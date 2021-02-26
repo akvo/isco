@@ -1,6 +1,7 @@
 * Beyond chocolate
 
-```
+
+ #+BEGIN_SRC shell
 docker-compose up --build -d
 docker-compose logs -f
-```
+ #+END_SRC
