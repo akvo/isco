@@ -1,0 +1,6 @@
+* flow to rsr
+
+  copy data from akvo-flow into akvo-rsr
+
+
+  This project was created with https://github.com/stuartsierra/reloaded leiningen template. Then once you start your repl, you can `(dev)` to go into `dev` namespace, and there you can `(refresh)` your project code
