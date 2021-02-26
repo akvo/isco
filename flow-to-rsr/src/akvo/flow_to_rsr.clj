@@ -47,10 +47,15 @@
 
 
 (comment
-  (let [rsr-api-token "rsr-api-token"
-        id 32771]
-    (-> (rsr-api/read-indicator-period-data-framework id rsr-api-token)
-        :body
-        :value))
-
-)
+  (let [rsr-api-token "rsr-api-token"]
+    (let [id 32771]
+      (log/error :current-value-for id
+                 (-> (rsr-api/read-indicator-period-data-framework rsr-api-token id)
+                     :body
+                     :value)))
+    (let [user-id 45824
+          period-id 435305
+          value (+ 10 (rand-int 100))]
+      (log/error :writing-value
+                 (rsr-api/write-indicator-period-data rsr-api-token user-id period-id value)))
+    ))
