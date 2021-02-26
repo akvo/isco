@@ -33,3 +33,8 @@
    ))
 
 (set-init (fn [_] (dev-system)))
+
+
+(defn migrate-and-seed []
+  (println "Na")
+  )

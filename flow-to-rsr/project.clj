@@ -61,4 +61,11 @@
                  ]
   :profiles {:dev {:dependencies [[org.clojure/tools.namespace "0.2.11"]
                                   [com.stuartsierra/component.repl "0.2.0"]]
-                   :source-paths ["dev"]}})
+                   :source-paths ["dev"]
+                   :repl-options {:init-ns dev
+                                  :init (do
+                                          (println "Starting BackEnd ...")
+                                          #_(go)
+                                          (migrate-and-seed))
+                                  :host "0.0.0.0"
+                                  :port 47480}}})
