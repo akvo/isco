@@ -1,6 +1,8 @@
 (ns akvo.flow-to-rsr
   (:require [akvo.lumen.lib.import.common :as common]
             [akvo.lumen.postgres :as postgres]
+            [akvo.rsr-api :as rsr-api]
+            [cheshire.core :as cheshire]
             [akvo.lumen.protocols :as p]
             [akvo.lumen.component.flow :as c.flow]
             [clojure.tools.logging :as log]))
@@ -38,6 +40,17 @@
           (log/error (mapv postgres/coerce-to-sql iterations)))))))
 
 (comment
-  (let [token "your token"]
-    (execute (source "uat1" "722939140" "713029131" "juan@akvo.org" token)
+  (let [jwt-token "your-jwt-token"]
+    (execute (source "uat1" "722939140" "713029131" "juan@akvo.org" jwt-token)
              (import-config "https://api-auth0.akvotest.org/flow"))))
+
+
+
+(comment
+  (let [rsr-api-token "rsr-api-token"
+        id 32771]
+    (-> (rsr-api/read-indicator-period-data-framework id rsr-api-token)
+        :body
+        :value))
+
+)

@@ -36,5 +36,4 @@
 
 
 (defn migrate-and-seed []
-  (println "Na")
-  )
+  (println "TODO: migrate-and-seed"))
