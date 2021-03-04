@@ -9,13 +9,26 @@
 
 (def host "https://rsr.test.akvo.org/rest/")
 
+(defn me [token]
+  (-> (http.client/get*
+       (format "%sv1/me/?format=json" host)
+       (merge http-client-req-defaults
+              {:headers {:Authorization (str "Token " token)}
+               :as :json}))))
+
+(defn read-indicators [token project-id]
+  (http.client/get*
+   (format "%sv1/project/%s/results_framework/?format=json" host project-id)
+   (merge http-client-req-defaults
+          {:headers {:Authorization (str "Token " token)}
+           :as :json})))
+
 (defn read-indicator-period-data-framework [token id]
   (http.client/get*
    (format "%sv1/indicator_period_data_framework/%s/?format=json" host id)
    (merge http-client-req-defaults
           {:headers {:Authorization (str "Token " token)}
            :as :json})))
-
 
 (defn write-indicator-period-data [token user period value]
   (let [body {:status "A"
