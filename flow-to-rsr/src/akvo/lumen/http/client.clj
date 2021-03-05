@@ -40,6 +40,10 @@
   {:pre [(req-pre-condition opts)]}
   (client/post url opts))
 
+(defn patch* [url opts]
+  {:pre [(req-pre-condition opts)]}
+  (client/patch url opts))
+
 (defn put* [url opts]
   {:pre [(req-pre-condition opts)]}
   (client/put url opts))

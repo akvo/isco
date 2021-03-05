@@ -37,3 +37,8 @@
 
 (defn migrate-and-seed []
   (println "TODO: migrate-and-seed"))
+
+
+(def rsr-token "")
+
+(def jwt "")

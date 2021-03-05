@@ -12,7 +12,8 @@
              (flow/import-config "https://api-auth0.akvotest.org/flow"))))
 
 (comment "rsr part"
-  (rsr/me dev/rsr-token)
+         (rsr/me dev/rsr-token)
+         (rsr-api/new-project dev/rsr-token 9269)
   (let [rsr-api-token dev/rsr-token]
     (rsr/project-indicators dev/rsr-token 9269)
     #_(let [id 32771]
