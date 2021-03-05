@@ -13,7 +13,23 @@
 
 (comment "rsr part"
          (rsr/me dev/rsr-token)
-         (rsr-api/new-project dev/rsr-token 9269)
+         {:id 9247, :status "published", :project 9309}
+         (rsr-api/new-project dev/rsr-token 9274 {:title "Dynamic secretariat"
+                                                  :subtitle "dynamically generated"
+                                                  :date-start-planned "2021-03-05"})
+
+         (->>
+          (:rows (flow/get-data (flow/source "isco" "112020049" "120020050" "juan@akvo.org" dev/jwt)
+                                (flow/import-config "https://api-auth0.akvo.org/flow")))
+          (mapv (fn [submission]
+                  (let [title (-> submission :metadata :display_name)]
+                    {:title title
+                     :rsr-project-id (-> (rsr-api/new-project dev/rsr-token 9309 {:title title
+                                                                                  :subtitle "dynamically generated"
+                                                                                  :date-start-planned "2021-03-05"})
+                                         :project)}))))
+
+
   (let [rsr-api-token dev/rsr-token]
     (rsr/project-indicators dev/rsr-token 9269)
     #_(let [id 32771]

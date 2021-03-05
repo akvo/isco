@@ -7,9 +7,9 @@
    [clojure.tools.logging :as log]))
 
 (defn adapt-columns [importer-columns]
-  (map (fn [c] (-> c
-                   (update :groupName (fn [groupName] (or groupName "main")))
-                   (update :groupId (fn [groupId] (or groupId "main")))))
+  (mapv (fn [c] (-> c
+                    (update :groupName (fn [groupName] (or groupName "main")))
+                    (update :groupId (fn [groupId] (or groupId "main")))))
        importer-columns))
 
 (defn import-config [flow-auth0-api-url]
@@ -28,23 +28,31 @@
    "email" email
    "token" token})
 
-(defn execute [source import-config]
+(defn get-data [source import-config]
   (with-open [importer (common/datagroups-importer source import-config)]
     (let [rows (p/records importer)
           columns  (adapt-columns (p/columns importer))]
       #_(doseq [[groupId cols] (group-by :groupId columns)]
           (log/error groupId cols))
-      (doseq [response (take common/rows-limit rows)]
-        (let [metadata  (->> response
-                             (filter (fn [[groupId iterations]] (= groupId "metadata")))
-                             first
-                             last
-                             first)
-              not-metadata-groups (filter (fn [[groupId iterations]]
-                                            (not= groupId "metadata")
-                                            ) response)]
-          (log/error :metadata metadata)
-          (doseq [[groupId iterations] not-metadata-groups]
-            (log/error groupId (->> iterations
-                                    (mapv #(merge % metadata)) ;; we merge metadata submission in all group responses for later process data massaging
-                                    (mapv postgres/coerce-to-sql)))))))))
+      {:columns columns
+       :rows (reduce (fn [c response]
+                 (conj c
+                       (let [metadata  (->> response
+                                            (filter (fn [[groupId iterations]] (= groupId "metadata")))
+                                            first
+                                            last
+                                            first)
+                             not-metadata-groups (filter (fn [[groupId iterations]]
+                                                           (not= groupId "metadata")
+                                                           ) response)]
+                         #_(log/error :metadata metadata)
+                         {:metadata metadata
+                          :groups (reduce  (fn [m [groupId iterations]]
+                                           (assoc m groupId
+                                                  (->> iterations
+                                                       (mapv #(merge % metadata)) ;; we merge metadata submission in all group responses for later process data massaging
+                                                       (mapv postgres/coerce-to-sql))))
+                                           {}
+                                         not-metadata-groups
+                                         )})))
+               [] (take common/rows-limit rows))})))

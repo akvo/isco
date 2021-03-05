@@ -46,7 +46,7 @@
              :form-params body
              :content-type :json}))))
 
-(defn new-project [token parent-project-id]
+(defn new-project [token parent-project-id {:keys [title subtitle date-start-planned]}]
   (let [project-body (-> (http.client/post*
                           (format "%sv1/program/%s/add-project/?format=json" host parent-project-id)
                           (merge http-client-req-defaults
@@ -63,13 +63,13 @@
                  :as :json
                  :form-params (merge
                                ;; general information
-                               {:title (str "wow!" (rand 3000 ))
-                                :subtitle (str "yup" (rand 3000 ))
+                               {:title title
+                                :subtitle subtitle
                                 :status_label "Implementation"
                                 :status "A"
-                                :date_start_planned "2021-02-24"}
+                                :date_start_planned date-start-planned}
                                ;; descriptions
-                               {:project_plan_summary "this is a long description"}
+                               {:project_plan_summary "project plan summary description"}
                                )
                  :content-type :json}))
         :body
