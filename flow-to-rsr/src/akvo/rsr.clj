@@ -35,7 +35,8 @@
   (let [indicator-type* (indicator-type indicator)
         period-id (:id (last (:periods indicator)))]
    (if (= :quantitative (indicator-type indicator))
-     (rsr-api/write-indicator-period-value token user-id period-id indicator-type* value)
+     (when value
+       (rsr-api/write-indicator-period-value token user-id period-id indicator-type* value))
      (let [score-value (.indexOf (:scores indicator) value)]
        (when (>= score-value 0)
          (rsr-api/write-indicator-period-value token user-id period-id indicator-type* (inc score-value)))))))

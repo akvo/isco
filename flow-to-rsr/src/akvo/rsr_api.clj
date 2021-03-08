@@ -34,7 +34,7 @@
 (defn write-indicator-period-value [token user-id period-id indicator-type value]
   (let [body (merge
               (if (= :quantitative indicator-type)
-                {:value value}
+                {:value (format "%.2f" value)}
                 {:value 0
                  :score_indices [value]})
               {:status "A"
