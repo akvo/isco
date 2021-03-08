@@ -31,13 +31,17 @@
           {:headers {:Authorization (str "Token " token)}
            :as :json})))
 
-(defn write-indicator-period-data [token user period value]
-  (let [body {:status "A"
-              :text "the comment of the value"
-              :disaggregations []
-              :value value
-              :user user
-              :period period}]
+(defn write-indicator-period-value [token user-id period-id indicator-type value]
+  (let [body (merge
+              (if (= :quantitative indicator-type)
+                {:value value}
+                {:value 0
+                 :score_indices [value]})
+              {:status "A"
+               :text "the comment of the value"
+               :disaggregations []
+               :user user-id
+               :period period-id})]
     (http.client/post*
      (format "%sv1/indicator_period_data_framework/?format=json" host)
      (merge http-client-req-defaults

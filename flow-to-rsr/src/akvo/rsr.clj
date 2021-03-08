@@ -25,3 +25,17 @@
                                          (assoc (select-keys u [:value :id :created_at])
                                                 :email (-> u :user_details :email)
                                                 )) updates))))) periods))))))))
+
+(defn indicator-type [indicator]
+  (if (= 1 (:type indicator))
+    :quantitative
+    :qualitative))
+
+(defn write-indicator-period-value [token user-id indicator value]
+  (let [indicator-type* (indicator-type indicator)
+        period-id (:id (last (:periods indicator)))]
+   (if (= :quantitative (indicator-type indicator))
+     (rsr-api/write-indicator-period-value token user-id period-id indicator-type* value)
+     (let [score-value (.indexOf (:scores indicator) value)]
+       (when (>= score-value 0)
+         (rsr-api/write-indicator-period-value token user-id period-id indicator-type* (inc score-value)))))))
