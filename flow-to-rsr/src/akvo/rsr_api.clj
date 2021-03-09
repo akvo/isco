@@ -50,7 +50,10 @@
              :form-params body
              :content-type :json}))))
 
-(defn new-project [token parent-project-id {:keys [title subtitle date-start-planned]}]
+(defn new-project
+  "returns {:id x, :status \"published\", :project xxxx}
+  `:project` is the expected project-id"
+  [token parent-project-id {:keys [title subtitle date-start-planned]}]
   (let [project-body (-> (http.client/post*
                           (format "%sv1/program/%s/add-project/?format=json" host parent-project-id)
                           (merge http-client-req-defaults
