@@ -1,17 +1,178 @@
-import React from 'react';
 import ReactDOM from 'react-dom';
-import './main.scss';
-import reportWebVitals from './reportWebVitals';
-import Root from './root';
+import React, { useEffect, useState } from "react";
+import { Auth0Provider } from "@auth0/auth0-react";
+import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
+import HeaderPanel from "./components/HeaderPanel";
+import Navigation from "./components/Navigation";
+import Footer from "./components/Footer";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+import Users from "./pages/Users";
+import WebForm from "./pages/WebForm";
+import Definition from "./pages/Definition";
+import Feedback from "./pages/Feedback";
+import Setting from "./pages/Setting";
+import Home from "./pages/Home";
+import Impressum from "./pages/Impressum";
+// import Faq from "./pages/Faq";
+ import {
+     AuthProvider,
+     SecureRoute,
+     PublicOnlyRoute
+ } from "./components/auth-context";
+ import config from "./config";
+// import authApi from "./services/auth";
+ import GettingStarted from "./pages/GettingStarted";
+ import Submission from "./pages/Submission";
+import './sass/app.scss';
+
+const Main = () => {
+    useEffect(async () => {
+        localStorage.clear();
+        // check cache time / login expired
+        // const now = new Date();
+        // let cachetime = localStorage.getItem("cache-time");
+        // let cache_version = document.getElementsByName("cache-version")[0].getAttribute("value");
+        // let current_version = localStorage.getItem("cache-version");
+        // let expiredon_cachetime = cachetime !== null ? new Date(parseInt(cachetime) + 2 * 60 * 60 * 1000) : new Date(0); // 2 hours
+        // if ((now > expiredon_cachetime || cache_version !== current_version) && cachetime !== null) {
+        //     localStorage.clear();
+        //     await authApi.logout();
+        //     window.location.reload();
+        //     return;
+        // }
+        // if (now < expiredon_cachetime && cache_version === current_version) {
+        //     let ct = localStorage.getItem("cache-time");
+        //     let cv = localStorage.getItem("cache-version");
+        //     localStorage.clear();
+        //     localStorage.setItem("cache-time", ct);
+        //     localStorage.setItem("cache-version", cv);
+        //     return;
+        // }
+    }, []);
+
+    const [formLoaded, setFormLoaded] = useState(false);
+    const [webForm, setWebForm] = useState(null);
+
+    window.onbeforeunload = (e) => {
+        if (formLoaded) {
+            // Cancel event as specified by spec
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    };
+    return (
+        <BrowserRouter>
+        <Auth0Provider
+      domain="akvo-k2-test.eu.auth0.com"
+      clientId="P78owsNcgEyEVNI9bAZ16vFdRvCQ02Ff"
+      redirectUri={window.location.origin+'/login'}>
+        <AuthProvider>
+                <header>
+                    <Navigation formLoaded={formLoaded} setFormLoaded={setFormLoaded} />
+                    <HeaderPanel />
+                </header>
+                <main>
+                    <Switch>
+                        <Route exact path="/">
+                            <Redirect to={config.routes.login} />
+                        </Route>
+                        {/* <Route
+                            exact
+                            path={config.routes.gettingStarted}
+                            component={GettingStarted}
+                        /> */}
+
+                        <SecureRoute
+                            exact
+                            path={config.routes.submission}
+                            component={Submission}
+                        />
+                        <Route
+                            exact
+                            path={config.routes.definition}
+                            component={Definition}
+                        />
+                        <SecureRoute
+                            exact
+                            path={config.routes.feedback}
+                            component={Feedback}
+                        />
+                        <SecureRoute
+                            exact
+                            path={config.routes.impressum}
+                            component={Impressum}
+                        />
+        {/*<SecureRoute
+                            exact
+                            path={config.routes.faq}
+                            component={Faq}
+                            /> */}
+                        <SecureRoute
+                            exact
+                            path={config.routes.users}
+                            component={Users}
+                        />
+                        <SecureRoute
+                            exact
+                            path={config.routes.home}
+                            component={Home}
+                        />
+                        <SecureRoute
+                            exact
+                            path={config.routes.setting}
+                            component={Setting}
+                        />
+                        <SecureRoute
+                            exact
+                            path={config.routes.survey}
+                            component={WebForm}
+                            setFormLoaded={setFormLoaded}
+                            setWebForm={setWebForm}
+                            webForm={webForm}
+                        />
+                        <PublicOnlyRoute
+                            exact
+                            path={config.routes.register}
+                            component={Register}
+                        />
+                        <PublicOnlyRoute
+                            exact
+                            path={config.routes.resetPassword}
+                            component={ResetPassword}
+                        />
+                        <PublicOnlyRoute
+                            exact
+                            path={config.routes.forgotPassword}
+                            component={ForgotPassword}
+                        />
+
+                              <PublicOnlyRoute
+                            exact
+                            path={config.routes.login}
+                            component={Login}
+                        />
+
+                    </Switch>
+                </main>
+
+                <footer>
+                    <Footer />
+                </footer>
+
+      </AuthProvider>
+        </Auth0Provider>
+        </BrowserRouter>
+
+    );
+};
+
 
 ReactDOM.render(
   <React.StrictMode>
-    <Root />
+    <Main />
   </React.StrictMode>,
   document.getElementById('root')
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();

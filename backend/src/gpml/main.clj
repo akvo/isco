@@ -1,6 +1,7 @@
 (ns gpml.main
   (:gen-class)
-  (:require [duct.core :as duct]))
+  (:require [duct.core :as duct]
+            [gpml.db]))
 
 (duct/load-hierarchy)
 

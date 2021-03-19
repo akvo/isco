@@ -1,0 +1,165 @@
+#+PROPERTY: header-args:sql :engine postgresql
+#+PROPERTY: header-args:sql+ :dbhost localhost
+#+PROPERTY: header-args:sql+ :dbport 5432
+#+PROPERTY: header-args:sql+ :dbuser unep
+#+PROPERTY: header-args:sql+ :dbpassword password
+#+PROPERTY: header-args:sql+ :database gpml
+
+
+
+ #+BEGIN_SRC sql
+        \d
+ #+END_SRC
+
+ #+RESULTS:
+ | List of relations |                      |          |       |
+ |-------------------+----------------------+----------+-------|
+ | Schema            | Name                 | Type     | Owner |
+ | public            | organizations        | table    | unep  |
+ | public            | organizations_id_seq | sequence | unep  |
+ | public            | ragtime_migrations   | table    | unep  |
+ | public            | users                | table    | unep  |
+ | public            | users_id_seq         | sequence | unep  |
+ | public            | verify_tokens        | table    | unep  |
+
+
+ #+BEGIN_SRC sql
+select * from verify_tokens
+ #+END_SRC
+
+ #+RESULTS:
+ | id                                   | user_id | created                      |
+ |--------------------------------------+---------+------------------------------|
+ | 3aa6f8a2_0c52_4cdc_ae30_46753bb18194 |       1 | 2021-03-24 09:24:35.08172+00 |
+ | c1b66a61_a09f_4c59_878b_25d73b514718 |       5 | 2021-03-24 09:24:35.08172+00 |
+
+
+
+ #+BEGIN_SRC sql
+ CREATE TABLE organizations (
+   id serial NOT NULL PRIMARY KEY,
+   parent_id integer NULL REFERENCES organizations,
+   name text NULL,
+   code text NULL,
+   active boolean NOT NULL DEFAULT true,
+   created timestamptz NOT NULL DEFAULT now(),
+   updated timestamptz NOT NULL DEFAULT now()
+ );
+
+
+ #+END_SRC
+
+ #+RESULTS:
+ | CREATE TABLE |
+ |--------------|
+
+
+ #+BEGIN_SRC sql
+INSERT INTO organizations (parent_id, name, code, active)
+VALUES (NULL, 'org 1', 'code1', true),
+       (1, 'org 2', 'code2', true),
+       (1, 'org 3', 'code3', true);
+
+ #+END_SRC
+
+
+  #+BEGIN_SRC sql
+delete from organizations where id=1
+
+  #+END_SRC
+
+
+ #+RESULTS:
+ |---|
+
+ #+BEGIN_SRC sql
+DROP table organizations CASCADE;
+ #+END_SRC
+
+ #+RESULTS:
+ | DROP TABLE |
+ |------------|
+
+
+ #+BEGIN_SRC sql
+select * from country
+ #+END_SRC
+
+ #+RESULTS:
+ | id | name      | iso_code |
+ |----+-----------+----------|
+ |  1 | Bulgaria  | BGR      |
+ |  2 | Finland   | FIN      |
+ |  3 | India     | IND      |
+ |  4 | Indonesia | IDN      |
+ |  5 | Spain     | ESP      |
+
+
+
+ #+BEGIN_SRC sql
+delete from ragtime_migrations
+ #+END_SRC
+
+ #+RESULTS:
+ | DELETE 0 |
+ |----------|
+
+
+ #+BEGIN_SRC sql
+CREATE TABLE organizations (
+  id serial NOT NULL PRIMARY KEY,
+  created timestamptz NOT NULL DEFAULT now(),
+  updated timestamptz NOT NULL DEFAULT now()
+);
+
+ #+END_SRC
+
+ #+RESULTS:
+ | CREATE TABLE |
+ |--------------|
+
+
+  #+BEGIN_SRC sql
+DROP TABLE IF EXISTS country CASCADE;
+  #+END_SRC
+
+  #+RESULTS:
+  | DROP TABLE |
+  |------------|
+
+
+
+   #+BEGIN_SRC sql
+\d organizations
+   #+END_SRC
+
+   #+RESULTS:
+   | Table "public.organizations"                                                                                         |                          |           |          |                                           |
+   |----------------------------------------------------------------------------------------------------------------------+--------------------------+-----------+----------+-------------------------------------------|
+   | Column                                                                                                               | Type                     | Collation | Nullable | Default                                   |
+   | id                                                                                                                   | integer                  |           | not null | nextval('organizations_id_seq'::regclass) |
+   | parent_id                                                                                                            | integer                  |           |          |                                           |
+   | name                                                                                                                 | text                     |           |          |                                           |
+   | code                                                                                                                 | text                     |           |          |                                           |
+   | level                                                                                                                | integer                  |           | not null | 0                                         |
+   | active                                                                                                               | boolean                  |           | not null | true                                      |
+   | created                                                                                                              | timestamp with time zone |           | not null | now()                                     |
+   | updated                                                                                                              | timestamp with time zone |           | not null | now()                                     |
+   | Indexes:                                                                                                             |                          |           |          |                                           |
+   | "organizations_pkey" PRIMARY KEY, btree (id)                                                                         |                          |           |          |                                           |
+   | Foreign-key constraints:                                                                                             |                          |           |          |                                           |
+   | "organizations_parent_id_fkey" FOREIGN KEY (parent_id) REFERENCES organizations(id)                                  |                          |           |          |                                           |
+   | Referenced by:                                                                                                       |                          |           |          |                                           |
+   | TABLE "organizations" CONSTRAINT "organizations_parent_id_fkey" FOREIGN KEY (parent_id) REFERENCES organizations(id) |                          |           |          |                                           |
+
+
+    #+BEGIN_SRC sql
+select * from organizations
+    #+END_SRC
+
+    #+RESULTS:
+    | id | parent_id | name  | code  | level | active | created                      | updated                      |
+    |----+-----------+-------+-------+-------+--------+------------------------------+------------------------------|
+    |  1 |           | org 1 | code1 |     0 | t      | 2021-03-18 13:35:07.86612+00 | 2021-03-18 13:35:07.86612+00 |
+    |  2 |         1 | org 2 | code2 |     0 | t      | 2021-03-18 13:35:07.86612+00 | 2021-03-18 13:35:07.86612+00 |
+    |  3 |         1 | org 3 | code3 |     0 | t      | 2021-03-18 13:35:07.86612+00 | 2021-03-18 13:35:07.86612+00 |

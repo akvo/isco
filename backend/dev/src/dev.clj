@@ -5,10 +5,35 @@
             [clojure.java.io :as io]
             [duct.core :as duct]
             [duct.core.repl :as duct-repl]
+            [ragtime.core :as ragtime]
+            [gpml.db]
+            [ragtime.jdbc :as jdbc]
+            [duct.logger :as logger]
+            [gpml.db.verify-token :as db.token]
+            [akvo.isco.utils :as isco.u]
+            [akvo.isco.time :as isco.t]
+            [ragtime.repl :as rragtime]
             [eftest.runner :as eftest]
             [integrant.core :as ig]
             [integrant.repl :refer [clear halt go init prep reset]]
-            [integrant.repl.state :refer [config system]]))
+            [integrant.repl.state :refer [config system]]
+            [clojure.string :as str]
+            [clj-time.core :as t]
+            [clj-time.coerce :as tc])
+  (:import [java.util UUID]))
+
+(isco.u/uuid)
+
+(comment
+  (db.token/all-tokens (dev/db))
+  (t/within? (t/interval
+              (t/minus (t/now) (t/hours 2)) (t/now))
+             (tc/from-date(:created (first (db.token/token-by-user (dev/db) {:id 5})))))
+
+
+
+
+  )
 
 (duct/load-hierarchy)
 
@@ -27,3 +52,24 @@
   (load "local"))
 
 (integrant.repl/set-prep! #(duct/prep-config (read-config) profiles))
+#_(ragtime/rollback  {:db-spec (:datasource (:spec (:duct.database.sql/hikaricp system)))}  (last (first (:duct.migrator/ragtime system))))
+
+(defn db []
+  (:spec (:duct.database.sql/hikaricp system)))
+
+(comment
+ (def configo
+   {:datastore  (jdbc/sql-database (:duct.database.sql/hikaricp config))
+    :migrations (:duct.migrator.ragtime/resources system)})
+ (refresh)
+ (go)
+ (rragtime/rollback configo)
+ (rragtime/migrate configo)
+
+ )
+(comment
+  (logger/log  (:duct.logger/timbre system) :info  :asas)
+
+  )
+
+;;(keys system)
