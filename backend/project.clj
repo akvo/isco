@@ -24,7 +24,8 @@
                  [com.auth0/jwks-rsa "0.15.0" :exclusions [com.fasterxml.jackson.core/jackson-databind]]
                  [com.auth0/java-jwt "3.12.0" :exclusions [com.fasterxml.jackson.core/jackson-databind]]
                  [org.clojure/data.json "2.0.1"]
-
+                 [clj-http "3.12.0"]
+                 [de.ubercode.clostache/clostache "1.4.0"]
                  ]
   :plugins [[duct/lein-duct "0.12.1"]]
   :main ^:skip-aot gpml.main

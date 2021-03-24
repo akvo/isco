@@ -3,6 +3,7 @@
             [ring.util.response :as resp]
             [clojure.java.jdbc :as jdbc]
             [akvo.isco.time :as it]
+            [akvo.isco.protocols :as p]
             [clojure.string :as str]
             [duct.logger :as log]
             [gpml.db.user :as db.user]
@@ -51,20 +52,28 @@
 (defmethod ig/init-key :gpml.handler.profile/register-post-params [_ _]
   post-params)
 
-(defmethod ig/init-key :gpml.handler.profile/register [_ {:keys [db logger config]}]
+(defn validate-url [register-url token]
+  (str (str/replace register-url "register" "validate-email/token=") token))
+
+(defmethod ig/init-key :gpml.handler.profile/register [_ {:keys [db logger config emailer]}]
   (fn [{:keys [body-params] :as req}]
-    (let [new-token (iu/uuid)]
+    (let [new-token (iu/uuid)
+          validate-url (validate-url (get-in req [:headers "referer"]) new-token)]
       (log/error logger {::new-token new-token })
      (jdbc/with-db-transaction [conn (:spec db)]
-       (log/info logger {::params body-params})
+       (log/info logger {::params body-params ::headers (get-in req [:headers])})
        (if (:agreement body-params)
          (if-let [existent-user (db.user/user-by-email conn body-params)]
            (do
              (log/warn logger {:existent-user existent-user})
-             (db.verify-token/new-token conn {:id new-token :user_id (:id existent-user)}))
+             (db.verify-token/new-token conn {:id new-token :user_id (:id existent-user)})
+             (p/send-email emailer [(:email existent-user) ] {:url validate-url})
+             (resp/created (get-in req [:headers "referer"]) {:message "New token created" })
+             )
            (let [new-user (db.user/new-user conn body-params)]
              (db.verify-token/new-token conn {:id new-token :user_id (:id new-user)})
              (log/error logger {::new-user new-user})
+             (p/send-email emailer [(:email new-user) ] {:url validate-url})
              (resp/created (get-in req [:headers "referer"]) {:message "New user created" })))
          (resp/bad-request {:error "missing agreement"}))))))
 

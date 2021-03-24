@@ -1,1 +1,6 @@
-{}
+{
+ :akvo.isco.utils.dev-emailer/emailer {:from-email "devops@akvo.localhost"
+                                       :from-name "ISCO - DEV"
+                                       :logger #ig/ref :duct.logger/timbre}
+
+ }

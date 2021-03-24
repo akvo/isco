@@ -1,1 +1,1 @@
-{}
+{:akvo.isco.emailer/mailjet-v3-emailer [:akvo.isco.emailer/sender]}

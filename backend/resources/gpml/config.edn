@@ -115,7 +115,8 @@
                                                :logger #ig/ref :duct.logger/timbre}
   :gpml.handler.profile/register-post-params {}
   :gpml.handler.profile/register {:db #ig/ref :duct.database.sql/hikaricp
-                                 :config #ig/ref :gpml.config/config
+                                  :config #ig/ref :gpml.config/config
+                                  :emailer #ig/ref :akvo.isco.emailer/sender
                                   :logger #ig/ref :duct.logger/timbre}
   :gpml.handler.profile/validate-email {:db #ig/ref :duct.database.sql/hikaricp
                                         :config #ig/ref :gpml.config/config
@@ -136,12 +137,19 @@
                               :audience #duct/env "OIDC_AUDIENCE"}
   :gpml.auth/auth-required {}
 
+
+
   :gpml.config/config {}
   }
 
  :duct.profile/dev   #duct/include "dev"
  :duct.profile/local #duct/include "local"
- :duct.profile/prod  {}
+ :duct.profile/prod  {
+                        :akvo.isco.emailer/mailjet-v3-emailer {:email-password #duct/env "LUMEN_EMAIL_PASSWORD"
+                                         :email-user #duct/env "LUMEN_EMAIL_USER"
+                                         :from-email "noreply@akvo.org"
+                                         :from-name "ISCO"}
+                      }
 
  :duct.module/logging {}
  :duct.module/sql {}
