@@ -11,6 +11,9 @@ select * from users where id = :id
 -- :doc Get user by id
 select * from users where email = :email
 
+-- :name validate-user :! :1
+-- :doc validate user by email
+UPDATE users set email_verified_at=now() where email = :email
 
 -- :name new-user :<! :1
 -- :doc Insert new user

@@ -20,7 +20,14 @@
                                          {:post {:summary "register user"
                                                  :swagger {:tags ["register-user"]}
                                                  :parameters {:body #ig/ref :gpml.handler.profile/register-post-params}
-                                                 :handler #ig/ref :gpml.handler.profile/register}}]]
+                                                 :handler #ig/ref :gpml.handler.profile/register}}]
+                                        ["/validate-email"
+                                         {:get {:summary "validate email"
+                                                :middleware []
+                                                :swagger {:tags ["profile"]}
+                                                :parameters {:query [:map [:token {:optional true} string?]]}
+                                                :handler #ig/ref :gpml.handler.profile/validate-email}}]
+                                        ]
                                        ["/api"
                                         {:middleware [#ig/ref :gpml.auth/auth-middleware
                                                       #ig/ref :gpml.auth/auth-required]}
@@ -109,7 +116,10 @@
   :gpml.handler.profile/register-post-params {}
   :gpml.handler.profile/register {:db #ig/ref :duct.database.sql/hikaricp
                                  :config #ig/ref :gpml.config/config
-                                 :logger #ig/ref :duct.logger/timbre}
+                                  :logger #ig/ref :duct.logger/timbre}
+  :gpml.handler.profile/validate-email {:db #ig/ref :duct.database.sql/hikaricp
+                                        :config #ig/ref :gpml.config/config
+                                        :logger #ig/ref :duct.logger/timbre}
   :gpml.handler.profile/surveys {:db #ig/ref :duct.database.sql/hikaricp
                                  :config #ig/ref :gpml.config/config
                                  :logger #ig/ref :duct.logger/timbre}
