@@ -7,7 +7,13 @@ select * from users order by id
 -- :doc Get user by id
 select * from users where id = :id
 
--- :name new-user :!
+-- :name user-by-email :? :1
+-- :doc Get user by id
+select * from users where email = :email
+
+
+-- :name new-user :<! :1
 -- :doc Insert new user
 insert into users (email, organization_id, name, role)
 values(:email, :organization_id, :name, 'submitter')
+RETURNING *;

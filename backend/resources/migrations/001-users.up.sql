@@ -7,7 +7,8 @@
    role text NULL,
    questionnaires jsonb DEFAULT '[]'::json,
    created timestamptz NOT NULL DEFAULT now(),
-   updated timestamptz NOT NULL DEFAULT now()
+   updated timestamptz NOT NULL DEFAULT now(),
+   UNIQUE (email)
  );
 -- Sample data
 INSERT INTO users (organization_id, name, email, email_verified_at, role)
