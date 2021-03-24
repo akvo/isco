@@ -74,7 +74,7 @@
 
 ;; TODO: expected payload
 (comment
-  payload
+  ;; payload
   {:name "Juan",
   :role "admin",
   :questionnaires ["113130042" "105640815"],
@@ -112,4 +112,4 @@
 (defmethod ig/init-key :gpml.handler.users/delete [_ {:keys [db logger config]}]
   (fn [{:keys [jwt-claims] {{:keys [page]} :query} :parameters}]
     (log/info logger {:page page})
-    (resp/response (res page))))
+    (resp/response (res page nil config))))

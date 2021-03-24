@@ -48,4 +48,4 @@ blocks:
         - name: Build and test
           commands:
             - ./ci/build.sh
-            - ./ci/deploy.sh
+            # - ./ci/deploy.sh
