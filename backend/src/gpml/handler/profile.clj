@@ -12,10 +12,14 @@
 (defmethod ig/init-key :gpml.handler.profile/me [_ {:keys [db logger config]}]
   (fn [{:keys [jwt-claims] {{:keys [id]} :query} :parameters}]
     (log/info logger :jwt-claims jwt-claims)
-    (resp/response (assoc (select-keys jwt-claims [:name :email :email_verified])
-                          :organization_id 74
-                          :permissions (-> config :roles :admin :permissions)
-                          :project_fids (-> config :webform :forms :project :fids)))))
+    (jdbc/with-db-transaction [conn (:spec db)]
+      (let [user (db.user/user-by-email conn jwt-claims)
+            email_verified (boolean (:email_verified_at user))]
+        (resp/response (assoc (select-keys jwt-claims [:name :email])
+                              :organization_id (:organization_id user)
+                              :email_verified email_verified
+                              :permissions (-> config :roles :admin :permissions)
+                              :project_fids (-> config :webform :forms :project :fids)))))))
 
 (defmethod ig/init-key :gpml.handler.profile/saved-surveys-handler [_ {:keys [logger db]}]
   (fn [{:keys [jwt-claims] {{:keys [id]} :query} :parameters}]

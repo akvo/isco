@@ -26,7 +26,7 @@ const Navigation = ({formLoaded, setFormLoaded}) => {
     const endSession = async () => {
         await logout();
         setFormLoaded(false);
-        window.location.reload();
+        //window.location.reload();
     };
 
     const handleLocale = eventKey => {

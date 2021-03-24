@@ -28,6 +28,7 @@ import Impressum from "./pages/Impressum";
  import Submission from "./pages/Submission";
 import './sass/app.scss';
 
+
 const Main = () => {
     useEffect(async () => {
         localStorage.clear();
@@ -140,7 +141,7 @@ const Main = () => {
                         />
                         <PublicOnlyRoute
                             exact
-                            path={config.routes.resetPassword}
+                            path={config.routes.validateEmail}
                             component={ResetPassword}
                         />
                         <PublicOnlyRoute

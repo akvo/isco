@@ -33,6 +33,11 @@ const resetPassword = async data => {
     return await request().post("/api/auth/reset-password", data);
 };
 
+const validateEmail = async token => {
+    // await request().get("sanctum/csrf-cookie");
+  return await request().get(`/public-api/validate-email?${token}`);
+};
+
 const resendVerificationEmail = async () => {
     await request().get("sanctum/csrf-cookie");
     return await request().post("/email/verification-notification");
@@ -53,6 +58,7 @@ export default {
     getUser,
     register,
     forgotPassword,
+    validateEmail,
     resetPassword,
     resendVerificationEmail,
     updatePassword,
