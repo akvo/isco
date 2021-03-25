@@ -15,6 +15,11 @@ select * from users where email = :email
 -- :doc validate user by email
 UPDATE users set email_verified_at=now() where email = :email
 
+-- :name patch-user :! :1
+-- :doc patch user by id
+UPDATE users set name=:name, role=:role, questionnaires=:questionnaires, organization_id=:organization_id, updated=now()
+where id = :id;
+
 -- :name new-user :<! :1
 -- :doc Insert new user
 insert into users (email, organization_id, name, role)

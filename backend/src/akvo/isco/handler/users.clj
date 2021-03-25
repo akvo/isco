@@ -2,16 +2,20 @@
   (:require [integrant.core :as ig]
             [ring.util.response :as resp]
             [akvo.isco.config :as c]
+            [clojure.java.jdbc :as jdbc]
             [akvo.isco.db.user :as db.user]
             [duct.logger :as log]
             [clojure.string :as str]
             [clojure.pprint :refer (pprint)]))
 
-(defn user-res-data [user role]
+(defn find-questionnaire [questionnaires q]
+  (first (filter #(= q (:name %)) questionnaires)))
+
+(defn user-res-data [user role questionnaires]
   (merge
    user
    {
-    :questionnaires []
+    :questionnaires (mapv (partial find-questionnaire questionnaires) (:questionnaires user))
     :role role
     :organization
     {:id 78,
@@ -27,6 +31,7 @@
 
 (defn res [url page data config]
   (let [roles (:roles config)
+        questionnaires (:questionnaires config)
         total-rows (count data)
         total-pages (+ (quot total-rows page-limit) (if (rem total-rows page-limit) 1 0))
         ;; TODO: fix links active value
@@ -51,7 +56,7 @@
       :per_page 10 ;; TODO review this value
       :links links
       :data
-      (mapv #(user-res-data % (get roles (keyword (:role %)))) data)}}))
+      (mapv #(user-res-data % (get roles (keyword (:role %))) questionnaires) data)}}))
 
 #_(first (db.user/all-users (dev/db)))
 
@@ -61,44 +66,43 @@
     (let [data (db.user/all-users (:spec db))]
       (resp/response (res "https://gisco-demo.tc.akvo.org" page data config)))))
 
+(def patch-params
+  [:map
+   [:name string?]
+   [:role string?]
+   [:questionnaires [:vector string?]];; TODO fix FE to not send null
+   [:organization_id int?]])
 
-
-
-;; TODO: expected payload
 (comment
-  payload
-  {:name "Juan",
-  :role "admin",
-  :questionnaires ["113130042" "105640815"],
-   :organization_id 74})
+  (require '[malli.core :as m])
+  ;; TODO: expected payload
+  (def payload {:name "Juan",
+                :role "admin",
+                :questionnaires [],
+                :organization_id 74})
+
+  (m/validate patch-params payload)
+  )
+
+
+(defmethod ig/init-key :akvo.isco.handler.users/user-patch-params [_ _]
+  patch-params)
+
 
 (defmethod ig/init-key :akvo.isco.handler.users/patch [_ {:keys [db logger config]}]
-  (fn [{:keys [jwt-claims] {{:keys [page]} :query} :parameters}]
-    (log/info logger {:page page})
-    (resp/response {:role
-                    {:key "admin",
-                     :name "Admin",
-                     :permissions ["submit-survey" "manage-surveys" "manage-users"],
-                     :description nil},
-                    :email "juan@akvo.org",
-                    :email_verified_at "2021-02-25T08:19:28.000000Z",
-                    :organization_id 74,
-                    :two_factor_recovery_codes nil,
-                    :name "Juan",
-                    :updated_at "2021-03-23T10:26:26.000000Z",
-                    :last_activity "2021-03-23 10:26:14",
-                    :id 50,
-                    :two_factor_secret nil,
-                    :questionnaires
-                    [{:name "113130042",
-                      :title "B - Industry",
-                      :url
-                      "https://tech-consultancy.akvotest.org/akvo-flow-web/idh/113130042"}
-                     {:name "105640815",
-                      :title "C - Retail",
-                      :url
-                      "https://tech-consultancy.akvotest.org/akvo-flow-web/idh/105640815"}],
-                    :created_at "2021-02-25T08:19:15.000000Z"})))
+  (fn [{:keys [body-params parameters] :as req}]
+    ;;    {{{:keys [id]} :path} :parameters}
+    (println (:id (:path parameters)) body-params)
+    (jdbc/with-db-transaction [conn (:spec db)]
+      (db.user/patch-user conn (merge (:path parameters) body-params))
+      (let [updated-user (db.user/user-by-id conn (:path parameters))
+            res (merge updated-user
+                       {:role (get (:roles config) (keyword (:role updated-user)))
+                        :last_activity "2021-03-23 10:26:14"
+                        :questionnaires
+                        (mapv (partial find-questionnaire (:questionnaires config)) (:questionnaires updated-user))})]
+        (log/error logger res)
+        (resp/response res)))))
 
 
 (defmethod ig/init-key :akvo.isco.handler.users/delete [_ {:keys [db logger config]}]
