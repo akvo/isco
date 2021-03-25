@@ -11,7 +11,7 @@ services:
     depends_on:
       - db
     environment:
-      - DATABASE_URL=jdbc:postgresql://db/gpml?user=unep&password=password
+      - DATABASE_URL=jdbc:postgresql://db/isco?user=isco&password=password
       - OIDC_ISSUER=https://akvo-k2-test.eu.auth0.com/
       - OIDC_AUDIENCE=P78owsNcgEyEVNI9bAZ16vFdRvCQ02Ff
   frontend:

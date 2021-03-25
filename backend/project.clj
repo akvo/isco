@@ -1,6 +1,6 @@
-(defproject gpml "1.0.0"
-  :description "UNEP - GPML Digital Platform"
-  :url "https://www.gpmarinelitter.org/what-we-do/gpml-digital-platform"
+(defproject isco "1.0.0"
+  :description "ISCO"
+  :url "TODO"
   :license {:name "AGPL-3.0"
             :url "https://www.gnu.org/licenses/agpl-3.0.en.html"}
   :min-lein-version "2.0.0"
@@ -28,7 +28,7 @@
                  [de.ubercode.clostache/clostache "1.4.0"]
                  ]
   :plugins [[duct/lein-duct "0.12.1"]]
-  :main ^:skip-aot gpml.main
+  :main ^:skip-aot akvo.isco.main
   :resource-paths ["resources" "target/resources"]
   :prep-tasks     ["javac" "compile" ["run" ":duct/compiler"]]
   :middleware     [lein-duct.plugin/middleware]
@@ -36,7 +36,7 @@
                    :integration :integration}
   :profiles
   {:dev  [:project/dev :profiles/dev]
-   :uberjar {:aot [gpml.main]
+   :uberjar {:aot [akvo.isco.main]
              :uberjar-name "uberjar.jar"}
    :metajar {:aot :all
              :direct-link true
@@ -57,6 +57,7 @@
                   :repl-options {:init-ns dev
                                  :init (do
                                          (println "Starting backend ...")
-                                         (go))
+                                         (go)
+                                         )
                                  :host "0.0.0.0"
                                  :port 47480}}})

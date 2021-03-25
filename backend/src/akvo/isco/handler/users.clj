@@ -1,8 +1,8 @@
-(ns gpml.handler.users
+(ns akvo.isco.handler.users
   (:require [integrant.core :as ig]
             [ring.util.response :as resp]
-            [gpml.config :as c]
-            [gpml.db.user :as db.user]
+            [akvo.isco.config :as c]
+            [akvo.isco.db.user :as db.user]
             [duct.logger :as log]
             [clojure.string :as str]
             [clojure.pprint :refer (pprint)]))
@@ -63,7 +63,7 @@
 
 #_(first (db.user/all-users (dev/db)))
 
-(defmethod ig/init-key :gpml.handler.users/get [_ {:keys [db logger config]}]
+(defmethod ig/init-key :akvo.isco.handler.users/get [_ {:keys [db logger config]}]
   (fn [{:keys [jwt-claims] {{:keys [page]} :query} :parameters}]
     (log/info logger {:page page })
     (let [data (db.user/all-users (:spec db))]
@@ -80,7 +80,7 @@
   :questionnaires ["113130042" "105640815"],
    :organization_id 74})
 
-(defmethod ig/init-key :gpml.handler.users/patch [_ {:keys [db logger config]}]
+(defmethod ig/init-key :akvo.isco.handler.users/patch [_ {:keys [db logger config]}]
   (fn [{:keys [jwt-claims] {{:keys [page]} :query} :parameters}]
     (log/info logger {:page page})
     (resp/response {:role
@@ -109,7 +109,7 @@
                     :created_at "2021-02-25T08:19:15.000000Z"})))
 
 
-(defmethod ig/init-key :gpml.handler.users/delete [_ {:keys [db logger config]}]
+(defmethod ig/init-key :akvo.isco.handler.users/delete [_ {:keys [db logger config]}]
   (fn [{:keys [jwt-claims] {{:keys [page]} :query} :parameters}]
     (log/info logger {:page page})
     (resp/response (res page))))

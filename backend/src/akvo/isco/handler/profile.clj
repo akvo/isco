@@ -1,4 +1,4 @@
-(ns gpml.handler.profile
+(ns akvo.isco.handler.profile
   (:require [integrant.core :as ig]
             [ring.util.response :as resp]
             [clojure.java.jdbc :as jdbc]
@@ -6,11 +6,11 @@
             [akvo.isco.protocols :as p]
             [clojure.string :as str]
             [duct.logger :as log]
-            [gpml.db.user :as db.user]
+            [akvo.isco.db.user :as db.user]
             [akvo.isco.utils :as iu]
-            [gpml.db.verify-token :as db.verify-token]))
+            [akvo.isco.db.verify-token :as db.verify-token]))
 
-(defmethod ig/init-key :gpml.handler.profile/me [_ {:keys [db logger config]}]
+(defmethod ig/init-key :akvo.isco.handler.profile/me [_ {:keys [db logger config]}]
   (fn [{:keys [jwt-claims] {{:keys [id]} :query} :parameters}]
     (log/info logger :jwt-claims jwt-claims)
     (jdbc/with-db-transaction [conn (:spec db)]
@@ -22,7 +22,7 @@
                               :permissions (-> config :roles :admin :permissions)
                               :project_fids (-> config :webform :forms :project :fids)))))))
 
-(defmethod ig/init-key :gpml.handler.profile/saved-surveys-handler [_ {:keys [logger db]}]
+(defmethod ig/init-key :akvo.isco.handler.profile/saved-surveys-handler [_ {:keys [logger db]}]
   (fn [{:keys [jwt-claims] {{:keys [id]} :query} :parameters}]
     (resp/response {:data
                     [{:web_form_id 33,
@@ -36,7 +36,7 @@
                       :date "2021-03-22T10:31:16.000000Z"}],
                     :last_activity "2021-03-22T10:31:25.731110Z"})))
 
-(defmethod ig/init-key :gpml.handler.profile/surveys [_ {:keys [config logger]}]
+(defmethod ig/init-key :akvo.isco.handler.profile/surveys [_ {:keys [config logger]}]
   (fn [{:keys [jwt-claims] {{:keys [id]} :query} :parameters}]
     (resp/response {:data
                     (-> config :questionnaires),
@@ -49,13 +49,13 @@
    [:agreement boolean?]
    [:organization_id int?]])
 
-(defmethod ig/init-key :gpml.handler.profile/register-post-params [_ _]
+(defmethod ig/init-key :akvo.isco.handler.profile/register-post-params [_ _]
   post-params)
 
 (defn validate-url [register-url token]
   (str (str/replace register-url "register" "validate-email/token=") token))
 
-(defmethod ig/init-key :gpml.handler.profile/register [_ {:keys [db logger config emailer]}]
+(defmethod ig/init-key :akvo.isco.handler.profile/register [_ {:keys [db logger config emailer]}]
   (fn [{:keys [body-params] :as req}]
     (let [new-token (iu/uuid)
           validate-url (validate-url (get-in req [:headers "referer"]) new-token)]
@@ -82,7 +82,7 @@
     (boolean (db.user/validate-user db {:email email}))))
 
 
-(defmethod ig/init-key :gpml.handler.profile/validate-email [_ {:keys [db]}]
+(defmethod ig/init-key :akvo.isco.handler.profile/validate-email [_ {:keys [db]}]
   (fn [{{{:keys [token]} :query} :parameters}]
     (if token
       (jdbc/with-db-transaction [conn (:spec db)]
