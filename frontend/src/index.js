@@ -16,7 +16,7 @@ import Feedback from "./pages/Feedback";
 import Setting from "./pages/Setting";
 import Home from "./pages/Home";
 import Impressum from "./pages/Impressum";
-// import Faq from "./pages/Faq";
+import Faq from "./pages/Faq";
  import {
      AuthProvider,
      SecureRoute,
@@ -106,11 +106,11 @@ const Main = () => {
                             path={config.routes.impressum}
                             component={Impressum}
                         />
-        {/*<SecureRoute
+                        <SecureRoute
                             exact
                             path={config.routes.faq}
                             component={Faq}
-                            /> */}
+                            />
                         <SecureRoute
                             exact
                             path={config.routes.users}
