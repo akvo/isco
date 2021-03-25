@@ -6,10 +6,10 @@
             [duct.core :as duct]
             [duct.core.repl :as duct-repl]
             [ragtime.core :as ragtime]
-            [gpml.db]
+            [akvo.isco.db]
             [ragtime.jdbc :as jdbc]
             [duct.logger :as logger]
-            [gpml.db.verify-token :as db.token]
+            [akvo.isco.db.verify-token :as db.token]
             [akvo.isco.utils :as isco.u]
             [akvo.isco.time :as isco.t]
             [ragtime.repl :as rragtime]
@@ -38,7 +38,7 @@
 (duct/load-hierarchy)
 
 (defn read-config []
-  (duct/read-config (io/resource "gpml/config.edn")))
+  (duct/read-config (io/resource "akvo/isco/config.edn")))
 
 (defn test []
   (eftest/run-tests (eftest/find-tests "test")))

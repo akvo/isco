@@ -1,0 +1,1 @@
+{:akvo.isco.utils.dev-emailer/emailer [:akvo.isco.emailer/sender]}

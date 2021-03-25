@@ -35,8 +35,7 @@ const useAuth = () => {
     localStorage.clear();
 
     setUser(null);
-
-    logout0();
+    logout0({ returnTo: window.location.origin+"/login" });
   };
     const login = async data => {
         const sessionUser = await authApi.login(data);

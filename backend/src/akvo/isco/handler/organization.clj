@@ -1,9 +1,9 @@
-(ns gpml.handler.organization
-  (:require [gpml.db.organization :as db.organization]
+(ns akvo.isco.handler.organization
+  (:require [akvo.isco.db.organization :as db.organization]
             [integrant.core :as ig]
             [ring.util.response :as resp]))
 
-(defmethod ig/init-key :gpml.handler.organization/handler [_ {:keys [db]}]
+(defmethod ig/init-key :akvo.isco.handler.organization/handler [_ {:keys [db]}]
   (fn [{{{:keys [id]} :query} :parameters}]
     (let [conn (:spec db)
           data (if id

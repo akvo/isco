@@ -1,0 +1,159 @@
+{:duct.profile/base
+ {:duct.core/project-ns gpml
+
+  :akvo.isco.handler.main/handler {:routes [["/"
+                                             {:get #ig/ref :akvo.isco.handler.main/root}]
+                                            ["/public-api"
+                                             ["/swagger.json"
+                                              {:get {:no-doc true
+                                                     :swagger {:info {:title "UNEP GPML"
+                                                                      :description "Digital Platform API"
+                                                                      :version "1.0.0"}}
+                                                     :handler #ig/ref :akvo.isco.handler.main/swagger-handler}}]
+                                             ["/organizations"
+                                              {:get {:summary "List available orgs"
+                                                     :middleware []
+                                                     :swagger {:tags ["orgs"]}
+                                                     :parameters {:query [:map [:id {:optional true} int?]]}
+                                                     :handler #ig/ref :akvo.isco.handler.organization/handler}}]
+                                             ["/register"
+                                              {:post {:summary "register user"
+                                                      :swagger {:tags ["register-user"]}
+                                                      :parameters {:body #ig/ref :akvo.isco.handler.profile/register-post-params}
+                                                      :handler #ig/ref :akvo.isco.handler.profile/register}}]
+                                             ["/validate-email"
+                                              {:get {:summary "validate email"
+                                                     :middleware []
+                                                     :swagger {:tags ["profile"]}
+                                                     :parameters {:query [:map [:token {:optional true} string?]]}
+                                                     :handler #ig/ref :akvo.isco.handler.profile/validate-email}}]
+                                             ]
+                                            ["/api"
+                                             {:middleware [#ig/ref :akvo.isco.auth/auth-middleware
+                                                           #ig/ref :akvo.isco.auth/auth-required]}
+                                             ["/questionnaires"
+                                              {:get {:summary "List available qustionnaires"
+                                                     :swagger {:tags ["roles"]}
+                                                     :parameters {:query [:map [:id {:optional true} int?]]}
+                                                     :handler #ig/ref :akvo.isco.handler.questionnaires/handler}}]
+                                             ["/roles"
+                                              {:get {:summary "List available roles"
+                                                     :swagger {:tags ["roles"]}
+                                                     :parameters {:query [:map [:id {:optional true} int?]]}
+                                                     :handler #ig/ref :akvo.isco.handler.roles/handler}}]
+                                             ["/users"
+                                              [""
+                                               {:get {:summary "List available users"
+                                                      :swagger {:tags ["users"]}
+                                                      :parameters {:query [:map
+                                                                           [:id {:optional true} int?]
+                                                                           [:page {:optional true} int?]]}
+                                                      :handler #ig/ref :akvo.isco.handler.users/get}}]
+                                              ["/{id}"
+                                               {:delete {:summary "delete user"
+                                                         :swagger {:tags ["users"]}
+                                                         :parameters {:path [:map [:id int?]]}
+                                                         :handler #ig/ref :akvo.isco.handler.users/delete}
+                                                :patch {:summary "patch users"
+                                                        :swagger {:tags ["users"]}
+                                                        :parameters {:path [:map [:id int?]]
+                                                                     :body #ig/ref :akvo.isco.handler.users/user-patch-params}
+                                                        :handler #ig/ref :akvo.isco.handler.users/patch}}]]
+                                             ["/submission"
+                                              ["/check/{id}"
+                                               [""
+                                                {:get {:summary "saved-surveys"
+                                                       :swagger {:tags ["profile"]}
+                                                       :parameters {:path [:map [:id int?]]}
+                                                       :handler #ig/ref :akvo.isco.handler.submission/check}}]
+                                               ["/{form-id}"
+                                                {:get {:summary "saved-surveys"
+                                                       :swagger {:tags ["profile"]}
+                                                       :parameters {:path [:map [:form-id int?]]}
+                                                       :handler #ig/ref :akvo.isco.handler.submission/check-form}}]
+                                               ]]
+                                             ["/me"
+                                              [""
+                                               {:get {:summary "profile"
+                                                      :swagger {:tags ["profile"]}
+                                                      :parameters {:query [:map [:id {:optional true} int?]]}
+                                                      :handler #ig/ref :akvo.isco.handler.profile/me}}]
+                                              ["/saved-surveys"
+                                               {:get {:summary "saved-surveys"
+                                                      :swagger {:tags ["profile"]}
+                                                      :parameters {:query [:map [:id {:optional true} int?]]}
+                                                      :handler #ig/ref :akvo.isco.handler.profile/saved-surveys-handler}}]
+                                              ["/surveys"
+                                               {:get {:summary "surveys"
+                                                      :swagger {:tags ["profile"]}
+                                                      :parameters {:query [:map [:id {:optional true} int?]]}
+                                                      :handler #ig/ref :akvo.isco.handler.profile/surveys}}]]]]}
+
+  :duct.server.http/jetty {:handler #ig/ref :akvo.isco.handler.main/handler}
+
+  :akvo.isco.handler.main/root {}
+  :akvo.isco.handler.main/swagger-handler {}
+  :akvo.isco.handler.questionnaires/handler {:db #ig/ref :duct.database.sql/hikaricp
+                                             :config #ig/ref :akvo.isco.config/config
+                                             :logger #ig/ref :duct.logger/timbre}
+  :akvo.isco.handler.roles/handler {:db #ig/ref :duct.database.sql/hikaricp
+                                    :config #ig/ref :akvo.isco.config/config
+                                    :logger #ig/ref :duct.logger/timbre}
+  :akvo.isco.handler.users/get {:db #ig/ref :duct.database.sql/hikaricp
+                                :config #ig/ref :akvo.isco.config/config
+                                :logger #ig/ref :duct.logger/timbre}
+  :akvo.isco.handler.users/patch {:db #ig/ref :duct.database.sql/hikaricp
+                                  :config #ig/ref :akvo.isco.config/config
+                                  :logger #ig/ref :duct.logger/timbre}
+  :akvo.isco.handler.users/delete {:db #ig/ref :duct.database.sql/hikaricp
+                                   :config #ig/ref :akvo.isco.config/config
+                                   :logger #ig/ref :duct.logger/timbre}
+  :akvo.isco.handler.organization/handler {:db #ig/ref :duct.database.sql/hikaricp}
+  :akvo.isco.handler.profile/me {:db #ig/ref :duct.database.sql/hikaricp
+                                 :config #ig/ref :akvo.isco.config/config
+                                 :logger #ig/ref :duct.logger/timbre}
+  :akvo.isco.handler.profile/saved-surveys-handler {:db #ig/ref :duct.database.sql/hikaricp
+                                                    :logger #ig/ref :duct.logger/timbre}
+  :akvo.isco.handler.profile/register-post-params {}
+  :akvo.isco.handler.users/user-patch-params {}
+  :akvo.isco.handler.profile/register {:db #ig/ref :duct.database.sql/hikaricp
+                                       :config #ig/ref :akvo.isco.config/config
+                                       :emailer #ig/ref :akvo.isco.emailer/sender
+                                       :logger #ig/ref :duct.logger/timbre}
+  :akvo.isco.handler.profile/validate-email {:db #ig/ref :duct.database.sql/hikaricp
+                                             :config #ig/ref :akvo.isco.config/config
+                                             :logger #ig/ref :duct.logger/timbre}
+  :akvo.isco.handler.profile/surveys {:db #ig/ref :duct.database.sql/hikaricp
+                                      :config #ig/ref :akvo.isco.config/config
+                                      :logger #ig/ref :duct.logger/timbre}
+  :akvo.isco.handler.submission/check {:db #ig/ref :duct.database.sql/hikaricp
+                                       :config #ig/ref :akvo.isco.config/config
+                                       :logger #ig/ref :duct.logger/timbre}
+  :akvo.isco.handler.submission/check-form {:db #ig/ref :duct.database.sql/hikaricp
+                                            :config #ig/ref :akvo.isco.config/config
+                                            :logger #ig/ref :duct.logger/timbre}
+  :duct.migrator/ragtime {:migrations #ig/ref :duct.migrator.ragtime/resources}
+  :duct.migrator.ragtime/resources {:path "migrations"}
+  :duct.database/sql {:connection-uri #duct/env "DATABASE_URL"}
+  :akvo.isco.auth/auth-middleware {:issuer #duct/env "OIDC_ISSUER"
+                                   :audience #duct/env "OIDC_AUDIENCE"}
+  :akvo.isco.auth/auth-required {}
+
+
+
+  :akvo.isco.config/config {}
+  }
+
+ :duct.profile/dev   #duct/include "dev"
+ :duct.profile/local #duct/include "local"
+ :duct.profile/prod  {
+                      :akvo.isco.emailer/mailjet-v3-emailer {:email-password #duct/env "LUMEN_EMAIL_PASSWORD"
+                                                             :email-user #duct/env "LUMEN_EMAIL_USER"
+                                                             :from-email "noreply@akvo.org"
+                                                             :from-name "ISCO"}
+                      }
+
+ :duct.module/logging {}
+ :duct.module/sql {}
+ :duct.module/web {}
+ }

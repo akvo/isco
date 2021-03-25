@@ -9,6 +9,7 @@ export default {
         login: "/login",
         register: "/register",
         resetPassword: "/reset-password/:token",
+        validateEmail: "/validate-email/:token",
         forgotPassword: "forgot-password",
         impressum: "/impressum",
         faq: "/faq",

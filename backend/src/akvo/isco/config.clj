@@ -1,4 +1,4 @@
-(ns gpml.config
+(ns akvo.isco.config
   (:require [integrant.core :as ig]))
 
 
@@ -87,5 +87,5 @@
            })
 
 
-(defmethod ig/init-key :gpml.config/config [_ _]
+(defmethod ig/init-key :akvo.isco.config/config [_ _]
   data)

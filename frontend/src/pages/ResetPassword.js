@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useParams, useLocation, useHistory } from "react-router-dom";
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 import * as qs from "query-string";
+import { useAuth0 } from "@auth0/auth0-react";
 import useForm from "../lib/use-form";
 import authApi from "../services/auth";
 import WelcomeBanner from "../components/WelcomeBanner";
@@ -77,7 +78,7 @@ const ResetPasswordForm = ({ text, email, token, setSuccess }) => {
                     placeholder={ text.formConfirmPwd }
                     isInvalid={!!errors.password_confirmation}
                     ref={register({
-                        validate: value => value === password.current 
+                        validate: value => value === password.current
                         || text.valPwdNotMatch
                     })}
                 />
@@ -105,7 +106,31 @@ const ResetPassword = () => {
     const { email } = qs.parse(location.search);
     const [success, setSuccess] = useState();
     const { locale } = useLocale();
-    let text = uiText[locale.active];
+  let text = uiText[locale.active];
+  const { loginWithRedirect } = useAuth0();
+  const check = async token => {
+            try {
+          const res =  await authApi.validateEmail(token);
+          console.log(res.data['token-verified']);
+            setSuccess(res.data['token-verified']);
+              loginWithRedirect();
+        } catch (e) {
+          if (e.status === 422) {
+            console.log("yayaya", token);
+//                setServerErrors(e.errors);
+            } else {
+                throw e;
+            }
+        }
+
+  };
+
+
+    useEffect(() => {
+      console.log("testing token ", token);
+      check(token);
+    }, []);
+
 
     return (
         <>
@@ -114,7 +139,7 @@ const ResetPassword = () => {
                 <Row className="justify-content-md-center">
                     <Col md={6}>
                         <Card>
-                            <Card.Header>{ text.formResetPwd }</Card.Header>
+        <Card.Header>{ text.formResetPwd }- {token} - {success}</Card.Header>
                             <Card.Body>
                                 {success ? (
                                     <SuccessBanner message={success} />

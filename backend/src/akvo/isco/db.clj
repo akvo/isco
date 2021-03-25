@@ -1,4 +1,4 @@
-(ns gpml.db
+(ns akvo.isco.db
   (:require [clojure.java.jdbc :as jdbc]
             [clojure.data.json :as json])
   (:import org.postgresql.util.PGobject))

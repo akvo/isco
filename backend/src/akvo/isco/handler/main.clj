@@ -1,4 +1,4 @@
-(ns gpml.handler.main
+(ns akvo.isco.handler.main
   (:require [integrant.core :as ig]
             [malli.util :as mu]
             [muuntaja.core :as m]
@@ -47,7 +47,7 @@
                         ;; coercing request parameters
                         coercion/coerce-request-middleware]}}))
 
-(defmethod ig/init-key :gpml.handler.main/handler [_ {:keys [routes]}]
+(defmethod ig/init-key :akvo.isco.handler.main/handler [_ {:keys [routes]}]
   (ring/ring-handler (router routes)
                      (ring/routes
                       (swagger-ui/create-swagger-ui-handler {:path "/api/docs"
@@ -56,8 +56,8 @@
                                                              :operationsSorter "alpha"})
                       (ring/create-default-handler))))
 
-(defmethod ig/init-key :gpml.handler.main/root [_ _]
+(defmethod ig/init-key :akvo.isco.handler.main/root [_ _]
   root)
 
-(defmethod ig/init-key :gpml.handler.main/swagger-handler [_ _]
+(defmethod ig/init-key :akvo.isco.handler.main/swagger-handler [_ _]
   (swagger/create-swagger-handler))

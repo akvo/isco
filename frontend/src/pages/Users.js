@@ -200,7 +200,7 @@ const Users = () => {
         data = { ...data, organization_id: selectedOrgs.value };
         const questionnaires = data.questionnaires?.length
             ? data.questionnaires.map(q => q.value)
-            : null;
+            : [];
         try {
             await request().patch(`/api/users/${id}`, {
                 ...data,

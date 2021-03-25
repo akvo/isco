@@ -40,7 +40,7 @@ const Submission = () => {
         const { data } = await request().get("/api/submissions/submitted");
         let results = data.map(x => ({...x, 'isLoading': false}));
         setSubmissions(results);
-        delayInterval;
+//TODO uncomment        delayInterval;
     }, []);
 
     const setLoading = (id, status) =>{
@@ -85,7 +85,7 @@ const Submission = () => {
         let status = interval <= 60;
         return status;
     };
-    
+
     const renderSubmissions = () => {
         if (submissions.length === 0) {
             return (
@@ -103,8 +103,8 @@ const Submission = () => {
                     <td className="pl-3">{x.form_name}</td>
                     <td className="pl-3">
                         <Button
-                            key={'btnDownload-'+i} 
-                            variant="primary" 
+                            key={'btnDownload-'+i}
+                            variant="primary"
                             size="sm"
                             disabled={(delay && isDelay) ? true : x.isLoading}
                             onClick={!x.isLoading ? () => handleDownload(x) : null}
@@ -130,8 +130,8 @@ const Submission = () => {
     const renderAlert = () => {
         const { show, msg } = isError;
         return show && (
-            <Alert 
-                key={msg} 
+            <Alert
+                key={msg}
                 variant='warning'
                 onClose={() => setIsError({show: false, msg: null})}
                 dismissible
@@ -143,11 +143,11 @@ const Submission = () => {
         );
     };
 
-    useEffect(() => {
-        isError.show ? 
+  useEffect(() => {
+    if(isError.show){
             setTimeout(() => {
                 setIsError({show: false, msg: null});
-            }, 5000) : "";
+            }, 5000); }
     }, [isError]);
 
     return (

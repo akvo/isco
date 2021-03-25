@@ -16,7 +16,7 @@ import Feedback from "./pages/Feedback";
 import Setting from "./pages/Setting";
 import Home from "./pages/Home";
 import Impressum from "./pages/Impressum";
-// import Faq from "./pages/Faq";
+import Faq from "./pages/Faq";
  import {
      AuthProvider,
      SecureRoute,
@@ -27,6 +27,7 @@ import Impressum from "./pages/Impressum";
  import GettingStarted from "./pages/GettingStarted";
  import Submission from "./pages/Submission";
 import './sass/app.scss';
+
 
 const Main = () => {
     useEffect(async () => {
@@ -105,11 +106,11 @@ const Main = () => {
                             path={config.routes.impressum}
                             component={Impressum}
                         />
-        {/*<SecureRoute
+                        <SecureRoute
                             exact
                             path={config.routes.faq}
                             component={Faq}
-                            /> */}
+                            />
                         <SecureRoute
                             exact
                             path={config.routes.users}
@@ -140,7 +141,7 @@ const Main = () => {
                         />
                         <PublicOnlyRoute
                             exact
-                            path={config.routes.resetPassword}
+                            path={config.routes.validateEmail}
                             component={ResetPassword}
                         />
                         <PublicOnlyRoute

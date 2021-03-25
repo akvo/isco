@@ -1,4 +1,4 @@
-(ns gpml.auth
+(ns akvo.isco.auth
   (:require [integrant.core :as ig]
             [malli.core :as malli]
             [clojure.pprint :refer (pprint)])
@@ -45,7 +45,7 @@
              {}
              (into {} (.getClaims (JWT/decode token)))))
 
-(defmethod ig/prep-key :gpml.auth/auth-middleware [_ opts]
+(defmethod ig/prep-key :akvo.isco.auth/auth-middleware [_ opts]
   (and (validate-opts opts)
        opts))
 
@@ -74,7 +74,7 @@
         (catch Exception e
           [false (.getMessage e)])))))
 
-(defmethod ig/init-key :gpml.auth/auth-middleware [_ opts]
+(defmethod ig/init-key :akvo.isco.auth/auth-middleware [_ opts]
   (fn [handler]
 ;;    (println "auth-middleware0" opts)
     (let [signature-verifier (signature-verifier (:issuer opts))]
@@ -86,7 +86,7 @@
                                                                          opts))))))))
 
 
-(defmethod ig/init-key :gpml.auth/auth-required [_ _]
+(defmethod ig/init-key :akvo.isco.auth/auth-required [_ _]
   (fn [handler]
 ;;    (println "auth-required0")
     (fn [request]
