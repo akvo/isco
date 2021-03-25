@@ -44,7 +44,7 @@ const Feedback = () => {
     useEffect(() => {
         updateValidator();
     }, [emailStatus]);
-    
+
     const onSubmit = async (data, e) => {
         if (captchaNumber !== parseInt(data.captcha)) {
             updateValidator();
@@ -57,14 +57,14 @@ const Feedback = () => {
                 email: user.email,
                 subject: data.title,
                 message: data.feedback,
-            }
+            };
             let res = await emailApi.sendEmail(sendData);
             let status = (res.data.mails !== null) ? true : false;
             setEmailStatus(status);
             setEmailMessage(text.valFeedbackError);
             setLoading(false);
-            status ? e.target.reset() : "";
-            
+         // TODO:             status ? e.target.reset() : "";
+
         } catch (e) {
             if (e.status === 422 || e.status === 429) {
                 setServerErrors(e.errors);
@@ -137,7 +137,7 @@ const Feedback = () => {
                                     </Form.Control.Feedback>
                                 </Form.Group>
                                 <Button
-                                    variant={isLoading ? "secondary" : "primary"} 
+                                    variant={isLoading ? "secondary" : "primary"}
                                     disabled={isLoading}
                                     type="submit"
                                 >
