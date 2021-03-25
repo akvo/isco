@@ -2,20 +2,20 @@
   (:require [integrant.core :as ig]
             [ring.util.response :as resp]
             [akvo.isco.config :as c]
+            [akvo.isco.utils :as iu]
             [clojure.java.jdbc :as jdbc]
             [akvo.isco.db.user :as db.user]
             [duct.logger :as log]
             [clojure.string :as str]
             [clojure.pprint :refer (pprint)]))
 
-(defn find-questionnaire [questionnaires q]
-  (first (filter #(= q (:name %)) questionnaires)))
+
 
 (defn user-res-data [user role questionnaires]
   (merge
    user
    {
-    :questionnaires (mapv (partial find-questionnaire questionnaires) (:questionnaires user))
+    :questionnaires (mapv (partial iu/find-questionnaire questionnaires) (:questionnaires user))
     :role role
     :organization
     {:id 78,
@@ -100,8 +100,7 @@
                        {:role (get (:roles config) (keyword (:role updated-user)))
                         :last_activity "2021-03-23 10:26:14"
                         :questionnaires
-                        (mapv (partial find-questionnaire (:questionnaires config)) (:questionnaires updated-user))})]
-        (log/error logger res)
+                        (mapv (partial iu/find-questionnaire (:questionnaires config)) (:questionnaires updated-user))})]
         (resp/response res)))))
 
 

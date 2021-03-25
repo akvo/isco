@@ -36,11 +36,13 @@
                       :date "2021-03-22T10:31:16.000000Z"}],
                     :last_activity "2021-03-22T10:31:25.731110Z"})))
 
-(defmethod ig/init-key :akvo.isco.handler.profile/surveys [_ {:keys [config logger]}]
+(defmethod ig/init-key :akvo.isco.handler.profile/surveys [_ {:keys [config logger db]}]
   (fn [{:keys [jwt-claims] {{:keys [id]} :query} :parameters}]
-    (resp/response {:data
-                    (-> config :questionnaires),
-                    :last_activity "2021-03-22T10:31:25.731110Z"})))
+    (jdbc/with-db-transaction [conn (:spec db)]
+      (let [user (db.user/user-by-email conn jwt-claims)]
+        (resp/response {:data
+                        (mapv (partial iu/find-questionnaire (:questionnaires config)) (:questionnaires user))
+                        :last_activity "2021-03-22T10:31:25.731110Z"})))))
 
 (def post-params
   [:map
