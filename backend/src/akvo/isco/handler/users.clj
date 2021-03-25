@@ -23,43 +23,35 @@
      :parents nil}})
   )
 
-(defn res [page data config]
-  {:last_activity "2021-03-23T09:22:54.039708Z",
-   :data
-   {:path "https://gisco-demo.tc.akvo.org/api/users",
-    :current_page page
-    :last_page 5,
-    :total 45,
-    :from 1,
-    :to 10,
-    :prev_page_url nil,
-    :first_page_url "https://gisco-demo.tc.akvo.org/api/users?page=1",
-    :next_page_url "https://gisco-demo.tc.akvo.org/api/users?page=2",
-    :last_page_url "https://gisco-demo.tc.akvo.org/api/users?page=5",
-    :per_page 10,
-    :links
-    [{:url nil, :label "&laquo; Previous", :active false}
-     {:url "https://gisco-demo.tc.akvo.org/api/users?page=1",
-      :label 1,
-      :active true}
-     {:url "https://gisco-demo.tc.akvo.org/api/users?page=2",
-      :label 2,
-      :active false}
-     {:url "https://gisco-demo.tc.akvo.org/api/users?page=3",
-      :label 3,
-      :active false}
-     {:url "https://gisco-demo.tc.akvo.org/api/users?page=4",
-      :label 4,
-      :active false}
-     {:url "https://gisco-demo.tc.akvo.org/api/users?page=5",
-      :label 5,
-      :active false}
-     {:url "https://gisco-demo.tc.akvo.org/api/users?page=2",
-      :label "Next &raquo;",
-      :active false}],
-    :data
-    [(user-res-data (first data) (get (:roles config) (keyword (:role (first data)))))
-     ]}})
+(def page-limit 2)
+
+(defn res [url page data config]
+  (let [roles (:roles config)
+        total-rows (count data)
+        total-pages (+ (quot total-rows page-limit) (if (rem total-rows page-limit) 1 0))
+        ;; TODO: fix links active value
+        links (vec (conj (map (fn [itm]
+                                {:url (format "%s/api/users?page=%s" url itm),
+                                 :label itm,
+                                 :active true}) (map inc (range total-pages)))
+                         {:url nil, :label "&laquo; Previous", :active false}))
+        ]
+    {:last_activity "2021-03-23T09:22:54.039708Z",
+     :data
+     {:path (format "%s/api/users" url),
+      :current_page page
+      :last_page total-pages,
+      :total total-rows,
+      :from 1 ;; TODO review this value
+      :to page-limit ;; TODO review this value
+      :prev_page_url nil ;; TODO review this value
+      :first_page_url (format "%s/api/users?page=1" url),
+      :next_page_url (format "%s/api/users?page=2" url),
+      :last_page_url (format "%s/api/users?page=5" url),
+      :per_page 10 ;; TODO review this value
+      :links links
+      :data
+      (mapv #(user-res-data % (get roles (keyword (:role %)))) data)}}))
 
 #_(first (db.user/all-users (dev/db)))
 
@@ -67,7 +59,7 @@
   (fn [{:keys [jwt-claims] {{:keys [page]} :query} :parameters}]
     (log/info logger {:page page })
     (let [data (db.user/all-users (:spec db))]
-      (resp/response (res page data config)))))
+      (resp/response (res "https://gisco-demo.tc.akvo.org" page data config)))))
 
 
 
