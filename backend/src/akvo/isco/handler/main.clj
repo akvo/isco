@@ -5,6 +5,7 @@
             [reitit.coercion.malli]
             [reitit.ring :as ring]
             [reitit.ring.coercion :as coercion]
+            [ring.middleware.cors :refer (wrap-cors)]
             [reitit.ring.middleware.exception :as exception]
             [reitit.ring.middleware.muuntaja :as muuntaja]
             [reitit.ring.middleware.parameters :as parameters]
@@ -44,6 +45,9 @@
                         muuntaja/format-request-middleware
                         ;; coercing response bodys
                         coercion/coerce-response-middleware
+                        #(wrap-cors %
+                                   :access-control-allow-origin [#"http://localhost:3002" #"https://gisco-pilot.tc.akvo.org" #"https://gisco-demo.tc.akvo.org"]
+                                   :access-control-allow-methods [:get])
                         ;; coercing request parameters
                         coercion/coerce-request-middleware]}}))
 

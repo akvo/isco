@@ -16,10 +16,11 @@
     (jdbc/with-db-transaction [conn (:spec db)]
       (let [user (db.user/user-by-email conn jwt-claims)
             email_verified (boolean (:email_verified_at user))]
-        (resp/response (assoc (select-keys jwt-claims [:name :email])
+        (resp/response (assoc (select-keys user [:name :email :id])
                               :organization_id (:organization_id user)
                               :email_verified email_verified
                               :permissions (-> config :roles :admin :permissions)
+                              :hash (:id user)
                               :project_fids (-> config :webform :forms :project :fids)))))))
 
 (defmethod ig/init-key :akvo.isco.handler.profile/saved-surveys-handler [_ {:keys [logger db]}]
@@ -95,4 +96,21 @@
               (resp/bad-request {:error "invalid token"}))
             (resp/bad-request {:error "missing user token related"}))
           (resp/bad-request {:error "missing token"})))
+      (resp/bad-request {:error "missing token"}))))
+
+
+(defmethod ig/init-key :akvo.isco.handler.profile/flow-submitter [_ {:keys [db logger]}]
+  (fn [{{{:keys [token]} :path} :parameters}]
+    (log/error logger token)
+    (resp/response {:id token
+                    :user "juan@akvo.org"
+                    :org 1})
+    #_(if token
+      (jdbc/with-db-transaction [conn (:spec db)]
+        (if-let [user (db.user/user-by-id conn {:id token})]
+          (resp/response {:id token
+                          :user (:email user)
+                          :org (:organization_id user)})
+          (resp/bad-request {:error "missing user token related"}))
+        )
       (resp/bad-request {:error "missing token"}))))

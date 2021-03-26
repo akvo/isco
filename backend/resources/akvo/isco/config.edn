@@ -21,6 +21,12 @@
                                                       :swagger {:tags ["register-user"]}
                                                       :parameters {:body #ig/ref :akvo.isco.handler.profile/register-post-params}
                                                       :handler #ig/ref :akvo.isco.handler.profile/register}}]
+                                             ["/flow-submitter/{token}"
+                                              {:get {:summary "flow-submitter"
+                                                     :middleware []
+                                                     :swagger {:tags ["profile"]}
+                                                     :parameters {:path [:map [:token string?]]}
+                                                     :handler #ig/ref :akvo.isco.handler.profile/flow-submitter}}]
                                              ["/validate-email"
                                               {:get {:summary "validate email"
                                                      :middleware []
@@ -121,6 +127,9 @@
                                        :emailer #ig/ref :akvo.isco.emailer/sender
                                        :logger #ig/ref :duct.logger/timbre}
   :akvo.isco.handler.profile/validate-email {:db #ig/ref :duct.database.sql/hikaricp
+                                             :config #ig/ref :akvo.isco.config/config
+                                             :logger #ig/ref :duct.logger/timbre}
+  :akvo.isco.handler.profile/flow-submitter {:db #ig/ref :duct.database.sql/hikaricp
                                              :config #ig/ref :akvo.isco.config/config
                                              :logger #ig/ref :duct.logger/timbre}
   :akvo.isco.handler.profile/surveys {:db #ig/ref :duct.database.sql/hikaricp

@@ -26,6 +26,8 @@
                  [org.clojure/data.json "2.0.1"]
                  [clj-http "3.12.0"]
                  [de.ubercode.clostache/clostache "1.4.0"]
+                 [ring-cors "0.1.13"]
+                 [buddy/buddy-core "1.9.0"]
                  ]
   :plugins [[duct/lein-duct "0.12.1"]]
   :main ^:skip-aot akvo.isco.main

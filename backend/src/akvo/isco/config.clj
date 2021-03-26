@@ -11,8 +11,8 @@
                         :key "submitter"
                         :description nil}})
 
-
-
+"https://tech-consultancy.akvotest.org/akvo-flow-web"
+(def akvo-flow-web-host "http://localhost:3002" )
 
 (def data {:roles roles
            :webform {:forms
@@ -45,43 +45,43 @@
                          :contact_email 81610060,
                          :comment 124750055}}]}}
            :questionnaires [{:url
-                             "https://tech-consultancy.akvotest.org/akvo-flow-web/idh/111510043",
+                             (format "%s/idh/111510043" akvo-flow-web-host),
                              :title "Projects - GISCO",
                              :name "111510043"}
                             {:url
-                             "https://tech-consultancy.akvotest.org/akvo-flow-web/idh/113130042",
+                             (format "%s/idh/113130042" akvo-flow-web-host),
                              :title "B - Industry",
                              :name "113130042"}
                             {:url
-                             "https://tech-consultancy.akvotest.org/akvo-flow-web/idh/105640815",
+                             (format "%s/idh/105640815" akvo-flow-web-host),
                              :title "C - Retail",
                              :name "105640815"}
                             {:url
-                             "https://tech-consultancy.akvotest.org/akvo-flow-web/idh/111890828",
+                             (format "%s/idh/111890828" akvo-flow-web-host),
                              :title "D - Civil Society (NGOs)",
                              :name "111890828"}
                             {:url
-                             "https://tech-consultancy.akvotest.org/akvo-flow-web/idh/134210832",
+                             (format "%s/idh/134210832" akvo-flow-web-host),
                              :title "D - Standard setting organisations",
                              :name "134210832"}
                             {:url
-                             "https://tech-consultancy.akvotest.org/akvo-flow-web/idh/143215090",
+                             (format "%s/idh/143215090" akvo-flow-web-host),
                              :title "Projects - Beyond Chocolate",
                              :name "143215090"}
                             {:url
-                             "https://tech-consultancy.akvotest.org/akvo-flow-web/idh/130990814",
+                             (format "%s/idh/130990814" akvo-flow-web-host),
                              :title "B - Industry - Beyond Chocolate",
                              :name "130990814"}
                             {:url
-                             "https://tech-consultancy.akvotest.org/akvo-flow-web/idh/143340791",
+                             (format "%s/idh/143340791" akvo-flow-web-host),
                              :title "C - Retail - Beyond Chocolate",
                              :name "143340791"}
                             {:url
-                             "https://tech-consultancy.akvotest.org/akvo-flow-web/idh/150700609",
+                             (format "%s/idh/150700609" akvo-flow-web-host),
                              :title "D - Civil Society (NGOs) - Beyond Chocolate",
                              :name "150700609"}
                             {:url
-                             "https://tech-consultancy.akvotest.org/akvo-flow-web/idh/148430590",
+                             (format "%s/idh/148430590" akvo-flow-web-host),
                              :title "D - Standard setting organisations - Beyond Chocolate",
                              :name "148430590"}]
            })

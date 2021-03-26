@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 import React, { useState, useEffect } from "react";
 import {
     Container,
@@ -6,9 +7,9 @@ import {
     Card,
     Form,
     Button,
-    Modal, 
-    ButtonGroup, 
-    Spinner, 
+    Modal,
+    ButtonGroup,
+    Spinner,
     Alert
 } from "react-bootstrap";
 import Select, { components } from "react-select";
@@ -139,7 +140,7 @@ const SavedFormsSelector = ({ text, user, onSelect, watchValue, setConfirmAction
         let title = (submission_name !== null) ? submission_name.toLowerCase().includes(text) : false;
         if (
             org_name.toLowerCase().includes(text) || title ||
-            submitter.toLowerCase().includes(text) || survey_name.toLowerCase().includes(text) 
+            submitter.toLowerCase().includes(text) || survey_name.toLowerCase().includes(text)
         ) {
             return true;
         } else {
@@ -528,24 +529,25 @@ const WebForm = ({setFormLoaded, webForm, setWebForm}) => {
         request.onerror = function(event) {
             setIsIndexDB(false);
             // console.log('indexDB not allowed');
-        }
+        };
         request.onsuccess = function(event) {
             setIsIndexDB(true);
             // console.log('indexDB allowed');
             db = event.target.result;
-        }
-    }
+        };
+    };
 
     const openForm = (url, cache=0) => {
         setFormLoading(false);
         setIframeKey(iframeKey + 1);
         const isDemo = location.hostname.startsWith('gisco-pilot') ? 0 : 1;
-        let endpoint = (url === null) ? url : `${url}&locale=${locale.active}&demo=${isDemo}&cache=${cache}`;
+      let endpoint = (url === null) ? url : `${url}&locale=${locale.active}&demo=${isDemo}&cache=${cache}`;
+      console.log(url, endpoint);
         setActiveForm(endpoint);
         localStorage.setItem(`active-form:${user.id}`, url);
     };
 
-    const onSelectForm = ({ url, type, webForm }) => {
+  const onSelectForm = ({ url, type, webForm }) => {
         setFormLoading((localStorage.getItem(`active-form:${user.id}`) === url) ? true : false);
         setIsSpinner(true);
         setIsWebFormLoaded(null);
@@ -556,7 +558,8 @@ const WebForm = ({setFormLoaded, webForm, setWebForm}) => {
             // always show collaborators
             // setWebForm({ web_form_id: null, submission_name: null, new_questionnaire: true, show_collaborator: true, fid: parseInt(type)});
         } else {
-            // if type null ? saved form : new form;
+          // if type null ? saved form : new form;
+          console.log('ULLL');
             let cache = (type === null) ? 1 : 0;
             openForm(url, cache);
             (user.project_fids.some(id => url.includes(id)))
@@ -668,7 +671,8 @@ const WebForm = ({setFormLoaded, webForm, setWebForm}) => {
                     }
                     {/* End of Manage indexDB not allowed on Firefox private mode */}
 
-                    <Card>
+                    <Card><h1>{activeForm} -isIndexDB {isIndexDB}</h1>
+
                         {(activeForm && isIndexDB) && (
                             <iframe
                                 // sandbox="allow-same-origin allow-scripts allow-forms allow-modals"
