@@ -1,0 +1,2 @@
+ALTER TABLE webforms DROP CONSTRAINT one_submission;
+DROP TABLE IF EXISTS webforms CASCADE;

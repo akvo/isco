@@ -7,6 +7,7 @@
             [clojure.string :as str]
             [duct.logger :as log]
             [akvo.isco.db.user :as db.user]
+            [akvo.isco.db.webforms :as db.webforms]
             [akvo.isco.utils :as iu]
             [akvo.isco.db.verify-token :as db.verify-token]))
 
@@ -23,19 +24,24 @@
                               :hash (:id user)
                               :project_fids (-> config :webform :forms :project :fids)))))))
 
-(defmethod ig/init-key :akvo.isco.handler.profile/saved-surveys-handler [_ {:keys [logger db]}]
+(defmethod ig/init-key :akvo.isco.handler.profile/saved-surveys-handler [_ {:keys [logger db config]}]
   (fn [{:keys [jwt-claims] {{:keys [id]} :query} :parameters}]
-    (resp/response {:data
-                    [{:web_form_id 33,
-                      :url
-                      "https://tech-consultancy.akvotest.org/akvo-flow-web/idh/105640815/b9a9f96f-a5af-4b55-93f8-00e8a575f8d5",
-                      :survey_name "C - Retail",
-                      :submitter "juan@akvo.org",
-                      :submission_name nil,
-                      :org_name "staff GISCO secretariat",
-                      :org_id 74,
-                      :date "2021-03-22T10:31:16.000000Z"}],
-                    :last_activity "2021-03-22T10:31:25.731110Z"})))
+    (jdbc/with-db-transaction [conn (:spec db)]
+      (let [webforms (db.webforms/all-not-submitted-webforms conn)
+            host (:webform-host config)]
+        (resp/response {:data
+                        (mapv (fn [wb]
+                                (let [q (iu/find-questionnaire (:questionnaires config) (:form_id wb))]
+                                  {:web_form_id (:web_form_id wb)
+                                   :url (format "%s/%s" host (:form_instance_url wb))
+                                   :survey_name (:title q)
+                                   :submitter (:submitter wb)
+                                   :submission_name nil ;; (:display_name wb)
+                                   :org_name (:org_name wb)
+                                   :org_id (:org_id wb),
+                                   :date (:date wb)})
+                                ) webforms)
+                        :last_activity "2021-03-22T10:31:25.731110Z"})))))
 
 (defmethod ig/init-key :akvo.isco.handler.profile/surveys [_ {:keys [config logger db]}]
   (fn [{:keys [jwt-claims] {{:keys [id]} :query} :parameters}]
@@ -114,3 +120,25 @@
           (resp/bad-request {:error "missing user token related"}))
         )
       (resp/bad-request {:error "missing token"}))))
+
+
+(def submission-post-params
+  [:map
+   [:updated_at string?]
+;;   [:uuid string?]
+   [:submitted boolean?]
+   [:form_instance_url string?]
+   [:form_instance_id string?]
+   [:display_name string?]
+   [:form_id int?]
+   [:organization_id int?]
+   [:user_id int?]])
+
+(defmethod ig/init-key :akvo.isco.handler.profile/submission-post-params [_ _]
+  submission-post-params)
+
+(defmethod ig/init-key :akvo.isco.handler.profile/submission [_ {:keys [db logger config emailer]}]
+  (fn [{:keys [body-params] :as req}]
+    (jdbc/with-db-transaction [conn (:spec db)]
+      (let [new-webform (db.webforms/new-webform conn body-params)]
+        (resp/created (get-in req [:headers "referer"]) new-webform)))))

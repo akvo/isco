@@ -15,10 +15,10 @@
 (def akvo-flow-web-host "http://localhost:3002" )
 
 (def data {:roles roles
+           :webform-host akvo-flow-web-host
            :webform {:forms
                      {:project {:fids ["111510043" "143215090"], :max_submission nil},
-                      :industry
-                      {:fids
+                      :industry {:fids
                        ["113130042"
                         "105640815"
                         "111890828"
@@ -30,20 +30,17 @@
                         "150981538"],
                        :max_submission 1}},
                      :exception
-                     {:organization
-                      {:name ["staff akvo" "staff gisco secretariat"], :ids []}},
-                     :surveys
-                     {:project
-                      [{:survey_id 116680069,
-                        :form_id 111510043,
-                        :question
-                        {:dependency_to 124260137,
-                         :group 95530076,
-                         :repeatable true,
-                         :member 89980334,
-                         :contact_name 124680005,
-                         :contact_email 81610060,
-                         :comment 124750055}}]}}
+                     {:organization {:name ["staff akvo" "staff gisco secretariat"], :ids []}},
+                     :surveys {:project [{:survey_id 116680069,
+                                          :form_id 111510043,
+                                          :question
+                                          {:dependency_to 124260137,
+                                           :group 95530076,
+                                           :repeatable true,
+                                           :member 89980334,
+                                           :contact_name 124680005,
+                                           :contact_email 81610060,
+                                           :comment 124750055}}]}}
            :questionnaires [{:url
                              (format "%s/idh/111510043" akvo-flow-web-host),
                              :title "Projects - GISCO",

@@ -46,8 +46,8 @@
                         ;; coercing response bodys
                         coercion/coerce-response-middleware
                         #(wrap-cors %
-                                   :access-control-allow-origin [#"http://localhost:3002" #"https://gisco-pilot.tc.akvo.org" #"https://gisco-demo.tc.akvo.org"]
-                                   :access-control-allow-methods [:get])
+                                    :access-control-allow-origin [#"http://localhost:3002" #"http://tangrammer.local:3002" #"https://gisco-pilot.tc.akvo.org" #"https://gisco-demo.tc.akvo.org"]
+                                   :access-control-allow-methods [:get :post])
                         ;; coercing request parameters
                         coercion/coerce-request-middleware]}}))
 
