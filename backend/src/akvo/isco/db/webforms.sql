@@ -12,6 +12,16 @@ select * from webforms order by id
  where webforms.submitted='f'
  order by webforms.id
 
+-- :name all-submitted-webforms :? :*
+-- :doc Get all not-submitted webforms
+ select webforms.id as web_form_id, email as submitter, users.name as submitter_name, form_instance_url, organizations.name as "org_name",
+ webforms.organization_id as "org_id", webforms.created as "date", webforms.form_id, webforms.updated as updated_at from webforms
+ left join organizations ON organizations.id=webforms.organization_id
+ left join users ON users.id=webforms.user_id
+ where webforms.submitted='t'
+ order by webforms.id
+
+
 
 -- :name webform-by-id :? :1
 -- :doc Get webform by id
