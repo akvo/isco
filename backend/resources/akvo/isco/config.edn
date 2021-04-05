@@ -29,10 +29,10 @@
                                                      :handler #ig/ref :akvo.isco.handler.profile/flow-submitter}}]
                                              ["/submission"
                                               {:post {:summary "flow-submitter"
-                                                     :middleware []
-                                                     :swagger {:tags ["profile"]}
+                                                      :middleware []
+                                                      :swagger {:tags ["profile"]}
                                                       :parameters {:body #ig/ref :akvo.isco.handler.profile/submission-post-params}
-                                                     :handler #ig/ref :akvo.isco.handler.profile/submission}}]
+                                                      :handler #ig/ref :akvo.isco.handler.profile/submission}}]
                                              ["/validate-email"
                                               {:get {:summary "validate email"
                                                      :middleware []
@@ -48,6 +48,25 @@
                                                      :swagger {:tags ["roles"]}
                                                      :parameters {:query [:map [:id {:optional true} int?]]}
                                                      :handler #ig/ref :akvo.isco.handler.questionnaires/handler}}]
+                                             ["/collaborators"
+                                              ["/{id}/"
+                                               {:get {:summary "List available collaborators"
+                                                      :swagger {:tags ["collaborators"]}
+                                                      :parameters {:path [:map [:id int?]]}
+                                                      :handler #ig/ref :akvo.isco.handler.questionnaires/collaborators}}]
+                                              ["/{id}/{orgid}"
+                                               {:post {:summary "add  collaborator"
+                                                       :swagger {:tags ["collaborators"]}
+                                                       :parameters {:path [:map
+                                                                           [:id int?]
+                                                                           [:orgid int?]]}
+                                                       :handler #ig/ref :akvo.isco.handler.questionnaires/new-collaborators}
+                                                :delete {:summary "remove collaborator"
+                                                         :swagger {:tags ["collaborators"]}
+                                                         :parameters {:path [:map
+                                                                             [:id int?]
+                                                                             [:orgid int?]]}
+                                                         :handler #ig/ref :akvo.isco.handler.questionnaires/delete-collaborator}}]]
                                              ["/roles"
                                               {:get {:summary "List available roles"
                                                      :swagger {:tags ["roles"]}
@@ -108,6 +127,15 @@
   :akvo.isco.handler.questionnaires/handler {:db #ig/ref :duct.database.sql/hikaricp
                                              :config #ig/ref :akvo.isco.config/config
                                              :logger #ig/ref :duct.logger/timbre}
+  :akvo.isco.handler.questionnaires/collaborators {:db #ig/ref :duct.database.sql/hikaricp
+                                                   :config #ig/ref :akvo.isco.config/config
+                                                   :logger #ig/ref :duct.logger/timbre}
+  :akvo.isco.handler.questionnaires/delete-collaborator {:db #ig/ref :duct.database.sql/hikaricp
+                                                         :config #ig/ref :akvo.isco.config/config
+                                                         :logger #ig/ref :duct.logger/timbre}
+  :akvo.isco.handler.questionnaires/new-collaborators {:db #ig/ref :duct.database.sql/hikaricp
+                                                       :config #ig/ref :akvo.isco.config/config
+                                                       :logger #ig/ref :duct.logger/timbre}
   :akvo.isco.handler.roles/handler {:db #ig/ref :duct.database.sql/hikaricp
                                     :config #ig/ref :akvo.isco.config/config
                                     :logger #ig/ref :duct.logger/timbre}
@@ -131,9 +159,9 @@
   :akvo.isco.handler.profile/submission-post-params {}
   :akvo.isco.handler.users/user-patch-params {}
   :akvo.isco.handler.profile/submission {:db #ig/ref :duct.database.sql/hikaricp
-                                       :config #ig/ref :akvo.isco.config/config
-                                       :emailer #ig/ref :akvo.isco.emailer/sender
-                                       :logger #ig/ref :duct.logger/timbre}
+                                         :config #ig/ref :akvo.isco.config/config
+                                         :emailer #ig/ref :akvo.isco.emailer/sender
+                                         :logger #ig/ref :duct.logger/timbre}
   :akvo.isco.handler.profile/register {:db #ig/ref :duct.database.sql/hikaricp
                                        :config #ig/ref :akvo.isco.config/config
                                        :emailer #ig/ref :akvo.isco.emailer/sender

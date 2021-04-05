@@ -15,7 +15,9 @@ select * from webforms order by id
 
 -- :name webform-by-id :? :1
 -- :doc Get webform by id
-select * from webforms where id = :id
+select webforms.id, organizations.name as "organization_name", webforms.organization_id from webforms
+left join organizations ON organizations.id=webforms.organization_id
+where webforms.id = :id
 
 -- :name new-webform :<! :1
 -- :doc Insert new webform
