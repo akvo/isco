@@ -17,18 +17,21 @@
 (def data {:roles roles
            :webform-host akvo-flow-web-host
            :webform {:forms
-                     {:project {:fids ["111510043" "143215090"], :max_submission nil},
+                     {:project {:fids ["111510043" "143215090"
+                                       ;; TODO: remove after testing
+                                       "111890828"
+                                       ], :max_submission nil},
                       :industry {:fids
-                       ["113130042"
-                        "105640815"
-                        "111890828"
-                        "134210832"
-                        "130990814"
-                        "143340791"
-                        "150700609"
-                        "148430590"
-                        "150981538"],
-                       :max_submission 1}},
+                                 ["113130042"
+                                  "105640815"
+                                  "111890828"
+                                  "134210832"
+                                  "130990814"
+                                  "143340791"
+                                  "150700609"
+                                  "148430590"
+                                  "150981538"],
+                                 :max_submission 1}},
                      :exception
                      {:organization {:name ["staff akvo" "staff gisco secretariat"], :ids []}},
                      :surveys {:project [{:survey_id 116680069,
