@@ -6,6 +6,7 @@
             [duct.core :as duct]
             [duct.core.repl :as duct-repl]
             [ragtime.core :as ragtime]
+            [clojure.data.json :as json]
             [akvo.isco.db]
             [ragtime.jdbc :as jdbc]
             [duct.logger :as logger]
@@ -21,6 +22,9 @@
             [clj-time.core :as t]
             [clj-time.coerce :as tc])
   (:import [java.util UUID]))
+
+(defn json>clj [json]
+  (json/read-str json :key-fn keyword))
 
 (isco.u/uuid)
 
@@ -73,3 +77,8 @@
   )
 
 ;;(keys system)
+
+(comment
+
+  (json>clj "{\"user_id\":50,\"organization_id\":74,\"form_id\":111890828,\"form_instance_id\":\"idh\",\"form_instance_url\":\"idh\\/111890828\\/13b336fd-cc2b-431c-9c29-0aad3a781858\",\"submitted\":false,\"uuid\":null,\"display_name\":null,\"updated_at\":\"2021-04-05T08:34:25.000000Z\",\"id\":37}")
+  )
