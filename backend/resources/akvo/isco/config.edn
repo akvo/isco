@@ -103,12 +103,19 @@
                                                        :parameters {:path [:map [:form-id int?]]}
                                                        :handler #ig/ref :akvo.isco.handler.submission/check-form}}]
                                                ]]
-                                             ["/submissions/submitted"
-                                              {:get {:summary "saved-surveys"
-                                                     :swagger {:tags ["profile"]}
-                                                     :handler #ig/ref :akvo.isco.handler.submission/submitted}}
-
-                                              ]
+                                             ["/submissions"
+                                              ["/submitted"
+                                               {:get {:summary "saved-surveys"
+                                                      :swagger {:tags ["profile"]}
+                                                      :handler #ig/ref :akvo.isco.handler.submission/submitted}}]
+                                              ["/sync-download/{form-id}/{uuid}/{form-title}"
+                                               {:get {:summary "download report"
+                                                      :swagger {:tags ["reports"]}
+                                                      :parameters {:path [:map
+                                                                          [:form-title string?]
+                                                                          [:uuid string?]
+                                                                          [:form-id int?]]}
+                                                      :handler #ig/ref :akvo.isco.handler.submission/sync-download}}]]
                                              ["/me"
                                               [""
                                                {:get {:summary "profile"
@@ -168,6 +175,7 @@
                                          :config #ig/ref :akvo.isco.config/config
                                          :emailer #ig/ref :akvo.isco.emailer/sender
                                          :logger #ig/ref :duct.logger/timbre}
+
   :akvo.isco.handler.profile/register {:db #ig/ref :duct.database.sql/hikaricp
                                        :config #ig/ref :akvo.isco.config/config
                                        :emailer #ig/ref :akvo.isco.emailer/sender
@@ -184,6 +192,9 @@
   :akvo.isco.handler.submission/check {:db #ig/ref :duct.database.sql/hikaricp
                                        :config #ig/ref :akvo.isco.config/config
                                        :logger #ig/ref :duct.logger/timbre}
+  :akvo.isco.handler.submission/sync-download {:db #ig/ref :duct.database.sql/hikaricp
+                                               :config #ig/ref :akvo.isco.config/config
+                                               :logger #ig/ref :duct.logger/timbre}
   :akvo.isco.handler.submission/submitted {:db #ig/ref :duct.database.sql/hikaricp
                                            :config #ig/ref :akvo.isco.config/config
                                            :logger #ig/ref :duct.logger/timbre}

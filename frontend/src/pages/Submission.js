@@ -61,13 +61,14 @@ const Submission = () => {
         setLoading(uuid, true);
         const filename = form_name.replace(' - ', '-').replace(' ', '') + '-' + submitter_name.replace(' ', '');
         // const { data, status } = await request().get(`/api/submissions/download/${form_id}/${id}/${filename}`);
-        const { data, status } = await request().get(`/api/submissions/sync-download/${form_id}/${uuid}/${filename}`);
+      const { data, status } = await request().get(`/api/submissions/sync-download/${form_id}/${uuid}/${filename}`);
         if (status === 200) {
-            const link = document.createElement('a');
-            link.href = data.link;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+          const link = document.createElement('a');
+          link.href = data.link;
+          var blob=new Blob([data]);
+          link.href=window.URL.createObjectURL(blob);
+          link.download=`${filename}.csv`;
+          link.click();
         } else {
             // create error notif
             let msg = (status === 204) ? `Failed to download ${filename}.csv. Generate data process failed.` : "Something went wrong.";

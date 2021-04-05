@@ -28,6 +28,7 @@
                  [de.ubercode.clostache/clostache "1.4.0"]
                  [ring-cors "0.1.13"]
                  [buddy/buddy-core "1.9.0"]
+                 [org.clojure/data.csv "1.0.0"]
                  ]
   :plugins [[duct/lein-duct "0.12.1"]]
   :main ^:skip-aot akvo.isco.main
