@@ -51,14 +51,21 @@
                         ;; coercing request parameters
                         coercion/coerce-request-middleware]}}))
 
-(defmethod ig/init-key :akvo.isco.handler.main/handler [_ {:keys [routes]}]
-  (ring/ring-handler (router routes)
-                     (ring/routes
-                      (swagger-ui/create-swagger-ui-handler {:path "/api/docs"
-                                                             :url "/api/swagger.json"
-                                                             :validatorUrl nil
-                                                             :operationsSorter "alpha"})
-                      (ring/create-default-handler))))
+(defmethod ig/init-key :akvo.isco.handler.main/handler [_ {:keys [main-route auth-routes public-routes auth-middleware]}]
+  (let [auth-routes-with-middleware (mapv (fn [route]
+                                            (if (map? (second route))
+                                              (update-in route [1 :middleware] #(apply conj % auth-middleware)) ;; Take care that we are
+                                              (apply conj [(first route) {:middleware auth-middleware}] (subvec route 1)))) auth-routes)
+        routes (conj main-route (apply conj ["api"] (apply conj
+                                                           auth-routes-with-middleware
+                                                           public-routes)))]
+   (ring/ring-handler (router routes)
+                      (ring/routes
+                       (swagger-ui/create-swagger-ui-handler {:path "/api/docs"
+                                                              :url "/api/swagger.json"
+                                                              :validatorUrl nil
+                                                              :operationsSorter "alpha"})
+                       (ring/create-default-handler)))))
 
 (defmethod ig/init-key :akvo.isco.handler.main/root [_ _]
   root)

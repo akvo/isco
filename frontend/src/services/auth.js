@@ -20,7 +20,7 @@ const getUser = async (u, token) => {
 
 const register = async data => {
 // TODO: double check    await request().get("sanctum/csrf-cookie");
-    return await request().post("/public-api/register", data);
+    return await request().post("/api/register", data);
 };
 
 const forgotPassword = async data => {
@@ -35,7 +35,7 @@ const resetPassword = async data => {
 
 const validateEmail = async token => {
     // await request().get("sanctum/csrf-cookie");
-  return await request().get(`/public-api/validate-email?${token}`);
+  return await request().get(`/api/validate-email?${token}`);
 };
 
 const resendVerificationEmail = async () => {
@@ -49,7 +49,7 @@ const updatePassword = async data => {
 };
 
 const getOrganizations = async data => {
-    return await request().get("/public-api/organizations");
+    return await request().get("/api/organizations");
 };
 
 export default {
