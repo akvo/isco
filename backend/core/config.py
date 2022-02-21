@@ -1,10 +1,10 @@
 from fastapi import FastAPI
-
+from routes.organisation import organisation_route
+from routes.user import user_route
 
 app = FastAPI(
     root_path="/api",
     title="ISCO",
-    description="Auth Client ID: 99w2F1wVLZq8GqJwZph1kE42GuAZFvlF",
     version="1.0.0",
     contact={
         "name": "Akvo",
@@ -16,6 +16,9 @@ app = FastAPI(
         "url": "https://www.gnu.org/licenses/agpl-3.0.en.html",
     },
 )
+
+app.include_router(organisation_route)
+app.include_router(user_route)
 
 
 @app.get("/", tags=["Dev"])
