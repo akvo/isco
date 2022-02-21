@@ -1,0 +1,4 @@
+/.ipynb_checkpoints
+/.pip
+/.mypy_cache
+__pycache__
