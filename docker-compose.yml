@@ -25,12 +25,12 @@ services:
     depends_on:
       - db
     network_mode: service:mainnetwork
-  # frontend:
-  #   image: akvo/akvo-node-14-alpine:20210106.152005.1864760
-  #   working_dir: /app
-  #   command: ["./start.sh"]
-  #   volumes:
-  #     - ./frontend:/app:delegated
-  #   network_mode: service:mainnetwork
+  frontend:
+    image: akvo/akvo-node-17-alpine:20220121.024749.f30b815
+    working_dir: /app
+    command: ["./start.sh"]
+    volumes:
+      - ./frontend:/app:delegated
+    network_mode: service:mainnetwork
 volumes:
   pg-data:
