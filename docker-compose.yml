@@ -1,0 +1,36 @@
+---
+version: "3.9"
+services:
+  mainnetwork:
+    image: alpine:3.14.0
+    command: ["tail", "-f", "/dev/null"]
+  db:
+    image: postgres:12-alpine
+    volumes:
+      - ./db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - pg-data:/var/lib/postgresql/data
+      - ./db/script:/script:ro
+    environment:
+      - POSTGRES_PASSWORD=password
+    ports:
+      - 5432:5432
+  backend:
+    image: amancevice/pandas:0.24.2-slim
+    working_dir: /app
+    command: ["./dev.sh"]
+    volumes:
+      - ./backend:/app:delegated
+    environment:
+      - DATABASE_URL=postgresql://isco_user:password@db:5432/isco
+    depends_on:
+      - db
+    network_mode: service:mainnetwork
+  # frontend:
+  #   image: akvo/akvo-node-14-alpine:20210106.152005.1864760
+  #   working_dir: /app
+  #   command: ["./start.sh"]
+  #   volumes:
+  #     - ./frontend:/app:delegated
+  #   network_mode: service:mainnetwork
+volumes:
+  pg-data:
