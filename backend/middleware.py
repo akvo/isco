@@ -8,7 +8,6 @@ from typing import Optional
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from db import crud_user
-from models.user import User
 
 
 # to get a string like this run:
@@ -60,16 +59,26 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     return encoded_jwt
 
 
-async def get_current_user(session: Session,
-                           token: str = Depends(oauth2_scheme)):
+def decode_token(token: str = Depends(oauth2_scheme)):
+    return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+
+
+def verify_token(authenticated):
+    if datetime.now().timestamp() > authenticated.get("exp"):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                            detail="Unauthorized")
+    return authenticated
+
+
+def verify_user(session: Session, authenticated):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
+    authenticated = verify_token(authenticated)
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        email: str = payload.get("sub")
+        email: str = authenticated.get("sub")
         if email is None:
             raise credentials_exception
         token_data = TokenData(email=email)
@@ -78,14 +87,11 @@ async def get_current_user(session: Session,
     user = crud_user.get_user_by_email(session=session, email=token_data.email)
     if user is None:
         raise credentials_exception
-    return user
-
-
-async def get_current_active_user(current_user: User =
-                                  Depends(get_current_user)):
-    if not current_user.active:
-        raise HTTPException(status_code=400, detail="Inactive user")
-    return current_user
+    if not user.active:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Please check your email inbox to verify email account")
+    return user.serialize
 
 
 def check_query(keywords):
