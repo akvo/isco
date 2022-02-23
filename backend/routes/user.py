@@ -1,12 +1,10 @@
 from middleware import Token, authenticate_user
 from middleware import create_access_token, verify_user
-from middleware import ACCESS_TOKEN_EXPIRE_MINUTES
 from fastapi import Depends, HTTPException, status, APIRouter, Request
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
 from sqlalchemy.orm import Session
 from db.connection import get_session
-from datetime import timedelta
 from models.user import UserDict
 from pydantic import SecretStr
 
@@ -30,9 +28,7 @@ def login(req: Request, email: str, password: SecretStr,
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(data={"sub": user.email},
-                                       expires_delta=access_token_expires)
+    access_token = create_access_token(data={"email": user.email})
     return {"access_token": access_token, "token_type": "bearer"}
 
 
