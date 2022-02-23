@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from typing import Optional
-from jose import JWTError, jwt
+from jose import JWTError, jwt, exceptions
 from passlib.context import CryptContext
 from db import crud_user
 
@@ -60,7 +60,10 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 
 
 def decode_token(token: str = Depends(oauth2_scheme)):
-    return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    try:
+        return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    except exceptions.ExpiredSignatureError:
+        return {"email": None, "exp": 0}
 
 
 def verify_token(authenticated):
