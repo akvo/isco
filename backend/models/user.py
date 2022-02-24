@@ -48,13 +48,15 @@ class User(Base):
     password = Column(String)
     active = Column(Boolean, nullable=True, default=False)
     role = Column(Enum(UserRole))
-    last_activity = Column(DateTime, default=datetime.utcnow)
+    last_activity = Column(DateTime, nullable=True, default=datetime.utcnow)
     organisation = Column(Integer, ForeignKey('organisation.id'))
 
-    def __init__(self, email: str, name: str, role: UserRole, active: bool,
-                 organisation: int):
+    def __init__(self, email: str, password: str, name: str, phone_number: str,
+                 role: UserRole, active: bool, organisation: int):
         self.email = email
+        self.password = password
         self.name = name
+        self.phone_number = phone_number
         self.active = active
         self.role = role
         self.organisation = organisation
@@ -83,12 +85,12 @@ class User(Base):
 
 
 class UserBase(BaseModel):
-    id: int
     name: str
     email: str
+    phone_number: Optional[str] = None
+    password: str
     role: UserRole
     active: Optional[bool] = False
-    email_verified: Optional[bool] = False
     organisation: int
 
     class Config:
