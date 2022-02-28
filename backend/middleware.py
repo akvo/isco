@@ -86,7 +86,7 @@ def verify_user(session: Session, authenticated):
     user = crud_user.get_user_by_email(session=session, email=token_data.email)
     if user is None:
         raise credentials_exception
-    if not user.active:
+    if not user.email_verified:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Please check your email inbox to verify email account")

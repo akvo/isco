@@ -4,10 +4,11 @@
 from typing import Optional, List
 from pydantic import BaseModel
 from typing_extensions import TypedDict
-from sqlalchemy import Column, Integer, ForeignKey, String, Boolean
+from sqlalchemy import Column, Integer, ForeignKey, String, Boolean, DateTime
 from sqlalchemy.orm import relationship
 from db.connection import Base
 from models.user import UserBase
+from datetime import datetime
 
 
 class OrganisationDict(TypedDict):
@@ -29,6 +30,7 @@ class Organisation(Base):
     name = Column(String)
     level = Column(Integer)
     active = Column(Boolean)
+    created = Column(DateTime, default=datetime.utcnow)
     children = relationship("Organisation")
     parent_detail = relationship("Organisation", remote_side=[id])
     user = relationship("User",

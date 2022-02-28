@@ -9,8 +9,7 @@ def get_user_by_email(session: Session, email: str) -> User:
 
 def add_user(session: Session, payload: UserBase) -> UserDict:
     user = User(name=payload.name, email=payload.email,
-                phone_number=payload.phone_number,
-                password=payload.password, active=payload.active,
+                phone_number=payload.phone_number, password=payload.password,
                 role=payload.role, organisation=payload.organisation)
     session.add(user)
     session.commit()

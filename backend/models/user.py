@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from datetime import datetime
 from typing import List, Optional
 from typing_extensions import TypedDict
-from sqlalchemy import Column, Integer, Boolean, String
+from sqlalchemy import Column, Integer, String
 from sqlalchemy import Enum, DateTime
 from sqlalchemy import ForeignKey
 from db.connection import Base
@@ -23,7 +23,7 @@ class UserDict(TypedDict):
     organisation: int
     name: str
     email: str
-    active: bool
+    email_verified: Optional[datetime] = None
     role: UserRole
 
 
@@ -31,7 +31,7 @@ class UserSimple(TypedDict):
     email: str
     name: str
     role: UserRole
-    active: bool
+    email_verified: datetime
 
 
 class UserRecipient(TypedDict):
@@ -46,18 +46,18 @@ class User(Base):
     email = Column(String, unique=True)
     phone_number = Column(String, nullable=True)
     password = Column(String)
-    active = Column(Boolean, nullable=True, default=False)
+    email_verified = Column(DateTime, nullable=True)
     role = Column(Enum(UserRole))
     last_activity = Column(DateTime, nullable=True, default=datetime.utcnow)
+    created = Column(DateTime, default=datetime.utcnow)
     organisation = Column(Integer, ForeignKey('organisation.id'))
 
     def __init__(self, email: str, password: str, name: str, phone_number: str,
-                 role: UserRole, active: bool, organisation: int):
+                 role: UserRole, organisation: int):
         self.email = email
         self.password = password
         self.name = name
         self.phone_number = phone_number
-        self.active = active
         self.role = role
         self.organisation = organisation
 
@@ -71,7 +71,7 @@ class User(Base):
             "name": self.name,
             "email": self.email,
             "role": self.role,
-            "active": self.active,
+            "email_verified": self.email_verified,
             "organisation": self.organisation,
             "last_activity": self.last_activity
         }
@@ -90,7 +90,6 @@ class UserBase(BaseModel):
     phone_number: Optional[str] = None
     password: str
     role: UserRole
-    active: Optional[bool] = False
     organisation: int
 
     class Config:
