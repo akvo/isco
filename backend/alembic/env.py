@@ -56,8 +56,8 @@ def run_migrations_online():
                                        isolation_level="AUTOCOMMIT")
         # drop testing db if it exists and create a fresh one
         with default_engine.connect() as default_conn:
-            default_conn.execute(f"DROP DATABASE IF EXISTS isco_test")
-            default_conn.execute(f"CREATE DATABASE isco_test")
+            default_conn.execute("DROP DATABASE IF EXISTS isco_test")
+            default_conn.execute("CREATE DATABASE isco_test")
     connectable = config.attributes.get("connection", None)
     config.set_main_option("sqlalchemy.url", DB_URL)
 
