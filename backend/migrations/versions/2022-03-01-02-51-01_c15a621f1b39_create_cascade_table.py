@@ -21,6 +21,8 @@ def upgrade():
         'cascade',
         sa.Column('id', sa.Integer(), nullable=False),
         sa.Column('name', sa.String()),
+        sa.Column('type', sa.Enum('cascade', 'nested',
+                                  name='cascade_type')),
         sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_cascade_id'), 'cascade', ['id'], unique=True)
@@ -29,3 +31,4 @@ def upgrade():
 def downgrade():
     op.drop_index(op.f('ix_cascade_id'), table_name='cascade')
     op.drop_table('cascade')
+    op.execute('DROP TYPE cascade_type')
