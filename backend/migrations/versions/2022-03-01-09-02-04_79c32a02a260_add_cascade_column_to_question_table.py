@@ -1,7 +1,7 @@
 """add cascade column to question table
 
-Revision ID: 79c32a02a260
-Revises: 2d95d4d571fa
+Revision ID: 2d95d4d571fa
+Revises: 12d2a22a983e
 Create Date: 2022-03-01 09:02:04.979732
 
 """
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '79c32a02a260'
-down_revision = '2d95d4d571fa'
+revision = '2d95d4d571fa'
+down_revision = '12d2a22a983e'
 branch_labels = None
 depends_on = None
 
