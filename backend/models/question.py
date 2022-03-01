@@ -36,7 +36,7 @@ class QuestionDict(TypedDict):
     rule: Optional[dict] = None
     tooltip: Optional[str] = None
     tooltip_translations: Optional[List[dict]] = None
-    option: Optional[List[OptionBase]] = None
+    options: Optional[List[OptionBase]] = None
 
 
 class Question(Base):
@@ -52,10 +52,10 @@ class Question(Base):
     rule = Column(MutableDict.as_mutable(pg.JSONB), nullable=True)
     tooltip = Column(String, nullable=True)
     tooltip_translations = Column(pg.ARRAY(pg.JSONB), nullable=True)
-    option = relationship("Option",
-                          cascade="all, delete",
-                          passive_deletes=True,
-                          backref="option")
+    options = relationship("Option",
+                           cascade="all, delete",
+                           passive_deletes=True,
+                           backref="question_detail")
 
     def __init__(self, id: Optional[int], name: str,
                  translations: Optional[List[dict]], mandatory: Optional[bool],
@@ -92,7 +92,7 @@ class Question(Base):
             "rule": self.rule,
             "tooltip": self.tooltip,
             "tooltip_translations": self.tooltip_translations,
-            "option": self.option
+            "options": self.options
         }
 
 
@@ -108,4 +108,4 @@ class QuestionBase(BaseModel):
     rule: Optional[dict] = None
     tooltip: Optional[str] = None
     tooltip_translations: Optional[List[dict]] = None
-    option: Optional[List[OptionBase]] = None
+    options: Optional[List[OptionBase]] = None

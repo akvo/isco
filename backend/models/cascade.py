@@ -22,7 +22,7 @@ class Cascade(Base):
     cascade_list = relationship("CascadeList",
                                 cascade="all, delete",
                                 passive_deletes=True,
-                                backref="cascade_list")
+                                backref="cascade_detail")
 
     def __init__(self, id: Optional[int], name: str):
         self.id = id

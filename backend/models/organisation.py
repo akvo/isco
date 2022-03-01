@@ -19,7 +19,7 @@ class OrganisationDict(TypedDict):
     level: str
     active: bool
     children: Optional[List] = []
-    user: List[UserBase]
+    users: List[UserBase]
 
 
 class Organisation(Base):
@@ -33,10 +33,10 @@ class Organisation(Base):
     created = Column(DateTime, default=datetime.utcnow)
     children = relationship("Organisation")
     parent_detail = relationship("Organisation", remote_side=[id])
-    user = relationship("User",
-                        cascade="all, delete",
-                        passive_deletes=True,
-                        backref="user")
+    users = relationship("User",
+                         cascade="all, delete",
+                         passive_deletes=True,
+                         backref="organisation_detail")
 
     def __init__(self, parent: int, name: str):
         self.parent = parent
@@ -55,7 +55,7 @@ class Organisation(Base):
             "level": self.level,
             "active": self.active,
             "children": self.children,
-            "user": self.user
+            "users": self.users
         }
 
     @property
