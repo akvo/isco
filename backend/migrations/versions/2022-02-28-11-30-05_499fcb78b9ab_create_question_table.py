@@ -27,6 +27,9 @@ def upgrade():
         sa.Column('translations', CastingArray(pg.JSONB()), nullable=True),
         sa.Column('mandatory', sa.Boolean,
                   server_default=expression.true(), nullable=False),
+        sa.Column('datapoint_name', sa.Boolean,
+                  server_default=expression.false(), nullable=False),
+        sa.Column('variable_name', sa.String(), nullable=True, unique=True),
         sa.Column('type',
                   sa.Enum(
                       'text',
@@ -51,6 +54,8 @@ def upgrade():
         sa.Column('tooltip', sa.String(), nullable=True),
         sa.Column('tooltip_translations',
                   CastingArray(pg.JSONB()), nullable=True),
+        sa.Column('repeating_objects', CastingArray(pg.JSONB()),
+                  nullable=True),
         sa.Column('created', sa.DateTime(), nullable=True),
         sa.PrimaryKeyConstraint('id')
     )
