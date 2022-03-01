@@ -7,6 +7,7 @@ from typing_extensions import TypedDict
 from pydantic import BaseModel
 from sqlalchemy import Column, Integer, String
 from sqlalchemy import Boolean, DateTime, Enum
+from sqlalchemy.orm import relationship
 import sqlalchemy.dialects.postgresql as pg
 from db.connection import Base
 from datetime import datetime
@@ -43,6 +44,9 @@ class QuestionGroup(Base):
     isco_type = Column(pg.ARRAY(Enum(IscoType)))
     repeat = Column(Boolean, default=False)
     created = Column(DateTime, default=datetime.utcnow)
+    questions = relationship("Question",
+                             secondary="QuestionGroupQuestion",
+                             backref="question_detail")
 
     def __init__(self, id: Optional[int], name: str,
                  translations: Optional[List[dict]],

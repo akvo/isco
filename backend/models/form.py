@@ -5,6 +5,7 @@ from typing_extensions import TypedDict
 from typing import List, Optional
 from pydantic import BaseModel
 from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy.orm import relationship
 import sqlalchemy.dialects.postgresql as pg
 from db.connection import Base
 from datetime import datetime
@@ -22,6 +23,9 @@ class Form(Base):
     name = Column(String)
     languages = Column(pg.ARRAY(String), nullable=True)
     created = Column(DateTime, default=datetime.utcnow)
+    question_groups = relationship("QuestionGroup",
+                                   secondary="QuestionGroupQuestion",
+                                   backref="question_group_detail")
 
     def __init__(self, id: Optional[int], name: str,
                  languages: Optional[List[str]]):
