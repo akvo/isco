@@ -8,7 +8,9 @@ from typing import Optional, List
 from typing_extensions import TypedDict
 from sqlalchemy import Column, Integer, String, Boolean, Enum
 from sqlalchemy.ext.mutable import MutableDict
+from sqlalchemy.orm import relationship
 from .question_group import MemberType, IscoType
+from .option import OptionBase
 import sqlalchemy.dialects.postgresql as pg
 
 
@@ -34,6 +36,7 @@ class QuestionDict(TypedDict):
     rule: Optional[dict] = None
     tooltip: Optional[str] = None
     tooltip_translations: Optional[List[dict]] = None
+    option: Optional[List[OptionBase]] = None
 
 
 class Question(Base):
@@ -49,6 +52,10 @@ class Question(Base):
     rule = Column(MutableDict.as_mutable(pg.JSONB), nullable=True)
     tooltip = Column(String, nullable=True)
     tooltip_translations = Column(pg.ARRAY(pg.JSONB), nullable=True)
+    option = relationship("Option",
+                          cascade="all, delete",
+                          passive_deletes=True,
+                          backref="option")
 
     def __init__(self, id: Optional[int], name: str,
                  translations: Optional[List[dict]], mandatory: Optional[bool],
@@ -84,7 +91,8 @@ class Question(Base):
             "personal_data": self.personal_data,
             "rule": self.rule,
             "tooltip": self.tooltip,
-            "tooltip_translations": self.tooltip_translations
+            "tooltip_translations": self.tooltip_translations,
+            "option": self.option
         }
 
 
@@ -100,3 +108,4 @@ class QuestionBase(BaseModel):
     rule: Optional[dict] = None
     tooltip: Optional[str] = None
     tooltip_translations: Optional[List[dict]] = None
+    option: Optional[List[OptionBase]] = None
