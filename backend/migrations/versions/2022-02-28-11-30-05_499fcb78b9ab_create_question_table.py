@@ -23,6 +23,9 @@ def upgrade():
     op.create_table(
         'question',
         sa.Column('id', sa.Integer(), nullable=False),
+        sa.Column('form', sa.Integer(), sa.ForeignKey('form.id')),
+        sa.Column('question_group', sa.Integer(),
+                  sa.ForeignKey('question_group.id')),
         sa.Column('name', sa.String()),
         sa.Column('translations', CastingArray(pg.JSONB()), nullable=True),
         sa.Column('mandatory', sa.Boolean,
@@ -57,7 +60,13 @@ def upgrade():
         sa.Column('repeating_objects', CastingArray(pg.JSONB()),
                   nullable=True),
         sa.Column('created', sa.DateTime(), nullable=True),
-        sa.PrimaryKeyConstraint('id')
+        sa.PrimaryKeyConstraint('id'),
+        sa.ForeignKeyConstraint(['form'], ['form.id'],
+                                name='form_question_constraint',
+                                ondelete='CASCADE'),
+        sa.ForeignKeyConstraint(['question_group'], ['question_group.id'],
+                                name='question_group_question_constraint',
+                                ondelete='CASCADE')
     )
     op.create_index(op.f('ix_question_id'),
                     'question', ['id'], unique=True)
