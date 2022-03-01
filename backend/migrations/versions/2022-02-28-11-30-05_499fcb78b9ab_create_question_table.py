@@ -62,5 +62,3 @@ def downgrade():
     op.drop_index(op.f('ix_question_id'), table_name='question')
     op.drop_table('question')
     op.execute('DROP TYPE question_type')
-    op.execute('DROP TYPE member_type')
-    op.execute('DROP TYPE isco_type')

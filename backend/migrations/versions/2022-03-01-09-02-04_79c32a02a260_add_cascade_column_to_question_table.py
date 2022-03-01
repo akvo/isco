@@ -21,11 +21,14 @@ def upgrade():
         'question',
         sa.Column('cascade', sa.Integer(),
                   sa.ForeignKey('cascade.id'), nullable=True),
-        sa.ForeignKeyConstraint(['cascade'], ['cascade.id'],
-                                name='question_cascade_constraint',
-                                ondelete='CASCADE')
+    )
+    op.create_foreign_key(
+        'question_cascade_constraint', 'question',
+        'cascade', ['cascade'], ['id']
     )
 
 
 def downgrade():
+    op.drop_constraint('question_cascade_constraint',
+                       'question', type_='foreignkey')
     op.drop_column('question', 'cascade')
