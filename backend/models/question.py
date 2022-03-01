@@ -10,9 +10,21 @@ from sqlalchemy import Column, Integer, String
 from sqlalchemy import Boolean, Enum, ForeignKey
 from sqlalchemy.ext.mutable import MutableDict
 from sqlalchemy.orm import relationship
-from .question_group import MemberType, IscoType
 from .option import OptionBase
 import sqlalchemy.dialects.postgresql as pg
+
+
+class MemberType(enum.Enum):
+    big_industry = 'Big Industry'
+    small_industry = 'Small Industry'
+    disco = 'DISCO - Traders'
+    retail = 'Retail'
+    standard_setting_org = 'Standard Setting Organisation'
+    other = 'Other'
+
+
+class IscoType(enum.Enum):
+    isco = 'ISCO'
 
 
 class QuestionType(enum.Enum):
