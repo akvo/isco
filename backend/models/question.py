@@ -6,7 +6,8 @@ from db.connection import Base
 from pydantic import BaseModel
 from typing import Optional, List
 from typing_extensions import TypedDict
-from sqlalchemy import Column, Integer, String, Boolean, Enum
+from sqlalchemy import Column, Integer, String
+from sqlalchemy import Boolean, Enum, ForeignKey
 from sqlalchemy.ext.mutable import MutableDict
 from sqlalchemy.orm import relationship
 from .question_group import MemberType, IscoType
@@ -36,6 +37,7 @@ class QuestionDict(TypedDict):
     rule: Optional[dict] = None
     tooltip: Optional[str] = None
     tooltip_translations: Optional[List[dict]] = None
+    cascade: Optional[int] = None
     options: Optional[List[OptionBase]] = None
 
 
@@ -52,6 +54,7 @@ class Question(Base):
     rule = Column(MutableDict.as_mutable(pg.JSONB), nullable=True)
     tooltip = Column(String, nullable=True)
     tooltip_translations = Column(pg.ARRAY(pg.JSONB), nullable=True)
+    cascade = Column(Integer, ForeignKey('cascade.id'), nullable=True)
     options = relationship("Option",
                            cascade="all, delete",
                            passive_deletes=True,
@@ -62,7 +65,8 @@ class Question(Base):
                  type: QuestionType, member_type: List[MemberType],
                  isco_type: List[IscoType], personal_data: Optional[bool],
                  rule: Optional[dict], tooltip: Optional[str],
-                 tooltip_translations: Optional[List[dict]]):
+                 tooltip_translations: Optional[List[dict]],
+                 cascade: Optional[int]):
         self.id = id
         self.name = name
         self.translations = translations
@@ -74,6 +78,7 @@ class Question(Base):
         self.rule = rule
         self.tooltip = tooltip
         self.tooltip_translations = tooltip_translations
+        self.cascade = cascade
 
     def __repr__(self) -> int:
         return f"<Question {self.id}>"
@@ -92,6 +97,7 @@ class Question(Base):
             "rule": self.rule,
             "tooltip": self.tooltip,
             "tooltip_translations": self.tooltip_translations,
+            "cascade": self.cascade,
             "options": self.options
         }
 
@@ -108,4 +114,5 @@ class QuestionBase(BaseModel):
     rule: Optional[dict] = None
     tooltip: Optional[str] = None
     tooltip_translations: Optional[List[dict]] = None
+    cascade: Optional[int] = None
     options: Optional[List[OptionBase]] = None
