@@ -23,9 +23,10 @@ class Form(Base):
     name = Column(String)
     languages = Column(pg.ARRAY(String), nullable=True)
     created = Column(DateTime, default=datetime.utcnow)
-    question_groups = relationship("QuestionGroup",
-                                   secondary="QuestionGroupQuestion",
-                                   backref="question_group_detail")
+    question_group = relationship("QuestionGroup",
+                                  cascade="all, delete",
+                                  passive_deletes=True,
+                                  backref="form_detail")
 
     def __init__(self, id: Optional[int], name: str,
                  languages: Optional[List[str]]):

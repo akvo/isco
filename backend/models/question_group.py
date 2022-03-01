@@ -26,9 +26,10 @@ class QuestionGroup(Base):
     translations = Column(pg.ARRAY(pg.JSONB), nullable=True)
     repeat = Column(Boolean, default=False)
     created = Column(DateTime, default=datetime.utcnow)
-    questions = relationship("Question",
-                             secondary="QuestionGroupQuestion",
-                             backref="question_detail")
+    question = relationship("Question",
+                            cascade="all, delete",
+                            passive_deletes=True,
+                            backref="question_group_detail")
 
     def __init__(self, id: Optional[int], name: str,
                  translations: Optional[List[dict]],
