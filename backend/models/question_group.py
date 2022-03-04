@@ -13,6 +13,13 @@ from datetime import datetime
 from models.question import QuestionBase
 
 
+class QuestionGroupPayload(TypedDict):
+    form: int
+    name: str
+    translations: Optional[List[dict]] = None
+    repeat: Optional[bool] = None
+
+
 class QuestionGroupDict(TypedDict):
     id: int
     form: int
@@ -63,7 +70,7 @@ class QuestionGroupBase(BaseModel):
     name: str
     translations: Optional[List[dict]] = None
     repeat: bool
-    question: List[QuestionBase]
+    question: Optional[List[QuestionBase]] = []
 
     class Config:
         orm_mode = True
