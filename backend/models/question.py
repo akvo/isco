@@ -10,8 +10,7 @@ from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy import Boolean, Enum, ForeignKey
 from sqlalchemy.ext.mutable import MutableDict
 from sqlalchemy.orm import relationship
-from .option import OptionBase
-from .skip_logic import SkipLogicBase
+from models.option import OptionBase
 import sqlalchemy.dialects.postgresql as pg
 from datetime import datetime
 
@@ -39,6 +38,24 @@ class QuestionType(enum.Enum):
     cascade = 'cascade'
 
 
+class RuleDict(TypedDict):
+    allow_other: Optional[bool] = None
+    allow_negative: Optional[bool] = None
+    allow_decimal: Optional[bool] = None
+    min: Optional[int] = None
+    max: Optional[int] = None
+
+
+class RepeatingObjectType(enum.Enum):
+    unit = 'unit'
+    indicator = 'indicator'
+
+
+class RepeatingObjectDict(TypedDict):
+    key: RepeatingObjectType
+    value: str
+
+
 class QuestionDict(TypedDict):
     id: int
     form: int
@@ -52,13 +69,12 @@ class QuestionDict(TypedDict):
     member_type: List[MemberType]
     isco_type: List[IscoType]
     personal_data: bool
-    rule: Optional[dict] = None
+    rule: Optional[RuleDict] = None
     tooltip: Optional[str] = None
     tooltip_translations: Optional[List[dict]] = None
     cascade: Optional[int] = None
-    repeating_objects: Optional[List[dict]] = None
+    repeating_objects: Optional[List[RepeatingObjectDict]] = None
     options: Optional[List[OptionBase]] = None
-    skip_logic: Optional[List[SkipLogicBase]] = None
 
 
 class Question(Base):
@@ -85,20 +101,16 @@ class Question(Base):
                            cascade="all, delete",
                            passive_deletes=True,
                            backref="question_detail")
-    skip_logic = relationship("SkipLogic",
-                              cascade="all, delete",
-                              passive_deletes=True,
-                              backref="question_skip_logic")
 
     def __init__(self, id: Optional[int], name: str, form: int,
                  question_group: int, translations: Optional[List[dict]],
                  mandatory: Optional[bool], datapoint_name: Optional[bool],
                  variable_name: Optional[str], type: QuestionType,
                  member_type: List[MemberType], isco_type: List[IscoType],
-                 personal_data: Optional[bool], rule: Optional[dict],
+                 personal_data: Optional[bool], rule: Optional[RuleDict],
                  tooltip: Optional[str], cascade: Optional[int],
                  tooltip_translations: Optional[List[dict]],
-                 repeating_objects: Optional[List[dict]]):
+                 repeating_objects: Optional[List[RepeatingObjectDict]]):
         self.id = id
         self.form = form
         self.question_group = question_group
@@ -141,7 +153,6 @@ class Question(Base):
             "cascade": self.cascade,
             "repeating_objects": self.repeating_objects,
             "options": self.options,
-            "skip_logic": self.skip_logic,
         }
 
 
@@ -158,13 +169,12 @@ class QuestionBase(BaseModel):
     member_type: List[MemberType]
     isco_type: List[IscoType]
     personal_data: bool
-    rule: Optional[dict] = None
+    rule: Optional[RuleDict] = None
     tooltip: Optional[str] = None
     tooltip_translations: Optional[List[dict]] = None
     cascade: Optional[int] = None
-    repeating_objects: Optional[List[dict]] = None
+    repeating_objects: Optional[List[RepeatingObjectDict]] = None
     options: Optional[List[OptionBase]] = None
-    skip_logic: Optional[List[SkipLogicBase]] = None
 
     class Config:
         orm_mode = True

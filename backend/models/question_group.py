@@ -10,6 +10,7 @@ from sqlalchemy.orm import relationship
 import sqlalchemy.dialects.postgresql as pg
 from db.connection import Base
 from datetime import datetime
+from models.question import QuestionBase
 
 
 class QuestionGroupDict(TypedDict):
@@ -62,6 +63,7 @@ class QuestionGroupBase(BaseModel):
     name: str
     translations: Optional[List[dict]] = None
     repeat: bool
+    question: List[QuestionBase]
 
     class Config:
         orm_mode = True

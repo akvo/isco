@@ -6,9 +6,10 @@ from typing import Optional
 from typing_extensions import TypedDict
 from sqlalchemy import Enum, Integer, String
 from sqlalchemy import Column, ForeignKey
+from sqlalchemy.orm import relationship
 from db.connection import Base
 from pydantic import BaseModel
-from .question import QuestionType
+from models.question import QuestionType
 
 
 class OperatorType(enum.Enum):
@@ -37,6 +38,8 @@ class SkipLogic(Base):
     operator = Column(Enum(OperatorType))
     value = Column(String)
     type = Column(Enum(QuestionType))
+    question = relationship("Question",
+                            backref="skip_logic")
 
     def __init__(self, id: Optional[int], question: int, dependent_to: int,
                  operator: OperatorType, value: str, type: QuestionType):
