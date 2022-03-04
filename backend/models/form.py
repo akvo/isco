@@ -56,7 +56,7 @@ class FormBase(BaseModel):
     id: int
     name: str
     languages: Optional[List[str]] = None
-    question_group: Optional[List[QuestionGroupBase]] = None
+    question_group: Optional[List[QuestionGroupBase]] = []
 
     class Config:
         orm_mode = True

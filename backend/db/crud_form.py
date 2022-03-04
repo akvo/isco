@@ -18,15 +18,16 @@ def get_form(session: Session) -> List[FormDict]:
 
 
 def get_form_by_id(session: Session, id: int) -> FormBase:
-    return session.query(Form).filter(Form.id == id).first()
-
-
-def update_form(session: Session, id: int, payload: FormPayload) -> FormDict:
     form = session.query(Form).filter(Form.id == id).first()
     if form is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"form {id} not found")
+    return form
+
+
+def update_form(session: Session, id: int, payload: FormPayload) -> FormDict:
+    form = get_form_by_id(session=session, id=id)
     form.name = payload['name']
     form.languages = payload['languages']
     session.commit()

@@ -1,6 +1,5 @@
 from http import HTTPStatus
-from fastapi import Depends, Request, APIRouter
-from fastapi import Response, status, HTTPException
+from fastapi import Depends, Request, APIRouter, Response
 from typing import List
 from sqlalchemy.orm import Session
 import db.crud_form as crud
@@ -38,10 +37,6 @@ def get(req: Request, session: Session = Depends(get_session)):
                 tags=["Form"])
 def get_by_id(req: Request, id: int, session: Session = Depends(get_session)):
     form = crud.get_form_by_id(session=session, id=id)
-    if form is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"form {id} not found")
     return form.serialize
 
 
@@ -64,7 +59,6 @@ def update(req: Request, id: int, payload: FormPayload,
                    summary="delete form by id",
                    name="form:delete",
                    tags=["Form"])
-def delete_user_by_id(req: Request, id: int,
-                      session: Session = Depends(get_session)):
+def delete(req: Request, id: int, session: Session = Depends(get_session)):
     crud.delete_form(session=session, id=id)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)
