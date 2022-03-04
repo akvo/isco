@@ -9,6 +9,7 @@ from sqlalchemy.orm import relationship
 import sqlalchemy.dialects.postgresql as pg
 from db.connection import Base
 from datetime import datetime
+from models.question_group import QuestionGroupBase
 
 
 class FormDict(TypedDict):
@@ -47,9 +48,10 @@ class Form(Base):
 
 
 class FormBase(BaseModel):
-    id: int
+    id: Optional[int] = None
     name: str
     languages: Optional[List[str]] = None
+    question_group: Optional[List[QuestionGroupBase]] = None
 
     class Config:
         orm_mode = True

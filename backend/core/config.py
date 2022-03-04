@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request
 from routes.organisation import organisation_route
 from routes.user import user_route
+from routes.form import form_route
 from middleware import decode_token
 
 app = FastAPI(
@@ -20,6 +21,7 @@ app = FastAPI(
 
 app.include_router(organisation_route)
 app.include_router(user_route)
+app.include_router(form_route)
 
 
 @app.get("/", tags=["Dev"])
