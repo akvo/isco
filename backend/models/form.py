@@ -12,6 +12,11 @@ from datetime import datetime
 from models.question_group import QuestionGroupBase
 
 
+class FormPayload(TypedDict):
+    name: str
+    languages: Optional[List[str]] = None
+
+
 class FormDict(TypedDict):
     id: int
     name: str
@@ -48,7 +53,7 @@ class Form(Base):
 
 
 class FormBase(BaseModel):
-    id: Optional[int] = None
+    id: int
     name: str
     languages: Optional[List[str]] = None
     question_group: Optional[List[QuestionGroupBase]] = None

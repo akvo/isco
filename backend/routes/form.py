@@ -5,7 +5,7 @@ from typing import List
 from sqlalchemy.orm import Session
 import db.crud_form as crud
 from db.connection import get_session
-from models.form import FormBase, FormDict
+from models.form import FormBase, FormDict, FormPayload
 
 form_route = APIRouter()
 
@@ -15,7 +15,7 @@ form_route = APIRouter()
                  summary="add new form",
                  name="form:create",
                  tags=["Form"])
-def add(req: Request, payload: FormDict,
+def add(req: Request, payload: FormPayload,
         session: Session = Depends(get_session)):
     form = crud.add_form(session=session, payload=payload)
     return form.serialize
@@ -48,9 +48,9 @@ def get_by_id(req: Request, id: int, session: Session = Depends(get_session)):
 @form_route.put("/form/{id:path}",
                 response_model=FormDict,
                 summary="update form",
-                name="form:update",
+                name="form:put",
                 tags=["Form"])
-def update(req: Request, id: int, payload: FormDict,
+def update(req: Request, id: int, payload: FormPayload,
            session: Session = Depends(get_session)):
     form = crud.update_form(session=session, id=id, payload=payload)
     return form.serialize

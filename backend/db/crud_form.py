@@ -1,10 +1,10 @@
 from fastapi import HTTPException, status
 from typing import List
 from sqlalchemy.orm import Session
-from models.form import Form, FormDict, FormBase
+from models.form import Form, FormDict, FormBase, FormPayload
 
 
-def add_form(session: Session, payload: FormDict):
+def add_form(session: Session, payload: FormPayload):
     form = Form(id=None, name=payload['name'], languages=payload['languages'])
     session.add(form)
     session.commit()
@@ -21,7 +21,7 @@ def get_form_by_id(session: Session, id: int) -> FormBase:
     return session.query(Form).filter(Form.id == id).first()
 
 
-def update_form(session: Session, id: int, payload: FormDict) -> FormDict:
+def update_form(session: Session, id: int, payload: FormPayload) -> FormDict:
     form = session.query(Form).filter(Form.id == id).first()
     if form is None:
         raise HTTPException(
