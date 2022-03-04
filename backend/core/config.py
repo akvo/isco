@@ -4,6 +4,7 @@ from routes.organisation import organisation_route
 from routes.user import user_route
 from routes.form import form_route
 from routes.question_group import question_group_route
+from routes.question import question_route
 
 app = FastAPI(
     root_path="/api",
@@ -24,6 +25,7 @@ app.include_router(organisation_route)
 app.include_router(user_route)
 app.include_router(form_route)
 app.include_router(question_group_route)
+app.include_router(question_route)
 
 
 @app.get("/", tags=["Dev"])

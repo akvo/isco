@@ -47,7 +47,7 @@ def upgrade():
                   ArrayOfEnum(
                       sa.Enum('Big Industry', 'Small Industry',
                               'DISCO - Traders', 'Retail',
-                              'Standard Setting Organisation'
+                              'Standard Setting Organisation',
                               'Other', name='member_type'))),
         sa.Column('isco_type',
                   ArrayOfEnum(sa.Enum('ISCO', name='isco_type'))),

@@ -46,7 +46,7 @@ def update_question_group(session: Session, id: int,
     return question_group
 
 
-def delete_question_group(session: Session, id: int) -> QuestionGroupDict:
+def delete_question_group(session: Session, id: int):
     question_group = get_question_group_by_id(session=session, id=id)
     session.delete(question_group)
     session.commit()

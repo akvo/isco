@@ -56,6 +56,25 @@ class RepeatingObjectDict(TypedDict):
     value: str
 
 
+class QuestionPayload(TypedDict):
+    form: int
+    question_group: int
+    name: str
+    translations: Optional[List[dict]] = None
+    mandatory: bool
+    datapoint_name: bool
+    variable_name: Optional[str] = None
+    type: QuestionType
+    member_type: List[MemberType]
+    isco_type: List[IscoType]
+    personal_data: bool
+    rule: Optional[RuleDict] = None
+    tooltip: Optional[str] = None
+    tooltip_translations: Optional[List[dict]] = None
+    cascade: Optional[int] = None
+    repeating_objects: Optional[List[RepeatingObjectDict]] = None
+
+
 class QuestionDict(TypedDict):
     id: int
     form: int
@@ -94,7 +113,7 @@ class Question(Base):
     rule = Column(MutableDict.as_mutable(pg.JSONB), nullable=True)
     tooltip = Column(String, nullable=True)
     tooltip_translations = Column(pg.ARRAY(pg.JSONB), nullable=True)
-    cascade = Column(Integer, ForeignKey('cascade.id'), nullable=True)
+    cascade = Column(Integer, nullable=True)
     repeating_objects = Column(pg.ARRAY(pg.JSONB), nullable=True)
     created = Column(DateTime, default=datetime.utcnow)
     options = relationship("Option",

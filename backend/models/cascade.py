@@ -27,6 +27,7 @@ class Cascade(Base):
     id = Column(Integer, primary_key=True, index=True, nullable=True)
     name = Column(String)
     type = Column(Enum(CascadeType), nullable=False)
+    question = relationship("Question")
     cascade_list = relationship("CascadeList",
                                 cascade="all, delete",
                                 passive_deletes=True,

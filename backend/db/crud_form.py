@@ -36,7 +36,7 @@ def update_form(session: Session, id: int, payload: FormPayload) -> FormDict:
     return form
 
 
-def delete_form(session: Session, id: int) -> FormDict:
+def delete_form(session: Session, id: int):
     form = get_form_by_id(session=session, id=id)
     session.delete(form)
     session.commit()
