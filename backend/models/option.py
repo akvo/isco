@@ -9,6 +9,13 @@ from pydantic import BaseModel
 import sqlalchemy.dialects.postgresql as pg
 
 
+class OptionPayload(TypedDict):
+    code: Optional[str] = None
+    name: str
+    question: int
+    translations: Optional[List[dict]] = None
+
+
 class OptionDict(TypedDict):
     id: int
     code: Optional[str] = None
@@ -24,12 +31,13 @@ class Option(Base):
     name = Column(String)
     translations = Column(pg.ARRAY(pg.JSONB), nullable=True)
 
-    def __init__(self, code: Optional[str], name: str, question: int,
-                 translations: Optional[List[dict]]):
+    def __init__(self, id: Optional[int], code: Optional[str], name: str,
+                 question: int, translations: Optional[List[dict]]):
+        self.id = id
         self.code = code
         self.name = name
         self.translations = translations
-        self.quesion = question
+        self.question = question
 
     def __repr__(self) -> int:
         return f"<Option {self.id}>"
