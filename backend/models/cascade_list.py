@@ -9,6 +9,15 @@ from sqlalchemy.orm import relationship
 from pydantic import BaseModel
 
 
+class CascadeListPayload(TypedDict):
+    cascade: Optional[int] = None
+    parent: Optional[int] = None
+    code: Optional[str] = None
+    name: str
+    path: Optional[str] = None
+    level: int
+
+
 class CascadeListDict(TypedDict):
     id: int
     cascade: int
@@ -31,9 +40,14 @@ class CascadeList(Base):
     level = Column(Integer)
     children = relationship("CascadeList")
     parent_detail = relationship("CascadeList", remote_side=[id])
+    cascade_detail = relationship("Cascade",
+                                  cascade="all, delete",
+                                  passive_deletes=True,
+                                  backref="cascade_list")
 
-    def __init__(self, cascade: int, parent: int, code: Optional[str],
-                 name: str, path: Optional[str], level: int):
+    def __init__(self, cascade: Optional[int], parent: int,
+                 code: Optional[str], name: str,
+                 path: Optional[str], level: int):
         self.cascade = cascade
         self.parent = parent
         self.code = code

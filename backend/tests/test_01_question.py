@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from httpx import AsyncClient
 from sqlalchemy.orm import Session
 from models.question import QuestionType, MemberType, IscoType
+from models.cascade import CascadeType
 
 pytestmark = pytest.mark.asyncio
 sys.path.append("..")
@@ -177,4 +178,132 @@ class TestQuestionRoutes():
             "name": "Option 1",
             "translations": [
                 {"language": "id", "text": "Pilihan 1"}]
+        }
+
+    @pytest.mark.asyncio
+    async def test_add_cascade(self, app: FastAPI, session: Session,
+                               client: AsyncClient) -> None:
+        # add cascade
+        cascade_payload = {
+            "name": "Cascade 1",
+            "type": CascadeType.cascade.value,
+            "cascade_list": [{
+                "cascade": None,
+                "parent": None,
+                "code": None,
+                "name": "Cascade List Parent 1",
+                "path": None,
+                "level": 0
+            }]
+        }
+        res = await client.post(
+            app.url_path_for("cascade:create"), json=cascade_payload)
+        assert res.status_code == 200
+        res = res.json()
+        assert res == {
+            "id": 1,
+            "name": "Cascade 1",
+            "type": "cascade",
+            "cascade_list": [{
+                "cascade": 1,
+                "code": None,
+                "id": 1,
+                "level": 0,
+                "name": "Cascade List Parent 1",
+                "parent": None,
+                "path": None
+            }]
+        }
+
+    @pytest.mark.asyncio
+    async def test_update_cascade(self, app: FastAPI, session: Session,
+                                  client: AsyncClient) -> None:
+        # get cascade
+        res = await client.get(app.url_path_for("cascade:get_by_id", id=1))
+        assert res.status_code == 200
+        res = res.json()
+        assert res["id"] == 1
+        # update cascade
+        cascade_payload = {
+            "name": "Cascade 1 Updated",
+            "type": CascadeType.cascade.value,
+            "cascade_list": None
+        }
+        res = await client.put(app.url_path_for("cascade:put", id=1),
+                               json=cascade_payload)
+        assert res.status_code == 200
+        res = res.json()
+        assert res == {
+            "id": 1,
+            "name": "Cascade 1 Updated",
+            "type": "cascade"
+        }
+
+    @pytest.mark.asyncio
+    async def test_add_cascade_list(self, app: FastAPI, session: Session,
+                                    client: AsyncClient) -> None:
+        # get cascade
+        res = await client.get(app.url_path_for("cascade:get_by_id", id=1))
+        assert res.status_code == 200
+        res = res.json()
+        assert res["id"] == 1
+        # get cascade list
+        res = await client.get(
+            app.url_path_for("cascade_list:get_by_id", id=1))
+        assert res.status_code == 200
+        res = res.json()
+        assert res["id"] == 1
+        # add cascade list
+        cascade_payload = {
+            "cascade": 1,
+            "parent": 1,
+            "code": None,
+            "name": "Child of Parent 1",
+            "path": "1.",
+            "level": 1
+        }
+        res = await client.post(
+            app.url_path_for("cascade_list:create"), json=cascade_payload)
+        assert res.status_code == 200
+        res = res.json()
+        assert res == {
+            "cascade": 1,
+            "code": None,
+            "id": 2,
+            "level": 1,
+            "name": "Child of Parent 1",
+            "parent": 1,
+            "path": "1."
+        }
+
+    @pytest.mark.asyncio
+    async def test_update_cascade_list(self, app: FastAPI, session: Session,
+                                       client: AsyncClient) -> None:
+        # get cascade list
+        res = await client.get(
+            app.url_path_for("cascade_list:get_by_id", id=1))
+        assert res.status_code == 200
+        res = res.json()
+        assert res["id"] == 1
+        # add cascade list
+        cascade_payload = {
+            "cascade": 1,
+            "parent": None,
+            "code": "P1",
+            "name": "Cascade List Parent 1 Updated",
+            "path": None,
+            "level": 0
+        }
+        res = await client.put(app.url_path_for("cascade_list:put", id=1),
+                               json=cascade_payload)
+        assert res.status_code == 200
+        res = res.json()
+        assert res == {
+            "cascade": 1,
+            "code": "P1",
+            "id": 1,
+            "level": 0,
+            "name": "Cascade List Parent 1 Updated",
+            "parent": None,
+            "path": None
         }

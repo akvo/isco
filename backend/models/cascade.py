@@ -6,14 +6,19 @@ from typing_extensions import TypedDict
 from typing import List, Optional
 from db.connection import Base
 from sqlalchemy import Column, Integer, String, Enum
-from sqlalchemy.orm import relationship
 from pydantic import BaseModel
-from .cascade_list import CascadeListBase
+from models.cascade_list import CascadeListBase, CascadeListPayload
 
 
 class CascadeType(enum.Enum):
-    cascade: 'cascade'
-    nested: 'nested'
+    cascade = 'cascade'
+    nested = 'nested'
+
+
+class CascadePayload(TypedDict):
+    name: str
+    type: CascadeType
+    cascade_list: Optional[List[CascadeListPayload]] = None
 
 
 class CascadeDict(TypedDict):
@@ -27,11 +32,6 @@ class Cascade(Base):
     id = Column(Integer, primary_key=True, index=True, nullable=True)
     name = Column(String)
     type = Column(Enum(CascadeType), nullable=False)
-    question = relationship("Question")
-    cascade_list = relationship("CascadeList",
-                                cascade="all, delete",
-                                passive_deletes=True,
-                                backref="cascade_detail")
 
     def __init__(self, id: Optional[int], name: str, type: CascadeType):
         self.id = id

@@ -9,7 +9,7 @@ from typing_extensions import TypedDict
 from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy import Boolean, Enum, ForeignKey
 from sqlalchemy.ext.mutable import MutableDict
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from models.option import OptionBase
 import sqlalchemy.dialects.postgresql as pg
 from datetime import datetime
@@ -113,13 +113,15 @@ class Question(Base):
     rule = Column(MutableDict.as_mutable(pg.JSONB), nullable=True)
     tooltip = Column(String, nullable=True)
     tooltip_translations = Column(pg.ARRAY(pg.JSONB), nullable=True)
-    cascade = Column(Integer, nullable=True)
+    cascade = Column(Integer, ForeignKey('cascade.id'), nullable=True)
     repeating_objects = Column(pg.ARRAY(pg.JSONB), nullable=True)
     created = Column(DateTime, default=datetime.utcnow)
     options = relationship("Option",
                            cascade="all, delete",
                            passive_deletes=True,
                            backref="question_detail")
+    cascades = relationship("Cascade", backref=backref(
+        "question", uselist=False))
 
     def __init__(self, id: Optional[int], name: str, form: int,
                  question_group: int, translations: Optional[List[dict]],
