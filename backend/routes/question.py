@@ -5,8 +5,27 @@ from sqlalchemy.orm import Session
 from db.connection import get_session
 import db.crud_question as crud
 from models.question import QuestionBase, QuestionDict, QuestionPayload
+from models.question import MemberType, IscoType
 
 question_route = APIRouter()
+
+
+@question_route.get("/member_type",
+                    response_model=List[MemberType],
+                    summary="get all member type value from question",
+                    name="question:get_all_member_type",
+                    tags=["Question"])
+def get_member_type(req: Request):
+    return [x.value for x in MemberType]
+
+
+@question_route.get("/isco_type",
+                    response_model=List[IscoType],
+                    summary="get all ISCO type value from question",
+                    name="question:get_all_isco_type",
+                    tags=["Question"])
+def get_isco_type(req: Request):
+    return [x.value for x in IscoType]
 
 
 @question_route.post("/question",
@@ -30,15 +49,15 @@ def get(req: Request, session: Session = Depends(get_session)):
     return [q.serialize for q in question]
 
 
-@question_route.get("/question/{form_id:path}",
-                    response_model=List[QuestionDict],
-                    summary="get all questions by form id",
-                    name="question:get_all_by_form_id",
-                    tags=["Question"])
-def get_by_form_id(req: Request, form_id: int,
-                   session: Session = Depends(get_session)):
-    question = crud.get_question(session=session, form=form_id)
-    return [q.serialize for q in question]
+# @question_route.get("/question/{form_id:path}",
+#                     response_model=List[QuestionDict],
+#                     summary="get all questions by form id",
+#                     name="question:get_all_by_form_id",
+#                     tags=["Question"])
+# def get_by_form_id(req: Request, form_id: int,
+#                    session: Session = Depends(get_session)):
+#     question = crud.get_question(session=session, form=form_id)
+#     return [q.serialize for q in question]
 
 
 @question_route.get("/question/{id:path}",

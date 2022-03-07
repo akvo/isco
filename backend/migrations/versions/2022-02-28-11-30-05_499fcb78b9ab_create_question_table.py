@@ -7,7 +7,7 @@ Create Date: 2022-02-28 11:30:05.268182
 """
 from alembic import op
 from sqlalchemy.sql import expression
-from db.util import CastingArray, ArrayOfEnum
+from db.util import CastingArray
 import sqlalchemy as sa
 import sqlalchemy.dialects.postgresql as pg
 
@@ -43,14 +43,8 @@ def upgrade():
                       'nested_list',
                       'cascade',
                       name='question_type')),
-        sa.Column('member_type',
-                  ArrayOfEnum(
-                      sa.Enum('Big Industry', 'Small Industry',
-                              'DISCO - Traders', 'Retail',
-                              'Standard Setting Organisation',
-                              'Other', name='member_type'))),
-        sa.Column('isco_type',
-                  ArrayOfEnum(sa.Enum('ISCO', name='isco_type'))),
+        sa.Column('member_type', pg.ARRAY(sa.String())),
+        sa.Column('isco_type', pg.ARRAY(sa.String())),
         sa.Column('personal_data', sa.Boolean,
                   server_default=expression.false(), nullable=False),
         sa.Column('rule', pg.JSONB(), nullable=True),
@@ -76,5 +70,3 @@ def downgrade():
     op.drop_index(op.f('ix_question_id'), table_name='question')
     op.drop_table('question')
     op.execute('DROP TYPE question_type')
-    op.execute('DROP TYPE member_type')
-    op.execute('DROP TYPE isco_type')
