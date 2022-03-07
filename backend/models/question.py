@@ -11,6 +11,7 @@ from sqlalchemy import Boolean, Enum, ForeignKey
 from sqlalchemy.ext.mutable import MutableDict
 from sqlalchemy.orm import relationship, backref
 from models.option import OptionBase
+# from models.skip_logic import SkipLogicBase
 import sqlalchemy.dialects.postgresql as pg
 from datetime import datetime
 
@@ -93,7 +94,8 @@ class QuestionDict(TypedDict):
     tooltip_translations: Optional[List[dict]] = None
     cascade: Optional[int] = None
     repeating_objects: Optional[List[RepeatingObjectDict]] = None
-    options: Optional[List[OptionBase]] = None
+    options: Optional[List[OptionBase]] = []
+    # skip_logic: Optional[List[SkipLogicBase]] = []
 
 
 class Question(Base):
@@ -195,7 +197,8 @@ class QuestionBase(BaseModel):
     tooltip_translations: Optional[List[dict]] = None
     cascade: Optional[int] = None
     repeating_objects: Optional[List[RepeatingObjectDict]] = None
-    options: Optional[List[OptionBase]] = None
+    options: Optional[List[OptionBase]] = []
+    # skip_logic: Optional[List[SkipLogicBase]] = []
 
     class Config:
         orm_mode = True

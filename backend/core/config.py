@@ -7,6 +7,7 @@ from routes.question_group import question_group_route
 from routes.question import question_route
 from routes.option import option_route
 from routes.cascade import cascade_route
+from routes.skip_logic import skip_logic_route
 
 app = FastAPI(
     root_path="/api",
@@ -30,6 +31,7 @@ app.include_router(question_group_route)
 app.include_router(question_route)
 app.include_router(option_route)
 app.include_router(cascade_route)
+app.include_router(skip_logic_route)
 
 
 @app.get("/", tags=["Dev"])

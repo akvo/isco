@@ -5,6 +5,7 @@ from httpx import AsyncClient
 from sqlalchemy.orm import Session
 from models.question import QuestionType, MemberType, IscoType
 from models.cascade import CascadeType
+from models.skip_logic import OperatorType
 
 pytestmark = pytest.mark.asyncio
 sys.path.append("..")
@@ -88,7 +89,7 @@ class TestQuestionRoutes():
             "mandatory": True,
             "datapoint_name": True,
             "variable_name": None,
-            "type": QuestionType.text.value,
+            "type": QuestionType.single_select.value,
             "member_type": [MemberType.retail.value, MemberType.disco.value],
             "isco_type": [IscoType.isco.value],
             "personal_data": False,
@@ -122,7 +123,7 @@ class TestQuestionRoutes():
                 {"language": "id", "text": "Keterangan Pertanyaan 1"}],
             "translations": [
                 {"language": "id", "text": "Pertanyaan 1"}],
-            "type": 'text',
+            "type": 'single_select',
             "variable_name": None
         }
 
@@ -306,4 +307,76 @@ class TestQuestionRoutes():
             "name": "Cascade List Parent 1 Updated",
             "parent": None,
             "path": None
+        }
+
+    @pytest.mark.asyncio
+    async def test_add_skip_logic(self, app: FastAPI, session: Session,
+                                  client: AsyncClient) -> None:
+        # add question type text
+        question_payload = {
+            "form": 1,
+            "question_group": 1,
+            "name": "Question 2",
+            "translations": None,
+            "mandatory": True,
+            "datapoint_name": True,
+            "variable_name": None,
+            "type": QuestionType.text.value,
+            "member_type": [MemberType.retail.value, MemberType.disco.value],
+            "isco_type": [IscoType.isco.value],
+            "personal_data": False,
+            "rule": None,
+            "tooltip": "Question 2 tooltip",
+            "tooltip_translations": None,
+            "cascade": None,
+            "repeating_objects": None,
+        }
+        res = await client.post(
+            app.url_path_for("question:create"), json=question_payload)
+        assert res.status_code == 200
+        res = res.json()
+        assert res == {
+            "id": 2,
+            "cascade": None,
+            "datapoint_name": True,
+            "form": 1,
+            "isco_type": ['ISCO'],
+            "mandatory": True,
+            "member_type": ['Retail', 'DISCO - Traders'],
+            "name": 'Question 2',
+            "options": [],
+            "personal_data": False,
+            "question_group": 1,
+            "repeating_objects": None,
+            "rule": None,
+            "tooltip": 'Question 2 tooltip',
+            "tooltip_translations": None,
+            "translations": None,
+            "type": 'text',
+            "variable_name": None
+        }
+        # get question
+        res = await client.get(app.url_path_for("question:get_by_id", id=2))
+        assert res.status_code == 200
+        res = res.json()
+        assert res["id"] == 2
+        # add skip logic
+        skip_logic_payload = {
+            "question": 2,
+            "dependent_to": 1,
+            "operator": OperatorType.equal.value,
+            "value": "Option 1",
+            "type": QuestionType.single_select.value
+        }
+        res = await client.post(
+            app.url_path_for("skip_logic:create"), json=skip_logic_payload)
+        assert res.status_code == 200
+        res = res.json()
+        assert res == {
+            "dependent_to": 1,
+            "id": 1,
+            "operator": "equal",
+            "question": 2,
+            "type": "single_select",
+            "value": "Option 1",
         }

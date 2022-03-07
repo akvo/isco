@@ -6,19 +6,36 @@ from typing import Optional
 from typing_extensions import TypedDict
 from sqlalchemy import Enum, Integer, String
 from sqlalchemy import Column, ForeignKey
-from sqlalchemy.orm import relationship
+# from sqlalchemy.orm import relationship
 from db.connection import Base
 from pydantic import BaseModel
-from models.question import QuestionType
+
+
+class QuestionType(enum.Enum):
+    text = 'text'
+    number = 'number'
+    single_select = 'single_select'
+    multiple_select = 'multiple_select'
+    date = 'date'
+    nested_list = 'nested_list'
+    cascade = 'cascade'
 
 
 class OperatorType(enum.Enum):
-    equal = '=='
-    not_equal = '!='
-    greater_than = '>'
-    less_than = '<'
-    greater_than_or_equal = '>='
-    less_than_or_equal = '<='
+    equal = 'equal'
+    not_equal = 'not_equal'
+    greater_than = 'greater_than'
+    less_than = 'less_than'
+    greater_than_or_equal = 'greater_than_or_equal'
+    less_than_or_equal = 'less_than_or_equal'
+
+
+class SkipLogicPayload(TypedDict):
+    question: int
+    dependent_to: int
+    operator: OperatorType
+    value: str
+    type: QuestionType
 
 
 class SkipLogicDict(TypedDict):
@@ -38,8 +55,7 @@ class SkipLogic(Base):
     operator = Column(Enum(OperatorType))
     value = Column(String)
     type = Column(Enum(QuestionType))
-    question = relationship("Question",
-                            backref="skip_logic")
+    # question = relationship("Question", backref="skip_logic")
 
     def __init__(self, id: Optional[int], question: int, dependent_to: int,
                  operator: OperatorType, value: str, type: QuestionType):
