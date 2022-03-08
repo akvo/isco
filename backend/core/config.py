@@ -28,14 +28,14 @@ app = FastAPI(
 
 app.include_router(organisation_route)
 app.include_router(user_route)
+app.include_router(member_type_route)
+app.include_router(isco_type_route)
 app.include_router(form_route)
 app.include_router(question_group_route)
 app.include_router(question_route)
 app.include_router(option_route)
 app.include_router(cascade_route)
 app.include_router(skip_logic_route)
-app.include_router(member_type_route)
-app.include_router(isco_type_route)
 
 
 @app.get("/", tags=["Dev"])

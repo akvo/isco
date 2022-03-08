@@ -16,19 +16,6 @@ import sqlalchemy.dialects.postgresql as pg
 from datetime import datetime
 
 
-class MemberType(enum.Enum):
-    big_industry = 'Big Industry'
-    small_industry = 'Small Industry'
-    disco = 'DISCO - Traders'
-    retail = 'Retail'
-    standard_setting_org = 'Standard Setting Organisation'
-    other = 'Other'
-
-
-class IscoType(enum.Enum):
-    isco = 'ISCO'
-
-
 class QuestionType(enum.Enum):
     text = 'text'
     number = 'number'
