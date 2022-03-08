@@ -3,6 +3,7 @@ import pytest
 from fastapi import FastAPI
 from httpx import AsyncClient
 from sqlalchemy.orm import Session
+from seeder.member_isco_type import member_values, isco_values
 
 pytestmark = pytest.mark.asyncio
 sys.path.append("..")
@@ -91,20 +92,30 @@ class TestFormRoutes():
     async def test_add_member_type(self, app: FastAPI, session: Session,
                                    client: AsyncClient) -> None:
         # create member type
-        res = await client.post(
-            app.url_path_for("member_type:create"),
-            json={"name": "Retail"})
+        for m in member_values:
+            res = await client.post(
+                app.url_path_for("member_type:create"),
+                json={"name": m})
+            assert res.status_code == 200
+        # get all member type
+        res = await client.get(
+                app.url_path_for("member_type:get_all"))
         assert res.status_code == 200
         res = res.json()
-        assert res == {"id": 1, "name": "Retail"}
+        assert len(res) == len(member_values)
 
     @pytest.mark.asyncio
     async def test_add_isco_type(self, app: FastAPI, session: Session,
                                  client: AsyncClient) -> None:
         # create isco type
-        res = await client.post(
-            app.url_path_for("isco_type:create"),
-            json={"name": "ISCO"})
+        for i in isco_values:
+            res = await client.post(
+                app.url_path_for("isco_type:create"),
+                json={"name": "ISCO"})
+            assert res.status_code == 200
+        # get all isco type
+        res = await client.get(
+                app.url_path_for("isco_type:get_all"))
         assert res.status_code == 200
         res = res.json()
-        assert res == {"id": 1, "name": "ISCO"}
+        assert len(res) == len(isco_values)
