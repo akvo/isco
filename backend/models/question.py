@@ -12,6 +12,8 @@ from sqlalchemy.ext.mutable import MutableDict
 from sqlalchemy.orm import relationship, backref
 from models.option import OptionBase
 from models.skip_logic import SkipLogicBase
+from models.question_member_access import QuestionMemberAccessBase
+from models.question_isco_access import QuestionIscoAccessBase
 import sqlalchemy.dialects.postgresql as pg
 from datetime import datetime
 
@@ -75,9 +77,11 @@ class QuestionDict(TypedDict):
     rule: Optional[RuleDict] = None
     tooltip: Optional[str] = None
     tooltip_translations: Optional[List[dict]] = None
+    member_access: List[QuestionMemberAccessBase]
+    isco_access: List[QuestionIscoAccessBase]
     cascade: Optional[int] = None
     repeating_objects: Optional[List[RepeatingObjectDict]] = None
-    options: Optional[List[OptionBase]] = []
+    option: Optional[List[OptionBase]] = []
     skip_logic: Optional[List[SkipLogicBase]] = []
 
 
@@ -99,16 +103,31 @@ class Question(Base):
     cascade = Column(Integer, ForeignKey('cascade.id'), nullable=True)
     repeating_objects = Column(pg.ARRAY(pg.JSONB), nullable=True)
     created = Column(DateTime, default=datetime.utcnow)
-    options = relationship("Option",
-                           primaryjoin="Option.question==Question.id",
-                           cascade="all, delete",
-                           passive_deletes=True,
-                           backref="question_option")
-    skip_logic = relationship("SkipLogic",
-                              primaryjoin="SkipLogic.question==Question.id",
-                              backref="question_skip_logic")
-    cascades = relationship("Cascade",
-                            backref=backref("question", uselist=False))
+    member_access = relationship(
+        "QuestionMemberAccess",
+        primaryjoin="QuestionMemberAccess.question==Question.id",
+        cascade="all, delete",
+        passive_deletes=True,
+        backref="question_member_access")
+    isco_access = relationship(
+        "QuestionIscoAccess",
+        primaryjoin="QuestionIscoAccess.question==Question.id",
+        cascade="all, delete",
+        passive_deletes=True,
+        backref="question_isco_access")
+    option = relationship(
+        "Option",
+        primaryjoin="Option.question==Question.id",
+        cascade="all, delete",
+        passive_deletes=True,
+        backref="question_option")
+    skip_logic = relationship(
+        "SkipLogic",
+        primaryjoin="SkipLogic.question==Question.id",
+        backref="question_skip_logic")
+    cascades = relationship(
+        "Cascade",
+        backref=backref("question", uselist=False))
 
     def __init__(self, id: Optional[int], name: str, form: int,
                  question_group: int, translations: Optional[List[dict]],
@@ -153,9 +172,11 @@ class Question(Base):
             "rule": self.rule,
             "tooltip": self.tooltip,
             "tooltip_translations": self.tooltip_translations,
+            "member_access": [m.member_type for m in self.member_access],
+            "isco_access": [i.isco_type for i in self.isco_access],
             "cascade": self.cascade,
             "repeating_objects": self.repeating_objects,
-            "options": self.options,
+            "option": self.option,
             "skip_logic": self.skip_logic
         }
 
@@ -174,9 +195,11 @@ class QuestionBase(BaseModel):
     rule: Optional[RuleDict] = None
     tooltip: Optional[str] = None
     tooltip_translations: Optional[List[dict]] = None
+    member_access: List[int]
+    isco_access: List[int]
     cascade: Optional[int] = None
     repeating_objects: Optional[List[RepeatingObjectDict]] = None
-    options: Optional[List[OptionBase]] = []
+    option: Optional[List[OptionBase]] = []
     skip_logic: Optional[List[SkipLogicBase]] = []
 
     class Config:
