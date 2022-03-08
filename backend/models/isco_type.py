@@ -8,6 +8,10 @@ from sqlalchemy import Column, Integer, String
 from db.connection import Base
 
 
+class IscoTypePayload(TypedDict):
+    name: str
+
+
 class IscoTypeDict(TypedDict):
     id: int
     name: str

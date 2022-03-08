@@ -86,3 +86,25 @@ class TestFormRoutes():
                            "language": "id",
                            "text": "Kelompok Pertanyaan 1"
                            }]}
+
+    @pytest.mark.asyncio
+    async def test_add_member_type(self, app: FastAPI, session: Session,
+                                   client: AsyncClient) -> None:
+        # create member type
+        res = await client.post(
+            app.url_path_for("member_type:create"),
+            json={"name": "Retail"})
+        assert res.status_code == 200
+        res = res.json()
+        assert res == {"id": 1, "name": "Retail"}
+
+    @pytest.mark.asyncio
+    async def test_add_isco_type(self, app: FastAPI, session: Session,
+                                 client: AsyncClient) -> None:
+        # create isco type
+        res = await client.post(
+            app.url_path_for("isco_type:create"),
+            json={"name": "ISCO"})
+        assert res.status_code == 200
+        res = res.json()
+        assert res == {"id": 1, "name": "ISCO"}

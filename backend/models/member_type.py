@@ -8,6 +8,10 @@ from sqlalchemy import Column, Integer, String
 from db.connection import Base
 
 
+class MemberTypePayload(TypedDict):
+    name: str
+
+
 class MemberTypeDict(TypedDict):
     id: int
     name: str
