@@ -90,7 +90,7 @@ class TestQuestionRoutes():
             "mandatory": True,
             "datapoint_name": True,
             "variable_name": None,
-            "type": QuestionType.single_select.value,
+            "type": QuestionType.option.value,
             "personal_data": False,
             "rule": None,
             "tooltip": "Question 1 tooltip",
@@ -123,7 +123,7 @@ class TestQuestionRoutes():
                 {"language": "id", "text": "Keterangan Pertanyaan 1"}],
             "translations": [
                 {"language": "id", "text": "Pertanyaan 1"}],
-            "type": 'single_select',
+            "type": "option",
             "variable_name": None
         }
 
@@ -362,7 +362,7 @@ class TestQuestionRoutes():
             "dependent_to": 1,
             "operator": OperatorType.equal.value,
             "value": "Option 1",
-            "type": QuestionType.single_select.value
+            "type": QuestionType.option.value
         }
         res = await client.post(
             app.url_path_for("skip_logic:create"), json=skip_logic_payload)
@@ -373,7 +373,7 @@ class TestQuestionRoutes():
             "id": 1,
             "operator": "equal",
             "question": 2,
-            "type": "single_select",
+            "type": "option",
             "value": "Option 1",
         }
 
@@ -404,7 +404,7 @@ class TestQuestionRoutes():
                 "mandatory": True,
                 "datapoint_name": False,
                 "variable_name": None,
-                "type": QuestionType.single_select.value,
+                "type": QuestionType.option.value,
                 "personal_data": False,
                 "rule": None,
                 "tooltip": None,
@@ -448,7 +448,7 @@ class TestQuestionRoutes():
                     "dependent_to": 1,
                     "operator": OperatorType.equal.value,
                     "value": "Option 1",
-                    "type": QuestionType.single_select.value
+                    "type": QuestionType.option.value
                 }
             ]
         }
@@ -508,13 +508,13 @@ class TestQuestionRoutes():
                     "id": 2,
                     "operator": "equal",
                     "question": 3,
-                    "type": "single_select",
+                    "type": "option",
                     "value": "Option 1"
                 }
             ],
             "tooltip": None,
             "tooltip_translations": None,
             "translations": None,
-            "type": 'single_select',
+            "type": "option",
             "variable_name": None
         }

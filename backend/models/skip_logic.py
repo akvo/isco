@@ -11,10 +11,11 @@ from pydantic import BaseModel
 
 
 class QuestionType(enum.Enum):
+    input = 'input'
     text = 'text'
     number = 'number'
-    single_select = 'single_select'
-    multiple_select = 'multiple_select'
+    option = 'option'
+    multiple_option = 'multiple_option'
     date = 'date'
     nested_list = 'nested_list'
     cascade = 'cascade'
