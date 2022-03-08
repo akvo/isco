@@ -15,8 +15,6 @@ def add_question(session: Session, payload: QuestionPayload) -> QuestionDict:
                         datapoint_name=payload['datapoint_name'],
                         variable_name=payload['variable_name'],
                         type=payload['type'],
-                        member_type=payload['member_type'],
-                        isco_type=payload['isco_type'],
                         personal_data=payload['personal_data'],
                         rule=payload['rule'],
                         tooltip=payload['tooltip'],
@@ -58,8 +56,6 @@ def update_question(session: Session, id: int,
     question.datapoint_name = payload['datapoint_name']
     question.variable_name = payload['variable_name']
     question.type = payload['type']
-    question.member_type = payload['member_type']
-    question.isco_type = payload['isco_type']
     question.personal_data = payload['personal_data']
     question.rule = payload['rule']
     question.tooltip = payload['tooltip']

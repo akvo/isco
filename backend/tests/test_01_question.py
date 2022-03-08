@@ -3,7 +3,7 @@ import pytest
 from fastapi import FastAPI
 from httpx import AsyncClient
 from sqlalchemy.orm import Session
-from models.question import QuestionType, MemberType, IscoType
+from models.question import QuestionType
 from models.cascade import CascadeType
 from models.skip_logic import OperatorType
 
@@ -36,8 +36,6 @@ class TestQuestionRoutes():
             "datapoint_name": True,
             "variable_name": None,
             "type": QuestionType.text.value,
-            "member_type": [MemberType.retail.value, MemberType.disco.value],
-            "isco_type": [IscoType.isco.value],
             "personal_data": False,
             "rule": None,
             "tooltip": "Question 1 tooltip",
@@ -54,9 +52,7 @@ class TestQuestionRoutes():
             "cascade": None,
             "datapoint_name": True,
             "form": 1,
-            "isco_type": ['ISCO'],
             "mandatory": True,
-            "member_type": ['Retail', 'DISCO - Traders'],
             "name": 'Question 1',
             "options": [],
             "personal_data": False,
@@ -91,8 +87,6 @@ class TestQuestionRoutes():
             "datapoint_name": True,
             "variable_name": None,
             "type": QuestionType.single_select.value,
-            "member_type": [MemberType.retail.value, MemberType.disco.value],
-            "isco_type": [IscoType.isco.value],
             "personal_data": False,
             "rule": None,
             "tooltip": "Question 1 tooltip",
@@ -110,9 +104,7 @@ class TestQuestionRoutes():
             "cascade": None,
             "datapoint_name": True,
             "form": 1,
-            "isco_type": ['ISCO'],
             "mandatory": True,
-            "member_type": ['Retail', 'DISCO - Traders'],
             "name": 'Question 1',
             "options": [],
             "personal_data": False,
@@ -324,8 +316,6 @@ class TestQuestionRoutes():
             "datapoint_name": True,
             "variable_name": None,
             "type": QuestionType.text.value,
-            "member_type": [MemberType.retail.value, MemberType.disco.value],
-            "isco_type": [IscoType.isco.value],
             "personal_data": False,
             "rule": None,
             "tooltip": "Question 2 tooltip",
@@ -342,9 +332,7 @@ class TestQuestionRoutes():
             "cascade": None,
             "datapoint_name": True,
             "form": 1,
-            "isco_type": ['ISCO'],
             "mandatory": True,
-            "member_type": ['Retail', 'DISCO - Traders'],
             "name": 'Question 2',
             "options": [],
             "personal_data": False,

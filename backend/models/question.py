@@ -66,8 +66,6 @@ class QuestionPayload(TypedDict):
     datapoint_name: bool
     variable_name: Optional[str] = None
     type: QuestionType
-    member_type: List[MemberType]
-    isco_type: List[IscoType]
     personal_data: bool
     rule: Optional[RuleDict] = None
     tooltip: Optional[str] = None
@@ -86,8 +84,6 @@ class QuestionDict(TypedDict):
     datapoint_name: bool
     variable_name: Optional[str] = None
     type: QuestionType
-    member_type: List[MemberType]
-    isco_type: List[IscoType]
     personal_data: bool
     rule: Optional[RuleDict] = None
     tooltip: Optional[str] = None
@@ -109,8 +105,6 @@ class Question(Base):
     datapoint_name = Column(Boolean, default=False)
     variable_name = Column(String, nullable=True, unique=True)
     type = Column(Enum(QuestionType), default=QuestionType.text)
-    member_type = Column(pg.ARRAY(Enum(MemberType)))
-    isco_type = Column(pg.ARRAY(Enum(IscoType)))
     personal_data = Column(Boolean, default=False)
     rule = Column(MutableDict.as_mutable(pg.JSONB), nullable=True)
     tooltip = Column(String, nullable=True)
@@ -133,7 +127,6 @@ class Question(Base):
                  question_group: int, translations: Optional[List[dict]],
                  mandatory: Optional[bool], datapoint_name: Optional[bool],
                  variable_name: Optional[str], type: QuestionType,
-                 member_type: List[MemberType], isco_type: List[IscoType],
                  personal_data: Optional[bool], rule: Optional[RuleDict],
                  tooltip: Optional[str], cascade: Optional[int],
                  tooltip_translations: Optional[List[dict]],
@@ -147,8 +140,6 @@ class Question(Base):
         self.datapoint_name = datapoint_name
         self.variable_name = variable_name
         self.type = type
-        self.member_type = member_type
-        self.isco_type = isco_type
         self.personal_data = personal_data
         self.rule = rule
         self.tooltip = tooltip
@@ -171,8 +162,6 @@ class Question(Base):
             "datapoint_name": self.datapoint_name,
             "variable_name": self.variable_name,
             "type": self.type,
-            "member_type": self.member_type,
-            "isco_type": self.isco_type,
             "personal_data": self.personal_data,
             "rule": self.rule,
             "tooltip": self.tooltip,
@@ -194,8 +183,6 @@ class QuestionBase(BaseModel):
     datapoint_name: bool
     variable_name: Optional[str] = None
     type: QuestionType
-    member_type: List[MemberType]
-    isco_type: List[IscoType]
     personal_data: bool
     rule: Optional[RuleDict] = None
     tooltip: Optional[str] = None
