@@ -9,6 +9,11 @@ from sqlalchemy import ForeignKey
 from db.connection import Base
 
 
+class QuestionMemberAccessPayload(TypedDict):
+    question: Optional[int] = None
+    member_type: int
+
+
 class QuestionMemberAccessDict(TypedDict):
     id: int
     question: int

@@ -1,10 +1,14 @@
 from http import HTTPStatus
 from fastapi import Depends, Request, APIRouter, Response
-from typing import List
+from typing import List, Optional
 from sqlalchemy.orm import Session
 from db.connection import get_session
 import db.crud_question as crud
 from models.question import QuestionBase, QuestionDict, QuestionPayload
+from models.option import OptionPayload
+from models.question_member_access import QuestionMemberAccessPayload
+from models.question_isco_access import QuestionIscoAccessPayload
+from models.skip_logic import SkipLogicPayload
 
 question_route = APIRouter()
 
@@ -14,9 +18,18 @@ question_route = APIRouter()
                      summary="add new question",
                      name="question:create",
                      tags=["Question"])
-def add(req: Request, payload: QuestionPayload,
+def add(req: Request, question: QuestionPayload,
+        option: Optional[List[OptionPayload]] = None,
+        member_access: Optional[List[QuestionMemberAccessPayload]] = None,
+        isco_access: Optional[List[QuestionIscoAccessPayload]] = None,
+        skip_logic: Optional[List[SkipLogicPayload]] = None,
         session: Session = Depends(get_session)):
-    question = crud.add_question(session=session, payload=payload)
+    question = crud.add_question(session=session,
+                                 payload=question,
+                                 option=option,
+                                 member_access=member_access,
+                                 isco_access=isco_access,
+                                 skip_logic=skip_logic)
     return question.serialize
 
 

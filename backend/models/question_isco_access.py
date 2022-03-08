@@ -9,6 +9,11 @@ from sqlalchemy import ForeignKey
 from db.connection import Base
 
 
+class QuestionIscoAccessPayload(TypedDict):
+    question: Optional[int] = None
+    isco_type: int
+
+
 class QuestionIscoAccessDict(TypedDict):
     id: int
     question: int

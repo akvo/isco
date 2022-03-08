@@ -1,5 +1,5 @@
 from fastapi import HTTPException, status
-from typing import List
+from typing import List, Optional
 from sqlalchemy.orm import Session
 from models.cascade import Cascade, CascadeBase
 from models.cascade import CascadeDict, CascadePayload
@@ -11,7 +11,8 @@ from models.cascade_list import CascadeListDict, CascadeListPayload
 
 
 def add_cascade(session: Session,
-                payload: CascadePayload, cascade_list: CascadeListPayload):
+                payload: CascadePayload,
+                cascade_list: Optional[List[CascadeListPayload]] = None):
     cascade = Cascade(id=None, name=payload['name'], type=payload['type'])
     if cascade_list:
         for cl in cascade_list:

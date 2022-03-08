@@ -28,20 +28,22 @@ class TestQuestionRoutes():
         assert res["id"] == 1
         # add question type text
         question_payload = {
-            "form": 1,
-            "question_group": 1,
-            "name": "Question 1",
-            "translations": None,
-            "mandatory": True,
-            "datapoint_name": True,
-            "variable_name": None,
-            "type": QuestionType.text.value,
-            "personal_data": False,
-            "rule": None,
-            "tooltip": "Question 1 tooltip",
-            "tooltip_translations": None,
-            "cascade": None,
-            "repeating_objects": None,
+            "question": {
+                "form": 1,
+                "question_group": 1,
+                "name": "Question 1",
+                "translations": None,
+                "mandatory": True,
+                "datapoint_name": True,
+                "variable_name": None,
+                "type": QuestionType.text.value,
+                "personal_data": False,
+                "rule": None,
+                "tooltip": "Question 1 tooltip",
+                "tooltip_translations": None,
+                "cascade": None,
+                "repeating_objects": None,
+            }
         }
         res = await client.post(
             app.url_path_for("question:create"), json=question_payload)
@@ -307,20 +309,22 @@ class TestQuestionRoutes():
                                   client: AsyncClient) -> None:
         # add question type text
         question_payload = {
-            "form": 1,
-            "question_group": 1,
-            "name": "Question 2",
-            "translations": None,
-            "mandatory": True,
-            "datapoint_name": True,
-            "variable_name": None,
-            "type": QuestionType.text.value,
-            "personal_data": False,
-            "rule": None,
-            "tooltip": "Question 2 tooltip",
-            "tooltip_translations": None,
-            "cascade": None,
-            "repeating_objects": None,
+            "question": {
+                "form": 1,
+                "question_group": 1,
+                "name": "Question 2",
+                "translations": None,
+                "mandatory": True,
+                "datapoint_name": True,
+                "variable_name": None,
+                "type": QuestionType.text.value,
+                "personal_data": False,
+                "rule": None,
+                "tooltip": "Question 2 tooltip",
+                "tooltip_translations": None,
+                "cascade": None,
+                "repeating_objects": None,
+            }
         }
         res = await client.post(
             app.url_path_for("question:create"), json=question_payload)
@@ -371,4 +375,146 @@ class TestQuestionRoutes():
             "question": 2,
             "type": "single_select",
             "value": "Option 1",
+        }
+
+    @pytest.mark.asyncio
+    async def test_add_question_with_option_and_access(self,
+                                                       app: FastAPI,
+                                                       session: Session,
+                                                       client: AsyncClient
+                                                       ) -> None:
+        # get form
+        res = await client.get(app.url_path_for("form:get_by_id", id=1))
+        assert res.status_code == 200
+        res = res.json()
+        assert res["id"] == 1
+        # get question group
+        res = await client.get(
+            app.url_path_for("question_group:get_by_id", id=1))
+        assert res.status_code == 200
+        res = res.json()
+        assert res["id"] == 1
+        # add question type text
+        question_payload = {
+            "question": {
+                "form": 1,
+                "question_group": 1,
+                "name": "Gender",
+                "translations": None,
+                "mandatory": True,
+                "datapoint_name": False,
+                "variable_name": None,
+                "type": QuestionType.single_select.value,
+                "personal_data": False,
+                "rule": None,
+                "tooltip": None,
+                "tooltip_translations": None,
+                "cascade": None,
+                "repeating_objects": None,
+            },
+            "option": [
+                {
+                    "code": None,
+                    "name": "Male",
+                    "question": None,
+                    "translations": None
+                },
+                {
+                    "code": None,
+                    "name": "Female",
+                    "question": None,
+                    "translations": None
+                }
+            ],
+            "member_access": [
+                {
+                    "question": None,
+                    "member_type": 1,
+                },
+                {
+                    "question": None,
+                    "member_type": 2,
+                }
+            ],
+            "isco_access": [
+                {
+                    "question": None,
+                    "isco_type": 1,
+                }
+            ],
+            "skip_logic": [
+                {
+                    "question": None,
+                    "dependent_to": 1,
+                    "operator": OperatorType.equal.value,
+                    "value": "Option 1",
+                    "type": QuestionType.single_select.value
+                }
+            ]
+        }
+        res = await client.post(
+            app.url_path_for("question:create"), json=question_payload)
+        assert res.status_code == 200
+        res = res.json()
+        assert res == {
+            "cascade": None,
+            "datapoint_name": False,
+            "form": 1,
+            "id": 3,
+            "isco_access": [
+                {
+                    "id": 1,
+                    "isco_type": 1,
+                    "question": 3
+                }
+            ],
+            "mandatory": True,
+            "member_access": [
+                {
+                    "id": 1,
+                    "member_type": 1,
+                    "question": 3
+                },
+                {
+                    "id": 2,
+                    "member_type": 2,
+                    "question": 3
+                }
+            ],
+            "name": 'Gender',
+            "option": [
+                {
+                    "code": None,
+                    "id": 2,
+                    "name": "Male",
+                    "question": 3,
+                    "translations": None
+                },
+                {
+                    "code": None,
+                    "id": 3,
+                    "name": "Female",
+                    "question": 3,
+                    "translations": None
+                }
+            ],
+            "personal_data": False,
+            "question_group": 1,
+            "repeating_objects": None,
+            "rule": None,
+            "skip_logic": [
+                {
+                    "dependent_to": 1,
+                    "id": 2,
+                    "operator": "equal",
+                    "question": 3,
+                    "type": "single_select",
+                    "value": "Option 1"
+                }
+            ],
+            "tooltip": None,
+            "tooltip_translations": None,
+            "translations": None,
+            "type": 'single_select',
+            "variable_name": None
         }

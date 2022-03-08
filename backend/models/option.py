@@ -12,7 +12,7 @@ import sqlalchemy.dialects.postgresql as pg
 class OptionPayload(TypedDict):
     code: Optional[str] = None
     name: str
-    question: int
+    question: Optional[int] = None
     translations: Optional[List[dict]] = None
 
 

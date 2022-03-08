@@ -10,7 +10,6 @@ from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy import Boolean, Enum, ForeignKey
 from sqlalchemy.ext.mutable import MutableDict
 from sqlalchemy.orm import relationship, backref
-from models.option import OptionBase
 from models.skip_logic import SkipLogicBase
 from models.question_member_access import QuestionMemberAccessBase
 from models.question_isco_access import QuestionIscoAccessBase
@@ -77,11 +76,11 @@ class QuestionDict(TypedDict):
     rule: Optional[RuleDict] = None
     tooltip: Optional[str] = None
     tooltip_translations: Optional[List[dict]] = None
-    member_access: List[QuestionMemberAccessBase]
-    isco_access: List[QuestionIscoAccessBase]
+    member_access: Optional[List[QuestionMemberAccessBase]] = []
+    isco_access: Optional[List[QuestionIscoAccessBase]] = []
     cascade: Optional[int] = None
     repeating_objects: Optional[List[RepeatingObjectDict]] = None
-    option: Optional[List[OptionBase]] = []
+    option: Optional[List] = []
     skip_logic: Optional[List[SkipLogicBase]] = []
 
 
@@ -172,8 +171,8 @@ class Question(Base):
             "rule": self.rule,
             "tooltip": self.tooltip,
             "tooltip_translations": self.tooltip_translations,
-            "member_access": [m.member_type for m in self.member_access],
-            "isco_access": [i.isco_type for i in self.isco_access],
+            "member_access": self.member_access,
+            "isco_access": self.isco_access,
             "cascade": self.cascade,
             "repeating_objects": self.repeating_objects,
             "option": self.option,
@@ -195,11 +194,11 @@ class QuestionBase(BaseModel):
     rule: Optional[RuleDict] = None
     tooltip: Optional[str] = None
     tooltip_translations: Optional[List[dict]] = None
-    member_access: List[int]
-    isco_access: List[int]
+    member_access: Optional[List[QuestionMemberAccessBase]] = []
+    isco_access: Optional[List[QuestionIscoAccessBase]] = []
     cascade: Optional[int] = None
     repeating_objects: Optional[List[RepeatingObjectDict]] = None
-    option: Optional[List[OptionBase]] = []
+    option: Optional[List] = []
     skip_logic: Optional[List[SkipLogicBase]] = []
 
     class Config:

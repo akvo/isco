@@ -30,7 +30,7 @@ class OperatorType(enum.Enum):
 
 
 class SkipLogicPayload(TypedDict):
-    question: int
+    question: Optional[int] = None
     dependent_to: int
     operator: OperatorType
     value: str
