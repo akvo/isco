@@ -1,6 +1,6 @@
 from http import HTTPStatus
 from fastapi import Depends, Request, APIRouter, Response
-from typing import List
+from typing import List, Optional
 from sqlalchemy.orm import Session
 import db.crud_cascade as crud
 from db.connection import get_session
@@ -19,9 +19,12 @@ cascade_route = APIRouter()
                     summary="add new cascade",
                     name="cascade:create",
                     tags=["Cascade"])
-def add(req: Request, payload: CascadePayload,
+def add(req: Request, cascade: CascadePayload,
+        cascade_list: Optional[List[CascadeListPayload]] = None,
         session: Session = Depends(get_session)):
-    cascade = crud.add_cascade(session=session, payload=payload)
+    cascade = crud.add_cascade(session=session,
+                               payload=cascade,
+                               cascade_list=cascade_list)
     return cascade.serialize
 
 

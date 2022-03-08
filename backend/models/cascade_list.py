@@ -26,7 +26,7 @@ class CascadeListDict(TypedDict):
     name: str
     path: Optional[str] = None
     level: int
-    children: Optional[List] = None
+    children: Optional[List] = []
 
 
 class CascadeList(Base):
@@ -40,10 +40,6 @@ class CascadeList(Base):
     level = Column(Integer)
     children = relationship("CascadeList")
     parent_detail = relationship("CascadeList", remote_side=[id])
-    cascade_detail = relationship("Cascade",
-                                  cascade="all, delete",
-                                  passive_deletes=True,
-                                  backref="cascade_list")
 
     def __init__(self, cascade: Optional[int], parent: int,
                  code: Optional[str], name: str,

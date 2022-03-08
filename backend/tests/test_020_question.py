@@ -184,34 +184,36 @@ class TestQuestionRoutes():
                                client: AsyncClient) -> None:
         # add cascade
         cascade_payload = {
-            "name": "Cascade 1",
-            "type": CascadeType.cascade.value,
+            "cascade": {
+                "name": "Cascade 1",
+                "type": CascadeType.cascade.value,
+            },
             "cascade_list": [{
                 "cascade": None,
                 "parent": None,
                 "code": None,
-                "name": "Cascade List Parent 1",
+                "name": "Parent 1",
                 "path": None,
                 "level": 0
-            }]
+            }],
         }
         res = await client.post(
             app.url_path_for("cascade:create"), json=cascade_payload)
         assert res.status_code == 200
         res = res.json()
         assert res == {
-            "id": 1,
-            "name": "Cascade 1",
-            "type": "cascade",
-            "cascade_list": [{
+            "cascades": [{
                 "cascade": 1,
                 "code": None,
                 "id": 1,
                 "level": 0,
-                "name": "Cascade List Parent 1",
+                "name": "Parent 1",
                 "parent": None,
                 "path": None
-            }]
+            }],
+            "id": 1,
+            "name": "Cascade 1",
+            "type": "cascade",
         }
 
     @pytest.mark.asyncio
@@ -226,7 +228,6 @@ class TestQuestionRoutes():
         cascade_payload = {
             "name": "Cascade 1 Updated",
             "type": CascadeType.cascade.value,
-            "cascade_list": None
         }
         res = await client.put(app.url_path_for("cascade:put", id=1),
                                json=cascade_payload)
@@ -246,20 +247,14 @@ class TestQuestionRoutes():
         assert res.status_code == 200
         res = res.json()
         assert res["id"] == 1
-        # get cascade list
-        res = await client.get(
-            app.url_path_for("cascade_list:get_by_id", id=1))
-        assert res.status_code == 200
-        res = res.json()
-        assert res["id"] == 1
         # add cascade list
         cascade_payload = {
             "cascade": 1,
-            "parent": 1,
+            "parent": None,
             "code": None,
-            "name": "Child of Parent 1",
-            "path": "1.",
-            "level": 1
+            "name": "Parent 2",
+            "path": None,
+            "level": 0
         }
         res = await client.post(
             app.url_path_for("cascade_list:create"), json=cascade_payload)
@@ -269,10 +264,10 @@ class TestQuestionRoutes():
             "cascade": 1,
             "code": None,
             "id": 2,
-            "level": 1,
-            "name": "Child of Parent 1",
-            "parent": 1,
-            "path": "1."
+            "level": 0,
+            "name": "Parent 2",
+            "parent": None,
+            "path": None
         }
 
     @pytest.mark.asyncio
@@ -289,7 +284,7 @@ class TestQuestionRoutes():
             "cascade": 1,
             "parent": None,
             "code": "P1",
-            "name": "Cascade List Parent 1 Updated",
+            "name": "Parent 1 Updated",
             "path": None,
             "level": 0
         }
@@ -302,7 +297,7 @@ class TestQuestionRoutes():
             "code": "P1",
             "id": 1,
             "level": 0,
-            "name": "Cascade List Parent 1 Updated",
+            "name": "Parent 1 Updated",
             "parent": None,
             "path": None
         }

@@ -10,8 +10,8 @@ from models.cascade_list import CascadeListDict, CascadeListPayload
 # Cascade
 
 
-def add_cascade(session: Session, payload: CascadePayload):
-    cascade_list = payload['cascade_list']
+def add_cascade(session: Session,
+                payload: CascadePayload, cascade_list: CascadeListPayload):
     cascade = Cascade(id=None, name=payload['name'], type=payload['type'])
     if cascade_list:
         for cl in cascade_list:
@@ -23,7 +23,7 @@ def add_cascade(session: Session, payload: CascadePayload):
                                 name=cl['name'],
                                 path=cl['path'],
                                 level=cl['level'])
-            cascade.cascade_list.append(clist)
+            cascade.cascades.append(clist)
     session.add(cascade)
     session.commit()
     session.flush()
