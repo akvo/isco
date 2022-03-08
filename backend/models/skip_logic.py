@@ -6,7 +6,6 @@ from typing import Optional
 from typing_extensions import TypedDict
 from sqlalchemy import Enum, Integer, String
 from sqlalchemy import Column, ForeignKey
-# from sqlalchemy.orm import relationship
 from db.connection import Base
 from pydantic import BaseModel
 
@@ -55,7 +54,6 @@ class SkipLogic(Base):
     operator = Column(Enum(OperatorType))
     value = Column(String)
     type = Column(Enum(QuestionType))
-    # question = relationship("Question", backref="skip_logic")
 
     def __init__(self, id: Optional[int], question: int, dependent_to: int,
                  operator: OperatorType, value: str, type: QuestionType):

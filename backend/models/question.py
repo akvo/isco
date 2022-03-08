@@ -11,7 +11,7 @@ from sqlalchemy import Boolean, Enum, ForeignKey
 from sqlalchemy.ext.mutable import MutableDict
 from sqlalchemy.orm import relationship, backref
 from models.option import OptionBase
-# from models.skip_logic import SkipLogicBase
+from models.skip_logic import SkipLogicBase
 import sqlalchemy.dialects.postgresql as pg
 from datetime import datetime
 
@@ -95,7 +95,7 @@ class QuestionDict(TypedDict):
     cascade: Optional[int] = None
     repeating_objects: Optional[List[RepeatingObjectDict]] = None
     options: Optional[List[OptionBase]] = []
-    # skip_logic: Optional[List[SkipLogicBase]] = []
+    skip_logic: Optional[List[SkipLogicBase]] = []
 
 
 class Question(Base):
@@ -119,11 +119,15 @@ class Question(Base):
     repeating_objects = Column(pg.ARRAY(pg.JSONB), nullable=True)
     created = Column(DateTime, default=datetime.utcnow)
     options = relationship("Option",
+                           primaryjoin="Option.question==Question.id",
                            cascade="all, delete",
                            passive_deletes=True,
-                           backref="question_detail")
-    cascades = relationship("Cascade", backref=backref(
-        "question", uselist=False))
+                           backref="question_option")
+    skip_logic = relationship("SkipLogic",
+                              primaryjoin="SkipLogic.question==Question.id",
+                              backref="question_skip_logic")
+    cascades = relationship("Cascade",
+                            backref=backref("question", uselist=False))
 
     def __init__(self, id: Optional[int], name: str, form: int,
                  question_group: int, translations: Optional[List[dict]],
@@ -176,6 +180,7 @@ class Question(Base):
             "cascade": self.cascade,
             "repeating_objects": self.repeating_objects,
             "options": self.options,
+            "skip_logic": self.skip_logic
         }
 
 
@@ -198,7 +203,7 @@ class QuestionBase(BaseModel):
     cascade: Optional[int] = None
     repeating_objects: Optional[List[RepeatingObjectDict]] = None
     options: Optional[List[OptionBase]] = []
-    # skip_logic: Optional[List[SkipLogicBase]] = []
+    skip_logic: Optional[List[SkipLogicBase]] = []
 
     class Config:
         orm_mode = True

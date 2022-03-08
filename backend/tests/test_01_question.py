@@ -63,6 +63,7 @@ class TestQuestionRoutes():
             "question_group": 1,
             "repeating_objects": None,
             "rule": None,
+            "skip_logic": [],
             "tooltip": 'Question 1 tooltip',
             "tooltip_translations": None,
             "translations": None,
@@ -118,6 +119,7 @@ class TestQuestionRoutes():
             "question_group": 1,
             "repeating_objects": None,
             "rule": None,
+            "skip_logic": [],
             "tooltip": 'Question 1 tooltip',
             "tooltip_translations": [
                 {"language": "id", "text": "Keterangan Pertanyaan 1"}],
@@ -349,6 +351,7 @@ class TestQuestionRoutes():
             "question_group": 1,
             "repeating_objects": None,
             "rule": None,
+            "skip_logic": [],
             "tooltip": 'Question 2 tooltip',
             "tooltip_translations": None,
             "translations": None,
