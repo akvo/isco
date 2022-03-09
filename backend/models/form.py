@@ -10,6 +10,7 @@ import sqlalchemy.dialects.postgresql as pg
 from db.connection import Base
 from datetime import datetime
 from models.question_group import QuestionGroupBase
+from models.question_group import QuestionGroupJson
 
 
 class FormPayload(TypedDict):
@@ -58,6 +59,16 @@ class FormBase(BaseModel):
     name: str
     languages: Optional[List[str]] = None
     question_group: Optional[List[QuestionGroupBase]] = []
+
+    class Config:
+        orm_mode = True
+
+
+class FormJson(BaseModel):
+    id: int
+    name: str
+    languages: Optional[List[str]] = None
+    question_group: Optional[List[QuestionGroupJson]] = []
 
     class Config:
         orm_mode = True

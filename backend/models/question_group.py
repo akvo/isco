@@ -10,7 +10,7 @@ from sqlalchemy.orm import relationship
 import sqlalchemy.dialects.postgresql as pg
 from db.connection import Base
 from datetime import datetime
-from models.question import QuestionBase
+from models.question import QuestionBase, QuestionJson
 
 
 class QuestionGroupPayload(TypedDict):
@@ -78,6 +78,17 @@ class QuestionGroupBase(BaseModel):
     order: Optional[int] = None
     repeat: bool
     question: Optional[List[QuestionBase]] = []
+
+    class Config:
+        orm_mode = True
+
+
+class QuestionGroupJson(BaseModel):
+    name: str
+    translations: Optional[List[dict]] = None
+    order: Optional[int] = None
+    repeat: bool
+    question: Optional[List[QuestionJson]] = []
 
     class Config:
         orm_mode = True

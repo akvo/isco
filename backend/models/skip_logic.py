@@ -81,7 +81,6 @@ class SkipLogic(Base):
 
 
 class SkipLogicBase(BaseModel):
-    id: int
     question: int
     dependent_to: int
     operator: OperatorType

@@ -13,6 +13,7 @@ from sqlalchemy.orm import relationship, backref
 from models.skip_logic import SkipLogicBase
 from models.question_member_access import QuestionMemberAccessBase
 from models.question_isco_access import QuestionIscoAccessBase
+from models.option import OptionBase
 import sqlalchemy.dialects.postgresql as pg
 from datetime import datetime
 
@@ -201,9 +202,33 @@ class QuestionBase(BaseModel):
     isco_access: Optional[List[QuestionIscoAccessBase]] = []
     cascade: Optional[int] = None
     repeating_objects: Optional[List[RepeatingObjectDict]] = None
-    option: Optional[List] = []
+    option: Optional[List[OptionBase]] = []
     skip_logic: Optional[List[SkipLogicBase]] = []
     order: Optional[int] = None
+
+    class Config:
+        orm_mode = True
+
+
+class QuestionJson(BaseModel):
+    id: int
+    name: str
+    translations: Optional[List[dict]] = None
+    mandatory: bool
+    order: Optional[int] = None
+    datapoint_name: bool
+    variable_name: Optional[str] = None
+    type: QuestionType
+    personal_data: bool
+    rule: Optional[RuleDict] = None
+    tooltip: Optional[str] = None
+    tooltip_translations: Optional[List[dict]] = None
+    member_access: Optional[List[QuestionMemberAccessBase]] = []
+    isco_access: Optional[List[QuestionIscoAccessBase]] = []
+    cascade: Optional[int] = None
+    repeating_objects: Optional[List[RepeatingObjectDict]] = None
+    option: Optional[List[OptionBase]] = []
+    skip_logic: Optional[List[SkipLogicBase]] = []
 
     class Config:
         orm_mode = True
