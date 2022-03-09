@@ -8,7 +8,16 @@ from sqlalchemy import Column, Integer, ForeignKey, String, Boolean, DateTime
 from sqlalchemy.orm import relationship
 from db.connection import Base
 from models.user import UserBase
+from models.organisation_isco import OrganisationIscoBase
 from datetime import datetime
+
+
+class OrganisationPayload(TypedDict):
+    parent: Optional[int] = None
+    code: Optional[str] = None
+    name: str
+    level: int
+    active: Optional[bool] = True
 
 
 class OrganisationDict(TypedDict):
@@ -16,10 +25,11 @@ class OrganisationDict(TypedDict):
     parent: Optional[int] = None
     code: Optional[str] = None
     name: str
-    level: str
+    level: int
     active: bool
     children: Optional[List] = []
     users: List[UserBase]
+    isco_type: Optional[List[OrganisationIscoBase]] = None
 
 
 class Organisation(Base):
@@ -33,10 +43,14 @@ class Organisation(Base):
     created = Column(DateTime, default=datetime.utcnow)
     children = relationship("Organisation")
     parent_detail = relationship("Organisation", remote_side=[id])
-    users = relationship("User",
-                         cascade="all, delete",
-                         passive_deletes=True,
-                         backref="organisation_detail")
+    users = relationship(
+        "User",
+        primaryjoin="User.organisation==Organisation.id",
+        backref="organisation_detail")
+    isco_type = relationship(
+        "OrganisationIsco",
+        primaryjoin="OrganisationIsco.organisation==Organisation.id",
+        backref="organisation_isco_detail")
 
     def __init__(self, parent: int, name: str):
         self.parent = parent
@@ -82,7 +96,7 @@ class OrganisationBase(BaseModel):
     parent: Optional[int] = None
     code: Optional[str] = None
     name: str
-    level: Optional[int] = 0
+    level: int
     active: Optional[bool] = True
 
     class Config:
