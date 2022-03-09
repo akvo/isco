@@ -65,7 +65,8 @@ class QuestionGroup(Base):
             "name": self.name,
             "translations": self.translations,
             "order": self.order,
-            "repeat": self.repeat
+            "repeat": self.repeat,
+            "question": self.question
         }
 
 

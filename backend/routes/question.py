@@ -14,7 +14,7 @@ question_route = APIRouter()
 
 
 @question_route.post("/question",
-                     response_model=QuestionDict,
+                     response_model=QuestionBase,
                      summary="add new question",
                      name="question:create",
                      tags=["Question"])

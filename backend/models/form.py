@@ -49,6 +49,7 @@ class Form(Base):
             "id": self.id,
             "name": self.name,
             "languages": self.languages,
+            "question_group": self.question_group
         }
 
 

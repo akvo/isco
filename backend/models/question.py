@@ -78,12 +78,8 @@ class QuestionDict(TypedDict):
     rule: Optional[RuleDict] = None
     tooltip: Optional[str] = None
     tooltip_translations: Optional[List[dict]] = None
-    member_access: Optional[List[QuestionMemberAccessBase]] = []
-    isco_access: Optional[List[QuestionIscoAccessBase]] = []
     cascade: Optional[int] = None
     repeating_objects: Optional[List[RepeatingObjectDict]] = None
-    option: Optional[List] = []
-    skip_logic: Optional[List[SkipLogicBase]] = []
     order: Optional[int] = None
 
 
