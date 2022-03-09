@@ -6,9 +6,11 @@ from models.option import OptionDict, OptionPayload
 
 
 def add_option(session: Session, payload: OptionPayload):
-    option = Option(id=None, code=payload['code'],
+    option = Option(id=None,
+                    code=payload['code'],
                     name=payload['name'],
                     question=payload['question'],
+                    order=payload['order'],
                     translations=payload['translations'])
     session.add(option)
     session.commit()
@@ -35,6 +37,7 @@ def update_option(session: Session,
     option = get_option_by_id(session=session, id=id)
     option.code = payload['code']
     option.name = payload['name']
+    option.order = payload['order']
     option.translations = payload['translations']
     session.commit()
     session.flush()

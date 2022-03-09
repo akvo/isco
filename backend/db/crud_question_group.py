@@ -7,9 +7,23 @@ from models.question_group import QuestionGroup, QuestionGroupBase
 
 def add_question_group(session: Session,
                        payload: QuestionGroupPayload) -> QuestionGroupDict:
+    last_question_group = session.query(QuestionGroup).filter(
+        QuestionGroup.form == payload['form']).order_by(
+            QuestionGroup.order.desc()).first()
+    if last_question_group:
+        last_question_group = last_question_group.order + 1
+    else:
+        last_question_group = 1
+
+    if "order" in payload:
+        order = payload['order']
+        if order:
+            last_question_group = order
+
     question_group = QuestionGroup(id=None,
                                    name=payload['name'],
                                    form=payload['form'],
+                                   order=last_question_group,
                                    translations=payload['translations'],
                                    repeat=payload['repeat'])
     session.add(question_group)
@@ -38,6 +52,7 @@ def update_question_group(session: Session, id: int,
     question_group = get_question_group_by_id(session=session, id=id)
     question_group.form = payload['form']
     question_group.name = payload['name']
+    question_group.order = payload['order']
     question_group.translations = payload['translations']
     question_group.repeat = payload['repeat']
     session.commit()

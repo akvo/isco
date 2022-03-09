@@ -1,5 +1,6 @@
 from fastapi import HTTPException, status
 from typing import List, Optional
+from sqlalchemy import and_
 from sqlalchemy.orm import Session
 from models.question import Question, QuestionBase
 from models.question import QuestionDict, QuestionPayload
@@ -20,6 +21,20 @@ def add_question(session: Session,
                      List[QuestionIscoAccessPayload]] = None,
                  skip_logic: Optional[
                      List[SkipLogicPayload]] = None) -> QuestionDict:
+    last_question = session.query(Question).filter(
+        and_(Question.form == payload['form'],
+             Question.question_group == payload['question_group'])).order_by(
+                 Question.order.desc()).first()
+    if last_question:
+        last_question = last_question.order + 1
+    else:
+        last_question = 1
+
+    if "order" in payload:
+        order = payload['order']
+        if order:
+            last_question = order
+
     question = Question(id=None,
                         form=payload['form'],
                         question_group=payload['question_group'],
@@ -34,13 +49,15 @@ def add_question(session: Session,
                         tooltip=payload['tooltip'],
                         tooltip_translations=payload['tooltip_translations'],
                         cascade=payload['cascade'],
-                        repeating_objects=payload['repeating_objects'])
+                        repeating_objects=payload['repeating_objects'],
+                        order=last_question)
     if option:
         for o in option:
             opt = Option(id=None,
                          code=o['code'],
                          name=o['name'],
                          question=o['question'],
+                         order=o['order'],
                          translations=o['translations'])
             question.option.append(opt)
     if member_access:
@@ -105,6 +122,7 @@ def update_question(session: Session, id: int,
     question.tooltip_translations = payload['tooltip_translations']
     question.cascade = payload['cascade']
     question.repeating_objects = payload['repeating_objects']
+    question.order = payload['order']
     session.commit()
     session.flush()
     session.refresh(question)
