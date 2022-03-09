@@ -45,39 +45,11 @@ class TestOrganisationRoutes():
     @pytest.mark.asyncio
     async def test_add_organisation(self, app: FastAPI, session: Session,
                                     client: AsyncClient) -> None:
-        # create organisation parent
+        # create organisation
         org_payload = {
             "organisation": {
-                "parent": None,
-                "code": None,
-                "name": "staff Akvo",
-                "level": 0,
-                "active": True
-            }
-        }
-        res = await client.post(
-            app.url_path_for("organisation:create"), json=org_payload)
-        assert res.status_code == 200
-        res = res.json()
-        assert res == {
-            "active": True,
-            "children": [],
-            "code": None,
-            "id": 1,
-            "isco_type": [],
-            "level": 0,
-            "name": "staff Akvo",
-            "parent": None,
-            "users": []
-        }
-
-        # create organisation child
-        org_payload = {
-            "organisation": {
-                "parent": 1,
                 "code": None,
                 "name": "Akvo",
-                "level": 1,
                 "active": True
             },
             "isco_type": [
@@ -93,19 +65,16 @@ class TestOrganisationRoutes():
         res = res.json()
         assert res == {
             "active": True,
-            "children": [],
             "code": None,
-            "id": 2,
+            "id": 1,
             "isco_type": [
                 {
                     "id": 1,
                     "isco_type": 1,
-                    "organisation": 2
+                    "organisation": 1
                 }
             ],
-            "level": 1,
             "name": "Akvo",
-            "parent": 1,
             "users": []
         }
 
@@ -120,10 +89,8 @@ class TestOrganisationRoutes():
         assert res["id"] == 1
         # update organisation
         org_payload = {
-            "parent": None,
-            "code": "SA",
-            "name": "Staff Akvo",
-            "level": 0,
+            "code": "Akvo",
+            "name": "Akvo",
             "active": True
         }
         res = await client.put(
@@ -132,9 +99,7 @@ class TestOrganisationRoutes():
         res = res.json()
         assert res == {
             "active": True,
-            "code": "SA",
+            "code": "Akvo",
             "id": 1,
-            "level": 0,
-            "name": "Staff Akvo",
-            "parent": None,
+            "name": "Akvo",
         }

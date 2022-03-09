@@ -11,12 +11,9 @@ def add_organisation(session: Session,
                      payload: OrganisationPayload,
                      isco_type: Optional[List[OrganisationIscoPayload]] = None
                      ) -> OrganisationDict:
-    level = 0 if payload['level'] is None else payload['level']
     active = True if payload['active'] is None else payload['active']
-    organisation = Organisation(parent=payload['parent'],
-                                code=payload['code'],
+    organisation = Organisation(code=payload['code'],
                                 name=payload['name'],
-                                level=level,
                                 active=active)
     if isco_type:
         for it in isco_type:
@@ -53,10 +50,8 @@ def get_organisation_by_name(session: Session, name: str) -> OrganisationBase:
 def update_organisation(session: Session, id: int,
                         payload: OrganisationPayload) -> OrganisationBase:
     organisation = get_organisation_by_id(session=session, id=id)
-    organisation.parent = payload['parent']
     organisation.code = payload['code']
     organisation.name = payload['name']
-    organisation.level = payload['level']
     organisation.active = payload['active']
     session.commit()
     session.flush()
