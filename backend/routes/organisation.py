@@ -12,7 +12,7 @@ organisation_route = APIRouter()
 
 
 @organisation_route.post("/organisation",
-                         response_model=OrganisationDict,
+                         response_model=OrganisationBase,
                          summary="add new organisation",
                          name="organisation:create",
                          tags=["Organisation"])
@@ -26,7 +26,7 @@ def add(req: Request, organisation: OrganisationPayload,
 
 
 @organisation_route.get("/organisation/",
-                        response_model=List[OrganisationBase],
+                        response_model=List[OrganisationDict],
                         summary="get all organisations",
                         name="organisation:get_all",
                         tags=["Organisation"])
@@ -36,7 +36,7 @@ def get(req: Request, session: Session = Depends(get_session)):
 
 
 @organisation_route.get("/organisation/{id:path}",
-                        response_model=OrganisationDict,
+                        response_model=OrganisationBase,
                         summary="get organisation by id",
                         name="organisation:get_by_id",
                         tags=["Organisation"])
@@ -46,7 +46,7 @@ def get_by_id(req: Request, id: int, session: Session = Depends(get_session)):
 
 
 @organisation_route.put("/organisation/{id:path}",
-                        response_model=OrganisationBase,
+                        response_model=OrganisationDict,
                         summary="update organisation",
                         name="organisation:put",
                         tags=["Organisation"])

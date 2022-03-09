@@ -27,9 +27,6 @@ class OrganisationDict(TypedDict):
     name: str
     level: int
     active: bool
-    children: Optional[List] = []
-    users: Optional[List[UserBase]] = []
-    isco_type: Optional[List[OrganisationIscoBase]] = []
 
 
 class Organisation(Base):
@@ -103,7 +100,10 @@ class OrganisationBase(BaseModel):
     code: Optional[str] = None
     name: str
     level: int
-    active: Optional[bool] = True
+    active: bool
+    children: Optional[List] = []
+    users: Optional[List[UserBase]] = []
+    isco_type: Optional[List[OrganisationIscoBase]] = []
 
     class Config:
         orm_mode = True
