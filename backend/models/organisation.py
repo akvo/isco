@@ -28,8 +28,8 @@ class OrganisationDict(TypedDict):
     level: int
     active: bool
     children: Optional[List] = []
-    users: List[UserBase]
-    isco_type: Optional[List[OrganisationIscoBase]] = None
+    users: Optional[List[UserBase]] = []
+    isco_type: Optional[List[OrganisationIscoBase]] = []
 
 
 class Organisation(Base):

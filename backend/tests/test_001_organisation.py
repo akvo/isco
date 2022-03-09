@@ -108,3 +108,33 @@ class TestOrganisationRoutes():
             "parent": 1,
             "users": []
         }
+
+    @pytest.mark.asyncio
+    async def test_update_organisation(self, app: FastAPI, session: Session,
+                                       client: AsyncClient) -> None:
+        # get organisation
+        res = await client.get(
+            app.url_path_for("organisation:get_by_id", id=1))
+        assert res.status_code == 200
+        res = res.json()
+        assert res["id"] == 1
+        # update organisation
+        org_payload = {
+            "parent": None,
+            "code": "SA",
+            "name": "Staff Akvo",
+            "level": 0,
+            "active": True
+        }
+        res = await client.put(
+            app.url_path_for("organisation:put", id=1), json=org_payload)
+        assert res.status_code == 200
+        res = res.json()
+        assert res == {
+            "active": True,
+            "code": "SA",
+            "id": 1,
+            "level": 0,
+            "name": "Staff Akvo",
+            "parent": None,
+        }
