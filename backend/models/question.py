@@ -61,6 +61,7 @@ class QuestionPayload(TypedDict):
     tooltip_translations: Optional[List[dict]] = None
     cascade: Optional[int] = None
     repeating_objects: Optional[List[RepeatingObjectDict]] = None
+    order: Optional[int] = None
 
 
 class QuestionDict(TypedDict):
@@ -83,6 +84,7 @@ class QuestionDict(TypedDict):
     repeating_objects: Optional[List[RepeatingObjectDict]] = None
     option: Optional[List] = []
     skip_logic: Optional[List[SkipLogicBase]] = []
+    order: Optional[int] = None
 
 
 class Question(Base):
@@ -103,6 +105,7 @@ class Question(Base):
     cascade = Column(Integer, ForeignKey('cascade.id'), nullable=True)
     repeating_objects = Column(pg.ARRAY(pg.JSONB), nullable=True)
     created = Column(DateTime, default=datetime.utcnow)
+    order = Column(Integer, nullable=True)
     member_access = relationship(
         "QuestionMemberAccess",
         primaryjoin="QuestionMemberAccess.question==Question.id",
@@ -136,7 +139,8 @@ class Question(Base):
                  personal_data: Optional[bool], rule: Optional[RuleDict],
                  tooltip: Optional[str], cascade: Optional[int],
                  tooltip_translations: Optional[List[dict]],
-                 repeating_objects: Optional[List[RepeatingObjectDict]]):
+                 repeating_objects: Optional[List[RepeatingObjectDict]],
+                 order: Optional[int]):
         self.id = id
         self.form = form
         self.question_group = question_group
@@ -152,6 +156,7 @@ class Question(Base):
         self.tooltip_translations = tooltip_translations
         self.cascade = cascade
         self.repeating_objects = repeating_objects
+        self.order = order
 
     def __repr__(self) -> int:
         return f"<Question {self.id}>"
@@ -177,7 +182,8 @@ class Question(Base):
             "cascade": self.cascade,
             "repeating_objects": self.repeating_objects,
             "option": self.option,
-            "skip_logic": self.skip_logic
+            "skip_logic": self.skip_logic,
+            "order": self.order
         }
 
 
@@ -201,6 +207,7 @@ class QuestionBase(BaseModel):
     repeating_objects: Optional[List[RepeatingObjectDict]] = None
     option: Optional[List] = []
     skip_logic: Optional[List[SkipLogicBase]] = []
+    order: Optional[int] = None
 
     class Config:
         orm_mode = True

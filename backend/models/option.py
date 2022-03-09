@@ -14,6 +14,7 @@ class OptionPayload(TypedDict):
     name: str
     question: Optional[int] = None
     translations: Optional[List[dict]] = None
+    order: Optional[int] = None
 
 
 class OptionDict(TypedDict):
@@ -21,6 +22,7 @@ class OptionDict(TypedDict):
     code: Optional[str] = None
     name: str
     translations: Optional[List[dict]] = None
+    order: Optional[int] = None
 
 
 class Option(Base):
@@ -30,14 +32,17 @@ class Option(Base):
     code = Column(String, nullable=True)
     name = Column(String)
     translations = Column(pg.ARRAY(pg.JSONB), nullable=True)
+    order = Column(Integer, nullable=True)
 
     def __init__(self, id: Optional[int], code: Optional[str], name: str,
-                 question: int, translations: Optional[List[dict]]):
+                 question: int, translations: Optional[List[dict]],
+                 order: Optional[int]):
         self.id = id
         self.code = code
         self.name = name
         self.translations = translations
         self.question = question
+        self.order = order
 
     def __repr__(self) -> int:
         return f"<Option {self.id}>"
@@ -48,7 +53,8 @@ class Option(Base):
             "id": self.id,
             "code": self.code,
             "name": self.name,
-            "translations": self.translations
+            "translations": self.translations,
+            "order": self.order
         }
 
 
@@ -57,3 +63,4 @@ class OptionBase(BaseModel):
     code: Optional[str] = None
     name: str
     translations: Optional[List[dict]] = None
+    order: Optional[int] = None

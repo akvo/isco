@@ -17,6 +17,7 @@ class QuestionGroupPayload(TypedDict):
     form: int
     name: str
     translations: Optional[List[dict]] = None
+    order: Optional[int] = None
     repeat: Optional[bool] = None
 
 
@@ -25,6 +26,7 @@ class QuestionGroupDict(TypedDict):
     form: int
     name: str
     translations: Optional[List[dict]] = None
+    order: Optional[int] = None
     repeat: bool
 
 
@@ -35,6 +37,7 @@ class QuestionGroup(Base):
     name = Column(String)
     translations = Column(pg.ARRAY(pg.JSONB), nullable=True)
     repeat = Column(Boolean, default=False)
+    order = Column(Integer, nullable=True)
     created = Column(DateTime, default=datetime.utcnow)
     question = relationship("Question",
                             cascade="all, delete",
@@ -43,11 +46,12 @@ class QuestionGroup(Base):
 
     def __init__(self, id: Optional[int], form: int, name: str,
                  translations: Optional[List[dict]],
-                 repeat: Optional[bool]):
+                 repeat: Optional[bool], order: Optional[int]):
         self.id = id
         self.form = form
         self.name = name
         self.translations = translations
+        self.order = order
         self.repeat = repeat
 
     def __repr__(self) -> int:
@@ -60,6 +64,7 @@ class QuestionGroup(Base):
             "form": self.form,
             "name": self.name,
             "translations": self.translations,
+            "order": self.order,
             "repeat": self.repeat
         }
 
@@ -69,6 +74,7 @@ class QuestionGroupBase(BaseModel):
     form: int
     name: str
     translations: Optional[List[dict]] = None
+    order: Optional[int] = None
     repeat: bool
     question: Optional[List[QuestionBase]] = []
 
