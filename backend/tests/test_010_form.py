@@ -50,12 +50,14 @@ class TestFormRoutes():
             json={"form": 1,
                   "name": "Question Group 1",
                   "translations": None,
-                  "repeat": False})
+                  "repeat": False,
+                  "order": None})
         assert res.status_code == 200
         res = res.json()
         assert res == {"id": 1,
                        "form": 1,
                        "name": "Question Group 1",
+                       "order": 1,
                        "repeat": False,
                        "translations": None}
 
@@ -75,13 +77,15 @@ class TestFormRoutes():
                   "name": "Question Group 1",
                   "translations": [
                       {"language": "id", "text": "Kelompok Pertanyaan 1"}],
-                  "repeat": False})
+                  "repeat": False,
+                  "order": 1})
         assert res.status_code == 200
         res = res.json()
         assert res == {"id": 1,
                        "form": 1,
                        "name": "Question Group 1",
                        "repeat": False,
+                       "order": 1,
                        "translations": [{
                            "language": "id",
                            "text": "Kelompok Pertanyaan 1"

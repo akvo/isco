@@ -43,6 +43,7 @@ class TestQuestionRoutes():
                 "tooltip_translations": None,
                 "cascade": None,
                 "repeating_objects": None,
+                "order": None
             }
         }
         res = await client.post(
@@ -59,6 +60,7 @@ class TestQuestionRoutes():
             "member_access": [],
             "name": 'Question 1',
             "option": [],
+            "order": 1,
             "personal_data": False,
             "question_group": 1,
             "repeating_objects": None,
@@ -98,6 +100,7 @@ class TestQuestionRoutes():
                 {"language": "id", "text": "Keterangan Pertanyaan 1"}],
             "cascade": None,
             "repeating_objects": None,
+            "order": 1,
         }
         res = await client.put(
             app.url_path_for("question:put", id=1), json=question_payload)
@@ -112,6 +115,7 @@ class TestQuestionRoutes():
             "mandatory": True,
             "member_access": [],
             "name": 'Question 1',
+            "order": 1,
             "option": [],
             "personal_data": False,
             "question_group": 1,
@@ -140,7 +144,8 @@ class TestQuestionRoutes():
             "code": None,
             "name": "Option 1",
             "translations": None,
-            "question": 1
+            "question": 1,
+            "order": None
         }
         res = await client.post(
             app.url_path_for("option:create"), json=option_payload)
@@ -150,6 +155,7 @@ class TestQuestionRoutes():
             "code": None,
             "id": 1,
             "name": "Option 1",
+            "order": None,
             "translations": None
         }
 
@@ -167,7 +173,8 @@ class TestQuestionRoutes():
             "name": "Option 1",
             "translations": [
                 {"language": "id", "text": "Pilihan 1"}],
-            "question": 1
+            "question": 1,
+            "order": 1,
         }
         res = await client.put(
             app.url_path_for("option:put", id=1), json=option_payload)
@@ -177,6 +184,7 @@ class TestQuestionRoutes():
             "code": "opt1",
             "id": 1,
             "name": "Option 1",
+            "order": 1,
             "translations": [
                 {"language": "id", "text": "Pilihan 1"}]
         }
@@ -324,6 +332,7 @@ class TestQuestionRoutes():
                 "tooltip_translations": None,
                 "cascade": None,
                 "repeating_objects": None,
+                "order": None,
             }
         }
         res = await client.post(
@@ -339,6 +348,7 @@ class TestQuestionRoutes():
             "mandatory": True,
             "member_access": [],
             "name": 'Question 2',
+            "order": 2,
             "option": [],
             "personal_data": False,
             "question_group": 1,
@@ -411,18 +421,21 @@ class TestQuestionRoutes():
                 "tooltip_translations": None,
                 "cascade": None,
                 "repeating_objects": None,
+                "order": None
             },
             "option": [
                 {
                     "code": None,
                     "name": "Male",
                     "question": None,
+                    "order": 1,
                     "translations": None
                 },
                 {
                     "code": None,
                     "name": "Female",
                     "question": None,
+                    "order": 2,
                     "translations": None
                 }
             ],
@@ -487,6 +500,7 @@ class TestQuestionRoutes():
                     "code": None,
                     "id": 2,
                     "name": "Male",
+                    "order": 1,
                     "question": 3,
                     "translations": None
                 },
@@ -494,10 +508,12 @@ class TestQuestionRoutes():
                     "code": None,
                     "id": 3,
                     "name": "Female",
+                    "order": 2,
                     "question": 3,
                     "translations": None
                 }
             ],
+            "order": 3,
             "personal_data": False,
             "question_group": 1,
             "repeating_objects": None,
