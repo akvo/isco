@@ -27,17 +27,17 @@ def upgrade():
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint('question', 'isco_type'),
         sa.ForeignKeyConstraint(['question'], ['question.id'],
-                                name='question_iscostraint',
+                                name='question_isco_access_constraint',
                                 ondelete='CASCADE'),
         sa.ForeignKeyConstraint(['isco_type'], ['isco_type.id'],
-                                name='isco_type_member_access_constraint',
+                                name='isco_type_isco_access_constraint',
                                 ondelete='CASCADE')
     )
-    op.create_index(op.f('ix_question_iscocess_id'),
+    op.create_index(op.f('ix_question_isco_access_id'),
                     'question_isco_access', ['id'], unique=True)
 
 
 def downgrade():
-    op.drop_index(op.f('ix_question_iscocess_id'),
+    op.drop_index(op.f('ix_question_isco_access_id'),
                   table_name='question_isco_access')
     op.drop_table('question_isco_access')
