@@ -5,6 +5,7 @@ from typing_extensions import TypedDict
 from typing import Optional
 from pydantic import BaseModel
 from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
 from db.connection import Base
 
 
@@ -21,6 +22,10 @@ class MemberType(Base):
     __tablename__ = "member_type"
     id = Column(Integer, primary_key=True, index=True, nullable=True)
     name = Column(String)
+    organisation = relationship(
+        "Organisation",
+        primaryjoin="Organisation.member_type==MemberType.id",
+        backref="member_detail")
 
     def __init__(self, id: Optional[int], name: str):
         self.id = id

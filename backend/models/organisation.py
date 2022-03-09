@@ -4,7 +4,8 @@
 from typing import Optional, List
 from pydantic import BaseModel
 from typing_extensions import TypedDict
-from sqlalchemy import Column, Integer, String, Boolean, DateTime
+from sqlalchemy import Column, Integer, String
+from sqlalchemy import ForeignKey, Boolean, DateTime
 from sqlalchemy.orm import relationship
 from db.connection import Base
 from models.user import UserBase
@@ -16,6 +17,7 @@ class OrganisationPayload(TypedDict):
     code: Optional[str] = None
     name: str
     active: Optional[bool] = True
+    member_type = int
 
 
 class OrganisationDict(TypedDict):
@@ -23,6 +25,7 @@ class OrganisationDict(TypedDict):
     code: Optional[str] = None
     name: str
     active: bool
+    member_type = int
 
 
 class Organisation(Base):
@@ -32,6 +35,7 @@ class Organisation(Base):
     name = Column(String)
     active = Column(Boolean)
     created = Column(DateTime, default=datetime.utcnow)
+    member_type = Column(Integer, ForeignKey('member_type.id'))
     users = relationship(
         "User",
         primaryjoin="User.organisation==Organisation.id",
@@ -41,10 +45,12 @@ class Organisation(Base):
         primaryjoin="OrganisationIsco.organisation==Organisation.id",
         backref="organisation_isco_detail")
 
-    def __init__(self, name: str, code: Optional[str], active: Optional[bool]):
+    def __init__(self, name: str, code: Optional[str],
+                 active: Optional[bool], member_type: int):
         self.name = name
         self.code = code
         self.active = active
+        self.member_type = member_type
 
     def __repr__(self) -> int:
         return f"<Organisation {self.id}>"
@@ -57,16 +63,8 @@ class Organisation(Base):
             "name": self.name,
             "active": self.active,
             "users": self.users,
-            "isco_type": self.isco_type
-        }
-
-    @property
-    def with_parent_name(self):
-        return {
-            "id": self.id,
-            "code": self.code,
-            "name": self.name,
-            "active": self.active
+            "isco_type": self.isco_type,
+            "member_type": self.member_type
         }
 
 
@@ -75,6 +73,7 @@ class OrganisationBase(BaseModel):
     code: Optional[str] = None
     name: str
     active: bool
+    member_type = int
     users: Optional[List[UserBase]] = []
     isco_type: Optional[List[OrganisationIscoBase]] = []
 
