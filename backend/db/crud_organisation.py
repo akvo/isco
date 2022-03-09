@@ -20,7 +20,8 @@ def add_organisation(session: Session,
                                 active=active)
     if isco_type:
         for it in isco_type:
-            isco = OrganisationIsco(organisation=it['organisation'],
+            isco = OrganisationIsco(id=None,
+                                    organisation=it['organisation'],
                                     isco_type=it['isco_type'])
             organisation.isco_type.append(isco)
     session.add(organisation)

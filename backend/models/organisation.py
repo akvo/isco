@@ -52,9 +52,14 @@ class Organisation(Base):
         primaryjoin="OrganisationIsco.organisation==Organisation.id",
         backref="organisation_isco_detail")
 
-    def __init__(self, parent: int, name: str):
+    def __init__(self, parent: Optional[int], name: str,
+                 code: Optional[str], level: Optional[int],
+                 active: Optional[bool]):
         self.parent = parent
         self.name = name
+        self.code = code
+        self.level = level
+        self.active = active
 
     def __repr__(self) -> int:
         return f"<Organisation {self.id}>"
@@ -69,7 +74,8 @@ class Organisation(Base):
             "level": self.level,
             "active": self.active,
             "children": self.children,
-            "users": self.users
+            "users": self.users,
+            "isco_type": self.isco_type
         }
 
     @property
