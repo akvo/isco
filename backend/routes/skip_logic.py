@@ -4,7 +4,7 @@ from typing import List
 from sqlalchemy.orm import Session
 import db.crud_skip_logic as crud
 from db.connection import get_session
-from models.skip_logic import SkipLogicBase, SkipLogicDict, SkipLogicPayload
+from models.skip_logic import SkipLogicDict, SkipLogicPayload
 
 skip_logic_route = APIRouter()
 
@@ -31,7 +31,7 @@ def get(req: Request, session: Session = Depends(get_session)):
 
 
 @skip_logic_route.get("/skip_logic/{id:path}",
-                      response_model=SkipLogicBase,
+                      response_model=SkipLogicDict,
                       summary="get skip logic by id",
                       name="skip_logic:get_by_id",
                       tags=["Skip Logic"])

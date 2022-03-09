@@ -4,7 +4,7 @@ from typing import List
 from sqlalchemy.orm import Session
 import db.crud_option as crud
 from db.connection import get_session
-from models.option import OptionBase, OptionDict, OptionPayload
+from models.option import OptionDict, OptionPayload
 
 option_route = APIRouter()
 
@@ -31,7 +31,7 @@ def get(req: Request, session: Session = Depends(get_session)):
 
 
 @option_route.get("/option/{id:path}",
-                  response_model=OptionBase,
+                  response_model=OptionDict,
                   summary="get option by id",
                   name="option:get_by_id",
                   tags=["Option"])

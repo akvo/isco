@@ -4,7 +4,8 @@ from typing import List
 from sqlalchemy.orm import Session
 import db.crud_form as crud
 from db.connection import get_session
-from models.form import FormBase, FormDict, FormPayload
+from models.form import FormBase, FormDict
+from models.form import FormPayload, FormJson
 
 form_route = APIRouter()
 
@@ -62,3 +63,14 @@ def update(req: Request, id: int, payload: FormPayload,
 def delete(req: Request, id: int, session: Session = Depends(get_session)):
     crud.delete_form(session=session, id=id)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)
+
+
+@form_route.get("/webform/{form_id:path}",
+                response_model=FormJson,
+                summary="load webform json by form id",
+                name="form:get_webform_by_id",
+                tags=["Form"])
+def get_webform_by_id(req: Request, form_id: int,
+                      session: Session = Depends(get_session)):
+    form = crud.get_form_by_id(session=session, id=form_id)
+    return form.serialize
