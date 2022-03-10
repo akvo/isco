@@ -17,7 +17,7 @@ class OrganisationPayload(TypedDict):
     code: Optional[str] = None
     name: str
     active: Optional[bool] = True
-    member_type = int
+    member_type: int
 
 
 class OrganisationDict(TypedDict):
@@ -25,7 +25,7 @@ class OrganisationDict(TypedDict):
     code: Optional[str] = None
     name: str
     active: bool
-    member_type = int
+    member_type: int
 
 
 class Organisation(Base):
@@ -73,7 +73,7 @@ class OrganisationBase(BaseModel):
     code: Optional[str] = None
     name: str
     active: bool
-    member_type = int
+    member_type: int
     users: Optional[List[UserBase]] = []
     isco_type: Optional[List[OrganisationIscoBase]] = []
 

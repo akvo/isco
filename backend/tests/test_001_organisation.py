@@ -50,7 +50,8 @@ class TestOrganisationRoutes():
             "organisation": {
                 "code": None,
                 "name": "Akvo",
-                "active": True
+                "active": True,
+                "member_type": 1,
             },
             "isco_type": [
                 {
@@ -74,6 +75,7 @@ class TestOrganisationRoutes():
                     "organisation": 1
                 }
             ],
+            "member_type": 1,
             "name": "Akvo",
             "users": []
         }
@@ -91,7 +93,8 @@ class TestOrganisationRoutes():
         org_payload = {
             "code": "Akvo",
             "name": "Akvo",
-            "active": True
+            "active": True,
+            "member_type": 1
         }
         res = await client.put(
             app.url_path_for("organisation:put", id=1), json=org_payload)
@@ -101,5 +104,6 @@ class TestOrganisationRoutes():
             "active": True,
             "code": "Akvo",
             "id": 1,
-            "name": "Akvo",
+            "member_type": 1,
+            "name": "Akvo"
         }

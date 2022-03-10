@@ -14,6 +14,7 @@ def add_organisation(session: Session,
     active = True if payload['active'] is None else payload['active']
     organisation = Organisation(code=payload['code'],
                                 name=payload['name'],
+                                member_type=payload['member_type'],
                                 active=active)
     if isco_type:
         for it in isco_type:
@@ -52,6 +53,7 @@ def update_organisation(session: Session, id: int,
     organisation = get_organisation_by_id(session=session, id=id)
     organisation.code = payload['code']
     organisation.name = payload['name']
+    organisation.member_type = payload['member_type']
     organisation.active = payload['active']
     session.commit()
     session.flush()
