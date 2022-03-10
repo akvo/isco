@@ -1,6 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import "./style.scss";
-import { Row, Col, Typography, Table, Button, Tooltip, Space } from "antd";
+import {
+  Row,
+  Col,
+  Typography,
+  Table,
+  Button,
+  Tooltip,
+  Space,
+  Modal,
+  Form,
+  Input,
+  Select,
+} from "antd";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { RiPencilFill, RiDeleteBinFill } from "react-icons/ri";
 import { MdFileCopy } from "react-icons/md";
@@ -79,6 +91,9 @@ const columns = [
 ];
 
 const ManageSurvey = () => {
+  const [form] = Form.useForm();
+  const [isSurveyModalVisible, setIsSurveyModalVisible] = useState(false);
+
   return (
     <div id="manage-survey">
       <Row className="container bg-grey">
@@ -88,7 +103,14 @@ const ManageSurvey = () => {
           </Title>
           <Row>
             <Col span={24}>
-              <Button className="button-add" type="primary" ghost>
+              <Button
+                className="button-add"
+                type="primary"
+                ghost
+                onClick={() => {
+                  setIsSurveyModalVisible(true);
+                }}
+              >
                 New Survey
               </Button>
               <Table
@@ -112,6 +134,37 @@ const ManageSurvey = () => {
           </Row>
         </Col>
       </Row>
+
+      {/* New Survey Modal */}
+      <Modal
+        forceRender={true}
+        title={<Title level={4}>Survey Details</Title>}
+        visible={isSurveyModalVisible}
+        onOk={() => form.submit()}
+        onCancel={() => setIsSurveyModalVisible(false)}
+      >
+        <Form
+          form={form}
+          name="survey-detail"
+          onFinish={(values) => console.log(values)}
+          onFinishFailed={(values, errorFields) =>
+            console.log(values, errorFields)
+          }
+        >
+          <Form.Item
+            name="name"
+            rules={[{ required: true, message: "Please input survey name" }]}
+          >
+            <Input placeholder="Survey Name" />
+          </Form.Item>
+          <Form.Item name="description">
+            <Input.TextArea placeholder="Survey Description" rows={3} />
+          </Form.Item>
+          <Form.Item name="languages">
+            <Select placeholder="Languages" options={[]} />
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };
