@@ -12,10 +12,12 @@ body {
   letter-spacing: 0.11px;
 
   #root {
+    button.ant-btn.ant-btn-primary.ant-btn-background-ghost,
     a.ant-btn.ant-btn-primary.ant-btn-background-ghost {
       border-width: 2px;
       font-weight: 500;
       min-height: 35px;
+      border-radius: 5px;
     }
   }
 }

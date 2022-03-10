@@ -8,23 +8,21 @@ const Home = () => {
       <Row className="home-landing" align="middle" justify="center">
         <Col className="intro-text" align="middle">
           <h1>WELCOME TO THE COCOA MONITORING!</h1>
-          <p>
-            <Space direction="vertical">
-              <span>
-                Dear Participants, <br />
-                Thank you for participating in this pilot of our new monitoring
-                system. Your comments on the monitoring system are very valuable
-                for us – you can give them in the feedback section (menu above)
-                or in the comment fields in the questionnaires. Before you
-                start, please use this link to check on the data security and
-                confidentiality measures taken.
-              </span>
-              <span>
-                Thank you very much for your contribution to making the cocoa
-                sector more sustainable!
-              </span>
-            </Space>
-          </p>
+          <Space direction="vertical">
+            <p>
+              Dear Participants, <br />
+              Thank you for participating in this pilot of our new monitoring
+              system. Your comments on the monitoring system are very valuable
+              for us – you can give them in the feedback section (menu above) or
+              in the comment fields in the questionnaires. Before you start,
+              please use this link to check on the data security and
+              confidentiality measures taken.
+            </p>
+            <p>
+              Thank you very much for your contribution to making the cocoa
+              sector more sustainable!
+            </p>
+          </Space>
           <div className="start-btn-wrapper">
             <Button type="primary" size="large" to="#">
               Click here to start the survey
