@@ -1,7 +1,15 @@
 from fastapi import FastAPI, Request
+from middleware import decode_token
 from routes.organisation import organisation_route
 from routes.user import user_route
-from middleware import decode_token
+from routes.form import form_route
+from routes.question_group import question_group_route
+from routes.question import question_route
+from routes.option import option_route
+from routes.cascade import cascade_route
+from routes.skip_logic import skip_logic_route
+from routes.member_type import member_type_route
+from routes.isco_type import isco_type_route
 
 app = FastAPI(
     root_path="/api",
@@ -20,6 +28,14 @@ app = FastAPI(
 
 app.include_router(organisation_route)
 app.include_router(user_route)
+app.include_router(member_type_route)
+app.include_router(isco_type_route)
+app.include_router(form_route)
+app.include_router(question_group_route)
+app.include_router(question_route)
+app.include_router(option_route)
+app.include_router(cascade_route)
+app.include_router(skip_logic_route)
 
 
 @app.get("/", tags=["Dev"])

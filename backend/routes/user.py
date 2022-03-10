@@ -9,6 +9,7 @@ from models.user import UserDict, UserBase
 from pydantic import SecretStr
 from db import crud_user
 from middleware import get_password_hash
+from typing import List, Optional
 
 security = HTTPBearer()
 user_route = APIRouter()
@@ -55,3 +56,26 @@ def register(req: Request, payload: UserBase,
     payload.password = get_password_hash(payload.password)
     user = crud_user.add_user(session=session, payload=payload)
     return user.serialize
+
+
+@user_route.put("/user/verify_email/{id:path}",
+                response_model=UserDict,
+                summary="verify user email",
+                name="user:verify_email",
+                tags=["User"])
+def verify_email(req: Request, id: int,
+                 session: Session = Depends(get_session)):
+    user = crud_user.verify_user_email(session=session, id=id)
+    return user.serialize
+
+
+@user_route.get("/user/member/{member_type:path}",
+                response_model=Optional[List[UserDict]],
+                summary="filter user by member type",
+                name="user:filter_by_member_type",
+                tags=["User"])
+def filter_user_by_member(req: Request, member_type: int,
+                          session: Session = Depends(get_session)):
+    user = crud_user.get_user_by_member_type(session=session,
+                                             member_type=member_type)
+    return [u.serialize for u in user]

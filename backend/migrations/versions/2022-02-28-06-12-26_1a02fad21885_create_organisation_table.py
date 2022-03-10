@@ -1,7 +1,7 @@
 """create organisation table
 
 Revision ID: 1a02fad21885
-Revises: 08a12a005fd4
+Revises:
 Create Date: 2022-02-28 06:12:26.939440
 
 """
@@ -18,7 +18,8 @@ depends_on = None
 
 def upgrade():
     op.create_table(
-        'organisation', sa.Column('id', sa.Integer()),
+        'organisation',
+        sa.Column('id', sa.Integer(), nullable=False),
         sa.Column('parent', sa.Integer(), nullable=True),
         sa.Column('code', sa.String(), nullable=True),
         sa.Column('name', sa.String()),
@@ -34,4 +35,5 @@ def upgrade():
 
 
 def downgrade():
+    op.drop_index(op.f('ix_organisation_id'), table_name='organisation')
     op.drop_table('organisation')

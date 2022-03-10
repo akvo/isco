@@ -4,43 +4,53 @@
 from typing import Optional, List
 from pydantic import BaseModel
 from typing_extensions import TypedDict
-from sqlalchemy import Column, Integer, ForeignKey, String, Boolean, DateTime
+from sqlalchemy import Column, Integer, String
+from sqlalchemy import ForeignKey, Boolean, DateTime
 from sqlalchemy.orm import relationship
 from db.connection import Base
 from models.user import UserBase
+from models.organisation_isco import OrganisationIscoBase
 from datetime import datetime
+
+
+class OrganisationPayload(TypedDict):
+    code: Optional[str] = None
+    name: str
+    active: Optional[bool] = True
+    member_type: int
 
 
 class OrganisationDict(TypedDict):
     id: int
-    parent: Optional[int] = None
     code: Optional[str] = None
     name: str
-    level: str
     active: bool
-    children: Optional[List] = []
-    user: List[UserBase]
+    member_type: int
 
 
 class Organisation(Base):
     __tablename__ = "organisation"
     id = Column(Integer, primary_key=True, index=True, nullable=True)
-    parent = Column(Integer, ForeignKey('organisation.id'), nullable=True)
     code = Column(String, nullable=True)
     name = Column(String)
-    level = Column(Integer)
     active = Column(Boolean)
     created = Column(DateTime, default=datetime.utcnow)
-    children = relationship("Organisation")
-    parent_detail = relationship("Organisation", remote_side=[id])
-    user = relationship("User",
-                        cascade="all, delete",
-                        passive_deletes=True,
-                        backref="user")
+    member_type = Column(Integer, ForeignKey('member_type.id'))
+    users = relationship(
+        "User",
+        primaryjoin="User.organisation==Organisation.id",
+        backref="organisation_detail")
+    isco_type = relationship(
+        "OrganisationIsco",
+        primaryjoin="OrganisationIsco.organisation==Organisation.id",
+        backref="organisation_isco_detail")
 
-    def __init__(self, parent: int, name: str):
-        self.parent = parent
+    def __init__(self, name: str, code: Optional[str],
+                 active: Optional[bool], member_type: int):
         self.name = name
+        self.code = code
+        self.active = active
+        self.member_type = member_type
 
     def __repr__(self) -> int:
         return f"<Organisation {self.id}>"
@@ -49,45 +59,23 @@ class Organisation(Base):
     def serialize(self) -> OrganisationDict:
         return {
             "id": self.id,
-            "parent": self.parent,
             "code": self.code,
             "name": self.name,
-            "level": self.level,
             "active": self.active,
-            "children": self.children,
-            "user": self.user
-        }
-
-    @property
-    def with_parent_name(self):
-        return {
-            "id": self.id,
-            "parent": self.parent_detail.name if self.parent_detail else None,
-            "code": self.code,
-            "name": self.name,
-            "level": self.level,
-            "active": self.active
-        }
-
-    @property
-    def simplify_serialize_with_children(self):
-        return {
-            "id": self.id,
-            "children": [c.id for c in self.children]
+            "users": self.users,
+            "isco_type": self.isco_type,
+            "member_type": self.member_type
         }
 
 
 class OrganisationBase(BaseModel):
     id: int
-    parent: Optional[int] = None
     code: Optional[str] = None
     name: str
-    level: Optional[int] = 0
-    active: Optional[bool] = True
+    active: bool
+    member_type: int
+    users: Optional[List[UserBase]] = []
+    isco_type: Optional[List[OrganisationIscoBase]] = []
 
     class Config:
         orm_mode = True
-
-
-class OrganisationResponse(OrganisationBase):
-    children: List[OrganisationBase]

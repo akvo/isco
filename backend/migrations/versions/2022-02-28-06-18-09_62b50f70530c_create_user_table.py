@@ -18,7 +18,8 @@ depends_on = None
 
 def upgrade():
     op.create_table(
-        'user', sa.Column('id', sa.Integer()),
+        'user',
+        sa.Column('id', sa.Integer(), nullable=False),
         sa.Column('organisation', sa.Integer(),
                   sa.ForeignKey('organisation.id')),
         sa.Column('name', sa.String()),
@@ -32,13 +33,13 @@ def upgrade():
         sa.Column('created', sa.DateTime(), nullable=True),
         sa.PrimaryKeyConstraint('id'),
         sa.ForeignKeyConstraint(['organisation'], ['organisation.id'],
-                                name='organisation_user_constraint',
-                                ondelete='CASCADE'))
+                                name='organisation_user_constraint'))
     op.create_index(op.f('ix_user_email'), 'user', ['email'], unique=True)
     op.create_index(op.f('ix_user_id'), 'user', ['id'], unique=True)
 
 
 def downgrade():
     op.drop_index(op.f('ix_user_id'), table_name='user')
+    op.drop_index(op.f('ix_user_email'), table_name='user')
     op.drop_table('user')
     op.execute('DROP TYPE userrole')
