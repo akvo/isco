@@ -142,3 +142,12 @@ class TestOrganisationRoutes():
         assert res.status_code == 200
         res = res.json()
         assert res['email_verified'] is not None
+
+    @pytest.mark.asyncio
+    async def test_filter_user_by_member(self, app: FastAPI, session: Session,
+                                         client: AsyncClient) -> None:
+        res = await client.get(
+            app.url_path_for("user:filter_by_member_type", member_type=1))
+        assert res.status_code == 200
+        res = res.json()
+        assert len(res) > 0

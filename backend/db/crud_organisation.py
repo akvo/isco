@@ -43,6 +43,15 @@ def get_organisation_by_id(session: Session, id: int) -> OrganisationDict:
     return organisation
 
 
+def get_organisation_by_membery_type(session: Session,
+                                     member_type: int
+                                     ) -> List[OrganisationDict]:
+    organisation = session.query(
+        Organisation).filter(
+            Organisation.member_type == member_type).all()
+    return organisation
+
+
 def get_organisation_by_name(session: Session, name: str) -> OrganisationBase:
     return session.query(Organisation).filter(
         Organisation.name.ilike("%{}%".format(name.lower().strip()))).first()

@@ -2,6 +2,7 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from models.user import User, UserBase, UserDict
 from datetime import datetime
+import db.crud_organisation as crud_org
 
 
 def get_user_by_email(session: Session, email: str) -> User:
@@ -35,4 +36,14 @@ def verify_user_email(session: Session, id: int) -> UserDict:
     session.commit()
     session.flush()
     session.refresh(user)
+    return user
+
+
+def get_user_by_member_type(session: Session, member_type: int) -> UserDict:
+    organisation = crud_org.get_organisation_by_membery_type(
+        session=session, member_type=member_type)
+    org_ids = [org.id for org in organisation]
+    # filter user by org_ids
+    user = session.query(User).filter(
+        User.organisation.in_(org_ids)).all()
     return user
