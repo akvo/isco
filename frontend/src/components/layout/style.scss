@@ -1,0 +1,39 @@
+@import "../../variables";
+
+#root {
+  .header {
+    width: 100%;
+    padding: 24px 30px;
+    background-color: $white;
+    color: $black;
+    border-bottom: 0.1rem solid #eaecec;
+    margin-bottom: 0.5rem;
+    z-index: 999;
+
+    .left {
+      a {
+        color: $black;
+      }
+      .brand {
+        .title {
+          font-size: 1.25rem;
+          display: inline-block;
+          line-height: inherit;
+          white-space: nowrap;
+        }
+      }
+
+      .navigation {
+        font-size: 0.9rem;
+        font-weight: 400;
+        text-transform: uppercase;
+      }
+    }
+
+    .right {
+      font-size: 0.9rem;
+      font-weight: 400;
+      text-transform: uppercase;
+    }
+  }
+}
