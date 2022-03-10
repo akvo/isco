@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from httpx import AsyncClient
 from sqlalchemy.orm import Session
 from seeder.member_isco_type import member_values, isco_values
+from models.user import UserRole
 
 pytestmark = pytest.mark.asyncio
 sys.path.append("..")
@@ -107,3 +108,37 @@ class TestOrganisationRoutes():
             "member_type": 1,
             "name": "Akvo"
         }
+
+    @pytest.mark.asyncio
+    async def test_register_user(self, app: FastAPI, session: Session,
+                                 client: AsyncClient) -> None:
+        # create organisation
+        user_payload = {
+            "name": "John Doe",
+            "email": "mail@mail.test",
+            "phone_number": None,
+            "password": "test",
+            "role": UserRole.secretariat_admin.value,
+            "organisation": 1
+        }
+        res = await client.post(
+            app.url_path_for("user:register"), json=user_payload)
+        assert res.status_code == 200
+        res = res.json()
+        assert res == {
+            "email": "mail@mail.test",
+            "email_verified": None,
+            "id": 1,
+            "name": "John Doe",
+            "organisation": 1,
+            "role": "secretariat_admin"
+        }
+
+    @pytest.mark.asyncio
+    async def test_verify_user_email(self, app: FastAPI, session: Session,
+                                     client: AsyncClient) -> None:
+        res = await client.put(
+            app.url_path_for("user:verify_email", id=1))
+        assert res.status_code == 200
+        res = res.json()
+        assert res['email_verified'] is not None

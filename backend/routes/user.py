@@ -55,3 +55,14 @@ def register(req: Request, payload: UserBase,
     payload.password = get_password_hash(payload.password)
     user = crud_user.add_user(session=session, payload=payload)
     return user.serialize
+
+
+@user_route.put("/user/verify_email/{id:path}",
+                response_model=UserDict,
+                summary="verify user email",
+                name="user:verify_email",
+                tags=["User"])
+def verify_email(req: Request, id: int,
+                 session: Session = Depends(get_session)):
+    user = crud_user.verify_user_email(session=session, id=id)
+    return user.serialize
