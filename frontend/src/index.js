@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { BrowserRouter as Router } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import "antd/dist/antd.min.css";
-import "./index.scss";
+import "./index.scss"; // only to reset antd style
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 

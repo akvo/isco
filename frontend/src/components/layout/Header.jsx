@@ -1,9 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Row, Col, Space, Button, Menu, Dropdown } from "antd";
+import { Row, Col, Space, Menu, Dropdown } from "antd";
 import { FaUser } from "react-icons/fa";
 import { BsGearFill } from "react-icons/bs";
 import { MdLogout } from "react-icons/md";
+import { RiAdminFill } from "react-icons/ri";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Header = ({ className = "header", ...props }) => {
@@ -12,6 +13,14 @@ const Header = ({ className = "header", ...props }) => {
 
   const accountMenu = (
     <Menu className="account-dropdown-menu">
+      <Menu.Item className="account-item">
+        <Link to="#">
+          <Space align="center" size={8}>
+            <RiAdminFill />
+            ADMIN
+          </Space>
+        </Link>
+      </Menu.Item>
       <Menu.Item className="account-item">
         <Link to="#">
           <Space align="center" size={8}>

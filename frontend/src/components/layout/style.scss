@@ -35,4 +35,14 @@
       text-transform: uppercase;
     }
   }
+
+  .body {
+    // Layout body style here
+  }
+
+  .footer {
+    width: 100%;
+    padding: $padding-container-y $padding-container-x;
+    border-top: 0.1rem solid #eaecec;
+  }
 }
