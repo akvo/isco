@@ -1,0 +1,66 @@
+@import "../../variables";
+
+#root {
+  #home {
+    .home-landing {
+      position: relative;
+      height: calc(100vh - 7rem);
+      background-image: url("../../../public/images/cacao-seeds.jpg");
+      background-repeat: no-repeat;
+      background-size: cover;
+
+      .intro-text {
+        width: 80%;
+        padding: 2rem;
+        height: auto;
+        background: hsla(0, 0%, 100%, 0.8);
+        border-radius: 0.5rem;
+        border: 0.1rem solid #fff;
+        box-shadow: -0.2rem -0.2rem 10px hsla(0, 0, 45%, 0.8);
+
+        h1 {
+          text-transform: uppercase;
+          font-weight: 800;
+          font-size: 2rem;
+          color: $cacao;
+          text-shadow: 0.1rem 0.1rem 0 hsla(0, 0, 100%, 0.8);
+        }
+
+        p {
+          text-align: left;
+          font-weight: $font-weight-medium;
+        }
+
+        .start-btn-wrapper {
+          position: absolute;
+          margin-top: 0.75rem;
+          margin-left: auto;
+          margin-right: auto;
+          left: 0;
+          right: 0;
+          text-align: center;
+          button {
+            height: 45px;
+            background-color: $cacao;
+            border: 2px solid #fff;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+          }
+        }
+      }
+    }
+
+    .getting-started {
+      padding: 75px 0;
+
+      h1 {
+        color: $cacao;
+        font-size: 2rem;
+        text-transform: uppercase;
+        font-weight: 800;
+        margin-bottom: 24px;
+      }
+    }
+  }
+}
