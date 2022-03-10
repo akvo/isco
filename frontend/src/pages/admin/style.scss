@@ -1,0 +1,30 @@
+@import "../../variables";
+
+#root {
+  #admin {
+    .page-title {
+      margin: 40px 0;
+    }
+
+    .card-wrapper {
+      border-radius: 8px;
+      padding: 20px;
+
+      .ant-card-body {
+        font-size: 0.9rem;
+        p {
+          line-height: 2;
+        }
+      }
+
+      .card-footer {
+        border-top: 1px solid #f0f0f0;
+        padding-top: 20px;
+        button,
+        a {
+          float: right;
+        }
+      }
+    }
+  }
+}

@@ -5,4 +5,13 @@
 #root {
   font-family: $font-family;
   font-size: 1rem;
+
+  .container {
+    padding: $padding-container-y $padding-container-x;
+    min-height: calc(100vh - 10rem);
+  }
+
+  .bg-grey {
+    background-color: $bg-grey;
+  }
 }

@@ -1,12 +1,19 @@
 @import "../../variables";
 
 #root {
+  .layout {
+    min-width: 100vw;
+    min-height: 100vh;
+    background-color: $white;
+    display: block;
+  }
+
   .header {
     width: 100%;
     padding: $padding-container-y $padding-container-x;
     background-color: $white;
     color: $black;
-    border-bottom: 0.1rem solid #eaecec;
+    border-bottom: 0.1rem solid $border-grey;
     z-index: 999;
 
     .left {
@@ -37,12 +44,14 @@
   }
 
   .body {
-    // Layout body style here
+    font-size: 1rem;
+    color: $black;
   }
 
   .footer {
     width: 100%;
     padding: $padding-container-y $padding-container-x;
-    border-top: 0.1rem solid #eaecec;
+    border-top: 0.1rem solid $border-grey;
+    background-color: $white;
   }
 }
