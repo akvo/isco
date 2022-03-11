@@ -1,0 +1,13 @@
+@import "../../variables";
+
+#root {
+  #main-form-editor {
+    .form-editor-wrapper {
+      border-bottom: 2px solid #777777;
+
+      .ant-input {
+        width: 40%;
+      }
+    }
+  }
+}
