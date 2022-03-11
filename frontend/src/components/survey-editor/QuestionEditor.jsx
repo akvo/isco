@@ -41,19 +41,21 @@ const TranslationTab = () => {
   );
 };
 
-const QuestionMenu = ({ setIsLangActive }) => {
+const QuestionMenu = ({ activeSetting, setActiveSetting }) => {
   return (
-    <Space direction="vertical" size={1}>
+    <Space direction="vertical" size={1} className="question-menu-wrapper">
       <Button
+        className={`${activeSetting === "setting" ? "active" : ""}`}
         type="text"
         icon={<RiSettings5Fill />}
-        onClick={() => setIsLangActive(false)}
+        onClick={() => setActiveSetting("setting")}
       />
       <Button type="text" icon={<MdFileCopy />} />
       <Button
+        className={`${activeSetting === "translation" ? "active" : ""}`}
         type="text"
         icon={<MdGTranslate />}
-        onClick={() => setIsLangActive(true)}
+        onClick={() => setActiveSetting("translation")}
       />
       <Button type="text" icon={<RiDeleteBinFill />} />
     </Space>
@@ -62,7 +64,7 @@ const QuestionMenu = ({ setIsLangActive }) => {
 
 const Question = ({ form }) => {
   const [activePanel, setActivePanel] = useState(null);
-  const [isLangActive, setIsLangActive] = useState(false);
+  const [activeSetting, setActiveSetting] = useState("detail");
 
   return (
     <Row className="question-editor-wrapper">
@@ -80,26 +82,28 @@ const Question = ({ form }) => {
                         className="question-number"
                         type="text"
                         size="small"
-                        onClick={() =>
-                          setActivePanel(activePanel ? null : "q1")
-                        }
+                        onClick={() => {
+                          setActivePanel(activePanel ? null : "q1");
+                          setActiveSetting("detail");
+                        }}
                       >
                         Q1
                       </Button>
-                      {isLangActive ? (
-                        <TranslationTab />
-                      ) : (
-                        <QuestionNameInput />
-                      )}
+                      {(activeSetting === "detail" ||
+                        activeSetting === "setting") && <QuestionNameInput />}
+                      {activeSetting === "translation" && <TranslationTab />}
                     </>
                   }
                 >
                   <Row className="panel-body-wrapper">
                     <Col className="button-wrapper" style={{ width: "40px" }}>
-                      <QuestionMenu setIsLangActive={setIsLangActive} />
+                      <QuestionMenu
+                        activeSetting={activeSetting}
+                        setActiveSetting={setActiveSetting}
+                      />
                     </Col>
                     <Col className="input-wrapper">
-                      <QuestionSetting isLangActive={isLangActive} />
+                      <QuestionSetting activeSetting={activeSetting} />
                     </Col>
                   </Row>
                 </Panel>

@@ -76,7 +76,7 @@
         }
 
         .ant-form-item-label > label:after {
-          content: none;
+          content: " ";
         }
 
         .ant-collapse-content > .ant-collapse-content-box {
@@ -105,6 +105,15 @@
       }
     }
 
+    .question-menu-wrapper {
+      .active {
+        background-color: $white !important;
+        &:hover {
+          background-color: $white;
+        }
+      }
+    }
+
     .panel-body-wrapper {
       .button-wrapper {
       }
@@ -119,6 +128,18 @@
 
           .ant-input {
             margin-bottom: 12px;
+          }
+
+          &.setting {
+            padding: 0 0 20px 0;
+            .ant-tabs-nav-wrap {
+              border-bottom: 1px solid #777777;
+              padding: 0 20px;
+            }
+
+            .ant-tabs-content {
+              padding: 0 20px;
+            }
           }
         }
 

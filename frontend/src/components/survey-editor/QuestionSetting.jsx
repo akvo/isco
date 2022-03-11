@@ -1,8 +1,21 @@
 import React from "react";
-import { Row, Col, Form, Input, Checkbox, Button, Space } from "antd";
+import {
+  Row,
+  Col,
+  Form,
+  Input,
+  Checkbox,
+  Button,
+  Space,
+  Tabs,
+  Switch,
+  Select,
+} from "antd";
 import { BiRadioCircle } from "react-icons/bi";
 
-const Setting = () => {
+const { TabPane } = Tabs;
+
+const Detail = () => {
   return (
     <>
       <div className="question-setting-wrapper">
@@ -96,10 +109,84 @@ const Translation = () => {
   );
 };
 
-const QuestionSetting = ({ isLangActive }) => {
+const Setting = () => {
+  return (
+    <div className="question-setting-wrapper setting">
+      <Tabs size="small">
+        <TabPane tab="Question Options" key="question-option">
+          <>
+            <Form.Item name="variable_name">
+              <Input
+                className="bg-grey"
+                placeholder="Data Column Name (Custom ID)"
+              />
+            </Form.Item>
+            <Form.Item name="tooltip">
+              <Input placeholder="Tooltip" />
+            </Form.Item>
+            <Space size={100}>
+              <Form.Item name="mandatory">
+                <Space>
+                  Required <Switch size="small" />
+                </Space>
+              </Form.Item>
+              <Form.Item name="personal_data">
+                <Space>
+                  Personal data <Switch size="small" />
+                </Space>
+              </Form.Item>
+            </Space>
+          </>
+        </TabPane>
+        <TabPane tab="Skip Logic" key="skip-logic">
+          <Space direction="vertical">
+            <div>
+              This question will only be displayed if the following conditions
+              apply
+            </div>
+            <Form.Item name="skip_logic">
+              <Select
+                className="bg-grey"
+                placeholder="Select question from list"
+                options={[]}
+              />
+            </Form.Item>
+          </Space>
+        </TabPane>
+        <TabPane tab="Validation Criteria" key="validation-criteria">
+          <Space direction="vertical">
+            <div>
+              This question will only be valid if the following conditions apply
+            </div>
+            <Form.Item label="This question's response has to be" name="rule">
+              <Input className="bg-grey" placeholder="Response Value" />
+            </Form.Item>
+            <hr />
+            <Form.Item name="error_message">
+              <Input className="bg-grey" placeholder="Error Message" />
+            </Form.Item>
+          </Space>
+        </TabPane>
+      </Tabs>
+    </div>
+  );
+};
+
+const RenderLayout = ({ activeSetting }) => {
+  switch (activeSetting) {
+    case "translation":
+      return <Translation />;
+    case "setting":
+      return <Setting />;
+    default:
+      return <Detail />;
+  }
+};
+
+const QuestionSetting = ({ activeSetting }) => {
   return (
     <>
-      {isLangActive ? <Translation /> : <Setting />}
+      <RenderLayout activeSetting={activeSetting} />
       <div className="question-button-wrapper">
         <Space align="center">
           <Button>Cancel</Button>
