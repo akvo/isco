@@ -2,7 +2,7 @@ import React from "react";
 import { Row, Col, Form, Input, Checkbox, Button, Space } from "antd";
 import { BiRadioCircle } from "react-icons/bi";
 
-const QuestionSetting = () => {
+const Setting = () => {
   return (
     <>
       <div className="question-setting-wrapper">
@@ -55,6 +55,51 @@ const QuestionSetting = () => {
           </Col>
         </Row>
       </div>
+    </>
+  );
+};
+
+const Translation = () => {
+  return (
+    <>
+      <div className="question-setting-wrapper ">
+        <Form.Item
+          label={<div className="translation-label">Question 1</div>}
+          name="name-here"
+        >
+          <Input className="bg-grey" placeholder="Enter translation" />
+        </Form.Item>
+      </div>
+      <div className="question-setting-wrapper">
+        <Form.Item
+          label={<div className="translation-label">Question Tooltip</div>}
+          name="name-here"
+        >
+          <Input className="bg-grey" placeholder="Enter translation" />
+        </Form.Item>
+      </div>
+      <div className="question-setting-wrapper">
+        <Form.Item
+          label={<div className="translation-label">Option 1</div>}
+          name="name-here"
+        >
+          <Input className="bg-grey" placeholder="Enter translation" />
+        </Form.Item>
+        <Form.Item
+          label={<div className="translation-label">Option 2</div>}
+          name="name-here"
+        >
+          <Input className="bg-grey" placeholder="Enter translation" />
+        </Form.Item>
+      </div>
+    </>
+  );
+};
+
+const QuestionSetting = ({ isLangActive }) => {
+  return (
+    <>
+      {isLangActive ? <Translation /> : <Setting />}
       <div className="question-button-wrapper">
         <Space align="center">
           <Button>Cancel</Button>

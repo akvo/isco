@@ -82,6 +82,12 @@
         .ant-collapse-content > .ant-collapse-content-box {
           padding: 0;
         }
+
+        .question-number {
+          margin-right: 5px;
+          margin-top: 3px;
+          font-weight: 600;
+        }
       }
 
       .right {
@@ -101,7 +107,6 @@
 
     .panel-body-wrapper {
       .button-wrapper {
-        padding-left: 4px;
       }
 
       .input-wrapper {
@@ -121,6 +126,24 @@
           float: right;
           padding: 14px;
         }
+      }
+    }
+
+    .ant-form-item-label > label {
+      .translation-label {
+        width: 175px;
+        text-align: left;
+      }
+    }
+
+    .translation-tab-wrapper {
+      background-color: $white;
+      width: 100%;
+      padding-top: 5px;
+      border-bottom: 1px solid #777777;
+
+      button.active {
+        border-bottom: 2px solid #777777;
       }
     }
   }

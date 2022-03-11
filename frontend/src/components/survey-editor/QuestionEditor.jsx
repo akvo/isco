@@ -20,31 +20,41 @@ import QuestionSetting from "./QuestionSetting";
 
 const { Panel } = Collapse;
 
-const PanelHeader = ({ activePanel, setActivePanel }) => {
+const QuestionNameInput = () => {
   return (
-    <Form.Item
-      label={
-        <Button
-          type="text"
-          size="small"
-          onClick={() => setActivePanel(activePanel ? null : "q1")}
-        >
-          Q1
-        </Button>
-      }
-      name="question-group-name"
-    >
+    <Form.Item name="question-group-name">
       <Input placeholder="Enter your question" />
     </Form.Item>
   );
 };
 
-const QuestionButtons = () => {
+const TranslationTab = () => {
+  return (
+    <div className="translation-tab-wrapper">
+      <Space>
+        <Button type="text" className="active">
+          French
+        </Button>
+        <Button type="text">German</Button>
+      </Space>
+    </div>
+  );
+};
+
+const QuestionMenu = ({ setIsLangActive }) => {
   return (
     <Space direction="vertical" size={1}>
-      <Button type="text" icon={<RiSettings5Fill />} />
+      <Button
+        type="text"
+        icon={<RiSettings5Fill />}
+        onClick={() => setIsLangActive(false)}
+      />
       <Button type="text" icon={<MdFileCopy />} />
-      <Button type="text" icon={<MdGTranslate />} />
+      <Button
+        type="text"
+        icon={<MdGTranslate />}
+        onClick={() => setIsLangActive(true)}
+      />
       <Button type="text" icon={<RiDeleteBinFill />} />
     </Space>
   );
@@ -52,7 +62,7 @@ const QuestionButtons = () => {
 
 const Question = ({ form }) => {
   const [activePanel, setActivePanel] = useState(null);
-  console.log(activePanel);
+  const [isLangActive, setIsLangActive] = useState(false);
 
   return (
     <Row className="question-editor-wrapper">
@@ -65,18 +75,31 @@ const Question = ({ form }) => {
                   key="q1"
                   showArrow={false}
                   header={
-                    <PanelHeader
-                      activePanel={activePanel}
-                      setActivePanel={setActivePanel}
-                    />
+                    <>
+                      <Button
+                        className="question-number"
+                        type="text"
+                        size="small"
+                        onClick={() =>
+                          setActivePanel(activePanel ? null : "q1")
+                        }
+                      >
+                        Q1
+                      </Button>
+                      {isLangActive ? (
+                        <TranslationTab />
+                      ) : (
+                        <QuestionNameInput />
+                      )}
+                    </>
                   }
                 >
                   <Row className="panel-body-wrapper">
                     <Col className="button-wrapper" style={{ width: "40px" }}>
-                      <QuestionButtons />
+                      <QuestionMenu setIsLangActive={setIsLangActive} />
                     </Col>
                     <Col className="input-wrapper">
-                      <QuestionSetting />
+                      <QuestionSetting isLangActive={isLangActive} />
                     </Col>
                   </Row>
                 </Panel>
