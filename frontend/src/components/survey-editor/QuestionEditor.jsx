@@ -10,10 +10,45 @@ import {
   Select,
   Collapse,
 } from "antd";
-import { RiQuestionFill, RiSettings5Fill } from "react-icons/ri";
-import { BiRadioCircle } from "react-icons/bi";
+import {
+  RiQuestionFill,
+  RiSettings5Fill,
+  RiDeleteBinFill,
+} from "react-icons/ri";
+import { MdFileCopy, MdGTranslate } from "react-icons/md";
+import QuestionSetting from "./QuestionSetting";
 
 const { Panel } = Collapse;
+
+const PanelHeader = ({ activePanel, setActivePanel }) => {
+  return (
+    <Form.Item
+      label={
+        <Button
+          type="text"
+          size="small"
+          onClick={() => setActivePanel(activePanel ? null : "q1")}
+        >
+          Q1
+        </Button>
+      }
+      name="question-group-name"
+    >
+      <Input placeholder="Enter your question" />
+    </Form.Item>
+  );
+};
+
+const QuestionButtons = () => {
+  return (
+    <Space direction="vertical" size={1}>
+      <Button type="text" icon={<RiSettings5Fill />} />
+      <Button type="text" icon={<MdFileCopy />} />
+      <Button type="text" icon={<MdGTranslate />} />
+      <Button type="text" icon={<RiDeleteBinFill />} />
+    </Space>
+  );
+};
 
 const Question = ({ form }) => {
   const [activePanel, setActivePanel] = useState(null);
@@ -22,48 +57,26 @@ const Question = ({ form }) => {
   return (
     <Row className="question-editor-wrapper">
       <Col span={24}>
-        <Card className="q-card-wrapper">
-          <Row
-            className="question-row"
-            align="middle"
-            justify="space-between"
-            gutter={[12, 12]}
-          >
+        <Card className="question-card-wrapper">
+          <Row align="middle" justify="space-between" gutter={[12, 12]}>
             <Col span={18} align="start" className="left">
               <Collapse ghost activeKey={activePanel}>
                 <Panel
                   key="q1"
                   showArrow={false}
                   header={
-                    <Form.Item
-                      label={
-                        <Button
-                          type="text"
-                          size="small"
-                          onClick={() =>
-                            setActivePanel(activePanel ? null : "q1")
-                          }
-                        >
-                          Q1
-                        </Button>
-                      }
-                      name="question-group-name"
-                    >
-                      <Input placeholder="Enter your question" />
-                    </Form.Item>
+                    <PanelHeader
+                      activePanel={activePanel}
+                      setActivePanel={setActivePanel}
+                    />
                   }
                 >
                   <Row className="panel-body-wrapper">
-                    <Col className="button-wrapper" span={1}>
-                      <Button type="text" icon={<RiSettings5Fill />} />
+                    <Col className="button-wrapper" style={{ width: "40px" }}>
+                      <QuestionButtons />
                     </Col>
-                    <Col className="input-wrapper" span={23}>
-                      <Form.Item label={<BiRadioCircle />} name="option">
-                        <Input placeholder="Enter an answer choice" />
-                      </Form.Item>
-                      <Form.Item label={<BiRadioCircle />} name="option">
-                        <Input placeholder="Enter an answer choice" />
-                      </Form.Item>
+                    <Col className="input-wrapper">
+                      <QuestionSetting />
                     </Col>
                   </Row>
                 </Panel>

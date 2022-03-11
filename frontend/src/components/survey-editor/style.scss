@@ -52,7 +52,7 @@
 
   .question-editor-wrapper {
     padding: 14px 14px 0 14px;
-    .q-card-wrapper {
+    .question-card-wrapper {
       padding: 0 14px;
       background-color: $bg-grey;
 
@@ -86,22 +86,41 @@
 
       .right {
         position: absolute;
-        top: 12px;
+        top: 13px;
         right: 0;
 
         .ant-space {
           float: right;
+        }
+
+        .custom-dropdown-wrapper {
+          width: 16rem;
         }
       }
     }
 
     .panel-body-wrapper {
       .button-wrapper {
+        padding-left: 4px;
       }
 
       .input-wrapper {
-        width: 100%;
+        width: calc(100% - 40px);
         background-color: $white;
+
+        .question-setting-wrapper {
+          padding: 20px;
+          border-bottom: 1px solid #777777;
+
+          .ant-input {
+            margin-bottom: 12px;
+          }
+        }
+
+        .question-button-wrapper {
+          float: right;
+          padding: 14px;
+        }
       }
     }
   }
