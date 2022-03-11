@@ -1,3 +1,5 @@
+@import "variables";
+
 html,
 body,
 #root {
@@ -11,7 +13,9 @@ body {
   -webkit-font-smoothing: antialiased;
   letter-spacing: 0.11px;
 
-  #root {
+  #root,
+  .ant-modal-root {
+    // button primary ghost
     button.ant-btn.ant-btn-primary.ant-btn-background-ghost,
     a.ant-btn.ant-btn-primary.ant-btn-background-ghost {
       border-width: 2px;
@@ -19,5 +23,47 @@ body {
       min-height: 35px;
       border-radius: 5px;
     }
+
+    // button default
+    button.ant-btn.ant-btn-default,
+    a.ant-btn.ant-btn-default {
+      border-width: 2px;
+      font-weight: 500;
+      min-height: 35px;
+      border-radius: 5px;
+      color: #777777;
+      border-color: #777777;
+    }
+
+    // Form Style
+    // set input border-bottom
+    .ant-input,
+    .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+      border: none;
+      border-bottom: 1px solid #777777;
+      background-color: #eeeeee;
+      color: $black;
+
+      &::placeholder {
+        color: $black;
+      }
+
+      &:hover,
+      &:focus {
+        border: none;
+        border-bottom: 1px solid #777777;
+        box-shadow: none;
+      }
+    }
+
+    .ant-select-selection-placeholder,
+    span.anticon.anticon-down.ant-select-suffix {
+      color: $black;
+    }
+
+    .language-dropdown-wrapper {
+      width: 150px;
+    }
+    // End of Form Style
   }
 }

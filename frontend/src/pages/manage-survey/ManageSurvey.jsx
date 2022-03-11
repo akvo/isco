@@ -140,8 +140,16 @@ const ManageSurvey = () => {
         forceRender={true}
         title={<Title level={4}>Survey Details</Title>}
         visible={isSurveyModalVisible}
-        onOk={() => form.submit()}
-        onCancel={() => setIsSurveyModalVisible(false)}
+        footer={
+          <Space>
+            <Button onClick={() => setIsSurveyModalVisible(false)}>
+              Cancel
+            </Button>
+            <Button type="primary" ghost onClick={() => form.submit()}>
+              Create Survey
+            </Button>
+          </Space>
+        }
       >
         <Form
           form={form}
@@ -161,7 +169,11 @@ const ManageSurvey = () => {
             <Input.TextArea placeholder="Survey Description" rows={3} />
           </Form.Item>
           <Form.Item name="languages">
-            <Select placeholder="Languages" options={[]} />
+            <Select
+              className="language-dropdown-wrapper"
+              placeholder="Languages"
+              options={[]}
+            />
           </Form.Item>
         </Form>
       </Modal>
