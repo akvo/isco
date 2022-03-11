@@ -13,15 +13,15 @@ const Header = ({ className = "header", ...props }) => {
 
   const accountMenu = (
     <Menu className="account-dropdown-menu">
-      <Menu.Item className="account-item">
-        <Link to="#">
+      <Menu.Item key="admin" className="account-item">
+        <Link to="/admin">
           <Space align="center" size={8}>
             <RiAdminFill />
             ADMIN
           </Space>
         </Link>
       </Menu.Item>
-      <Menu.Item className="account-item">
+      <Menu.Item key="setting" className="account-item">
         <Link to="#">
           <Space align="center" size={8}>
             <BsGearFill />
@@ -29,7 +29,7 @@ const Header = ({ className = "header", ...props }) => {
           </Space>
         </Link>
       </Menu.Item>
-      <Menu.Item className="account-item">
+      <Menu.Item key="logout" className="account-item">
         <Link to="#">
           <Space align="center" size={8}>
             <MdLogout />

@@ -23,7 +23,7 @@ const Admin = () => {
               >
                 <p>{loremText}</p>
                 <div className="card-footer">
-                  <Button type="primary" ghost href="#">
+                  <Button type="primary" ghost href="/manage-user">
                     Manage Users
                   </Button>
                 </div>

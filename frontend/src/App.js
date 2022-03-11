@@ -2,7 +2,7 @@ import "./App.scss";
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import { Layout } from "./components";
-import { Home, Admin, ManageSurvey } from "./pages";
+import { Home, Admin, ManageSurvey, ManageUser } from "./pages";
 
 const App = () => {
   return (
@@ -14,6 +14,7 @@ const App = () => {
           <Route exact path="/home" element={<Home />} />
           <Route exact path="/admin" element={<Admin />} />
           <Route exact path="/manage-survey" element={<ManageSurvey />} />
+          <Route exact path="/manage-user" element={<ManageUser />} />
         </Routes>
       </Layout.Body>
       <Layout.Footer />

@@ -13,9 +13,9 @@ import {
   Input,
   Select,
 } from "antd";
-import { IoMdInformationCircleOutline } from "react-icons/io";
 import { RiPencilFill, RiDeleteBinFill } from "react-icons/ri";
 import { MdFileCopy } from "react-icons/md";
+import { FaInfoCircle } from "react-icons/fa";
 import { dataSources } from "./static";
 
 const { Title } = Typography;
@@ -35,7 +35,7 @@ const columns = [
           title={record?.status}
           placement="left"
         >
-          <IoMdInformationCircleOutline />
+          <FaInfoCircle />
         </Tooltip>
       );
     },
@@ -150,6 +150,7 @@ const ManageSurvey = () => {
             </Button>
           </Space>
         }
+        onCancel={() => setIsSurveyModalVisible(false)}
       >
         <Form
           form={form}
@@ -163,14 +164,18 @@ const ManageSurvey = () => {
             name="name"
             rules={[{ required: true, message: "Please input survey name" }]}
           >
-            <Input placeholder="Survey Name" />
+            <Input className="bg-grey" placeholder="Survey Name" />
           </Form.Item>
           <Form.Item name="description">
-            <Input.TextArea placeholder="Survey Description" rows={3} />
+            <Input.TextArea
+              className="bg-grey"
+              placeholder="Survey Description"
+              rows={3}
+            />
           </Form.Item>
           <Form.Item name="languages">
             <Select
-              className="language-dropdown-wrapper"
+              className="custom-dropdown-wrapper bg-grey"
               placeholder="Languages"
               options={[]}
             />

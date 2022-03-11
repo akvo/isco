@@ -35,14 +35,28 @@ body {
       border-color: #777777;
     }
 
+    // button text
+    button.ant-btn.ant-btn-text,
+    a.ant-btn.ant-btn-text {
+      &:hover,
+      &:focus {
+        background-color: transparent;
+      }
+    }
+
     // Form Style
     // set input border-bottom
     .ant-input,
+    .ant-input-affix-wrapper,
     .ant-select:not(.ant-select-customize-input) .ant-select-selector {
       border: none;
       border-bottom: 1px solid #777777;
-      background-color: #eeeeee;
       color: $black;
+      background-color: $white;
+
+      &.bg-grey {
+        background-color: #eeeeee;
+      }
 
       &::placeholder {
         color: $black;
@@ -56,13 +70,19 @@ body {
       }
     }
 
+    .ant-select.bg-grey {
+      .ant-select-selector {
+        background-color: #eeeeee;
+      }
+    }
+
     .ant-select-selection-placeholder,
     span.anticon.anticon-down.ant-select-suffix {
       color: $black;
     }
 
-    .language-dropdown-wrapper {
-      width: 150px;
+    .custom-dropdown-wrapper {
+      width: 200px;
     }
     // End of Form Style
   }
