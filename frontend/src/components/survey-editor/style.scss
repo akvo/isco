@@ -2,11 +2,70 @@
 
 #root {
   #main-form-editor {
+    .ant-space.ant-space-vertical {
+      width: 100%;
+    }
+
+    .ant-btn-icon-only {
+      color: #777777;
+    }
+
     .form-editor-wrapper {
       border-bottom: 2px solid #777777;
 
       .ant-input {
         width: 40%;
+      }
+    }
+
+    .question-group-editor-wrapper {
+      .qge-card-wrapper {
+        background-color: #f5f9ff;
+        border: 1px solid #777777;
+
+        .ant-card-body {
+          padding: 12px 0;
+        }
+
+        .section-title-row {
+          border-bottom: 2px solid #777777;
+          .left {
+            .ant-input {
+              border: none;
+            }
+
+            .ant-form-item {
+              margin: 0;
+            }
+          }
+
+          .right {
+            padding-right: 10px;
+            .ant-space {
+              float: right;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .question-editor-wrapper {
+    padding: 14px 14px 0 14px;
+    .q-card-wrapper {
+      padding: 0 14px;
+      background-color: $bg-grey;
+
+      .left {
+        .ant-form-item {
+          margin: 0;
+        }
+      }
+
+      .right {
+        .ant-space {
+          float: right;
+        }
       }
     }
   }

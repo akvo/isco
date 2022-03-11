@@ -1,5 +1,5 @@
 import React from "react";
-import { Form } from "antd";
+import { Form, Space } from "antd";
 import FormEditor from "./FormEditor";
 import QuestionGroupEditor from "./QuestionGroupEditor";
 
@@ -16,8 +16,10 @@ const MainEditor = () => {
           console.log(values, errorFields)
         }
       >
-        <FormEditor form={form} />
-        <QuestionGroupEditor form={form} />
+        <Space direction="vertical" size="large">
+          <FormEditor form={form} />
+          <QuestionGroupEditor form={form} />
+        </Space>
       </Form>
     </div>
   );
