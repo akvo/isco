@@ -60,12 +60,48 @@
         .ant-form-item {
           margin: 0;
         }
+
+        .ant-collapse > .ant-collapse-item {
+          border-bottom: none;
+        }
+
+        .ant-collapse
+          > .ant-collapse-item.ant-collapse-no-arrow
+          > .ant-collapse-header {
+          padding: 0;
+        }
+
+        .ant-row.ant-form-item {
+          width: 100%;
+        }
+
+        .ant-form-item-label > label:after {
+          content: none;
+        }
+
+        .ant-collapse-content > .ant-collapse-content-box {
+          padding: 0;
+        }
       }
 
       .right {
+        position: absolute;
+        top: 12px;
+        right: 0;
+
         .ant-space {
           float: right;
         }
+      }
+    }
+
+    .panel-body-wrapper {
+      .button-wrapper {
+      }
+
+      .input-wrapper {
+        width: 100%;
+        background-color: $white;
       }
     }
   }
