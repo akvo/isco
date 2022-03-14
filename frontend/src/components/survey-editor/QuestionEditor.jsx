@@ -10,11 +10,7 @@ import {
   Select,
   Collapse,
 } from "antd";
-import {
-  RiQuestionFill,
-  RiSettings5Fill,
-  RiDeleteBinFill,
-} from "react-icons/ri";
+import { RiSettings5Fill, RiDeleteBinFill } from "react-icons/ri";
 import { MdFileCopy, MdGTranslate } from "react-icons/md";
 import QuestionSetting from "./QuestionSetting";
 import { store } from "../../lib";
@@ -132,7 +128,11 @@ const QuestionEditor = ({ form, index, question, questionGroup }) => {
                       />
                     </Col>
                     <Col className="input-wrapper">
-                      <QuestionSetting activeSetting={activeSetting} />
+                      <QuestionSetting
+                        activeSetting={activeSetting}
+                        questionGroup={questionGroup}
+                        question={question}
+                      />
                     </Col>
                   </Row>
                 </Panel>

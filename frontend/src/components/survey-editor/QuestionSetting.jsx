@@ -12,20 +12,119 @@ import {
   Select,
 } from "antd";
 import { BiRadioCircle } from "react-icons/bi";
+import { HiPlus, HiMinus } from "react-icons/hi";
+import { store } from "../../lib";
+import orderBy from "lodash/orderBy";
+import { defaultOption } from "../../lib/store";
+import { v4 as uuidv4 } from "uuid";
 
 const { TabPane } = Tabs;
 
-const Detail = () => {
+const Detail = ({ questionGroup, question }) => {
+  const state = store.useState((s) => s?.surveyEditor);
+  const { type, option } = question;
+
+  const handlePlusMinusOptionButton = (operation, opt, optIndex) => {
+    const filterQuestionGroup = state?.questionGroup?.filter(
+      (qg) => qg?.id !== questionGroup?.id
+    );
+
+    const filterQuestion = questionGroup?.question?.filter(
+      (q) => q?.id !== question?.id
+    );
+
+    const insert = (arr, index, ...newItems) => [
+      // part of the array before the specified index
+      ...arr.slice(0, index),
+      // inserted items
+      ...newItems,
+      // part of the array after the specified index
+      ...arr.slice(index),
+    ];
+
+    let updatedOption = [];
+    if (operation === "add") {
+      updatedOption = insert(option, optIndex + 1, {
+        ...defaultOption,
+        id: uuidv4(),
+      })?.map((op, opi) => ({
+        ...op,
+        order: opi + 1,
+      }));
+    }
+
+    if (operation === "remove") {
+      updatedOption = question?.option?.filter((op) => op?.id !== opt?.id);
+    }
+
+    const questionGroupWithUpdatedQuestionOption = {
+      ...questionGroup,
+      question: orderBy(
+        [
+          ...filterQuestion,
+          {
+            ...question,
+            option: updatedOption,
+          },
+        ],
+        ["order"]
+      ),
+    };
+
+    store.update((s) => {
+      s.surveyEditor = {
+        ...s.surveyEditor,
+        questionGroup: orderBy(
+          [...filterQuestionGroup, questionGroupWithUpdatedQuestionOption],
+          ["order"]
+        ),
+      };
+    });
+  };
+
   return (
     <>
+      {/* Options */}
       <div className="question-setting-wrapper">
-        <Form.Item label={<BiRadioCircle />} name="option">
-          <Input placeholder="Enter an answer choice" />
-        </Form.Item>
-        <Form.Item label={<BiRadioCircle />} name="option">
-          <Input placeholder="Enter an answer choice" />
-        </Form.Item>
+        {option?.map((opt, optIndex) => (
+          <Row
+            key={`option-${opt?.id}`}
+            align="middle"
+            justify="space-between"
+            gutter={[12, 12]}
+          >
+            <Col span={22}>
+              <Form.Item
+                label={<BiRadioCircle />}
+                name={`question-option-${opt?.id}`}
+              >
+                <Input placeholder="Enter an answer choice" />
+              </Form.Item>
+            </Col>
+            <Col span={2}>
+              <Space size={1} align="center">
+                <Button
+                  type="text"
+                  icon={<HiPlus />}
+                  onClick={() =>
+                    handlePlusMinusOptionButton("add", opt, optIndex)
+                  }
+                />
+                {option.length > 1 && (
+                  <Button
+                    type="text"
+                    icon={<HiMinus />}
+                    onClick={() =>
+                      handlePlusMinusOptionButton("remove", opt, optIndex)
+                    }
+                  />
+                )}
+              </Space>
+            </Col>
+          </Row>
+        ))}
       </div>
+      {/* Repeat Objects */}
       <div className="question-setting-wrapper">
         <Row align="middle" justify="space-between" gutter={[12, 12]}>
           <Col span={12}>
@@ -40,7 +139,8 @@ const Detail = () => {
           </Col>
         </Row>
       </div>
-      <div className="question-setting-wrapper">
+      {/* Add Other */}
+      {/* <div className="question-setting-wrapper">
         <Row>
           <Col span={1}>
             <Form.Item name="rule-other">
@@ -67,7 +167,7 @@ const Detail = () => {
             />
           </Col>
         </Row>
-      </div>
+      </div> */}
     </>
   );
 };
@@ -172,21 +272,25 @@ const Setting = () => {
   );
 };
 
-const RenderLayout = ({ activeSetting }) => {
+const RenderLayout = ({ activeSetting, questionGroup, question }) => {
   switch (activeSetting) {
     case "translation":
       return <Translation />;
     case "setting":
       return <Setting />;
     default:
-      return <Detail />;
+      return <Detail questionGroup={questionGroup} question={question} />;
   }
 };
 
-const QuestionSetting = ({ activeSetting }) => {
+const QuestionSetting = ({ activeSetting, questionGroup, question }) => {
   return (
     <>
-      <RenderLayout activeSetting={activeSetting} />
+      <RenderLayout
+        activeSetting={activeSetting}
+        questionGroup={questionGroup}
+        question={question}
+      />
       <div className="question-button-wrapper">
         <Space align="center">
           <Button>Cancel</Button>

@@ -38,7 +38,7 @@ const MainEditor = () => {
           </Row>
           <Row align="middle">
             {/* Button */}
-            <Col span={23}>
+            <Col span={22}>
               <Row align="middle" justify="space-between">
                 <Col span={12} align="start" onClick={() => form.submit()}>
                   <Button>Done</Button>

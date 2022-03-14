@@ -26,6 +26,8 @@ import { v4 as uuidv4 } from "uuid";
 const { TabPane } = Tabs;
 
 const QuestionGroupSetting = ({ index, questionGroup }) => {
+  const qgid = questionGroup?.id;
+
   return (
     <div className="qge-setting-wrapper">
       <Tabs>
@@ -37,20 +39,20 @@ const QuestionGroupSetting = ({ index, questionGroup }) => {
             className="qge-setting-tab-body"
           >
             <Col span={10}>
-              <Form.Item name={`question_group-description-${index}`}>
+              <Form.Item name={`question_group-description-${qgid}`}>
                 <Input.TextArea
                   rows={3}
                   placeholder="Question Group Description"
                 />
               </Form.Item>
-              <Form.Item name={`question_group-mandatory-${index}`}>
+              <Form.Item name={`question_group-mandatory-${qgid}`}>
                 <Space>
                   Required <Switch size="small" />
                 </Space>
               </Form.Item>
             </Col>
             <Col span={7}>
-              <Form.Item name={`question_group-member-type-${index}`}>
+              <Form.Item name={`question_group-member-type-${qgid}`}>
                 <Select
                   className="custom-dropdown-wrapper"
                   placeholder="Member Type"
@@ -59,10 +61,10 @@ const QuestionGroupSetting = ({ index, questionGroup }) => {
               </Form.Item>
             </Col>
             <Col span={7}>
-              <Form.Item name={`question_group-isco-type-${index}`}>
+              <Form.Item name={`question_group-isco-type-${qgid}`}>
                 <Select
                   className="custom-dropdown-wrapper"
-                  placeholder="Organization"
+                  placeholder="ISCO Type"
                   options={[]}
                 />
               </Form.Item>
@@ -75,7 +77,7 @@ const QuestionGroupSetting = ({ index, questionGroup }) => {
               This question will only be displayed if the following conditions
               apply
             </div>
-            <Form.Item name="skip_logic">
+            <Form.Item name={`question_group-skip_logic-${qgid}`}>
               <Select placeholder="Select question from list" options={[]} />
             </Form.Item>
           </Space>
@@ -88,7 +90,7 @@ const QuestionGroupSetting = ({ index, questionGroup }) => {
 const QuestionGroupEditor = ({ form, index, questionGroup }) => {
   const [isGroupSettingVisible, setIsGroupSettingVisible] = useState(false);
   const state = store.useState((s) => s?.surveyEditor);
-  const { question } = questionGroup;
+  const { id, question } = questionGroup;
 
   const handleAddQuestionButton = (questionGroup) => {
     const findQuestionGroup = state.questionGroup.find(
@@ -156,13 +158,13 @@ const QuestionGroupEditor = ({ form, index, questionGroup }) => {
 
   return (
     <Row
-      key={`qge-${index}`}
+      key={`qge-${id}`}
       className="question-group-editor-wrapper"
       align="bottom"
       justify="space-between"
-      gutter={[12, 12]}
+      gutter={[40, 12]}
     >
-      <Col span={23}>
+      <Col span={22}>
         <Card className="qge-card-wrapper">
           <Row
             className="section-title-row"
@@ -170,7 +172,7 @@ const QuestionGroupEditor = ({ form, index, questionGroup }) => {
             justify="space-between"
           >
             <Col span={18} align="start" className="left">
-              <Form.Item name={`question_group-name-${index}`}>
+              <Form.Item name={`question_group-name-${id}`}>
                 <Input placeholder="Section Title" />
               </Form.Item>
             </Col>
@@ -206,7 +208,7 @@ const QuestionGroupEditor = ({ form, index, questionGroup }) => {
           )}
         </Card>
       </Col>
-      <Col span={1} align="center">
+      <Col span={2} align="center">
         <Card className="button-control-wrapper">
           <Space align="center" direction="vertical">
             <Button

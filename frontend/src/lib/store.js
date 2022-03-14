@@ -1,6 +1,14 @@
 import { Store } from "pullstate";
 import { v4 as uuidv4 } from "uuid";
 
+export const defaultOption = {
+  id: null,
+  code: null,
+  name: null,
+  translations: [],
+  order: 0,
+};
+
 export const defaultQuestionEditor = {
   id: uuidv4(),
   name: null,
