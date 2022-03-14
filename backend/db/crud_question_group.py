@@ -3,10 +3,11 @@ from typing import List
 from sqlalchemy.orm import Session
 from models.question_group import QuestionGroupPayload, QuestionGroupDict
 from models.question_group import QuestionGroup, QuestionGroupBase
+from db.crud_question import add_question
 
 
 def add_question_group(session: Session,
-                       payload: QuestionGroupPayload) -> QuestionGroupDict:
+                       payload: QuestionGroupPayload) -> QuestionGroupBase:
     last_question_group = session.query(QuestionGroup).filter(
         QuestionGroup.form == payload['form']).order_by(
             QuestionGroup.order.desc()).first()
@@ -30,6 +31,13 @@ def add_question_group(session: Session,
     session.commit()
     session.flush()
     session.refresh(question_group)
+
+    if len(payload['question']):
+        for q in payload['question']:
+            q['form'] = question_group.form,
+            q['question_group'] = question_group.id
+            add_question(session=session, payload=q)
+
     return question_group
 
 

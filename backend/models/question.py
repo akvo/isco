@@ -50,8 +50,8 @@ class RepeatingObjectDict(TypedDict):
 
 
 class QuestionPayload(TypedDict):
-    form: int
-    question_group: int
+    form: Optional[int] = None
+    question_group: Optional[int] = None
     name: str
     translations: Optional[List[dict]] = None
     mandatory: bool

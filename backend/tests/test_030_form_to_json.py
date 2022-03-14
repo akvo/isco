@@ -19,4 +19,4 @@ class TestFormToJson():
         assert res.status_code == 200
         res = res.json()
         res = json.dumps(res, indent=2, sort_keys=False)
-        print(res)
+        # print(res)

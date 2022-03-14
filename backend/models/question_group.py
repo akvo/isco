@@ -11,6 +11,7 @@ import sqlalchemy.dialects.postgresql as pg
 from db.connection import Base
 from datetime import datetime
 from models.question import QuestionBase, QuestionJson
+from models.question import QuestionPayload
 
 
 class QuestionGroupPayload(TypedDict):
@@ -19,6 +20,7 @@ class QuestionGroupPayload(TypedDict):
     translations: Optional[List[dict]] = None
     order: Optional[int] = None
     repeat: Optional[bool] = None
+    question: Optional[List[QuestionPayload]]
 
 
 class QuestionGroupDict(TypedDict):

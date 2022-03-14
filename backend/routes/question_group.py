@@ -11,7 +11,7 @@ question_group_route = APIRouter()
 
 
 @question_group_route.post("/question_group",
-                           response_model=QuestionGroupDict,
+                           response_model=QuestionGroupBase,
                            summary="add new question group",
                            name="question_group:create",
                            tags=["Question Group"])

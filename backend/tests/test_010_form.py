@@ -51,7 +51,8 @@ class TestFormRoutes():
                   "name": "Question Group 1",
                   "translations": None,
                   "repeat": False,
-                  "order": None})
+                  "order": None,
+                  "question": []})
         assert res.status_code == 200
         res = res.json()
         assert res == {"id": 1,
@@ -59,7 +60,8 @@ class TestFormRoutes():
                        "name": "Question Group 1",
                        "order": 1,
                        "repeat": False,
-                       "translations": None}
+                       "translations": None,
+                       "question": []}
 
     @pytest.mark.asyncio
     async def test_update_question_group(self, app: FastAPI, session: Session,
@@ -78,7 +80,8 @@ class TestFormRoutes():
                   "translations": [
                       {"language": "id", "text": "Kelompok Pertanyaan 1"}],
                   "repeat": False,
-                  "order": 1})
+                  "order": 1,
+                  "question": []})
         assert res.status_code == 200
         res = res.json()
         assert res == {"id": 1,

@@ -535,3 +535,83 @@ class TestQuestionRoutes():
             "type": "option",
             "variable_name": None
         }
+
+    @pytest.mark.asyncio
+    async def test_add_question_group_with_question(self,
+                                                    app: FastAPI,
+                                                    session: Session,
+                                                    client: AsyncClient
+                                                    ) -> None:
+        # get form
+        res = await client.get(app.url_path_for("form:get_by_id", id=1))
+        assert res.status_code == 200
+        res = res.json()
+        assert res["id"] == 1
+        # create question group with question
+        question_group_payload = {
+            "form": 1,
+            "name": "Question Group 2",
+            "translations": None,
+            "repeat": False,
+            "order": None,
+            "question": [
+                {
+                    "form": None,
+                    "question_group": None,
+                    "name": "Age",
+                    "translations": None,
+                    "mandatory": True,
+                    "datapoint_name": False,
+                    "variable_name": None,
+                    "type": QuestionType.number.value,
+                    "personal_data": False,
+                    "rule": None,
+                    "tooltip": None,
+                    "tooltip_translations": None,
+                    "cascade": None,
+                    "repeating_objects": None,
+                    "order": None,
+                    "option": [],
+                    "member_access": [],
+                    "isco_access": [],
+                    "skip_logic": []
+                }
+            ]
+        }
+        res = await client.post(
+            app.url_path_for("question_group:create"),
+            json=question_group_payload)
+        assert res.status_code == 200
+        res = res.json()
+        assert res == {
+            "id": 2,
+            "form": 1,
+            "name": "Question Group 2",
+            "order": 2,
+            "repeat": False,
+            "question": [
+                {
+                    "cascade": None,
+                    "datapoint_name": False,
+                    "form": 1,
+                    "id": 4,
+                    "isco_access": [],
+                    "mandatory": True,
+                    "member_access": [],
+                    "name": 'Age',
+                    "option": [],
+                    "order": 1,
+                    "personal_data": False,
+                    "question_group": 2,
+                    "repeating_objects": None,
+                    "rule": None,
+                    "skip_logic": [],
+                    "tooltip": None,
+                    "tooltip_translations": None,
+                    "translations": None,
+                    "type": "number",
+                    "variable_name": None
+                }
+            ],
+            "translations": None,
+        }
