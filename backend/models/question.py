@@ -43,7 +43,7 @@ class RepeatingObjectType(enum.Enum):
 
 
 class RepeatingObjectDict(TypedDict):
-    key: RepeatingObjectType
+    field: RepeatingObjectType
     value: str
 
 
