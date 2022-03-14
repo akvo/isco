@@ -10,10 +10,12 @@ from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy import Boolean, Enum, ForeignKey
 from sqlalchemy.ext.mutable import MutableDict
 from sqlalchemy.orm import relationship, backref
-from models.skip_logic import SkipLogicBase
+from models.skip_logic import SkipLogicBase, SkipLogicPayload
 from models.question_member_access import QuestionMemberAccessBase
 from models.question_isco_access import QuestionIscoAccessBase
-from models.option import OptionBase
+from models.option import OptionBase, OptionPayload
+from models.question_member_access import QuestionMemberAccessPayload
+from models.question_isco_access import QuestionIscoAccessPayload
 import sqlalchemy.dialects.postgresql as pg
 from datetime import datetime
 
@@ -63,6 +65,10 @@ class QuestionPayload(TypedDict):
     cascade: Optional[int] = None
     repeating_objects: Optional[List[RepeatingObjectDict]] = None
     order: Optional[int] = None
+    option: Optional[List[OptionPayload]]
+    member_access: Optional[List[QuestionMemberAccessPayload]]
+    isco_access: Optional[List[QuestionIscoAccessPayload]]
+    skip_logic: Optional[List[SkipLogicPayload]]
 
 
 class QuestionDict(TypedDict):

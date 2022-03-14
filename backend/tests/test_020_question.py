@@ -28,23 +28,25 @@ class TestQuestionRoutes():
         assert res["id"] == 1
         # add question type text
         question_payload = {
-            "question": {
-                "form": 1,
-                "question_group": 1,
-                "name": "Question 1",
-                "translations": None,
-                "mandatory": True,
-                "datapoint_name": True,
-                "variable_name": None,
-                "type": QuestionType.text.value,
-                "personal_data": False,
-                "rule": None,
-                "tooltip": "Question 1 tooltip",
-                "tooltip_translations": None,
-                "cascade": None,
-                "repeating_objects": None,
-                "order": None
-            }
+            "form": 1,
+            "question_group": 1,
+            "name": "Question 1",
+            "translations": None,
+            "mandatory": True,
+            "datapoint_name": True,
+            "variable_name": None,
+            "type": QuestionType.text.value,
+            "personal_data": False,
+            "rule": None,
+            "tooltip": "Question 1 tooltip",
+            "tooltip_translations": None,
+            "cascade": None,
+            "repeating_objects": None,
+            "order": None,
+            "option": [],
+            "member_access": [],
+            "isco_access": [],
+            "skip_logic": [],
         }
         res = await client.post(
             app.url_path_for("question:create"), json=question_payload)
@@ -101,6 +103,10 @@ class TestQuestionRoutes():
             "cascade": None,
             "repeating_objects": None,
             "order": 1,
+            "option": [],
+            "member_access": [],
+            "isco_access": [],
+            "skip_logic": [],
         }
         res = await client.put(
             app.url_path_for("question:put", id=1), json=question_payload)
@@ -315,23 +321,25 @@ class TestQuestionRoutes():
                                   client: AsyncClient) -> None:
         # add question type text
         question_payload = {
-            "question": {
-                "form": 1,
-                "question_group": 1,
-                "name": "Question 2",
-                "translations": None,
-                "mandatory": True,
-                "datapoint_name": True,
-                "variable_name": None,
-                "type": QuestionType.text.value,
-                "personal_data": False,
-                "rule": None,
-                "tooltip": "Question 2 tooltip",
-                "tooltip_translations": None,
-                "cascade": None,
-                "repeating_objects": None,
-                "order": None,
-            }
+            "form": 1,
+            "question_group": 1,
+            "name": "Question 2",
+            "translations": None,
+            "mandatory": True,
+            "datapoint_name": True,
+            "variable_name": None,
+            "type": QuestionType.text.value,
+            "personal_data": False,
+            "rule": None,
+            "tooltip": "Question 2 tooltip",
+            "tooltip_translations": None,
+            "cascade": None,
+            "repeating_objects": None,
+            "order": None,
+            "option": [],
+            "member_access": [],
+            "isco_access": [],
+            "skip_logic": [],
         }
         res = await client.post(
             app.url_path_for("question:create"), json=question_payload)
@@ -404,23 +412,21 @@ class TestQuestionRoutes():
         assert res["id"] == 1
         # add question type text
         question_payload = {
-            "question": {
-                "form": 1,
-                "question_group": 1,
-                "name": "Gender",
-                "translations": None,
-                "mandatory": True,
-                "datapoint_name": False,
-                "variable_name": None,
-                "type": QuestionType.option.value,
-                "personal_data": False,
-                "rule": None,
-                "tooltip": None,
-                "tooltip_translations": None,
-                "cascade": None,
-                "repeating_objects": None,
-                "order": None
-            },
+            "form": 1,
+            "question_group": 1,
+            "name": "Gender",
+            "translations": None,
+            "mandatory": True,
+            "datapoint_name": False,
+            "variable_name": None,
+            "type": QuestionType.option.value,
+            "personal_data": False,
+            "rule": None,
+            "tooltip": None,
+            "tooltip_translations": None,
+            "cascade": None,
+            "repeating_objects": None,
+            "order": None,
             "option": [
                 {
                     "code": None,
