@@ -22,9 +22,9 @@ import orderBy from "lodash/orderBy";
 
 const { Panel } = Collapse;
 
-const QuestionNameInput = () => {
+const QuestionNameInput = ({ index, question }) => {
   return (
-    <Form.Item name="question-group-name">
+    <Form.Item name={`question-name-${question?.id}`}>
       <Input placeholder="Enter your question" />
     </Form.Item>
   );
@@ -117,7 +117,9 @@ const QuestionEditor = ({ form, index, question, questionGroup }) => {
                         {`Q${index}`}
                       </Button>
                       {(activeSetting === "detail" ||
-                        activeSetting === "setting") && <QuestionNameInput />}
+                        activeSetting === "setting") && (
+                        <QuestionNameInput index={index} question={question} />
+                      )}
                       {activeSetting === "translation" && <TranslationTab />}
                     </>
                   }

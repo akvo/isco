@@ -128,6 +128,12 @@ const QuestionGroupEditor = ({ form, index, questionGroup }) => {
               ...defaultQuestionGroupEditor,
               id: uuidv4(),
               order: questionGroup?.order + 1,
+              question: [
+                {
+                  ...defaultQuestionGroupEditor?.question?.[0],
+                  id: uuidv4(),
+                },
+              ],
             },
           ],
           ["order"]
