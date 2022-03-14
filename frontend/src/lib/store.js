@@ -9,6 +9,12 @@ export const defaultOption = {
   order: 0,
 };
 
+export const defaultRepeatingObject = {
+  id: uuidv4(),
+  key: null,
+  value: null,
+};
+
 export const defaultQuestionEditor = {
   id: uuidv4(),
   name: null,
@@ -22,21 +28,17 @@ export const defaultQuestionEditor = {
   tooltip: null,
   tooltip_translations: [],
   cascade: null,
-  repeating_objects: [],
+  repeating_objects: [defaultRepeatingObject],
   order: 1,
   option: [
     {
+      ...defaultOption,
       id: uuidv4(),
-      code: null,
-      name: null,
-      translations: [],
       order: 1,
     },
     {
+      ...defaultOption,
       id: uuidv4(),
-      code: null,
-      name: null,
-      translations: [],
       order: 2,
     },
   ],

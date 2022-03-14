@@ -15,14 +15,23 @@ import { BiRadioCircle } from "react-icons/bi";
 import { HiPlus, HiMinus } from "react-icons/hi";
 import { store } from "../../lib";
 import orderBy from "lodash/orderBy";
-import { defaultOption } from "../../lib/store";
+import { defaultOption, defaultRepeatingObject } from "../../lib/store";
 import { v4 as uuidv4 } from "uuid";
 
 const { TabPane } = Tabs;
 
+const insert = (arr, index, ...newItems) => [
+  // part of the array before the specified index
+  ...arr.slice(0, index),
+  // inserted items
+  ...newItems,
+  // part of the array after the specified index
+  ...arr.slice(index),
+];
+
 const Detail = ({ questionGroup, question }) => {
   const state = store.useState((s) => s?.surveyEditor);
-  const { type, option } = question;
+  const { type, option, repeating_objects } = question;
 
   const handlePlusMinusOptionButton = (operation, opt, optIndex) => {
     const filterQuestionGroup = state?.questionGroup?.filter(
@@ -32,15 +41,6 @@ const Detail = ({ questionGroup, question }) => {
     const filterQuestion = questionGroup?.question?.filter(
       (q) => q?.id !== question?.id
     );
-
-    const insert = (arr, index, ...newItems) => [
-      // part of the array before the specified index
-      ...arr.slice(0, index),
-      // inserted items
-      ...newItems,
-      // part of the array after the specified index
-      ...arr.slice(index),
-    ];
 
     let updatedOption = [];
     if (operation === "add") {
@@ -65,6 +65,57 @@ const Detail = ({ questionGroup, question }) => {
           {
             ...question,
             option: updatedOption,
+          },
+        ],
+        ["order"]
+      ),
+    };
+
+    store.update((s) => {
+      s.surveyEditor = {
+        ...s.surveyEditor,
+        questionGroup: orderBy(
+          [...filterQuestionGroup, questionGroupWithUpdatedQuestionOption],
+          ["order"]
+        ),
+      };
+    });
+  };
+
+  const handlePlusMinusRepeatingObjects = (operation, ro, roi) => {
+    const filterQuestionGroup = state?.questionGroup?.filter(
+      (qg) => qg?.id !== questionGroup?.id
+    );
+
+    const filterQuestion = questionGroup?.question?.filter(
+      (q) => q?.id !== question?.id
+    );
+
+    let updatedRepeatingObject = [];
+    if (operation === "add") {
+      updatedRepeatingObject = insert(repeating_objects, roi + 1, {
+        ...defaultRepeatingObject,
+        id: uuidv4(),
+      })?.map((r, ri) => ({
+        ...r,
+        order: ri + 1,
+      }));
+    }
+
+    if (operation === "remove") {
+      updatedRepeatingObject = question?.repeating_objects?.filter(
+        (op) => op?.id !== ro?.id
+      );
+    }
+
+    const questionGroupWithUpdatedQuestionOption = {
+      ...questionGroup,
+      question: orderBy(
+        [
+          ...filterQuestion,
+          {
+            ...question,
+            repeating_objects: updatedRepeatingObject,
           },
         ],
         ["order"]
@@ -124,20 +175,51 @@ const Detail = ({ questionGroup, question }) => {
           </Row>
         ))}
       </div>
-      {/* Repeat Objects */}
+      {/* Repeating Objects */}
       <div className="question-setting-wrapper">
-        <Row align="middle" justify="space-between" gutter={[12, 12]}>
-          <Col span={12}>
-            <Form.Item name="repeat-object-key">
-              <Input placeholder="Field" />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item name="repeat-object-value">
-              <Input placeholder="Value" />
-            </Form.Item>
-          </Col>
-        </Row>
+        {repeating_objects?.map((ro, roi) => (
+          <Row
+            key={`repeating-object-${ro?.id}`}
+            align="middle"
+            justify="space-between"
+            gutter={[12, 12]}
+          >
+            <Col span={22}>
+              <Row align="middle" justify="space-between" gutter={[12, 12]}>
+                <Col span={12}>
+                  <Form.Item name={`question_repeating-object-field-${ro?.id}`}>
+                    <Input placeholder="Field" />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item name={`question_repeating-object-value-${ro?.id}`}>
+                    <Input placeholder="Value" />
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Col>
+            <Col span={2}>
+              <Space size={1} align="center">
+                <Button
+                  type="text"
+                  icon={<HiPlus />}
+                  onClick={() =>
+                    handlePlusMinusRepeatingObjects("add", ro, roi)
+                  }
+                />
+                {repeating_objects.length > 1 && (
+                  <Button
+                    type="text"
+                    icon={<HiMinus />}
+                    onClick={() =>
+                      handlePlusMinusRepeatingObjects("remove", ro, roi)
+                    }
+                  />
+                )}
+              </Space>
+            </Col>
+          </Row>
+        ))}
       </div>
       {/* Add Other */}
       {/* <div className="question-setting-wrapper">
