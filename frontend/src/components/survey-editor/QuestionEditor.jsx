@@ -17,6 +17,8 @@ import {
 } from "react-icons/ri";
 import { MdFileCopy, MdGTranslate } from "react-icons/md";
 import QuestionSetting from "./QuestionSetting";
+import { store } from "../../lib";
+import orderBy from "lodash/orderBy";
 
 const { Panel } = Collapse;
 
@@ -62,10 +64,34 @@ const QuestionMenu = ({ activeSetting, setActiveSetting }) => {
   );
 };
 
-const QuestionEditor = ({ form, index, question }) => {
+const QuestionEditor = ({ form, index, question, questionGroup }) => {
   const [activePanel, setActivePanel] = useState(null);
   const [activeSetting, setActiveSetting] = useState("detail");
+  const state = store.useState((s) => s?.surveyEditor);
   const panelKey = `qe-${index}`;
+
+  const handleDeleteQuestionButton = (question) => {
+    const filterQuestionGroup = state?.questionGroup?.filter(
+      (qg) => qg?.id !== questionGroup?.id
+    );
+    let deletedQuestionOnQg = questionGroup;
+    const filterQuestion = deletedQuestionOnQg?.question?.filter(
+      (q) => q?.id !== question?.id
+    );
+    deletedQuestionOnQg = {
+      ...deletedQuestionOnQg,
+      question: filterQuestion,
+    };
+    store.update((s) => {
+      s.surveyEditor = {
+        ...s.surveyEditor,
+        questionGroup: orderBy(
+          [...filterQuestionGroup, deletedQuestionOnQg],
+          ["order"]
+        ),
+      };
+    });
+  };
 
   return (
     <Row key={`qe-${index}`} className="question-editor-wrapper">
@@ -120,7 +146,11 @@ const QuestionEditor = ({ form, index, question }) => {
                     options={[]}
                   />
                 </Form.Item>
-                <Button type="text" icon={<RiDeleteBinFill />} />
+                <Button
+                  type="text"
+                  icon={<RiDeleteBinFill />}
+                  onClick={() => handleDeleteQuestionButton(question)}
+                />
               </Space>
             </Col>
           </Row>

@@ -194,6 +194,7 @@ const QuestionGroupEditor = ({ form, index, questionGroup }) => {
                 form={form}
                 index={qi + 1}
                 question={q}
+                questionGroup={questionGroup}
               />
             ))
           )}
