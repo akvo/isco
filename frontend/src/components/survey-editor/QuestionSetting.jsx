@@ -187,12 +187,12 @@ const Detail = ({ questionGroup, question }) => {
             <Col span={22}>
               <Row align="middle" justify="space-between" gutter={[12, 12]}>
                 <Col span={12}>
-                  <Form.Item name={`question_repeating-object-field-${ro?.id}`}>
+                  <Form.Item name={`question-repeating-object-field-${ro?.id}`}>
                     <Input placeholder="Field" />
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item name={`question_repeating-object-value-${ro?.id}`}>
+                  <Form.Item name={`question-repeating-object-value-${ro?.id}`}>
                     <Input placeholder="Value" />
                   </Form.Item>
                 </Col>
@@ -291,28 +291,30 @@ const Translation = () => {
   );
 };
 
-const Setting = () => {
+const Setting = ({ question, questionGroup }) => {
+  const qid = question?.id;
+
   return (
     <div className="question-setting-wrapper setting">
       <Tabs size="small">
         <TabPane tab="Question Options" key="question-option">
           <>
-            <Form.Item name="variable_name">
+            <Form.Item name={`question-variable_name-${qid}`}>
               <Input
                 className="bg-grey"
                 placeholder="Data Column Name (Custom ID)"
               />
             </Form.Item>
-            <Form.Item name="tooltip">
+            <Form.Item name={`question-tooltip-${qid}`}>
               <Input placeholder="Tooltip" />
             </Form.Item>
             <Space size={100}>
-              <Form.Item name="mandatory">
+              <Form.Item name={`question-mandatory-${qid}`}>
                 <Space>
                   Required <Switch size="small" />
                 </Space>
               </Form.Item>
-              <Form.Item name="personal_data">
+              <Form.Item name={`question-personal_data-${qid}`}>
                 <Space>
                   Personal data <Switch size="small" />
                 </Space>
@@ -326,7 +328,7 @@ const Setting = () => {
               This question will only be displayed if the following conditions
               apply
             </div>
-            <Form.Item name="skip_logic">
+            <Form.Item name={`question-skip_logic-${qid}`}>
               <Select
                 className="bg-grey"
                 placeholder="Select question from list"
@@ -335,7 +337,7 @@ const Setting = () => {
             </Form.Item>
           </Space>
         </TabPane>
-        <TabPane tab="Validation Criteria" key="validation-criteria">
+        {/* <TabPane tab="Validation Criteria" key="validation-criteria">
           <Space direction="vertical">
             <div>
               This question will only be valid if the following conditions apply
@@ -348,7 +350,7 @@ const Setting = () => {
               <Input className="bg-grey" placeholder="Error Message" />
             </Form.Item>
           </Space>
-        </TabPane>
+        </TabPane> */}
       </Tabs>
     </div>
   );
@@ -357,9 +359,9 @@ const Setting = () => {
 const RenderLayout = ({ activeSetting, questionGroup, question }) => {
   switch (activeSetting) {
     case "translation":
-      return <Translation />;
+      return <Translation questionGroup={questionGroup} question={question} />;
     case "setting":
-      return <Setting />;
+      return <Setting questionGroup={questionGroup} question={question} />;
     default:
       return <Detail questionGroup={questionGroup} question={question} />;
   }

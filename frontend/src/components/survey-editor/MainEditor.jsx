@@ -14,6 +14,9 @@ const MainEditor = () => {
       <Form
         form={form}
         name="survey-detail"
+        onValuesChange={(changedValues, allValues) =>
+          console.log(changedValues, allValues)
+        }
         onFinish={(values) => console.log(values)}
         onFinishFailed={({ values, errorFields }) =>
           console.log(values, errorFields)
