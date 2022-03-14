@@ -1,12 +1,20 @@
 import React from "react";
 import { Row, Col, Card, Form, Input, Button, Space } from "antd";
 import { RiSettings5Fill, RiDeleteBinFill } from "react-icons/ri";
+import { HiPlus } from "react-icons/hi";
+import { MdTextFields } from "react-icons/md";
+import { AiOutlineGroup } from "react-icons/ai";
 import Question from "./QuestionEditor";
 
 const QuestionGroupEditor = ({ form }) => {
   return (
-    <Row className="question-group-editor-wrapper">
-      <Col span={24}>
+    <Row
+      className="question-group-editor-wrapper"
+      align="bottom"
+      justify="space-between"
+      gutter={[12, 12]}
+    >
+      <Col span={21}>
         <Card className="qge-card-wrapper">
           <Row
             className="section-title-row"
@@ -26,6 +34,15 @@ const QuestionGroupEditor = ({ form }) => {
             </Col>
           </Row>
           <Question form={form} />
+        </Card>
+      </Col>
+      <Col span={3} align="center">
+        <Card className="button-control-wrapper">
+          <Space align="center">
+            <Button ghost icon={<HiPlus />} />
+            <Button ghost icon={<MdTextFields />} />
+            <Button ghost icon={<AiOutlineGroup />} />
+          </Space>
         </Card>
       </Col>
     </Row>

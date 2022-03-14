@@ -15,6 +15,15 @@ body {
 
   #root,
   .ant-modal-root {
+    // button primary
+    button.ant-btn.ant-btn-primary,
+    a.ant-btn.ant-btn-primary {
+      border-width: 2px;
+      font-weight: 500;
+      min-height: 35px;
+      border-radius: 5px;
+    }
+
     // button primary ghost
     button.ant-btn.ant-btn-primary.ant-btn-background-ghost,
     a.ant-btn.ant-btn-primary.ant-btn-background-ghost {

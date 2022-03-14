@@ -8,6 +8,7 @@
 
     .ant-btn-icon-only {
       color: #777777;
+      padding-top: 5px;
     }
 
     .form-editor-wrapper {
@@ -45,6 +46,16 @@
               float: right;
             }
           }
+        }
+      }
+
+      .button-control-wrapper {
+        padding: 0;
+        border: 1px solid #777777;
+        background-color: $bg-grey;
+
+        .ant-card-body {
+          padding: 12px;
         }
       }
     }
@@ -92,7 +103,7 @@
 
       .right {
         position: absolute;
-        top: 13px;
+        top: 12px;
         right: 0;
 
         .ant-space {
@@ -100,7 +111,7 @@
         }
 
         .custom-dropdown-wrapper {
-          width: 16rem;
+          width: 14rem;
         }
       }
     }
@@ -124,7 +135,7 @@
 
         .question-setting-wrapper {
           padding: 20px;
-          border-bottom: 1px solid #777777;
+          border-bottom: 2px solid #777777;
 
           .ant-input {
             margin-bottom: 12px;

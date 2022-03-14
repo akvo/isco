@@ -44,7 +44,7 @@ const Detail = () => {
         <Row>
           <Col span={1}>
             <Form.Item name="rule-other">
-              <Checkbox />
+              <Checkbox checked={false} />
             </Form.Item>
           </Col>
           <Col span={23}>
@@ -57,7 +57,7 @@ const Detail = () => {
         <Row>
           <Col span={1}>
             <Form.Item name="rule-none">
-              <Checkbox />
+              <Checkbox checked={false} />
             </Form.Item>
           </Col>
           <Col span={23}>
