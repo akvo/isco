@@ -13,13 +13,19 @@ import {
 } from "antd";
 import { RiSettings5Fill, RiDeleteBinFill } from "react-icons/ri";
 import { HiPlus } from "react-icons/hi";
-import { MdTextFields } from "react-icons/md";
 import { AiOutlineGroup } from "react-icons/ai";
 import QuestionEditor from "./QuestionEditor";
+import { store } from "../../lib";
+import {
+  defaultQuestionEditor,
+  defaultQuestionGroupEditor,
+} from "../../lib/store";
+import { findLast, orderBy } from "lodash";
+import { v4 as uuidv4 } from "uuid";
 
 const { TabPane } = Tabs;
 
-const QuestionGroupSetting = () => {
+const QuestionGroupSetting = ({ index }) => {
   return (
     <div className="qge-setting-wrapper">
       <Tabs>
@@ -30,18 +36,21 @@ const QuestionGroupSetting = () => {
             gutter={[24, 12]}
             className="qge-setting-tab-body"
           >
-            <Col span={8}>
-              <Form.Item name="variable_name">
-                <Input placeholder="Data Column Name (Custom ID)" />
+            <Col span={10}>
+              <Form.Item name={`question_group-description-${index}`}>
+                <Input.TextArea
+                  rows={3}
+                  placeholder="Question Group Description"
+                />
               </Form.Item>
-              <Form.Item name="mandatory">
+              <Form.Item name={`question_group-mandatory-${index}`}>
                 <Space>
                   Required <Switch size="small" />
                 </Space>
               </Form.Item>
             </Col>
-            <Col span={8}>
-              <Form.Item name="member_type">
+            <Col span={7}>
+              <Form.Item name={`question_group-member-type-${index}`}>
                 <Select
                   className="custom-dropdown-wrapper"
                   placeholder="Member Type"
@@ -49,8 +58,8 @@ const QuestionGroupSetting = () => {
                 />
               </Form.Item>
             </Col>
-            <Col span={8}>
-              <Form.Item name="isco_type">
+            <Col span={7}>
+              <Form.Item name={`question_group-isco-type-${index}`}>
                 <Select
                   className="custom-dropdown-wrapper"
                   placeholder="Organization"
@@ -76,17 +85,66 @@ const QuestionGroupSetting = () => {
   );
 };
 
-const QuestionGroupEditor = ({ form }) => {
+const QuestionGroupEditor = ({ form, index, questionGroup }) => {
   const [isGroupSettingVisible, setIsGroupSettingVisible] = useState(false);
+  const state = store.useState((s) => s?.surveyEditor);
+  const { question } = questionGroup;
+
+  const handleAddQuestionButton = (questionGroup) => {
+    const findQuestionGroup = state.questionGroup.find(
+      (qg) => qg?.id === questionGroup?.id
+    );
+    const filterQuestionGroup = state.questionGroup.filter(
+      (qg) => qg?.id !== questionGroup?.id
+    );
+    const lastQ = findLast(questionGroup.question, "id");
+    const newQg = {
+      ...findQuestionGroup,
+      question: [
+        ...findQuestionGroup?.question,
+        {
+          ...defaultQuestionEditor,
+          id: uuidv4(),
+          order: lastQ?.order + 1,
+        },
+      ],
+    };
+    store.update((s) => {
+      s.surveyEditor = {
+        ...s.surveyEditor,
+        questionGroup: orderBy([...filterQuestionGroup, newQg], ["order"]),
+      };
+    });
+  };
+
+  const handleAddQuestionGroupButton = (questionGroup) => {
+    store.update((s) => {
+      s.surveyEditor = {
+        ...s.surveyEditor,
+        questionGroup: orderBy(
+          [
+            ...s.surveyEditor.questionGroup,
+            {
+              ...defaultQuestionGroupEditor,
+              id: uuidv4(),
+              order: questionGroup?.order + 1,
+            },
+          ],
+          ["order"]
+        ),
+      };
+    });
+  };
 
   return (
     <Row
+      key={`qge-${index}`}
       className="question-group-editor-wrapper"
       align="bottom"
       justify="space-between"
       gutter={[12, 12]}
     >
-      <Col span={21}>
+      <Col span={23}>
         <Card className="qge-card-wrapper">
           <Row
             className="section-title-row"
@@ -94,7 +152,7 @@ const QuestionGroupEditor = ({ form }) => {
             justify="space-between"
           >
             <Col span={18} align="start" className="left">
-              <Form.Item name="question-group-name">
+              <Form.Item name={`question_group-name-${index}`}>
                 <Input placeholder="Section Title" />
               </Form.Item>
             </Col>
@@ -112,18 +170,32 @@ const QuestionGroupEditor = ({ form }) => {
             </Col>
           </Row>
           {isGroupSettingVisible ? (
-            <QuestionGroupSetting />
+            <QuestionGroupSetting index={index} />
           ) : (
-            <QuestionEditor form={form} />
+            question.map((q, qi) => (
+              <QuestionEditor
+                key={`question-key-${qi + 1}`}
+                form={form}
+                index={qi + 1}
+                question={q}
+              />
+            ))
           )}
         </Card>
       </Col>
-      <Col span={3} align="center">
+      <Col span={1} align="center">
         <Card className="button-control-wrapper">
-          <Space align="center">
-            <Button ghost icon={<HiPlus />} />
-            <Button ghost icon={<MdTextFields />} />
-            <Button ghost icon={<AiOutlineGroup />} />
+          <Space align="center" direction="vertical">
+            <Button
+              ghost
+              icon={<HiPlus />}
+              onClick={() => handleAddQuestionButton(questionGroup)}
+            />
+            <Button
+              ghost
+              icon={<AiOutlineGroup />}
+              onClick={() => handleAddQuestionGroupButton(questionGroup)}
+            />
           </Space>
         </Card>
       </Col>

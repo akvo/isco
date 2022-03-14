@@ -1,10 +1,13 @@
 import React from "react";
 import { Form, Space, Row, Col, Button } from "antd";
+import { store } from "../../lib";
 import FormEditor from "./FormEditor";
 import QuestionGroupEditor from "./QuestionGroupEditor";
 
 const MainEditor = () => {
   const [form] = Form.useForm();
+  const state = store.useState((s) => s?.surveyEditor);
+  const { questionGroup } = state;
 
   return (
     <div id="main-form-editor">
@@ -22,13 +25,20 @@ const MainEditor = () => {
             <Col span={24}>
               <Space direction="vertical" size="large">
                 <FormEditor form={form} />
-                <QuestionGroupEditor form={form} />
+                {questionGroup?.map((qg, qgi) => (
+                  <QuestionGroupEditor
+                    key={`question-group-key-${qgi + 1}`}
+                    form={form}
+                    index={qgi + 1}
+                    questionGroup={qg}
+                  />
+                ))}
               </Space>
             </Col>
           </Row>
           <Row align="middle">
             {/* Button */}
-            <Col span={21}>
+            <Col span={23}>
               <Row align="middle" justify="space-between">
                 <Col span={12} align="start" onClick={() => form.submit()}>
                   <Button>Done</Button>

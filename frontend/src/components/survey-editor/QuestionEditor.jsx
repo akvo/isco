@@ -62,19 +62,20 @@ const QuestionMenu = ({ activeSetting, setActiveSetting }) => {
   );
 };
 
-const QuestionEditor = ({ form }) => {
+const QuestionEditor = ({ form, index, question }) => {
   const [activePanel, setActivePanel] = useState(null);
   const [activeSetting, setActiveSetting] = useState("detail");
+  const panelKey = `qe-${index}`;
 
   return (
-    <Row className="question-editor-wrapper">
+    <Row key={`qe-${index}`} className="question-editor-wrapper">
       <Col span={24}>
         <Card className="question-card-wrapper">
           <Row align="middle" justify="space-between" gutter={[12, 12]}>
             <Col span={18} align="start" className="left">
               <Collapse ghost activeKey={activePanel}>
                 <Panel
-                  key="q1"
+                  key={panelKey}
                   showArrow={false}
                   header={
                     <>
@@ -83,11 +84,11 @@ const QuestionEditor = ({ form }) => {
                         type="text"
                         size="small"
                         onClick={() => {
-                          setActivePanel(activePanel ? null : "q1");
+                          setActivePanel(activePanel ? null : panelKey);
                           setActiveSetting("detail");
                         }}
                       >
-                        Q1
+                        {`Q${index}`}
                       </Button>
                       {(activeSetting === "detail" ||
                         activeSetting === "setting") && <QuestionNameInput />}
@@ -112,12 +113,14 @@ const QuestionEditor = ({ form }) => {
 
             <Col span={6} align="end" className="right">
               <Space align="center">
-                <Select
-                  className="custom-dropdown-wrapper"
-                  placeholder="Question Type"
-                  options={[]}
-                />
-                <Button type="text" icon={<RiQuestionFill />} />
+                <Form.Item name={`question-type-${index}`}>
+                  <Select
+                    className="custom-dropdown-wrapper"
+                    placeholder="Question Type"
+                    options={[]}
+                  />
+                </Form.Item>
+                <Button type="text" icon={<RiDeleteBinFill />} />
               </Space>
             </Col>
           </Row>
