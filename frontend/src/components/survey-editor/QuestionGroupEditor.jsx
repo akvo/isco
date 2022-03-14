@@ -25,7 +25,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const { TabPane } = Tabs;
 
-const QuestionGroupSetting = ({ index }) => {
+const QuestionGroupSetting = ({ index, questionGroup }) => {
   return (
     <div className="qge-setting-wrapper">
       <Tabs>
@@ -136,6 +136,18 @@ const QuestionGroupEditor = ({ form, index, questionGroup }) => {
     });
   };
 
+  const handleDeleteQuestionGroupButton = (questionGroup) => {
+    const filterQuestionGroup = state.questionGroup.filter(
+      (qg) => qg?.id !== questionGroup?.id
+    );
+    store.update((s) => {
+      s.surveyEditor = {
+        ...s.surveyEditor,
+        questionGroup: orderBy(filterQuestionGroup, ["order"]),
+      };
+    });
+  };
+
   return (
     <Row
       key={`qge-${index}`}
@@ -165,12 +177,16 @@ const QuestionGroupEditor = ({ form, index, questionGroup }) => {
                     setIsGroupSettingVisible(!isGroupSettingVisible)
                   }
                 />
-                <Button type="text" icon={<RiDeleteBinFill />} />
+                <Button
+                  type="text"
+                  icon={<RiDeleteBinFill />}
+                  onClick={() => handleDeleteQuestionGroupButton(questionGroup)}
+                />
               </Space>
             </Col>
           </Row>
           {isGroupSettingVisible ? (
-            <QuestionGroupSetting index={index} />
+            <QuestionGroupSetting index={index} questionGroup={questionGroup} />
           ) : (
             question.map((q, qi) => (
               <QuestionEditor

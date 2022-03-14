@@ -112,7 +112,7 @@ const QuestionEditor = ({ form, index, question }) => {
             </Col>
 
             <Col span={6} align="end" className="right">
-              <Space align="center">
+              <Space align="start">
                 <Form.Item name={`question-type-${index}`}>
                   <Select
                     className="custom-dropdown-wrapper"
