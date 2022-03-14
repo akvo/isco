@@ -2,6 +2,18 @@
 
 #root {
   #main-form-editor {
+    .ant-tabs-nav {
+      padding: 0 20px;
+    }
+
+    .ant-tabs-tab .ant-tabs-tab-btn {
+      color: #777777 !important;
+    }
+
+    .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+      color: #777777 !important;
+    }
+
     .ant-space.ant-space-vertical {
       width: 100%;
     }
@@ -44,6 +56,16 @@
             padding-right: 10px;
             .ant-space {
               float: right;
+            }
+          }
+        }
+
+        .qge-setting-wrapper {
+          .qge-setting-tab-body {
+            padding: 12px 20px;
+
+            .ant-form-item {
+              margin-bottom: 10px;
             }
           }
         }
@@ -143,10 +165,6 @@
 
           &.setting {
             padding: 0 0 20px 0;
-            .ant-tabs-nav-wrap {
-              border-bottom: 1px solid #777777;
-              padding: 0 20px;
-            }
 
             .ant-tabs-content {
               padding: 0 20px;

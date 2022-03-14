@@ -62,7 +62,7 @@ const QuestionMenu = ({ activeSetting, setActiveSetting }) => {
   );
 };
 
-const Question = ({ form }) => {
+const QuestionEditor = ({ form }) => {
   const [activePanel, setActivePanel] = useState(null);
   const [activeSetting, setActiveSetting] = useState("detail");
 
@@ -127,4 +127,4 @@ const Question = ({ form }) => {
   );
 };
 
-export default Question;
+export default QuestionEditor;
