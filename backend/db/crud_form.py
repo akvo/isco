@@ -5,7 +5,9 @@ from models.form import Form, FormDict, FormBase, FormPayload
 
 
 def add_form(session: Session, payload: FormPayload):
-    form = Form(id=None, name=payload['name'], languages=payload['languages'])
+    form = Form(id=None, name=payload['name'],
+                description=payload['description'],
+                languages=payload['languages'])
     session.add(form)
     session.commit()
     session.flush()
@@ -29,6 +31,7 @@ def get_form_by_id(session: Session, id: int) -> FormBase:
 def update_form(session: Session, id: int, payload: FormPayload) -> FormDict:
     form = get_form_by_id(session=session, id=id)
     form.name = payload['name']
+    form.description = payload['description']
     form.languages = payload['languages']
     session.commit()
     session.flush()

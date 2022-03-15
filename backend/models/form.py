@@ -4,7 +4,8 @@
 from typing_extensions import TypedDict
 from typing import List, Optional
 from pydantic import BaseModel
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String
+from sqlalchemy import Text, DateTime
 from sqlalchemy.orm import relationship
 import sqlalchemy.dialects.postgresql as pg
 from db.connection import Base
@@ -15,12 +16,14 @@ from models.question_group import QuestionGroupJson
 
 class FormPayload(TypedDict):
     name: str
+    description: Optional[str] = None
     languages: Optional[List[str]] = None
 
 
 class FormDict(TypedDict):
     id: int
     name: str
+    description: Optional[str] = None
     languages: Optional[List[str]] = None
 
 
@@ -28,6 +31,7 @@ class Form(Base):
     __tablename__ = "form"
     id = Column(Integer, primary_key=True, index=True, nullable=True)
     name = Column(String)
+    description = Column(Text, nullable=True)
     languages = Column(pg.ARRAY(String), nullable=True)
     created = Column(DateTime, default=datetime.utcnow)
     question_group = relationship("QuestionGroup",
@@ -36,9 +40,11 @@ class Form(Base):
                                   backref="form_detail")
 
     def __init__(self, id: Optional[int], name: str,
-                 languages: Optional[List[str]]):
+                 languages: Optional[List[str]],
+                 description: Optional[str]):
         self.id = id
         self.name = name
+        self.description = description
         self.languages = languages
 
     def __repr__(self) -> int:
@@ -49,6 +55,7 @@ class Form(Base):
         return {
             "id": self.id,
             "name": self.name,
+            "description": self.description,
             "languages": self.languages,
             "question_group": self.question_group
         }
@@ -57,6 +64,7 @@ class Form(Base):
 class FormBase(BaseModel):
     id: int
     name: str
+    description: Optional[str] = None
     languages: Optional[List[str]] = None
     question_group: Optional[List[QuestionGroupBase]] = []
 
@@ -67,6 +75,7 @@ class FormBase(BaseModel):
 class FormJson(BaseModel):
     id: int
     name: str
+    description: Optional[str] = None
     languages: Optional[List[str]] = None
     question_group: Optional[List[QuestionGroupJson]] = []
 

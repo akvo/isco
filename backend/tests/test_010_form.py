@@ -15,10 +15,15 @@ class TestFormRoutes():
         # create form
         res = await client.post(
             app.url_path_for("form:create"),
-            json={"name": "Form Test", "languages": None})
+            json={"name": "Form Test",
+                  "description": "Form Description",
+                  "languages": None})
         assert res.status_code == 200
         res = res.json()
-        assert res == {"id": 1, "languages": None, "name": "Form Test"}
+        assert res == {"description": "Form Description",
+                       "id": 1,
+                       "languages": None,
+                       "name": "Form Test"}
 
     @pytest.mark.asyncio
     async def test_update_form(self, app: FastAPI, session: Session,
@@ -31,10 +36,15 @@ class TestFormRoutes():
         # update form
         res = await client.put(
             app.url_path_for("form:put", id=1),
-            json={"name": "Form Test", "languages": ["id"]})
+            json={"name": "Form Test",
+                  "description": "Form Description",
+                  "languages": ["id"]})
         assert res.status_code == 200
         res = res.json()
-        assert res == {"id": 1, "languages": ["id"], "name": "Form Test"}
+        assert res == {"description": "Form Description",
+                       "id": 1,
+                       "languages": ["id"],
+                       "name": "Form Test"}
 
     @pytest.mark.asyncio
     async def test_add_question_group(self, app: FastAPI,  session: Session,
