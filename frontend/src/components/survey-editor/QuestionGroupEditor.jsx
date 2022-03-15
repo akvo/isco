@@ -10,6 +10,7 @@ import {
   Tabs,
   Switch,
   Select,
+  Tooltip,
 } from "antd";
 import { RiSettings5Fill, RiDeleteBinFill } from "react-icons/ri";
 import { HiPlus } from "react-icons/hi";
@@ -29,7 +30,6 @@ const QuestionGroupSetting = ({ index, questionGroup }) => {
   const optionValues = store.useState((s) => s?.optionValues);
   const { member_type, isco_type } = optionValues;
   const qgid = questionGroup?.id;
-  console.log(member_type, isco_type);
 
   return (
     <div className="qge-setting-wrapper">
@@ -48,14 +48,19 @@ const QuestionGroupSetting = ({ index, questionGroup }) => {
                   placeholder="Question Group Description"
                 />
               </Form.Item>
-              <Form.Item name={`question_group-mandatory-${qgid}`}>
+              <Form.Item name={`question_group-repeat-${qgid}`}>
                 <Space>
-                  Required <Switch size="small" />
+                  Repeat <Switch size="small" />
                 </Space>
               </Form.Item>
             </Col>
             <Col span={7}>
-              <Form.Item name={`question_group-member-type-${qgid}`}>
+              <Form.Item
+                name={`question_group-member-type-${qgid}`}
+                rules={[
+                  { required: true, message: "Please select member type" },
+                ]}
+              >
                 <Select
                   mode="multiple"
                   showSearch={true}
@@ -72,7 +77,10 @@ const QuestionGroupSetting = ({ index, questionGroup }) => {
               </Form.Item>
             </Col>
             <Col span={7}>
-              <Form.Item name={`question_group-isco-type-${qgid}`}>
+              <Form.Item
+                name={`question_group-isco-type-${qgid}`}
+                rules={[{ required: true, message: "Please select isco type" }]}
+              >
                 <Select
                   mode="multiple"
                   showSearch={true}
@@ -107,11 +115,13 @@ const QuestionGroupSetting = ({ index, questionGroup }) => {
 };
 
 const QuestionGroupEditor = ({ form, index, questionGroup }) => {
-  const [isGroupSettingVisible, setIsGroupSettingVisible] = useState(false);
+  const [isGroupSettingVisible, setIsGroupSettingVisible] = useState(true);
   const state = store.useState((s) => s?.surveyEditor);
-  const { id, question } = questionGroup;
+  const { id, name, question } = questionGroup;
+  const isQuestionGroupSaved = id && name;
 
   const handleAddQuestionButton = (questionGroup) => {
+    setIsGroupSettingVisible(false);
     const findQuestionGroup = state.questionGroup.find(
       (qg) => qg?.id === questionGroup?.id
     );
@@ -191,7 +201,12 @@ const QuestionGroupEditor = ({ form, index, questionGroup }) => {
             justify="space-between"
           >
             <Col span={18} align="start" className="left">
-              <Form.Item name={`question_group-name-${id}`}>
+              <Form.Item
+                name={`question_group-name-${id}`}
+                rules={[
+                  { required: true, message: "Please input section title" },
+                ]}
+              >
                 <Input placeholder="Section Title" />
               </Form.Item>
             </Col>
@@ -213,7 +228,19 @@ const QuestionGroupEditor = ({ form, index, questionGroup }) => {
             </Col>
           </Row>
           {isGroupSettingVisible ? (
-            <QuestionGroupSetting index={index} questionGroup={questionGroup} />
+            <>
+              <QuestionGroupSetting
+                index={index}
+                questionGroup={questionGroup}
+              />
+              <div className="qge-button-wrapper">
+                <Space align="center">
+                  <Button type="primary" ghost onClick={() => form.submit()}>
+                    Save
+                  </Button>
+                </Space>
+              </div>
+            </>
           ) : (
             question.map((q, qi) => (
               <QuestionEditor
@@ -230,16 +257,22 @@ const QuestionGroupEditor = ({ form, index, questionGroup }) => {
       <Col span={2} align="center">
         <Card className="button-control-wrapper">
           <Space align="center" direction="vertical">
-            <Button
-              ghost
-              icon={<HiPlus />}
-              onClick={() => handleAddQuestionButton(questionGroup)}
-            />
-            <Button
-              ghost
-              icon={<AiOutlineGroup />}
-              onClick={() => handleAddQuestionGroupButton(questionGroup)}
-            />
+            {isQuestionGroupSaved && (
+              <Tooltip title="Add question">
+                <Button
+                  ghost
+                  icon={<HiPlus />}
+                  onClick={() => handleAddQuestionButton(questionGroup)}
+                />
+              </Tooltip>
+            )}
+            <Tooltip title="Add section">
+              <Button
+                ghost
+                icon={<AiOutlineGroup />}
+                onClick={() => handleAddQuestionGroupButton(questionGroup)}
+              />
+            </Tooltip>
           </Space>
         </Card>
       </Col>

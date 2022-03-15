@@ -20,7 +20,10 @@ const { Panel } = Collapse;
 
 const QuestionNameInput = ({ index, question }) => {
   return (
-    <Form.Item name={`question-name-${question?.id}`}>
+    <Form.Item
+      name={`question-name-${question?.id}`}
+      rules={[{ required: true, message: "Please input your question" }]}
+    >
       <Input placeholder="Enter your question" />
     </Form.Item>
   );
@@ -143,7 +146,12 @@ const QuestionEditor = ({ form, index, question, questionGroup }) => {
 
             <Col span={6} align="end" className="right">
               <Space align="start">
-                <Form.Item name={`question-type-${index}`}>
+                <Form.Item
+                  name={`question-type-${index}`}
+                  rules={[
+                    { required: true, message: "Please select question type" },
+                  ]}
+                >
                   <Select
                     showSearch={true}
                     className="custom-dropdown-wrapper"

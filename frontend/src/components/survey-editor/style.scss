@@ -63,11 +63,16 @@
         .qge-setting-wrapper {
           .qge-setting-tab-body {
             padding: 12px 20px;
+            border-bottom: 2px solid #777777;
 
             .ant-form-item {
               margin-bottom: 10px;
             }
           }
+        }
+        .qge-button-wrapper {
+          padding: 12px 20px;
+          float: right;
         }
       }
 
@@ -134,6 +139,9 @@
 
         .custom-dropdown-wrapper {
           width: 14rem;
+          text-align: left;
+        }
+        .ant-form-item-explain-error {
           text-align: left;
         }
       }

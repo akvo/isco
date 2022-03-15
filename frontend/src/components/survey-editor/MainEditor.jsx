@@ -15,7 +15,7 @@ const MainEditor = () => {
   const { questionGroup } = state;
 
   useEffect(() => {
-    if (state?.name) {
+    if (state?.id) {
       // set form fields initial value
       Object.keys(formFields).forEach((key) => {
         form.setFieldsValue({ [key]: formFields?.[key] });
@@ -33,7 +33,7 @@ const MainEditor = () => {
         }
         onFinish={(values) => console.log(values)}
         onFinishFailed={({ values, errorFields }) =>
-          console.log(values, errorFields)
+          console.log(values, errorFields, form.getFieldsValue())
         }
       >
         <Space direction="vertical" size="large">
@@ -55,7 +55,7 @@ const MainEditor = () => {
           </Row>
           <Row align="middle">
             {/* Button */}
-            <Col span={22}>
+            {/* <Col span={22}>
               <Row align="middle" justify="space-between">
                 <Col span={12} align="start" onClick={() => form.submit()}>
                   <Button>Save</Button>
@@ -70,7 +70,7 @@ const MainEditor = () => {
                   </Button>
                 </Col>
               </Row>
-            </Col>
+            </Col> */}
           </Row>
         </Space>
       </Form>

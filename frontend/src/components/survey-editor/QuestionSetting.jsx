@@ -220,7 +220,7 @@ const Detail = ({ questionGroup, question }) => {
         ))}
       </div>
       {/* Add Other */}
-      {/* <div className="question-setting-wrapper">
+      <div className="question-setting-wrapper">
         <Row>
           <Col span={1}>
             <Form.Item name="rule-other">
@@ -247,7 +247,7 @@ const Detail = ({ questionGroup, question }) => {
             />
           </Col>
         </Row>
-      </div> */}
+      </div>
     </>
   );
 };
@@ -335,7 +335,7 @@ const Setting = ({ question, questionGroup }) => {
             </Form.Item>
           </Space>
         </TabPane>
-        {/* <TabPane tab="Validation Criteria" key="validation-criteria">
+        <TabPane tab="Validation Criteria" key="validation-criteria">
           <Space direction="vertical">
             <div>
               This question will only be valid if the following conditions apply
@@ -348,7 +348,7 @@ const Setting = ({ question, questionGroup }) => {
               <Input className="bg-grey" placeholder="Error Message" />
             </Form.Item>
           </Space>
-        </TabPane> */}
+        </TabPane>
       </Tabs>
     </div>
   );
