@@ -26,7 +26,10 @@ import { v4 as uuidv4 } from "uuid";
 const { TabPane } = Tabs;
 
 const QuestionGroupSetting = ({ index, questionGroup }) => {
+  const optionValues = store.useState((s) => s?.optionValues);
+  const { member_type, isco_type } = optionValues;
   const qgid = questionGroup?.id;
+  console.log(member_type, isco_type);
 
   return (
     <div className="qge-setting-wrapper">
@@ -54,18 +57,34 @@ const QuestionGroupSetting = ({ index, questionGroup }) => {
             <Col span={7}>
               <Form.Item name={`question_group-member-type-${qgid}`}>
                 <Select
+                  mode="multiple"
+                  showSearch={true}
                   className="custom-dropdown-wrapper"
                   placeholder="Member Type"
-                  options={[]}
+                  options={member_type?.map((item) => ({
+                    label: item?.name,
+                    value: item?.id,
+                  }))}
+                  filterOption={(input, option) =>
+                    option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
                 />
               </Form.Item>
             </Col>
             <Col span={7}>
               <Form.Item name={`question_group-isco-type-${qgid}`}>
                 <Select
+                  mode="multiple"
+                  showSearch={true}
                   className="custom-dropdown-wrapper"
                   placeholder="ISCO Type"
-                  options={[]}
+                  options={isco_type?.map((item) => ({
+                    label: item?.name,
+                    value: item?.id,
+                  }))}
+                  filterOption={(input, option) =>
+                    option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
                 />
               </Form.Item>
             </Col>

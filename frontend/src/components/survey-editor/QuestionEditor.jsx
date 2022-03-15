@@ -64,6 +64,8 @@ const QuestionEditor = ({ form, index, question, questionGroup }) => {
   const [activePanel, setActivePanel] = useState(null);
   const [activeSetting, setActiveSetting] = useState("detail");
   const state = store.useState((s) => s?.surveyEditor);
+  const optionValues = store.useState((s) => s?.optionValues);
+  const { question_type } = optionValues;
   const panelKey = `qe-${index}`;
 
   const handleDeleteQuestionButton = (question) => {
@@ -143,9 +145,18 @@ const QuestionEditor = ({ form, index, question, questionGroup }) => {
               <Space align="start">
                 <Form.Item name={`question-type-${index}`}>
                   <Select
+                    showSearch={true}
                     className="custom-dropdown-wrapper"
                     placeholder="Question Type"
-                    options={[]}
+                    options={question_type?.map((item) => ({
+                      label: item.split("_").join(" "),
+                      value: item,
+                    }))}
+                    filterOption={(input, option) =>
+                      option.label.toLowerCase().indexOf(input.toLowerCase()) >=
+                      0
+                    }
+                    value={["input"]}
                   />
                 </Form.Item>
                 <Button

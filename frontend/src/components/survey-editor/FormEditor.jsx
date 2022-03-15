@@ -1,8 +1,12 @@
 import React from "react";
 import "./style.scss";
 import { Row, Col, Form, Input, Select } from "antd";
+import { store } from "../../lib";
 
 const FormEditor = ({ form }) => {
+  const optionValues = store.useState((s) => s?.optionValues);
+  const { languages } = optionValues;
+
   return (
     <Row className="form-editor-wrapper">
       <Col span={24}>
@@ -21,9 +25,17 @@ const FormEditor = ({ form }) => {
         </Form.Item>
         <Form.Item name="form-languages">
           <Select
+            mode="multiple"
+            showSearch={true}
             className="custom-dropdown-wrapper bg-grey"
             placeholder="Languages"
-            options={[]}
+            options={languages?.map((lang) => ({
+              label: lang?.name,
+              value: lang?.code,
+            }))}
+            filterOption={(input, option) =>
+              option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
           />
         </Form.Item>
       </Col>
