@@ -70,8 +70,8 @@ def delete(req: Request, id: int, session: Session = Depends(get_session)):
                 summary="load survey editor data by id",
                 name="form:get_survey_editor_by_id",
                 tags=["Form"])
-def get_webform_by_id(req: Request, form_id: int,
-                      session: Session = Depends(get_session)):
+def get_survey_editor_by_id(req: Request, form_id: int,
+                            session: Session = Depends(get_session)):
     form = crud.get_form_by_id(session=session, id=form_id)
     return form.serialize
 
