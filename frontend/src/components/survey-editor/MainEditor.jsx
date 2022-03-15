@@ -25,37 +25,37 @@ const MainEditor = () => {
 
   return (
     <div id="main-form-editor">
-      <Form
-        form={form}
-        name="survey-detail"
-        onValuesChange={(changedValues, allValues) =>
-          console.log(changedValues, allValues)
-        }
-        onFinish={(values) => console.log(values)}
-        onFinishFailed={({ values, errorFields }) =>
-          console.log(values, errorFields, form.getFieldsValue())
-        }
-      >
-        <Space direction="vertical" size="large">
-          <Row align="middle">
-            {/* Form & Question Group */}
-            <Col span={24}>
-              <Space direction="vertical" size="large">
+      <Space direction="vertical" size="large">
+        <Row align="middle">
+          {/* Form & Question Group */}
+          <Col span={24}>
+            <Space direction="vertical" size="large">
+              <Form
+                form={form}
+                name="survey-detail"
+                onValuesChange={(changedValues, allValues) =>
+                  console.log(changedValues, allValues)
+                }
+                onFinish={(values) => console.log(values)}
+                onFinishFailed={({ values, errorFields }) =>
+                  console.log(values, errorFields, form.getFieldsValue())
+                }
+              >
                 <FormEditor form={form} />
-                {questionGroup?.map((qg, qgi) => (
-                  <QuestionGroupEditor
-                    key={`question-group-key-${qgi + 1}`}
-                    form={form}
-                    index={qgi + 1}
-                    questionGroup={qg}
-                  />
-                ))}
-              </Space>
-            </Col>
-          </Row>
-          <Row align="middle">
-            {/* Button */}
-            {/* <Col span={22}>
+              </Form>
+              {questionGroup?.map((qg, qgi) => (
+                <QuestionGroupEditor
+                  key={`question-group-key-${qgi + 1}`}
+                  index={qgi + 1}
+                  questionGroup={qg}
+                />
+              ))}
+            </Space>
+          </Col>
+        </Row>
+        <Row align="middle">
+          {/* Button */}
+          {/* <Col span={22}>
               <Row align="middle" justify="space-between">
                 <Col span={12} align="start" onClick={() => form.submit()}>
                   <Button>Save</Button>
@@ -71,9 +71,8 @@ const MainEditor = () => {
                 </Col>
               </Row>
             </Col> */}
-          </Row>
-        </Space>
-      </Form>
+        </Row>
+      </Space>
     </div>
   );
 };

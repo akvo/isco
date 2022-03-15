@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Row,
   Col,
@@ -16,7 +16,7 @@ import { RiSettings5Fill, RiDeleteBinFill } from "react-icons/ri";
 import { HiPlus } from "react-icons/hi";
 import { AiOutlineGroup } from "react-icons/ai";
 import QuestionEditor from "./QuestionEditor";
-import { store } from "../../lib";
+import { store, api } from "../../lib";
 import {
   defaultQuestionEditor,
   defaultQuestionGroupEditor,
@@ -29,7 +29,7 @@ const { TabPane } = Tabs;
 const QuestionGroupSetting = ({ index, questionGroup }) => {
   const optionValues = store.useState((s) => s?.optionValues);
   const { member_type, isco_type } = optionValues;
-  const qgid = questionGroup?.id;
+  const { id } = questionGroup;
 
   return (
     <div className="qge-setting-wrapper">
@@ -42,13 +42,13 @@ const QuestionGroupSetting = ({ index, questionGroup }) => {
             className="qge-setting-tab-body"
           >
             <Col span={10}>
-              <Form.Item name={`question_group-description-${qgid}`}>
+              <Form.Item name={`question_group-description-${id}`}>
                 <Input.TextArea
                   rows={3}
                   placeholder="Question Group Description"
                 />
               </Form.Item>
-              <Form.Item name={`question_group-repeat-${qgid}`}>
+              <Form.Item name={`question_group-repeat-${id}`}>
                 <Space>
                   Repeat <Switch size="small" />
                 </Space>
@@ -56,7 +56,7 @@ const QuestionGroupSetting = ({ index, questionGroup }) => {
             </Col>
             <Col span={7}>
               <Form.Item
-                name={`question_group-member-type-${qgid}`}
+                name={`question_group-member_access-${id}`}
                 rules={[
                   { required: true, message: "Please select member type" },
                 ]}
@@ -78,7 +78,7 @@ const QuestionGroupSetting = ({ index, questionGroup }) => {
             </Col>
             <Col span={7}>
               <Form.Item
-                name={`question_group-isco-type-${qgid}`}
+                name={`question_group-isco_access-${id}`}
                 rules={[{ required: true, message: "Please select isco type" }]}
               >
                 <Select
@@ -104,7 +104,7 @@ const QuestionGroupSetting = ({ index, questionGroup }) => {
               This question will only be displayed if the following conditions
               apply
             </div>
-            <Form.Item name={`question_group-skip_logic-${qgid}`}>
+            <Form.Item name={`question_group-skip_logic-${id}`}>
               <Select placeholder="Select question from list" options={[]} />
             </Form.Item>
           </Space>
@@ -114,11 +114,34 @@ const QuestionGroupSetting = ({ index, questionGroup }) => {
   );
 };
 
-const QuestionGroupEditor = ({ form, index, questionGroup }) => {
-  const [isGroupSettingVisible, setIsGroupSettingVisible] = useState(true);
+const QuestionGroupEditor = ({ index, questionGroup }) => {
+  const [form] = Form.useForm();
   const state = store.useState((s) => s?.surveyEditor);
   const { id, name, question } = questionGroup;
   const isQuestionGroupSaved = id && name;
+  const [isGroupSettingVisible, setIsGroupSettingVisible] = useState(true);
+  const [submitStatus, setSubmitStatus] = useState(null);
+
+  useEffect(() => {
+    if (questionGroup.id) {
+      Object.keys(questionGroup).forEach((key) => {
+        const field = `question_group-${key}-${id}`;
+        if (key === "member_access") {
+          form.setFieldsValue({
+            [field]: questionGroup?.[key]?.map((x) => x.member_type),
+          });
+          return;
+        }
+        if (key === "isco_access") {
+          form.setFieldsValue({
+            [field]: questionGroup?.[key]?.map((x) => x.isco_type),
+          });
+          return;
+        }
+        form.setFieldsValue({ [field]: questionGroup?.[key] });
+      });
+    }
+  }, [questionGroup]);
 
   const handleAddQuestionButton = (questionGroup) => {
     setIsGroupSettingVisible(false);
@@ -185,75 +208,154 @@ const QuestionGroupEditor = ({ form, index, questionGroup }) => {
     });
   };
 
+  const handleFormOnFinish = (values) => {
+    let data = {};
+    if (submitStatus === "question-group") {
+      Object.keys(values).forEach((key) => {
+        const field = key.split("-")[1];
+        let val = values[key] || null;
+        if (field === "member_access") {
+          val = values[key].map((v) => ({
+            question_group: null,
+            member_type: v,
+          }));
+        }
+        if (field === "isco_access") {
+          val = values[key].map((v) => ({
+            question_group: null,
+            isco_type: v,
+          }));
+        }
+        data = {
+          ...data,
+          [field]: val,
+        };
+      });
+      data = {
+        ...data,
+        form: state?.id,
+        order: null,
+        translations: null,
+        question: [],
+        repeat: false,
+      };
+      // how about put?
+      api
+        .post("/question_group", data, { "content-type": "application/json" })
+        .then((res) => {
+          const { data } = res;
+          store.update((s) => {
+            s.surveyEditor = {
+              ...s.surveyEditor,
+              questionGroup: [
+                ...s.surveyEditor.questionGroup.filter((x) => x?.id),
+                data,
+              ],
+            };
+          });
+        })
+        .catch((e) => {
+          const { status, statusText } = e.response;
+          console.error(status, statusText);
+        })
+        .finally(() => {
+          setSubmitStatus(null);
+        });
+    }
+  };
+
+  const handleFormOnFinishFailed = ({ values }) => {
+    console.log("Failed", values);
+  };
+
   return (
     <Row
-      key={`qge-${id}`}
+      key={`qge-${index}`}
       className="question-group-editor-wrapper"
       align="bottom"
       justify="space-between"
       gutter={[40, 12]}
     >
       <Col span={22}>
-        <Card className="qge-card-wrapper">
-          <Row
-            className="section-title-row"
-            align="middle"
-            justify="space-between"
-          >
-            <Col span={18} align="start" className="left">
-              <Form.Item
-                name={`question_group-name-${id}`}
-                rules={[
-                  { required: true, message: "Please input section title" },
-                ]}
-              >
-                <Input placeholder="Section Title" />
-              </Form.Item>
-            </Col>
-            <Col span={6} align="end" className="right">
-              <Space size={1} align="center">
-                <Button
-                  type="text"
-                  icon={<RiSettings5Fill />}
-                  onClick={() =>
-                    setIsGroupSettingVisible(!isGroupSettingVisible)
-                  }
-                />
-                <Button
-                  type="text"
-                  icon={<RiDeleteBinFill />}
-                  onClick={() => handleDeleteQuestionGroupButton(questionGroup)}
-                />
-              </Space>
-            </Col>
-          </Row>
-          {isGroupSettingVisible ? (
-            <>
-              <QuestionGroupSetting
-                index={index}
-                questionGroup={questionGroup}
-              />
-              <div className="qge-button-wrapper">
-                <Space align="center">
-                  <Button type="primary" ghost onClick={() => form.submit()}>
-                    Save
-                  </Button>
+        <Form
+          form={form}
+          name="survey-detail"
+          onFinish={handleFormOnFinish}
+          onFinishFailed={handleFormOnFinishFailed}
+        >
+          <Card className="qge-card-wrapper">
+            <Row
+              className="section-title-row"
+              align="middle"
+              justify="space-between"
+            >
+              <Col span={18} align="start" className="left">
+                <Form.Item
+                  name={`question_group-name-${id}`}
+                  rules={[
+                    { required: true, message: "Please input section title" },
+                  ]}
+                >
+                  <Input placeholder="Section Title" />
+                </Form.Item>
+              </Col>
+              <Col span={6} align="end" className="right">
+                <Space size={1} align="center">
+                  <Button
+                    type="text"
+                    icon={<RiSettings5Fill />}
+                    onClick={() =>
+                      setIsGroupSettingVisible(!isGroupSettingVisible)
+                    }
+                  />
+                  <Button
+                    type="text"
+                    icon={<RiDeleteBinFill />}
+                    onClick={() =>
+                      handleDeleteQuestionGroupButton(questionGroup)
+                    }
+                  />
                 </Space>
-              </div>
-            </>
-          ) : (
-            question.map((q, qi) => (
-              <QuestionEditor
-                key={`question-key-${qi + 1}`}
-                form={form}
-                index={qi + 1}
-                question={q}
-                questionGroup={questionGroup}
-              />
-            ))
-          )}
-        </Card>
+              </Col>
+            </Row>
+            {isGroupSettingVisible ? (
+              <>
+                <QuestionGroupSetting
+                  index={index}
+                  questionGroup={questionGroup}
+                />
+                <div className="qge-button-wrapper">
+                  <Space align="center">
+                    <Button
+                      type="primary"
+                      ghost
+                      onClick={() => {
+                        setSubmitStatus("question-group");
+                        setTimeout(() => {
+                          form.submit();
+                        }, 100);
+                      }}
+                    >
+                      Save
+                    </Button>
+                  </Space>
+                </div>
+              </>
+            ) : (
+              question.map((q, qi) => (
+                <QuestionEditor
+                  key={`question-key-${qi + 1}`}
+                  form={form}
+                  index={qi + 1}
+                  question={q}
+                  questionGroup={questionGroup}
+                />
+              ))
+            )}
+          </Card>
+        </Form>
       </Col>
+      {/* Button Add Section & Question */}
       <Col span={2} align="center">
         <Card className="button-control-wrapper">
           <Space align="center" direction="vertical">

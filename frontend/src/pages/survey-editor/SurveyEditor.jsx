@@ -22,6 +22,7 @@ const SurveyEditor = () => {
             name: data?.name,
             description: data?.description,
             languages: data?.languages,
+            questionGroup: data?.question_group,
           };
         });
       })
