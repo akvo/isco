@@ -1,5 +1,5 @@
 import { Store } from "pullstate";
-import { v4 as uuidv4 } from "uuid";
+import { generateID } from "./util";
 import isoLangs from "./isoLangs";
 
 export const defaultOption = {
@@ -11,13 +11,13 @@ export const defaultOption = {
 };
 
 export const defaultRepeatingObject = {
-  id: uuidv4(),
+  id: generateID(),
   key: null,
   value: null,
 };
 
 export const defaultQuestionEditor = {
-  id: uuidv4(),
+  id: generateID(),
   name: null,
   translations: [],
   mandatory: false,
@@ -34,12 +34,12 @@ export const defaultQuestionEditor = {
   option: [
     {
       ...defaultOption,
-      id: uuidv4(),
+      id: generateID(),
       order: 1,
     },
     {
       ...defaultOption,
-      id: uuidv4(),
+      id: generateID(),
       order: 2,
     },
   ],
@@ -49,7 +49,7 @@ export const defaultQuestionEditor = {
 };
 
 export const defaultQuestionGroupEditor = {
-  id: uuidv4(),
+  id: generateID(),
   form: null,
   name: null,
   description: null,
@@ -60,7 +60,7 @@ export const defaultQuestionGroupEditor = {
 };
 
 const defaultSurveyEditor = {
-  id: uuidv4(),
+  id: generateID(),
   name: null,
   description: null,
   languages: ["en"],

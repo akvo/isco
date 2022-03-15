@@ -21,7 +21,7 @@ import {
   defaultQuestionGroupEditor,
 } from "../../lib/store";
 import { findLast, orderBy } from "lodash";
-import { v4 as uuidv4 } from "uuid";
+import { generateID } from "../../lib/util";
 
 const { TabPane } = Tabs;
 
@@ -125,7 +125,7 @@ const QuestionGroupEditor = ({ form, index, questionGroup }) => {
         ...findQuestionGroup?.question,
         {
           ...defaultQuestionEditor,
-          id: uuidv4(),
+          id: generateID(),
           order: lastQ?.order + 1,
         },
       ],
@@ -147,12 +147,12 @@ const QuestionGroupEditor = ({ form, index, questionGroup }) => {
             ...s.surveyEditor.questionGroup,
             {
               ...defaultQuestionGroupEditor,
-              id: uuidv4(),
+              id: generateID(),
               order: questionGroup?.order + 1,
               question: [
                 {
                   ...defaultQuestionGroupEditor?.question?.[0],
-                  id: uuidv4(),
+                  id: generateID(),
                 },
               ],
             },

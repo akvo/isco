@@ -16,18 +16,49 @@ import { HiPlus, HiMinus } from "react-icons/hi";
 import { store } from "../../lib";
 import orderBy from "lodash/orderBy";
 import { defaultOption, defaultRepeatingObject } from "../../lib/store";
-import { v4 as uuidv4 } from "uuid";
+import { generateID, insert } from "../../lib/util";
 
 const { TabPane } = Tabs;
 
-const insert = (arr, index, ...newItems) => [
-  // part of the array before the specified index
-  ...arr.slice(0, index),
-  // inserted items
-  ...newItems,
-  // part of the array after the specified index
-  ...arr.slice(index),
-];
+const RenderOptionInput = ({ option, handlePlusMinusOptionButton }) => {
+  <div className="question-setting-wrapper">
+    {option?.map((opt, optIndex) => (
+      <Row
+        key={`option-${opt?.id}`}
+        align="middle"
+        justify="space-between"
+        gutter={[12, 12]}
+      >
+        <Col span={22}>
+          <Form.Item
+            label={<BiRadioCircle />}
+            name={`question-option-${opt?.id}`}
+          >
+            <Input placeholder="Enter an answer choice" />
+          </Form.Item>
+        </Col>
+        <Col span={2}>
+          <Space size={1} align="center">
+            <Button
+              type="text"
+              icon={<HiPlus />}
+              onClick={() => handlePlusMinusOptionButton("add", opt, optIndex)}
+            />
+            {option.length > 1 && (
+              <Button
+                type="text"
+                icon={<HiMinus />}
+                onClick={() =>
+                  handlePlusMinusOptionButton("remove", opt, optIndex)
+                }
+              />
+            )}
+          </Space>
+        </Col>
+      </Row>
+    ))}
+  </div>;
+};
 
 const Detail = ({ questionGroup, question }) => {
   const state = store.useState((s) => s?.surveyEditor);
@@ -46,7 +77,7 @@ const Detail = ({ questionGroup, question }) => {
     if (operation === "add") {
       updatedOption = insert(option, optIndex + 1, {
         ...defaultOption,
-        id: uuidv4(),
+        id: generateID(),
       })?.map((op, opi) => ({
         ...op,
         order: opi + 1,
@@ -95,7 +126,7 @@ const Detail = ({ questionGroup, question }) => {
     if (operation === "add") {
       updatedRepeatingObject = insert(repeating_objects, roi + 1, {
         ...defaultRepeatingObject,
-        id: uuidv4(),
+        id: generateID(),
       })?.map((r, ri) => ({
         ...r,
         order: ri + 1,
@@ -136,45 +167,12 @@ const Detail = ({ questionGroup, question }) => {
   return (
     <>
       {/* Options */}
-      <div className="question-setting-wrapper">
-        {option?.map((opt, optIndex) => (
-          <Row
-            key={`option-${opt?.id}`}
-            align="middle"
-            justify="space-between"
-            gutter={[12, 12]}
-          >
-            <Col span={22}>
-              <Form.Item
-                label={<BiRadioCircle />}
-                name={`question-option-${opt?.id}`}
-              >
-                <Input placeholder="Enter an answer choice" />
-              </Form.Item>
-            </Col>
-            <Col span={2}>
-              <Space size={1} align="center">
-                <Button
-                  type="text"
-                  icon={<HiPlus />}
-                  onClick={() =>
-                    handlePlusMinusOptionButton("add", opt, optIndex)
-                  }
-                />
-                {option.length > 1 && (
-                  <Button
-                    type="text"
-                    icon={<HiMinus />}
-                    onClick={() =>
-                      handlePlusMinusOptionButton("remove", opt, optIndex)
-                    }
-                  />
-                )}
-              </Space>
-            </Col>
-          </Row>
-        ))}
-      </div>
+      {type === "option" && (
+        <RenderOptionInput
+          option={option}
+          handlePlusMinusOptionButton={handlePlusMinusOptionButton}
+        />
+      )}
       {/* Repeating Objects */}
       <div className="question-setting-wrapper">
         {repeating_objects?.map((ro, roi) => (

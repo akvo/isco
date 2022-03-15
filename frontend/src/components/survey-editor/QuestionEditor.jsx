@@ -156,7 +156,6 @@ const QuestionEditor = ({ form, index, question, questionGroup }) => {
                       option.label.toLowerCase().indexOf(input.toLowerCase()) >=
                       0
                     }
-                    value={["input"]}
                   />
                 </Form.Item>
                 <Button
