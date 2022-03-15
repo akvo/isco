@@ -71,7 +71,10 @@ const defaultUIState = {
   isLoggedIn: false,
   user: null,
   optionValues: {
-    languages: isoLangs,
+    languages: Object.keys(isoLangs)?.map((key) => ({
+      ...isoLangs[key],
+      code: key,
+    })),
     member_type: [],
     isco_type: [],
     question_type: [],

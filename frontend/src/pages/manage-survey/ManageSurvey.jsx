@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./style.scss";
 import {
   Row,
@@ -17,6 +17,7 @@ import { RiPencilFill, RiDeleteBinFill } from "react-icons/ri";
 import { MdFileCopy } from "react-icons/md";
 import { FaInfoCircle } from "react-icons/fa";
 import { dataSources } from "./static";
+import { store, api } from "../../lib";
 
 const { Title } = Typography;
 
@@ -91,8 +92,28 @@ const columns = [
 ];
 
 const ManageSurvey = () => {
+  const optionValues = store.useState((s) => s?.optionValues);
+  const { languages } = optionValues;
   const [form] = Form.useForm();
   const [isSurveyModalVisible, setIsSurveyModalVisible] = useState(false);
+
+  useEffect(() => {
+    Promise.all([
+      api.get("question/type"),
+      api.get("member_type/"),
+      api.get("isco_type/"),
+    ]).then((res) => {
+      const [question_type, member_type, isco_type] = res;
+      store.update((s) => {
+        s.optionValues = {
+          ...s.optionValues,
+          question_type: question_type?.data,
+          member_type: member_type?.data,
+          isco_type: isco_type?.data,
+        };
+      });
+    });
+  }, []);
 
   return (
     <div id="manage-survey">
@@ -156,7 +177,7 @@ const ManageSurvey = () => {
           form={form}
           name="survey-detail"
           onFinish={(values) => console.log(values)}
-          onFinishFailed={(values, errorFields) =>
+          onFinishFailed={({ values, errorFields }) =>
             console.log(values, errorFields)
           }
         >
@@ -175,9 +196,17 @@ const ManageSurvey = () => {
           </Form.Item>
           <Form.Item name="languages">
             <Select
+              mode="multiple"
+              showSearch={true}
               className="custom-dropdown-wrapper bg-grey"
               placeholder="Languages"
-              options={[]}
+              options={languages?.map((lang) => ({
+                label: lang?.name,
+                value: lang?.code,
+              }))}
+              filterOption={(input, option) =>
+                option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
             />
           </Form.Item>
         </Form>

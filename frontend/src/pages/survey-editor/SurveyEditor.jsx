@@ -2,10 +2,13 @@ import React from "react";
 import "./style.scss";
 import { Row, Col, Card, Tabs } from "antd";
 import { MainEditor } from "../../components";
+import { store } from "../../lib";
 
 const { TabPane } = Tabs;
 
 const SurveyEditor = () => {
+  const optionValues = store.useState((s) => s?.optionValues);
+
   return (
     <div id="survey-editor">
       <Row className="container bg-grey">
