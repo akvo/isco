@@ -1,5 +1,6 @@
 import { Store } from "pullstate";
 import { v4 as uuidv4 } from "uuid";
+import isoLangs from "./isoLangs";
 
 export const defaultOption = {
   id: null,
@@ -69,6 +70,12 @@ const defaultSurveyEditor = {
 const defaultUIState = {
   isLoggedIn: false,
   user: null,
+  optionValues: {
+    languages: isoLangs,
+    member_type: [],
+    isco_type: [],
+    question_type: [],
+  },
   surveyEditor: defaultSurveyEditor,
 };
 
