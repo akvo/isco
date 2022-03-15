@@ -65,6 +65,17 @@ def delete(req: Request, id: int, session: Session = Depends(get_session)):
     return Response(status_code=HTTPStatus.NO_CONTENT.value)
 
 
+@form_route.get("/survey-editor/{form_id:path}",
+                response_model=FormBase,
+                summary="load survey editor data by id",
+                name="form:get_survey_editor_by_id",
+                tags=["Form"])
+def get_webform_by_id(req: Request, form_id: int,
+                      session: Session = Depends(get_session)):
+    form = crud.get_form_by_id(session=session, id=form_id)
+    return form.serialize
+
+
 @form_route.get("/webform/{form_id:path}",
                 response_model=FormJson,
                 summary="load webform json by form id",
