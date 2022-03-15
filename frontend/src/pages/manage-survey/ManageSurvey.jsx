@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./style.scss";
 import {
   Row,
@@ -10,14 +11,12 @@ import {
   Space,
   Modal,
   Form,
-  Input,
-  Select,
 } from "antd";
 import { RiPencilFill, RiDeleteBinFill } from "react-icons/ri";
 import { MdFileCopy } from "react-icons/md";
 import { FaInfoCircle } from "react-icons/fa";
 import { dataSources } from "./static";
-import { store, api } from "../../lib";
+import { FormEditor } from "../../components";
 
 const { Title } = Typography;
 
@@ -92,28 +91,14 @@ const columns = [
 ];
 
 const ManageSurvey = () => {
-  const optionValues = store.useState((s) => s?.optionValues);
-  const { languages } = optionValues;
   const [form] = Form.useForm();
   const [isSurveyModalVisible, setIsSurveyModalVisible] = useState(false);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    Promise.all([
-      api.get("question/type"),
-      api.get("member_type/"),
-      api.get("isco_type/"),
-    ]).then((res) => {
-      const [question_type, member_type, isco_type] = res;
-      store.update((s) => {
-        s.optionValues = {
-          ...s.optionValues,
-          question_type: question_type?.data,
-          member_type: member_type?.data,
-          isco_type: isco_type?.data,
-        };
-      });
-    });
-  }, []);
+  const onSubmitForm = (values) => {
+    console.log(values);
+    navigate("/survey-editor");
+  };
 
   return (
     <div id="manage-survey">
@@ -176,39 +161,12 @@ const ManageSurvey = () => {
         <Form
           form={form}
           name="survey-detail"
-          onFinish={(values) => console.log(values)}
+          onFinish={onSubmitForm}
           onFinishFailed={({ values, errorFields }) =>
             console.log(values, errorFields)
           }
         >
-          <Form.Item
-            name="name"
-            rules={[{ required: true, message: "Please input survey name" }]}
-          >
-            <Input className="bg-grey" placeholder="Survey Name" />
-          </Form.Item>
-          <Form.Item name="description">
-            <Input.TextArea
-              className="bg-grey"
-              placeholder="Survey Description"
-              rows={3}
-            />
-          </Form.Item>
-          <Form.Item name="languages">
-            <Select
-              mode="multiple"
-              showSearch={true}
-              className="custom-dropdown-wrapper bg-grey"
-              placeholder="Languages"
-              options={languages?.map((lang) => ({
-                label: lang?.name,
-                value: lang?.code,
-              }))}
-              filterOption={(input, option) =>
-                option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-            />
-          </Form.Item>
+          <FormEditor form={form} />
         </Form>
       </Modal>
     </div>
