@@ -59,14 +59,16 @@ class TestFormRoutes():
             app.url_path_for("question_group:create"),
             json={"form": 1,
                   "name": "Question Group 1",
+                  "description": "Question Group 1 Description",
                   "translations": None,
                   "repeat": False,
                   "order": None,
                   "question": []})
         assert res.status_code == 200
         res = res.json()
-        assert res == {"id": 1,
+        assert res == {"description": "Question Group 1 Description",
                        "form": 1,
+                       "id": 1,
                        "name": "Question Group 1",
                        "order": 1,
                        "repeat": False,
@@ -87,19 +89,31 @@ class TestFormRoutes():
             app.url_path_for("question_group:put", id=1),
             json={"form": 1,
                   "name": "Question Group 1",
+                  "description": "Question Group 1 Description",
                   "translations": [
-                      {"language": "id", "text": "Kelompok Pertanyaan 1"}],
+                        {
+                            "language": "id",
+                            "name": "Kelompok Pertanyaan 1",
+                            "description": "Deskripsi Kelompok Pertanyaan 1"
+                        }
+                    ],
                   "repeat": False,
                   "order": 1,
                   "question": []})
         assert res.status_code == 200
         res = res.json()
-        assert res == {"id": 1,
-                       "form": 1,
-                       "name": "Question Group 1",
-                       "repeat": False,
-                       "order": 1,
-                       "translations": [{
-                           "language": "id",
-                           "text": "Kelompok Pertanyaan 1"
-                           }]}
+        assert res == {
+            "description": "Question Group 1 Description",
+            "form": 1,
+            "id": 1,
+            "name": "Question Group 1",
+            "repeat": False,
+            "order": 1,
+            "translations": [
+                {
+                    "language": "id",
+                    "name": "Kelompok Pertanyaan 1",
+                    "description": "Deskripsi Kelompok Pertanyaan 1"
+                }
+            ]
+        }

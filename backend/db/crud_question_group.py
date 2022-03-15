@@ -23,6 +23,7 @@ def add_question_group(session: Session,
 
     question_group = QuestionGroup(id=None,
                                    name=payload['name'],
+                                   description=payload['description'],
                                    form=payload['form'],
                                    order=last_question_group,
                                    translations=payload['translations'],
@@ -60,6 +61,7 @@ def update_question_group(session: Session, id: int,
     question_group = get_question_group_by_id(session=session, id=id)
     question_group.form = payload['form']
     question_group.name = payload['name']
+    question_group.description = payload['description']
     question_group.order = payload['order']
     question_group.translations = payload['translations']
     question_group.repeat = payload['repeat']

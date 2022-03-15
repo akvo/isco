@@ -4,7 +4,7 @@
 from typing import Optional, List
 from typing_extensions import TypedDict
 from pydantic import BaseModel
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Text
 from sqlalchemy import Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 import sqlalchemy.dialects.postgresql as pg
@@ -17,6 +17,7 @@ from models.question import QuestionPayload
 class QuestionGroupPayload(TypedDict):
     form: int
     name: str
+    description: Optional[str] = None
     translations: Optional[List[dict]] = None
     order: Optional[int] = None
     repeat: Optional[bool] = None
@@ -27,6 +28,7 @@ class QuestionGroupDict(TypedDict):
     id: int
     form: int
     name: str
+    description: Optional[str] = None
     translations: Optional[List[dict]] = None
     order: Optional[int] = None
     repeat: bool
@@ -37,6 +39,7 @@ class QuestionGroup(Base):
     id = Column(Integer, primary_key=True, index=True, nullable=True)
     form = Column(Integer, ForeignKey('form.id'))
     name = Column(String)
+    description = Column(Text, nullable=True)
     translations = Column(pg.ARRAY(pg.JSONB), nullable=True)
     repeat = Column(Boolean, default=False)
     order = Column(Integer, nullable=True)
@@ -48,10 +51,12 @@ class QuestionGroup(Base):
 
     def __init__(self, id: Optional[int], form: int, name: str,
                  translations: Optional[List[dict]],
-                 repeat: Optional[bool], order: Optional[int]):
+                 repeat: Optional[bool], order: Optional[int],
+                 description: Optional[str]):
         self.id = id
         self.form = form
         self.name = name
+        self.description = description
         self.translations = translations
         self.order = order
         self.repeat = repeat
@@ -65,6 +70,7 @@ class QuestionGroup(Base):
             "id": self.id,
             "form": self.form,
             "name": self.name,
+            "description": self.description,
             "translations": self.translations,
             "order": self.order,
             "repeat": self.repeat,
@@ -76,6 +82,7 @@ class QuestionGroupBase(BaseModel):
     id: int
     form: int
     name: str
+    description: Optional[str] = None
     translations: Optional[List[dict]] = None
     order: Optional[int] = None
     repeat: bool
@@ -87,6 +94,7 @@ class QuestionGroupBase(BaseModel):
 
 class QuestionGroupJson(BaseModel):
     name: str
+    description: Optional[str] = None
     translations: Optional[List[dict]] = None
     order: Optional[int] = None
     repeat: bool

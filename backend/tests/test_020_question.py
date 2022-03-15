@@ -551,6 +551,7 @@ class TestQuestionRoutes():
         question_group_payload = {
             "form": 1,
             "name": "Question Group 2",
+            "description": "This is description",
             "translations": None,
             "repeat": False,
             "order": None,
@@ -584,8 +585,9 @@ class TestQuestionRoutes():
         assert res.status_code == 200
         res = res.json()
         assert res == {
-            "id": 2,
+            "description": "This is description",
             "form": 1,
+            "id": 2,
             "name": "Question Group 2",
             "order": 2,
             "repeat": False,
