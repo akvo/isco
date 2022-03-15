@@ -4,7 +4,8 @@ from typing import List
 from sqlalchemy.orm import Session
 from db.connection import get_session
 import db.crud_question as crud
-from models.question import QuestionBase, QuestionDict, QuestionPayload
+from models.question import QuestionBase, QuestionDict
+from models.question import QuestionPayload, QuestionType
 
 question_route = APIRouter()
 
@@ -28,6 +29,15 @@ def add(req: Request, payload: QuestionPayload,
 def get(req: Request, session: Session = Depends(get_session)):
     question = crud.get_question(session=session)
     return [q.serialize for q in question]
+
+
+@question_route.get("/question/type",
+                    response_model=List[str],
+                    summary="get all question type",
+                    name="question:get_all_type",
+                    tags=["Question"])
+def get_question_type(req: Request, session: Session = Depends(get_session)):
+    return [q.value for q in QuestionType]
 
 
 # @question_route.get("/question/{form_id:path}",

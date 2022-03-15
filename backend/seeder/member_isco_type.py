@@ -6,6 +6,7 @@ import db.crud_isco_type as crud_isco
 # Defined Values
 
 member_values = [
+    'All',
     'Big Industry',
     'Small Industry',
     'DISCO - Traders',
@@ -14,7 +15,7 @@ member_values = [
     'Other'
 ]
 
-isco_values = ['ISCO']
+isco_values = ['All', 'ISCO']
 
 
 # Start seeding
