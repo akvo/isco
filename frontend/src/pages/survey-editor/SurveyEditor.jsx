@@ -2,10 +2,14 @@ import React from "react";
 import "./style.scss";
 import { Row, Col, Card, Tabs } from "antd";
 import { MainEditor } from "../../components";
+import { useParams } from "react-router-dom";
 
 const { TabPane } = Tabs;
 
 const SurveyEditor = () => {
+  const { formId } = useParams();
+  console.log(formId);
+
   return (
     <div id="survey-editor">
       <Row className="container bg-grey">

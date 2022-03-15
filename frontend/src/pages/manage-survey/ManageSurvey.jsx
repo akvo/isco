@@ -15,89 +15,125 @@ import {
 import { RiPencilFill, RiDeleteBinFill } from "react-icons/ri";
 import { MdFileCopy } from "react-icons/md";
 import { FaInfoCircle } from "react-icons/fa";
-import { dataSources } from "./static";
 import { FormEditor } from "../../components";
+import { api } from "../../lib";
 
 const { Title } = Typography;
 
-const columns = [
-  {
-    title: "",
-    dataIndex: "",
-    key: "status",
-    render: (record) => {
-      if (!record?.status) {
-        return "";
-      }
-      return (
-        <Tooltip
-          key={`${record?.id}-${record?.key}`}
-          title={record?.status}
-          placement="left"
-        >
-          <FaInfoCircle />
-        </Tooltip>
-      );
-    },
-  },
-  {
-    title: "Name",
-    dataIndex: "name",
-    key: "name",
-    className: "bg-grey title",
-  },
-  {
-    title: "Added By",
-    dataIndex: "user",
-    key: "user",
-    className: "bg-grey",
-  },
-  {
-    title: "Date Created",
-    dataIndex: "created",
-    key: "created",
-    className: "bg-grey",
-  },
-  {
-    title: "Action",
-    dataIndex: "",
-    key: "action",
-    className: "bg-grey",
-    render: (record) => {
-      return (
-        <Space key={`${record?.id}-${record?.key}`}>
-          <Button
-            className="action-btn"
-            icon={<RiPencilFill />}
-            shape="circle"
-            type="text"
-          />
-          <Button
-            className="action-btn"
-            icon={<MdFileCopy />}
-            shape="circle"
-            type="text"
-          />
-          <Button
-            className="action-btn"
-            icon={<RiDeleteBinFill />}
-            shape="circle"
-            type="text"
-          />
-        </Space>
-      );
-    },
-  },
-];
-
 const ManageSurvey = () => {
+  const navigate = useNavigate();
   const [form] = Form.useForm();
   const [isSurveyModalVisible, setIsSurveyModalVisible] = useState(false);
-  const navigate = useNavigate();
+  const [dataSource, setDataSource] = useState([]);
+  const isLoading = !dataSource?.length;
+
+  const columns = [
+    {
+      title: "",
+      dataIndex: "",
+      key: "status",
+      render: (record) => {
+        if (!record?.status) {
+          return "";
+        }
+        return (
+          <Tooltip
+            key={`${record?.id}-${record?.key}`}
+            title={record?.status}
+            placement="left"
+          >
+            <FaInfoCircle />
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      className: "bg-grey title",
+    },
+    {
+      title: "Added By",
+      dataIndex: "user",
+      key: "user",
+      className: "bg-grey",
+    },
+    {
+      title: "Date Created",
+      dataIndex: "created",
+      key: "created",
+      className: "bg-grey",
+    },
+    {
+      title: "Action",
+      dataIndex: "",
+      key: "action",
+      className: "bg-grey",
+      render: (record) => {
+        return (
+          <Space key={`${record?.id}-${record?.key}`}>
+            <Button
+              className="action-btn"
+              icon={<RiPencilFill />}
+              shape="circle"
+              type="text"
+              onClick={() => navigate(`/survey-editor/${record?.id}`)}
+            />
+            {/* <Button
+              className="action-btn"
+              icon={<MdFileCopy />}
+              shape="circle"
+              type="text"
+            /> */}
+            <Button
+              className="action-btn"
+              icon={<RiDeleteBinFill />}
+              shape="circle"
+              type="text"
+            />
+          </Space>
+        );
+      },
+    },
+  ];
+
+  useEffect(() => {
+    api
+      .get("/form/")
+      .then((res) => {
+        const data = res?.data?.map((item) => ({
+          ...item,
+          user: "John Doe",
+          status: null,
+        }));
+        setDataSource(data);
+      })
+      .catch((e) => {
+        const { status, statusText } = e.response;
+        console.error(status, statusText);
+      });
+  }, []);
 
   const onSubmitForm = (values) => {
-    console.log(values);
-    navigate("/survey-editor");
+    let data = {};
+    Object.keys(values)?.forEach((key) => {
+      const field = key.split("-")[1];
+      data = {
+        ...data,
+        ...{ [field]: values[key] },
+      };
+    });
+    api
+      .post("/form", data, { "content-type": "application/json" })
+      .then((res) => {
+        const { data } = res;
+        navigate(`/survey-editor/${data?.id}`);
+      })
+      .catch((e) => {
+        const { status, statusText } = e.response;
+        console.error(status, statusText);
+      });
   };
 
   return (
@@ -120,10 +156,11 @@ const ManageSurvey = () => {
                 New Survey
               </Button>
               <Table
+                loading={isLoading}
                 rowKey={(record) => `${record?.key}-${record?.id}`}
                 className="table-wrapper"
                 columns={columns}
-                dataSource={dataSources}
+                dataSource={dataSource}
                 expandable={{
                   defaultExpandAllRows: true,
                   expandedRowRender: (record) => (

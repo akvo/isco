@@ -8,9 +8,9 @@ import { store, api } from "./lib";
 const App = () => {
   useEffect(() => {
     Promise.all([
-      api.get("question/type"),
-      api.get("member_type/"),
-      api.get("isco_type/"),
+      api.get("/question/type"),
+      api.get("/member_type/"),
+      api.get("/isco_type/"),
     ]).then((res) => {
       const [question_type, member_type, isco_type] = res;
       store.update((s) => {
@@ -34,7 +34,11 @@ const App = () => {
           <Route exact path="/admin" element={<Admin />} />
           <Route exact path="/manage-survey" element={<ManageSurvey />} />
           <Route exact path="/manage-user" element={<ManageUser />} />
-          <Route exact path="/survey-editor" element={<SurveyEditor />} />
+          <Route
+            exact
+            path="/survey-editor/:formId"
+            element={<SurveyEditor />}
+          />
         </Routes>
       </Layout.Body>
       <Layout.Footer />
