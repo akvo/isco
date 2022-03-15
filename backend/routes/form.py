@@ -65,7 +65,7 @@ def delete(req: Request, id: int, session: Session = Depends(get_session)):
     return Response(status_code=HTTPStatus.NO_CONTENT.value)
 
 
-@form_route.get("/survey-editor/{form_id:path}",
+@form_route.get("/survey_editor/{form_id:path}",
                 response_model=FormBase,
                 summary="load survey editor data by id",
                 name="form:get_survey_editor_by_id",

@@ -1,14 +1,35 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./style.scss";
 import { Row, Col, Card, Tabs } from "antd";
 import { MainEditor } from "../../components";
 import { useParams } from "react-router-dom";
+import { store, api } from "../../lib";
 
 const { TabPane } = Tabs;
 
 const SurveyEditor = () => {
   const { formId } = useParams();
-  console.log(formId);
+
+  useEffect(() => {
+    api
+      .get(`survey_editor/${formId}`)
+      .then((res) => {
+        const { data } = res;
+        store.update((s) => {
+          s.surveyEditor = {
+            ...s.surveyEditor,
+            id: data?.id,
+            name: data?.name,
+            description: data?.description,
+            languages: data?.languages,
+          };
+        });
+      })
+      .catch((e) => {
+        const { status, statusText } = e.response;
+        console.error(status, statusText);
+      });
+  }, []);
 
   return (
     <div id="survey-editor">
