@@ -12,6 +12,8 @@ from db.connection import Base
 from datetime import datetime
 from models.question import QuestionBase, QuestionJson
 from models.question import QuestionPayload
+import models.question_group_member_access as qg_member_access
+import models.question_group_isco_access as qg_isco_access
 
 
 class QuestionGroupPayload(TypedDict):
@@ -21,6 +23,10 @@ class QuestionGroupPayload(TypedDict):
     translations: Optional[List[dict]] = None
     order: Optional[int] = None
     repeat: Optional[bool] = None
+    member_access: Optional[
+        List[qg_member_access.QuestionGroupMemberAccessPayload]]
+    isco_access: Optional[
+        List[qg_isco_access.QuestionGroupIscoAccessPayload]]
     question: Optional[List[QuestionPayload]]
 
 
@@ -44,10 +50,24 @@ class QuestionGroup(Base):
     repeat = Column(Boolean, default=False)
     order = Column(Integer, nullable=True)
     created = Column(DateTime, default=datetime.utcnow)
-    question = relationship("Question",
-                            cascade="all, delete",
-                            passive_deletes=True,
-                            backref="question_group_detail")
+    member_access = relationship(
+        "QuestionGroupMemberAccess",
+        primaryjoin="QuestionGroupMemberAccess.question_group==QuestionGroup.id",
+        cascade="all, delete",
+        passive_deletes=True,
+        backref="question_group_member_access")
+    isco_access = relationship(
+        "QuestionGroupIscoAccess",
+        primaryjoin="QuestionGroupIscoAccess.question_group==QuestionGroup.id",
+        cascade="all, delete",
+        passive_deletes=True,
+        backref="question_group_isco_access")
+    question = relationship(
+        "Question",
+        primaryjoin="Question.question_group==QuestionGroup.id",
+        cascade="all, delete",
+        passive_deletes=True,
+        backref="question_group_detail")
 
     def __init__(self, id: Optional[int], form: int, name: str,
                  translations: Optional[List[dict]],
@@ -74,6 +94,8 @@ class QuestionGroup(Base):
             "translations": self.translations,
             "order": self.order,
             "repeat": self.repeat,
+            "member_access": self.member_access,
+            "isco_access": self.isco_access,
             "question": self.question
         }
 
@@ -86,6 +108,8 @@ class QuestionGroupBase(BaseModel):
     translations: Optional[List[dict]] = None
     order: Optional[int] = None
     repeat: bool
+    member_access: Optional[List] = []
+    isco_access: Optional[List] = []
     question: Optional[List[QuestionBase]] = []
 
     class Config:
@@ -98,6 +122,8 @@ class QuestionGroupJson(BaseModel):
     translations: Optional[List[dict]] = None
     order: Optional[int] = None
     repeat: bool
+    member_access: Optional[List] = []
+    isco_access: Optional[List] = []
     question: Optional[List[QuestionJson]] = []
 
     class Config:

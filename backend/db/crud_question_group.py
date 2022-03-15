@@ -3,6 +3,8 @@ from typing import List
 from sqlalchemy.orm import Session
 from models.question_group import QuestionGroupPayload, QuestionGroupDict
 from models.question_group import QuestionGroup, QuestionGroupBase
+from models.question_group_member_access import QuestionGroupMemberAccess
+from models.question_group_isco_access import QuestionGroupIscoAccess
 from db.crud_question import add_question
 
 
@@ -28,6 +30,21 @@ def add_question_group(session: Session,
                                    order=last_question_group,
                                    translations=payload['translations'],
                                    repeat=payload['repeat'])
+    if len(payload['member_access']):
+        for ma in payload['member_access']:
+            member = QuestionGroupMemberAccess(
+                id=None,
+                question_group=ma['question_group'],
+                member_type=ma['member_type'])
+            question_group.member_access.append(member)
+    if len(payload['isco_access']):
+        for ia in payload['isco_access']:
+            isco = QuestionGroupIscoAccess(
+                id=None,
+                question_group=ia['question_group'],
+                isco_type=ia['isco_type'])
+            question_group.isco_access.append(isco)
+
     session.add(question_group)
     session.commit()
     session.flush()
@@ -57,7 +74,7 @@ def get_question_group_by_id(session: Session, id: int) -> QuestionGroupBase:
 
 
 def update_question_group(session: Session, id: int,
-                          payload: QuestionGroupPayload) -> QuestionGroupDict:
+                          payload: QuestionGroupPayload) -> QuestionGroupBase:
     question_group = get_question_group_by_id(session=session, id=id)
     question_group.form = payload['form']
     question_group.name = payload['name']

@@ -42,7 +42,7 @@ def get_by_id(req: Request, id: int, session: Session = Depends(get_session)):
 
 
 @question_group_route.put("/question_group/{id:path}",
-                          response_model=QuestionGroupDict,
+                          response_model=QuestionGroupBase,
                           summary="update question group",
                           name="question_group:put",
                           tags=["Question Group"])

@@ -63,12 +63,16 @@ class TestFormRoutes():
                   "translations": None,
                   "repeat": False,
                   "order": None,
+                  "member_access": [],
+                  "isco_access": [],
                   "question": []})
         assert res.status_code == 200
         res = res.json()
         assert res == {"description": "Question Group 1 Description",
                        "form": 1,
                        "id": 1,
+                       "isco_access": [],
+                       "member_access": [],
                        "name": "Question Group 1",
                        "order": 1,
                        "repeat": False,
@@ -99,6 +103,8 @@ class TestFormRoutes():
                     ],
                   "repeat": False,
                   "order": 1,
+                  "member_access": [],
+                  "isco_access": [],
                   "question": []})
         assert res.status_code == 200
         res = res.json()
@@ -106,9 +112,12 @@ class TestFormRoutes():
             "description": "Question Group 1 Description",
             "form": 1,
             "id": 1,
+            "isco_access": [],
+            "member_access": [],
             "name": "Question Group 1",
             "repeat": False,
             "order": 1,
+            "question": [],
             "translations": [
                 {
                     "language": "id",

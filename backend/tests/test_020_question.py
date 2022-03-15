@@ -555,6 +555,18 @@ class TestQuestionRoutes():
             "translations": None,
             "repeat": False,
             "order": None,
+            "member_access": [
+                {
+                    "question_group": None,
+                    "member_type": 1,
+                }
+            ],
+            "isco_access": [
+                {
+                    "question_group": None,
+                    "isco_type": 1,
+                }
+            ],
             "question": [
                 {
                     "form": None,
@@ -588,6 +600,20 @@ class TestQuestionRoutes():
             "description": "This is description",
             "form": 1,
             "id": 2,
+            "isco_access": [
+                {
+                    "id": 1,
+                    "isco_type": 1,
+                    "question_group": 2,
+                }
+            ],
+            "member_access": [
+                {
+                    "id": 1,
+                    "member_type": 1,
+                    "question_group": 2,
+                }
+            ],
             "name": "Question Group 2",
             "order": 2,
             "repeat": False,
