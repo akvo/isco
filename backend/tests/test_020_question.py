@@ -623,9 +623,21 @@ class TestQuestionRoutes():
                     "datapoint_name": False,
                     "form": 1,
                     "id": 4,
-                    "isco_access": [],
+                    "isco_access": [
+                        {
+                            "id": 2,
+                            "isco_type": 1,
+                            "question": 4,
+                        }
+                    ],
                     "mandatory": True,
-                    "member_access": [],
+                    "member_access": [
+                        {
+                            "id": 3,
+                            "member_type": 1,
+                            "question": 4,
+                        }
+                    ],
                     "name": 'Age',
                     "option": [],
                     "order": 1,

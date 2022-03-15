@@ -52,7 +52,8 @@ class QuestionGroup(Base):
     created = Column(DateTime, default=datetime.utcnow)
     member_access = relationship(
         "QuestionGroupMemberAccess",
-        primaryjoin="QuestionGroupMemberAccess.question_group==QuestionGroup.id",
+        primaryjoin="QuestionGroupMemberAccess.question_group==\
+        QuestionGroup.id",
         cascade="all, delete",
         passive_deletes=True,
         backref="question_group_member_access")
