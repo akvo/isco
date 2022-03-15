@@ -3,9 +3,15 @@ import pytest
 from fastapi import FastAPI
 from httpx import AsyncClient
 from sqlalchemy.orm import Session
+from datetime import datetime
 
 pytestmark = pytest.mark.asyncio
 sys.path.append("..")
+
+
+def datenow():
+    now = datetime.utcnow()
+    return now.strftime("%d-%m-%Y")
 
 
 class TestFormRoutes():
@@ -20,7 +26,8 @@ class TestFormRoutes():
                   "languages": None})
         assert res.status_code == 200
         res = res.json()
-        assert res == {"description": "Form Description",
+        assert res == {"created": datenow(),
+                       "description": "Form Description",
                        "id": 1,
                        "languages": None,
                        "name": "Form Test"}
@@ -41,7 +48,8 @@ class TestFormRoutes():
                   "languages": ["id"]})
         assert res.status_code == 200
         res = res.json()
-        assert res == {"description": "Form Description",
+        assert res == {"created": datenow(),
+                       "description": "Form Description",
                        "id": 1,
                        "languages": ["id"],
                        "name": "Form Test"}

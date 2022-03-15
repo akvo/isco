@@ -25,6 +25,7 @@ class FormDict(TypedDict):
     name: str
     description: Optional[str] = None
     languages: Optional[List[str]] = None
+    created: str
 
 
 class Form(Base):
@@ -57,6 +58,7 @@ class Form(Base):
             "name": self.name,
             "description": self.description,
             "languages": self.languages,
+            "created": self.created.strftime("%d-%m-%Y"),
             "question_group": self.question_group
         }
 
