@@ -290,7 +290,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
       if (key.includes("question")) {
         // update question state
         let findQuestion = question?.find((q) => q?.id === qid);
-        if (!field.includes("option") || !field.includes("repeating_object")) {
+        if (!["option", "repeating_object", "rule"].includes(field)) {
           findQuestion = {
             ...findQuestion,
             [field]: value,
@@ -326,6 +326,17 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
               return ro;
             }),
           };
+        }
+        if (field.includes("rule")) {
+          const ruleType = key.split("-")[3];
+          findQuestion = {
+            ...findQuestion,
+            rule: {
+              ...findQuestion?.rule,
+              [ruleType]: value,
+            },
+          };
+          console.log(ruleType, value);
         }
         console.log(findQuestion);
         store.update((s) => {
@@ -365,7 +376,11 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
         <Form
           form={form}
           name="survey-detail"
-          onValuesChange={handleFormOnValuesChange}
+          onValuesChange={(values, allValues) => {
+            setTimeout(() => {
+              handleFormOnValuesChange(values, allValues);
+            }, 100);
+          }}
           onFinish={handleFormOnFinish}
           onFinishFailed={handleFormOnFinishFailed}
         >
@@ -439,6 +454,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
                   index={qi + 1}
                   question={q}
                   questionGroup={questionGroup}
+                  handleFormOnValuesChange={handleFormOnValuesChange}
                 />
               ))
             )}

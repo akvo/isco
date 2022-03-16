@@ -64,7 +64,13 @@ const QuestionMenu = ({ activeSetting, setActiveSetting }) => {
   );
 };
 
-const QuestionEditor = ({ form, index, question, questionGroup }) => {
+const QuestionEditor = ({
+  form,
+  index,
+  question,
+  questionGroup,
+  handleFormOnValuesChange,
+}) => {
   const [activePanel, setActivePanel] = useState(null);
   const [activeSetting, setActiveSetting] = useState("detail");
   const state = store.useState((s) => s?.surveyEditor);
@@ -187,6 +193,7 @@ const QuestionEditor = ({ form, index, question, questionGroup }) => {
                         activeSetting={activeSetting}
                         questionGroup={questionGroup}
                         question={question}
+                        handleFormOnValuesChange={handleFormOnValuesChange}
                       />
                     </Col>
                   </Row>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Row,
   Col,
@@ -117,9 +117,16 @@ const RenderRepeatingObjectInput = ({
   ));
 };
 
-const Detail = ({ form, questionGroup, question }) => {
+const Detail = ({
+  form,
+  questionGroup,
+  question,
+  handleFormOnValuesChange,
+}) => {
   const state = store.useState((s) => s?.surveyEditor);
   const { type, option, repeating_objects } = question;
+  const [allowOther, setAllowOther] = useState(false);
+  const qId = question?.id;
 
   const handlePlusMinusOptionButton = (operation, opt, optIndex) => {
     const filterQuestionGroup = state?.questionGroup?.filter(
@@ -221,6 +228,14 @@ const Detail = ({ form, questionGroup, question }) => {
     });
   };
 
+  const handleAllowOtherChange = (val, field) => {
+    form.setFieldsValue({ [field]: val });
+    setAllowOther(val);
+    setTimeout(() => {
+      handleFormOnValuesChange(form?.getFieldsValue(), form?.getFieldsValue());
+    }, 100);
+  };
+
   return (
     <>
       {/* Options */}
@@ -243,11 +258,19 @@ const Detail = ({ form, questionGroup, question }) => {
       </div>
       {/* Add Other */}
       <div className="question-setting-wrapper">
-        <Row>
+        <Row align="middle" justify="space-between">
           <Col span={1}>
-            <Form.Item name="rule-other">
-              <Checkbox checked={false} />
+            <Form.Item name={`question-${qId}-rule-allow_other`} hidden noStyle>
+              <Input />
             </Form.Item>
+            <Checkbox
+              onChange={(val) =>
+                handleAllowOtherChange(
+                  val?.target?.checked,
+                  `question-${qId}-rule-allow_other`
+                )
+              }
+            />
           </Col>
           <Col span={23}>
             <Input
@@ -256,7 +279,7 @@ const Detail = ({ form, questionGroup, question }) => {
             />
           </Col>
         </Row>
-        <Row>
+        {/* <Row>
           <Col span={1}>
             <Form.Item name="rule-none">
               <Checkbox checked={false} />
@@ -268,7 +291,7 @@ const Detail = ({ form, questionGroup, question }) => {
               disabled
             />
           </Col>
-        </Row>
+        </Row> */}
       </div>
     </>
   );
@@ -376,7 +399,13 @@ const Setting = ({ question, questionGroup }) => {
   );
 };
 
-const RenderLayout = ({ form, activeSetting, questionGroup, question }) => {
+const RenderLayout = ({
+  form,
+  activeSetting,
+  questionGroup,
+  question,
+  handleFormOnValuesChange,
+}) => {
   switch (activeSetting) {
     case "translation":
       return <Translation questionGroup={questionGroup} question={question} />;
@@ -384,12 +413,23 @@ const RenderLayout = ({ form, activeSetting, questionGroup, question }) => {
       return <Setting questionGroup={questionGroup} question={question} />;
     default:
       return (
-        <Detail form={form} questionGroup={questionGroup} question={question} />
+        <Detail
+          form={form}
+          questionGroup={questionGroup}
+          question={question}
+          handleFormOnValuesChange={handleFormOnValuesChange}
+        />
       );
   }
 };
 
-const QuestionSetting = ({ form, activeSetting, questionGroup, question }) => {
+const QuestionSetting = ({
+  form,
+  activeSetting,
+  questionGroup,
+  question,
+  handleFormOnValuesChange,
+}) => {
   return (
     <>
       <RenderLayout
@@ -397,6 +437,7 @@ const QuestionSetting = ({ form, activeSetting, questionGroup, question }) => {
         activeSetting={activeSetting}
         questionGroup={questionGroup}
         question={question}
+        handleFormOnValuesChange={handleFormOnValuesChange}
       />
       <div className="question-button-wrapper">
         <Space align="center">
