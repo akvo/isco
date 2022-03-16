@@ -4,6 +4,8 @@ import { Row, Col, Card, Tabs } from "antd";
 import { MainEditor } from "../../components";
 import { useParams } from "react-router-dom";
 import { store, api } from "../../lib";
+import { defaultRepeatingObject } from "../../lib/store";
+import { generateID } from "../../lib/util";
 
 const { TabPane } = Tabs;
 
@@ -22,7 +24,25 @@ const SurveyEditor = () => {
             name: data?.name,
             description: data?.description,
             languages: data?.languages,
-            questionGroup: data?.question_group,
+            questionGroup: data?.question_group?.map((qg) => {
+              return {
+                ...qg,
+                question: qg?.question?.map((q) => {
+                  if (
+                    !q?.repeating_objects ||
+                    q?.repeating_objects?.length === 0
+                  ) {
+                    return {
+                      ...q,
+                      repeating_objects: [
+                        { ...defaultRepeatingObject, id: generateID() },
+                      ],
+                    };
+                  }
+                  return q;
+                }),
+              };
+            }),
           };
         });
       })

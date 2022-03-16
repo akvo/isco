@@ -18,6 +18,8 @@ import { AiOutlineGroup } from "react-icons/ai";
 import QuestionEditor from "./QuestionEditor";
 import { store, api } from "../../lib";
 import orderBy from "lodash/orderBy";
+import { defaultRepeatingObject } from "../../lib/store";
+import { generateID } from "../../lib/util";
 
 const { TabPane } = Tabs;
 
@@ -161,7 +163,16 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
         setIsGroupSettingVisible(false);
         const newQg = {
           ...questionGroup,
-          question: [...questionGroup?.question, data],
+          // add new option with default repeating objects
+          question: [
+            ...questionGroup?.question,
+            {
+              ...data,
+              repeating_objects: [
+                { ...defaultRepeatingObject, id: generateID() },
+              ],
+            },
+          ],
         };
         store.update((s) => {
           s.surveyEditor = {
@@ -279,13 +290,13 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
       if (key.includes("question")) {
         // update question state
         let findQuestion = question?.find((q) => q?.id === qid);
-        if (!field.includes("option")) {
+        if (!field.includes("option") || !field.includes("repeating_object")) {
           findQuestion = {
             ...findQuestion,
             [field]: value,
           };
         }
-        if (field === "option") {
+        if (field.includes("option")) {
           const optId = key.split("-")[3];
           findQuestion = {
             ...findQuestion,
@@ -297,6 +308,22 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
                 };
               }
               return opt;
+            }),
+          };
+        }
+        if (field.includes("repeating_object")) {
+          const roId = key.split("-")[3];
+          const roKey = field.split("_")[2];
+          findQuestion = {
+            ...findQuestion,
+            repeating_objects: findQuestion?.repeating_objects?.map((ro) => {
+              if (ro?.id == roId) {
+                return {
+                  ...ro,
+                  [roKey]: value,
+                };
+              }
+              return ro;
             }),
           };
         }

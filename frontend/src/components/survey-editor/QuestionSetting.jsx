@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   Row,
   Col,
@@ -38,6 +38,7 @@ const RenderOptionInput = ({
         <Form.Item
           label={<BiRadioCircle />}
           name={`question-${qId}-option-${opt?.id}`}
+          rules={[{ required: true, message: "Please option value" }]}
         >
           <Input placeholder="Enter an answer choice" />
         </Form.Item>
@@ -65,13 +66,11 @@ const RenderOptionInput = ({
 };
 
 const RenderRepeatingObjectInput = ({
+  question,
   repeating_objects,
   handlePlusMinusRepeatingObjects,
 }) => {
-  repeating_objects =
-    repeating_objects?.length || repeating_objects
-      ? repeating_objects
-      : [defaultRepeatingObject];
+  const qId = question?.id;
 
   return repeating_objects?.map((ro, roi) => (
     <Row
@@ -83,12 +82,16 @@ const RenderRepeatingObjectInput = ({
       <Col span={22}>
         <Row align="middle" justify="space-between" gutter={[12, 12]}>
           <Col span={12}>
-            <Form.Item name={`question-repeating-object-field-${ro?.id}`}>
+            <Form.Item
+              name={`question-${qId}-repeating_object_field-${ro?.id}`}
+            >
               <Input placeholder="Field" />
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item name={`question-repeating-object-value-${ro?.id}`}>
+            <Form.Item
+              name={`question-${qId}-repeating_object_value-${ro?.id}`}
+            >
               <Input placeholder="Value" />
             </Form.Item>
           </Col>
@@ -233,6 +236,7 @@ const Detail = ({ form, questionGroup, question }) => {
       {/* Repeating Objects */}
       <div className="question-setting-wrapper">
         <RenderRepeatingObjectInput
+          question={question}
           repeating_objects={repeating_objects}
           handlePlusMinusRepeatingObjects={handlePlusMinusRepeatingObjects}
         />

@@ -11,7 +11,7 @@ export const defaultOption = {
 
 export const defaultRepeatingObject = {
   id: null,
-  key: null,
+  field: null,
   value: null,
 };
 
