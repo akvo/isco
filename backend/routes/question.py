@@ -21,13 +21,36 @@ def add(req: Request, payload: QuestionPayload,
     return question.serialize
 
 
-@question_route.post("/question",
-                     response_model=QuestionBase,
-                     summary="add new question",
-                     name="question:create",
-                     tags=["Question"])
-def create_default(req: Request, payload: QuestionPayload,
+@question_route.post(
+    "/default_question/{form_id:path}/{question_group_id:path}",
+    response_model=QuestionBase,
+    summary="add default question",
+    name="question:create_default",
+    tags=["Question"])
+def create_default(req: Request, form_id: int,
+                   question_group_id: int,
                    session: Session = Depends(get_session)):
+    payload = {
+        "form": form_id,
+        "question_group": question_group_id,
+        "name": "New question",
+        "translations": None,
+        "mandatory": False,
+        "datapoint_name": False,
+        "variable_name": None,
+        "type": QuestionType.text.value,
+        "personal_data": False,
+        "rule": None,
+        "tooltip": None,
+        "tooltip_translations": None,
+        "cascade": None,
+        "repeating_objects": None,
+        "order": None,
+        "option": None,
+        "member_access": None,
+        "isco_access": None,
+        "skip_logic": None,
+    }
     question = crud.add_question(session=session, payload=payload)
     return question.serialize
 

@@ -23,8 +23,8 @@ def add(req: Request, payload: QuestionGroupPayload,
 
 @question_group_route.post("/default_question_group/{form_id:path}",
                            response_model=QuestionGroupBase,
-                           summary="add new question group",
-                           name="question_group:create",
+                           summary="add default question group",
+                           name="question_group:create_default",
                            tags=["Question Group"])
 def create_default(req: Request, form_id: int,
                    session: Session = Depends(get_session)):
