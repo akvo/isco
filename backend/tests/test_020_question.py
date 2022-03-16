@@ -101,7 +101,12 @@ class TestQuestionRoutes():
             "tooltip_translations": [
                 {"language": "id", "text": "Keterangan Pertanyaan 1"}],
             "cascade": None,
-            "repeating_objects": None,
+            "repeating_objects": [
+                {
+                    "field": "unit",
+                    "value": "cm",
+                },
+            ],
             "order": 1,
             "option": None,
             "member_access": None,
@@ -113,17 +118,26 @@ class TestQuestionRoutes():
         assert res.status_code == 200
         res = res.json()
         assert res == {
-            "id": 1,
             "cascade": None,
             "datapoint_name": True,
             "form": 1,
+            "id": 1,
+            "isco_access": [],
             "mandatory": True,
+            "member_access": [],
             "name": 'Question 1',
+            "option": [],
             "order": 1,
             "personal_data": False,
             "question_group": 1,
-            "repeating_objects": None,
+            "repeating_objects": [
+                {
+                    "field": "unit",
+                    "value": "cm",
+                },
+            ],
             "rule": None,
+            "skip_logic": [],
             "tooltip": 'Question 1 tooltip',
             "tooltip_translations": [
                 {"language": "id", "text": "Keterangan Pertanyaan 1"}],

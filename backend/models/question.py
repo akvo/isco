@@ -55,11 +55,11 @@ class QuestionPayload(TypedDict):
     variable_name: Optional[str] = None
     type: QuestionType
     personal_data: bool
-    rule: Optional[RuleDict] = None
+    rule: Optional[dict] = None
     tooltip: Optional[str] = None
     tooltip_translations: Optional[List[dict]] = None
     cascade: Optional[int] = None
-    repeating_objects: Optional[List[RepeatingObjectDict]] = None
+    repeating_objects: Optional[List[dict]] = None
     order: Optional[int] = None
     option: Optional[List[OptionPayload]] = None
     member_access: Optional[List[int]] = None
@@ -78,11 +78,11 @@ class QuestionDict(TypedDict):
     variable_name: Optional[str] = None
     type: QuestionType
     personal_data: bool
-    rule: Optional[RuleDict] = None
+    rule: Optional[dict] = None
     tooltip: Optional[str] = None
     tooltip_translations: Optional[List[dict]] = None
     cascade: Optional[int] = None
-    repeating_objects: Optional[List[RepeatingObjectDict]] = []
+    repeating_objects: Optional[List] = []
     order: Optional[int] = None
 
 
@@ -135,10 +135,10 @@ class Question(Base):
                  question_group: int, translations: Optional[List[dict]],
                  mandatory: Optional[bool], datapoint_name: Optional[bool],
                  variable_name: Optional[str], type: QuestionType,
-                 personal_data: Optional[bool], rule: Optional[RuleDict],
+                 personal_data: Optional[bool], rule: Optional[dict],
                  tooltip: Optional[str], cascade: Optional[int],
                  tooltip_translations: Optional[List[dict]],
-                 repeating_objects: Optional[List[RepeatingObjectDict]],
+                 repeating_objects: Optional[List],
                  order: Optional[int]):
         self.id = id
         self.form = form
@@ -197,13 +197,13 @@ class QuestionBase(BaseModel):
     variable_name: Optional[str] = None
     type: QuestionType
     personal_data: bool
-    rule: Optional[RuleDict] = None
+    rule: Optional[dict] = None
     tooltip: Optional[str] = None
     tooltip_translations: Optional[List[dict]] = None
     member_access: Optional[List[int]] = []
     isco_access: Optional[List[int]] = []
     cascade: Optional[int] = None
-    repeating_objects: Optional[List[RepeatingObjectDict]] = []
+    repeating_objects: Optional[List] = []
     option: Optional[List[OptionBase]] = []
     skip_logic: Optional[List[SkipLogicBase]] = []
     order: Optional[int] = None
@@ -222,13 +222,13 @@ class QuestionJson(BaseModel):
     variable_name: Optional[str] = None
     type: QuestionType
     personal_data: bool
-    rule: Optional[RuleDict] = None
+    rule: Optional[dict] = None
     tooltip: Optional[str] = None
     tooltip_translations: Optional[List[dict]] = None
     member_access: Optional[List[int]] = []
     isco_access: Optional[List[int]] = []
     cascade: Optional[int] = None
-    repeating_objects: Optional[List[RepeatingObjectDict]] = []
+    repeating_objects: Optional[List] = []
     option: Optional[List[OptionBase]] = []
     skip_logic: Optional[List[SkipLogicBase]] = []
 

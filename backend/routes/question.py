@@ -97,7 +97,7 @@ def get_by_id(req: Request, id: int,
 
 
 @question_route.put("/question/{id:path}",
-                    response_model=QuestionDict,
+                    response_model=QuestionBase,
                     summary="update question",
                     name="question:put",
                     tags=["Question"])
