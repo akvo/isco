@@ -4,10 +4,7 @@ from sqlalchemy.orm import Session
 from models.question_group import QuestionGroupPayload, QuestionGroupDict
 from models.question_group import QuestionGroup, QuestionGroupBase
 from models.question_group_member_access import QuestionGroupMemberAccess
-from models.question_group_member_access import \
-    QuestionGroupMemberAccessPayload
 from models.question_group_isco_access import QuestionGroupIscoAccess
-from models.question_group_isco_access import QuestionGroupIscoAccessPayload
 from db.crud_question import add_question
 
 
