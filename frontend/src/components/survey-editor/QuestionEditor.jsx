@@ -85,6 +85,7 @@ const QuestionEditor = ({
 
   useEffect(() => {
     if (qId) {
+      // Load question value to fields
       Object.keys(question).forEach((key) => {
         const field = `question-${qId}-${key}`;
         const value = question?.[key];
@@ -100,7 +101,7 @@ const QuestionEditor = ({
         }
         // Load repeating objects value
         if (key === "repeating_objects" && value) {
-          value?.map((val, vi) => {
+          value?.forEach((val, vi) => {
             Object.keys(val).forEach((key) => {
               const rField = `${field}_${key}-${vi}`;
               form.setFieldsValue({ [rField]: val?.[key] });
@@ -108,7 +109,12 @@ const QuestionEditor = ({
           });
         }
         // Load option value
-        // TODO::HERE
+        if (key === "option" && value) {
+          value?.forEach((val) => {
+            const opField = `${field}-${val?.id}`;
+            form.setFieldsValue({ [opField]: val?.name });
+          });
+        }
       });
     }
   }, [question]);

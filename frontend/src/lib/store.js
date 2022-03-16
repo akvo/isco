@@ -7,6 +7,7 @@ export const defaultOption = {
   name: null,
   translations: [],
   order: 1,
+  flag: "post",
 };
 
 export const defaultRepeatingObject = {

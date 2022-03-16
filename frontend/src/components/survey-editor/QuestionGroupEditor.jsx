@@ -310,17 +310,31 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
               opt?.translations?.length > 0 ? opt?.translations : null,
             question: qId,
           };
-          api
-            .post(`/option`, optionPayload, {
-              "content-type": "application/json",
-            })
-            .then((res) => {
-              console.log("Option created", res?.data);
-            })
-            .catch((e) => {
-              const { status, statusText } = e.response;
-              console.error(status, statusText);
-            });
+          if (opt?.flag === "post") {
+            api
+              .post(`/option`, optionPayload, {
+                "content-type": "application/json",
+              })
+              .then((res) => {
+                console.log("Option created", res?.data);
+              })
+              .catch((e) => {
+                const { status, statusText } = e.response;
+                console.error(status, statusText);
+              });
+          } else {
+            api
+              .put(`/option/${opt?.id}`, optionPayload, {
+                "content-type": "application/json",
+              })
+              .then((res) => {
+                console.log("Option updated", res?.data);
+              })
+              .catch((e) => {
+                const { status, statusText } = e.response;
+                console.error(status, statusText);
+              });
+          }
         });
       }
       api
