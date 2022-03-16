@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Row,
   Col,
@@ -20,8 +20,13 @@ import { generateID, insert } from "../../lib/util";
 
 const { TabPane } = Tabs;
 
-const RenderOptionInput = ({ option, handlePlusMinusOptionButton }) => {
-  option = option?.length === 0 ? [defaultOption] : option;
+const RenderOptionInput = ({
+  question,
+  option,
+  handlePlusMinusOptionButton,
+}) => {
+  const qId = question?.id;
+
   return option?.map((opt, optIndex) => (
     <Row
       key={`option-${opt?.id}`}
@@ -32,7 +37,7 @@ const RenderOptionInput = ({ option, handlePlusMinusOptionButton }) => {
       <Col span={22}>
         <Form.Item
           label={<BiRadioCircle />}
-          name={`question-option-${opt?.id}`}
+          name={`question-${qId}-option-${opt?.id}`}
         >
           <Input placeholder="Enter an answer choice" />
         </Form.Item>
@@ -219,6 +224,7 @@ const Detail = ({ form, questionGroup, question }) => {
       {type === "option" && (
         <div className="question-setting-wrapper">
           <RenderOptionInput
+            question={question}
             option={option}
             handlePlusMinusOptionButton={handlePlusMinusOptionButton}
           />

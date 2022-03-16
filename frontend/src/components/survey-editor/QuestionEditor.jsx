@@ -14,13 +14,15 @@ import { RiSettings5Fill, RiDeleteBinFill } from "react-icons/ri";
 import { MdFileCopy, MdGTranslate } from "react-icons/md";
 import QuestionSetting from "./QuestionSetting";
 import { store, api } from "../../lib";
+import { defaultOption } from "../../lib/store";
+import { generateID } from "../../lib/util";
 
 const { Panel } = Collapse;
 
 const QuestionNameInput = ({ index, question }) => {
   return (
     <Form.Item
-      name={`question-name-${question?.id}`}
+      name={`question-${question?.id}-name`}
       rules={[{ required: true, message: "Please input your question" }]}
     >
       <Input placeholder="Enter your question" />
@@ -69,18 +71,48 @@ const QuestionEditor = ({ form, index, question, questionGroup }) => {
   const optionValues = store.useState((s) => s?.optionValues);
   const { question_type } = optionValues;
   const panelKey = `qe-${index}`;
-  const qid = question?.id;
+  const qgId = questionGroup?.id;
+  const qId = question?.id;
 
   useEffect(() => {
-    const qid = question?.id;
-    if (qid) {
+    if (qId) {
       Object.keys(question).forEach((key) => {
-        const field = `question-${key}-${qid}`;
+        const field = `question-${qId}-${key}`;
         const value = question?.[key];
         form.setFieldsValue({ [field]: value });
       });
     }
   }, [question]);
+
+  const handleOnChangeQuestionType = (val) => {
+    if (val === "option") {
+      store.update((s) => {
+        s.surveyEditor = {
+          ...s.surveyEditor,
+          questionGroup: s.surveyEditor?.questionGroup?.map((qg) => {
+            if (qg?.id === qgId) {
+              return {
+                ...qg,
+                question: qg?.question?.map((q) => {
+                  if (q?.id === qId) {
+                    if (q?.option?.length === 0) {
+                      return {
+                        ...q,
+                        option: [{ ...defaultOption, id: generateID() }],
+                      };
+                    }
+                    return q;
+                  }
+                  return q;
+                }),
+              };
+            }
+            return qg;
+          }),
+        };
+      });
+    }
+  };
 
   const handleDeleteQuestionButton = (question) => {
     const { id } = question;
@@ -165,7 +197,7 @@ const QuestionEditor = ({ form, index, question, questionGroup }) => {
             <Col span={6} align="end" className="right">
               <Space align="start">
                 <Form.Item
-                  name={`question-type-${qid}`}
+                  name={`question-${qId}-type`}
                   rules={[
                     { required: true, message: "Please select question type" },
                   ]}
@@ -174,6 +206,7 @@ const QuestionEditor = ({ form, index, question, questionGroup }) => {
                     showSearch={true}
                     className="custom-dropdown-wrapper"
                     placeholder="Question Type"
+                    onChange={handleOnChangeQuestionType}
                     options={question_type?.map((item) => ({
                       label: item.split("_").join(" "),
                       value: item,

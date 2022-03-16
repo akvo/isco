@@ -147,7 +147,6 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
   }, [questionGroup]);
 
   const onChangeRepeat = (val, fieldId) => {
-    console.log(fieldId);
     form.setFieldsValue({ [fieldId]: val });
     setRepeat(val);
   };
@@ -272,19 +271,36 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
   };
 
   const handleFormOnValuesChange = (values, allValues) => {
-    console.log(values);
     const question = questionGroup?.question;
     Object.keys(values).forEach((key) => {
-      const field = key.split("-")[1];
-      const qid = parseInt(key.split("-")[2]);
+      const field = key.split("-")[2];
+      const qid = parseInt(key.split("-")[1]);
       const value = values?.[key];
       if (key.includes("question")) {
         // update question state
         let findQuestion = question?.find((q) => q?.id === qid);
-        findQuestion = {
-          ...findQuestion,
-          [field]: value,
-        };
+        if (!field.includes("option")) {
+          findQuestion = {
+            ...findQuestion,
+            [field]: value,
+          };
+        }
+        if (field === "option") {
+          const optId = key.split("-")[3];
+          findQuestion = {
+            ...findQuestion,
+            option: findQuestion?.option?.map((opt) => {
+              if (opt?.id == optId) {
+                return {
+                  ...opt,
+                  name: value,
+                };
+              }
+              return opt;
+            }),
+          };
+        }
+        console.log(findQuestion);
         store.update((s) => {
           s.surveyEditor = {
             ...s.surveyEditor,
