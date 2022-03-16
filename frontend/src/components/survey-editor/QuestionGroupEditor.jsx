@@ -293,9 +293,36 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
         ?.map((r) => ({ field: r?.field, value: r?.value }));
       data = {
         ...findQuestion,
-        option: option?.length > 0 ? option : null,
+        // option: option?.length > 0 ? option : null,
+        option: null,
         repeating_objects: repeatingObject?.length > 0 ? repeatingObject : null,
       };
+      // post option first, then update question
+      if (option?.length > 0) {
+        option?.forEach((opt) => {
+          let optionPayload = {};
+          optionPayload = {
+            ...optionPayload,
+            code: opt?.code,
+            name: opt?.name,
+            order: opt?.order,
+            translations:
+              opt?.translations?.length > 0 ? opt?.translations : null,
+            question: qId,
+          };
+          api
+            .post(`/option`, optionPayload, {
+              "content-type": "application/json",
+            })
+            .then((res) => {
+              console.log("Option created", res?.data);
+            })
+            .catch((e) => {
+              const { status, statusText } = e.response;
+              console.error(status, statusText);
+            });
+        });
+      }
       api
         .put(`/question/${qId}`, data, {
           "content-type": "application/json",
