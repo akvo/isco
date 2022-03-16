@@ -18,7 +18,7 @@ import { AiOutlineGroup } from "react-icons/ai";
 import QuestionEditor from "./QuestionEditor";
 import { store, api } from "../../lib";
 import orderBy from "lodash/orderBy";
-import { defaultRepeatingObject } from "../../lib/store";
+import { defaultRepeatingObject, defaultOption } from "../../lib/store";
 import { generateID } from "../../lib/util";
 
 const { TabPane } = Tabs;
@@ -168,6 +168,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
             ...questionGroup?.question,
             {
               ...data,
+              option: [{ ...defaultOption, id: generateID() }],
               repeating_objects: [
                 { ...defaultRepeatingObject, id: generateID() },
               ],
@@ -282,14 +283,15 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
       const qId = parseInt(submitStatus?.split("-")[1]);
       const findQuestion = questionGroup?.question?.find((q) => q?.id === qId);
       const qgId = findQuestion?.question_group;
+      const option = findQuestion?.option?.filter((opt) => opt?.name);
       const repeatingObject = findQuestion?.repeating_objects
         ?.filter((r) => r?.field && r?.value)
         ?.map((r) => ({ field: r?.field, value: r?.value }));
       data = {
         ...findQuestion,
+        option: option?.length > 0 ? option : null,
         repeating_objects: repeatingObject?.length > 0 ? repeatingObject : null,
       };
-      console.log(data);
       api
         .put(`/question/${qId}`, data, {
           "content-type": "application/json",
@@ -305,7 +307,26 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
                     ...qg,
                     question: qg?.question?.map((q) => {
                       if (q?.id === qId) {
-                        return data;
+                        let option = data?.option;
+                        let repeating_objects = data?.repeating_objects;
+                        // add option default
+                        if (option?.length === 0) {
+                          option = [{ ...defaultOption, id: generateID() }];
+                        }
+                        // add repeating object default
+                        if (
+                          !repeating_objects ||
+                          repeating_objects?.length === 0
+                        ) {
+                          repeating_objects = [
+                            { ...defaultRepeatingObject, id: generateID() },
+                          ];
+                        }
+                        return {
+                          ...data,
+                          option: option,
+                          repeating_objects: repeating_objects,
+                        };
                       }
                       return q;
                     }),
@@ -335,7 +356,6 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
       if (key.includes("question")) {
         // update question state
         let findQuestion = question?.find((q) => q?.id === qid);
-        console.log("findQ", findQuestion);
         if (
           ![
             "option",
@@ -390,7 +410,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
             },
           };
         }
-        console.log(findQuestion);
+        console.log("onFormChangeValue", findQuestion);
         store.update((s) => {
           s.surveyEditor = {
             ...s.surveyEditor,

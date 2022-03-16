@@ -113,10 +113,11 @@ const QuestionEditor = ({
 
   const handleOnChangeQuestionType = (val) => {
     if (val === "option") {
+      return;
       store.update((s) => {
         s.surveyEditor = {
           ...s.surveyEditor,
-          questionGroup: s.surveyEditor?.questionGroup?.map((qg) => {
+          questionGroup: state?.questionGroup?.map((qg) => {
             if (qg?.id === qgId) {
               return {
                 ...qg,

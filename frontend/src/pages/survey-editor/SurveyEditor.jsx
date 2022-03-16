@@ -4,7 +4,7 @@ import { Row, Col, Card, Tabs } from "antd";
 import { MainEditor } from "../../components";
 import { useParams } from "react-router-dom";
 import { store, api } from "../../lib";
-import { defaultRepeatingObject } from "../../lib/store";
+import { defaultRepeatingObject, defaultOption } from "../../lib/store";
 import { generateID } from "../../lib/util";
 
 const { TabPane } = Tabs;
@@ -28,18 +28,21 @@ const SurveyEditor = () => {
               return {
                 ...qg,
                 question: qg?.question?.map((q) => {
-                  if (
-                    !q?.repeating_objects ||
-                    q?.repeating_objects?.length === 0
-                  ) {
-                    return {
-                      ...q,
-                      repeating_objects: [
-                        { ...defaultRepeatingObject, id: generateID() },
-                      ],
-                    };
+                  let option = q?.option;
+                  let repeating_objects = q?.repeating_objects;
+                  if (option?.length === 0) {
+                    option = [{ ...defaultOption, id: generateID() }];
                   }
-                  return q;
+                  if (!repeating_objects || repeating_objects?.length === 0) {
+                    repeating_objects = [
+                      { ...defaultRepeatingObject, id: generateID() },
+                    ];
+                  }
+                  return {
+                    ...q,
+                    option: option,
+                    repeating_objects: repeating_objects,
+                  };
                 }),
               };
             }),

@@ -6,7 +6,7 @@ export const defaultOption = {
   code: null,
   name: null,
   translations: [],
-  order: 0,
+  order: 1,
 };
 
 export const defaultRepeatingObject = {
