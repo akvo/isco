@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Row,
   Col,
@@ -13,8 +13,7 @@ import {
 import { RiSettings5Fill, RiDeleteBinFill } from "react-icons/ri";
 import { MdFileCopy, MdGTranslate } from "react-icons/md";
 import QuestionSetting from "./QuestionSetting";
-import { store } from "../../lib";
-import orderBy from "lodash/orderBy";
+import { store, api } from "../../lib";
 
 const { Panel } = Collapse;
 
@@ -51,7 +50,7 @@ const QuestionMenu = ({ activeSetting, setActiveSetting }) => {
         icon={<RiSettings5Fill />}
         onClick={() => setActiveSetting("setting")}
       />
-      <Button type="text" icon={<MdFileCopy />} />
+      {/* <Button type="text" icon={<MdFileCopy />} /> */}
       <Button
         className={`${activeSetting === "translation" ? "active" : ""}`}
         type="text"
@@ -70,28 +69,46 @@ const QuestionEditor = ({ form, index, question, questionGroup }) => {
   const optionValues = store.useState((s) => s?.optionValues);
   const { question_type } = optionValues;
   const panelKey = `qe-${index}`;
+  const qid = question?.id;
+
+  useEffect(() => {
+    const qid = question?.id;
+    if (qid) {
+      Object.keys(question).forEach((key) => {
+        const field = `question-${key}-${qid}`;
+        const value = question?.[key];
+        form.setFieldsValue({ [field]: value });
+      });
+    }
+  }, [question]);
 
   const handleDeleteQuestionButton = (question) => {
-    const filterQuestionGroup = state?.questionGroup?.filter(
-      (qg) => qg?.id !== questionGroup?.id
-    );
-    let deletedQuestionOnQg = questionGroup;
-    const filterQuestion = deletedQuestionOnQg?.question?.filter(
-      (q) => q?.id !== question?.id
-    );
-    deletedQuestionOnQg = {
-      ...deletedQuestionOnQg,
-      question: filterQuestion,
-    };
-    store.update((s) => {
-      s.surveyEditor = {
-        ...s.surveyEditor,
-        questionGroup: orderBy(
-          [...filterQuestionGroup, deletedQuestionOnQg],
-          ["order"]
-        ),
-      };
-    });
+    const { id } = question;
+    api
+      .delete(`/question/${id}`)
+      .then((res) => {
+        const filterQuestionGroup = state?.questionGroup?.filter(
+          (qg) => qg?.id !== questionGroup?.id
+        );
+        let deletedQuestionOnQg = questionGroup;
+        const filterQuestion = deletedQuestionOnQg?.question?.filter(
+          (q) => q?.id !== question?.id
+        );
+        deletedQuestionOnQg = {
+          ...deletedQuestionOnQg,
+          question: filterQuestion,
+        };
+        store.update((s) => {
+          s.surveyEditor = {
+            ...s.surveyEditor,
+            questionGroup: [...filterQuestionGroup, deletedQuestionOnQg],
+          };
+        });
+      })
+      .catch((e) => {
+        const { status, statusText } = e.response;
+        console.error(status, statusText);
+      });
   };
 
   return (
@@ -134,6 +151,7 @@ const QuestionEditor = ({ form, index, question, questionGroup }) => {
                     </Col>
                     <Col className="input-wrapper">
                       <QuestionSetting
+                        form={form}
                         activeSetting={activeSetting}
                         questionGroup={questionGroup}
                         question={question}
@@ -147,7 +165,7 @@ const QuestionEditor = ({ form, index, question, questionGroup }) => {
             <Col span={6} align="end" className="right">
               <Space align="start">
                 <Form.Item
-                  name={`question-type-${index}`}
+                  name={`question-type-${qid}`}
                   rules={[
                     { required: true, message: "Please select question type" },
                   ]}
