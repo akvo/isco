@@ -155,31 +155,31 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
   };
 
   const handleAddQuestionButton = (questionGroup) => {
-    setIsGroupSettingVisible(false);
-    const findQuestionGroup = state.questionGroup.find(
-      (qg) => qg?.id === questionGroup?.id
-    );
-    const filterQuestionGroup = state.questionGroup.filter(
-      (qg) => qg?.id !== questionGroup?.id
-    );
-    const lastQ = findLast(questionGroup.question, "id");
-    const newQg = {
-      ...findQuestionGroup,
-      question: [
-        ...findQuestionGroup?.question,
-        {
-          ...defaultQuestionEditor,
-          id: generateID(),
-          order: lastQ?.order + 1,
-        },
-      ],
-    };
-    store.update((s) => {
-      s.surveyEditor = {
-        ...s.surveyEditor,
-        questionGroup: [...filterQuestionGroup, newQg],
-      };
-    });
+    const formId = state?.id;
+    const qgId = questionGroup?.id;
+    api
+      .post(`/default_question/${formId}/${qgId}`)
+      .then((res) => {
+        const { data } = res;
+        setIsGroupSettingVisible(false);
+        const newQg = {
+          ...questionGroup,
+          question: [...questionGroup?.question, data],
+        };
+        store.update((s) => {
+          s.surveyEditor = {
+            ...s.surveyEditor,
+            questionGroup: [
+              ...s.surveyEditor.questionGroup.filter((qg) => qg?.id !== qgId),
+              newQg,
+            ],
+          };
+        });
+      })
+      .catch((e) => {
+        const { status, statusText } = e.response;
+        console.error(status, statusText);
+      });
   };
 
   const handleAddQuestionGroupButton = (questionGroup) => {
@@ -188,7 +188,6 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
       .post(`/default_question_group/${id}`)
       .then((res) => {
         const { data } = res;
-        console.log(data);
         store.update((s) => {
           s.surveyEditor = {
             ...s.surveyEditor,
