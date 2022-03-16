@@ -21,46 +21,95 @@ import { generateID, insert } from "../../lib/util";
 const { TabPane } = Tabs;
 
 const RenderOptionInput = ({ option, handlePlusMinusOptionButton }) => {
-  <div className="question-setting-wrapper">
-    {option?.map((opt, optIndex) => (
-      <Row
-        key={`option-${opt?.id}`}
-        align="middle"
-        justify="space-between"
-        gutter={[12, 12]}
-      >
-        <Col span={22}>
-          <Form.Item
-            label={<BiRadioCircle />}
-            name={`question-option-${opt?.id}`}
-          >
-            <Input placeholder="Enter an answer choice" />
-          </Form.Item>
-        </Col>
-        <Col span={2}>
-          <Space size={1} align="center">
+  option = option?.length === 0 ? [defaultOption] : option;
+  return option?.map((opt, optIndex) => (
+    <Row
+      key={`option-${opt?.id}`}
+      align="middle"
+      justify="space-between"
+      gutter={[12, 12]}
+    >
+      <Col span={22}>
+        <Form.Item
+          label={<BiRadioCircle />}
+          name={`question-option-${opt?.id}`}
+        >
+          <Input placeholder="Enter an answer choice" />
+        </Form.Item>
+      </Col>
+      <Col span={2}>
+        <Space size={1} align="center">
+          <Button
+            type="text"
+            icon={<HiPlus />}
+            onClick={() => handlePlusMinusOptionButton("add", opt, optIndex)}
+          />
+          {option.length > 1 && (
             <Button
               type="text"
-              icon={<HiPlus />}
-              onClick={() => handlePlusMinusOptionButton("add", opt, optIndex)}
+              icon={<HiMinus />}
+              onClick={() =>
+                handlePlusMinusOptionButton("remove", opt, optIndex)
+              }
             />
-            {option.length > 1 && (
-              <Button
-                type="text"
-                icon={<HiMinus />}
-                onClick={() =>
-                  handlePlusMinusOptionButton("remove", opt, optIndex)
-                }
-              />
-            )}
-          </Space>
-        </Col>
-      </Row>
-    ))}
-  </div>;
+          )}
+        </Space>
+      </Col>
+    </Row>
+  ));
 };
 
-const Detail = ({ questionGroup, question }) => {
+const RenderRepeatingObjectInput = ({
+  repeating_objects,
+  handlePlusMinusRepeatingObjects,
+}) => {
+  repeating_objects =
+    repeating_objects?.length || repeating_objects
+      ? repeating_objects
+      : [defaultRepeatingObject];
+
+  return repeating_objects?.map((ro, roi) => (
+    <Row
+      key={`repeating-object-${ro?.id}`}
+      align="middle"
+      justify="space-between"
+      gutter={[12, 12]}
+    >
+      <Col span={22}>
+        <Row align="middle" justify="space-between" gutter={[12, 12]}>
+          <Col span={12}>
+            <Form.Item name={`question-repeating-object-field-${ro?.id}`}>
+              <Input placeholder="Field" />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item name={`question-repeating-object-value-${ro?.id}`}>
+              <Input placeholder="Value" />
+            </Form.Item>
+          </Col>
+        </Row>
+      </Col>
+      <Col span={2}>
+        <Space size={1} align="center">
+          <Button
+            type="text"
+            icon={<HiPlus />}
+            onClick={() => handlePlusMinusRepeatingObjects("add", ro, roi)}
+          />
+          {repeating_objects.length > 1 && (
+            <Button
+              type="text"
+              icon={<HiMinus />}
+              onClick={() => handlePlusMinusRepeatingObjects("remove", ro, roi)}
+            />
+          )}
+        </Space>
+      </Col>
+    </Row>
+  ));
+};
+
+const Detail = ({ form, questionGroup, question }) => {
   const state = store.useState((s) => s?.surveyEditor);
   const { type, option, repeating_objects } = question;
 
@@ -168,56 +217,19 @@ const Detail = ({ questionGroup, question }) => {
     <>
       {/* Options */}
       {type === "option" && (
-        <RenderOptionInput
-          option={option}
-          handlePlusMinusOptionButton={handlePlusMinusOptionButton}
-        />
+        <div className="question-setting-wrapper">
+          <RenderOptionInput
+            option={option}
+            handlePlusMinusOptionButton={handlePlusMinusOptionButton}
+          />
+        </div>
       )}
       {/* Repeating Objects */}
       <div className="question-setting-wrapper">
-        {repeating_objects?.map((ro, roi) => (
-          <Row
-            key={`repeating-object-${ro?.id}`}
-            align="middle"
-            justify="space-between"
-            gutter={[12, 12]}
-          >
-            <Col span={22}>
-              <Row align="middle" justify="space-between" gutter={[12, 12]}>
-                <Col span={12}>
-                  <Form.Item name={`question-repeating-object-field-${ro?.id}`}>
-                    <Input placeholder="Field" />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item name={`question-repeating-object-value-${ro?.id}`}>
-                    <Input placeholder="Value" />
-                  </Form.Item>
-                </Col>
-              </Row>
-            </Col>
-            <Col span={2}>
-              <Space size={1} align="center">
-                <Button
-                  type="text"
-                  icon={<HiPlus />}
-                  onClick={() =>
-                    handlePlusMinusRepeatingObjects("add", ro, roi)
-                  }
-                />
-                {repeating_objects.length > 1 && (
-                  <Button
-                    type="text"
-                    icon={<HiMinus />}
-                    onClick={() =>
-                      handlePlusMinusRepeatingObjects("remove", ro, roi)
-                    }
-                  />
-                )}
-              </Space>
-            </Col>
-          </Row>
-        ))}
+        <RenderRepeatingObjectInput
+          repeating_objects={repeating_objects}
+          handlePlusMinusRepeatingObjects={handlePlusMinusRepeatingObjects}
+        />
       </div>
       {/* Add Other */}
       <div className="question-setting-wrapper">
@@ -354,21 +366,24 @@ const Setting = ({ question, questionGroup }) => {
   );
 };
 
-const RenderLayout = ({ activeSetting, questionGroup, question }) => {
+const RenderLayout = ({ form, activeSetting, questionGroup, question }) => {
   switch (activeSetting) {
     case "translation":
       return <Translation questionGroup={questionGroup} question={question} />;
     case "setting":
       return <Setting questionGroup={questionGroup} question={question} />;
     default:
-      return <Detail questionGroup={questionGroup} question={question} />;
+      return (
+        <Detail form={form} questionGroup={questionGroup} question={question} />
+      );
   }
 };
 
-const QuestionSetting = ({ activeSetting, questionGroup, question }) => {
+const QuestionSetting = ({ form, activeSetting, questionGroup, question }) => {
   return (
     <>
       <RenderLayout
+        form={form}
         activeSetting={activeSetting}
         questionGroup={questionGroup}
         question={question}
