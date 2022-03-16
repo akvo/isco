@@ -3,6 +3,7 @@ import { Form, Space, Row, Col, Button } from "antd";
 import { store } from "../../lib";
 import FormEditor from "./FormEditor";
 import QuestionGroupEditor from "./QuestionGroupEditor";
+import orderBy from "lodash/orderBy";
 
 const MainEditor = () => {
   const [form] = Form.useForm();
@@ -43,7 +44,7 @@ const MainEditor = () => {
               >
                 <FormEditor form={form} />
               </Form>
-              {questionGroup?.map((qg, qgi) => (
+              {orderBy(questionGroup, ["order"])?.map((qg, qgi) => (
                 <QuestionGroupEditor
                   key={`question-group-key-${qgi + 1}`}
                   index={qgi + 1}

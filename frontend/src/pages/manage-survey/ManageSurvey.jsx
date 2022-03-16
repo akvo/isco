@@ -27,6 +27,28 @@ const ManageSurvey = () => {
   const [dataSource, setDataSource] = useState([]);
   const isLoading = !dataSource?.length;
 
+  const handleEditButton = (record) => {
+    const { id, has_question_group } = record;
+    // if not has question group, create first question group
+    if (!has_question_group) {
+      api
+        .post(`/default_question_group/${id}`)
+        .then((res) => {
+          const { data } = res;
+          console.log(data);
+        })
+        .catch((e) => {
+          const { status, statusText } = e.response;
+          console.error(status, statusText);
+        })
+        .finally(() => {
+          navigate(`/survey-editor/${id}`);
+        });
+      return;
+    }
+    navigate(`/survey-editor/${id}`);
+  };
+
   const columns = [
     {
       title: "",
@@ -78,7 +100,7 @@ const ManageSurvey = () => {
               icon={<RiPencilFill />}
               shape="circle"
               type="text"
-              onClick={() => navigate(`/survey-editor/${record?.id}`)}
+              onClick={() => handleEditButton(record)}
             />
             {/* <Button
               className="action-btn"

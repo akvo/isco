@@ -17,16 +17,19 @@ import { HiPlus } from "react-icons/hi";
 import { AiOutlineGroup } from "react-icons/ai";
 import QuestionEditor from "./QuestionEditor";
 import { store, api } from "../../lib";
-import {
-  defaultQuestionEditor,
-  defaultQuestionGroupEditor,
-} from "../../lib/store";
+import { defaultQuestionEditor } from "../../lib/store";
 import { findLast, orderBy } from "lodash";
 import { generateID } from "../../lib/util";
 
 const { TabPane } = Tabs;
 
-const QuestionGroupSetting = ({ index, questionGroup }) => {
+const QuestionGroupSetting = ({
+  form,
+  index,
+  questionGroup,
+  repeat,
+  onChangeRepeat,
+}) => {
   const optionValues = store.useState((s) => s?.optionValues);
   const { member_type, isco_type } = optionValues;
   const { id } = questionGroup;
@@ -48,11 +51,19 @@ const QuestionGroupSetting = ({ index, questionGroup }) => {
                   placeholder="Question Group Description"
                 />
               </Form.Item>
-              <Form.Item name={`question_group-repeat-${id}`}>
-                <Space>
-                  Repeat <Switch size="small" />
-                </Space>
+              <Form.Item name={`question_group-repeat-${id}`} hidden noStyle>
+                <Input />
               </Form.Item>
+              <Space>
+                Repeat{" "}
+                <Switch
+                  size="small"
+                  onChange={(val) =>
+                    onChangeRepeat(val, `question_group-repeat-${id}`)
+                  }
+                  checked={repeat}
+                />
+              </Space>
             </Col>
             <Col span={7}>
               <Form.Item
@@ -98,7 +109,7 @@ const QuestionGroupSetting = ({ index, questionGroup }) => {
             </Col>
           </Row>
         </TabPane>
-        <TabPane tab="Skip Logic" key="skip-logic">
+        {/* <TabPane tab="Skip Logic" key="skip-logic">
           <Space direction="vertical" className="qge-setting-tab-body">
             <div>
               This question will only be displayed if the following conditions
@@ -108,7 +119,7 @@ const QuestionGroupSetting = ({ index, questionGroup }) => {
               <Select placeholder="Select question from list" options={[]} />
             </Form.Item>
           </Space>
-        </TabPane>
+        </TabPane> */}
       </Tabs>
     </div>
   );
@@ -121,27 +132,27 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
   const isQuestionGroupSaved = id && name;
   const [isGroupSettingVisible, setIsGroupSettingVisible] = useState(true);
   const [submitStatus, setSubmitStatus] = useState(null);
+  const [repeat, setRepeat] = useState(false);
+  const [saveBtnLoading, setSaveBtnLoading] = useState(false);
 
   useEffect(() => {
     if (questionGroup.id) {
       Object.keys(questionGroup).forEach((key) => {
         const field = `question_group-${key}-${id}`;
-        if (key === "member_access") {
-          form.setFieldsValue({
-            [field]: questionGroup?.[key]?.map((x) => x.member_type),
-          });
-          return;
+        const value = questionGroup?.[key];
+        form.setFieldsValue({ [field]: value });
+        if (key === "repeat") {
+          setRepeat(value);
         }
-        if (key === "isco_access") {
-          form.setFieldsValue({
-            [field]: questionGroup?.[key]?.map((x) => x.isco_type),
-          });
-          return;
-        }
-        form.setFieldsValue({ [field]: questionGroup?.[key] });
       });
     }
   }, [questionGroup]);
+
+  const onChangeRepeat = (val, fieldId) => {
+    console.log(fieldId);
+    form.setFieldsValue({ [fieldId]: val });
+    setRepeat(val);
+  };
 
   const handleAddQuestionButton = (questionGroup) => {
     setIsGroupSettingVisible(false);
@@ -166,34 +177,29 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
     store.update((s) => {
       s.surveyEditor = {
         ...s.surveyEditor,
-        questionGroup: orderBy([...filterQuestionGroup, newQg], ["order"]),
+        questionGroup: [...filterQuestionGroup, newQg],
       };
     });
   };
 
   const handleAddQuestionGroupButton = (questionGroup) => {
-    store.update((s) => {
-      s.surveyEditor = {
-        ...s.surveyEditor,
-        questionGroup: orderBy(
-          [
-            ...s.surveyEditor.questionGroup,
-            {
-              ...defaultQuestionGroupEditor,
-              id: generateID(),
-              order: questionGroup?.order + 1,
-              question: [
-                {
-                  ...defaultQuestionGroupEditor?.question?.[0],
-                  id: generateID(),
-                },
-              ],
-            },
-          ],
-          ["order"]
-        ),
-      };
-    });
+    const { id } = state;
+    api
+      .post(`/default_question_group/${id}`)
+      .then((res) => {
+        const { data } = res;
+        console.log(data);
+        store.update((s) => {
+          s.surveyEditor = {
+            ...s.surveyEditor,
+            questionGroup: [...s.surveyEditor.questionGroup, data],
+          };
+        });
+      })
+      .catch((e) => {
+        const { status, statusText } = e.response;
+        console.error(status, statusText);
+      });
   };
 
   const handleDeleteQuestionGroupButton = (questionGroup) => {
@@ -203,28 +209,23 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
     store.update((s) => {
       s.surveyEditor = {
         ...s.surveyEditor,
-        questionGroup: orderBy(filterQuestionGroup, ["order"]),
+        questionGroup: filterQuestionGroup,
       };
     });
   };
 
   const handleFormOnFinish = (values) => {
+    const { id, order } = questionGroup;
     let data = {};
     if (submitStatus === "question-group") {
+      setSaveBtnLoading(true);
       Object.keys(values).forEach((key) => {
         const field = key.split("-")[1];
-        let val = values[key] || null;
-        if (field === "member_access") {
-          val = values[key].map((v) => ({
-            question_group: null,
-            member_type: v,
-          }));
-        }
-        if (field === "isco_access") {
-          val = values[key].map((v) => ({
-            question_group: null,
-            isco_type: v,
-          }));
+        let val = values[key];
+        if (typeof val == "boolean") {
+          val = val;
+        } else {
+          val = val || null;
         }
         data = {
           ...data,
@@ -234,21 +235,21 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
       data = {
         ...data,
         form: state?.id,
-        order: null,
+        order: order,
         translations: null,
-        question: [],
-        repeat: false,
+        question: null,
       };
-      // how about put?
       api
-        .post("/question_group", data, { "content-type": "application/json" })
+        .put(`/question_group/${id}`, data, {
+          "content-type": "application/json",
+        })
         .then((res) => {
           const { data } = res;
           store.update((s) => {
             s.surveyEditor = {
               ...s.surveyEditor,
               questionGroup: [
-                ...s.surveyEditor.questionGroup.filter((x) => x?.id),
+                ...s.surveyEditor.questionGroup.filter((x) => x?.id !== id),
                 data,
               ],
             };
@@ -260,6 +261,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
         })
         .finally(() => {
           setSubmitStatus(null);
+          setSaveBtnLoading(false);
         });
     }
   };
@@ -321,14 +323,18 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
             {isGroupSettingVisible ? (
               <>
                 <QuestionGroupSetting
+                  form={form}
                   index={index}
                   questionGroup={questionGroup}
+                  repeat={repeat}
+                  onChangeRepeat={onChangeRepeat}
                 />
                 <div className="qge-button-wrapper">
                   <Space align="center">
                     <Button
                       type="primary"
                       ghost
+                      loading={saveBtnLoading}
                       onClick={() => {
                         setSubmitStatus("question-group");
                         setTimeout(() => {
@@ -342,7 +348,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
                 </div>
               </>
             ) : (
-              question.map((q, qi) => (
+              orderBy(question, ["order"]).map((q, qi) => (
                 <QuestionEditor
                   key={`question-key-${qi + 1}`}
                   form={form}
