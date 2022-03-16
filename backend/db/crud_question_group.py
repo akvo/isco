@@ -124,7 +124,7 @@ def get_member_access_by_question_group_id(session: Session,
                                            question_group: int) -> List:
     member_access = session.query(
         QuestionGroupMemberAccess).filter(
-            QuestionGroupMemberAccess.question_group == question_group).all()
+            QuestionGroupMemberAccess.question_group == question_group)
     return member_access
 
 
@@ -134,7 +134,7 @@ def delete_member_access_by_group_id(session: Session, question_group: int):
         session=session, question_group=question_group)
     if member_access:
         # delete
-        session.delete(member_access)
+        member_access.delete()
         session.commit()
         session.flush()
     return member_access
@@ -144,7 +144,7 @@ def get_isco_access_by_question_group_id(session: Session,
                                          question_group: int) -> List:
     isco_access = session.query(
         QuestionGroupIscoAccess).filter(
-            QuestionGroupIscoAccess.question_group == question_group).all()
+            QuestionGroupIscoAccess.question_group == question_group)
     return isco_access
 
 
@@ -154,7 +154,7 @@ def delete_isco_access_by_group_id(session: Session, question_group: int):
         session=session, question_group=question_group)
     if isco_access:
         # delete
-        session.delete(isco_access)
+        isco_access.delete()
         session.commit()
         session.flush()
     return isco_access
