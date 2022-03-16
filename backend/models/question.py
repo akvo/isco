@@ -82,7 +82,7 @@ class QuestionDict(TypedDict):
     tooltip: Optional[str] = None
     tooltip_translations: Optional[List[dict]] = None
     cascade: Optional[int] = None
-    repeating_objects: Optional[List[RepeatingObjectDict]] = None
+    repeating_objects: Optional[List[RepeatingObjectDict]] = []
     order: Optional[int] = None
 
 
@@ -203,7 +203,7 @@ class QuestionBase(BaseModel):
     member_access: Optional[List[int]] = []
     isco_access: Optional[List[int]] = []
     cascade: Optional[int] = None
-    repeating_objects: Optional[List[RepeatingObjectDict]] = None
+    repeating_objects: Optional[List[RepeatingObjectDict]] = []
     option: Optional[List[OptionBase]] = []
     skip_logic: Optional[List[SkipLogicBase]] = []
     order: Optional[int] = None
@@ -228,7 +228,7 @@ class QuestionJson(BaseModel):
     member_access: Optional[List[int]] = []
     isco_access: Optional[List[int]] = []
     cascade: Optional[int] = None
-    repeating_objects: Optional[List[RepeatingObjectDict]] = None
+    repeating_objects: Optional[List[RepeatingObjectDict]] = []
     option: Optional[List[OptionBase]] = []
     skip_logic: Optional[List[SkipLogicBase]] = []
 
