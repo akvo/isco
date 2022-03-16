@@ -28,6 +28,15 @@ class FormDict(TypedDict):
     created: str
 
 
+class FormDictWithGroupStatus(TypedDict):
+    id: int
+    name: str
+    description: Optional[str] = None
+    languages: Optional[List[str]] = None
+    created: str
+    has_question_group: bool
+
+
 class Form(Base):
     __tablename__ = "form"
     id = Column(Integer, primary_key=True, index=True, nullable=True)
@@ -60,6 +69,17 @@ class Form(Base):
             "languages": self.languages,
             "created": self.created.strftime("%d-%m-%Y"),
             "question_group": [qg.serialize for qg in self.question_group]
+        }
+
+    @property
+    def serializeWithGroupStatus(self) -> FormDict:
+        return {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
+            "languages": self.languages,
+            "created": self.created.strftime("%d-%m-%Y"),
+            "has_question_group": len(self.question_group) > 0
         }
 
 

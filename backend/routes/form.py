@@ -4,7 +4,7 @@ from typing import List
 from sqlalchemy.orm import Session
 import db.crud_form as crud
 from db.connection import get_session
-from models.form import FormBase, FormDict
+from models.form import FormBase, FormDict, FormDictWithGroupStatus
 from models.form import FormPayload, FormJson
 
 form_route = APIRouter()
@@ -22,13 +22,13 @@ def add(req: Request, payload: FormPayload,
 
 
 @form_route.get("/form/",
-                response_model=List[FormDict],
+                response_model=List[FormDictWithGroupStatus],
                 summary="get all forms",
                 name="form:get_all",
                 tags=["Form"])
 def get(req: Request, session: Session = Depends(get_session)):
     form = crud.get_form(session=session)
-    return [f.serialize for f in form]
+    return [f.serializeWithGroupStatus for f in form]
 
 
 @form_route.get("/form/{id:path}",

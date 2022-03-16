@@ -21,6 +21,17 @@ def add(req: Request, payload: QuestionPayload,
     return question.serialize
 
 
+@question_route.post("/question",
+                     response_model=QuestionBase,
+                     summary="add new question",
+                     name="question:create",
+                     tags=["Question"])
+def create_default(req: Request, payload: QuestionPayload,
+                   session: Session = Depends(get_session)):
+    question = crud.add_question(session=session, payload=payload)
+    return question.serialize
+
+
 @question_route.get("/question/",
                     response_model=List[QuestionDict],
                     summary="get all questions",
