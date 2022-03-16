@@ -111,8 +111,8 @@ class TestFormRoutes():
                     ],
                   "repeat": False,
                   "order": 1,
-                  "member_access": None,
-                  "isco_access": None,
+                  "member_access": [1],
+                  "isco_access": [1],
                   "question": None})
         assert res.status_code == 200
         res = res.json()
@@ -120,8 +120,8 @@ class TestFormRoutes():
             "description": "Question Group 1 Description",
             "form": 1,
             "id": 1,
-            "isco_access": [],
-            "member_access": [],
+            "isco_access": [1],
+            "member_access": [1],
             "name": "Question Group 1",
             "repeat": False,
             "order": 1,

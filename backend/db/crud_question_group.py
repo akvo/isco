@@ -4,7 +4,10 @@ from sqlalchemy.orm import Session
 from models.question_group import QuestionGroupPayload, QuestionGroupDict
 from models.question_group import QuestionGroup, QuestionGroupBase
 from models.question_group_member_access import QuestionGroupMemberAccess
+from models.question_group_member_access import \
+    QuestionGroupMemberAccessPayload
 from models.question_group_isco_access import QuestionGroupIscoAccess
+from models.question_group_isco_access import QuestionGroupIscoAccessPayload
 from db.crud_question import add_question
 
 
@@ -86,6 +89,27 @@ def update_question_group(session: Session, id: int,
     question_group.order = payload['order']
     question_group.translations = payload['translations']
     question_group.repeat = payload['repeat']
+    # Add member access
+    if payload['member_access']:
+        delete_member_access_by_group_id(session=session,
+                                         question_group=id)
+        for ma in payload['member_access']:
+            member = QuestionGroupMemberAccess(
+                id=None,
+                question_group=None,
+                member_type=ma)
+            question_group.member_access.append(member)
+    # Add isco access
+    if payload['isco_access']:
+        delete_isco_access_by_group_id(session=session,
+                                       question_group=id)
+        for ia in payload['isco_access']:
+            isco = QuestionGroupIscoAccess(
+                id=None,
+                question_group=None,
+                isco_type=ia)
+            question_group.isco_access.append(isco)
+
     session.commit()
     session.flush()
     session.refresh(question_group)
@@ -97,3 +121,43 @@ def delete_question_group(session: Session, id: int):
     session.delete(question_group)
     session.commit()
     session.flush()
+
+
+def get_member_access_by_question_group_id(session: Session,
+                                           question_group: int) -> List:
+    member_access = session.query(
+        QuestionGroupMemberAccess).filter(
+            QuestionGroupMemberAccess.question_group == question_group).all()
+    return member_access
+
+
+def delete_member_access_by_group_id(session: Session, question_group: int):
+    # check if exist
+    member_access = get_member_access_by_question_group_id(
+        session=session, question_group=question_group)
+    if member_access:
+        # delete
+        session.delete(member_access)
+        session.commit()
+        session.flush()
+    return member_access
+
+
+def get_isco_access_by_question_group_id(session: Session,
+                                         question_group: int) -> List:
+    isco_access = session.query(
+        QuestionGroupIscoAccess).filter(
+            QuestionGroupIscoAccess.question_group == question_group).all()
+    return isco_access
+
+
+def delete_isco_access_by_group_id(session: Session, question_group: int):
+    # check if exist
+    isco_access = get_isco_access_by_question_group_id(
+        session=session, question_group=question_group)
+    if isco_access:
+        # delete
+        session.delete(isco_access)
+        session.commit()
+        session.flush()
+    return isco_access
