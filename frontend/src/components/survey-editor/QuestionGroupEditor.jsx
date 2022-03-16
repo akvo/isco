@@ -203,15 +203,23 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
   };
 
   const handleDeleteQuestionGroupButton = (questionGroup) => {
-    const filterQuestionGroup = state.questionGroup.filter(
-      (qg) => qg?.id !== questionGroup?.id
-    );
-    store.update((s) => {
-      s.surveyEditor = {
-        ...s.surveyEditor,
-        questionGroup: filterQuestionGroup,
-      };
-    });
+    const { id } = questionGroup;
+    api
+      .delete(`/question_group/${id}`)
+      .then((res) => {
+        store.update((s) => {
+          s.surveyEditor = {
+            ...s.surveyEditor,
+            questionGroup: s.surveyEditor.questionGroup.filter(
+              (qg) => qg?.id !== id
+            ),
+          };
+        });
+      })
+      .catch((e) => {
+        const { status, statusText } = e.response;
+        console.error(status, statusText);
+      });
   };
 
   const handleFormOnFinish = (values) => {
