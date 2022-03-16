@@ -163,12 +163,13 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
         setIsGroupSettingVisible(false);
         const newQg = {
           ...questionGroup,
-          // add new option with default repeating objects
           question: [
             ...questionGroup?.question,
             {
               ...data,
+              // add option default
               option: [{ ...defaultOption, id: generateID() }],
+              // add repeating object default
               repeating_objects: [
                 { ...defaultRepeatingObject, id: generateID() },
               ],
@@ -279,7 +280,10 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
           setSaveBtnLoading(false);
         });
     }
-    if (submitStatus.includes("question")) {
+    if (
+      submitStatus.includes("question") &&
+      !submitStatus?.includes("question-group")
+    ) {
       const qId = parseInt(submitStatus?.split("-")[1]);
       const findQuestion = questionGroup?.question?.find((q) => q?.id === qId);
       const qgId = findQuestion?.question_group;
@@ -353,7 +357,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
       const field = key.split("-")[2];
       const qid = parseInt(key.split("-")[1]);
       const value = values?.[key];
-      if (key.includes("question")) {
+      if (key.includes("question") && !key.includes("question_group")) {
         // update question state
         let findQuestion = question?.find((q) => q?.id === qid);
         if (

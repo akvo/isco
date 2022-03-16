@@ -90,7 +90,7 @@ const QuestionEditor = ({
         const value = question?.[key];
         form.setFieldsValue({ [field]: value });
         // Load allow other value
-        if (key === "rule") {
+        if (key === "rule" && value) {
           Object.keys(value).forEach((key) => {
             form.setFieldsValue({ [`${field}-${key}`]: value?.[key] });
             if (key === "allow_other") {
@@ -99,7 +99,7 @@ const QuestionEditor = ({
           });
         }
         // Load repeating objects value
-        if (key === "repeating_objects") {
+        if (key === "repeating_objects" && value) {
           value?.map((val, vi) => {
             Object.keys(val).forEach((key) => {
               const rField = `${field}_${key}-${vi}`;

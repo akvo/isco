@@ -30,9 +30,11 @@ const SurveyEditor = () => {
                 question: qg?.question?.map((q) => {
                   let option = q?.option;
                   let repeating_objects = q?.repeating_objects;
+                  // add option default
                   if (option?.length === 0) {
                     option = [{ ...defaultOption, id: generateID() }];
                   }
+                  // add repeating object default
                   if (!repeating_objects || repeating_objects?.length === 0) {
                     repeating_objects = [
                       { ...defaultRepeatingObject, id: generateID() },
