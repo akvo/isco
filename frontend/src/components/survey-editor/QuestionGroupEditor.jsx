@@ -17,9 +17,7 @@ import { HiPlus } from "react-icons/hi";
 import { AiOutlineGroup } from "react-icons/ai";
 import QuestionEditor from "./QuestionEditor";
 import { store, api } from "../../lib";
-import { defaultQuestionEditor } from "../../lib/store";
-import { findLast, orderBy } from "lodash";
-import { generateID } from "../../lib/util";
+import orderBy from "lodash/orderBy";
 
 const { TabPane } = Tabs;
 
@@ -130,7 +128,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
   const state = store.useState((s) => s?.surveyEditor);
   const { id, name, question } = questionGroup;
   const isQuestionGroupSaved = id && name;
-  const [isGroupSettingVisible, setIsGroupSettingVisible] = useState(true);
+  const [isGroupSettingVisible, setIsGroupSettingVisible] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
   const [repeat, setRepeat] = useState(false);
   const [saveBtnLoading, setSaveBtnLoading] = useState(false);
@@ -273,6 +271,41 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
     }
   };
 
+  const handleFormOnValuesChange = (values, allValues) => {
+    console.log(values);
+    const question = questionGroup?.question;
+    Object.keys(values).forEach((key) => {
+      const field = key.split("-")[1];
+      const qid = parseInt(key.split("-")[2]);
+      const value = values?.[key];
+      if (key.includes("question")) {
+        // update question state
+        let findQuestion = question?.find((q) => q?.id === qid);
+        findQuestion = {
+          ...findQuestion,
+          [field]: value,
+        };
+        store.update((s) => {
+          s.surveyEditor = {
+            ...s.surveyEditor,
+            questionGroup: [
+              ...s.surveyEditor?.questionGroup?.filter(
+                (x) => x?.id !== questionGroup?.id
+              ),
+              {
+                ...questionGroup,
+                question: [
+                  ...questionGroup?.question?.filter((x) => x?.id !== qid),
+                  findQuestion,
+                ],
+              },
+            ],
+          };
+        });
+      }
+    });
+  };
+
   const handleFormOnFinishFailed = ({ values }) => {
     console.log("Failed", values);
   };
@@ -289,6 +322,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
         <Form
           form={form}
           name="survey-detail"
+          onValuesChange={handleFormOnValuesChange}
           onFinish={handleFormOnFinish}
           onFinishFailed={handleFormOnFinishFailed}
         >
