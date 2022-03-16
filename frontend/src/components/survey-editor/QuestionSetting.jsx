@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Row,
   Col,
@@ -74,7 +74,7 @@ const RenderRepeatingObjectInput = ({
 
   return repeating_objects?.map((ro, roi) => (
     <Row
-      key={`repeating-object-${ro?.id}`}
+      key={`repeating-object-${ro?.id || roi}`}
       align="middle"
       justify="space-between"
       gutter={[12, 12]}
@@ -83,14 +83,14 @@ const RenderRepeatingObjectInput = ({
         <Row align="middle" justify="space-between" gutter={[12, 12]}>
           <Col span={12}>
             <Form.Item
-              name={`question-${qId}-repeating_object_field-${ro?.id}`}
+              name={`question-${qId}-repeating_objects_field-${ro?.id || roi}`}
             >
               <Input placeholder="Field" />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item
-              name={`question-${qId}-repeating_object_value-${ro?.id}`}
+              name={`question-${qId}-repeating_objects_value-${ro?.id || roi}`}
             >
               <Input placeholder="Value" />
             </Form.Item>
@@ -122,10 +122,11 @@ const Detail = ({
   questionGroup,
   question,
   handleFormOnValuesChange,
+  setAllowOther,
+  allowOther,
 }) => {
   const state = store.useState((s) => s?.surveyEditor);
   const { type, option, repeating_objects } = question;
-  const [allowOther, setAllowOther] = useState(false);
   const qId = question?.id;
 
   const handlePlusMinusOptionButton = (operation, opt, optIndex) => {
@@ -264,6 +265,7 @@ const Detail = ({
               <Input />
             </Form.Item>
             <Checkbox
+              checked={allowOther}
               onChange={(val) =>
                 handleAllowOtherChange(
                   val?.target?.checked,
@@ -405,6 +407,8 @@ const RenderLayout = ({
   questionGroup,
   question,
   handleFormOnValuesChange,
+  setAllowOther,
+  allowOther,
 }) => {
   switch (activeSetting) {
     case "translation":
@@ -418,6 +422,8 @@ const RenderLayout = ({
           questionGroup={questionGroup}
           question={question}
           handleFormOnValuesChange={handleFormOnValuesChange}
+          allowOther={allowOther}
+          setAllowOther={setAllowOther}
         />
       );
   }
@@ -429,6 +435,10 @@ const QuestionSetting = ({
   questionGroup,
   question,
   handleFormOnValuesChange,
+  submitStatus,
+  setSubmitStatus,
+  setAllowOther,
+  allowOther,
 }) => {
   return (
     <>
@@ -438,11 +448,23 @@ const QuestionSetting = ({
         questionGroup={questionGroup}
         question={question}
         handleFormOnValuesChange={handleFormOnValuesChange}
+        allowOther={allowOther}
+        setAllowOther={setAllowOther}
       />
       <div className="question-button-wrapper">
         <Space align="center">
           <Button>Cancel</Button>
-          <Button type="primary" ghost>
+          <Button
+            type="primary"
+            ghost
+            loading={submitStatus === `question-${question?.id}`}
+            onClick={() => {
+              setSubmitStatus(`question-${question?.id}`);
+              setTimeout(() => {
+                form.submit();
+              }, 100);
+            }}
+          >
             Save
           </Button>
         </Space>

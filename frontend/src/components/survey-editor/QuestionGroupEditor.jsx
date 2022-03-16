@@ -233,7 +233,6 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
     const { id, order } = questionGroup;
     let data = {};
     if (submitStatus === "question-group") {
-      setSaveBtnLoading(true);
       Object.keys(values).forEach((key) => {
         const field = key.split("-")[1];
         let val = values[key];
@@ -279,6 +278,52 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
           setSaveBtnLoading(false);
         });
     }
+    if (submitStatus.includes("question")) {
+      const qId = parseInt(submitStatus?.split("-")[1]);
+      const findQuestion = questionGroup?.question?.find((q) => q?.id === qId);
+      const qgId = findQuestion?.question_group;
+      const repeatingObject = findQuestion?.repeating_objects
+        ?.filter((r) => r?.field && r?.value)
+        ?.map((r) => ({ field: r?.field, value: r?.value }));
+      data = {
+        ...findQuestion,
+        repeating_objects: repeatingObject?.length > 0 ? repeatingObject : null,
+      };
+      console.log(data);
+      api
+        .put(`/question/${qId}`, data, {
+          "content-type": "application/json",
+        })
+        .then((res) => {
+          const { data } = res;
+          store.update((s) => {
+            s.surveyEditor = {
+              ...s.surveyEditor,
+              questionGroup: s.surveyEditor.questionGroup?.map((qg) => {
+                if (qg?.id === qgId) {
+                  return {
+                    ...qg,
+                    question: qg?.question?.map((q) => {
+                      if (q?.id === qId) {
+                        return data;
+                      }
+                      return q;
+                    }),
+                  };
+                }
+                return qg;
+              }),
+            };
+          });
+        })
+        .catch((e) => {
+          const { status, statusText } = e.response;
+          console.error(status, statusText);
+        })
+        .finally(() => {
+          setSubmitStatus(null);
+        });
+    }
   };
 
   const handleFormOnValuesChange = (values, allValues) => {
@@ -290,7 +335,15 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
       if (key.includes("question")) {
         // update question state
         let findQuestion = question?.find((q) => q?.id === qid);
-        if (!["option", "repeating_object", "rule"].includes(field)) {
+        console.log("findQ", findQuestion);
+        if (
+          ![
+            "option",
+            "repeating_objects_field",
+            "repeating_objects_value",
+            "rule",
+          ].includes(field)
+        ) {
           findQuestion = {
             ...findQuestion,
             [field]: value,
@@ -311,7 +364,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
             }),
           };
         }
-        if (field.includes("repeating_object")) {
+        if (field.includes("repeating_objects")) {
           const roId = key.split("-")[3];
           const roKey = field.split("_")[2];
           findQuestion = {
@@ -336,7 +389,6 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
               [ruleType]: value,
             },
           };
-          console.log(ruleType, value);
         }
         console.log(findQuestion);
         store.update((s) => {
@@ -435,6 +487,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
                       ghost
                       loading={saveBtnLoading}
                       onClick={() => {
+                        setSaveBtnLoading(true);
                         setSubmitStatus("question-group");
                         setTimeout(() => {
                           form.submit();
@@ -455,6 +508,8 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
                   question={q}
                   questionGroup={questionGroup}
                   handleFormOnValuesChange={handleFormOnValuesChange}
+                  submitStatus={submitStatus}
+                  setSubmitStatus={setSubmitStatus}
                 />
               ))
             )}

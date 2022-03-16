@@ -70,9 +70,12 @@ const QuestionEditor = ({
   question,
   questionGroup,
   handleFormOnValuesChange,
+  submitStatus,
+  setSubmitStatus,
 }) => {
   const [activePanel, setActivePanel] = useState(null);
   const [activeSetting, setActiveSetting] = useState("detail");
+  const [allowOther, setAllowOther] = useState(false);
   const state = store.useState((s) => s?.surveyEditor);
   const optionValues = store.useState((s) => s?.optionValues);
   const { question_type } = optionValues;
@@ -86,6 +89,24 @@ const QuestionEditor = ({
         const field = `question-${qId}-${key}`;
         const value = question?.[key];
         form.setFieldsValue({ [field]: value });
+        // Load allow other value
+        if (key === "rule") {
+          Object.keys(value).forEach((key) => {
+            form.setFieldsValue({ [`${field}-${key}`]: value?.[key] });
+            if (key === "allow_other") {
+              setAllowOther(value?.[key]);
+            }
+          });
+        }
+        // Load repeating objects value
+        if (key === "repeating_objects") {
+          value?.map((val, vi) => {
+            Object.keys(val).forEach((key) => {
+              const rField = `${field}_${key}-${vi}`;
+              form.setFieldsValue({ [rField]: val?.[key] });
+            });
+          });
+        }
       });
     }
   }, [question]);
@@ -194,6 +215,10 @@ const QuestionEditor = ({
                         questionGroup={questionGroup}
                         question={question}
                         handleFormOnValuesChange={handleFormOnValuesChange}
+                        submitStatus={submitStatus}
+                        setSubmitStatus={setSubmitStatus}
+                        allowOther={allowOther}
+                        setAllowOther={setAllowOther}
                       />
                     </Col>
                   </Row>
