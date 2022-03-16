@@ -59,7 +59,7 @@ class Form(Base):
             "description": self.description,
             "languages": self.languages,
             "created": self.created.strftime("%d-%m-%Y"),
-            "question_group": self.question_group
+            "question_group": [qg.serialize for qg in self.question_group]
         }
 
 

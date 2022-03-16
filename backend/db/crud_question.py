@@ -6,17 +6,13 @@ from models.question import Question, QuestionBase
 from models.question import QuestionDict, QuestionPayload
 from models.option import Option
 from models.question_member_access import QuestionMemberAccess
-from models.question_member_access import QuestionMemberAccessPayload
 from models.question_isco_access import QuestionIscoAccess
-from models.question_isco_access import QuestionIscoAccessPayload
 from models.skip_logic import SkipLogic
 
 
 def add_question(session: Session, payload: QuestionPayload,
-                 member_access: Optional[
-                     List[QuestionMemberAccessPayload]] = None,
-                 isco_access: Optional[
-                     List[QuestionIscoAccessPayload]] = None) -> QuestionDict:
+                 member_access: Optional[List[int]] = None,
+                 isco_access: Optional[List[int]] = None) -> QuestionDict:
     last_question = session.query(Question).filter(
         and_(Question.form == payload['form'],
              Question.question_group == payload['question_group'])).order_by(
@@ -47,7 +43,7 @@ def add_question(session: Session, payload: QuestionPayload,
                         cascade=payload['cascade'],
                         repeating_objects=payload['repeating_objects'],
                         order=last_question)
-    if len(payload['option']):
+    if payload['option']:
         for o in payload['option']:
             opt = Option(id=None,
                          code=o['code'],
@@ -57,31 +53,31 @@ def add_question(session: Session, payload: QuestionPayload,
                          translations=o['translations'])
             question.option.append(opt)
 
-    member_access_payload = []
-    if len(payload['member_access']):
+    member_access_payload = None
+    if payload['member_access']:
         member_access_payload = payload['member_access']
-    if member_access is not None:
+    if member_access:
         member_access_payload = member_access
-    if len(member_access_payload):
+    if member_access_payload:
         for ma in member_access_payload:
             member = QuestionMemberAccess(id=None,
-                                          question=ma['question'],
-                                          member_type=ma['member_type'])
+                                          question=None,
+                                          member_type=ma)
             question.member_access.append(member)
 
-    isco_access_payload = []
-    if len(payload['isco_access']):
+    isco_access_payload = None
+    if payload['isco_access']:
         isco_access_payload = payload['isco_access']
-    if isco_access is not None:
+    if isco_access:
         isco_access_payload = isco_access
-    if len(isco_access_payload):
+    if isco_access_payload:
         for ia in isco_access_payload:
             isco = QuestionIscoAccess(id=None,
-                                      question=ia['question'],
-                                      isco_type=ia['isco_type'])
+                                      question=None,
+                                      isco_type=ia)
             question.isco_access.append(isco)
 
-    if len(payload['skip_logic']):
+    if payload['skip_logic']:
         for sl in payload['skip_logic']:
             skip = SkipLogic(id=None,
                              question=sl['question'],
@@ -90,6 +86,7 @@ def add_question(session: Session, payload: QuestionPayload,
                              value=sl['value'],
                              type=sl['type'])
             question.skip_logic.append(skip)
+
     session.add(question)
     session.commit()
     session.flush()

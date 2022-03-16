@@ -30,30 +30,20 @@ def add_question_group(session: Session,
                                    order=last_question_group,
                                    translations=payload['translations'],
                                    repeat=payload['repeat'])
-    question_member_access = []
-    if len(payload['member_access']):
+    if payload['member_access']:
         for ma in payload['member_access']:
-            question_member_access.append({
-                "question": None,
-                "member_type": ma['member_type']
-            })
             member = QuestionGroupMemberAccess(
                 id=None,
-                question_group=ma['question_group'],
-                member_type=ma['member_type'])
+                question_group=None,
+                member_type=ma)
             question_group.member_access.append(member)
 
-    question_isco_access = []
-    if len(payload['isco_access']):
+    if payload['isco_access']:
         for ia in payload['isco_access']:
-            question_isco_access.append({
-                "question": None,
-                "isco_type": ia['isco_type']
-            })
             isco = QuestionGroupIscoAccess(
                 id=None,
-                question_group=ia['question_group'],
-                isco_type=ia['isco_type'])
+                question_group=None,
+                isco_type=ia)
             question_group.isco_access.append(isco)
 
     session.add(question_group)
@@ -61,14 +51,14 @@ def add_question_group(session: Session,
     session.flush()
     session.refresh(question_group)
 
-    if len(payload['question']):
+    if payload['question']:
         for q in payload['question']:
             q['form'] = question_group.form,
             q['question_group'] = question_group.id
             add_question(session=session,
                          payload=q,
-                         member_access=question_member_access,
-                         isco_access=question_isco_access)
+                         member_access=payload['member_access'],
+                         isco_access=payload['isco_access'])
 
     return question_group
 

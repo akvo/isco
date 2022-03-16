@@ -43,10 +43,10 @@ class TestQuestionRoutes():
             "cascade": None,
             "repeating_objects": None,
             "order": None,
-            "option": [],
-            "member_access": [],
-            "isco_access": [],
-            "skip_logic": [],
+            "option": None,
+            "member_access": None,
+            "isco_access": None,
+            "skip_logic": None,
         }
         res = await client.post(
             app.url_path_for("question:create"), json=question_payload)
@@ -103,10 +103,10 @@ class TestQuestionRoutes():
             "cascade": None,
             "repeating_objects": None,
             "order": 1,
-            "option": [],
-            "member_access": [],
-            "isco_access": [],
-            "skip_logic": [],
+            "option": None,
+            "member_access": None,
+            "isco_access": None,
+            "skip_logic": None,
         }
         res = await client.put(
             app.url_path_for("question:put", id=1), json=question_payload)
@@ -336,10 +336,10 @@ class TestQuestionRoutes():
             "cascade": None,
             "repeating_objects": None,
             "order": None,
-            "option": [],
-            "member_access": [],
-            "isco_access": [],
-            "skip_logic": [],
+            "option": None,
+            "member_access": None,
+            "isco_access": None,
+            "skip_logic": None,
         }
         res = await client.post(
             app.url_path_for("question:create"), json=question_payload)
@@ -443,22 +443,8 @@ class TestQuestionRoutes():
                     "translations": None
                 }
             ],
-            "member_access": [
-                {
-                    "question": None,
-                    "member_type": 1,
-                },
-                {
-                    "question": None,
-                    "member_type": 2,
-                }
-            ],
-            "isco_access": [
-                {
-                    "question": None,
-                    "isco_type": 1,
-                }
-            ],
+            "member_access": [1, 2],
+            "isco_access": [1],
             "skip_logic": [
                 {
                     "question": None,
@@ -478,26 +464,9 @@ class TestQuestionRoutes():
             "datapoint_name": False,
             "form": 1,
             "id": 3,
-            "isco_access": [
-                {
-                    "id": 1,
-                    "isco_type": 1,
-                    "question": 3
-                }
-            ],
+            "isco_access": [1],
             "mandatory": True,
-            "member_access": [
-                {
-                    "id": 1,
-                    "member_type": 1,
-                    "question": 3
-                },
-                {
-                    "id": 2,
-                    "member_type": 2,
-                    "question": 3
-                }
-            ],
+            "member_access": [1, 2],
             "name": 'Gender',
             "option": [
                 {
@@ -555,18 +524,8 @@ class TestQuestionRoutes():
             "translations": None,
             "repeat": False,
             "order": None,
-            "member_access": [
-                {
-                    "question_group": None,
-                    "member_type": 1,
-                }
-            ],
-            "isco_access": [
-                {
-                    "question_group": None,
-                    "isco_type": 1,
-                }
-            ],
+            "member_access": [1],
+            "isco_access": [1],
             "question": [
                 {
                     "form": None,
@@ -584,10 +543,10 @@ class TestQuestionRoutes():
                     "cascade": None,
                     "repeating_objects": None,
                     "order": None,
-                    "option": [],
-                    "member_access": [],
-                    "isco_access": [],
-                    "skip_logic": []
+                    "option": None,
+                    "member_access": None,
+                    "isco_access": None,
+                    "skip_logic": None
                 }
             ]
         }
@@ -600,20 +559,8 @@ class TestQuestionRoutes():
             "description": "This is description",
             "form": 1,
             "id": 2,
-            "isco_access": [
-                {
-                    "id": 1,
-                    "isco_type": 1,
-                    "question_group": 2,
-                }
-            ],
-            "member_access": [
-                {
-                    "id": 1,
-                    "member_type": 1,
-                    "question_group": 2,
-                }
-            ],
+            "isco_access": [1],
+            "member_access": [1],
             "name": "Question Group 2",
             "order": 2,
             "repeat": False,
@@ -623,21 +570,9 @@ class TestQuestionRoutes():
                     "datapoint_name": False,
                     "form": 1,
                     "id": 4,
-                    "isco_access": [
-                        {
-                            "id": 2,
-                            "isco_type": 1,
-                            "question": 4,
-                        }
-                    ],
+                    "isco_access": [1],
                     "mandatory": True,
-                    "member_access": [
-                        {
-                            "id": 3,
-                            "member_type": 1,
-                            "question": 4,
-                        }
-                    ],
+                    "member_access": [1],
                     "name": 'Age',
                     "option": [],
                     "order": 1,
