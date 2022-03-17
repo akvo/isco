@@ -127,8 +127,11 @@ const Detail = ({
   allowOther,
 }) => {
   const state = store.useState((s) => s?.surveyEditor);
+  const { cascade, nested } = store.useState((s) => s?.optionValues);
   const { type, option, repeating_objects } = question;
   const qId = question?.id;
+
+  const cascadeValues = type === "cascade" ? cascade : nested;
 
   const handlePlusMinusOptionButton = (operation, opt, optIndex) => {
     const filterQuestionGroup = state?.questionGroup?.filter(
@@ -245,6 +248,27 @@ const Detail = ({
 
   return (
     <>
+      {/* Cascade / Nested dropdown */}
+      {(type === "cascade" || type === "nested_list") && (
+        <div className="question-setting-wrapper">
+          <Form.Item
+            name={`question-${qId}-cascade`}
+            rules={[{ required: true, message: "Please select cascade name" }]}
+          >
+            <Select
+              allowClear
+              className="bg-grey"
+              placeholder={`Select ${type?.split("_").join(" ")} value`}
+              options={cascadeValues?.map((x) => {
+                return {
+                  label: x?.name,
+                  value: x?.id,
+                };
+              })}
+            />
+          </Form.Item>
+        </div>
+      )}
       {/* Options */}
       {(type === "option" || type === "multiple_option") && (
         <>

@@ -79,6 +79,8 @@ const defaultUIState = {
     isco_type: [],
     question_type: [],
     operator_type: [],
+    cascade: [],
+    nested: [],
   },
   surveyEditor: defaultSurveyEditor,
   tempStorage: {

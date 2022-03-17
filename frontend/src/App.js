@@ -12,8 +12,10 @@ const App = () => {
       api.get("/member_type/"),
       api.get("/isco_type/"),
       api.get("/skip_logic/operator"),
+      api.get("/cascade/"),
     ]).then((res) => {
-      const [question_type, member_type, isco_type, operator_type] = res;
+      const [question_type, member_type, isco_type, operator_type, cascade] =
+        res;
       store.update((s) => {
         s.optionValues = {
           ...s.optionValues,
@@ -21,6 +23,8 @@ const App = () => {
           member_type: member_type?.data,
           isco_type: isco_type?.data,
           operator_type: operator_type?.data,
+          cascade: cascade?.data?.filter((c) => c?.type === "cascade"),
+          nested: cascade?.data?.filter((c) => c?.type === "nested"),
         };
       });
     });

@@ -308,6 +308,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
         option: null,
         repeating_objects: repeatingObject?.length > 0 ? repeatingObject : null,
         skip_logic: null,
+        cascade: findQuestion?.cascade || null,
       };
 
       // delete question option before update
