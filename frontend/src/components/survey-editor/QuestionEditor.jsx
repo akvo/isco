@@ -127,37 +127,6 @@ const QuestionEditor = ({
     }
   }, [question]);
 
-  const handleOnChangeQuestionType = (val) => {
-    if (val === "option") {
-      return;
-      store.update((s) => {
-        s.surveyEditor = {
-          ...s.surveyEditor,
-          questionGroup: state?.questionGroup?.map((qg) => {
-            if (qg?.id === qgId) {
-              return {
-                ...qg,
-                question: qg?.question?.map((q) => {
-                  if (q?.id === qId) {
-                    if (q?.option?.length === 0) {
-                      return {
-                        ...q,
-                        option: [{ ...defaultOption, id: generateID() }],
-                      };
-                    }
-                    return q;
-                  }
-                  return q;
-                }),
-              };
-            }
-            return qg;
-          }),
-        };
-      });
-    }
-  };
-
   const handleDeleteQuestionButton = (question) => {
     const { id } = question;
     api
@@ -259,7 +228,6 @@ const QuestionEditor = ({
                     showSearch={true}
                     className="custom-dropdown-wrapper"
                     placeholder="Question Type"
-                    onChange={handleOnChangeQuestionType}
                     options={question_type?.map((item) => ({
                       label: item.split("_").join(" "),
                       value: item,
