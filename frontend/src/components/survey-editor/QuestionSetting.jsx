@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   Row,
   Col,
@@ -359,8 +359,33 @@ const Setting = ({
   allowDecimal,
   setAllowDecimal,
 }) => {
+  const state = store?.useState((s) => s?.surveyEditor);
+  const { operator_type } = store?.useState((s) => s?.optionValues);
   const qid = question?.id;
   const { type } = question;
+  const allQuestion = state?.questionGroup?.flatMap((qg) => qg?.question);
+  const skipLogicQuestion = allQuestion
+    ?.filter((q) => ["option", "number"].includes(q?.type))
+    ?.map((q) => ({
+      label: q?.name,
+      value: q?.id,
+    }));
+
+  const dependentId = parseInt(
+    form?.getFieldValue(`question-${qid}-skip_logic-dependent_to`)
+  );
+  const dependentQuestion = useMemo(() => {
+    const find = allQuestion?.find((q) => q?.id === dependentId);
+    if (find) {
+      // set skip logic type
+      const type = { [`question-${qid}-skip_logic-type`]: find?.type };
+      form.setFieldsValue(type);
+      setTimeout(() => {
+        handleFormOnValuesChange(type, form?.getFieldsValue());
+      }, 100);
+    }
+    return find;
+  }, [dependentId]);
 
   const handleRequiredChange = (val, field) => {
     const fieldValue = { [field]: val };
@@ -392,6 +417,7 @@ const Setting = ({
   return (
     <div className="question-setting-wrapper setting">
       <Tabs size="small">
+        {/* Question Options */}
         <TabPane tab="Question Options" key="question-option">
           <>
             <Form.Item name={`question-${qid}-variable_name`}>
@@ -442,21 +468,78 @@ const Setting = ({
             </Space>
           </>
         </TabPane>
+        {/* Skip Logic */}
         <TabPane tab="Skip Logic" key="skip-logic">
           <Space direction="vertical">
             <div>
               This question will only be displayed if the following conditions
               apply
             </div>
-            <Form.Item name={`question-${qid}-skip_logic`}>
+            <Form.Item name={`question-${qid}-skip_logic-dependent_to`}>
               <Select
+                allowClear
                 className="bg-grey"
                 placeholder="Select question from list"
-                options={[]}
+                options={skipLogicQuestion}
               />
             </Form.Item>
+            {dependentQuestion && (
+              <>
+                <Form.Item
+                  name={`question-${qid}-skip_logic-type`}
+                  hidden
+                  noStyle
+                >
+                  <Input />
+                </Form.Item>
+                <Form.Item
+                  name={`question-${qid}-skip_logic-operator`}
+                  rules={[
+                    { required: true, message: "Please select operator" },
+                  ]}
+                >
+                  <Select
+                    allowClear
+                    className="bg-grey"
+                    placeholder="Select operator"
+                    options={operator_type?.map((x) => {
+                      return {
+                        label: x,
+                        value: x,
+                      };
+                    })}
+                  />
+                </Form.Item>
+              </>
+            )}
+            {dependentQuestion?.type === "number" && (
+              <Form.Item
+                name={`question-${qid}-skip_logic-value`}
+                rules={[{ required: true, message: "Please input value" }]}
+              >
+                <InputNumber />
+              </Form.Item>
+            )}
+            {dependentQuestion?.type === "option" && (
+              <Form.Item
+                name={`question-${qid}-skip_logic-value`}
+                rules={[{ required: true, message: "Please select value" }]}
+              >
+                <Select
+                  allowClear
+                  mode="multiple"
+                  className="bg-grey"
+                  placeholder="Select value"
+                  options={dependentQuestion?.option?.map((x) => ({
+                    label: x?.name,
+                    value: x?.id,
+                  }))}
+                />
+              </Form.Item>
+            )}
           </Space>
         </TabPane>
+        {/* Validation Criteria / Rule */}
         {type === "number" && (
           <TabPane tab="Validation Criteria" key="validation-criteria">
             <Space direction="vertical" size="large">
@@ -572,6 +655,7 @@ const QuestionSetting = ({
   setMandatory,
   personalData,
   setPersonalData,
+  setActivePanel,
 }) => {
   return (
     <>
@@ -592,7 +676,7 @@ const QuestionSetting = ({
       />
       <div className="question-button-wrapper">
         <Space align="center">
-          <Button>Cancel</Button>
+          <Button onClick={() => setActivePanel(null)}>Cancel</Button>
           <Button
             type="primary"
             ghost

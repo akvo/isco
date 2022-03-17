@@ -78,6 +78,7 @@ const defaultUIState = {
     member_type: [],
     isco_type: [],
     question_type: [],
+    operator_type: [],
   },
   surveyEditor: defaultSurveyEditor,
   tempStorage: {

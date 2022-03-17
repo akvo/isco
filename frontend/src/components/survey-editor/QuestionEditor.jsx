@@ -59,7 +59,7 @@ const QuestionMenu = ({ activeSetting, setActiveSetting }) => {
         icon={<MdGTranslate />}
         onClick={() => setActiveSetting("translation")}
       />
-      <Button type="text" icon={<RiDeleteBinFill />} />
+      {/* <Button type="text" icon={<RiDeleteBinFill />} /> */}
     </Space>
   );
 };
@@ -82,9 +82,9 @@ const QuestionEditor = ({
   const state = store.useState((s) => s?.surveyEditor);
   const optionValues = store.useState((s) => s?.optionValues);
   const { question_type } = optionValues;
-  const panelKey = `qe-${index}`;
   const qgId = questionGroup?.id;
   const qId = question?.id;
+  const panelKey = `qe-${qId}`;
 
   useEffect(() => {
     if (qId) {
@@ -161,7 +161,7 @@ const QuestionEditor = ({
   };
 
   return (
-    <Row key={`qe-${index}`} className="question-editor-wrapper">
+    <Row key={`qe-${qId}`} className="question-editor-wrapper">
       <Col span={24}>
         <Card className="question-card-wrapper">
           <Row align="middle" justify="space-between" gutter={[12, 12]}>
@@ -177,7 +177,7 @@ const QuestionEditor = ({
                         type="text"
                         size="small"
                         onClick={() => {
-                          setActivePanel(activePanel ? null : panelKey);
+                          setActivePanel(panelKey);
                           setActiveSetting("detail");
                         }}
                       >
@@ -215,6 +215,7 @@ const QuestionEditor = ({
                         setMandatory={setMandatory}
                         personalData={personalData}
                         setPersonalData={setPersonalData}
+                        setActivePanel={setActivePanel}
                       />
                     </Col>
                   </Row>
@@ -242,6 +243,7 @@ const QuestionEditor = ({
                       option.label.toLowerCase().indexOf(input.toLowerCase()) >=
                       0
                     }
+                    onChange={() => setActivePanel(panelKey)}
                   />
                 </Form.Item>
                 <Button

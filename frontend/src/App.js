@@ -11,14 +11,16 @@ const App = () => {
       api.get("/question/type"),
       api.get("/member_type/"),
       api.get("/isco_type/"),
+      api.get("/skip_logic/operator"),
     ]).then((res) => {
-      const [question_type, member_type, isco_type] = res;
+      const [question_type, member_type, isco_type, operator_type] = res;
       store.update((s) => {
         s.optionValues = {
           ...s.optionValues,
           question_type: question_type?.data,
           member_type: member_type?.data,
           isco_type: isco_type?.data,
+          operator_type: operator_type?.data,
         };
       });
     });

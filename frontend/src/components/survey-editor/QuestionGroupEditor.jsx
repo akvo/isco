@@ -242,6 +242,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
     const { id, order } = questionGroup;
     let qId = null;
     let data = {};
+    // Save Question Group
     if (submitStatus === "question-group") {
       Object.keys(values).forEach((key) => {
         const field = key.split("-")[2];
@@ -288,6 +289,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
           setSaveBtnLoading(false);
         });
     }
+    // Save Question
     if (
       submitStatus.includes("question") &&
       !submitStatus?.includes("question-group")
@@ -299,12 +301,15 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
       const repeatingObject = findQuestion?.repeating_objects
         ?.filter((r) => r?.field && r?.value)
         ?.map((r) => ({ field: r?.field, value: r?.value }));
+      const skipLogic = findQuestion?.skip_logic;
+
       data = {
         ...findQuestion,
-        // option: option?.length > 0 ? option : null,
         option: null,
         repeating_objects: repeatingObject?.length > 0 ? repeatingObject : null,
+        skip_logic: null,
       };
+
       // delete question option before update
       deleteQuestionOption(deletedOptions, qId);
       // post option first, then update question
@@ -347,6 +352,46 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
           }
         });
       }
+
+      // post skip logic
+      if (skipLogic?.length > 0) {
+        skipLogic?.forEach((ski) => {
+          const skipPayload = {
+            question: ski?.question,
+            dependent_to: ski?.dependent_to,
+            operator: ski?.operator,
+            value: ski?.value,
+            type: ski?.type,
+          };
+          if (ski?.flag === "post") {
+            api
+              .post(`/skip_logic`, skipPayload, {
+                "content-type": "application/json",
+              })
+              .then((res) => {
+                console.log("Skip logic created", res?.data);
+              })
+              .catch((e) => {
+                const { status, statusText } = e.response;
+                console.error(status, statusText);
+              });
+          } else {
+            api
+              .put(`/skip_logic/${ski?.id}`, skipPayload, {
+                "content-type": "application/json",
+              })
+              .then((res) => {
+                console.log("Skip logic updated", res?.data);
+              })
+              .catch((e) => {
+                const { status, statusText } = e.response;
+                console.error(status, statusText);
+              });
+          }
+        });
+        console.log(skipLogic);
+      }
+
       api
         .put(`/question/${qId}`, data, {
           "content-type": "application/json",
@@ -448,6 +493,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
             "repeating_objects_field",
             "repeating_objects_value",
             "rule",
+            "skip_logic",
           ].includes(field)
         ) {
           findQuestion = {
@@ -496,7 +542,22 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
             },
           };
         }
-
+        if (field.includes("skip_logic")) {
+          const skipKey = key.split("-")[3];
+          findQuestion = {
+            ...findQuestion,
+            skip_logic: [
+              {
+                ...findQuestion?.skip_logic[0],
+                flag: findQuestion?.skip_logic[0]?.id || "post",
+                question: qid,
+                [skipKey]: Array.isArray(value)
+                  ? value.join("|")
+                  : String(value),
+              },
+            ],
+          };
+        }
         console.log("onFormChangeValue", findQuestion);
 
         store.update((s) => {
