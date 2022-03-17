@@ -33,6 +33,7 @@ const QuestionGroupSetting = ({
   const optionValues = store.useState((s) => s?.optionValues);
   const { member_type, isco_type } = optionValues;
   const { id } = questionGroup;
+  const formId = questionGroup?.form;
 
   return (
     <div className="qge-setting-wrapper">
@@ -45,13 +46,17 @@ const QuestionGroupSetting = ({
             className="qge-setting-tab-body"
           >
             <Col span={10}>
-              <Form.Item name={`question_group-description-${id}`}>
+              <Form.Item name={`question_group-${formId}-description-${id}`}>
                 <Input.TextArea
                   rows={3}
                   placeholder="Question Group Description"
                 />
               </Form.Item>
-              <Form.Item name={`question_group-repeat-${id}`} hidden noStyle>
+              <Form.Item
+                name={`question_group-${formId}-repeat-${id}`}
+                hidden
+                noStyle
+              >
                 <Input />
               </Form.Item>
               <Space>
@@ -67,7 +72,7 @@ const QuestionGroupSetting = ({
             </Col>
             <Col span={7}>
               <Form.Item
-                name={`question_group-member_access-${id}`}
+                name={`question_group-${formId}-member_access-${id}`}
                 rules={[
                   { required: true, message: "Please select member type" },
                 ]}
@@ -89,7 +94,7 @@ const QuestionGroupSetting = ({
             </Col>
             <Col span={7}>
               <Form.Item
-                name={`question_group-isco_access-${id}`}
+                name={`question_group-${formId}-isco_access-${id}`}
                 rules={[{ required: true, message: "Please select isco type" }]}
               >
                 <Select
@@ -128,10 +133,14 @@ const QuestionGroupSetting = ({
 const QuestionGroupEditor = ({ index, questionGroup }) => {
   const [form] = Form.useForm();
   const state = store.useState((s) => s?.surveyEditor);
+  const formId = state?.id;
   const { deletedOptions } = store.useState((s) => s?.tempStorage);
   const { id, name, question } = questionGroup;
   const isQuestionGroupSaved = id && name;
-  const [isGroupSettingVisible, setIsGroupSettingVisible] = useState(false);
+  const hasQuestion = questionGroup?.question?.length > 0;
+  const [isGroupSettingVisible, setIsGroupSettingVisible] = useState(
+    !hasQuestion
+  );
   const [submitStatus, setSubmitStatus] = useState(null);
   const [repeat, setRepeat] = useState(false);
   const [saveBtnLoading, setSaveBtnLoading] = useState(false);
@@ -139,7 +148,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
   useEffect(() => {
     if (questionGroup.id) {
       Object.keys(questionGroup).forEach((key) => {
-        const field = `question_group-${key}-${id}`;
+        const field = `question_group-${formId}-${key}-${id}`;
         const value = questionGroup?.[key];
         form.setFieldsValue({ [field]: value });
         if (key === "repeat") {
@@ -152,10 +161,12 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
   const onChangeRepeat = (val, fieldId) => {
     form.setFieldsValue({ [fieldId]: val });
     setRepeat(val);
+    setTimeout(() => {
+      handleFormOnValuesChange(form?.getFieldsValue(), form?.getFieldsValue());
+    }, 100);
   };
 
   const handleAddQuestionButton = (questionGroup) => {
-    const formId = state?.id;
     const qgId = questionGroup?.id;
     api
       .post(`/default_question/${formId}/${qgId}`)
@@ -238,7 +249,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
     let data = {};
     if (submitStatus === "question-group") {
       Object.keys(values).forEach((key) => {
-        const field = key.split("-")[1];
+        const field = key.split("-")[2];
         let val = values[key];
         if (typeof val == "boolean") {
           val = val;
@@ -410,12 +421,31 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
   };
 
   const handleFormOnValuesChange = (values, allValues) => {
+    console.log("onFormChangeValue", values);
     const question = questionGroup?.question;
     Object.keys(values).forEach((key) => {
       const field = key.split("-")[2];
-      const qid = parseInt(key.split("-")[1]);
       const value = values?.[key];
+      if (key.includes("question_group")) {
+        let findQuestionGroup = questionGroup;
+        findQuestionGroup = {
+          ...findQuestionGroup,
+          [field]: value,
+        };
+        store.update((s) => {
+          s.surveyEditor = {
+            ...s.surveyEditor,
+            questionGroup: [
+              ...s.surveyEditor?.questionGroup?.filter(
+                (x) => x?.id !== questionGroup?.id
+              ),
+              findQuestionGroup,
+            ],
+          };
+        });
+      }
       if (key.includes("question") && !key.includes("question_group")) {
+        const qid = parseInt(key.split("-")[1]);
         // update question state
         let findQuestion = question?.find((q) => q?.id === qid);
         if (
@@ -472,7 +502,6 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
             },
           };
         }
-        console.log("onFormChangeValue", findQuestion);
         store.update((s) => {
           s.surveyEditor = {
             ...s.surveyEditor,
@@ -495,6 +524,8 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
   };
 
   const handleFormOnFinishFailed = ({ values }) => {
+    setSubmitStatus(null);
+    setSaveBtnLoading(false);
     console.log("Failed", values);
   };
 
@@ -511,9 +542,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
           form={form}
           name="survey-detail"
           onValuesChange={(values, allValues) => {
-            setTimeout(() => {
-              handleFormOnValuesChange(values, allValues);
-            }, 100);
+            handleFormOnValuesChange(values, allValues);
           }}
           onFinish={handleFormOnFinish}
           onFinishFailed={handleFormOnFinishFailed}
@@ -526,7 +555,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
             >
               <Col span={18} align="start" className="left">
                 <Form.Item
-                  name={`question_group-name-${id}`}
+                  name={`question_group-${formId}-name-${id}`}
                   rules={[
                     { required: true, message: "Please input section title" },
                   ]}
