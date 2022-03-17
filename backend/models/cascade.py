@@ -9,6 +9,7 @@ from sqlalchemy import Column, Integer, String, Enum
 from sqlalchemy.orm import relationship
 from pydantic import BaseModel
 from models.cascade_list import CascadeListBase
+from models.cascade_list import CascadeListPayload
 
 
 class CascadeType(enum.Enum):
@@ -19,6 +20,7 @@ class CascadeType(enum.Enum):
 class CascadePayload(TypedDict):
     name: str
     type: CascadeType
+    cascades: Optional[List[CascadeListPayload]] = None
 
 
 class CascadeDict(TypedDict):
@@ -51,7 +53,7 @@ class Cascade(Base):
             "id": self.id,
             "name": self.name,
             "type": self.type,
-            "cascades": self.cascades
+            "cascades": [c.serialize for c in self.cascades]
         }
 
 

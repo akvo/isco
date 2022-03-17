@@ -11,11 +11,10 @@ from models.cascade_list import CascadeListDict, CascadeListPayload
 
 
 def add_cascade(session: Session,
-                payload: CascadePayload,
-                cascade_list: Optional[List[CascadeListPayload]] = None):
+                payload: CascadePayload):
     cascade = Cascade(id=None, name=payload['name'], type=payload['type'])
-    if cascade_list:
-        for cl in cascade_list:
+    if payload['cascades']:
+        for cl in payload['cascades']:
             cid = cl['cascade']
             cid = None if cid is None else cid
             clist = CascadeList(cascade=cid,

@@ -20,11 +20,8 @@ cascade_route = APIRouter()
                     name="cascade:create",
                     tags=["Cascade"])
 def add(req: Request, cascade: CascadePayload,
-        cascade_list: Optional[List[CascadeListPayload]] = None,
         session: Session = Depends(get_session)):
-    cascade = crud.add_cascade(session=session,
-                               payload=cascade,
-                               cascade_list=cascade_list)
+    cascade = crud.add_cascade(session=session, payload=cascade)
     return cascade.serialize
 
 

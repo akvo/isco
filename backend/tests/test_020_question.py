@@ -212,11 +212,9 @@ class TestQuestionRoutes():
                                client: AsyncClient) -> None:
         # add cascade
         cascade_payload = {
-            "cascade": {
-                "name": "Cascade 1",
-                "type": CascadeType.cascade.value,
-            },
-            "cascade_list": [{
+            "name": "Cascade 1",
+            "type": CascadeType.cascade.value,
+            "cascades": [{
                 "cascade": None,
                 "parent": None,
                 "code": None,
@@ -256,6 +254,7 @@ class TestQuestionRoutes():
         cascade_payload = {
             "name": "Cascade 1 Updated",
             "type": CascadeType.cascade.value,
+            "cascades": None,
         }
         res = await client.put(app.url_path_for("cascade:put", id=1),
                                json=cascade_payload)
