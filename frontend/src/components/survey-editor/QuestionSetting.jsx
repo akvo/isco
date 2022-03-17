@@ -532,7 +532,7 @@ const Setting = ({
                   placeholder="Select value"
                   options={dependentQuestion?.option?.map((x) => ({
                     label: x?.name,
-                    value: x?.id,
+                    value: String(x?.id),
                   }))}
                 />
               </Form.Item>

@@ -14,8 +14,6 @@ import { RiSettings5Fill, RiDeleteBinFill } from "react-icons/ri";
 import { MdFileCopy, MdGTranslate } from "react-icons/md";
 import QuestionSetting from "./QuestionSetting";
 import { store, api } from "../../lib";
-import { defaultOption } from "../../lib/store";
-import { generateID } from "../../lib/util";
 
 const { Panel } = Collapse;
 
@@ -126,6 +124,15 @@ const QuestionEditor = ({
         }
         if (key === "personal_data") {
           setPersonalData(value);
+        }
+        // Load skip logic
+        if (key === "skip_logic") {
+          value?.forEach((val) => {
+            Object.keys(val).forEach((key) => {
+              const skipField = `${field}-${key}`;
+              form.setFieldsValue({ [skipField]: val?.[key] });
+            });
+          });
         }
       });
     }
