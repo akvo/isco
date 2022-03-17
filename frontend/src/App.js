@@ -13,9 +13,16 @@ const App = () => {
       api.get("/isco_type/"),
       api.get("/skip_logic/operator"),
       api.get("/cascade/"),
+      api.get("/question/repeating_object"),
     ]).then((res) => {
-      const [question_type, member_type, isco_type, operator_type, cascade] =
-        res;
+      const [
+        question_type,
+        member_type,
+        isco_type,
+        operator_type,
+        cascade,
+        repeating_object,
+      ] = res;
       store.update((s) => {
         s.optionValues = {
           ...s.optionValues,
@@ -25,6 +32,7 @@ const App = () => {
           operator_type: operator_type?.data,
           cascade: cascade?.data?.filter((c) => c?.type === "cascade"),
           nested: cascade?.data?.filter((c) => c?.type === "nested"),
+          repeating_object_option: repeating_object?.data,
         };
       });
     });

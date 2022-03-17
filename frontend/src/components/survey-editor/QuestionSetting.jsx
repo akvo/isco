@@ -73,6 +73,7 @@ const RenderRepeatingObjectInput = ({
   handlePlusMinusRepeatingObjects,
 }) => {
   const qId = question?.id;
+  const { repeating_object_option } = store.useState((s) => s?.optionValues);
 
   return repeating_objects?.map((ro, roi) => (
     <Row
@@ -87,7 +88,14 @@ const RenderRepeatingObjectInput = ({
             <Form.Item
               name={`question-${qId}-repeating_objects_field-${ro?.id || roi}`}
             >
-              <Input placeholder="Field" />
+              <Select
+                allowClear
+                placeholder="Select field value"
+                options={repeating_object_option?.map((x) => ({
+                  label: x,
+                  value: x,
+                }))}
+              />
             </Form.Item>
           </Col>
           <Col span={12}>
