@@ -80,6 +80,9 @@ const defaultUIState = {
     question_type: [],
   },
   surveyEditor: defaultSurveyEditor,
+  tempStorage: {
+    deletedOptions: [],
+  },
 };
 
 const store = new Store(defaultUIState);

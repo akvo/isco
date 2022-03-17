@@ -27,7 +27,7 @@ const RenderOptionInput = ({
 }) => {
   const qId = question?.id;
 
-  return option?.map((opt, optIndex) => (
+  return orderBy(option, ["order"])?.map((opt, optIndex) => (
     <Row
       key={`option-${opt?.id}`}
       align="middle"
@@ -151,29 +151,36 @@ const Detail = ({
 
     if (operation === "remove") {
       updatedOption = question?.option?.filter((op) => op?.id !== opt?.id);
+      // store removed option to delete when save button clicked
+      store.update((s) => {
+        s.tempStorage = {
+          ...s.tempStorage,
+          deletedOptions: [
+            ...s.tempStorage.deletedOptions?.filter((x) => x?.id !== opt?.id),
+            opt,
+          ],
+        };
+      });
     }
 
     const questionGroupWithUpdatedQuestionOption = {
       ...questionGroup,
-      question: orderBy(
-        [
-          ...filterQuestion,
-          {
-            ...question,
-            option: updatedOption,
-          },
-        ],
-        ["order"]
-      ),
+      question: [
+        ...filterQuestion,
+        {
+          ...question,
+          option: updatedOption,
+        },
+      ],
     };
 
     store.update((s) => {
       s.surveyEditor = {
         ...s.surveyEditor,
-        questionGroup: orderBy(
-          [...filterQuestionGroup, questionGroupWithUpdatedQuestionOption],
-          ["order"]
-        ),
+        questionGroup: [
+          ...filterQuestionGroup,
+          questionGroupWithUpdatedQuestionOption,
+        ],
       };
     });
   };
@@ -206,25 +213,22 @@ const Detail = ({
 
     const questionGroupWithUpdatedQuestionOption = {
       ...questionGroup,
-      question: orderBy(
-        [
-          ...filterQuestion,
-          {
-            ...question,
-            repeating_objects: updatedRepeatingObject,
-          },
-        ],
-        ["order"]
-      ),
+      question: [
+        ...filterQuestion,
+        {
+          ...question,
+          repeating_objects: updatedRepeatingObject,
+        },
+      ],
     };
 
     store.update((s) => {
       s.surveyEditor = {
         ...s.surveyEditor,
-        questionGroup: orderBy(
-          [...filterQuestionGroup, questionGroupWithUpdatedQuestionOption],
-          ["order"]
-        ),
+        questionGroup: [
+          ...filterQuestionGroup,
+          questionGroupWithUpdatedQuestionOption,
+        ],
       };
     });
   };
@@ -240,48 +244,43 @@ const Detail = ({
   return (
     <>
       {/* Options */}
-      {type === "option" && (
-        <div className="question-setting-wrapper">
-          <RenderOptionInput
-            question={question}
-            option={option}
-            handlePlusMinusOptionButton={handlePlusMinusOptionButton}
-          />
-        </div>
-      )}
-      {/* Repeating Objects */}
-      <div className="question-setting-wrapper">
-        <RenderRepeatingObjectInput
-          question={question}
-          repeating_objects={repeating_objects}
-          handlePlusMinusRepeatingObjects={handlePlusMinusRepeatingObjects}
-        />
-      </div>
-      {/* Add Other */}
-      <div className="question-setting-wrapper">
-        <Row align="middle" justify="space-between">
-          <Col span={1}>
-            <Form.Item name={`question-${qId}-rule-allow_other`} hidden noStyle>
-              <Input />
-            </Form.Item>
-            <Checkbox
-              checked={allowOther}
-              onChange={(val) =>
-                handleAllowOtherChange(
-                  val?.target?.checked,
-                  `question-${qId}-rule-allow_other`
-                )
-              }
+      {(type === "option" || type === "multiple_option") && (
+        <>
+          <div className="question-setting-wrapper">
+            <RenderOptionInput
+              question={question}
+              option={option}
+              handlePlusMinusOptionButton={handlePlusMinusOptionButton}
             />
-          </Col>
-          <Col span={23}>
-            <Input
-              placeholder='Add an "Other" answer option or Comment Field'
-              disabled
-            />
-          </Col>
-        </Row>
-        {/* <Row>
+          </div>
+          <div className="question-setting-wrapper">
+            <Row align="middle" justify="space-between">
+              <Col span={1}>
+                <Form.Item
+                  name={`question-${qId}-rule-allow_other`}
+                  hidden
+                  noStyle
+                >
+                  <Input />
+                </Form.Item>
+                <Checkbox
+                  checked={allowOther}
+                  onChange={(val) =>
+                    handleAllowOtherChange(
+                      val?.target?.checked,
+                      `question-${qId}-rule-allow_other`
+                    )
+                  }
+                />
+              </Col>
+              <Col span={23}>
+                <Input
+                  placeholder='Add an "Other" answer option or Comment Field'
+                  disabled
+                />
+              </Col>
+            </Row>
+            {/* <Row>
           <Col span={1}>
             <Form.Item name="rule-none">
               <Checkbox checked={false} />
@@ -294,6 +293,16 @@ const Detail = ({
             />
           </Col>
         </Row> */}
+          </div>
+        </>
+      )}
+      {/* Repeating Objects */}
+      <div className="question-setting-wrapper">
+        <RenderRepeatingObjectInput
+          question={question}
+          repeating_objects={repeating_objects}
+          handlePlusMinusRepeatingObjects={handlePlusMinusRepeatingObjects}
+        />
       </div>
     </>
   );

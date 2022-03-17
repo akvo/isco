@@ -19,7 +19,7 @@ import QuestionEditor from "./QuestionEditor";
 import { store, api } from "../../lib";
 import orderBy from "lodash/orderBy";
 import { defaultRepeatingObject, defaultOption } from "../../lib/store";
-import { generateID } from "../../lib/util";
+import { generateID, deleteQuestionOption } from "../../lib/util";
 
 const { TabPane } = Tabs;
 
@@ -128,6 +128,7 @@ const QuestionGroupSetting = ({
 const QuestionGroupEditor = ({ index, questionGroup }) => {
   const [form] = Form.useForm();
   const state = store.useState((s) => s?.surveyEditor);
+  const { deletedOptions } = store.useState((s) => s?.tempStorage);
   const { id, name, question } = questionGroup;
   const isQuestionGroupSaved = id && name;
   const [isGroupSettingVisible, setIsGroupSettingVisible] = useState(false);
@@ -233,6 +234,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
 
   const handleFormOnFinish = (values) => {
     const { id, order } = questionGroup;
+    let qId = null;
     let data = {};
     if (submitStatus === "question-group") {
       Object.keys(values).forEach((key) => {
@@ -284,7 +286,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
       submitStatus.includes("question") &&
       !submitStatus?.includes("question-group")
     ) {
-      const qId = parseInt(submitStatus?.split("-")[1]);
+      qId = parseInt(submitStatus?.split("-")[1]);
       const findQuestion = questionGroup?.question?.find((q) => q?.id === qId);
       const qgId = findQuestion?.question_group;
       const option = findQuestion?.option?.filter((opt) => opt?.name);
@@ -297,6 +299,8 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
         option: null,
         repeating_objects: repeatingObject?.length > 0 ? repeatingObject : null,
       };
+      // delete question option before update
+      deleteQuestionOption(deletedOptions, qId);
       // post option first, then update question
       if (option?.length > 0) {
         option?.forEach((opt) => {
@@ -352,7 +356,14 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
                     ...qg,
                     question: qg?.question?.map((q) => {
                       if (q?.id === qId) {
-                        let option = data?.option;
+                        let option = data?.option?.filter((op) => {
+                          const checkDelete = deletedOptions?.find(
+                            (d) => d?.id === op?.id
+                          );
+                          if (!checkDelete) {
+                            return op;
+                          }
+                        });
                         let repeating_objects = data?.repeating_objects;
                         // add option default
                         if (option?.length === 0) {
@@ -379,6 +390,12 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
                 }
                 return qg;
               }),
+            };
+          });
+          store.update((s) => {
+            s.tempStorage = {
+              ...s.tempStorage,
+              deletedOptions: [],
             };
           });
         })
