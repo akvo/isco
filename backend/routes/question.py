@@ -6,6 +6,7 @@ from db.connection import get_session
 import db.crud_question as crud
 from models.question import QuestionBase, QuestionDict
 from models.question import QuestionPayload, QuestionType
+from models.question import RepeatingObjectType
 
 question_route = APIRouter()
 
@@ -72,6 +73,15 @@ def get(req: Request, session: Session = Depends(get_session)):
                     tags=["Question"])
 def get_question_type(req: Request, session: Session = Depends(get_session)):
     return [q.value for q in QuestionType]
+
+
+@question_route.get("/question/repeating_object",
+                    response_model=List[str],
+                    summary="get all question repeating object options",
+                    name="question:get_all_repeating_object",
+                    tags=["Question"])
+def get_repeating_object(req: Request, session: Session = Depends(get_session)):
+    return [ro.value for ro in RepeatingObjectType]
 
 
 # @question_route.get("/question/{form_id:path}",
