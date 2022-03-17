@@ -4,6 +4,7 @@ import {
   Col,
   Form,
   Input,
+  InputNumber,
   Checkbox,
   Button,
   Space,
@@ -234,10 +235,11 @@ const Detail = ({
   };
 
   const handleAllowOtherChange = (val, field) => {
-    form.setFieldsValue({ [field]: val });
+    const fieldValue = { [field]: val };
+    form.setFieldsValue(fieldValue);
     setAllowOther(val);
     setTimeout(() => {
-      handleFormOnValuesChange(form?.getFieldsValue(), form?.getFieldsValue());
+      handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
     }, 100);
   };
 
@@ -354,22 +356,36 @@ const Setting = ({
   personalData,
   setPersonalData,
   handleFormOnValuesChange,
+  allowDecimal,
+  setAllowDecimal,
 }) => {
   const qid = question?.id;
+  const { type } = question;
 
   const handleRequiredChange = (val, field) => {
-    form.setFieldsValue({ [field]: val });
+    const fieldValue = { [field]: val };
+    form.setFieldsValue(fieldValue);
     setMandatory(val);
     setTimeout(() => {
-      handleFormOnValuesChange(form?.getFieldsValue(), form?.getFieldsValue());
+      handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
     }, 100);
   };
 
   const handlePersonalDataChange = (val, field) => {
-    form.setFieldsValue({ [field]: val });
+    const fieldValue = { [field]: val };
+    form.setFieldsValue(fieldValue);
     setPersonalData(val);
     setTimeout(() => {
-      handleFormOnValuesChange(form?.getFieldsValue(), form?.getFieldsValue());
+      handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
+    }, 100);
+  };
+
+  const handleAllowDecimalChange = (val, field) => {
+    const fieldValue = { [field]: val };
+    form.setFieldsValue(fieldValue);
+    setAllowDecimal(val);
+    setTimeout(() => {
+      handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
     }, 100);
   };
 
@@ -441,23 +457,53 @@ const Setting = ({
             </Form.Item>
           </Space>
         </TabPane>
-        <TabPane tab="Validation Criteria" key="validation-criteria">
-          <Space direction="vertical">
-            <div>
-              This question will only be valid if the following conditions apply
-            </div>
-            <Form.Item
-              label="This question's response has to be"
-              name={`question-${qid}-rule`}
-            >
-              <Input className="bg-grey" placeholder="Response Value" />
-            </Form.Item>
-            <hr />
-            <Form.Item name={`question-${qid}-error_message`}>
-              <Input className="bg-grey" placeholder="Error Message" />
-            </Form.Item>
-          </Space>
-        </TabPane>
+        {type === "number" && (
+          <TabPane tab="Validation Criteria" key="validation-criteria">
+            <Space direction="vertical" size="large">
+              <div>
+                This question will only be valid if the following conditions
+                apply :
+              </div>
+              <div>
+                <Form.Item
+                  name={`question-${qid}-rule-allow_decimal`}
+                  hidden
+                  noStyle
+                >
+                  <Input />
+                </Form.Item>
+                <Space>
+                  <Checkbox
+                    checked={allowDecimal}
+                    onChange={(val) =>
+                      handleAllowDecimalChange(
+                        val?.target?.checked,
+                        `question-${qid}-rule-allow_decimal`
+                      )
+                    }
+                  />{" "}
+                  Allow Decimal
+                </Space>
+              </div>
+              <div>
+                <Space align="center" size="large">
+                  <Form.Item
+                    label="Min Value"
+                    name={`question-${qid}-rule-min`}
+                  >
+                    <InputNumber className="bg-grey" />
+                  </Form.Item>
+                  <Form.Item
+                    label="Max Value"
+                    name={`question-${qid}-rule-max`}
+                  >
+                    <InputNumber className="bg-grey" />
+                  </Form.Item>
+                </Space>
+              </div>
+            </Space>
+          </TabPane>
+        )}
       </Tabs>
     </div>
   );
@@ -471,6 +517,8 @@ const RenderLayout = ({
   handleFormOnValuesChange,
   setAllowOther,
   allowOther,
+  allowDecimal,
+  setAllowDecimal,
   mandatory,
   setMandatory,
   personalData,
@@ -487,6 +535,8 @@ const RenderLayout = ({
           question={question}
           mandatory={mandatory}
           setMandatory={setMandatory}
+          allowDecimal={allowDecimal}
+          setAllowDecimal={setAllowDecimal}
           personalData={personalData}
           setPersonalData={setPersonalData}
           handleFormOnValuesChange={handleFormOnValuesChange}
@@ -516,6 +566,8 @@ const QuestionSetting = ({
   setSubmitStatus,
   setAllowOther,
   allowOther,
+  allowDecimal,
+  setAllowDecimal,
   mandatory,
   setMandatory,
   personalData,
@@ -531,6 +583,8 @@ const QuestionSetting = ({
         handleFormOnValuesChange={handleFormOnValuesChange}
         allowOther={allowOther}
         setAllowOther={setAllowOther}
+        allowDecimal={allowDecimal}
+        setAllowDecimal={setAllowDecimal}
         mandatory={mandatory}
         setMandatory={setMandatory}
         personalData={personalData}

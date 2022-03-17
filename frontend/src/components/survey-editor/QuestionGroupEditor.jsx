@@ -497,7 +497,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
           };
         }
 
-        // console.log("onFormChangeValue", findQuestion);
+        console.log("onFormChangeValue", findQuestion);
 
         store.update((s) => {
           s.surveyEditor = {

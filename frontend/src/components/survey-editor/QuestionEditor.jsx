@@ -76,6 +76,7 @@ const QuestionEditor = ({
   const [activePanel, setActivePanel] = useState(null);
   const [activeSetting, setActiveSetting] = useState("detail");
   const [allowOther, setAllowOther] = useState(false);
+  const [allowDecimal, setAllowDecimal] = useState(false);
   const [mandatory, setMandatory] = useState(false);
   const [personalData, setPersonalData] = useState(false);
   const state = store.useState((s) => s?.surveyEditor);
@@ -98,6 +99,9 @@ const QuestionEditor = ({
             form.setFieldsValue({ [`${field}-${key}`]: value?.[key] });
             if (key === "allow_other") {
               setAllowOther(value?.[key]);
+            }
+            if (key === "allow_decimal") {
+              setAllowDecimal(value?.[key]);
             }
           });
         }
@@ -205,6 +209,8 @@ const QuestionEditor = ({
                         setSubmitStatus={setSubmitStatus}
                         allowOther={allowOther}
                         setAllowOther={setAllowOther}
+                        allowDecimal={allowDecimal}
+                        setAllowDecimal={setAllowDecimal}
                         mandatory={mandatory}
                         setMandatory={setMandatory}
                         personalData={personalData}
