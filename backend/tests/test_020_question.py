@@ -488,6 +488,7 @@ class TestQuestionRoutes():
                     "id": 2,
                     "name": "Male",
                     "order": 1,
+                    "question": 3,
                     "translations": None
                 },
                 {
@@ -495,6 +496,7 @@ class TestQuestionRoutes():
                     "id": 3,
                     "name": "Female",
                     "order": 2,
+                    "question": 3,
                     "translations": None
                 }
             ],

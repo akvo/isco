@@ -62,6 +62,7 @@ class Option(Base):
 
 class OptionBase(BaseModel):
     id: int
+    question: int
     code: Optional[str] = None
     name: str
     translations: Optional[List[dict]] = None
