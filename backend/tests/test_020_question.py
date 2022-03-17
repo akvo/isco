@@ -229,15 +229,15 @@ class TestQuestionRoutes():
         res = res.json()
         assert res == {
             "cascades": [{
-                "cascade": 2,
+                "cascade": 3,
                 "code": None,
-                "id": 18,
+                "id": 26,
                 "level": 0,
                 "name": "Parent 1",
                 "parent": None,
                 "path": None
             }],
-            "id": 2,
+            "id": 3,
             "name": "Cascade 1",
             "type": "cascade",
         }
@@ -246,22 +246,22 @@ class TestQuestionRoutes():
     async def test_update_cascade(self, app: FastAPI, session: Session,
                                   client: AsyncClient) -> None:
         # get cascade
-        res = await client.get(app.url_path_for("cascade:get_by_id", id=1))
+        res = await client.get(app.url_path_for("cascade:get_by_id", id=3))
         assert res.status_code == 200
         res = res.json()
-        assert res["id"] == 1
+        assert res["id"] == 3
         # update cascade
         cascade_payload = {
             "name": "Cascade 1 Updated",
             "type": CascadeType.cascade.value,
             "cascades": None,
         }
-        res = await client.put(app.url_path_for("cascade:put", id=2),
+        res = await client.put(app.url_path_for("cascade:put", id=3),
                                json=cascade_payload)
         assert res.status_code == 200
         res = res.json()
         assert res == {
-            "id": 2,
+            "id": 3,
             "name": "Cascade 1 Updated",
             "type": "cascade"
         }
@@ -270,13 +270,13 @@ class TestQuestionRoutes():
     async def test_add_cascade_list(self, app: FastAPI, session: Session,
                                     client: AsyncClient) -> None:
         # get cascade
-        res = await client.get(app.url_path_for("cascade:get_by_id", id=1))
+        res = await client.get(app.url_path_for("cascade:get_by_id", id=3))
         assert res.status_code == 200
         res = res.json()
-        assert res["id"] == 1
+        assert res["id"] == 3
         # add cascade list
         cascade_payload = {
-            "cascade": 2,
+            "cascade": 3,
             "parent": None,
             "code": None,
             "name": "Parent 2",
@@ -288,9 +288,9 @@ class TestQuestionRoutes():
         assert res.status_code == 200
         res = res.json()
         assert res == {
-            "cascade": 2,
+            "cascade": 3,
             "code": None,
-            "id": 19,
+            "id": 27,
             "level": 0,
             "name": "Parent 2",
             "parent": None,

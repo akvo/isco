@@ -1,4 +1,5 @@
 # Defined Values
+
 member_values = [
     'All',
     'Big Industry',

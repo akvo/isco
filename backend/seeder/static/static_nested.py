@@ -1,14 +1,11 @@
 # Defined Values
 
-cascade_lv1 = ["Java", "Bali"]
-cascade_lv2_java = ["Banten", "Jakarta", "Jawab Barat",
-                    "Jawa Tengah", "Yogyakarta", "Jawa Timur"]
-cascade_lv2_bali = ["Badung", "Bangli", "Buleleng",
-                    "Gianyar", "Jembrana", "Karangasem",
-                    "Klungkung", "Tabanan", "Denpasar"]
+nested_lv1 = ["Sports", "Technology"]
+nested_lv2_sport = ["Basketball", "Football", "Tennis"]
+nested_lv2_tech = ["Programming", "Games", "Youtuber"]
 
 cascades = []
-for l1 in cascade_lv1:
+for l1 in nested_lv1:
     cascades.append(
         {
             "cascade": None,
@@ -20,32 +17,32 @@ for l1 in cascade_lv1:
         }
     )
 
-for l2 in cascade_lv2_java:
+for l2 in nested_lv2_sport:
     cascades.append(
         {
             "cascade": None,
-            "parent": 1,
+            "parent": 18,
             "code": None,
             "name": l2,
-            "path": "1.",
+            "path": "18.",
             "level": 2,
         }
     )
 
-for l2 in cascade_lv2_bali:
+for l2 in nested_lv2_tech:
     cascades.append(
         {
             "cascade": None,
-            "parent": 2,
+            "parent": 19,
             "code": None,
             "name": l2,
-            "path": "2.",
+            "path": "19.",
             "level": 2,
         }
     )
 
-cascade_values = {
-    "name": "Bali and Java",
-    "type": "cascade",
+nested_values = {
+    "name": "Sport & Technology",
+    "type": "nested",
     "cascades": cascades
 }
