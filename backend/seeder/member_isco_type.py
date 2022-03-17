@@ -2,20 +2,7 @@ from db.truncator import truncate
 from db.connection import Base, SessionLocal, engine
 import db.crud_member_type as crud_member
 import db.crud_isco_type as crud_isco
-
-# Defined Values
-
-member_values = [
-    'All',
-    'Big Industry',
-    'Small Industry',
-    'DISCO - Traders',
-    'Retail',
-    'Standard Setting Organisation',
-    'Other'
-]
-
-isco_values = ['All', 'ISCO']
+from seeder.static.static_member_isco import member_values, isco_values
 
 
 # Start seeding

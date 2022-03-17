@@ -3,7 +3,8 @@ import pytest
 from fastapi import FastAPI
 from httpx import AsyncClient
 from sqlalchemy.orm import Session
-from seeder.member_isco_type import member_values, isco_values
+from seeder.static.static_cascade import cascade_values
+from seeder.static.static_member_isco import member_values, isco_values
 from models.user import UserRole
 
 pytestmark = pytest.mark.asyncio
@@ -42,6 +43,22 @@ class TestOrganisationRoutes():
         assert res.status_code == 200
         res = res.json()
         assert len(res) == len(isco_values)
+
+    @pytest.mark.asyncio
+    async def test_add_cascade(self, app: FastAPI, session: Session,
+                               client: AsyncClient) -> None:
+        # create cascade
+        res = await client.post(
+            app.url_path_for("cascade:create"),
+            json=cascade_values)
+        assert res.status_code == 200
+        res = res.json()
+        # get cascade by id
+        res = await client.get(
+                app.url_path_for("cascade:get_by_id", id=res['id']))
+        assert res.status_code == 200
+        res = res.json()
+        assert len(res['cascades']) > 0
 
     @pytest.mark.asyncio
     async def test_add_organisation(self, app: FastAPI, session: Session,

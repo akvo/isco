@@ -229,15 +229,15 @@ class TestQuestionRoutes():
         res = res.json()
         assert res == {
             "cascades": [{
-                "cascade": 1,
+                "cascade": 2,
                 "code": None,
-                "id": 1,
+                "id": 18,
                 "level": 0,
                 "name": "Parent 1",
                 "parent": None,
                 "path": None
             }],
-            "id": 1,
+            "id": 2,
             "name": "Cascade 1",
             "type": "cascade",
         }
@@ -256,12 +256,12 @@ class TestQuestionRoutes():
             "type": CascadeType.cascade.value,
             "cascades": None,
         }
-        res = await client.put(app.url_path_for("cascade:put", id=1),
+        res = await client.put(app.url_path_for("cascade:put", id=2),
                                json=cascade_payload)
         assert res.status_code == 200
         res = res.json()
         assert res == {
-            "id": 1,
+            "id": 2,
             "name": "Cascade 1 Updated",
             "type": "cascade"
         }
@@ -276,7 +276,7 @@ class TestQuestionRoutes():
         assert res["id"] == 1
         # add cascade list
         cascade_payload = {
-            "cascade": 1,
+            "cascade": 2,
             "parent": None,
             "code": None,
             "name": "Parent 2",
@@ -288,9 +288,9 @@ class TestQuestionRoutes():
         assert res.status_code == 200
         res = res.json()
         assert res == {
-            "cascade": 1,
+            "cascade": 2,
             "code": None,
-            "id": 2,
+            "id": 19,
             "level": 0,
             "name": "Parent 2",
             "parent": None,
