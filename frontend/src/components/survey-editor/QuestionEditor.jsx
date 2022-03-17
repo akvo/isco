@@ -76,6 +76,8 @@ const QuestionEditor = ({
   const [activePanel, setActivePanel] = useState(null);
   const [activeSetting, setActiveSetting] = useState("detail");
   const [allowOther, setAllowOther] = useState(false);
+  const [mandatory, setMandatory] = useState(false);
+  const [personalData, setPersonalData] = useState(false);
   const state = store.useState((s) => s?.surveyEditor);
   const optionValues = store.useState((s) => s?.optionValues);
   const { question_type } = optionValues;
@@ -114,6 +116,12 @@ const QuestionEditor = ({
             const opField = `${field}-${val?.id}`;
             form.setFieldsValue({ [opField]: val?.name });
           });
+        }
+        if (key === "mandatory") {
+          setMandatory(value);
+        }
+        if (key === "personal_data") {
+          setPersonalData(value);
         }
       });
     }
@@ -228,6 +236,10 @@ const QuestionEditor = ({
                         setSubmitStatus={setSubmitStatus}
                         allowOther={allowOther}
                         setAllowOther={setAllowOther}
+                        mandatory={mandatory}
+                        setMandatory={setMandatory}
+                        personalData={personalData}
+                        setPersonalData={setPersonalData}
                       />
                     </Col>
                   </Row>

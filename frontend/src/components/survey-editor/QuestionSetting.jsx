@@ -345,34 +345,84 @@ const Translation = () => {
   );
 };
 
-const Setting = ({ question, questionGroup }) => {
+const Setting = ({
+  form,
+  question,
+  questionGroup,
+  mandatory,
+  setMandatory,
+  personalData,
+  setPersonalData,
+  handleFormOnValuesChange,
+}) => {
   const qid = question?.id;
+
+  const handleRequiredChange = (val, field) => {
+    form.setFieldsValue({ [field]: val });
+    setMandatory(val);
+    setTimeout(() => {
+      handleFormOnValuesChange(form?.getFieldsValue(), form?.getFieldsValue());
+    }, 100);
+  };
+
+  const handlePersonalDataChange = (val, field) => {
+    form.setFieldsValue({ [field]: val });
+    setPersonalData(val);
+    setTimeout(() => {
+      handleFormOnValuesChange(form?.getFieldsValue(), form?.getFieldsValue());
+    }, 100);
+  };
 
   return (
     <div className="question-setting-wrapper setting">
       <Tabs size="small">
         <TabPane tab="Question Options" key="question-option">
           <>
-            <Form.Item name={`question-variable_name-${qid}`}>
+            <Form.Item name={`question-${qid}-variable_name`}>
               <Input
                 className="bg-grey"
                 placeholder="Data Column Name (Custom ID)"
               />
             </Form.Item>
-            <Form.Item name={`question-tooltip-${qid}`}>
+            <Form.Item name={`question-${qid}-tooltip`}>
               <Input placeholder="Tooltip" />
             </Form.Item>
             <Space size={100}>
-              <Form.Item name={`question-mandatory-${qid}`}>
-                <Space>
-                  Required <Switch size="small" />
-                </Space>
-              </Form.Item>
-              <Form.Item name={`question-personal_data-${qid}`}>
-                <Space>
-                  Personal data <Switch size="small" />
-                </Space>
-              </Form.Item>
+              <div>
+                <Form.Item name={`question-${qid}-mandatory`} hidden noStyle>
+                  <Input />
+                </Form.Item>
+                Required{" "}
+                <Switch
+                  key={`question-${qid}-mandatory-switch`}
+                  size="small"
+                  checked={mandatory}
+                  onChange={(val) =>
+                    handleRequiredChange(val, `question-${qid}-mandatory`)
+                  }
+                />
+              </div>
+              <div>
+                <Form.Item
+                  name={`question-${qid}-personal_data`}
+                  hidden
+                  noStyle
+                >
+                  <Input />
+                </Form.Item>
+                Personal data{" "}
+                <Switch
+                  key={`question-${qid}-personal_data-switch`}
+                  size="small"
+                  checked={personalData}
+                  onChange={(val) =>
+                    handlePersonalDataChange(
+                      val,
+                      `question-${qid}-personal_data`
+                    )
+                  }
+                />
+              </div>
             </Space>
           </>
         </TabPane>
@@ -382,7 +432,7 @@ const Setting = ({ question, questionGroup }) => {
               This question will only be displayed if the following conditions
               apply
             </div>
-            <Form.Item name={`question-skip_logic-${qid}`}>
+            <Form.Item name={`question-${qid}-skip_logic`}>
               <Select
                 className="bg-grey"
                 placeholder="Select question from list"
@@ -396,11 +446,14 @@ const Setting = ({ question, questionGroup }) => {
             <div>
               This question will only be valid if the following conditions apply
             </div>
-            <Form.Item label="This question's response has to be" name="rule">
+            <Form.Item
+              label="This question's response has to be"
+              name={`question-${qid}-rule`}
+            >
               <Input className="bg-grey" placeholder="Response Value" />
             </Form.Item>
             <hr />
-            <Form.Item name="error_message">
+            <Form.Item name={`question-${qid}-error_message`}>
               <Input className="bg-grey" placeholder="Error Message" />
             </Form.Item>
           </Space>
@@ -418,12 +471,27 @@ const RenderLayout = ({
   handleFormOnValuesChange,
   setAllowOther,
   allowOther,
+  mandatory,
+  setMandatory,
+  personalData,
+  setPersonalData,
 }) => {
   switch (activeSetting) {
     case "translation":
       return <Translation questionGroup={questionGroup} question={question} />;
     case "setting":
-      return <Setting questionGroup={questionGroup} question={question} />;
+      return (
+        <Setting
+          form={form}
+          questionGroup={questionGroup}
+          question={question}
+          mandatory={mandatory}
+          setMandatory={setMandatory}
+          personalData={personalData}
+          setPersonalData={setPersonalData}
+          handleFormOnValuesChange={handleFormOnValuesChange}
+        />
+      );
     default:
       return (
         <Detail
@@ -448,6 +516,10 @@ const QuestionSetting = ({
   setSubmitStatus,
   setAllowOther,
   allowOther,
+  mandatory,
+  setMandatory,
+  personalData,
+  setPersonalData,
 }) => {
   return (
     <>
@@ -459,6 +531,10 @@ const QuestionSetting = ({
         handleFormOnValuesChange={handleFormOnValuesChange}
         allowOther={allowOther}
         setAllowOther={setAllowOther}
+        mandatory={mandatory}
+        setMandatory={setMandatory}
+        personalData={personalData}
+        setPersonalData={setPersonalData}
       />
       <div className="question-button-wrapper">
         <Space align="center">

@@ -33,7 +33,6 @@ const QuestionGroupSetting = ({
   const optionValues = store.useState((s) => s?.optionValues);
   const { member_type, isco_type } = optionValues;
   const { id } = questionGroup;
-  const formId = questionGroup?.form;
 
   return (
     <div className="qge-setting-wrapper">
@@ -46,17 +45,13 @@ const QuestionGroupSetting = ({
             className="qge-setting-tab-body"
           >
             <Col span={10}>
-              <Form.Item name={`question_group-${formId}-description-${id}`}>
+              <Form.Item name={`question_group-${id}-description`}>
                 <Input.TextArea
                   rows={3}
                   placeholder="Question Group Description"
                 />
               </Form.Item>
-              <Form.Item
-                name={`question_group-${formId}-repeat-${id}`}
-                hidden
-                noStyle
-              >
+              <Form.Item name={`question_group-${id}-repeat`} hidden noStyle>
                 <Input />
               </Form.Item>
               <Space>
@@ -64,7 +59,7 @@ const QuestionGroupSetting = ({
                 <Switch
                   size="small"
                   onChange={(val) =>
-                    onChangeRepeat(val, `question_group-repeat-${id}`)
+                    onChangeRepeat(val, `question_group-repeat`)
                   }
                   checked={repeat}
                 />
@@ -72,7 +67,7 @@ const QuestionGroupSetting = ({
             </Col>
             <Col span={7}>
               <Form.Item
-                name={`question_group-${formId}-member_access-${id}`}
+                name={`question_group-${id}-member_access`}
                 rules={[
                   { required: true, message: "Please select member type" },
                 ]}
@@ -94,7 +89,7 @@ const QuestionGroupSetting = ({
             </Col>
             <Col span={7}>
               <Form.Item
-                name={`question_group-${formId}-isco_access-${id}`}
+                name={`question_group-${id}-isco_access`}
                 rules={[{ required: true, message: "Please select isco type" }]}
               >
                 <Select
@@ -120,7 +115,7 @@ const QuestionGroupSetting = ({
               This question will only be displayed if the following conditions
               apply
             </div>
-            <Form.Item name={`question_group-skip_logic-${id}`}>
+            <Form.Item name={`question_group-${id}-skip_logic`}>
               <Select placeholder="Select question from list" options={[]} />
             </Form.Item>
           </Space>
@@ -137,20 +132,20 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
   const { deletedOptions } = store.useState((s) => s?.tempStorage);
   const { id, name, question } = questionGroup;
   const isQuestionGroupSaved = id && name;
-  const hasQuestion = questionGroup?.question?.length > 0;
-  const [isGroupSettingVisible, setIsGroupSettingVisible] = useState(
-    !hasQuestion
-  );
+  const [isGroupSettingVisible, setIsGroupSettingVisible] = useState(true);
   const [submitStatus, setSubmitStatus] = useState(null);
   const [repeat, setRepeat] = useState(false);
   const [saveBtnLoading, setSaveBtnLoading] = useState(false);
 
   useEffect(() => {
     if (questionGroup.id) {
+      setIsGroupSettingVisible(questionGroup?.question?.length === 0);
       Object.keys(questionGroup).forEach((key) => {
-        const field = `question_group-${formId}-${key}-${id}`;
+        const field = `question_group-${id}-${key}`;
         const value = questionGroup?.[key];
-        form.setFieldsValue({ [field]: value });
+        if (key !== "question") {
+          form.setFieldsValue({ [field]: value });
+        }
         if (key === "repeat") {
           setRepeat(value);
         }
@@ -421,7 +416,6 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
   };
 
   const handleFormOnValuesChange = (values, allValues) => {
-    console.log("onFormChangeValue", values);
     const question = questionGroup?.question;
     Object.keys(values).forEach((key) => {
       const field = key.split("-")[2];
@@ -502,6 +496,9 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
             },
           };
         }
+
+        // console.log("onFormChangeValue", findQuestion);
+
         store.update((s) => {
           s.surveyEditor = {
             ...s.surveyEditor,
@@ -555,7 +552,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
             >
               <Col span={18} align="start" className="left">
                 <Form.Item
-                  name={`question_group-${formId}-name-${id}`}
+                  name={`question_group-${id}-name`}
                   rules={[
                     { required: true, message: "Please input section title" },
                   ]}
