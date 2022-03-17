@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 import db.crud_skip_logic as crud
 from db.connection import get_session
 from models.skip_logic import SkipLogicDict, SkipLogicPayload
+from models.skip_logic import OperatorType
 
 skip_logic_route = APIRouter()
 
@@ -28,6 +29,15 @@ def add(req: Request, payload: SkipLogicPayload,
 def get(req: Request, session: Session = Depends(get_session)):
     skip_logic = crud.get_skip_logic(session=session)
     return [sl.serialize for sl in skip_logic]
+
+
+@skip_logic_route.get("/skip_logic/operator",
+                      response_model=List,
+                      summary="get all skip logic operators",
+                      name="skip_logic:get_all_operator",
+                      tags=["Skip Logic"])
+def get_operator(req: Request, session: Session = Depends(get_session)):
+    return [sl.value for sl in OperatorType]
 
 
 @skip_logic_route.get("/skip_logic/{id:path}",

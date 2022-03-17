@@ -508,6 +508,7 @@ class TestQuestionRoutes():
             "skip_logic": [
                 {
                     "dependent_to": 1,
+                    "id": 2,
                     "operator": "equal",
                     "question": 3,
                     "type": "option",
