@@ -392,7 +392,7 @@ const Setting = ({
     ?.filter((q) => ["option", "number"].includes(q?.type))
     ?.map((q) => ({
       label: q?.name,
-      value: q?.id,
+      value: String(q?.id),
     }));
 
   const dependentId = parseInt(
@@ -410,6 +410,10 @@ const Setting = ({
     }
     return find;
   }, [dependentId]);
+
+  const operators = dependentQuestion?.type.includes("option")
+    ? operator_type?.filter((x) => x === "equal")
+    : operator_type;
 
   const handleRequiredChange = (val, field) => {
     const fieldValue = { [field]: val };
@@ -507,60 +511,66 @@ const Setting = ({
                 options={skipLogicQuestion}
               />
             </Form.Item>
-            {dependentQuestion && (
-              <>
-                <Form.Item
-                  name={`question-${qid}-skip_logic-type`}
-                  hidden
-                  noStyle
-                >
-                  <Input />
-                </Form.Item>
-                <Form.Item
-                  name={`question-${qid}-skip_logic-operator`}
-                  rules={[
-                    { required: true, message: "Please select operator" },
-                  ]}
-                >
-                  <Select
-                    allowClear
-                    className="bg-grey"
-                    placeholder="Select operator"
-                    options={operator_type?.map((x) => {
-                      return {
-                        label: x,
-                        value: x,
-                      };
-                    })}
-                  />
-                </Form.Item>
-              </>
-            )}
-            {dependentQuestion?.type === "number" && (
-              <Form.Item
-                name={`question-${qid}-skip_logic-value`}
-                rules={[{ required: true, message: "Please input value" }]}
-              >
-                <InputNumber />
-              </Form.Item>
-            )}
-            {dependentQuestion?.type === "option" && (
-              <Form.Item
-                name={`question-${qid}-skip_logic-value`}
-                rules={[{ required: true, message: "Please select value" }]}
-              >
-                <Select
-                  allowClear
-                  mode="multiple"
-                  className="bg-grey"
-                  placeholder="Select value"
-                  options={dependentQuestion?.option?.map((x) => ({
-                    label: x?.name,
-                    value: String(x?.id),
-                  }))}
-                />
-              </Form.Item>
-            )}
+            <Row align="middle" justify="space-between" gutter={[24, 24]}>
+              <Col span={12}>
+                {dependentQuestion && (
+                  <>
+                    <Form.Item
+                      name={`question-${qid}-skip_logic-type`}
+                      hidden
+                      noStyle
+                    >
+                      <Input />
+                    </Form.Item>
+                    <Form.Item
+                      name={`question-${qid}-skip_logic-operator`}
+                      rules={[
+                        { required: true, message: "Please select operator" },
+                      ]}
+                    >
+                      <Select
+                        allowClear
+                        className="bg-grey"
+                        placeholder="Select operator"
+                        options={operators?.map((x) => {
+                          return {
+                            label: x,
+                            value: x,
+                          };
+                        })}
+                      />
+                    </Form.Item>
+                  </>
+                )}
+              </Col>
+              <Col span={12}>
+                {dependentQuestion?.type === "number" && (
+                  <Form.Item
+                    name={`question-${qid}-skip_logic-value`}
+                    rules={[{ required: true, message: "Please input value" }]}
+                  >
+                    <InputNumber className="bg-grey" />
+                  </Form.Item>
+                )}
+                {dependentQuestion?.type === "option" && (
+                  <Form.Item
+                    name={`question-${qid}-skip_logic-value`}
+                    rules={[{ required: true, message: "Please select value" }]}
+                  >
+                    <Select
+                      allowClear
+                      mode="multiple"
+                      className="bg-grey"
+                      placeholder="Select value"
+                      options={dependentQuestion?.option?.map((x) => ({
+                        label: x?.name,
+                        value: String(x?.id),
+                      }))}
+                    />
+                  </Form.Item>
+                )}
+              </Col>
+            </Row>
           </Space>
         </TabPane>
         {/* Validation Criteria / Rule */}

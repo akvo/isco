@@ -140,7 +140,12 @@ const QuestionEditor = ({
           value?.forEach((val) => {
             Object.keys(val).forEach((key) => {
               const skipField = `${field}-${key}`;
-              form.setFieldsValue({ [skipField]: val?.[key] });
+              let skipValue = String(val?.[key]);
+              if (key === "value") {
+                skipValue = skipValue?.split("|");
+                skipValue = Array.isArray(skipValue) ? skipValue : [skipValue];
+              }
+              form.setFieldsValue({ [skipField]: skipValue });
             });
           });
         }

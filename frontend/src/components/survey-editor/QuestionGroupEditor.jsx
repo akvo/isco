@@ -361,7 +361,9 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
             question: ski?.question,
             dependent_to: ski?.dependent_to,
             operator: ski?.operator,
-            value: ski?.value,
+            value: Array.isArray(ski?.value)
+              ? ski?.value?.join("|")
+              : String(ski?.value),
             type: ski?.type,
           };
           if (ski?.flag === "post") {
@@ -551,9 +553,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
                 ...findQuestion?.skip_logic[0],
                 flag: findQuestion?.skip_logic[0]?.id || "post",
                 question: qid,
-                [skipKey]: Array.isArray(value)
-                  ? value.join("|")
-                  : String(value),
+                [skipKey]: value,
               },
             ],
           };

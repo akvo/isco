@@ -57,7 +57,9 @@ body {
     // set input border-bottom
     .ant-input,
     .ant-input-affix-wrapper,
+    .ant-input-number,
     .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+      width: 100%;
       border: none;
       border-bottom: 1px solid #777777;
       color: $black;
