@@ -14,6 +14,7 @@ import { RiSettings5Fill, RiDeleteBinFill } from "react-icons/ri";
 import { MdFileCopy, MdGTranslate } from "react-icons/md";
 import QuestionSetting from "./QuestionSetting";
 import { store, api } from "../../lib";
+import { isoLangs } from "../../lib";
 
 const { Panel } = Collapse;
 
@@ -28,14 +29,22 @@ const QuestionNameInput = ({ index, question }) => {
   );
 };
 
-const TranslationTab = () => {
+const TranslationTab = ({ activeLang, setActiveLang }) => {
+  const state = store.useState((s) => s?.surveyEditor);
+  const { languages } = state;
+
   return (
     <div className="translation-tab-wrapper">
       <Space>
-        <Button type="text" className="active">
-          French
-        </Button>
-        <Button type="text">German</Button>
+        {languages?.map((l) => (
+          <Button
+            type="text"
+            className={`${activeLang === l ? "active" : ""}`}
+            onClick={() => setActiveLang(l)}
+          >
+            {isoLangs?.[l]?.name}
+          </Button>
+        ))}
       </Space>
     </div>
   );
@@ -83,6 +92,7 @@ const QuestionEditor = ({
   const qgId = questionGroup?.id;
   const qId = question?.id;
   const panelKey = `qe-${qId}`;
+  const [activeLang, setActiveLang] = useState(state?.languages[0]);
 
   useEffect(() => {
     if (qId) {
@@ -194,7 +204,12 @@ const QuestionEditor = ({
                         activeSetting === "setting") && (
                         <QuestionNameInput index={index} question={question} />
                       )}
-                      {activeSetting === "translation" && <TranslationTab />}
+                      {activeSetting === "translation" && (
+                        <TranslationTab
+                          activeLang={activeLang}
+                          setActiveLang={setActiveLang}
+                        />
+                      )}
                     </>
                   }
                 >

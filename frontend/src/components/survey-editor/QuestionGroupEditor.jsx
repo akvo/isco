@@ -389,7 +389,6 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
               });
           }
         });
-        console.log(skipLogic);
       }
 
       api
