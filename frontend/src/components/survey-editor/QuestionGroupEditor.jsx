@@ -19,7 +19,7 @@ import QuestionEditor from "./QuestionEditor";
 import { store, api } from "../../lib";
 import orderBy from "lodash/orderBy";
 import { defaultRepeatingObject, defaultOption } from "../../lib/store";
-import { generateID, deleteQuestionOption } from "../../lib/util";
+import { generateID } from "../../lib/util";
 
 const { TabPane } = Tabs;
 
@@ -314,7 +314,31 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
       };
 
       // delete question option before update
-      deleteQuestionOption(deletedOptions, qId);
+      let optionToDelete = deletedOptions;
+      if (qId) {
+        optionToDelete = optionToDelete?.filter((x) => x?.question === qId);
+      }
+      optionToDelete?.forEach(async (opt) => {
+        const { id } = opt;
+        api
+          .delete(`/option/${id}`)
+          .then((res) => {
+            console.log("Option deleted");
+            store.update((s) => {
+              s.tempStorage = {
+                ...s.tempStorage,
+                deletedOptions: s.tempStorage.deletedOptions?.filter(
+                  (x) => x?.id !== res?.id
+                ),
+              };
+            });
+          })
+          .catch((e) => {
+            const { status, statusText } = e.response;
+            console.error(status, statusText);
+          });
+      });
+
       // post option first, then update question
       if (option?.length > 0) {
         option?.forEach((opt) => {
@@ -355,6 +379,32 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
           }
         });
       }
+
+      // delete skip logic
+      let toDelete = deletedSkipLogic;
+      if (qId) {
+        toDelete = toDelete?.filter((x) => x?.question === qId);
+      }
+      toDelete?.forEach((item) => {
+        const { id } = item;
+        api
+          .delete(`/skip_logic/${id}`)
+          .then((res) => {
+            console.log("Skip logic deleted");
+            store.update((s) => {
+              s.tempStorage = {
+                ...s.tempStorage,
+                deletedSkipLogic: s.tempStorage.deletedSkipLogic?.filter(
+                  (x) => x?.id !== res?.id
+                ),
+              };
+            });
+          })
+          .catch((e) => {
+            const { status, statusText } = e.response;
+            console.error(status, statusText);
+          });
+      });
 
       // post skip logic
       if (skipLogic?.length > 0) {

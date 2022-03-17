@@ -37,21 +37,21 @@ export const deleteQuestionSkipLogic = (
   deletedSkipLogic,
   questionId = null
 ) => {
-  // let optionToDelete = deletedOptions;
-  // if (questionId) {
-  //   optionToDelete = optionToDelete?.filter((x) => x?.question === questionId);
-  // }
-  // optionToDelete?.forEach((opt) => {
-  //   const { id } = opt;
-  //   api
-  //     .delete(`/option/${id}`)
-  //     .then((res) => {
-  //       console.log("Option deleted");
-  //     })
-  //     .catch((e) => {
-  //       const { status, statusText } = e.response;
-  //       console.error(status, statusText);
-  //     });
-  // });
-  // return;
+  let toDelete = deletedSkipLogic;
+  if (questionId) {
+    toDelete = toDelete?.filter((x) => x?.question === questionId);
+  }
+  toDelete?.forEach((item) => {
+    const { id } = item;
+    api
+      .delete(`/skip_logic/${id}`)
+      .then((res) => {
+        console.log("Skip logic deleted");
+      })
+      .catch((e) => {
+        const { status, statusText } = e.response;
+        console.error(status, statusText);
+      });
+  });
+  return;
 };
