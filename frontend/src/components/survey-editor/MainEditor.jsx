@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Space, Row, Col, Button } from "antd";
-import { store } from "../../lib";
+import { store, api } from "../../lib";
 import FormEditor from "./FormEditor";
 import QuestionGroupEditor from "./QuestionGroupEditor";
 import orderBy from "lodash/orderBy";
@@ -8,21 +8,54 @@ import orderBy from "lodash/orderBy";
 const MainEditor = () => {
   const [form] = Form.useForm();
   const state = store.useState((s) => s?.surveyEditor);
+  const formId = state?.id;
   const formFields = {
     "form-name": state?.name,
     "form-description": state?.description,
     "form-languages": state?.languages,
   };
   const { questionGroup } = state;
+  const [saveButtonLoading, setSaveButtonLoading] = useState(false);
 
   useEffect(() => {
-    if (state?.id) {
+    if (formId) {
       // set form fields initial value
       Object.keys(formFields).forEach((key) => {
         form.setFieldsValue({ [key]: formFields?.[key] });
       });
     }
   }, [state]);
+
+  const onSubmitForm = (values) => {
+    setSaveButtonLoading(true);
+    let data = {};
+    Object.keys(values)?.forEach((key) => {
+      const field = key.split("-")[1];
+      data = {
+        ...data,
+        ...{ [field]: values[key] },
+      };
+    });
+    api
+      .put(`/form/${formId}`, data, { "content-type": "application/json" })
+      .then((res) => {
+        const { data } = res;
+        console.log(data);
+        store.update((s) => {
+          s.surveyEditor = {
+            ...s.surveyEditor,
+            ...data,
+          };
+        });
+      })
+      .catch((e) => {
+        const { status, statusText } = e.response;
+        console.error(status, statusText);
+      })
+      .finally(() => {
+        setSaveButtonLoading(false);
+      });
+  };
 
   return (
     <div id="main-form-editor">
@@ -34,15 +67,18 @@ const MainEditor = () => {
               <Form
                 form={form}
                 name="survey-detail"
-                onValuesChange={(changedValues, allValues) =>
-                  console.log(changedValues, allValues)
-                }
-                onFinish={(values) => console.log(values)}
+                onFinish={onSubmitForm}
                 onFinishFailed={({ values, errorFields }) =>
-                  console.log(values, errorFields, form.getFieldsValue())
+                  console.log(values, errorFields)
                 }
               >
-                <FormEditor form={form} />
+                <Space direction="vertical">
+                  <FormEditor
+                    form={form}
+                    showSaveButton={true}
+                    saveButtonLoading={saveButtonLoading}
+                  />
+                </Space>
               </Form>
               {orderBy(questionGroup, ["order"])?.map((qg, qgi) => (
                 <QuestionGroupEditor

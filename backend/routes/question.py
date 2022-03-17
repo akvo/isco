@@ -80,7 +80,8 @@ def get_question_type(req: Request, session: Session = Depends(get_session)):
                     summary="get all question repeating object options",
                     name="question:get_all_repeating_object",
                     tags=["Question"])
-def get_repeating_object(req: Request, session: Session = Depends(get_session)):
+def get_repeating_object(req: Request,
+                         session: Session = Depends(get_session)):
     return [ro.value for ro in RepeatingObjectType]
 
 

@@ -1,9 +1,13 @@
 import React from "react";
 import "./style.scss";
-import { Row, Col, Form, Input, Select } from "antd";
+import { Row, Col, Form, Input, Select, Button } from "antd";
 import { store } from "../../lib";
 
-const FormEditor = ({ form }) => {
+const FormEditor = ({
+  form,
+  showSaveButton = false,
+  saveButtonLoading = false,
+}) => {
   const optionValues = store.useState((s) => s?.optionValues);
   const { languages } = optionValues;
 
@@ -38,6 +42,16 @@ const FormEditor = ({ form }) => {
             }
           />
         </Form.Item>
+        {showSaveButton && (
+          <Button
+            type="primary"
+            ghost
+            onClick={() => form.submit()}
+            loading={saveButtonLoading}
+          >
+            Save
+          </Button>
+        )}
       </Col>
     </Row>
   );
