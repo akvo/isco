@@ -129,7 +129,9 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
   const [form] = Form.useForm();
   const state = store.useState((s) => s?.surveyEditor);
   const formId = state?.id;
-  const { deletedOptions } = store.useState((s) => s?.tempStorage);
+  const { deletedOptions, deletedSkipLogic } = store.useState(
+    (s) => s?.tempStorage
+  );
   const { id, name, question } = questionGroup;
   const isQuestionGroupSaved = id && name;
   const [isGroupSettingVisible, setIsGroupSettingVisible] = useState(true);
@@ -548,14 +550,16 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
           const skipKey = key.split("-")[3];
           findQuestion = {
             ...findQuestion,
-            skip_logic: [
-              {
-                ...findQuestion?.skip_logic[0],
-                flag: findQuestion?.skip_logic[0]?.id || "post",
-                question: qid,
-                [skipKey]: value,
-              },
-            ],
+            skip_logic: skipKey
+              ? [
+                  {
+                    ...findQuestion?.skip_logic[0],
+                    flag: findQuestion?.skip_logic[0]?.id || "post",
+                    question: qid,
+                    [skipKey]: value,
+                  },
+                ]
+              : null,
           };
         }
         console.log("onFormChangeValue", findQuestion);

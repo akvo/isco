@@ -85,6 +85,7 @@ const defaultUIState = {
   surveyEditor: defaultSurveyEditor,
   tempStorage: {
     deletedOptions: [],
+    deletedSkipLogic: [],
   },
 };
 

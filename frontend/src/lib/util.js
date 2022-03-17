@@ -32,3 +32,26 @@ export const deleteQuestionOption = (deletedOptions, questionId = null) => {
   });
   return;
 };
+
+export const deleteQuestionSkipLogic = (
+  deletedSkipLogic,
+  questionId = null
+) => {
+  // let optionToDelete = deletedOptions;
+  // if (questionId) {
+  //   optionToDelete = optionToDelete?.filter((x) => x?.question === questionId);
+  // }
+  // optionToDelete?.forEach((opt) => {
+  //   const { id } = opt;
+  //   api
+  //     .delete(`/option/${id}`)
+  //     .then((res) => {
+  //       console.log("Option deleted");
+  //     })
+  //     .catch((e) => {
+  //       const { status, statusText } = e.response;
+  //       console.error(status, statusText);
+  //     });
+  // });
+  // return;
+};

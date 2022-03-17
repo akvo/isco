@@ -12,6 +12,7 @@ import {
   Switch,
   Select,
 } from "antd";
+import { RiDeleteBinFill } from "react-icons/ri";
 import { BiRadioCircle } from "react-icons/bi";
 import { HiPlus, HiMinus } from "react-icons/hi";
 import { store } from "../../lib";
@@ -442,6 +443,32 @@ const Setting = ({
     }, 100);
   };
 
+  const handleOnDeleteSkipLogic = () => {
+    const skipLogic = question?.skip_logic?.[0];
+    const fieldValue = {
+      [`question-${qid}-skip_logic-dependent_to`]: "",
+    };
+    form.setFieldsValue(fieldValue);
+    setTimeout(() => {
+      handleFormOnValuesChange(
+        { [`question-${qid}-skip_logic`]: null },
+        form?.getFieldsValue()
+      );
+    }, 100);
+    // store removed skip logic to delete when save button clicked
+    store.update((s) => {
+      s.tempStorage = {
+        ...s.tempStorage,
+        deletedSkipLogic: [
+          ...s.tempStorage.deletedSkipLogic?.filter(
+            (x) => x?.id !== skipLogic?.id
+          ),
+          skipLogic,
+        ],
+      };
+    });
+  };
+
   return (
     <div className="question-setting-wrapper setting">
       <Tabs size="small">
@@ -503,14 +530,21 @@ const Setting = ({
               This question will only be displayed if the following conditions
               apply
             </div>
-            <Form.Item name={`question-${qid}-skip_logic-dependent_to`}>
-              <Select
-                allowClear
-                className="bg-grey"
-                placeholder="Select question from list"
-                options={skipLogicQuestion}
+            <Space align="middle">
+              <Form.Item name={`question-${qid}-skip_logic-dependent_to`}>
+                <Select
+                  className="bg-grey"
+                  placeholder="Select question from list"
+                  options={skipLogicQuestion}
+                  style={{ width: "47.5vw" }}
+                />
+              </Form.Item>
+              <Button
+                type="text"
+                icon={<RiDeleteBinFill />}
+                onClick={handleOnDeleteSkipLogic}
               />
-            </Form.Item>
+            </Space>
             <Row align="middle" justify="space-between" gutter={[24, 24]}>
               <Col span={12}>
                 {dependentQuestion && (
