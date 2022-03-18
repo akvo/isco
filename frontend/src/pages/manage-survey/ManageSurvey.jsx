@@ -25,7 +25,7 @@ const ManageSurvey = () => {
   const [form] = Form.useForm();
   const [isSurveyModalVisible, setIsSurveyModalVisible] = useState(false);
   const [dataSource, setDataSource] = useState([]);
-  const isLoading = !dataSource?.length;
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleEditButton = (record) => {
     const { id, has_question_group } = record;
@@ -34,8 +34,7 @@ const ManageSurvey = () => {
       api
         .post(`/default_question_group/${id}`)
         .then((res) => {
-          const { data } = res;
-          console.log(data);
+          console.info("Default question group created");
         })
         .catch((e) => {
           const { status, statusText } = e.response;
@@ -121,6 +120,7 @@ const ManageSurvey = () => {
   ];
 
   useEffect(() => {
+    setIsLoading(true);
     api
       .get("/form/")
       .then((res) => {
@@ -134,6 +134,9 @@ const ManageSurvey = () => {
       .catch((e) => {
         const { status, statusText } = e.response;
         console.error(status, statusText);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, []);
 
@@ -146,15 +149,28 @@ const ManageSurvey = () => {
         ...{ [field]: values[key] },
       };
     });
+    if (!data?.description) {
+      data = {
+        ...data,
+        description: null,
+      };
+    }
     api
       .post("/form", data, { "content-type": "application/json" })
       .then((res) => {
-        const { data } = res;
-        navigate(`/survey-editor/${data?.id}`);
+        const data = {
+          ...res?.data,
+          user: "John Doe",
+          status: null,
+        };
+        setDataSource([...dataSource, data]);
       })
       .catch((e) => {
         const { status, statusText } = e.response;
         console.error(status, statusText);
+      })
+      .finally(() => {
+        setIsSurveyModalVisible(false);
       });
   };
 
