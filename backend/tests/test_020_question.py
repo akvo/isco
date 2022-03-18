@@ -69,8 +69,8 @@ class TestQuestionRoutes():
             "rule": None,
             "skip_logic": [],
             "tooltip": 'Question 1 tooltip',
-            "tooltip_translations": None,
-            "translations": None,
+            "tooltip_translations": [],
+            "translations": [],
             "type": 'text',
             "variable_name": None
         }
@@ -173,7 +173,7 @@ class TestQuestionRoutes():
             "name": "Option 1",
             "order": None,
             "question": 1,
-            "translations": None
+            "translations": []
         }
 
     @pytest.mark.asyncio
@@ -375,8 +375,8 @@ class TestQuestionRoutes():
             "rule": None,
             "skip_logic": [],
             "tooltip": 'Question 2 tooltip',
-            "tooltip_translations": None,
-            "translations": None,
+            "tooltip_translations": [],
+            "translations": [],
             "type": 'text',
             "variable_name": None
         }
@@ -488,7 +488,7 @@ class TestQuestionRoutes():
                     "name": "Male",
                     "order": 1,
                     "question": 3,
-                    "translations": None
+                    "translations": []
                 },
                 {
                     "code": None,
@@ -496,7 +496,7 @@ class TestQuestionRoutes():
                     "name": "Female",
                     "order": 2,
                     "question": 3,
-                    "translations": None
+                    "translations": []
                 }
             ],
             "order": 3,
@@ -515,8 +515,8 @@ class TestQuestionRoutes():
                 }
             ],
             "tooltip": None,
-            "tooltip_translations": None,
-            "translations": None,
+            "tooltip_translations": [],
+            "translations": [],
             "type": "option",
             "variable_name": None
         }
@@ -598,8 +598,8 @@ class TestQuestionRoutes():
                     "rule": None,
                     "skip_logic": [],
                     "tooltip": None,
-                    "tooltip_translations": None,
-                    "translations": None,
+                    "tooltip_translations": [],
+                    "translations": [],
                     "type": "number",
                     "variable_name": None
                 }
