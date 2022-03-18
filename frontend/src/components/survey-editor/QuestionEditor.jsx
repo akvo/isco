@@ -155,7 +155,7 @@ const QuestionEditor = ({
             Object.keys(val).forEach((key) => {
               const skipField = `${field}-${key}`;
               let skipValue = String(val?.[key]);
-              if (val?.type.includes("option")) {
+              if (val?.type?.includes("option")) {
                 skipValue = skipValue?.split("|");
                 skipValue = Array.isArray(skipValue)
                   ? skipValue

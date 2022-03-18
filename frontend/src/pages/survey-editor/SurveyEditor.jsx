@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import "./style.scss";
-import { Row, Col, Card, Tabs } from "antd";
+import { Row, Col, Card, Tabs, Typography, Space } from "antd";
 import { MainEditor } from "../../components";
 import { useParams } from "react-router-dom";
 import { store, api } from "../../lib";
@@ -8,9 +8,11 @@ import { defaultRepeatingObject, defaultOption } from "../../lib/store";
 import { generateID } from "../../lib/util";
 
 const { TabPane } = Tabs;
+const { Title } = Typography;
 
 const SurveyEditor = () => {
   const { formId } = useParams();
+  const state = store.useState((s) => s?.surveyEditor);
 
   useEffect(() => {
     api
@@ -57,12 +59,31 @@ const SurveyEditor = () => {
       });
   }, [formId]);
 
+  const countAllQuestion = useMemo(() => {
+    return state?.questionGroup?.flatMap((q) => q?.question)?.length;
+  }, [state]);
+
+  const countMandatory = useMemo(() => {
+    return state?.questionGroup
+      ?.flatMap((q) => q?.question)
+      ?.filter((q) => q?.mandatory)?.length;
+  }, [state]);
+
   return (
     <div id="survey-editor">
       <Row className="container bg-grey">
         <Col span={24}>
           <Card className="card-wrapper">
-            <Tabs tabBarExtraContent={<>0/1 Mandatory Questions</>}>
+            <Tabs
+              tabBarExtraContent={
+                <Space align="middle">
+                  <Title
+                    level={5}
+                  >{`${countMandatory} / ${countAllQuestion}`}</Title>
+                  <div>Mandatory Questions</div>
+                </Space>
+              }
+            >
               <TabPane tab="Form Editor" key="form-editor">
                 <MainEditor />
               </TabPane>
