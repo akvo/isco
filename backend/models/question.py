@@ -170,6 +170,10 @@ class Question(Base):
         if self.tooltip_translations:
             tooltip_translations = self.tooltip_translations
 
+        repeating_objects = []
+        if self.repeating_objects:
+            repeating_objects = self.repeating_objects
+
         return {
             "id": self.id,
             "form": self.form,
@@ -187,7 +191,7 @@ class Question(Base):
             "member_access": [ma.member_type for ma in self.member_access],
             "isco_access": [ia.isco_type for ia in self.isco_access],
             "cascade": self.cascade,
-            "repeating_objects": self.repeating_objects,
+            "repeating_objects": repeating_objects,
             "option": [opt.serialize for opt in self.option],
             "skip_logic": self.skip_logic,
             "order": self.order
