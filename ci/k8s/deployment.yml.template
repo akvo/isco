@@ -44,6 +44,11 @@ spec:
                 secretKeyRef:
                   name: isco
                   key: database-url
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: isco
+                  key: secret-key
           readinessProbe:
             httpGet:
               path: /health-check
