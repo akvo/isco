@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import {
   Row,
   Col,
@@ -423,18 +423,17 @@ const Setting = ({
   const dependentId = parseInt(
     form?.getFieldValue(`question-${qid}-skip_logic-dependent_to`)
   );
-  const dependentQuestion = useMemo(() => {
-    const find = allQuestion?.find((q) => q?.id === dependentId);
-    if (find) {
-      // set skip logic type
-      const type = { [`question-${qid}-skip_logic-type`]: find?.type };
-      form.setFieldsValue(type);
-      setTimeout(() => {
-        handleFormOnValuesChange(type, form?.getFieldsValue());
-      }, 100);
-    }
-    return find;
-  }, [dependentId]);
+  const dependentQuestion = allQuestion?.find((q) => q?.id === dependentId);
+  if (dependentQuestion) {
+    // set skip logic type
+    const type = {
+      [`question-${qid}-skip_logic-type`]: dependentQuestion?.type,
+    };
+    form.setFieldsValue(type);
+    setTimeout(() => {
+      handleFormOnValuesChange(type, form?.getFieldsValue());
+    }, 100);
+  }
 
   const operators = dependentQuestion?.type.includes("option")
     ? operator_type?.filter((x) => x === "equal")
