@@ -1,0 +1,40 @@
+---
+version: "3"
+services:
+  mainnetwork:
+    image: alpine:3.14
+    command: ["tail", "-f", "/dev/null"]
+    ports:
+      - 3000:3000
+      - 5000:5000
+      - 5050:5050
+  db:
+    command: "postgres -c 'shared_buffers=128MB' -c 'fsync=off' -c 'synchronous_commit=off' -c 'full_page_writes=off' -c 'max_connections=100' -c 'bgwriter_lru_maxpages=0' -c 'client_min_messages=warning'"
+    restart: always
+  frontend:
+    image: eu.gcr.io/akvo-lumen/isco/frontend:latest
+    command: ["nginx", "-g", "daemon off;"]
+    depends_on:
+      - backend
+      - db
+  backend:
+    network_mode: service:mainnetwork
+    image: eu.gcr.io/akvo-lumen/isco/backend:latest
+    command: ["sh", "run.sh"]
+    environment:
+      - DATABASE_URL=postgresql://isco_user:password@db:5432/isco
+      - SKIP_MIGRATION=yes
+    depends_on:
+      - db
+    restart: always
+  ci:
+    network_mode: service:mainnetwork
+    image: alpine:3.14
+    volumes:
+      - ./ci/test:/test:ro
+    working_dir: /test
+    entrypoint: ./entrypoint.sh
+    depends_on:
+      - db
+      - backend
+      - frontend
