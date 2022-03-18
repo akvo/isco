@@ -570,7 +570,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
   };
 
   const handleFormOnValuesChange = (values, allValues) => {
-    console.info(allValues);
+    console.info("All values", Object.keys(allValues)?.length);
     const question = questionGroup?.question;
     Object.keys(values).forEach((key) => {
       const field = key.split("-")[2];

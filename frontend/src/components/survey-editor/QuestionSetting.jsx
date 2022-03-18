@@ -414,7 +414,7 @@ const Setting = ({
   const { type } = question;
   const allQuestion = state?.questionGroup?.flatMap((qg) => qg?.question);
   const skipLogicQuestion = allQuestion
-    ?.filter((q) => ["option", "number"].includes(q?.type))
+    ?.filter((q) => ["option", "number"].includes(q?.type) && q?.id !== qid)
     ?.map((q) => ({
       label: q?.name,
       value: String(q?.id),
@@ -434,7 +434,7 @@ const Setting = ({
       }, 100);
     }
     return find;
-  }, [dependentId, allQuestion, form, handleFormOnValuesChange, qid]);
+  }, [dependentId]);
 
   const operators = dependentQuestion?.type.includes("option")
     ? operator_type?.filter((x) => x === "equal")
