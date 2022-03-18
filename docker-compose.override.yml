@@ -4,7 +4,7 @@ services:
   mainnetwork:
     ports:
       - 3000:3000
-      - 8000:8000
+      - 5000:5000
       - 5050:5050
   pgadmin:
     image: dpage/pgadmin4:5.7
