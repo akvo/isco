@@ -3,7 +3,7 @@
 #root {
   #main-form-editor {
     .ant-tabs-nav {
-      padding: 0 20px;
+      padding: 0 10px;
     }
 
     .ant-tabs-tab .ant-tabs-tab-btn {
@@ -21,6 +21,18 @@
     .ant-btn-icon-only {
       color: #777777;
       padding-top: 5px;
+    }
+
+    .ant-form-item-label > label {
+      .translation-label {
+        min-width: 12vw;
+        max-width: 24vw;
+        text-align: left;
+      }
+    }
+
+    .ant-form-item-label > label:after {
+      content: " ";
     }
 
     .form-editor-wrapper {
@@ -114,10 +126,6 @@
           width: 100%;
         }
 
-        .ant-form-item-label > label:after {
-          content: " ";
-        }
-
         .ant-collapse-content > .ant-collapse-content-box {
           padding: 0;
         }
@@ -190,13 +198,6 @@
           float: right;
           padding: 14px;
         }
-      }
-    }
-
-    .ant-form-item-label > label {
-      .translation-label {
-        width: 175px;
-        text-align: left;
       }
     }
 

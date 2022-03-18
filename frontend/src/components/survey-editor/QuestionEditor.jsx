@@ -38,7 +38,7 @@ const TranslationTab = ({ activeLang, setActiveLang }) => {
       <Space>
         {languages?.map((l, li) => (
           <Button
-            key={`${l}-${li}`}
+            key={`question-${l}-${li}`}
             type="text"
             className={`${activeLang === l ? "active" : ""}`}
             onClick={() => setActiveLang(l)}

@@ -15,11 +15,13 @@ import {
 import { RiSettings5Fill, RiDeleteBinFill } from "react-icons/ri";
 import { HiPlus } from "react-icons/hi";
 import { AiOutlineGroup } from "react-icons/ai";
+import { MdGTranslate } from "react-icons/md";
 import QuestionEditor from "./QuestionEditor";
 import { store, api } from "../../lib";
 import orderBy from "lodash/orderBy";
 import { defaultRepeatingObject, defaultOption } from "../../lib/store";
 import { generateID } from "../../lib/util";
+import { isoLangs } from "../../lib";
 
 const { TabPane } = Tabs;
 
@@ -30,96 +32,156 @@ const QuestionGroupSetting = ({
   repeat,
   onChangeRepeat,
 }) => {
+  const state = store.useState((s) => s?.surveyEditor);
   const optionValues = store.useState((s) => s?.optionValues);
   const { member_type, isco_type } = optionValues;
-  const { id } = questionGroup;
+  const { languages } = state;
+  const qgId = questionGroup?.id;
+  const { name, description } = questionGroup;
+
+  const [groupTranslationVisible, setGroupTranslationVisible] = useState(false);
 
   return (
     <div className="qge-setting-wrapper">
-      <Tabs>
-        <TabPane tab="Group Settings" key="group-setting">
-          <Row
-            align="top"
-            justify="space-between"
-            gutter={[24, 12]}
-            className="qge-setting-tab-body"
-          >
-            <Col span={10}>
-              <Form.Item name={`question_group-${id}-description`}>
-                <Input.TextArea
-                  rows={3}
-                  placeholder="Question Group Description"
-                />
-              </Form.Item>
-              <Form.Item name={`question_group-${id}-repeat`} hidden noStyle>
-                <Input />
-              </Form.Item>
-              <Space>
-                Repeat{" "}
-                <Switch
-                  size="small"
-                  onChange={(val) =>
-                    onChangeRepeat(val, `question_group-repeat`)
-                  }
-                  checked={repeat}
-                />
-              </Space>
-            </Col>
-            <Col span={7}>
-              <Form.Item
-                name={`question_group-${id}-member_access`}
-                rules={[
-                  { required: true, message: "Please select member type" },
-                ]}
+      <Tabs
+        tabBarExtraContent={
+          <Button
+            icon={<MdGTranslate />}
+            type="text"
+            onClick={() => setGroupTranslationVisible(true)}
+          />
+        }
+      >
+        {/* Group setting */}
+        {!groupTranslationVisible && (
+          <>
+            <TabPane tab="Section Settings" key="group-setting">
+              <Row
+                align="top"
+                justify="space-between"
+                gutter={[24, 12]}
+                className="qge-setting-tab-body"
               >
-                <Select
-                  mode="multiple"
-                  showSearch={true}
-                  className="custom-dropdown-wrapper"
-                  placeholder="Member Type"
-                  options={member_type?.map((item) => ({
-                    label: item?.name,
-                    value: item?.id,
-                  }))}
-                  filterOption={(input, option) =>
-                    option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  }
-                />
-              </Form.Item>
-            </Col>
-            <Col span={7}>
-              <Form.Item
-                name={`question_group-${id}-isco_access`}
-                rules={[{ required: true, message: "Please select isco type" }]}
-              >
-                <Select
-                  mode="multiple"
-                  showSearch={true}
-                  className="custom-dropdown-wrapper"
-                  placeholder="ISCO Type"
-                  options={isco_type?.map((item) => ({
-                    label: item?.name,
-                    value: item?.id,
-                  }))}
-                  filterOption={(input, option) =>
-                    option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  }
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-        </TabPane>
-        {/* <TabPane tab="Skip Logic" key="skip-logic">
+                <Col span={10}>
+                  <Form.Item name={`question_group-${qgId}-description`}>
+                    <Input.TextArea
+                      rows={3}
+                      placeholder="Question Group Description"
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    name={`question_group-${qgId}-repeat`}
+                    hidden
+                    noStyle
+                  >
+                    <Input />
+                  </Form.Item>
+                  <Space>
+                    Repeat{" "}
+                    <Switch
+                      size="small"
+                      onChange={(val) =>
+                        onChangeRepeat(val, `question_group-repeat`)
+                      }
+                      checked={repeat}
+                    />
+                  </Space>
+                </Col>
+                <Col span={7}>
+                  <Form.Item
+                    name={`question_group-${qgId}-member_access`}
+                    rules={[
+                      { required: true, message: "Please select member type" },
+                    ]}
+                  >
+                    <Select
+                      mode="multiple"
+                      showSearch={true}
+                      className="custom-dropdown-wrapper"
+                      placeholder="Member Type"
+                      options={member_type?.map((item) => ({
+                        label: item?.name,
+                        value: item?.id,
+                      }))}
+                      filterOption={(input, option) =>
+                        option.label
+                          .toLowerCase()
+                          .indexOf(input.toLowerCase()) >= 0
+                      }
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={7}>
+                  <Form.Item
+                    name={`question_group-${qgId}-isco_access`}
+                    rules={[
+                      { required: true, message: "Please select isco type" },
+                    ]}
+                  >
+                    <Select
+                      mode="multiple"
+                      showSearch={true}
+                      className="custom-dropdown-wrapper"
+                      placeholder="ISCO Type"
+                      options={isco_type?.map((item) => ({
+                        label: item?.name,
+                        value: item?.id,
+                      }))}
+                      filterOption={(input, option) =>
+                        option.label
+                          .toLowerCase()
+                          .indexOf(input.toLowerCase()) >= 0
+                      }
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+            </TabPane>
+            {/* <TabPane tab="Skip Logic" key="skip-logic">
           <Space direction="vertical" className="qge-setting-tab-body">
             <div>
               This question will only be displayed if the following conditions
               apply
             </div>
-            <Form.Item name={`question_group-${id}-skip_logic`}>
+            <Form.Item name={`question_group-${qgId}-skip_logic`}>
               <Select placeholder="Select question from list" options={[]} />
             </Form.Item>
           </Space>
         </TabPane> */}
+          </>
+        )}
+
+        {/* Translation  */}
+        {groupTranslationVisible &&
+          languages?.map((lang, li) => (
+            <TabPane key={`group-${lang}-${li}`} tab={isoLangs?.[lang]?.name}>
+              <div className="qge-setting-tab-body">
+                <Form.Item
+                  label={<div className="translation-label">{name}</div>}
+                  name={`question_group-${qgId}-translations-${lang}-name`}
+                >
+                  <Input
+                    placeholder={`Enter ${isoLangs?.[lang]?.name} translation`}
+                  />
+                </Form.Item>
+              </div>
+              {description && (
+                <div className="qge-setting-tab-body">
+                  <Form.Item
+                    label={
+                      <div className="translation-label">{description}</div>
+                    }
+                    name={`question_group-${qgId}-translations-${lang}-description`}
+                  >
+                    <Input.TextArea
+                      rows={3}
+                      placeholder={`Enter ${isoLangs?.[lang]?.name} translation`}
+                    />
+                  </Form.Item>
+                </div>
+              )}
+            </TabPane>
+          ))}
       </Tabs>
     </div>
   );
@@ -141,7 +203,6 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
 
   useEffect(() => {
     if (questionGroup.id) {
-      setIsGroupSettingVisible(questionGroup?.question?.length === 0);
       Object.keys(questionGroup).forEach((key) => {
         const field = `question_group-${id}-${key}`;
         const value = questionGroup?.[key];
@@ -521,10 +582,32 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
       const value = values?.[key];
       if (key.includes("question_group")) {
         let findQuestionGroup = questionGroup;
-        findQuestionGroup = {
-          ...findQuestionGroup,
-          [field]: value,
-        };
+        if (!field.includes("translations")) {
+          findQuestionGroup = {
+            ...findQuestionGroup,
+            [field]: value,
+          };
+        }
+        if (field.includes("translations")) {
+          const lang = key.split("-")[3];
+          const tKey = key.split("-")[4];
+          findQuestionGroup = {
+            ...findQuestionGroup,
+            translations: [
+              ...findQuestionGroup?.translations?.filter(
+                (x) => x?.language !== lang
+              ),
+              {
+                ...findQuestionGroup?.translations?.find(
+                  (x) => x?.language === lang
+                ),
+                language: lang,
+                [tKey]: value,
+              },
+            ],
+          };
+        }
+        console.log(findQuestionGroup);
         store.update((s) => {
           s.surveyEditor = {
             ...s.surveyEditor,
@@ -659,8 +742,6 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
             ],
           };
         }
-
-        console.log("onFormChangeValue", findQuestion);
 
         store.update((s) => {
           s.surveyEditor = {

@@ -363,7 +363,7 @@ const Translation = ({
 
   return (
     <>
-      <div className="question-setting-wrapper ">
+      <div className="question-setting-wrapper">
         <Form.Item
           label={<div className="translation-label">{name}</div>}
           name={`${fieldNamePrefix}-name`}
