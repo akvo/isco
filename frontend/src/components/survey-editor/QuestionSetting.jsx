@@ -23,12 +23,9 @@ import { isoLangs } from "../../lib";
 
 const { TabPane } = Tabs;
 
-const RenderOptionInput = ({
-  question,
-  option,
-  handlePlusMinusOptionButton,
-}) => {
+const RenderOptionInput = ({ question, handlePlusMinusOptionButton }) => {
   const qId = question?.id;
+  const option = question?.option;
 
   return orderBy(option, ["order"])?.map((opt, optIndex) => (
     <Row
@@ -70,11 +67,18 @@ const RenderOptionInput = ({
 
 const RenderRepeatingObjectInput = ({
   question,
-  repeating_objects,
   handlePlusMinusRepeatingObjects,
 }) => {
   const qId = question?.id;
-  const { repeating_object_option } = store.useState((s) => s?.optionValues);
+  const repeating_objects = question?.repeating_objects;
+  let repeating_object_option = store.useState(
+    (s) => s?.optionValues?.repeating_object_option
+  );
+
+  // filter repeating object option by repeting object filled
+  repeating_object_option = repeating_object_option?.filter(
+    (x) => !repeating_objects?.map((y) => y?.field).includes(x)
+  );
 
   return repeating_objects?.map((ro, roi) => (
     <Row
@@ -109,10 +113,11 @@ const RenderRepeatingObjectInput = ({
         </Row>
       </Col>
       <Col span={2}>
-        <Space size={1} align="center">
+        <Space size={1} align="middle">
           <Button
             type="text"
             icon={<HiPlus />}
+            disabled={repeating_object_option?.length === 0}
             onClick={() => handlePlusMinusRepeatingObjects("add", ro, roi)}
           />
           {repeating_objects.length > 1 && (
@@ -221,11 +226,11 @@ const Detail = ({
 
     if (operation === "remove") {
       updatedRepeatingObject = question?.repeating_objects?.filter(
-        (op) => op?.id !== ro?.id
+        (op) => op?.id !== ro?.id || op?.field !== ro?.field
       );
     }
 
-    const questionGroupWithUpdatedQuestionOption = {
+    const questionGroupWithUpdatedRepeatingObject = {
       ...questionGroup,
       question: [
         ...filterQuestion,
@@ -241,7 +246,7 @@ const Detail = ({
         ...s.surveyEditor,
         questionGroup: [
           ...filterQuestionGroup,
-          questionGroupWithUpdatedQuestionOption,
+          questionGroupWithUpdatedRepeatingObject,
         ],
       };
     });
@@ -285,7 +290,6 @@ const Detail = ({
           <div className="question-setting-wrapper">
             <RenderOptionInput
               question={question}
-              option={option}
               handlePlusMinusOptionButton={handlePlusMinusOptionButton}
             />
           </div>
@@ -336,7 +340,6 @@ const Detail = ({
       <div className="question-setting-wrapper">
         <RenderRepeatingObjectInput
           question={question}
-          repeating_objects={repeating_objects}
           handlePlusMinusRepeatingObjects={handlePlusMinusRepeatingObjects}
         />
       </div>
