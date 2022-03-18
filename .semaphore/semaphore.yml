@@ -10,7 +10,6 @@ blocks:
       secrets:
         - name: GCP
         - name: docker-hub-credentials
-        - name: isco
       prologue:
         commands:
           - 'echo "${DOCKER_PASSWORD}" | docker login --username "${DOCKER_USERNAME}" --password-stdin'
