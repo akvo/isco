@@ -11,6 +11,7 @@ import {
   Switch,
   Select,
   Tooltip,
+  Popconfirm,
 } from "antd";
 import { RiSettings5Fill, RiDeleteBinFill } from "react-icons/ri";
 import { HiPlus } from "react-icons/hi";
@@ -816,13 +817,16 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
                       setIsGroupSettingVisible(!isGroupSettingVisible)
                     }
                   />
-                  <Button
-                    type="text"
-                    icon={<RiDeleteBinFill />}
-                    onClick={() =>
+                  <Popconfirm
+                    title="Delete section can't be undone."
+                    okText="Delete"
+                    cancelText="Cancel"
+                    onConfirm={() =>
                       handleDeleteQuestionGroupButton(questionGroup)
                     }
-                  />
+                  >
+                    <Button type="text" icon={<RiDeleteBinFill />} />
+                  </Popconfirm>
                 </Space>
               </Col>
             </Row>

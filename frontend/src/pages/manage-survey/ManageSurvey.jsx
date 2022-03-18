@@ -11,6 +11,7 @@ import {
   Space,
   Modal,
   Form,
+  Popconfirm,
 } from "antd";
 import { RiPencilFill, RiDeleteBinFill } from "react-icons/ri";
 import { FaInfoCircle } from "react-icons/fa";
@@ -45,6 +46,20 @@ const ManageSurvey = () => {
       return;
     }
     navigate(`/survey-editor/${id}`);
+  };
+
+  const handleDeleteButton = (record) => {
+    const { id } = record;
+    api
+      .delete(`/form/${id}`)
+      .then(() => {
+        console.info("Survey deleted");
+        setDataSource(dataSource?.filter((d) => d?.id !== id));
+      })
+      .catch((e) => {
+        const { status, statusText } = e.response;
+        console.error(status, statusText);
+      });
   };
 
   const columns = [
@@ -106,12 +121,19 @@ const ManageSurvey = () => {
               shape="circle"
               type="text"
             /> */}
-            <Button
-              className="action-btn"
-              icon={<RiDeleteBinFill />}
-              shape="circle"
-              type="text"
-            />
+            <Popconfirm
+              title="Delete survey can't be undone."
+              okText="Delete"
+              cancelText="Cancel"
+              onConfirm={() => handleDeleteButton(record)}
+            >
+              <Button
+                className="action-btn"
+                icon={<RiDeleteBinFill />}
+                shape="circle"
+                type="text"
+              />
+            </Popconfirm>
           </Space>
         );
       },

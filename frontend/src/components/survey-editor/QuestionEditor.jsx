@@ -9,6 +9,7 @@ import {
   Space,
   Select,
   Collapse,
+  Popconfirm,
 } from "antd";
 import { RiSettings5Fill, RiDeleteBinFill } from "react-icons/ri";
 import { MdGTranslate } from "react-icons/md";
@@ -298,11 +299,14 @@ const QuestionEditor = ({
                     onChange={() => setActivePanel(panelKey)}
                   />
                 </Form.Item>
-                <Button
-                  type="text"
-                  icon={<RiDeleteBinFill />}
-                  onClick={() => handleDeleteQuestionButton(question)}
-                />
+                <Popconfirm
+                  title="Delete question can't be undone."
+                  okText="Delete"
+                  cancelText="Cancel"
+                  onConfirm={() => handleDeleteQuestionButton(question)}
+                >
+                  <Button type="text" icon={<RiDeleteBinFill />} />
+                </Popconfirm>
               </Space>
             </Col>
           </Row>
