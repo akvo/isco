@@ -48,7 +48,7 @@ const QuestionGroupSetting = ({
           <Button
             icon={<MdGTranslate />}
             type="text"
-            onClick={() => setGroupTranslationVisible(true)}
+            onClick={() => setGroupTranslationVisible(!groupTranslationVisible)}
           />
         }
       >
@@ -206,8 +206,18 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
       Object.keys(questionGroup).forEach((key) => {
         const field = `question_group-${id}-${key}`;
         const value = questionGroup?.[key];
-        if (key !== "question") {
+        if (key !== "question" && key !== "translations") {
           form.setFieldsValue({ [field]: value });
+        }
+        // Load translations
+        if (key !== "question" && key === "translations") {
+          value?.forEach((val) => {
+            const lang = val?.language;
+            Object.keys(val).forEach((key) => {
+              const transField = `${field}-${lang}-${key}`;
+              form.setFieldsValue({ [transField]: val?.[key] });
+            });
+          });
         }
         if (key === "repeat") {
           setRepeat(value);
@@ -307,24 +317,9 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
     let data = {};
     // Save Question Group
     if (submitStatus === "question-group") {
-      Object.keys(values).forEach((key) => {
-        const field = key.split("-")[2];
-        let val = values[key];
-        if (typeof val == "boolean") {
-          val = val;
-        } else {
-          val = val || null;
-        }
-        data = {
-          ...data,
-          [field]: val,
-        };
-      });
+      const findQuestionGroup = questionGroup;
       data = {
-        ...data,
-        form: state?.id,
-        order: order,
-        translations: null,
+        ...findQuestionGroup,
         question: null,
       };
       api
@@ -384,7 +379,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
         api
           .delete(`/option/${id}`)
           .then((res) => {
-            console.log("Option deleted");
+            console.info("Option deleted");
             store.update((s) => {
               s.tempStorage = {
                 ...s.tempStorage,
@@ -419,7 +414,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
                 "content-type": "application/json",
               })
               .then((res) => {
-                console.log("Option created", res?.data);
+                console.info("Option created");
               })
               .catch((e) => {
                 const { status, statusText } = e.response;
@@ -431,7 +426,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
                 "content-type": "application/json",
               })
               .then((res) => {
-                console.log("Option updated", res?.data);
+                console.info("Option updated");
               })
               .catch((e) => {
                 const { status, statusText } = e.response;
@@ -451,7 +446,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
         api
           .delete(`/skip_logic/${id}`)
           .then((res) => {
-            console.log("Skip logic deleted");
+            console.info("Skip logic deleted");
             store.update((s) => {
               s.tempStorage = {
                 ...s.tempStorage,
@@ -485,7 +480,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
                 "content-type": "application/json",
               })
               .then((res) => {
-                console.log("Skip logic created", res?.data);
+                console.info("Skip logic created");
               })
               .catch((e) => {
                 const { status, statusText } = e.response;
@@ -497,7 +492,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
                 "content-type": "application/json",
               })
               .then((res) => {
-                console.log("Skip logic updated", res?.data);
+                console.info("Skip logic updated");
               })
               .catch((e) => {
                 const { status, statusText } = e.response;
@@ -607,7 +602,9 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
             ],
           };
         }
-        console.log(findQuestionGroup);
+
+        console.info("handleFormOnValuesChange", findQuestionGroup);
+
         store.update((s) => {
           s.surveyEditor = {
             ...s.surveyEditor,
@@ -743,6 +740,8 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
           };
         }
 
+        console.info("handleFormOnValuesChange", findQuestion);
+
         store.update((s) => {
           s.surveyEditor = {
             ...s.surveyEditor,
@@ -767,7 +766,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
   const handleFormOnFinishFailed = ({ values }) => {
     setSubmitStatus(null);
     setSaveBtnLoading(false);
-    console.log("Failed", values);
+    console.info("Failed", values);
   };
 
   return (
