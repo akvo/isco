@@ -604,5 +604,5 @@ class TestQuestionRoutes():
                     "variable_name": None
                 }
             ],
-            "translations": None,
+            "translations": [],
         }

@@ -31,7 +31,7 @@ class QuestionGroupDict(TypedDict):
     form: int
     name: str
     description: Optional[str] = None
-    translations: Optional[List[dict]] = None
+    translations: Optional[List[dict]] = []
     order: Optional[int] = None
     repeat: bool
 
@@ -83,12 +83,16 @@ class QuestionGroup(Base):
 
     @property
     def serialize(self) -> QuestionGroupDict:
+        translations = []
+        if self.translations:
+            translations = self.translations
+
         return {
             "id": self.id,
             "form": self.form,
             "name": self.name,
             "description": self.description,
-            "translations": self.translations,
+            "translations": translations,
             "order": self.order,
             "repeat": self.repeat,
             "member_access": [ma.member_type for ma in self.member_access],
@@ -102,7 +106,7 @@ class QuestionGroupBase(BaseModel):
     form: int
     name: str
     description: Optional[str] = None
-    translations: Optional[List[dict]] = None
+    translations: Optional[List[dict]] = []
     order: Optional[int] = None
     repeat: bool
     member_access: Optional[List[int]] = []
@@ -116,7 +120,7 @@ class QuestionGroupBase(BaseModel):
 class QuestionGroupJson(BaseModel):
     name: str
     description: Optional[str] = None
-    translations: Optional[List[dict]] = None
+    translations: Optional[List[dict]] = []
     order: Optional[int] = None
     repeat: bool
     member_access: Optional[List[int]] = []
