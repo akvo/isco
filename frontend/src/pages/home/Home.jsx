@@ -43,8 +43,8 @@ const Home = () => {
           </p>
           <p>We also prepare a slide, describing the tool functionalities.</p>
           <p>
-            If you need any more info, don't hesitate to get in touch directly:
-            feedback form
+            If you need any more info, {"don't"} hesitate to get in touch
+            directly: feedback form
           </p>
         </Col>
       </Row>

@@ -22,8 +22,8 @@ export const deleteQuestionOption = (deletedOptions, questionId = null) => {
     const { id } = opt;
     api
       .delete(`/option/${id}`)
-      .then((res) => {
-        console.log("Option deleted");
+      .then(() => {
+        console.info("Option deleted");
       })
       .catch((e) => {
         const { status, statusText } = e.response;
@@ -45,8 +45,8 @@ export const deleteQuestionSkipLogic = (
     const { id } = item;
     api
       .delete(`/skip_logic/${id}`)
-      .then((res) => {
-        console.log("Skip logic deleted");
+      .then(() => {
+        console.info("Skip logic deleted");
       })
       .catch((e) => {
         const { status, statusText } = e.response;

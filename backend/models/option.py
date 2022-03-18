@@ -22,7 +22,7 @@ class OptionDict(TypedDict):
     code: Optional[str] = None
     name: str
     question: int
-    translations: Optional[List[dict]] = None
+    translations: Optional[List[dict]] = []
     order: Optional[int] = None
 
 
@@ -50,12 +50,16 @@ class Option(Base):
 
     @property
     def serialize(self) -> OptionDict:
+        translations = []
+        if self.translations:
+            translations = self.translations
+
         return {
             "id": self.id,
             "code": self.code,
             "name": self.name,
             "question": self.question,
-            "translations": self.translations,
+            "translations": translations,
             "order": self.order
         }
 
@@ -65,7 +69,7 @@ class OptionBase(BaseModel):
     question: int
     code: Optional[str] = None
     name: str
-    translations: Optional[List[dict]] = None
+    translations: Optional[List[dict]] = []
     order: Optional[int] = None
 
     class Config:

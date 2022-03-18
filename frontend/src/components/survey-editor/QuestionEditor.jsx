@@ -9,16 +9,17 @@ import {
   Space,
   Select,
   Collapse,
+  Popconfirm,
 } from "antd";
 import { RiSettings5Fill, RiDeleteBinFill } from "react-icons/ri";
-import { MdFileCopy, MdGTranslate } from "react-icons/md";
+import { MdGTranslate } from "react-icons/md";
 import QuestionSetting from "./QuestionSetting";
 import { store, api } from "../../lib";
 import { isoLangs } from "../../lib";
 
 const { Panel } = Collapse;
 
-const QuestionNameInput = ({ index, question }) => {
+const QuestionNameInput = ({ question }) => {
   return (
     <Form.Item
       name={`question-${question?.id}-name`}
@@ -36,8 +37,9 @@ const TranslationTab = ({ activeLang, setActiveLang }) => {
   return (
     <div className="translation-tab-wrapper">
       <Space>
-        {languages?.map((l) => (
+        {languages?.map((l, li) => (
           <Button
+            key={`question-${l}-${li}`}
             type="text"
             className={`${activeLang === l ? "active" : ""}`}
             onClick={() => setActiveLang(l)}
@@ -80,18 +82,18 @@ const QuestionEditor = ({
   submitStatus,
   setSubmitStatus,
 }) => {
+  const state = store.useState((s) => s?.surveyEditor);
+  const optionValues = store.useState((s) => s?.optionValues);
+  const { question_type } = optionValues;
+  const qId = question?.id;
+  const panelKey = `qe-${qId}`;
+
   const [activePanel, setActivePanel] = useState(null);
   const [activeSetting, setActiveSetting] = useState("detail");
   const [allowOther, setAllowOther] = useState(false);
   const [allowDecimal, setAllowDecimal] = useState(false);
   const [mandatory, setMandatory] = useState(false);
   const [personalData, setPersonalData] = useState(false);
-  const state = store.useState((s) => s?.surveyEditor);
-  const optionValues = store.useState((s) => s?.optionValues);
-  const { question_type } = optionValues;
-  const qgId = questionGroup?.id;
-  const qId = question?.id;
-  const panelKey = `qe-${qId}`;
   const [activeLang, setActiveLang] = useState(state?.languages[0]);
 
   useEffect(() => {
@@ -125,8 +127,20 @@ const QuestionEditor = ({
         // Load option value
         if (key === "option" && value) {
           value?.forEach((val) => {
-            const opField = `${field}-${val?.id}`;
+            const opId = val?.id;
+            const opField = `${field}-${opId}`;
             form.setFieldsValue({ [opField]: val?.name });
+            // Load option translations
+            if (val?.translations?.length > 0) {
+              const opTransFieldPrefix = `question-${qId}-translations`;
+              val?.translations?.forEach((val) => {
+                const lang = val?.language;
+                Object.keys(val).forEach((key) => {
+                  const optTransField = `${opTransFieldPrefix}-${lang}-option_${key}-${opId}`;
+                  form.setFieldsValue({ [optTransField]: val?.[key] });
+                });
+              });
+            }
           });
         }
         if (key === "mandatory") {
@@ -141,23 +155,35 @@ const QuestionEditor = ({
             Object.keys(val).forEach((key) => {
               const skipField = `${field}-${key}`;
               let skipValue = String(val?.[key]);
-              if (key === "value") {
+              if (val?.type?.includes("option")) {
                 skipValue = skipValue?.split("|");
-                skipValue = Array.isArray(skipValue) ? skipValue : [skipValue];
+                skipValue = Array.isArray(skipValue)
+                  ? skipValue
+                  : [skipValue || ""];
               }
               form.setFieldsValue({ [skipField]: skipValue });
             });
           });
         }
+        // Load question translations
+        if (key === "translations") {
+          value?.forEach((val) => {
+            const lang = val?.language;
+            Object.keys(val).forEach((key) => {
+              const transField = `${field}-${lang}-${key}`;
+              form.setFieldsValue({ [transField]: val?.[key] });
+            });
+          });
+        }
       });
     }
-  }, [question]);
+  }, [question, form, qId]);
 
   const handleDeleteQuestionButton = (question) => {
     const { id } = question;
     api
       .delete(`/question/${id}`)
-      .then((res) => {
+      .then(() => {
         const filterQuestionGroup = state?.questionGroup?.filter(
           (qg) => qg?.id !== questionGroup?.id
         );
@@ -243,6 +269,8 @@ const QuestionEditor = ({
                         personalData={personalData}
                         setPersonalData={setPersonalData}
                         setActivePanel={setActivePanel}
+                        activeLang={activeLang}
+                        setActiveLang={setActiveLang}
                       />
                     </Col>
                   </Row>
@@ -273,11 +301,14 @@ const QuestionEditor = ({
                     onChange={() => setActivePanel(panelKey)}
                   />
                 </Form.Item>
-                <Button
-                  type="text"
-                  icon={<RiDeleteBinFill />}
-                  onClick={() => handleDeleteQuestionButton(question)}
-                />
+                <Popconfirm
+                  title="Delete question can't be undone."
+                  okText="Delete"
+                  cancelText="Cancel"
+                  onConfirm={() => handleDeleteQuestionButton(question)}
+                >
+                  <Button type="text" icon={<RiDeleteBinFill />} />
+                </Popconfirm>
               </Space>
             </Col>
           </Row>
