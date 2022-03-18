@@ -1,0 +1,94 @@
+{
+  "parser": "@babel/eslint-parser",
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "plugins": [
+    "react",
+    "react-hooks",
+    "import",
+    "export",
+    "jest",
+    "jsx-a11y"
+  ],
+  "parserOptions": {
+    "requireConfigFile": false,
+    "sourceType": "module",
+    "babelOptions": {
+      "presets": [
+        "@babel/preset-react"
+      ]
+    }
+  },
+  "rules": {
+    "no-alert": "warn",
+    "no-console": [
+      "warn",
+      {
+        "allow": [
+          "error",
+          "info"
+        ]
+      }
+    ],
+    "no-undef": "warn",
+    "no-else-return": "warn",
+    "no-unused-vars": "warn",
+    "no-undefined": "warn",
+    "no-unreachable": "warn",
+    "no-extra-semi": "warn",
+    "no-useless-escape": "warn",
+    "no-multi-spaces": [
+      "warn",
+      {
+        "ignoreEOLComments": true
+      }
+    ],
+    "eqeqeq": "warn",
+    "semi": "warn",
+    "no-delete-var": "warn",
+    "prefer-const": "warn",
+    "prefer-arrow-callback": "error",
+    "react/prefer-stateless-function": "warn",
+    "react-hooks/rules-of-hooks": "warn",
+    "react-hooks/exhaustive-deps": "warn",
+    "react/prop-types": "off",
+    "react/react-in-jsx-scope": "off",
+    "react/jsx-filename-extension": [
+      "error",
+      {
+        "extensions": [
+          ".js",
+          ".jsx"
+        ]
+      }
+    ],
+    "curly": "error"
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true,
+    "es2021": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "**/*.spec.js",
+        "**/*.spec.jsx",
+        "**/*.test.jsx",
+        "**/*.test.js"
+      ],
+      "env": {
+        "jest": true
+      }
+    }
+  ]
+}
