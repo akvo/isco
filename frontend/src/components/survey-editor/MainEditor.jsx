@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Form, Space, Row, Col, Button } from "antd";
+import { Form, Space, Row, Col } from "antd";
 import { store, api } from "../../lib";
 import FormEditor from "./FormEditor";
 import QuestionGroupEditor from "./QuestionGroupEditor";
@@ -9,22 +9,23 @@ const MainEditor = () => {
   const [form] = Form.useForm();
   const state = store.useState((s) => s?.surveyEditor);
   const formId = state?.id;
-  const formFields = {
-    "form-name": state?.name,
-    "form-description": state?.description,
-    "form-languages": state?.languages,
-  };
+
   const { questionGroup } = state;
   const [saveButtonLoading, setSaveButtonLoading] = useState(false);
 
   useEffect(() => {
     if (formId) {
+      const formFields = {
+        "form-name": state?.name,
+        "form-description": state?.description,
+        "form-languages": state?.languages,
+      };
       // set form fields initial value
       Object.keys(formFields).forEach((key) => {
         form.setFieldsValue({ [key]: formFields?.[key] });
       });
     }
-  }, [state]);
+  }, [state, formId, form]);
 
   const onSubmitForm = (values) => {
     setSaveButtonLoading(true);
@@ -40,7 +41,6 @@ const MainEditor = () => {
       .put(`/form/${formId}`, data, { "content-type": "application/json" })
       .then((res) => {
         const { data } = res;
-        console.log(data);
         store.update((s) => {
           s.surveyEditor = {
             ...s.surveyEditor,
@@ -69,7 +69,7 @@ const MainEditor = () => {
                 name="survey-detail"
                 onFinish={onSubmitForm}
                 onFinishFailed={({ values, errorFields }) =>
-                  console.log(values, errorFields)
+                  console.info(values, errorFields)
                 }
               >
                 <Space direction="vertical">

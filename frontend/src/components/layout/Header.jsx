@@ -5,12 +5,9 @@ import { FaUser } from "react-icons/fa";
 import { BsGearFill } from "react-icons/bs";
 import { MdLogout } from "react-icons/md";
 import { RiAdminFill } from "react-icons/ri";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Header = ({ className = "header", ...props }) => {
-  const navigate = useNavigate();
-  const location = useLocation();
-
   const accountMenu = (
     <Menu className="account-dropdown-menu">
       <Menu.Item key="admin" className="account-item">

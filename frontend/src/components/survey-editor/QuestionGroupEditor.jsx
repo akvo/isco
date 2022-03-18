@@ -25,13 +25,7 @@ import { isoLangs } from "../../lib";
 
 const { TabPane } = Tabs;
 
-const QuestionGroupSetting = ({
-  form,
-  index,
-  questionGroup,
-  repeat,
-  onChangeRepeat,
-}) => {
+const QuestionGroupSetting = ({ questionGroup, repeat, onChangeRepeat }) => {
   const state = store.useState((s) => s?.surveyEditor);
   const optionValues = store.useState((s) => s?.optionValues);
   const { member_type, isco_type } = optionValues;
@@ -224,7 +218,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
         }
       });
     }
-  }, [questionGroup]);
+  }, [questionGroup, form, id]);
 
   const onChangeRepeat = (val, fieldId) => {
     form.setFieldsValue({ [fieldId]: val });
@@ -236,6 +230,10 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
 
   const handleAddQuestionButton = (questionGroup) => {
     const qgId = questionGroup?.id;
+    let qGroups = [];
+    if (questionGroup?.question?.length > 0) {
+      qGroups = questionGroup?.question;
+    }
     api
       .post(`/default_question/${formId}/${qgId}`)
       .then((res) => {
@@ -244,7 +242,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
         const newQg = {
           ...questionGroup,
           question: [
-            ...questionGroup?.question,
+            ...qGroups,
             {
               ...data,
               // add option default
@@ -272,7 +270,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
       });
   };
 
-  const handleAddQuestionGroupButton = (questionGroup) => {
+  const handleAddQuestionGroupButton = () => {
     const { id } = state;
     api
       .post(`/default_question_group/${id}`)
@@ -295,7 +293,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
     const { id } = questionGroup;
     api
       .delete(`/question_group/${id}`)
-      .then((res) => {
+      .then(() => {
         store.update((s) => {
           s.surveyEditor = {
             ...s.surveyEditor,
@@ -311,8 +309,8 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
       });
   };
 
-  const handleFormOnFinish = (values) => {
-    const { id, order } = questionGroup;
+  const handleFormOnFinish = () => {
+    const { id } = questionGroup;
     let qId = null;
     let data = {};
     // Save Question Group
@@ -413,7 +411,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
               .post(`/option`, optionPayload, {
                 "content-type": "application/json",
               })
-              .then((res) => {
+              .then(() => {
                 console.info("Option created");
               })
               .catch((e) => {
@@ -425,7 +423,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
               .put(`/option/${opt?.id}`, optionPayload, {
                 "content-type": "application/json",
               })
-              .then((res) => {
+              .then(() => {
                 console.info("Option updated");
               })
               .catch((e) => {
@@ -479,7 +477,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
               .post(`/skip_logic`, skipPayload, {
                 "content-type": "application/json",
               })
-              .then((res) => {
+              .then(() => {
                 console.info("Skip logic created");
               })
               .catch((e) => {
@@ -491,7 +489,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
               .put(`/skip_logic/${ski?.id}`, skipPayload, {
                 "content-type": "application/json",
               })
-              .then((res) => {
+              .then(() => {
                 console.info("Skip logic updated");
               })
               .catch((e) => {
@@ -571,10 +569,12 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
   };
 
   const handleFormOnValuesChange = (values, allValues) => {
+    console.info(allValues);
     const question = questionGroup?.question;
     Object.keys(values).forEach((key) => {
       const field = key.split("-")[2];
       const value = values?.[key];
+      // Handle Question group
       if (key.includes("question_group")) {
         let findQuestionGroup = questionGroup;
         if (!field.includes("translations")) {
@@ -586,12 +586,13 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
         if (field.includes("translations")) {
           const lang = key.split("-")[3];
           const tKey = key.split("-")[4];
+          const transFilter = findQuestionGroup?.translations?.filter(
+            (x) => x?.language !== lang
+          );
           findQuestionGroup = {
             ...findQuestionGroup,
             translations: [
-              ...findQuestionGroup?.translations?.filter(
-                (x) => x?.language !== lang
-              ),
+              ...transFilter,
               {
                 ...findQuestionGroup?.translations?.find(
                   (x) => x?.language === lang
@@ -605,18 +606,17 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
 
         console.info("handleFormOnValuesChange", findQuestionGroup);
 
+        const filterQuestionGroup = state?.questionGroup?.filter(
+          (x) => x?.id !== questionGroup?.id
+        );
         store.update((s) => {
           s.surveyEditor = {
             ...s.surveyEditor,
-            questionGroup: [
-              ...s.surveyEditor?.questionGroup?.filter(
-                (x) => x?.id !== questionGroup?.id
-              ),
-              findQuestionGroup,
-            ],
+            questionGroup: [...filterQuestionGroup, findQuestionGroup],
           };
         });
       }
+      // Handle Question
       if (key.includes("question") && !key.includes("question_group")) {
         const qid = parseInt(key.split("-")[1]);
         // update question state
@@ -641,7 +641,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
           findQuestion = {
             ...findQuestion,
             option: findQuestion?.option?.map((opt) => {
-              if (opt?.id == optId) {
+              if (String(opt?.id) === String(optId)) {
                 return {
                   ...opt,
                   name: value,
@@ -657,7 +657,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
           findQuestion = {
             ...findQuestion,
             repeating_objects: findQuestion?.repeating_objects?.map((ro) => {
-              if (ro?.id == roId) {
+              if (String(ro?.id) === String(roId)) {
                 return {
                   ...ro,
                   [roKey]: value,
@@ -696,12 +696,13 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
         if (field.includes("translations") && !key.includes("option")) {
           const lang = key.split("-")[3];
           const tKey = key.split("-")[4];
+          const transFilter = findQuestion?.translations?.filter(
+            (x) => x?.language !== lang
+          );
           findQuestion = {
             ...findQuestion,
             translations: [
-              ...findQuestion?.translations?.filter(
-                (x) => x?.language !== lang
-              ),
+              ...transFilter,
               {
                 ...findQuestion?.translations?.find(
                   (x) => x?.language === lang
@@ -717,44 +718,47 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
           const tKey = key.split("-")[4];
           const optId = parseInt(key.split("-")[5]);
           const optKey = tKey.split("_")[1];
+          const updatedQuestionOption = findQuestion?.option?.map((opt) => {
+            if (opt?.id === optId) {
+              const filterOption = opt?.translations?.filter(
+                (x) => x?.language !== lang
+              );
+              return {
+                ...opt,
+                translations: [
+                  ...filterOption,
+                  {
+                    ...opt?.translations?.find((x) => x?.language === lang),
+                    language: lang,
+                    [optKey]: value,
+                  },
+                ],
+              };
+            }
+            return opt;
+          });
           findQuestion = {
             ...findQuestion,
-            option: [
-              ...findQuestion?.option?.map((opt) => {
-                if (opt?.id === optId) {
-                  return {
-                    ...opt,
-                    translations: [
-                      ...opt?.translations?.filter((x) => x?.language !== lang),
-                      {
-                        ...opt?.translations?.find((x) => x?.language === lang),
-                        language: lang,
-                        [optKey]: value,
-                      },
-                    ],
-                  };
-                }
-                return opt;
-              }),
-            ],
+            option: [...updatedQuestionOption],
           };
         }
 
         console.info("handleFormOnValuesChange", findQuestion);
 
+        const filterQuestionGroup = state?.questionGroup?.filter(
+          (x) => x?.id !== questionGroup?.id
+        );
+        const filterQuestion = questionGroup?.question?.filter(
+          (x) => x?.id !== qid
+        );
         store.update((s) => {
           s.surveyEditor = {
             ...s.surveyEditor,
             questionGroup: [
-              ...s.surveyEditor?.questionGroup?.filter(
-                (x) => x?.id !== questionGroup?.id
-              ),
+              ...filterQuestionGroup,
               {
                 ...questionGroup,
-                question: [
-                  ...questionGroup?.question?.filter((x) => x?.id !== qid),
-                  findQuestion,
-                ],
+                question: [...filterQuestion, findQuestion],
               },
             ],
           };

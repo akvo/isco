@@ -11,14 +11,14 @@ import {
   Collapse,
 } from "antd";
 import { RiSettings5Fill, RiDeleteBinFill } from "react-icons/ri";
-import { MdFileCopy, MdGTranslate } from "react-icons/md";
+import { MdGTranslate } from "react-icons/md";
 import QuestionSetting from "./QuestionSetting";
 import { store, api } from "../../lib";
 import { isoLangs } from "../../lib";
 
 const { Panel } = Collapse;
 
-const QuestionNameInput = ({ index, question }) => {
+const QuestionNameInput = ({ question }) => {
   return (
     <Form.Item
       name={`question-${question?.id}-name`}
@@ -84,7 +84,6 @@ const QuestionEditor = ({
   const state = store.useState((s) => s?.surveyEditor);
   const optionValues = store.useState((s) => s?.optionValues);
   const { question_type } = optionValues;
-  const qgId = questionGroup?.id;
   const qId = question?.id;
   const panelKey = `qe-${qId}`;
 
@@ -175,13 +174,13 @@ const QuestionEditor = ({
         }
       });
     }
-  }, [question]);
+  }, [question, form, qId]);
 
   const handleDeleteQuestionButton = (question) => {
     const { id } = question;
     api
       .delete(`/question/${id}`)
-      .then((res) => {
+      .then(() => {
         const filterQuestionGroup = state?.questionGroup?.filter(
           (qg) => qg?.id !== questionGroup?.id
         );

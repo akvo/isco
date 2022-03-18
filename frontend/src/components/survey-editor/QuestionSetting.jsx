@@ -142,6 +142,7 @@ const Detail = ({
   allowOther,
 }) => {
   const state = store.useState((s) => s?.surveyEditor);
+  const tempStorage = store.useState((s) => s?.tempStorage);
   const { cascade, nested } = store.useState((s) => s?.optionValues);
   const { type, option, repeating_objects } = question;
   const qId = question?.id;
@@ -171,13 +172,14 @@ const Detail = ({
     if (operation === "remove") {
       updatedOption = question?.option?.filter((op) => op?.id !== opt?.id);
       // store removed option to delete when save button clicked
+      const storage = tempStorage;
+      const filterTempStorage = storage.deletedOptions?.filter(
+        (x) => x?.id !== opt?.id
+      );
       store.update((s) => {
         s.tempStorage = {
-          ...s.tempStorage,
-          deletedOptions: [
-            ...s.tempStorage.deletedOptions?.filter((x) => x?.id !== opt?.id),
-            opt,
-          ],
+          ...storage,
+          deletedOptions: [...filterTempStorage, opt],
         };
       });
     }
@@ -347,12 +349,7 @@ const Detail = ({
   );
 };
 
-const Translation = ({
-  questionGroup,
-  question,
-  activeLang,
-  setActiveLang,
-}) => {
+const Translation = ({ question, activeLang }) => {
   const { id, name, tooltip } = question;
   const lang = isoLangs?.[activeLang];
   const fieldNamePrefix = `question-${id}-translations-${activeLang}`;
@@ -401,7 +398,6 @@ const Translation = ({
 const Setting = ({
   form,
   question,
-  questionGroup,
   mandatory,
   setMandatory,
   personalData,
@@ -411,7 +407,9 @@ const Setting = ({
   setAllowDecimal,
 }) => {
   const state = store?.useState((s) => s?.surveyEditor);
-  const { operator_type } = store?.useState((s) => s?.optionValues);
+  const tempStorage = store?.useState((s) => s?.tempStorage);
+  const optionValues = store?.useState((s) => s?.optionValues);
+  const { operator_type } = optionValues;
   const qid = question?.id;
   const { type } = question;
   const allQuestion = state?.questionGroup?.flatMap((qg) => qg?.question);
@@ -436,7 +434,7 @@ const Setting = ({
       }, 100);
     }
     return find;
-  }, [dependentId]);
+  }, [dependentId, allQuestion, form, handleFormOnValuesChange, qid]);
 
   const operators = dependentQuestion?.type.includes("option")
     ? operator_type?.filter((x) => x === "equal")
@@ -482,15 +480,13 @@ const Setting = ({
       );
     }, 100);
     // store removed skip logic to delete when save button clicked
+    const filterTempStorage = tempStorage.deletedSkipLogic?.filter(
+      (x) => x?.id !== skipLogic?.id
+    );
     store.update((s) => {
       s.tempStorage = {
         ...s.tempStorage,
-        deletedSkipLogic: [
-          ...s.tempStorage.deletedSkipLogic?.filter(
-            (x) => x?.id !== skipLogic?.id
-          ),
-          skipLogic,
-        ],
+        deletedSkipLogic: [...filterTempStorage, skipLogic],
       };
     });
   };

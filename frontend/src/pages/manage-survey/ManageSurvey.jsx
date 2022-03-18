@@ -13,7 +13,6 @@ import {
   Form,
 } from "antd";
 import { RiPencilFill, RiDeleteBinFill } from "react-icons/ri";
-import { MdFileCopy } from "react-icons/md";
 import { FaInfoCircle } from "react-icons/fa";
 import { FormEditor } from "../../components";
 import { api } from "../../lib";
@@ -33,7 +32,7 @@ const ManageSurvey = () => {
     if (!has_question_group) {
       api
         .post(`/default_question_group/${id}`)
-        .then((res) => {
+        .then(() => {
           console.info("Default question group created");
         })
         .catch((e) => {
@@ -238,7 +237,7 @@ const ManageSurvey = () => {
           name="survey-detail"
           onFinish={onSubmitForm}
           onFinishFailed={({ values, errorFields }) =>
-            console.log(values, errorFields)
+            console.info(values, errorFields)
           }
         >
           <FormEditor form={form} />

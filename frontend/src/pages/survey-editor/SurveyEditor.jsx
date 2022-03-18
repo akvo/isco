@@ -55,7 +55,7 @@ const SurveyEditor = () => {
         const { status, statusText } = e.response;
         console.error(status, statusText);
       });
-  }, []);
+  }, [formId]);
 
   return (
     <div id="survey-editor">
