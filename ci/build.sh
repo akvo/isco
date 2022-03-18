@@ -71,9 +71,8 @@ backend_build () {
         --tag "${image_prefix}/backend:${CI_COMMIT}" backend
 
     # Test and Code Quality
-    dc -f docker-compose.test.yml -p backend-test run \
-        --rm \
-        backend ./test.sh
+    docker-compose -f docker-compose.test.yml \
+        run --rm -T backend ./test.sh
 
 }
 

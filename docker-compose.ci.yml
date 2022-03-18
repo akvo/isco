@@ -18,8 +18,8 @@ services:
       - backend
       - db
   backend:
-    network_mode: service:mainnetwork
     image: eu.gcr.io/akvo-lumen/isco/backend:latest
+    network_mode: service:mainnetwork
     command: ["sh", "run.sh"]
     environment:
       - DATABASE_URL=postgresql://isco_user:password@db:5432/isco
@@ -29,8 +29,8 @@ services:
       - db
     restart: always
   ci:
-    network_mode: service:mainnetwork
     image: alpine:3.14
+    network_mode: service:mainnetwork
     volumes:
       - ./ci/test:/test:ro
     working_dir: /test
