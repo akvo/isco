@@ -36,8 +36,9 @@ const TranslationTab = ({ activeLang, setActiveLang }) => {
   return (
     <div className="translation-tab-wrapper">
       <Space>
-        {languages?.map((l) => (
+        {languages?.map((l, li) => (
           <Button
+            key={`${l}-${li}`}
             type="text"
             className={`${activeLang === l ? "active" : ""}`}
             onClick={() => setActiveLang(l)}
@@ -80,18 +81,19 @@ const QuestionEditor = ({
   submitStatus,
   setSubmitStatus,
 }) => {
-  const [activePanel, setActivePanel] = useState(null);
-  const [activeSetting, setActiveSetting] = useState("detail");
-  const [allowOther, setAllowOther] = useState(false);
-  const [allowDecimal, setAllowDecimal] = useState(false);
-  const [mandatory, setMandatory] = useState(false);
-  const [personalData, setPersonalData] = useState(false);
   const state = store.useState((s) => s?.surveyEditor);
   const optionValues = store.useState((s) => s?.optionValues);
   const { question_type } = optionValues;
   const qgId = questionGroup?.id;
   const qId = question?.id;
   const panelKey = `qe-${qId}`;
+
+  const [activePanel, setActivePanel] = useState(null);
+  const [activeSetting, setActiveSetting] = useState("detail");
+  const [allowOther, setAllowOther] = useState(false);
+  const [allowDecimal, setAllowDecimal] = useState(false);
+  const [mandatory, setMandatory] = useState(false);
+  const [personalData, setPersonalData] = useState(false);
   const [activeLang, setActiveLang] = useState(state?.languages[0]);
 
   useEffect(() => {
@@ -125,8 +127,20 @@ const QuestionEditor = ({
         // Load option value
         if (key === "option" && value) {
           value?.forEach((val) => {
-            const opField = `${field}-${val?.id}`;
+            const opId = val?.id;
+            const opField = `${field}-${opId}`;
             form.setFieldsValue({ [opField]: val?.name });
+            // Load option translations
+            if (val?.translations?.length > 0) {
+              const opTransFieldPrefix = `question-${qId}-translations`;
+              val?.translations?.forEach((val) => {
+                const lang = val?.language;
+                Object.keys(val).forEach((key) => {
+                  const optTransField = `${opTransFieldPrefix}-${lang}-option_${key}-${opId}`;
+                  form.setFieldsValue({ [optTransField]: val?.[key] });
+                });
+              });
+            }
           });
         }
         if (key === "mandatory") {
@@ -146,6 +160,16 @@ const QuestionEditor = ({
                 skipValue = Array.isArray(skipValue) ? skipValue : [skipValue];
               }
               form.setFieldsValue({ [skipField]: skipValue });
+            });
+          });
+        }
+        // Load question translations
+        if (key === "translations") {
+          value?.forEach((val) => {
+            const lang = val?.language;
+            Object.keys(val).forEach((key) => {
+              const transField = `${field}-${lang}-${key}`;
+              form.setFieldsValue({ [transField]: val?.[key] });
             });
           });
         }
@@ -243,6 +267,8 @@ const QuestionEditor = ({
                         personalData={personalData}
                         setPersonalData={setPersonalData}
                         setActivePanel={setActivePanel}
+                        activeLang={activeLang}
+                        setActiveLang={setActiveLang}
                       />
                     </Col>
                   </Row>

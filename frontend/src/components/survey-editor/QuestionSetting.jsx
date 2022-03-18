@@ -19,6 +19,7 @@ import { store } from "../../lib";
 import orderBy from "lodash/orderBy";
 import { defaultOption, defaultRepeatingObject } from "../../lib/store";
 import { generateID, insert } from "../../lib/util";
+import { isoLangs } from "../../lib";
 
 const { TabPane } = Tabs;
 
@@ -343,39 +344,53 @@ const Detail = ({
   );
 };
 
-const Translation = () => {
+const Translation = ({
+  questionGroup,
+  question,
+  activeLang,
+  setActiveLang,
+}) => {
+  const { id, name, tooltip } = question;
+  const lang = isoLangs?.[activeLang];
+  const fieldNamePrefix = `question-${id}-translations-${activeLang}`;
+  const placeholder = `Enter ${lang?.name} translation`;
+
+  // filter option from the default option list
+  const option = question?.option?.filter((x) => x?.name);
+
   return (
     <>
       <div className="question-setting-wrapper ">
         <Form.Item
-          label={<div className="translation-label">Question 1</div>}
-          name="name-here"
+          label={<div className="translation-label">{name}</div>}
+          name={`${fieldNamePrefix}-name`}
         >
-          <Input className="bg-grey" placeholder="Enter translation" />
+          <Input className="bg-grey" placeholder={placeholder} />
         </Form.Item>
       </div>
-      <div className="question-setting-wrapper">
-        <Form.Item
-          label={<div className="translation-label">Question Tooltip</div>}
-          name="name-here"
-        >
-          <Input className="bg-grey" placeholder="Enter translation" />
-        </Form.Item>
-      </div>
-      <div className="question-setting-wrapper">
-        <Form.Item
-          label={<div className="translation-label">Option 1</div>}
-          name="name-here"
-        >
-          <Input className="bg-grey" placeholder="Enter translation" />
-        </Form.Item>
-        <Form.Item
-          label={<div className="translation-label">Option 2</div>}
-          name="name-here"
-        >
-          <Input className="bg-grey" placeholder="Enter translation" />
-        </Form.Item>
-      </div>
+      {tooltip && (
+        <div className="question-setting-wrapper">
+          <Form.Item
+            label={<div className="translation-label">{tooltip}</div>}
+            name={`${fieldNamePrefix}-tooltip`}
+          >
+            <Input className="bg-grey" placeholder={placeholder} />
+          </Form.Item>
+        </div>
+      )}
+      {option?.length > 0 && (
+        <div className="question-setting-wrapper">
+          {option?.map(({ id, name }) => (
+            <Form.Item
+              key={`option-translation-${id}`}
+              label={<div className="translation-label">{name}</div>}
+              name={`${fieldNamePrefix}-option_name-${id}`}
+            >
+              <Input className="bg-grey" placeholder={placeholder} />
+            </Form.Item>
+          ))}
+        </div>
+      )}
     </>
   );
 };
@@ -682,10 +697,19 @@ const RenderLayout = ({
   setMandatory,
   personalData,
   setPersonalData,
+  activeLang,
+  setActiveLang,
 }) => {
   switch (activeSetting) {
     case "translation":
-      return <Translation questionGroup={questionGroup} question={question} />;
+      return (
+        <Translation
+          questionGroup={questionGroup}
+          question={question}
+          activeLang={activeLang}
+          setActiveLang={setActiveLang}
+        />
+      );
     case "setting":
       return (
         <Setting
@@ -732,6 +756,8 @@ const QuestionSetting = ({
   personalData,
   setPersonalData,
   setActivePanel,
+  activeLang,
+  setActiveLang,
 }) => {
   return (
     <>
@@ -749,6 +775,8 @@ const QuestionSetting = ({
         setMandatory={setMandatory}
         personalData={personalData}
         setPersonalData={setPersonalData}
+        activeLang={activeLang}
+        setActiveLang={setActiveLang}
       />
       <div className="question-button-wrapper">
         <Space align="center">

@@ -548,6 +548,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
             "repeating_objects_value",
             "rule",
             "skip_logic",
+            "translations",
           ].includes(field)
         ) {
           findQuestion = {
@@ -612,6 +613,53 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
               : null,
           };
         }
+        if (field.includes("translations") && !key.includes("option")) {
+          const lang = key.split("-")[3];
+          const tKey = key.split("-")[4];
+          findQuestion = {
+            ...findQuestion,
+            translations: [
+              ...findQuestion?.translations?.filter(
+                (x) => x?.language !== lang
+              ),
+              {
+                ...findQuestion?.translations?.find(
+                  (x) => x?.language === lang
+                ),
+                language: lang,
+                [tKey]: value,
+              },
+            ],
+          };
+        }
+        if (field.includes("translations") && key.includes("option")) {
+          const lang = key.split("-")[3];
+          const tKey = key.split("-")[4];
+          const optId = parseInt(key.split("-")[5]);
+          const optKey = tKey.split("_")[1];
+          findQuestion = {
+            ...findQuestion,
+            option: [
+              ...findQuestion?.option?.map((opt) => {
+                if (opt?.id === optId) {
+                  return {
+                    ...opt,
+                    translations: [
+                      ...opt?.translations?.filter((x) => x?.language !== lang),
+                      {
+                        ...opt?.translations?.find((x) => x?.language === lang),
+                        language: lang,
+                        [optKey]: value,
+                      },
+                    ],
+                  };
+                }
+                return opt;
+              }),
+            ],
+          };
+        }
+
         console.log("onFormChangeValue", findQuestion);
 
         store.update((s) => {
