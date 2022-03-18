@@ -72,7 +72,7 @@ class QuestionDict(TypedDict):
     form: int
     question_group: int
     name: str
-    translations: Optional[List[dict]] = None
+    translations: Optional[List[dict]] = []
     mandatory: bool
     datapoint_name: bool
     variable_name: Optional[str] = None
@@ -80,7 +80,7 @@ class QuestionDict(TypedDict):
     personal_data: bool
     rule: Optional[dict] = None
     tooltip: Optional[str] = None
-    tooltip_translations: Optional[List[dict]] = None
+    tooltip_translations: Optional[List[dict]] = []
     cascade: Optional[int] = None
     repeating_objects: Optional[List] = []
     order: Optional[int] = None
@@ -162,12 +162,24 @@ class Question(Base):
 
     @property
     def serialize(self) -> QuestionDict:
+        translations = []
+        if self.translations:
+            translations = self.translations
+
+        tooltip_translations = []
+        if self.tooltip_translations:
+            tooltip_translations = self.tooltip_translations
+
+        repeating_objects = []
+        if self.repeating_objects:
+            repeating_objects = self.repeating_objects
+
         return {
             "id": self.id,
             "form": self.form,
             "question_group": self.question_group,
             "name": self.name,
-            "translations": self.translations,
+            "translations": translations,
             "mandatory": self.mandatory,
             "datapoint_name": self.datapoint_name,
             "variable_name": self.variable_name,
@@ -175,12 +187,12 @@ class Question(Base):
             "personal_data": self.personal_data,
             "rule": self.rule,
             "tooltip": self.tooltip,
-            "tooltip_translations": self.tooltip_translations,
+            "tooltip_translations": tooltip_translations,
             "member_access": [ma.member_type for ma in self.member_access],
             "isco_access": [ia.isco_type for ia in self.isco_access],
             "cascade": self.cascade,
-            "repeating_objects": self.repeating_objects,
-            "option": self.option,
+            "repeating_objects": repeating_objects,
+            "option": [opt.serialize for opt in self.option],
             "skip_logic": self.skip_logic,
             "order": self.order
         }
@@ -191,7 +203,7 @@ class QuestionBase(BaseModel):
     form: int
     question_group: int
     name: str
-    translations: Optional[List[dict]] = None
+    translations: Optional[List[dict]] = []
     mandatory: bool
     datapoint_name: bool
     variable_name: Optional[str] = None
@@ -199,7 +211,7 @@ class QuestionBase(BaseModel):
     personal_data: bool
     rule: Optional[dict] = None
     tooltip: Optional[str] = None
-    tooltip_translations: Optional[List[dict]] = None
+    tooltip_translations: Optional[List[dict]] = []
     member_access: Optional[List[int]] = []
     isco_access: Optional[List[int]] = []
     cascade: Optional[int] = None
@@ -215,7 +227,7 @@ class QuestionBase(BaseModel):
 class QuestionJson(BaseModel):
     id: int
     name: str
-    translations: Optional[List[dict]] = None
+    translations: Optional[List[dict]] = []
     mandatory: bool
     order: Optional[int] = None
     datapoint_name: bool
@@ -224,7 +236,7 @@ class QuestionJson(BaseModel):
     personal_data: bool
     rule: Optional[dict] = None
     tooltip: Optional[str] = None
-    tooltip_translations: Optional[List[dict]] = None
+    tooltip_translations: Optional[List[dict]] = []
     member_access: Optional[List[int]] = []
     isco_access: Optional[List[int]] = []
     cascade: Optional[int] = None

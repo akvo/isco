@@ -84,7 +84,7 @@ class TestFormRoutes():
                        "name": "Question Group 1",
                        "order": 1,
                        "repeat": False,
-                       "translations": None,
+                       "translations": [],
                        "question": []}
 
     @pytest.mark.asyncio

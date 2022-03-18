@@ -11,115 +11,172 @@ import {
   Switch,
   Select,
   Tooltip,
+  Popconfirm,
 } from "antd";
 import { RiSettings5Fill, RiDeleteBinFill } from "react-icons/ri";
 import { HiPlus } from "react-icons/hi";
 import { AiOutlineGroup } from "react-icons/ai";
+import { MdGTranslate } from "react-icons/md";
 import QuestionEditor from "./QuestionEditor";
 import { store, api } from "../../lib";
 import orderBy from "lodash/orderBy";
 import { defaultRepeatingObject, defaultOption } from "../../lib/store";
 import { generateID } from "../../lib/util";
+import { isoLangs } from "../../lib";
 
 const { TabPane } = Tabs;
 
-const QuestionGroupSetting = ({
-  form,
-  index,
-  questionGroup,
-  repeat,
-  onChangeRepeat,
-}) => {
+const QuestionGroupSetting = ({ questionGroup, repeat, onChangeRepeat }) => {
+  const state = store.useState((s) => s?.surveyEditor);
   const optionValues = store.useState((s) => s?.optionValues);
   const { member_type, isco_type } = optionValues;
-  const { id } = questionGroup;
+  const { languages } = state;
+  const qgId = questionGroup?.id;
+  const { name, description } = questionGroup;
+
+  const [groupTranslationVisible, setGroupTranslationVisible] = useState(false);
 
   return (
     <div className="qge-setting-wrapper">
-      <Tabs>
-        <TabPane tab="Group Settings" key="group-setting">
-          <Row
-            align="top"
-            justify="space-between"
-            gutter={[24, 12]}
-            className="qge-setting-tab-body"
-          >
-            <Col span={10}>
-              <Form.Item name={`question_group-${id}-description`}>
-                <Input.TextArea
-                  rows={3}
-                  placeholder="Question Group Description"
-                />
-              </Form.Item>
-              <Form.Item name={`question_group-${id}-repeat`} hidden noStyle>
-                <Input />
-              </Form.Item>
-              <Space>
-                Repeat{" "}
-                <Switch
-                  size="small"
-                  onChange={(val) =>
-                    onChangeRepeat(val, `question_group-repeat`)
-                  }
-                  checked={repeat}
-                />
-              </Space>
-            </Col>
-            <Col span={7}>
-              <Form.Item
-                name={`question_group-${id}-member_access`}
-                rules={[
-                  { required: true, message: "Please select member type" },
-                ]}
+      <Tabs
+        tabBarExtraContent={
+          <Button
+            icon={<MdGTranslate />}
+            type="text"
+            onClick={() => setGroupTranslationVisible(!groupTranslationVisible)}
+          />
+        }
+      >
+        {/* Group setting */}
+        {!groupTranslationVisible && (
+          <>
+            <TabPane tab="Section Settings" key="group-setting">
+              <Row
+                align="top"
+                justify="space-between"
+                gutter={[24, 12]}
+                className="qge-setting-tab-body"
               >
-                <Select
-                  mode="multiple"
-                  showSearch={true}
-                  className="custom-dropdown-wrapper"
-                  placeholder="Member Type"
-                  options={member_type?.map((item) => ({
-                    label: item?.name,
-                    value: item?.id,
-                  }))}
-                  filterOption={(input, option) =>
-                    option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  }
-                />
-              </Form.Item>
-            </Col>
-            <Col span={7}>
-              <Form.Item
-                name={`question_group-${id}-isco_access`}
-                rules={[{ required: true, message: "Please select isco type" }]}
-              >
-                <Select
-                  mode="multiple"
-                  showSearch={true}
-                  className="custom-dropdown-wrapper"
-                  placeholder="ISCO Type"
-                  options={isco_type?.map((item) => ({
-                    label: item?.name,
-                    value: item?.id,
-                  }))}
-                  filterOption={(input, option) =>
-                    option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  }
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-        </TabPane>
-        {/* <TabPane tab="Skip Logic" key="skip-logic">
+                <Col span={10}>
+                  <Form.Item name={`question_group-${qgId}-description`}>
+                    <Input.TextArea
+                      rows={3}
+                      placeholder="Question Group Description"
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    name={`question_group-${qgId}-repeat`}
+                    hidden
+                    noStyle
+                  >
+                    <Input />
+                  </Form.Item>
+                  <Space>
+                    Repeat{" "}
+                    <Switch
+                      size="small"
+                      onChange={(val) =>
+                        onChangeRepeat(val, `question_group-repeat`)
+                      }
+                      checked={repeat}
+                    />
+                  </Space>
+                </Col>
+                <Col span={7}>
+                  <Form.Item
+                    name={`question_group-${qgId}-member_access`}
+                    rules={[
+                      { required: true, message: "Please select member type" },
+                    ]}
+                  >
+                    <Select
+                      mode="multiple"
+                      showSearch={true}
+                      className="custom-dropdown-wrapper"
+                      placeholder="Member Type"
+                      options={member_type?.map((item) => ({
+                        label: item?.name,
+                        value: item?.id,
+                      }))}
+                      filterOption={(input, option) =>
+                        option.label
+                          .toLowerCase()
+                          .indexOf(input.toLowerCase()) >= 0
+                      }
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={7}>
+                  <Form.Item
+                    name={`question_group-${qgId}-isco_access`}
+                    rules={[
+                      { required: true, message: "Please select isco type" },
+                    ]}
+                  >
+                    <Select
+                      mode="multiple"
+                      showSearch={true}
+                      className="custom-dropdown-wrapper"
+                      placeholder="ISCO Type"
+                      options={isco_type?.map((item) => ({
+                        label: item?.name,
+                        value: item?.id,
+                      }))}
+                      filterOption={(input, option) =>
+                        option.label
+                          .toLowerCase()
+                          .indexOf(input.toLowerCase()) >= 0
+                      }
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+            </TabPane>
+            {/* <TabPane tab="Skip Logic" key="skip-logic">
           <Space direction="vertical" className="qge-setting-tab-body">
             <div>
               This question will only be displayed if the following conditions
               apply
             </div>
-            <Form.Item name={`question_group-${id}-skip_logic`}>
+            <Form.Item name={`question_group-${qgId}-skip_logic`}>
               <Select placeholder="Select question from list" options={[]} />
             </Form.Item>
           </Space>
         </TabPane> */}
+          </>
+        )}
+
+        {/* Translation  */}
+        {groupTranslationVisible &&
+          languages?.map((lang, li) => (
+            <TabPane key={`group-${lang}-${li}`} tab={isoLangs?.[lang]?.name}>
+              <div className="qge-setting-tab-body">
+                <Form.Item
+                  label={<div className="translation-label">{name}</div>}
+                  name={`question_group-${qgId}-translations-${lang}-name`}
+                >
+                  <Input
+                    placeholder={`Enter ${isoLangs?.[lang]?.name} translation`}
+                  />
+                </Form.Item>
+              </div>
+              {description && (
+                <div className="qge-setting-tab-body">
+                  <Form.Item
+                    label={
+                      <div className="translation-label">{description}</div>
+                    }
+                    name={`question_group-${qgId}-translations-${lang}-description`}
+                  >
+                    <Input.TextArea
+                      rows={3}
+                      placeholder={`Enter ${isoLangs?.[lang]?.name} translation`}
+                    />
+                  </Form.Item>
+                </div>
+              )}
+            </TabPane>
+          ))}
       </Tabs>
     </div>
   );
@@ -141,19 +198,28 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
 
   useEffect(() => {
     if (questionGroup.id) {
-      setIsGroupSettingVisible(questionGroup?.question?.length === 0);
       Object.keys(questionGroup).forEach((key) => {
         const field = `question_group-${id}-${key}`;
         const value = questionGroup?.[key];
-        if (key !== "question") {
+        if (key !== "question" && key !== "translations") {
           form.setFieldsValue({ [field]: value });
+        }
+        // Load translations
+        if (key !== "question" && key === "translations") {
+          value?.forEach((val) => {
+            const lang = val?.language;
+            Object.keys(val).forEach((key) => {
+              const transField = `${field}-${lang}-${key}`;
+              form.setFieldsValue({ [transField]: val?.[key] });
+            });
+          });
         }
         if (key === "repeat") {
           setRepeat(value);
         }
       });
     }
-  }, [questionGroup]);
+  }, [questionGroup, form, id]);
 
   const onChangeRepeat = (val, fieldId) => {
     form.setFieldsValue({ [fieldId]: val });
@@ -165,6 +231,10 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
 
   const handleAddQuestionButton = (questionGroup) => {
     const qgId = questionGroup?.id;
+    let qGroups = [];
+    if (questionGroup?.question?.length > 0) {
+      qGroups = questionGroup?.question;
+    }
     api
       .post(`/default_question/${formId}/${qgId}`)
       .then((res) => {
@@ -173,7 +243,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
         const newQg = {
           ...questionGroup,
           question: [
-            ...questionGroup?.question,
+            ...qGroups,
             {
               ...data,
               // add option default
@@ -201,7 +271,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
       });
   };
 
-  const handleAddQuestionGroupButton = (questionGroup) => {
+  const handleAddQuestionGroupButton = () => {
     const { id } = state;
     api
       .post(`/default_question_group/${id}`)
@@ -224,7 +294,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
     const { id } = questionGroup;
     api
       .delete(`/question_group/${id}`)
-      .then((res) => {
+      .then(() => {
         store.update((s) => {
           s.surveyEditor = {
             ...s.surveyEditor,
@@ -240,30 +310,15 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
       });
   };
 
-  const handleFormOnFinish = (values) => {
-    const { id, order } = questionGroup;
+  const handleFormOnFinish = () => {
+    const { id } = questionGroup;
     let qId = null;
     let data = {};
     // Save Question Group
     if (submitStatus === "question-group") {
-      Object.keys(values).forEach((key) => {
-        const field = key.split("-")[2];
-        let val = values[key];
-        if (typeof val == "boolean") {
-          val = val;
-        } else {
-          val = val || null;
-        }
-        data = {
-          ...data,
-          [field]: val,
-        };
-      });
+      const findQuestionGroup = questionGroup;
       data = {
-        ...data,
-        form: state?.id,
-        order: order,
-        translations: null,
+        ...findQuestionGroup,
         question: null,
       };
       api
@@ -323,7 +378,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
         api
           .delete(`/option/${id}`)
           .then((res) => {
-            console.log("Option deleted");
+            console.info("Option deleted");
             store.update((s) => {
               s.tempStorage = {
                 ...s.tempStorage,
@@ -357,8 +412,8 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
               .post(`/option`, optionPayload, {
                 "content-type": "application/json",
               })
-              .then((res) => {
-                console.log("Option created", res?.data);
+              .then(() => {
+                console.info("Option created");
               })
               .catch((e) => {
                 const { status, statusText } = e.response;
@@ -369,8 +424,8 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
               .put(`/option/${opt?.id}`, optionPayload, {
                 "content-type": "application/json",
               })
-              .then((res) => {
-                console.log("Option updated", res?.data);
+              .then(() => {
+                console.info("Option updated");
               })
               .catch((e) => {
                 const { status, statusText } = e.response;
@@ -390,7 +445,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
         api
           .delete(`/skip_logic/${id}`)
           .then((res) => {
-            console.log("Skip logic deleted");
+            console.info("Skip logic deleted");
             store.update((s) => {
               s.tempStorage = {
                 ...s.tempStorage,
@@ -423,8 +478,8 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
               .post(`/skip_logic`, skipPayload, {
                 "content-type": "application/json",
               })
-              .then((res) => {
-                console.log("Skip logic created", res?.data);
+              .then(() => {
+                console.info("Skip logic created");
               })
               .catch((e) => {
                 const { status, statusText } = e.response;
@@ -435,8 +490,8 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
               .put(`/skip_logic/${ski?.id}`, skipPayload, {
                 "content-type": "application/json",
               })
-              .then((res) => {
-                console.log("Skip logic updated", res?.data);
+              .then(() => {
+                console.info("Skip logic updated");
               })
               .catch((e) => {
                 const { status, statusText } = e.response;
@@ -515,28 +570,54 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
   };
 
   const handleFormOnValuesChange = (values, allValues) => {
+    console.info("All values", Object.keys(allValues)?.length);
     const question = questionGroup?.question;
     Object.keys(values).forEach((key) => {
       const field = key.split("-")[2];
       const value = values?.[key];
+      // Handle Question group
       if (key.includes("question_group")) {
         let findQuestionGroup = questionGroup;
-        findQuestionGroup = {
-          ...findQuestionGroup,
-          [field]: value,
-        };
+        if (!field.includes("translations")) {
+          findQuestionGroup = {
+            ...findQuestionGroup,
+            [field]: value,
+          };
+        }
+        if (field.includes("translations")) {
+          const lang = key.split("-")[3];
+          const tKey = key.split("-")[4];
+          const transFilter = findQuestionGroup?.translations?.filter(
+            (x) => x?.language !== lang
+          );
+          findQuestionGroup = {
+            ...findQuestionGroup,
+            translations: [
+              ...transFilter,
+              {
+                ...findQuestionGroup?.translations?.find(
+                  (x) => x?.language === lang
+                ),
+                language: lang,
+                [tKey]: value,
+              },
+            ],
+          };
+        }
+
+        console.info("handleFormOnValuesChange", findQuestionGroup);
+
+        const filterQuestionGroup = state?.questionGroup?.filter(
+          (x) => x?.id !== questionGroup?.id
+        );
         store.update((s) => {
           s.surveyEditor = {
             ...s.surveyEditor,
-            questionGroup: [
-              ...s.surveyEditor?.questionGroup?.filter(
-                (x) => x?.id !== questionGroup?.id
-              ),
-              findQuestionGroup,
-            ],
+            questionGroup: [...filterQuestionGroup, findQuestionGroup],
           };
         });
       }
+      // Handle Question
       if (key.includes("question") && !key.includes("question_group")) {
         const qid = parseInt(key.split("-")[1]);
         // update question state
@@ -548,6 +629,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
             "repeating_objects_value",
             "rule",
             "skip_logic",
+            "translations",
           ].includes(field)
         ) {
           findQuestion = {
@@ -560,7 +642,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
           findQuestion = {
             ...findQuestion,
             option: findQuestion?.option?.map((opt) => {
-              if (opt?.id == optId) {
+              if (String(opt?.id) === String(optId)) {
                 return {
                   ...opt,
                   name: value,
@@ -576,7 +658,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
           findQuestion = {
             ...findQuestion,
             repeating_objects: findQuestion?.repeating_objects?.map((ro) => {
-              if (ro?.id == roId) {
+              if (String(ro?.id) === String(roId)) {
                 return {
                   ...ro,
                   [roKey]: value,
@@ -612,21 +694,72 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
               : null,
           };
         }
-        console.log("onFormChangeValue", findQuestion);
+        if (field.includes("translations") && !key.includes("option")) {
+          const lang = key.split("-")[3];
+          const tKey = key.split("-")[4];
+          const transFilter = findQuestion?.translations?.filter(
+            (x) => x?.language !== lang
+          );
+          findQuestion = {
+            ...findQuestion,
+            translations: [
+              ...transFilter,
+              {
+                ...findQuestion?.translations?.find(
+                  (x) => x?.language === lang
+                ),
+                language: lang,
+                [tKey]: value,
+              },
+            ],
+          };
+        }
+        if (field.includes("translations") && key.includes("option")) {
+          const lang = key.split("-")[3];
+          const tKey = key.split("-")[4];
+          const optId = parseInt(key.split("-")[5]);
+          const optKey = tKey.split("_")[1];
+          const updatedQuestionOption = findQuestion?.option?.map((opt) => {
+            if (opt?.id === optId) {
+              const filterOption = opt?.translations?.filter(
+                (x) => x?.language !== lang
+              );
+              return {
+                ...opt,
+                translations: [
+                  ...filterOption,
+                  {
+                    ...opt?.translations?.find((x) => x?.language === lang),
+                    language: lang,
+                    [optKey]: value,
+                  },
+                ],
+              };
+            }
+            return opt;
+          });
+          findQuestion = {
+            ...findQuestion,
+            option: [...updatedQuestionOption],
+          };
+        }
 
+        console.info("handleFormOnValuesChange", findQuestion);
+
+        const filterQuestionGroup = state?.questionGroup?.filter(
+          (x) => x?.id !== questionGroup?.id
+        );
+        const filterQuestion = questionGroup?.question?.filter(
+          (x) => x?.id !== qid
+        );
         store.update((s) => {
           s.surveyEditor = {
             ...s.surveyEditor,
             questionGroup: [
-              ...s.surveyEditor?.questionGroup?.filter(
-                (x) => x?.id !== questionGroup?.id
-              ),
+              ...filterQuestionGroup,
               {
                 ...questionGroup,
-                question: [
-                  ...questionGroup?.question?.filter((x) => x?.id !== qid),
-                  findQuestion,
-                ],
+                question: [...filterQuestion, findQuestion],
               },
             ],
           };
@@ -638,7 +771,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
   const handleFormOnFinishFailed = ({ values }) => {
     setSubmitStatus(null);
     setSaveBtnLoading(false);
-    console.log("Failed", values);
+    console.info("Failed", values);
   };
 
   return (
@@ -684,13 +817,16 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
                       setIsGroupSettingVisible(!isGroupSettingVisible)
                     }
                   />
-                  <Button
-                    type="text"
-                    icon={<RiDeleteBinFill />}
-                    onClick={() =>
+                  <Popconfirm
+                    title="Delete section can't be undone."
+                    okText="Delete"
+                    cancelText="Cancel"
+                    onConfirm={() =>
                       handleDeleteQuestionGroupButton(questionGroup)
                     }
-                  />
+                  >
+                    <Button type="text" icon={<RiDeleteBinFill />} />
+                  </Popconfirm>
                 </Space>
               </Col>
             </Row>

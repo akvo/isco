@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import {
   Row,
   Col,
@@ -19,15 +19,13 @@ import { store } from "../../lib";
 import orderBy from "lodash/orderBy";
 import { defaultOption, defaultRepeatingObject } from "../../lib/store";
 import { generateID, insert } from "../../lib/util";
+import { isoLangs } from "../../lib";
 
 const { TabPane } = Tabs;
 
-const RenderOptionInput = ({
-  question,
-  option,
-  handlePlusMinusOptionButton,
-}) => {
+const RenderOptionInput = ({ question, handlePlusMinusOptionButton }) => {
   const qId = question?.id;
+  const option = question?.option;
 
   return orderBy(option, ["order"])?.map((opt, optIndex) => (
     <Row
@@ -69,11 +67,18 @@ const RenderOptionInput = ({
 
 const RenderRepeatingObjectInput = ({
   question,
-  repeating_objects,
   handlePlusMinusRepeatingObjects,
 }) => {
   const qId = question?.id;
-  const { repeating_object_option } = store.useState((s) => s?.optionValues);
+  const repeating_objects = question?.repeating_objects;
+  let repeating_object_option = store.useState(
+    (s) => s?.optionValues?.repeating_object_option
+  );
+
+  // filter repeating object option by repeting object filled
+  repeating_object_option = repeating_object_option?.filter(
+    (x) => !repeating_objects?.map((y) => y?.field).includes(x)
+  );
 
   return repeating_objects?.map((ro, roi) => (
     <Row
@@ -108,10 +113,11 @@ const RenderRepeatingObjectInput = ({
         </Row>
       </Col>
       <Col span={2}>
-        <Space size={1} align="center">
+        <Space size={1} align="middle">
           <Button
             type="text"
             icon={<HiPlus />}
+            disabled={repeating_object_option?.length === 0}
             onClick={() => handlePlusMinusRepeatingObjects("add", ro, roi)}
           />
           {repeating_objects.length > 1 && (
@@ -136,6 +142,7 @@ const Detail = ({
   allowOther,
 }) => {
   const state = store.useState((s) => s?.surveyEditor);
+  const tempStorage = store.useState((s) => s?.tempStorage);
   const { cascade, nested } = store.useState((s) => s?.optionValues);
   const { type, option, repeating_objects } = question;
   const qId = question?.id;
@@ -165,13 +172,14 @@ const Detail = ({
     if (operation === "remove") {
       updatedOption = question?.option?.filter((op) => op?.id !== opt?.id);
       // store removed option to delete when save button clicked
+      const storage = tempStorage;
+      const filterTempStorage = storage.deletedOptions?.filter(
+        (x) => x?.id !== opt?.id
+      );
       store.update((s) => {
         s.tempStorage = {
-          ...s.tempStorage,
-          deletedOptions: [
-            ...s.tempStorage.deletedOptions?.filter((x) => x?.id !== opt?.id),
-            opt,
-          ],
+          ...storage,
+          deletedOptions: [...filterTempStorage, opt],
         };
       });
     }
@@ -220,11 +228,11 @@ const Detail = ({
 
     if (operation === "remove") {
       updatedRepeatingObject = question?.repeating_objects?.filter(
-        (op) => op?.id !== ro?.id
+        (op) => op?.id !== ro?.id || op?.field !== ro?.field
       );
     }
 
-    const questionGroupWithUpdatedQuestionOption = {
+    const questionGroupWithUpdatedRepeatingObject = {
       ...questionGroup,
       question: [
         ...filterQuestion,
@@ -240,7 +248,7 @@ const Detail = ({
         ...s.surveyEditor,
         questionGroup: [
           ...filterQuestionGroup,
-          questionGroupWithUpdatedQuestionOption,
+          questionGroupWithUpdatedRepeatingObject,
         ],
       };
     });
@@ -284,7 +292,6 @@ const Detail = ({
           <div className="question-setting-wrapper">
             <RenderOptionInput
               question={question}
-              option={option}
               handlePlusMinusOptionButton={handlePlusMinusOptionButton}
             />
           </div>
@@ -335,7 +342,6 @@ const Detail = ({
       <div className="question-setting-wrapper">
         <RenderRepeatingObjectInput
           question={question}
-          repeating_objects={repeating_objects}
           handlePlusMinusRepeatingObjects={handlePlusMinusRepeatingObjects}
         />
       </div>
@@ -343,39 +349,48 @@ const Detail = ({
   );
 };
 
-const Translation = () => {
+const Translation = ({ question, activeLang }) => {
+  const { id, name, tooltip } = question;
+  const lang = isoLangs?.[activeLang];
+  const fieldNamePrefix = `question-${id}-translations-${activeLang}`;
+  const placeholder = `Enter ${lang?.name} translation`;
+
+  // filter option from the default option list
+  const option = question?.option?.filter((x) => x?.name);
+
   return (
     <>
-      <div className="question-setting-wrapper ">
-        <Form.Item
-          label={<div className="translation-label">Question 1</div>}
-          name="name-here"
-        >
-          <Input className="bg-grey" placeholder="Enter translation" />
-        </Form.Item>
-      </div>
       <div className="question-setting-wrapper">
         <Form.Item
-          label={<div className="translation-label">Question Tooltip</div>}
-          name="name-here"
+          label={<div className="translation-label">{name}</div>}
+          name={`${fieldNamePrefix}-name`}
         >
-          <Input className="bg-grey" placeholder="Enter translation" />
+          <Input className="bg-grey" placeholder={placeholder} />
         </Form.Item>
       </div>
-      <div className="question-setting-wrapper">
-        <Form.Item
-          label={<div className="translation-label">Option 1</div>}
-          name="name-here"
-        >
-          <Input className="bg-grey" placeholder="Enter translation" />
-        </Form.Item>
-        <Form.Item
-          label={<div className="translation-label">Option 2</div>}
-          name="name-here"
-        >
-          <Input className="bg-grey" placeholder="Enter translation" />
-        </Form.Item>
-      </div>
+      {tooltip && (
+        <div className="question-setting-wrapper">
+          <Form.Item
+            label={<div className="translation-label">{tooltip}</div>}
+            name={`${fieldNamePrefix}-tooltip`}
+          >
+            <Input className="bg-grey" placeholder={placeholder} />
+          </Form.Item>
+        </div>
+      )}
+      {option?.length > 0 && (
+        <div className="question-setting-wrapper">
+          {option?.map(({ id, name }) => (
+            <Form.Item
+              key={`option-translation-${id}`}
+              label={<div className="translation-label">{name}</div>}
+              name={`${fieldNamePrefix}-option_name-${id}`}
+            >
+              <Input className="bg-grey" placeholder={placeholder} />
+            </Form.Item>
+          ))}
+        </div>
+      )}
     </>
   );
 };
@@ -383,7 +398,6 @@ const Translation = () => {
 const Setting = ({
   form,
   question,
-  questionGroup,
   mandatory,
   setMandatory,
   personalData,
@@ -393,12 +407,14 @@ const Setting = ({
   setAllowDecimal,
 }) => {
   const state = store?.useState((s) => s?.surveyEditor);
-  const { operator_type } = store?.useState((s) => s?.optionValues);
+  const tempStorage = store?.useState((s) => s?.tempStorage);
+  const optionValues = store?.useState((s) => s?.optionValues);
+  const { operator_type } = optionValues;
   const qid = question?.id;
   const { type } = question;
   const allQuestion = state?.questionGroup?.flatMap((qg) => qg?.question);
   const skipLogicQuestion = allQuestion
-    ?.filter((q) => ["option", "number"].includes(q?.type))
+    ?.filter((q) => ["option", "number"].includes(q?.type) && q?.id !== qid)
     ?.map((q) => ({
       label: q?.name,
       value: String(q?.id),
@@ -407,18 +423,17 @@ const Setting = ({
   const dependentId = parseInt(
     form?.getFieldValue(`question-${qid}-skip_logic-dependent_to`)
   );
-  const dependentQuestion = useMemo(() => {
-    const find = allQuestion?.find((q) => q?.id === dependentId);
-    if (find) {
-      // set skip logic type
-      const type = { [`question-${qid}-skip_logic-type`]: find?.type };
-      form.setFieldsValue(type);
-      setTimeout(() => {
-        handleFormOnValuesChange(type, form?.getFieldsValue());
-      }, 100);
-    }
-    return find;
-  }, [dependentId]);
+  const dependentQuestion = allQuestion?.find((q) => q?.id === dependentId);
+  if (dependentQuestion) {
+    // set skip logic type
+    const type = {
+      [`question-${qid}-skip_logic-type`]: dependentQuestion?.type,
+    };
+    form.setFieldsValue(type);
+    setTimeout(() => {
+      handleFormOnValuesChange(type, form?.getFieldsValue());
+    }, 100);
+  }
 
   const operators = dependentQuestion?.type.includes("option")
     ? operator_type?.filter((x) => x === "equal")
@@ -464,15 +479,13 @@ const Setting = ({
       );
     }, 100);
     // store removed skip logic to delete when save button clicked
+    const filterTempStorage = tempStorage.deletedSkipLogic?.filter(
+      (x) => x?.id !== skipLogic?.id
+    );
     store.update((s) => {
       s.tempStorage = {
         ...s.tempStorage,
-        deletedSkipLogic: [
-          ...s.tempStorage.deletedSkipLogic?.filter(
-            (x) => x?.id !== skipLogic?.id
-          ),
-          skipLogic,
-        ],
+        deletedSkipLogic: [...filterTempStorage, skipLogic],
       };
     });
   };
@@ -682,10 +695,19 @@ const RenderLayout = ({
   setMandatory,
   personalData,
   setPersonalData,
+  activeLang,
+  setActiveLang,
 }) => {
   switch (activeSetting) {
     case "translation":
-      return <Translation questionGroup={questionGroup} question={question} />;
+      return (
+        <Translation
+          questionGroup={questionGroup}
+          question={question}
+          activeLang={activeLang}
+          setActiveLang={setActiveLang}
+        />
+      );
     case "setting":
       return (
         <Setting
@@ -732,6 +754,8 @@ const QuestionSetting = ({
   personalData,
   setPersonalData,
   setActivePanel,
+  activeLang,
+  setActiveLang,
 }) => {
   return (
     <>
@@ -749,6 +773,8 @@ const QuestionSetting = ({
         setMandatory={setMandatory}
         personalData={personalData}
         setPersonalData={setPersonalData}
+        activeLang={activeLang}
+        setActiveLang={setActiveLang}
       />
       <div className="question-button-wrapper">
         <Space align="center">

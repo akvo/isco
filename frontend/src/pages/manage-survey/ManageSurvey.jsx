@@ -11,9 +11,9 @@ import {
   Space,
   Modal,
   Form,
+  Popconfirm,
 } from "antd";
 import { RiPencilFill, RiDeleteBinFill } from "react-icons/ri";
-import { MdFileCopy } from "react-icons/md";
 import { FaInfoCircle } from "react-icons/fa";
 import { FormEditor } from "../../components";
 import { api } from "../../lib";
@@ -25,7 +25,7 @@ const ManageSurvey = () => {
   const [form] = Form.useForm();
   const [isSurveyModalVisible, setIsSurveyModalVisible] = useState(false);
   const [dataSource, setDataSource] = useState([]);
-  const isLoading = !dataSource?.length;
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleEditButton = (record) => {
     const { id, has_question_group } = record;
@@ -33,9 +33,8 @@ const ManageSurvey = () => {
     if (!has_question_group) {
       api
         .post(`/default_question_group/${id}`)
-        .then((res) => {
-          const { data } = res;
-          console.log(data);
+        .then(() => {
+          console.info("Default question group created");
         })
         .catch((e) => {
           const { status, statusText } = e.response;
@@ -47,6 +46,20 @@ const ManageSurvey = () => {
       return;
     }
     navigate(`/survey-editor/${id}`);
+  };
+
+  const handleDeleteButton = (record) => {
+    const { id } = record;
+    api
+      .delete(`/form/${id}`)
+      .then(() => {
+        console.info("Survey deleted");
+        setDataSource(dataSource?.filter((d) => d?.id !== id));
+      })
+      .catch((e) => {
+        const { status, statusText } = e.response;
+        console.error(status, statusText);
+      });
   };
 
   const columns = [
@@ -108,12 +121,19 @@ const ManageSurvey = () => {
               shape="circle"
               type="text"
             /> */}
-            <Button
-              className="action-btn"
-              icon={<RiDeleteBinFill />}
-              shape="circle"
-              type="text"
-            />
+            <Popconfirm
+              title="Delete survey can't be undone."
+              okText="Delete"
+              cancelText="Cancel"
+              onConfirm={() => handleDeleteButton(record)}
+            >
+              <Button
+                className="action-btn"
+                icon={<RiDeleteBinFill />}
+                shape="circle"
+                type="text"
+              />
+            </Popconfirm>
           </Space>
         );
       },
@@ -121,6 +141,7 @@ const ManageSurvey = () => {
   ];
 
   useEffect(() => {
+    setIsLoading(true);
     api
       .get("/form/")
       .then((res) => {
@@ -134,6 +155,9 @@ const ManageSurvey = () => {
       .catch((e) => {
         const { status, statusText } = e.response;
         console.error(status, statusText);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, []);
 
@@ -146,15 +170,28 @@ const ManageSurvey = () => {
         ...{ [field]: values[key] },
       };
     });
+    if (!data?.description) {
+      data = {
+        ...data,
+        description: null,
+      };
+    }
     api
       .post("/form", data, { "content-type": "application/json" })
       .then((res) => {
-        const { data } = res;
-        navigate(`/survey-editor/${data?.id}`);
+        const data = {
+          ...res?.data,
+          user: "John Doe",
+          status: null,
+        };
+        setDataSource([...dataSource, data]);
       })
       .catch((e) => {
         const { status, statusText } = e.response;
         console.error(status, statusText);
+      })
+      .finally(() => {
+        setIsSurveyModalVisible(false);
       });
   };
 
@@ -222,7 +259,7 @@ const ManageSurvey = () => {
           name="survey-detail"
           onFinish={onSubmitForm}
           onFinishFailed={({ values, errorFields }) =>
-            console.log(values, errorFields)
+            console.info(values, errorFields)
           }
         >
           <FormEditor form={form} />

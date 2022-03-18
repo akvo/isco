@@ -175,9 +175,9 @@ const ManageUser = () => {
         <Form
           form={form}
           name="account-detail"
-          onFinish={(values) => console.log(values)}
+          onFinish={(values) => console.info(values)}
           onFinishFailed={(values, errorFields) =>
-            console.log(values, errorFields)
+            console.info(values, errorFields)
           }
         >
           <Row gutter={[12, 12]}>
