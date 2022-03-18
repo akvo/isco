@@ -3,9 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^12.0.0",
-    "@testing-library/user-event": "^13.2.1",
     "antd": "^4.19.1",
     "axios": "^0.26.1",
     "lodash": "^4.17.21",
@@ -46,7 +43,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint --config .eslintrc.json src --ext .js,.jsx"
+    "lint": "eslint --config .eslintrc.json src --ext .js,.jsx",
+    "prettier": "prettier --check src"
   },
   "eslintConfig": {
     "extends": [
