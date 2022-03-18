@@ -3,6 +3,34 @@
 
 set -exuo pipefail
 
+BACKEND_CHANGES=0
+FRONTEND_CHANGES=0
+
+COMMIT_CONTENT=$(git diff --name-only "${CI_COMMIT_RANGE}")
+
+if grep -q "backend" <<< "${COMMIT_CONTENT}"
+then
+    BACKEND_CHANGES=1
+fi
+
+if grep -q "frontend" <<< "${COMMIT_CONTENT}"
+then
+    FRONTEND_CHANGES=1
+fi
+
+if grep -q "ci" <<< "${COMMIT_CONTENT}"
+then
+    BACKEND_CHANGES=1
+    FRONTEND_CHANGES=1
+fi
+
+if [[ "${CI_BRANCH}" ==  "main" && "${CI_PULL_REQUEST}" !=  "true" ]];
+then
+    BACKEND_CHANGES=1
+    FRONTEND_CHANGES=1
+fi
+
+
 [[ -n "${CI_TAG:=}" ]] && { echo "Skip build"; exit 0; }
 
 image_prefix="eu.gcr.io/akvo-lumen/isco"
@@ -41,19 +69,37 @@ backend_build () {
     docker build \
         --tag "${image_prefix}/backend:latest" \
         --tag "${image_prefix}/backend:${CI_COMMIT}" backend
+
+    # Test and Code Quality
+    dc -f docker-compose.test.yml -p backend-test run \
+        --rm \
+        backend ./test.sh
+
 }
 
+if [[ ${BACKEND_CHANGES} == 1 ]];
+then
+    echo "================== * BACKEND BUILD * =================="
+    backend_build
+else
+    echo "No Changes detected for backend -- SKIP BUILD"
+fi
 
-backend_build
+if [[ ${FRONTEND_CHANGES} == 1 ]];
+then
+    echo "================== * FRONTEND BUILD * =================="
+    frontend_build
+else
+    echo "No Changes detected for frontend -- SKIP BUILD"
+fi
 
-#pytest
-docker-compose -f docker-compose.test.yml run -T backend ./test.sh
 
-frontend_build
 
 #test-connection
-if ! dci run -T ci ./basic.sh; then
-  dci logs
-  echo "Build failed when running basic.sh"
-  exit 1
+if [[ ${FRONTEND_CHANGES} == 1 && ${BACKEND_CHANGES} == 1 ]]; then
+    if ! dci run -T ci ./basic.sh; then
+      dci logs
+      echo "Build failed when running basic.sh"
+      exit 1
+    fi
 fi
