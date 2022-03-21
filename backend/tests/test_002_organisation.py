@@ -9,7 +9,6 @@ pytestmark = pytest.mark.asyncio
 sys.path.append("..")
 
 account = Acc(email=None, token=None)
-print(account.token)
 
 
 class TestOrganisationRoutes():

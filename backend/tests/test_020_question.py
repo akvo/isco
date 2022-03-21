@@ -6,9 +6,12 @@ from sqlalchemy.orm import Session
 from models.question import QuestionType
 from models.cascade import CascadeType
 from models.skip_logic import OperatorType
+from tests.test_000_main import Acc
 
 pytestmark = pytest.mark.asyncio
 sys.path.append("..")
+
+account = Acc(email=None, token=None)
 
 
 class TestQuestionRoutes():
@@ -568,6 +571,7 @@ class TestQuestionRoutes():
         }
         res = await client.post(
             app.url_path_for("question_group:create"),
+            headers={"Authorization": f"Bearer {account.token}"},
             json=question_group_payload)
         assert res.status_code == 200
         res = res.json()

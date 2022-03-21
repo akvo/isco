@@ -1,5 +1,7 @@
 from http import HTTPStatus
 from fastapi import Depends, Request, APIRouter, Response
+from fastapi.security import HTTPBearer
+from fastapi.security import HTTPBasicCredentials as credentials
 from typing import List
 from sqlalchemy.orm import Session
 import db.crud_question_group as crud
@@ -7,6 +9,7 @@ from db.connection import get_session
 from models.question_group import QuestionGroupBase, QuestionGroupDict
 from models.question_group import QuestionGroupPayload
 
+security = HTTPBearer()
 question_group_route = APIRouter()
 
 
@@ -16,7 +19,8 @@ question_group_route = APIRouter()
                            name="question_group:create",
                            tags=["Question Group"])
 def add(req: Request, payload: QuestionGroupPayload,
-        session: Session = Depends(get_session)):
+        session: Session = Depends(get_session),
+        credentials: credentials = Depends(security)):
     question_group = crud.add_question_group(session=session, payload=payload)
     return question_group.serialize
 
@@ -27,7 +31,8 @@ def add(req: Request, payload: QuestionGroupPayload,
                            name="question_group:create_default",
                            tags=["Question Group"])
 def create_default(req: Request, form_id: int,
-                   session: Session = Depends(get_session)):
+                   session: Session = Depends(get_session),
+                   credentials: credentials = Depends(security)):
     payload = {
         "form": form_id,
         "name": "New section title",
@@ -69,7 +74,8 @@ def get_by_id(req: Request, id: int, session: Session = Depends(get_session)):
                           name="question_group:put",
                           tags=["Question Group"])
 def update(req: Request, id: int, payload: QuestionGroupPayload,
-           session: Session = Depends(get_session)):
+           session: Session = Depends(get_session),
+           credentials: credentials = Depends(security)):
     question_group = crud.update_question_group(session=session,
                                                 id=id,
                                                 payload=payload)
@@ -84,6 +90,7 @@ def update(req: Request, id: int, payload: QuestionGroupPayload,
                              summary="delete question group by id",
                              name="question_group:delete",
                              tags=["Question Group"])
-def delete(req: Request, id: int, session: Session = Depends(get_session)):
+def delete(req: Request, id: int, session: Session = Depends(get_session),
+           credentials: credentials = Depends(security)):
     crud.delete_question_group(session=session, id=id)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)

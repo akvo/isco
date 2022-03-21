@@ -1,5 +1,7 @@
 from http import HTTPStatus
 from fastapi import Depends, Request, APIRouter, Response
+from fastapi.security import HTTPBearer
+from fastapi.security import HTTPBasicCredentials as credentials
 from typing import List
 from sqlalchemy.orm import Session
 import db.crud_form as crud
@@ -9,6 +11,7 @@ from models.form import FormBase, FormDict, FormDictWithGroupStatus
 from models.form import FormPayload, FormJson
 from models.question import QuestionType
 
+security = HTTPBearer()
 form_route = APIRouter()
 
 
@@ -18,7 +21,8 @@ form_route = APIRouter()
                  name="form:create",
                  tags=["Form"])
 def add(req: Request, payload: FormPayload,
-        session: Session = Depends(get_session)):
+        session: Session = Depends(get_session),
+        credentials: credentials = Depends(security)):
     form = crud.add_form(session=session, payload=payload)
     return form.serialize
 
@@ -49,7 +53,8 @@ def get_by_id(req: Request, id: int, session: Session = Depends(get_session)):
                 name="form:put",
                 tags=["Form"])
 def update(req: Request, id: int, payload: FormPayload,
-           session: Session = Depends(get_session)):
+           session: Session = Depends(get_session),
+           credentials: credentials = Depends(security)):
     form = crud.update_form(session=session, id=id, payload=payload)
     return form.serialize
 
@@ -62,7 +67,8 @@ def update(req: Request, id: int, payload: FormPayload,
                    summary="delete form by id",
                    name="form:delete",
                    tags=["Form"])
-def delete(req: Request, id: int, session: Session = Depends(get_session)):
+def delete(req: Request, id: int, session: Session = Depends(get_session),
+           credentials: credentials = Depends(security)):
     crud.delete_form(session=session, id=id)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)
 
