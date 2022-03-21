@@ -1,5 +1,7 @@
 from http import HTTPStatus
 from fastapi import Depends, Request, APIRouter, Response
+from fastapi.security import HTTPBearer
+from fastapi.security import HTTPBasicCredentials as credentials
 from typing import List
 from sqlalchemy.orm import Session
 import db.crud_skip_logic as crud
@@ -7,6 +9,7 @@ from db.connection import get_session
 from models.skip_logic import SkipLogicDict, SkipLogicPayload
 from models.skip_logic import OperatorType
 
+security = HTTPBearer()
 skip_logic_route = APIRouter()
 
 
@@ -16,7 +19,8 @@ skip_logic_route = APIRouter()
                        name="skip_logic:create",
                        tags=["Skip Logic"])
 def add(req: Request, payload: SkipLogicPayload,
-        session: Session = Depends(get_session)):
+        session: Session = Depends(get_session),
+        credentials: credentials = Depends(security)):
     skip_logic = crud.add_skip_logic(session=session, payload=payload)
     return skip_logic.serialize
 
@@ -56,7 +60,8 @@ def get_by_id(req: Request, id: int, session: Session = Depends(get_session)):
                       name="skip_logic:put",
                       tags=["Skip Logic"])
 def update(req: Request, id: int, payload: SkipLogicPayload,
-           session: Session = Depends(get_session)):
+           session: Session = Depends(get_session),
+           credentials: credentials = Depends(security)):
     skip_logic = crud.update_skip_logic(session=session,
                                         id=id,
                                         payload=payload)
@@ -71,6 +76,7 @@ def update(req: Request, id: int, payload: SkipLogicPayload,
                          summary="delete skip logic by id",
                          name="skip_logic:delete",
                          tags=["Skip Logic"])
-def delete(req: Request, id: int, session: Session = Depends(get_session)):
+def delete(req: Request, id: int, session: Session = Depends(get_session),
+           credentials: credentials = Depends(security)):
     crud.delete_skip_logic(session=session, id=id)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)

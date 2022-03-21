@@ -1,11 +1,14 @@
 from http import HTTPStatus
 from fastapi import Depends, Request, APIRouter, Response
+from fastapi.security import HTTPBearer
+from fastapi.security import HTTPBasicCredentials as credentials
 from typing import List
 from sqlalchemy.orm import Session
 import db.crud_option as crud
 from db.connection import get_session
 from models.option import OptionDict, OptionPayload
 
+security = HTTPBearer()
 option_route = APIRouter()
 
 
@@ -15,7 +18,8 @@ option_route = APIRouter()
                    name="option:create",
                    tags=["Option"])
 def add(req: Request, payload: OptionPayload,
-        session: Session = Depends(get_session)):
+        session: Session = Depends(get_session),
+        credentials: credentials = Depends(security)):
     option = crud.add_option(session=session, payload=payload)
     return option.serialize
 
@@ -46,7 +50,8 @@ def get_by_id(req: Request, id: int, session: Session = Depends(get_session)):
                   name="option:put",
                   tags=["Option"])
 def update(req: Request, id: int, payload: OptionPayload,
-           session: Session = Depends(get_session)):
+           session: Session = Depends(get_session),
+           credentials: credentials = Depends(security)):
     option = crud.update_option(session=session, id=id, payload=payload)
     return option.serialize
 
@@ -59,6 +64,7 @@ def update(req: Request, id: int, payload: OptionPayload,
                      summary="delete option by id",
                      name="option:delete",
                      tags=["Option"])
-def delete(req: Request, id: int, session: Session = Depends(get_session)):
+def delete(req: Request, id: int, session: Session = Depends(get_session),
+           credentials: credentials = Depends(security)):
     crud.delete_option(session=session, id=id)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)

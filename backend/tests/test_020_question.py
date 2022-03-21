@@ -52,7 +52,9 @@ class TestQuestionRoutes():
             "skip_logic": None,
         }
         res = await client.post(
-            app.url_path_for("question:create"), json=question_payload)
+            app.url_path_for("question:create"),
+            headers={"Authorization": f"Bearer {account.token}"},
+            json=question_payload)
         assert res.status_code == 200
         res = res.json()
         assert res == {
@@ -117,7 +119,9 @@ class TestQuestionRoutes():
             "skip_logic": None,
         }
         res = await client.put(
-            app.url_path_for("question:put", id=1), json=question_payload)
+            app.url_path_for("question:put", id=1),
+            headers={"Authorization": f"Bearer {account.token}"},
+            json=question_payload)
         assert res.status_code == 200
         res = res.json()
         assert res == {
@@ -167,7 +171,9 @@ class TestQuestionRoutes():
             "order": None
         }
         res = await client.post(
-            app.url_path_for("option:create"), json=option_payload)
+            app.url_path_for("option:create"),
+            headers={"Authorization": f"Bearer {account.token}"},
+            json=option_payload)
         assert res.status_code == 200
         res = res.json()
         assert res == {
@@ -197,7 +203,9 @@ class TestQuestionRoutes():
             "order": 1,
         }
         res = await client.put(
-            app.url_path_for("option:put", id=1), json=option_payload)
+            app.url_path_for("option:put", id=1),
+            headers={"Authorization": f"Bearer {account.token}"},
+            json=option_payload)
         assert res.status_code == 200
         res = res.json()
         assert res == {
@@ -227,7 +235,9 @@ class TestQuestionRoutes():
             }],
         }
         res = await client.post(
-            app.url_path_for("cascade:create"), json=cascade_payload)
+            app.url_path_for("cascade:create"),
+            headers={"Authorization": f"Bearer {account.token}"},
+            json=cascade_payload)
         assert res.status_code == 200
         res = res.json()
         assert res == {
@@ -259,8 +269,10 @@ class TestQuestionRoutes():
             "type": CascadeType.cascade.value,
             "cascades": None,
         }
-        res = await client.put(app.url_path_for("cascade:put", id=3),
-                               json=cascade_payload)
+        res = await client.put(
+            app.url_path_for("cascade:put", id=3),
+            headers={"Authorization": f"Bearer {account.token}"},
+            json=cascade_payload)
         assert res.status_code == 200
         res = res.json()
         assert res == {
@@ -287,7 +299,9 @@ class TestQuestionRoutes():
             "level": 0
         }
         res = await client.post(
-            app.url_path_for("cascade_list:create"), json=cascade_payload)
+            app.url_path_for("cascade_list:create"),
+            headers={"Authorization": f"Bearer {account.token}"},
+            json=cascade_payload)
         assert res.status_code == 200
         res = res.json()
         assert res == {
@@ -318,8 +332,10 @@ class TestQuestionRoutes():
             "path": None,
             "level": 0
         }
-        res = await client.put(app.url_path_for("cascade_list:put", id=1),
-                               json=cascade_payload)
+        res = await client.put(
+            app.url_path_for("cascade_list:put", id=1),
+            headers={"Authorization": f"Bearer {account.token}"},
+            json=cascade_payload)
         assert res.status_code == 200
         res = res.json()
         assert res == {
@@ -358,7 +374,9 @@ class TestQuestionRoutes():
             "skip_logic": None,
         }
         res = await client.post(
-            app.url_path_for("question:create"), json=question_payload)
+            app.url_path_for("question:create"),
+            headers={"Authorization": f"Bearer {account.token}"},
+            json=question_payload)
         assert res.status_code == 200
         res = res.json()
         assert res == {
@@ -397,7 +415,9 @@ class TestQuestionRoutes():
             "type": QuestionType.option.value
         }
         res = await client.post(
-            app.url_path_for("skip_logic:create"), json=skip_logic_payload)
+            app.url_path_for("skip_logic:create"),
+            headers={"Authorization": f"Bearer {account.token}"},
+            json=skip_logic_payload)
         assert res.status_code == 200
         res = res.json()
         assert res == {
@@ -472,7 +492,9 @@ class TestQuestionRoutes():
             ]
         }
         res = await client.post(
-            app.url_path_for("question:create"), json=question_payload)
+            app.url_path_for("question:create"),
+            headers={"Authorization": f"Bearer {account.token}"},
+            json=question_payload)
         assert res.status_code == 200
         res = res.json()
         assert res == {

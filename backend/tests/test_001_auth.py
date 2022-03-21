@@ -8,7 +8,7 @@ from seeder.static.static_nested import nested_values
 from seeder.static.static_member_isco import member_values, isco_values
 from models.user import UserRole
 from db import crud_member_type, crud_isco_type
-from db import crud_organisation
+from db import crud_organisation, crud_cascade
 from middleware import verify_token
 from tests.test_000_main import Acc
 
@@ -57,11 +57,9 @@ class TestUserAuthentication():
     async def test_add_cascade(self, app: FastAPI, session: Session,
                                client: AsyncClient) -> None:
         # create cascade
-        res = await client.post(
-            app.url_path_for("cascade:create"),
-            json=cascade_values)
-        assert res.status_code == 200
-        res = res.json()
+        res = crud_cascade.add_cascade(session=session,
+                                       payload=cascade_values)
+        res = res.serialize
         # get cascade by id
         res = await client.get(
                 app.url_path_for("cascade:get_by_id", id=res['id']))
@@ -73,11 +71,9 @@ class TestUserAuthentication():
     async def test_add_nested_list(self, app: FastAPI, session: Session,
                                    client: AsyncClient) -> None:
         # create cascade
-        res = await client.post(
-            app.url_path_for("cascade:create"),
-            json=nested_values)
-        assert res.status_code == 200
-        res = res.json()
+        res = crud_cascade.add_cascade(session=session,
+                                       payload=nested_values)
+        res = res.serialize
         # get cascade by id
         res = await client.get(
                 app.url_path_for("cascade:get_by_id", id=res['id']))
