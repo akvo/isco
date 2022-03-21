@@ -2,7 +2,14 @@ import "./App.scss";
 import React, { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import { Layout } from "./components";
-import { Home, Admin, ManageSurvey, ManageUser, SurveyEditor } from "./pages";
+import {
+  Home,
+  Admin,
+  ManageSurvey,
+  ManageUser,
+  SurveyEditor,
+  Login,
+} from "./pages";
 import { store, api } from "./lib";
 
 const App = () => {
@@ -45,6 +52,7 @@ const App = () => {
         <Routes>
           <Route exact path="/" element={<Home />} />
           <Route exact path="/home" element={<Home />} />
+          <Route exact path="/login" element={<Login />} />
           <Route exact path="/admin" element={<Admin />} />
           <Route exact path="/manage-survey" element={<ManageSurvey />} />
           <Route exact path="/manage-user" element={<ManageUser />} />
