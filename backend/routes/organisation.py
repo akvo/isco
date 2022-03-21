@@ -1,13 +1,15 @@
 from http import HTTPStatus
 from fastapi import Depends, Request, APIRouter, Response
-from typing import List, Optional
+from fastapi.security import HTTPBearer
+from fastapi.security import HTTPBasicCredentials as credentials
+from typing import List
 from sqlalchemy.orm import Session
 import db.crud_organisation as crud
 from db.connection import get_session
 from models.organisation import OrganisationBase, OrganisationDict
 from models.organisation import OrganisationPayload
-from models.organisation_isco import OrganisationIscoPayload
 
+security = HTTPBearer()
 organisation_route = APIRouter()
 
 
@@ -17,11 +19,10 @@ organisation_route = APIRouter()
                          name="organisation:create",
                          tags=["Organisation"])
 def add(req: Request, organisation: OrganisationPayload,
-        isco_type: Optional[List[OrganisationIscoPayload]] = None,
-        session: Session = Depends(get_session)):
+        session: Session = Depends(get_session),
+        credentials: credentials = Depends(security)):
     organisation = crud.add_organisation(session=session,
-                                         payload=organisation,
-                                         isco_type=isco_type)
+                                         payload=organisation)
     return organisation.serialize
 
 
@@ -51,7 +52,8 @@ def get_by_id(req: Request, id: int, session: Session = Depends(get_session)):
                         name="organisation:put",
                         tags=["Organisation"])
 def update(req: Request, id: int, payload: OrganisationPayload,
-           session: Session = Depends(get_session)):
+           session: Session = Depends(get_session),
+           credentials: credentials = Depends(security)):
     organisation = crud.update_organisation(session=session,
                                             id=id, payload=payload)
     return organisation.serialize
@@ -65,6 +67,7 @@ def update(req: Request, id: int, payload: OrganisationPayload,
                            summary="delete organisation by id",
                            name="organisation:delete",
                            tags=["Organisation"])
-def delete(req: Request, id: int, session: Session = Depends(get_session)):
+def delete(req: Request, id: int, session: Session = Depends(get_session),
+           credentials: credentials = Depends(security)):
     crud.delete_organisation(session=session, id=id)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)

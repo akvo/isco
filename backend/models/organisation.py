@@ -10,6 +10,7 @@ from sqlalchemy.orm import relationship, backref
 from db.connection import Base
 from models.user import UserBase
 from models.organisation_isco import OrganisationIscoBase
+from models.organisation_isco import OrganisationIscoPayload
 from datetime import datetime
 
 
@@ -18,6 +19,7 @@ class OrganisationPayload(TypedDict):
     name: str
     active: Optional[bool] = True
     member_type: int
+    isco_type: Optional[List[OrganisationIscoPayload]] = []
 
 
 class OrganisationDict(TypedDict):
