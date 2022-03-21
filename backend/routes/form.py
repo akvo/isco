@@ -3,9 +3,11 @@ from fastapi import Depends, Request, APIRouter, Response
 from typing import List
 from sqlalchemy.orm import Session
 import db.crud_form as crud
+import db.crud_option as crud_option
 from db.connection import get_session
 from models.form import FormBase, FormDict, FormDictWithGroupStatus
 from models.form import FormPayload, FormJson
+from models.question import QuestionType
 
 form_route = APIRouter()
 
@@ -76,6 +78,10 @@ def get_survey_editor_by_id(req: Request, form_id: int,
     return form.serialize
 
 
+def get_order(data):
+    return data['order']
+
+
 @form_route.get("/webform/{form_id:path}",
                 response_model=FormJson,
                 summary="load webform json by form id",
@@ -84,4 +90,27 @@ def get_survey_editor_by_id(req: Request, form_id: int,
 def get_webform_by_id(req: Request, form_id: int,
                       session: Session = Depends(get_session)):
     form = crud.get_form_by_id(session=session, id=form_id)
-    return form.serialize
+    form = form.serializeJson
+
+    # Sort question group by order
+    form['question_group'].sort(key=get_order)
+    for qg in form['question_group']:
+        # Sort question by order
+        qg['question'].sort(key=get_order)
+        for q in qg['question']:
+            # Sort option by order
+            q['option'].sort(key=get_order)
+            # Transform dependency
+            for d in q['dependency']:
+                if d['type'] == QuestionType.option.value:
+                    ids = d['value'].split('|')
+                    option = crud_option.get_option_by_ids(session=session,
+                                                           ids=ids)
+                    option = [opt.optionName for opt in option]
+                    d['options'] = option
+                    del d['value']
+                    del d['operator']
+                if d['type'] == QuestionType.number.value:
+                    d['value'] = int(d['value'])
+
+    return form

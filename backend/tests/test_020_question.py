@@ -390,7 +390,7 @@ class TestQuestionRoutes():
             "question": 2,
             "dependent_to": 1,
             "operator": OperatorType.equal.value,
-            "value": "Option 1",
+            "value": "1",
             "type": QuestionType.option.value
         }
         res = await client.post(
@@ -403,7 +403,7 @@ class TestQuestionRoutes():
             "operator": "equal",
             "question": 2,
             "type": "option",
-            "value": "Option 1",
+            "value": "1",
         }
 
     @pytest.mark.asyncio
@@ -463,7 +463,7 @@ class TestQuestionRoutes():
                     "question": None,
                     "dependent_to": 1,
                     "operator": OperatorType.equal.value,
-                    "value": "Option 1",
+                    "value": "1",
                     "type": QuestionType.option.value
                 }
             ]
@@ -511,7 +511,7 @@ class TestQuestionRoutes():
                     "operator": "equal",
                     "question": 3,
                     "type": "option",
-                    "value": "Option 1"
+                    "value": "1"
                 }
             ],
             "tooltip": None,

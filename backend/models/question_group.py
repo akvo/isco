@@ -100,6 +100,23 @@ class QuestionGroup(Base):
             "question": [q.serialize for q in self.question]
         }
 
+    @property
+    def serializeJson(self):
+        translations = []
+        if self.translations:
+            translations = self.translations
+
+        return {
+            "name": self.name,
+            "description": self.description,
+            "translations": translations,
+            "order": self.order,
+            "repeatable": self.repeat,
+            "member_access": [ma.memberName for ma in self.member_access],
+            "isco_access": [ia.iscoName for ia in self.isco_access],
+            "question": [q.serializeJson for q in self.question]
+        }
+
 
 class QuestionGroupBase(BaseModel):
     id: int
@@ -122,9 +139,9 @@ class QuestionGroupJson(BaseModel):
     description: Optional[str] = None
     translations: Optional[List[dict]] = []
     order: Optional[int] = None
-    repeat: bool
-    member_access: Optional[List[int]] = []
-    isco_access: Optional[List[int]] = []
+    repeatable: bool
+    member_access: Optional[List[str]] = []
+    isco_access: Optional[List[str]] = []
     question: Optional[List[QuestionJson]] = []
 
     class Config:
