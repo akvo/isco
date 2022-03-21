@@ -76,7 +76,7 @@ const QuestionGroupSetting = ({ questionGroup, repeat, onChangeRepeat }) => {
                     <Switch
                       size="small"
                       onChange={(val) =>
-                        onChangeRepeat(val, `question_group-repeat`)
+                        onChangeRepeat(val, `question_group-${qgId}-repeat`)
                       }
                       checked={repeat}
                     />
@@ -222,10 +222,11 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
   }, [questionGroup, form, id]);
 
   const onChangeRepeat = (val, fieldId) => {
-    form.setFieldsValue({ [fieldId]: val });
+    const repeatFieldValue = { [fieldId]: val };
+    form.setFieldsValue(repeatFieldValue);
     setRepeat(val);
     setTimeout(() => {
-      handleFormOnValuesChange(form?.getFieldsValue(), form?.getFieldsValue());
+      handleFormOnValuesChange(repeatFieldValue, form?.getFieldsValue());
     }, 100);
   };
 
@@ -578,13 +579,13 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
       // Handle Question group
       if (key.includes("question_group")) {
         let findQuestionGroup = questionGroup;
-        if (!field.includes("translations")) {
+        if (!field?.includes("translations")) {
           findQuestionGroup = {
             ...findQuestionGroup,
             [field]: value,
           };
         }
-        if (field.includes("translations")) {
+        if (field?.includes("translations")) {
           const lang = key.split("-")[3];
           const tKey = key.split("-")[4];
           const transFilter = findQuestionGroup?.translations?.filter(
