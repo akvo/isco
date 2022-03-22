@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./style.scss";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Row, Col, Space, Form, Input, Button } from "antd";
 import Auth from "./Auth";
 import { api, store } from "../../lib";
@@ -48,11 +48,11 @@ const Login = () => {
           <Col span={12} align="start">
             <p>Login</p>
           </Col>
-          <Col span={12} align="end">
+          {/* <Col span={12} align="end">
             <p className="float-right">
               Don&apos;t have any account? <Link to="/register">Register</Link>
             </p>
-          </Col>
+          </Col> */}
         </Row>
         <Form
           form={form}
