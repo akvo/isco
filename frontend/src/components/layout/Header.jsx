@@ -11,7 +11,8 @@ import { store, api } from "../../lib";
 
 const Header = ({ className = "header", ...props }) => {
   const [cookies, removeCookie] = useCookies(["AUTH_TOKEN"]);
-  const isLoggedIn = store.useState((s) => s?.isLoggedIn);
+  const { user, isLoggedIn } = store.useState((state) => state);
+  const isAdmin = user?.role?.includes("admin");
 
   const handleLogout = () => {
     if (cookies?.AUTH_TOKEN) {
@@ -26,22 +27,26 @@ const Header = ({ className = "header", ...props }) => {
 
   const accountMenu = (
     <Menu className="account-dropdown-menu">
-      <Menu.Item key="admin" className="account-item">
-        <Link to="/admin">
-          <Space align="center" size={8}>
-            <RiAdminFill />
-            ADMIN
-          </Space>
-        </Link>
-      </Menu.Item>
-      <Menu.Item key="setting" className="account-item">
-        <Link to="#">
-          <Space align="center" size={8}>
-            <BsGearFill />
-            SETTING
-          </Space>
-        </Link>
-      </Menu.Item>
+      {isAdmin && (
+        <>
+          <Menu.Item key="admin" className="account-item">
+            <Link to="/admin">
+              <Space align="center" size={8}>
+                <RiAdminFill />
+                ADMIN
+              </Space>
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="setting" className="account-item">
+            <Link to="#">
+              <Space align="center" size={8}>
+                <BsGearFill />
+                SETTING
+              </Space>
+            </Link>
+          </Menu.Item>
+        </>
+      )}
       <Menu.Item key="logout" className="account-item">
         <Link to="#" onClick={() => handleLogout()}>
           <Space align="center" size={8}>
@@ -110,7 +115,7 @@ const Header = ({ className = "header", ...props }) => {
                   <span className="icon">
                     <FaUser />
                   </span>
-                  John Doe
+                  {user?.name}
                 </Space>
               </a>
             </Dropdown>

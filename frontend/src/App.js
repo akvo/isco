@@ -10,27 +10,37 @@ import {
   SurveyEditor,
   Login,
   Register,
+  ErrorPage,
 } from "./pages";
 import { useCookies } from "react-cookie";
 import { store, api } from "./lib";
 import { useNotification } from "./util";
 
-const Secure = ({ element: Element }) => {
+const Secure = ({ element: Element, adminPage = false }) => {
   const user = store.useState((s) => s?.user);
-  if (user?.email) {
+  const [cookies] = useCookies(["AUTH_TOKEN"]);
+  const isAuth = cookies?.AUTH_TOKEN;
+  const isAuthAdmin = isAuth && user?.role?.includes("admin");
+  if (isAuthAdmin && adminPage) {
+    return <Element />;
+  }
+  if (isAuth && adminPage) {
+    return <ErrorPage status={403} />;
+  }
+  if (isAuth && !adminPage) {
     return <Element />;
   }
   return <Navigate to="/login" />;
 };
 
 const App = () => {
-  const { user, isLoggedIn } = store.useState((state) => state);
+  const isLoggedIn = store.useState((s) => s?.isLoggedIn);
   const [cookies, removeCookie] = useCookies(["AUTH_TOKEN"]);
   const { notify } = useNotification();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (cookies?.AUTH_TOKEN && !isLoggedIn && !user) {
+    if (cookies?.AUTH_TOKEN && !isLoggedIn) {
       api.setToken(cookies.AUTH_TOKEN);
       api
         .get("/user/me")
@@ -40,7 +50,6 @@ const App = () => {
             s.isLoggedIn = true;
             s.user = { ...data };
           });
-          navigate("/home");
         })
         .catch((e) => {
           const { status, statusText } = e.response;
@@ -56,11 +65,11 @@ const App = () => {
               s.isLoggedIn = false;
               s.user = null;
             });
-            navigate("/login");
           }
+          navigate("/login");
         });
     }
-  }, [cookies, isLoggedIn, user, navigate, notify, removeCookie]);
+  }, [cookies, isLoggedIn, notify, removeCookie, navigate]);
 
   useEffect(() => {
     Promise.all([
@@ -103,22 +112,27 @@ const App = () => {
           <Route exact path="/register" element={<Register />} />
           <Route exact path="/" element={<Secure element={Home} />} />
           <Route exact path="/home" element={<Secure element={Home} />} />
-          <Route exact path="/admin" element={<Secure element={Admin} />} />
+          <Route
+            exact
+            path="/admin"
+            element={<Secure element={Admin} adminPage={true} />}
+          />
           <Route
             exact
             path="/manage-survey"
-            element={<Secure element={ManageSurvey} />}
+            element={<Secure element={ManageSurvey} adminPage={true} />}
           />
           <Route
             exact
             path="/manage-user"
-            element={<Secure element={ManageUser} />}
+            element={<Secure element={ManageUser} adminPage={true} />}
           />
           <Route
             exact
             path="/survey-editor/:formId"
             element={<SurveyEditor />}
           />
+          <Route exact path="*" element={<ErrorPage status={404} />} />
         </Routes>
       </Layout.Body>
       <Layout.Footer />

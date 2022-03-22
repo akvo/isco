@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import "./style.scss";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Row, Col, Space, Form, Input, Button } from "antd";
 import Auth from "./Auth";
-import { api } from "../../lib";
+import { api, store } from "../../lib";
 import { useCookies } from "react-cookie";
 import { useNotification } from "../../util";
 
@@ -12,6 +12,7 @@ const Login = () => {
   const [btnLoading, setBtnLoading] = useState(false);
   const [cookies, setCookie] = useCookies(["AUTH_TOKEN"]);
   const { notify } = useNotification();
+  const navigate = useNavigate();
 
   const handleLoginOnFinish = (values) => {
     setBtnLoading(true);
@@ -23,6 +24,10 @@ const Login = () => {
         const { data } = res;
         setCookie("AUTH_TOKEN", data?.access_token, { path: "/" });
         api.setToken(cookies?.AUTH_TOKEN);
+        store.update((s) => {
+          s.isLoggedIn = true;
+        });
+        navigate("/home");
       })
       .catch((e) => {
         console.error(e);
