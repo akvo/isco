@@ -27,7 +27,9 @@ const Login = () => {
         store.update((s) => {
           s.isLoggedIn = true;
         });
-        navigate("/home");
+        setTimeout(() => {
+          navigate("/home");
+        }, 100);
       })
       .catch((e) => {
         console.error(e);
