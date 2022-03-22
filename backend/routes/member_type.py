@@ -1,5 +1,7 @@
 from http import HTTPStatus
 from fastapi import Depends, Request, APIRouter, Response
+from fastapi.security import HTTPBearer
+from fastapi.security import HTTPBasicCredentials as credentials
 from typing import List
 from sqlalchemy.orm import Session
 import db.crud_member_type as crud
@@ -7,6 +9,7 @@ from db.connection import get_session
 from models.member_type import MemberTypeBase
 from models.member_type import MemberTypeDict, MemberTypePayload
 
+security = HTTPBearer()
 member_type_route = APIRouter()
 
 
@@ -16,7 +19,8 @@ member_type_route = APIRouter()
                         name="member_type:create",
                         tags=["Member Type"])
 def add(req: Request, payload: MemberTypePayload,
-        session: Session = Depends(get_session)):
+        session: Session = Depends(get_session),
+        credentials: credentials = Depends(security)):
     member_type = crud.add_member_type(session=session, payload=payload)
     return member_type.serialize
 
@@ -47,7 +51,8 @@ def get_by_id(req: Request, id: int, session: Session = Depends(get_session)):
                        name="member_type:put",
                        tags=["Member Type"])
 def update(req: Request, id: int, payload: MemberTypePayload,
-           session: Session = Depends(get_session)):
+           session: Session = Depends(get_session),
+           credentials: credentials = Depends(security)):
     member_type = crud.update_member_type(session=session,
                                           id=id,
                                           payload=payload)
@@ -62,6 +67,7 @@ def update(req: Request, id: int, payload: MemberTypePayload,
                           summary="delete member type by id",
                           name="member_type:delete",
                           tags=["Member Type"])
-def delete(req: Request, id: int, session: Session = Depends(get_session)):
+def delete(req: Request, id: int, session: Session = Depends(get_session),
+           credentials: credentials = Depends(security)):
     crud.delete_member_type(session=session, id=id)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)

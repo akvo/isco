@@ -11,7 +11,7 @@ from sqlalchemy import Boolean, Enum, ForeignKey
 from sqlalchemy.ext.mutable import MutableDict
 from sqlalchemy.orm import relationship, backref
 from models.skip_logic import SkipLogicBase, SkipLogicPayload
-from models.option import OptionBase, OptionPayload
+from models.option import OptionBase, OptionPayload, OptionJson
 import sqlalchemy.dialects.postgresql as pg
 from datetime import datetime
 
@@ -193,8 +193,36 @@ class Question(Base):
             "cascade": self.cascade,
             "repeating_objects": repeating_objects,
             "option": [opt.serialize for opt in self.option],
-            "skip_logic": self.skip_logic,
+            "skip_logic": [skip.serialize for skip in self.skip_logic],
             "order": self.order
+        }
+
+    @property
+    def serializeJson(self):
+        translations = []
+        if self.translations:
+            translations = self.translations
+
+        repeating_objects = []
+        if self.repeating_objects:
+            repeating_objects = self.repeating_objects
+
+        return {
+            "id": self.id,
+            "name": self.name,
+            "required": self.mandatory,
+            "datapoint_name": self.datapoint_name,
+            "type": self.type,
+            "order": self.order,
+            "translations": translations,
+            "variable_name": self.variable_name,
+            "personal_data": self.personal_data,
+            "rule": self.rule,
+            "tooltip": {"text": self.tooltip} if self.tooltip else None,
+            "cascade": self.cascade,
+            "repeating_objects": repeating_objects,
+            "option": [opt.serializeJson for opt in self.option],
+            "dependency": [skip.serializeJson for skip in self.skip_logic]
         }
 
 
@@ -228,21 +256,18 @@ class QuestionJson(BaseModel):
     id: int
     name: str
     translations: Optional[List[dict]] = []
-    mandatory: bool
+    required: bool
     order: Optional[int] = None
     datapoint_name: bool
     variable_name: Optional[str] = None
     type: QuestionType
     personal_data: bool
     rule: Optional[dict] = None
-    tooltip: Optional[str] = None
-    tooltip_translations: Optional[List[dict]] = []
-    member_access: Optional[List[int]] = []
-    isco_access: Optional[List[int]] = []
+    tooltip: Optional[dict] = None
     cascade: Optional[int] = None
     repeating_objects: Optional[List] = []
-    option: Optional[List[OptionBase]] = []
-    skip_logic: Optional[List[SkipLogicBase]] = []
+    option: Optional[List[OptionJson]] = []
+    dependency: Optional[List[dict]] = []
 
     class Config:
         orm_mode = True

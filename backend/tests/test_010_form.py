@@ -4,9 +4,12 @@ from fastapi import FastAPI
 from httpx import AsyncClient
 from sqlalchemy.orm import Session
 from datetime import datetime
+from tests.test_000_main import Acc
 
 pytestmark = pytest.mark.asyncio
 sys.path.append("..")
+
+account = Acc(email=None, token=None)
 
 
 def datenow():
@@ -21,6 +24,7 @@ class TestFormRoutes():
         # create form
         res = await client.post(
             app.url_path_for("form:create"),
+            headers={"Authorization": f"Bearer {account.token}"},
             json={"name": "Form Test",
                   "description": "Form Description",
                   "languages": None})
@@ -43,6 +47,7 @@ class TestFormRoutes():
         # update form
         res = await client.put(
             app.url_path_for("form:put", id=1),
+            headers={"Authorization": f"Bearer {account.token}"},
             json={"name": "Form Test",
                   "description": "Form Description",
                   "languages": ["id"]})
@@ -65,6 +70,7 @@ class TestFormRoutes():
         # create question group
         res = await client.post(
             app.url_path_for("question_group:create"),
+            headers={"Authorization": f"Bearer {account.token}"},
             json={"form": 1,
                   "name": "Question Group 1",
                   "description": "Question Group 1 Description",
@@ -99,6 +105,7 @@ class TestFormRoutes():
         # update question group
         res = await client.put(
             app.url_path_for("question_group:put", id=1),
+            headers={"Authorization": f"Bearer {account.token}"},
             json={"form": 1,
                   "name": "Question Group 1",
                   "description": "Question Group 1 Description",

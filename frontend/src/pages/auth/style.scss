@@ -1,0 +1,35 @@
+@import "../../variables";
+
+#root {
+  #auth {
+    min-height: calc(100vh - 10rem);
+
+    .ant-space.ant-space-vertical {
+      width: 100%;
+    }
+
+    .auth-landing {
+      position: relative;
+      height: 20vh;
+      background-image: url("../../../public/images/cacao-seeds.jpg");
+      background-size: cover;
+      background-position: 50%;
+    }
+
+    .auth-form-container {
+      padding: 128px 10%;
+
+      .title {
+        color: $cacao;
+      }
+
+      .form-wrapper {
+        margin-bottom: 10px;
+
+        .ant-form-item-with-help {
+          margin-bottom: 12px;
+        }
+      }
+    }
+  }
+}

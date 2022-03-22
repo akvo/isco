@@ -1,23 +1,20 @@
 from fastapi import HTTPException, status
-from typing import List, Optional
+from typing import List
 from sqlalchemy.orm import Session
 from models.organisation import Organisation, OrganisationDict
 from models.organisation import OrganisationPayload, OrganisationBase
-from models.organisation_isco import OrganisationIscoPayload
 from models.organisation_isco import OrganisationIsco
 
 
 def add_organisation(session: Session,
-                     payload: OrganisationPayload,
-                     isco_type: Optional[List[OrganisationIscoPayload]] = None
-                     ) -> OrganisationDict:
+                     payload: OrganisationPayload) -> OrganisationDict:
     active = True if payload['active'] is None else payload['active']
     organisation = Organisation(code=payload['code'],
                                 name=payload['name'],
                                 member_type=payload['member_type'],
                                 active=active)
-    if isco_type:
-        for it in isco_type:
+    if payload['isco_type']:
+        for it in payload['isco_type']:
             isco = OrganisationIsco(id=None,
                                     organisation=it['organisation'],
                                     isco_type=it['isco_type'])

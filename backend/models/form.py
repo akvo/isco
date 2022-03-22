@@ -82,6 +82,16 @@ class Form(Base):
             "has_question_group": len(self.question_group) > 0
         }
 
+    @property
+    def serializeJson(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
+            "languages": self.languages,
+            "question_group": [qg.serializeJson for qg in self.question_group]
+        }
+
 
 class FormBase(BaseModel):
     id: int
