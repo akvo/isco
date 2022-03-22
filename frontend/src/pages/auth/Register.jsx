@@ -1,5 +1,6 @@
 import React from "react";
 import "./style.scss";
+import { Link } from "react-router-dom";
 import { Row, Col, Space, Form, Input, Button, Select } from "antd";
 import Auth from "./Auth";
 
@@ -15,7 +16,7 @@ const Register = () => {
           </Col>
           <Col span={12} align="end">
             <p className="float-right">
-              Already have an account? <a href="#">Login</a>
+              Already have an account? <Link to="/login">Login</Link>
             </p>
           </Col>
         </Row>

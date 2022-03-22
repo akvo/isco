@@ -6,8 +6,23 @@ import { BsGearFill } from "react-icons/bs";
 import { MdLogout } from "react-icons/md";
 import { RiAdminFill } from "react-icons/ri";
 import { Link } from "react-router-dom";
+import { useCookies } from "react-cookie";
+import { store, api } from "../../lib";
 
 const Header = ({ className = "header", ...props }) => {
+  const [cookies, removeCookie] = useCookies(["AUTH_TOKEN"]);
+
+  const handleLogout = () => {
+    if (cookies?.AUTH_TOKEN) {
+      removeCookie("AUTH_TOKEN");
+      api.setToken(null);
+      store.update((s) => {
+        s.isLoggedIn = false;
+        s.user = null;
+      });
+    }
+  };
+
   const accountMenu = (
     <Menu className="account-dropdown-menu">
       <Menu.Item key="admin" className="account-item">
@@ -27,7 +42,7 @@ const Header = ({ className = "header", ...props }) => {
         </Link>
       </Menu.Item>
       <Menu.Item key="logout" className="account-item">
-        <Link to="#">
+        <Link to="#" onClick={() => handleLogout()}>
           <Space align="center" size={8}>
             <MdLogout />
             LOGOUT

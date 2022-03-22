@@ -1,6 +1,6 @@
 import "./App.scss";
 import React, { useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { Layout } from "./components";
 import {
   Home,
@@ -11,9 +11,57 @@ import {
   Login,
   Register,
 } from "./pages";
+import { useCookies } from "react-cookie";
 import { store, api } from "./lib";
+import { useNotification } from "./util";
+
+const Secure = ({ element: Element }) => {
+  const user = store.useState((s) => s?.user);
+  if (user?.email) {
+    return <Element />;
+  }
+  return <Navigate to="/login" />;
+};
 
 const App = () => {
+  const { user, isLoggedIn } = store.useState((state) => state);
+  const [cookies, removeCookie] = useCookies(["AUTH_TOKEN"]);
+  const { notify } = useNotification();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (cookies?.AUTH_TOKEN && !isLoggedIn && !user) {
+      api.setToken(cookies.AUTH_TOKEN);
+      api
+        .get("/user/me")
+        .then((res) => {
+          const { data } = res;
+          store.update((s) => {
+            s.isLoggedIn = true;
+            s.user = { ...data };
+          });
+          navigate("/home");
+        })
+        .catch((e) => {
+          const { status, statusText } = e.response;
+          console.error(status, statusText);
+          if (status === 401) {
+            notify({
+              type: "error",
+              message: "Your session has expired",
+            });
+            removeCookie("AUTH_TOKEN");
+            api.setToken(null);
+            store.update((s) => {
+              s.isLoggedIn = false;
+              s.user = null;
+            });
+            navigate("/login");
+          }
+        });
+    }
+  }, [cookies, isLoggedIn, user, navigate, notify, removeCookie]);
+
   useEffect(() => {
     Promise.all([
       api.get("/question/type"),
@@ -51,13 +99,21 @@ const App = () => {
       <Layout.Header />
       <Layout.Body>
         <Routes>
-          <Route exact path="/" element={<Home />} />
-          <Route exact path="/home" element={<Home />} />
           <Route exact path="/login" element={<Login />} />
           <Route exact path="/register" element={<Register />} />
-          <Route exact path="/admin" element={<Admin />} />
-          <Route exact path="/manage-survey" element={<ManageSurvey />} />
-          <Route exact path="/manage-user" element={<ManageUser />} />
+          <Route exact path="/" element={<Secure element={Home} />} />
+          <Route exact path="/home" element={<Secure element={Home} />} />
+          <Route exact path="/admin" element={<Secure element={Admin} />} />
+          <Route
+            exact
+            path="/manage-survey"
+            element={<Secure element={ManageSurvey} />}
+          />
+          <Route
+            exact
+            path="/manage-user"
+            element={<Secure element={ManageUser} />}
+          />
           <Route
             exact
             path="/survey-editor/:formId"

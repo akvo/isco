@@ -1,11 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
 import "./style.scss";
+import { Link } from "react-router-dom";
 import { Row, Col, Space, Form, Input, Button } from "antd";
 import Auth from "./Auth";
+import { api } from "../../lib";
+import { useCookies } from "react-cookie";
+import { useNotification } from "../../util";
 
 const Login = () => {
   const [form] = Form.useForm();
-  console.info(form);
+  const [btnLoading, setBtnLoading] = useState(false);
+  const [cookies, setCookie] = useCookies(["AUTH_TOKEN"]);
+  const { notify } = useNotification();
+
+  const handleLoginOnFinish = (values) => {
+    setBtnLoading(true);
+    const { email, password } = values;
+    const params = `email=${email}&password=${password}`;
+    api
+      .post(`/user/login?${params}`)
+      .then((res) => {
+        const { data } = res;
+        setCookie("AUTH_TOKEN", data?.access_token, { path: "/" });
+        api.setToken(cookies?.AUTH_TOKEN);
+      })
+      .catch((e) => {
+        console.error(e);
+        notify({
+          type: "error",
+          message: "Email password doesn't match.",
+        });
+      })
+      .finally(() => {
+        setBtnLoading(false);
+      });
+  };
 
   return (
     <Auth>
@@ -16,11 +45,15 @@ const Login = () => {
           </Col>
           <Col span={12} align="end">
             <p className="float-right">
-              Don&apos;t have any account? <a href="#">Register</a>
+              Don&apos;t have any account? <Link to="/register">Register</Link>
             </p>
           </Col>
         </Row>
-        <Form form={form} className="form-wrapper">
+        <Form
+          form={form}
+          className="form-wrapper"
+          onFinish={handleLoginOnFinish}
+        >
           <Form.Item
             name="email"
             rules={[
@@ -49,6 +82,7 @@ const Login = () => {
             block
             size="large"
             onClick={() => form.submit()}
+            loading={btnLoading}
           >
             Login
           </Button>
