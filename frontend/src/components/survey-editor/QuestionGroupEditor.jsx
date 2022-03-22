@@ -650,8 +650,6 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
           };
         }
 
-        console.info("handleFormOnValuesChange", findQuestionGroup);
-
         const filterQuestionGroup = state?.questionGroup?.filter(
           (x) => x?.id !== questionGroup?.id
         );
@@ -788,8 +786,6 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
             option: [...updatedQuestionOption],
           };
         }
-
-        console.info("handleFormOnValuesChange", findQuestion);
 
         const filterQuestionGroup = state?.questionGroup?.filter(
           (x) => x?.id !== questionGroup?.id
