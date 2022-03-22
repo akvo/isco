@@ -11,6 +11,7 @@ import { store, api } from "../../lib";
 
 const Header = ({ className = "header", ...props }) => {
   const [cookies, removeCookie] = useCookies(["AUTH_TOKEN"]);
+  const isLoggedIn = store.useState((s) => s?.isLoggedIn);
 
   const handleLogout = () => {
     if (cookies?.AUTH_TOKEN) {
@@ -68,12 +69,20 @@ const Header = ({ className = "header", ...props }) => {
           </div>
           <div className="navigation">
             <Space size="large" align="center">
-              <Link to="#">Survey</Link>
-              <Link to="#">Download</Link>
+              {isLoggedIn && (
+                <>
+                  <Link to="#">Survey</Link>
+                  <Link to="#">Download</Link>
+                </>
+              )}
               <Link to="#">Definitions</Link>
-              <Link to="#">Feedback</Link>
-              <Link to="#">Impressum</Link>
-              <Link to="#">FAQ</Link>
+              {isLoggedIn && (
+                <>
+                  <Link to="#">Feedback</Link>
+                  <Link to="#">Impressum</Link>
+                  <Link to="#">FAQ</Link>
+                </>
+              )}
             </Space>
           </div>
         </Space>
@@ -86,24 +95,26 @@ const Header = ({ className = "header", ...props }) => {
               <div>DE</div>
             </Space>
           </div>
-          <Dropdown
-            overlay={accountMenu}
-            overlayClassName="account-dropdown-wrapper"
-          >
-            <a
-              className="ant-dropdown-link"
-              onClick={(e) => {
-                e.preventDefault();
-              }}
+          {isLoggedIn && (
+            <Dropdown
+              overlay={accountMenu}
+              overlayClassName="account-dropdown-wrapper"
             >
-              <Space align="center">
-                <span className="icon">
-                  <FaUser />
-                </span>
-                John Doe
-              </Space>
-            </a>
-          </Dropdown>
+              <a
+                className="ant-dropdown-link"
+                onClick={(e) => {
+                  e.preventDefault();
+                }}
+              >
+                <Space align="center">
+                  <span className="icon">
+                    <FaUser />
+                  </span>
+                  John Doe
+                </Space>
+              </a>
+            </Dropdown>
+          )}
         </Space>
       </Col>
     </Row>
