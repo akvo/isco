@@ -43,7 +43,7 @@ const QuestionGroupSetting = ({
   const memberValue = form.getFieldValue(memberAccessField);
   const memberOption = member_type?.map((item) => {
     // disabled other value if all selected / id === 1
-    if (memberValue.includes(1)) {
+    if (memberValue && memberValue?.includes(1)) {
       return {
         label: item?.name,
         value: item?.id,
@@ -60,7 +60,7 @@ const QuestionGroupSetting = ({
   const iscoValue = form.getFieldValue(iscoAccessField);
   const iscoOption = isco_type?.map((item) => {
     // disabled other value if all selected / id === 1
-    if (iscoValue.includes(1)) {
+    if (iscoValue && iscoValue?.includes(1)) {
       return {
         label: item?.name,
         value: item?.id,
@@ -402,6 +402,15 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
         repeating_objects: repeatingObject?.length > 0 ? repeatingObject : null,
         skip_logic: null,
         cascade: findQuestion?.cascade || null,
+      };
+
+      /**
+       * * add member/isco access value inherited from question group,
+       * * this will be changed in the future, to get member/isco value from dropdown on question editor */
+      data = {
+        ...data,
+        member_access: questionGroup?.member_access,
+        isco_access: questionGroup?.isco_access,
       };
 
       // delete question option before update
