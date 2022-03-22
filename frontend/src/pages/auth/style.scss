@@ -3,6 +3,11 @@
 #root {
   #auth {
     min-height: calc(100vh - 10rem);
+
+    .ant-space.ant-space-vertical {
+      width: 100%;
+    }
+
     .auth-landing {
       position: relative;
       height: 20vh;
@@ -18,8 +23,12 @@
         color: $cacao;
       }
 
-      .form-title {
-        margin-bottom: 20px;
+      .form-wrapper {
+        margin-bottom: 10px;
+
+        .ant-form-item-with-help {
+          margin-bottom: 12px;
+        }
       }
     }
   }

@@ -9,6 +9,7 @@ import {
   ManageUser,
   SurveyEditor,
   Login,
+  Register,
 } from "./pages";
 import { store, api } from "./lib";
 
@@ -53,6 +54,7 @@ const App = () => {
           <Route exact path="/" element={<Home />} />
           <Route exact path="/home" element={<Home />} />
           <Route exact path="/login" element={<Login />} />
+          <Route exact path="/register" element={<Register />} />
           <Route exact path="/admin" element={<Admin />} />
           <Route exact path="/manage-survey" element={<ManageSurvey />} />
           <Route exact path="/manage-user" element={<ManageUser />} />

@@ -82,6 +82,13 @@ body {
       }
     }
 
+    .ant-input-password {
+      input.ant-input {
+        border: none !important;
+        background-color: transparent !important;
+      }
+    }
+
     .ant-select.bg-grey {
       .ant-select-selector {
         background-color: #eeeeee;
