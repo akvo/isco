@@ -19,7 +19,7 @@ import { useNotification } from "./util";
 const Secure = ({ element: Element, adminPage = false }) => {
   const user = store.useState((s) => s?.user);
   const [cookies] = useCookies(["AUTH_TOKEN"]);
-  const isAuth = cookies?.AUTH_TOKEN;
+  const isAuth = cookies?.AUTH_TOKEN && cookies?.AUTH_TOKEN !== "undefined";
   const isAuthAdmin = isAuth && user?.role?.includes("admin");
   if (isAuthAdmin && adminPage) {
     return <Element />;
@@ -40,34 +40,36 @@ const App = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (cookies?.AUTH_TOKEN && !isLoggedIn) {
-      api.setToken(cookies.AUTH_TOKEN);
-      api
-        .get("/user/me")
-        .then((res) => {
-          const { data } = res;
-          store.update((s) => {
-            s.isLoggedIn = true;
-            s.user = { ...data };
-          });
-        })
-        .catch((e) => {
-          const { status, statusText } = e.response;
-          console.error(status, statusText);
-          if (status === 401) {
-            notify({
-              type: "error",
-              message: "Your session has expired",
-            });
-            removeCookie("AUTH_TOKEN");
-            api.setToken(null);
+    if (!location.pathname.includes("/register")) {
+      if (cookies?.AUTH_TOKEN && !isLoggedIn) {
+        api.setToken(cookies.AUTH_TOKEN);
+        api
+          .get("/user/me")
+          .then((res) => {
+            const { data } = res;
             store.update((s) => {
-              s.isLoggedIn = false;
-              s.user = null;
+              s.isLoggedIn = true;
+              s.user = { ...data };
             });
-          }
-          navigate("/login");
-        });
+          })
+          .catch((e) => {
+            const { status, statusText } = e.response;
+            console.error(status, statusText);
+            if (status === 401) {
+              removeCookie("AUTH_TOKEN");
+              api.setToken(null);
+              store.update((s) => {
+                s.isLoggedIn = false;
+                s.user = null;
+              });
+              notify({
+                type: "error",
+                message: "Your session has expired",
+              });
+            }
+            navigate("/login");
+          });
+      }
     }
   }, [cookies, isLoggedIn, notify, removeCookie, navigate]);
 
@@ -79,6 +81,7 @@ const App = () => {
       api.get("/skip_logic/operator"),
       api.get("/cascade/"),
       api.get("/question/repeating_object"),
+      api.get("/organisation/"),
     ]).then((res) => {
       const [
         question_type,
@@ -87,6 +90,7 @@ const App = () => {
         operator_type,
         cascade,
         repeating_object,
+        organisation,
       ] = res;
       store.update((s) => {
         s.optionValues = {
@@ -98,6 +102,7 @@ const App = () => {
           cascade: cascade?.data?.filter((c) => c?.type === "cascade"),
           nested: cascade?.data?.filter((c) => c?.type === "nested"),
           repeating_object_option: repeating_object?.data,
+          organisation: organisation?.data?.filter((o) => o?.active),
         };
       });
     });

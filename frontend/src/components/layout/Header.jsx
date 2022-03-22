@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Row, Col, Space, Menu, Dropdown } from "antd";
+import { useNavigate } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
 import { BsGearFill } from "react-icons/bs";
 import { MdLogout } from "react-icons/md";
@@ -13,6 +14,7 @@ const Header = ({ className = "header", ...props }) => {
   const [cookies, removeCookie] = useCookies(["AUTH_TOKEN"]);
   const { user, isLoggedIn } = store.useState((state) => state);
   const isAdmin = user?.role?.includes("admin");
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     if (cookies?.AUTH_TOKEN) {
@@ -22,6 +24,7 @@ const Header = ({ className = "header", ...props }) => {
         s.isLoggedIn = false;
         s.user = null;
       });
+      navigate("/login");
     }
   };
 

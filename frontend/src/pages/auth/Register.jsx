@@ -3,9 +3,23 @@ import "./style.scss";
 import { Link } from "react-router-dom";
 import { Row, Col, Space, Form, Input, Button, Select } from "antd";
 import Auth from "./Auth";
+import { store } from "../../lib";
 
 const Register = () => {
   const [form] = Form.useForm();
+  const optionValues = store.useState((s) => s?.optionValues);
+  const iscoOption = optionValues?.isco_type?.map((i) => ({
+    label: i?.name,
+    value: i?.id,
+  }));
+  const organisationOption = optionValues?.organisation?.map((o) => ({
+    label: o?.name,
+    value: o?.id,
+  }));
+
+  const handleRegisterOnFinish = (values) => {
+    console.info(values);
+  };
 
   return (
     <Auth>
@@ -20,7 +34,12 @@ const Register = () => {
             </p>
           </Col>
         </Row>
-        <Form form={form} className="form-wrapper">
+        <Form
+          form={form}
+          className="form-wrapper"
+          onFinish={handleRegisterOnFinish}
+          scrollToFirstError
+        >
           <Form.Item
             name="fullname"
             rules={[
@@ -71,7 +90,7 @@ const Register = () => {
               size="large"
               className="bg-grey"
               placeholder="Filter organizations by"
-              options={[]}
+              options={iscoOption}
             />
           </Form.Item>
           <Form.Item
@@ -87,7 +106,7 @@ const Register = () => {
               className="bg-grey"
               size="large"
               placeholder="Organization"
-              options={[]}
+              options={organisationOption}
             />
           </Form.Item>
           <Button
