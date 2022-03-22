@@ -255,6 +255,7 @@ const QuestionEditor = ({
                       <QuestionSetting
                         form={form}
                         activeSetting={activeSetting}
+                        setActiveSetting={setActiveSetting}
                         questionGroup={questionGroup}
                         question={question}
                         handleFormOnValuesChange={handleFormOnValuesChange}

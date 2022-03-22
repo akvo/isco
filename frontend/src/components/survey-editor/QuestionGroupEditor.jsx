@@ -26,13 +26,52 @@ import { isoLangs } from "../../lib";
 
 const { TabPane } = Tabs;
 
-const QuestionGroupSetting = ({ questionGroup, repeat, onChangeRepeat }) => {
+const QuestionGroupSetting = ({
+  form,
+  questionGroup,
+  repeat,
+  onChangeRepeat,
+}) => {
   const state = store.useState((s) => s?.surveyEditor);
   const optionValues = store.useState((s) => s?.optionValues);
   const { member_type, isco_type } = optionValues;
   const { languages } = state;
   const qgId = questionGroup?.id;
   const { name, description } = questionGroup;
+
+  const memberAccessField = `question_group-${qgId}-member_access`;
+  const memberValue = form.getFieldValue(memberAccessField);
+  const memberOption = member_type?.map((item) => {
+    // disabled other value if all selected / id === 1
+    if (memberValue.includes(1)) {
+      return {
+        label: item?.name,
+        value: item?.id,
+        disabled: true,
+      };
+    }
+    return {
+      label: item?.name,
+      value: item?.id,
+    };
+  });
+
+  const iscoAccessField = `question_group-${qgId}-isco_access`;
+  const iscoValue = form.getFieldValue(iscoAccessField);
+  const iscoOption = isco_type?.map((item) => {
+    // disabled other value if all selected / id === 1
+    if (iscoValue.includes(1)) {
+      return {
+        label: item?.name,
+        value: item?.id,
+        disabled: true,
+      };
+    }
+    return {
+      label: item?.name,
+      value: item?.id,
+    };
+  });
 
   const [groupTranslationVisible, setGroupTranslationVisible] = useState(false);
 
@@ -84,20 +123,18 @@ const QuestionGroupSetting = ({ questionGroup, repeat, onChangeRepeat }) => {
                 </Col>
                 <Col span={7}>
                   <Form.Item
-                    name={`question_group-${qgId}-member_access`}
+                    name={memberAccessField}
                     rules={[
                       { required: true, message: "Please select member type" },
                     ]}
                   >
                     <Select
+                      allowClear
                       mode="multiple"
                       showSearch={true}
                       className="custom-dropdown-wrapper"
                       placeholder="Member Type"
-                      options={member_type?.map((item) => ({
-                        label: item?.name,
-                        value: item?.id,
-                      }))}
+                      options={memberOption}
                       filterOption={(input, option) =>
                         option.label
                           .toLowerCase()
@@ -108,20 +145,18 @@ const QuestionGroupSetting = ({ questionGroup, repeat, onChangeRepeat }) => {
                 </Col>
                 <Col span={7}>
                   <Form.Item
-                    name={`question_group-${qgId}-isco_access`}
+                    name={iscoAccessField}
                     rules={[
                       { required: true, message: "Please select isco type" },
                     ]}
                   >
                     <Select
+                      allowClear
                       mode="multiple"
                       showSearch={true}
                       className="custom-dropdown-wrapper"
                       placeholder="ISCO Type"
-                      options={isco_type?.map((item) => ({
-                        label: item?.name,
-                        value: item?.id,
-                      }))}
+                      options={iscoOption}
                       filterOption={(input, option) =>
                         option.label
                           .toLowerCase()

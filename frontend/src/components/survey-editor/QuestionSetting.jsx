@@ -740,6 +740,7 @@ const RenderLayout = ({
 const QuestionSetting = ({
   form,
   activeSetting,
+  setActiveSetting,
   questionGroup,
   question,
   handleFormOnValuesChange,
@@ -778,7 +779,14 @@ const QuestionSetting = ({
       />
       <div className="question-button-wrapper">
         <Space align="center">
-          <Button onClick={() => setActivePanel(null)}>Cancel</Button>
+          <Button
+            onClick={() => {
+              setActiveSetting("detail");
+              setActivePanel(null);
+            }}
+          >
+            Cancel
+          </Button>
           <Button
             type="primary"
             ghost
