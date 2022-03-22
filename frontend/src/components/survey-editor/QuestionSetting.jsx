@@ -316,10 +316,7 @@ const Detail = ({
                 />
               </Col>
               <Col span={23}>
-                <Input
-                  placeholder='Add an "Other" answer option or Comment Field'
-                  disabled
-                />
+                <Input placeholder='Add an "Other" answer option' disabled />
               </Col>
             </Row>
             {/* <Row>
@@ -785,7 +782,7 @@ const QuestionSetting = ({
               setActivePanel(null);
             }}
           >
-            Cancel
+            Close
           </Button>
           <Button
             type="primary"
