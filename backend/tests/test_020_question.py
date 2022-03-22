@@ -547,6 +547,100 @@ class TestQuestionRoutes():
         }
 
     @pytest.mark.asyncio
+    async def test_update_question_with_access(self,
+                                               app: FastAPI,
+                                               session: Session,
+                                               client: AsyncClient
+                                               ) -> None:
+        # get form
+        res = await client.get(app.url_path_for("form:get_by_id", id=1))
+        assert res.status_code == 200
+        res = res.json()
+        assert res["id"] == 1
+        # get question group
+        res = await client.get(
+            app.url_path_for("question_group:get_by_id", id=1))
+        assert res.status_code == 200
+        res = res.json()
+        assert res["id"] == 1
+        # add question type text
+        question_payload = {
+            "form": 1,
+            "question_group": 1,
+            "name": "Gender",
+            "translations": None,
+            "mandatory": True,
+            "datapoint_name": False,
+            "variable_name": None,
+            "type": QuestionType.option.value,
+            "personal_data": False,
+            "rule": None,
+            "tooltip": None,
+            "tooltip_translations": None,
+            "cascade": None,
+            "repeating_objects": None,
+            "order": 3,
+            "option": [],
+            "member_access": [2],
+            "isco_access": [2],
+            "skip_logic": []
+        }
+        res = await client.put(
+            app.url_path_for("question:put", id=3),
+            headers={"Authorization": f"Bearer {account.token}"},
+            json=question_payload)
+        assert res.status_code == 200
+        res = res.json()
+        assert res == {
+            "cascade": None,
+            "datapoint_name": False,
+            "form": 1,
+            "id": 3,
+            "isco_access": [2],
+            "mandatory": True,
+            "member_access": [2],
+            "name": 'Gender',
+            "option": [
+                {
+                    "code": None,
+                    "id": 2,
+                    "name": "Male",
+                    "order": 1,
+                    "question": 3,
+                    "translations": []
+                },
+                {
+                    "code": None,
+                    "id": 3,
+                    "name": "Female",
+                    "order": 2,
+                    "question": 3,
+                    "translations": []
+                }
+            ],
+            "order": 3,
+            "personal_data": False,
+            "question_group": 1,
+            "repeating_objects": [],
+            "rule": None,
+            "skip_logic": [
+                {
+                    "dependent_to": 1,
+                    "id": 2,
+                    "operator": "equal",
+                    "question": 3,
+                    "type": "option",
+                    "value": "1"
+                }
+            ],
+            "tooltip": None,
+            "tooltip_translations": [],
+            "translations": [],
+            "type": "option",
+            "variable_name": None
+        }
+
+    @pytest.mark.asyncio
     async def test_add_question_group_with_question(self,
                                                     app: FastAPI,
                                                     session: Session,

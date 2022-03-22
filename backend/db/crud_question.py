@@ -129,6 +129,26 @@ def update_question(session: Session, id: int,
     question.cascade = payload['cascade']
     question.repeating_objects = payload['repeating_objects']
     question.order = payload['order']
+    # Add member access
+    if payload['member_access']:
+        delete_member_access_by_group_id(session=session,
+                                         question=id)
+        for ma in payload['member_access']:
+            member = QuestionMemberAccess(
+                id=None,
+                question=None,
+                member_type=ma)
+            question.member_access.append(member)
+    # Add isco access
+    if payload['isco_access']:
+        delete_isco_access_by_group_id(session=session,
+                                       question=id)
+        for ia in payload['isco_access']:
+            isco = QuestionIscoAccess(
+                id=None,
+                question=None,
+                isco_type=ia)
+            question.isco_access.append(isco)
     session.commit()
     session.flush()
     session.refresh(question)
@@ -140,3 +160,43 @@ def delete_question(session: Session, id: int):
     session.delete(question)
     session.commit()
     session.flush()
+
+
+def get_member_access_by_question_id(session: Session,
+                                     question: int) -> List:
+    member_access = session.query(
+        QuestionMemberAccess).filter(
+            QuestionMemberAccess.question == question)
+    return member_access
+
+
+def delete_member_access_by_group_id(session: Session, question: int):
+    # check if exist
+    member_access = get_member_access_by_question_id(
+        session=session, question=question)
+    if member_access:
+        # delete
+        member_access.delete()
+        session.commit()
+        session.flush()
+    return member_access
+
+
+def get_isco_access_by_question_id(session: Session,
+                                   question: int) -> List:
+    isco_access = session.query(
+        QuestionIscoAccess).filter(
+            QuestionIscoAccess.question == question)
+    return isco_access
+
+
+def delete_isco_access_by_group_id(session: Session, question: int):
+    # check if exist
+    isco_access = get_isco_access_by_question_id(
+        session=session, question=question)
+    if isco_access:
+        # delete
+        isco_access.delete()
+        session.commit()
+        session.flush()
+    return isco_access
