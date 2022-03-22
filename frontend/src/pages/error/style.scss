@@ -1,0 +1,10 @@
+@import "../../variables";
+
+#root {
+  #error {
+    min-height: calc(100vh - 10rem);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
