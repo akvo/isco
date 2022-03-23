@@ -376,10 +376,18 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
       .catch((e) => {
         const { status, statusText } = e.response;
         console.error(status, statusText);
-        notify({
-          type: "error",
-          message: "Oops, something went wrong.",
-        });
+        if (status === 422) {
+          notify({
+            type: "warning",
+            message:
+              "This section has question used as a dependency for other question",
+          });
+        } else {
+          notify({
+            type: "error",
+            message: "Oops, something went wrong.",
+          });
+        }
       });
   };
 
