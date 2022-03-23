@@ -30,3 +30,15 @@
     float: right;
   }
 }
+
+// for #root and modal
+.field-help {
+  margin-bottom: 12px;
+}
+
+.field-wrapper {
+  .field-label {
+    padding-left: 4px;
+    margin-bottom: 10px;
+  }
+}

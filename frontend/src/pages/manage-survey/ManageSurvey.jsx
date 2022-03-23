@@ -17,6 +17,7 @@ import { RiPencilFill, RiDeleteBinFill } from "react-icons/ri";
 import { FaInfoCircle } from "react-icons/fa";
 import { FormEditor } from "../../components";
 import { api } from "../../lib";
+import { useNotification } from "../../util";
 
 const { Title } = Typography;
 
@@ -26,6 +27,7 @@ const ManageSurvey = () => {
   const [isSurveyModalVisible, setIsSurveyModalVisible] = useState(false);
   const [dataSource, setDataSource] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const { notify } = useNotification();
 
   const handleEditButton = (record) => {
     const { id, has_question_group } = record;
@@ -55,10 +57,18 @@ const ManageSurvey = () => {
       .then(() => {
         console.info("Survey deleted");
         setDataSource(dataSource?.filter((d) => d?.id !== id));
+        notify({
+          type: "success",
+          message: "Survey deleted successfully.",
+        });
       })
       .catch((e) => {
         const { status, statusText } = e.response;
         console.error(status, statusText);
+        notify({
+          type: "error",
+          message: "Oops, something went wrong.",
+        });
       });
   };
 
@@ -176,6 +186,12 @@ const ManageSurvey = () => {
         description: null,
       };
     }
+    if (!data?.languages) {
+      data = {
+        ...data,
+        languages: null,
+      };
+    }
     api
       .post("/form", data, { "content-type": "application/json" })
       .then((res) => {
@@ -185,13 +201,22 @@ const ManageSurvey = () => {
           status: null,
         };
         setDataSource([...dataSource, data]);
+        notify({
+          type: "success",
+          message: "Survey saved successfully.",
+        });
       })
       .catch((e) => {
         const { status, statusText } = e.response;
         console.error(status, statusText);
+        notify({
+          type: "error",
+          message: "Oops, something went wrong.",
+        });
       })
       .finally(() => {
         setIsSurveyModalVisible(false);
+        form.resetFields();
       });
   };
 

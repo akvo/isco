@@ -378,7 +378,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
         console.error(status, statusText);
         notify({
           type: "error",
-          message: "Opps, something went wrong.",
+          message: "Oops, something went wrong.",
         });
       });
   };
@@ -419,7 +419,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
           console.error(status, statusText);
           notify({
             type: "error",
-            message: "Opps, something went wrong.",
+            message: "Oops, something went wrong.",
           });
         })
         .finally(() => {
@@ -658,7 +658,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
           console.error(status, statusText);
           notify({
             type: "error",
-            message: "Opps, something went wrong.",
+            message: "Oops, something went wrong.",
           });
         })
         .finally(() => {

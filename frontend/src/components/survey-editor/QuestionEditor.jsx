@@ -217,7 +217,7 @@ const QuestionEditor = ({
         console.error(status, statusText);
         notify({
           type: "error",
-          message: "Opps, something went wrong.",
+          message: "Oops, something went wrong.",
         });
       });
   };
