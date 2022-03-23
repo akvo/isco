@@ -8,6 +8,8 @@ from models.option import Option
 from models.question_member_access import QuestionMemberAccess
 from models.question_isco_access import QuestionIscoAccess
 from models.skip_logic import SkipLogic
+from db.crud_option import delete_option_by_question
+from db.crud_skip_logic import delete_skip_logic_by_question
 
 
 def add_question(session: Session, payload: QuestionPayload,
@@ -210,6 +212,10 @@ def delete_question_by_group(session: Session, group: id):
                 session=session, question=q.id)
             delete_isco_access_by_question_id(
                 session=session, question=q.id)
+            delete_option_by_question(
+                session=session, question=q.id)
+            delete_skip_logic_by_question(
+                session=session, question=q.id)
         question.delete()
         session.commit()
         session.flush()
@@ -219,6 +225,8 @@ def delete_question_by_group(session: Session, group: id):
 def delete_question(session: Session, id: int):
     delete_member_access_by_question_id(session=session, question=id)
     delete_isco_access_by_question_id(session=session, question=id)
+    delete_option_by_question(session=session, question=id)
+    delete_skip_logic_by_question(session=session, question=id)
     question = get_question_by_id(session=session, id=id)
     session.delete(question)
     session.commit()
