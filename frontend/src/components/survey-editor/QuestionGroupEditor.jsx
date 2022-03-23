@@ -112,12 +112,15 @@ const QuestionGroupSetting = ({
                 className="qge-setting-tab-body"
               >
                 <Col span={10}>
-                  <Form.Item name={`question_group-${qgId}-description`}>
-                    <Input.TextArea
-                      rows={3}
-                      placeholder="Question Group Description"
-                    />
-                  </Form.Item>
+                  <div className="field-wrapper">
+                    <div className="field-label">Section Description</div>
+                    <Form.Item name={`question_group-${qgId}-description`}>
+                      <Input.TextArea
+                        rows={3}
+                        placeholder="Type section description here..."
+                      />
+                    </Form.Item>
+                  </div>
                   <Form.Item
                     name={`question_group-${qgId}-repeat`}
                     hidden
@@ -137,48 +140,57 @@ const QuestionGroupSetting = ({
                   </Space>
                 </Col>
                 <Col span={7}>
-                  <Form.Item
-                    name={memberAccessField}
-                    rules={[
-                      { required: true, message: "Please select member type" },
-                    ]}
-                  >
-                    <Select
-                      allowClear
-                      mode="multiple"
-                      showSearch={true}
-                      className="custom-dropdown-wrapper"
-                      placeholder="Member Type"
-                      options={memberOption}
-                      filterOption={(input, option) =>
-                        option.label
-                          .toLowerCase()
-                          .indexOf(input.toLowerCase()) >= 0
-                      }
-                    />
-                  </Form.Item>
+                  <div className="field-wrapper">
+                    <div className="field-label">Member Type</div>
+                    <Form.Item
+                      name={memberAccessField}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please select member type",
+                        },
+                      ]}
+                    >
+                      <Select
+                        allowClear
+                        mode="multiple"
+                        showSearch={true}
+                        className="custom-dropdown-wrapper"
+                        placeholder="Select Member Type"
+                        options={memberOption}
+                        filterOption={(input, option) =>
+                          option.label
+                            .toLowerCase()
+                            .indexOf(input.toLowerCase()) >= 0
+                        }
+                      />
+                    </Form.Item>
+                  </div>
                 </Col>
                 <Col span={7}>
-                  <Form.Item
-                    name={iscoAccessField}
-                    rules={[
-                      { required: true, message: "Please select isco type" },
-                    ]}
-                  >
-                    <Select
-                      allowClear
-                      mode="multiple"
-                      showSearch={true}
-                      className="custom-dropdown-wrapper"
-                      placeholder="ISCO Type"
-                      options={iscoOption}
-                      filterOption={(input, option) =>
-                        option.label
-                          .toLowerCase()
-                          .indexOf(input.toLowerCase()) >= 0
-                      }
-                    />
-                  </Form.Item>
+                  <div className="field-wrapper">
+                    <div className="field-label">ISCO Type</div>
+                    <Form.Item
+                      name={iscoAccessField}
+                      rules={[
+                        { required: true, message: "Please select isco type" },
+                      ]}
+                    >
+                      <Select
+                        allowClear
+                        mode="multiple"
+                        showSearch={true}
+                        className="custom-dropdown-wrapper"
+                        placeholder="Select ISCO Type"
+                        options={iscoOption}
+                        filterOption={(input, option) =>
+                          option.label
+                            .toLowerCase()
+                            .indexOf(input.toLowerCase()) >= 0
+                        }
+                      />
+                    </Form.Item>
+                  </div>
                 </Col>
               </Row>
             </TabPane>
