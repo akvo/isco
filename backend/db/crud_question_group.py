@@ -113,13 +113,6 @@ def update_question_group(session: Session, id: int,
     return question_group
 
 
-def delete_question_group(session: Session, id: int):
-    question_group = get_question_group_by_id(session=session, id=id)
-    session.delete(question_group)
-    session.commit()
-    session.flush()
-
-
 def get_member_access_by_question_group_id(session: Session,
                                            question_group: int) -> List:
     member_access = session.query(
@@ -158,3 +151,12 @@ def delete_isco_access_by_group_id(session: Session, question_group: int):
         session.commit()
         session.flush()
     return isco_access
+
+
+def delete_question_group(session: Session, id: int):
+    delete_member_access_by_group_id(session=session, question_group=id)
+    delete_isco_access_by_group_id(session=session, question_group=id)
+    question_group = get_question_group_by_id(session=session, id=id)
+    session.delete(question_group)
+    session.commit()
+    session.flush()
