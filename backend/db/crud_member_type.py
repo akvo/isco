@@ -27,6 +27,12 @@ def get_member_type_by_id(session: Session, id: int) -> MemberTypeBase:
     return member_type
 
 
+def get_member_type_by_name(session: Session, name: str) -> MemberTypeBase:
+    member_type = session.query(
+        MemberType).filter(MemberType.name == name).first()
+    return member_type
+
+
 def update_member_type(session: Session, id: int,
                        payload: MemberTypePayload) -> MemberTypeDict:
     member_type = get_member_type_by_id(session=session, id=id)
