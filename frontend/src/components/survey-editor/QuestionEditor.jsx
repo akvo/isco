@@ -213,12 +213,19 @@ const QuestionEditor = ({
         });
       })
       .catch((e) => {
-        const { status, statusText } = e.response;
+        const { status, statusText, data } = e.response;
         console.error(status, statusText);
-        notify({
-          type: "error",
-          message: "Oops, something went wrong.",
-        });
+        if (status === 422) {
+          notify({
+            type: "warning",
+            message: data?.detail,
+          });
+        } else {
+          notify({
+            type: "error",
+            message: "Oops, something went wrong.",
+          });
+        }
       });
   };
 
