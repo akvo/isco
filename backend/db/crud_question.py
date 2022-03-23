@@ -131,8 +131,8 @@ def update_question(session: Session, id: int,
     question.order = payload['order']
     # Add member access
     if payload['member_access']:
-        delete_member_access_by_group_id(session=session,
-                                         question=id)
+        delete_member_access_by_question_id(
+            session=session, question=id)
         for ma in payload['member_access']:
             member = QuestionMemberAccess(
                 id=None,
@@ -141,8 +141,8 @@ def update_question(session: Session, id: int,
             question.member_access.append(member)
     # Add isco access
     if payload['isco_access']:
-        delete_isco_access_by_group_id(session=session,
-                                       question=id)
+        delete_isco_access_by_question_id(
+            session=session, question=id)
         for ia in payload['isco_access']:
             isco = QuestionIscoAccess(
                 id=None,
@@ -155,13 +155,6 @@ def update_question(session: Session, id: int,
     return question
 
 
-def delete_question(session: Session, id: int):
-    question = get_question_by_id(session=session, id=id)
-    session.delete(question)
-    session.commit()
-    session.flush()
-
-
 def get_member_access_by_question_id(session: Session,
                                      question: int) -> List:
     member_access = session.query(
@@ -170,7 +163,7 @@ def get_member_access_by_question_id(session: Session,
     return member_access
 
 
-def delete_member_access_by_group_id(session: Session, question: int):
+def delete_member_access_by_question_id(session: Session, question: int):
     # check if exist
     member_access = get_member_access_by_question_id(
         session=session, question=question)
@@ -190,7 +183,7 @@ def get_isco_access_by_question_id(session: Session,
     return isco_access
 
 
-def delete_isco_access_by_group_id(session: Session, question: int):
+def delete_isco_access_by_question_id(session: Session, question: int):
     # check if exist
     isco_access = get_isco_access_by_question_id(
         session=session, question=question)
@@ -200,3 +193,12 @@ def delete_isco_access_by_group_id(session: Session, question: int):
         session.commit()
         session.flush()
     return isco_access
+
+
+def delete_question(session: Session, id: int):
+    delete_member_access_by_question_id(session=session, question=id)
+    delete_isco_access_by_question_id(session=session, question=id)
+    question = get_question_by_id(session=session, id=id)
+    session.delete(question)
+    session.commit()
+    session.flush()
