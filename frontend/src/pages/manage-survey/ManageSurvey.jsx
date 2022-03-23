@@ -35,9 +35,6 @@ const ManageSurvey = () => {
     if (!has_question_group) {
       api
         .post(`/default_question_group/${id}`)
-        .then(() => {
-          console.info("Default question group created");
-        })
         .catch((e) => {
           const { status, statusText } = e.response;
           console.error(status, statusText);
@@ -55,7 +52,6 @@ const ManageSurvey = () => {
     api
       .delete(`/form/${id}`)
       .then(() => {
-        console.info("Survey deleted");
         setDataSource(dataSource?.filter((d) => d?.id !== id));
         notify({
           type: "success",
@@ -279,14 +275,7 @@ const ManageSurvey = () => {
         }
         onCancel={() => setIsSurveyModalVisible(false)}
       >
-        <Form
-          form={form}
-          name="survey-detail"
-          onFinish={onSubmitForm}
-          onFinishFailed={({ values, errorFields }) =>
-            console.info(values, errorFields)
-          }
-        >
+        <Form form={form} name="survey-detail" onFinish={onSubmitForm}>
           <FormEditor form={form} />
         </Form>
       </Modal>

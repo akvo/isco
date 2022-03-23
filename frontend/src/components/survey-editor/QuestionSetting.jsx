@@ -488,7 +488,7 @@ const Setting = ({
               <Form.Item name={`question-${qid}-variable_name`}>
                 <Input
                   className="bg-grey"
-                  placeholder="Enter cariable name (Custom ID)"
+                  placeholder="Enter variable name (Custom ID)"
                 />
               </Form.Item>
             </div>

@@ -476,7 +476,6 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
         api
           .delete(`/option/${id}`)
           .then((res) => {
-            console.info("Option deleted");
             store.update((s) => {
               s.tempStorage = {
                 ...s.tempStorage,
@@ -510,9 +509,6 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
               .post(`/option`, optionPayload, {
                 "content-type": "application/json",
               })
-              .then(() => {
-                console.info("Option created");
-              })
               .catch((e) => {
                 const { status, statusText } = e.response;
                 console.error(status, statusText);
@@ -521,9 +517,6 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
             api
               .put(`/option/${opt?.id}`, optionPayload, {
                 "content-type": "application/json",
-              })
-              .then(() => {
-                console.info("Option updated");
               })
               .catch((e) => {
                 const { status, statusText } = e.response;
@@ -543,7 +536,6 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
         api
           .delete(`/skip_logic/${id}`)
           .then((res) => {
-            console.info("Skip logic deleted");
             store.update((s) => {
               s.tempStorage = {
                 ...s.tempStorage,
@@ -576,9 +568,6 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
               .post(`/skip_logic`, skipPayload, {
                 "content-type": "application/json",
               })
-              .then(() => {
-                console.info("Skip logic created");
-              })
               .catch((e) => {
                 const { status, statusText } = e.response;
                 console.error(status, statusText);
@@ -587,9 +576,6 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
             api
               .put(`/skip_logic/${ski?.id}`, skipPayload, {
                 "content-type": "application/json",
-              })
-              .then(() => {
-                console.info("Skip logic updated");
               })
               .catch((e) => {
                 const { status, statusText } = e.response;
@@ -675,8 +661,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
     }
   };
 
-  const handleFormOnValuesChange = (values, allValues) => {
-    console.info("All values", Object.keys(allValues)?.length);
+  const handleFormOnValuesChange = (values /*allValues*/) => {
     const question = questionGroup?.question;
     Object.keys(values).forEach((key) => {
       const field = key.split("-")[2];
@@ -870,10 +855,9 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
     });
   };
 
-  const handleFormOnFinishFailed = ({ values }) => {
+  const handleFormOnFinishFailed = () => {
     setSubmitStatus(null);
     setSaveBtnLoading(false);
-    console.info("Failed", values);
   };
 
   return (
@@ -955,6 +939,12 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
                 />
                 <div className="qge-button-wrapper">
                   <Space align="center">
+                    <Button
+                      ghost
+                      onClick={() => setIsGroupSettingVisible(false)}
+                    >
+                      Close
+                    </Button>
                     <Button
                       type="primary"
                       ghost

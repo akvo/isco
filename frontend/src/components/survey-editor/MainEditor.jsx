@@ -64,14 +64,7 @@ const MainEditor = () => {
           {/* Form & Question Group */}
           <Col span={24}>
             <Space direction="vertical" size="large">
-              <Form
-                form={form}
-                name="survey-detail"
-                onFinish={onSubmitForm}
-                onFinishFailed={({ values, errorFields }) =>
-                  console.info(values, errorFields)
-                }
-              >
+              <Form form={form} name="survey-detail" onFinish={onSubmitForm}>
                 <Space direction="vertical">
                   <FormEditor
                     form={form}

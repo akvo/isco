@@ -57,15 +57,17 @@
 
         .section-title-row {
           border-bottom: 2px solid #777777;
+          padding-bottom: 12px;
+          padding-left: 14px;
 
           .ant-form-item-explain-error {
             margin-left: 10px;
           }
 
           .left {
-            .ant-input {
-              border: none;
-            }
+            // .ant-input {
+            //   border: none;
+            // }
 
             .ant-form-item {
               margin: 0;

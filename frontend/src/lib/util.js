@@ -21,15 +21,10 @@ export const deleteQuestionOption = (deletedOptions, questionId = null) => {
   }
   optionToDelete?.forEach((opt) => {
     const { id } = opt;
-    api
-      .delete(`/option/${id}`)
-      .then(() => {
-        console.info("Option deleted");
-      })
-      .catch((e) => {
-        const { status, statusText } = e.response;
-        console.error(status, statusText);
-      });
+    api.delete(`/option/${id}`).catch((e) => {
+      const { status, statusText } = e.response;
+      console.error(status, statusText);
+    });
   });
   return;
 };
@@ -44,15 +39,10 @@ export const deleteQuestionSkipLogic = (
   }
   toDelete?.forEach((item) => {
     const { id } = item;
-    api
-      .delete(`/skip_logic/${id}`)
-      .then(() => {
-        console.info("Skip logic deleted");
-      })
-      .catch((e) => {
-        const { status, statusText } = e.response;
-        console.error(status, statusText);
-      });
+    api.delete(`/skip_logic/${id}`).catch((e) => {
+      const { status, statusText } = e.response;
+      console.error(status, statusText);
+    });
   });
   return;
 };
