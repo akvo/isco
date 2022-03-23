@@ -873,7 +873,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
                     { required: true, message: "Please input section title" },
                   ]}
                 >
-                  <Input placeholder="Section Title" />
+                  <Input size="large" placeholder="Section Title" />
                 </Form.Item>
               </Col>
               <Col span={6} align="end" className="right">

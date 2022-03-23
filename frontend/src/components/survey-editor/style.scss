@@ -37,10 +37,14 @@
       content: " ";
     }
 
+    .field-help {
+      margin-bottom: 12px;
+    }
+
     .field-wrapper {
       .field-label {
         padding-left: 4px;
-        margin-bottom: 8px;
+        margin-bottom: 10px;
       }
     }
 
@@ -175,9 +179,6 @@
       }
 
       .panel-body-wrapper {
-        .button-wrapper {
-        }
-
         .input-wrapper {
           width: calc(100% - 40px);
           background-color: $white;
@@ -190,12 +191,12 @@
               margin-bottom: 12px;
             }
 
-            // .ant-input {
-            //   margin-bottom: 12px;
-            // }
-
             &.setting {
               padding: 0 0 20px 0;
+
+              .ant-form-item {
+                margin-bottom: 24px;
+              }
 
               .ant-tabs-content {
                 padding: 0 20px;

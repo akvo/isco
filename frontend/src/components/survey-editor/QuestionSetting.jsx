@@ -41,7 +41,7 @@ const RenderOptionInput = ({ question, handlePlusMinusOptionButton }) => {
           name={`question-${qId}-option-${opt?.id}`}
           rules={[{ required: true, message: "Please option value" }]}
         >
-          <Input placeholder="Enter an answer choice" />
+          <Input placeholder="Enter an answer option" />
         </Form.Item>
       </Col>
       <Col span={2}>
@@ -269,79 +269,67 @@ const Detail = ({
       {/* Cascade / Nested dropdown */}
       {(type === "cascade" || type === "nested_list") && (
         <div className="question-setting-wrapper">
-          <Form.Item
-            name={`question-${qId}-cascade`}
-            rules={[{ required: true, message: "Please select cascade name" }]}
-          >
-            <Select
-              allowClear
-              className="bg-grey"
-              placeholder={`Select ${type?.split("_").join(" ")} value`}
-              options={cascadeValues?.map((x) => {
-                return {
-                  label: x?.name,
-                  value: x?.id,
-                };
-              })}
-            />
-          </Form.Item>
+          <div className="field-wrapper">
+            <div className="field-label">Question Cascade</div>
+            <Form.Item
+              name={`question-${qId}-cascade`}
+              rules={[{ required: true, message: "Please select cascade" }]}
+            >
+              <Select
+                allowClear
+                className="bg-grey"
+                placeholder={`Select ${type?.split("_").join(" ")}`}
+                options={cascadeValues?.map((x) => {
+                  return {
+                    label: x?.name,
+                    value: x?.id,
+                  };
+                })}
+              />
+            </Form.Item>
+          </div>
         </div>
       )}
       {/* Options */}
       {(type === "option" || type === "multiple_option") && (
         <>
           <div className="question-setting-wrapper">
-            <RenderOptionInput
-              question={question}
-              handlePlusMinusOptionButton={handlePlusMinusOptionButton}
-            />
+            <div className="field-wrapper">
+              <div className="field-label">Question Option</div>
+              <RenderOptionInput
+                question={question}
+                handlePlusMinusOptionButton={handlePlusMinusOptionButton}
+              />
+            </div>
           </div>
           <div className="question-setting-wrapper">
-            <Row align="middle" justify="space-between">
-              <Col span={1}>
-                <Form.Item
-                  name={`question-${qId}-rule-allow_other`}
-                  hidden
-                  noStyle
-                >
-                  <Input />
-                </Form.Item>
-                <Checkbox
-                  checked={allowOther}
-                  onChange={(val) =>
-                    handleAllowOtherChange(
-                      val?.target?.checked,
-                      `question-${qId}-rule-allow_other`
-                    )
-                  }
-                />
-              </Col>
-              <Col span={23}>
-                <Input placeholder='Add an "Other" answer option' disabled />
-              </Col>
-            </Row>
-            {/* <Row>
-          <Col span={1}>
-            <Form.Item name="rule-none">
-              <Checkbox checked={false} />
+            <Form.Item name={`question-${qId}-rule-allow_other`} hidden noStyle>
+              <Input />
             </Form.Item>
-          </Col>
-          <Col span={23}>
-            <Input
-              placeholder='Add a "None of the above" answer option'
-              disabled
-            />
-          </Col>
-        </Row> */}
+            <Space>
+              <Checkbox
+                checked={allowOther}
+                onChange={(val) =>
+                  handleAllowOtherChange(
+                    val?.target?.checked,
+                    `question-${qId}-rule-allow_other`
+                  )
+                }
+              />
+              <span>Add an &quot;Other&quot; answer option</span>
+            </Space>
           </div>
         </>
       )}
       {/* Repeating Objects */}
       <div className="question-setting-wrapper">
-        <RenderRepeatingObjectInput
-          question={question}
-          handlePlusMinusRepeatingObjects={handlePlusMinusRepeatingObjects}
-        />
+        <div className="field-wrapper">
+          <div className="field-label">Extra Field</div>
+          <RenderRepeatingObjectInput
+            question={question}
+            handlePlusMinusRepeatingObjects={handlePlusMinusRepeatingObjects}
+          />
+        </div>
       </div>
     </>
   );
@@ -495,15 +483,21 @@ const Setting = ({
         {/* Question Options */}
         <TabPane tab="Question Options" key="question-option">
           <>
-            <Form.Item name={`question-${qid}-variable_name`}>
-              <Input
-                className="bg-grey"
-                placeholder="Data Column Name (Custom ID)"
-              />
-            </Form.Item>
-            <Form.Item name={`question-${qid}-tooltip`}>
-              <Input placeholder="Tooltip" />
-            </Form.Item>
+            <div className="field-wrapper">
+              <div className="field-label">Variable name (Custom ID)</div>
+              <Form.Item name={`question-${qid}-variable_name`}>
+                <Input
+                  className="bg-grey"
+                  placeholder="Enter cariable name (Custom ID)"
+                />
+              </Form.Item>
+            </div>
+            <div className="field-wrapper">
+              <div className="field-label">Tooltip</div>
+              <Form.Item name={`question-${qid}-tooltip`}>
+                <Input className="bg-grey" placeholder="Enter tooltip" />
+              </Form.Item>
+            </div>
             <Space size={100}>
               <div>
                 <Form.Item name={`question-${qid}-mandatory`} hidden noStyle>
@@ -546,27 +540,30 @@ const Setting = ({
         {/* Skip Logic */}
         <TabPane tab="Skip Logic" key="skip-logic">
           <Space direction="vertical">
-            <div>
+            <div className="field-help">
               This question will only be displayed if the following conditions
               apply
             </div>
-            <Space align="middle">
-              <Form.Item name={`question-${qid}-skip_logic-dependent_to`}>
-                <Select
-                  className="bg-grey"
-                  placeholder="Select question from list"
-                  options={skipLogicQuestion}
-                  style={{ width: "47.5vw" }}
-                />
-              </Form.Item>
-              <Tooltip title="Delete question skip logic">
-                <Button
-                  type="text"
-                  icon={<RiDeleteBinFill />}
-                  onClick={handleOnDeleteSkipLogic}
-                />
-              </Tooltip>
-            </Space>
+            <div className="field-wrapper">
+              <div className="field-label">Dependent to</div>
+              <Space align="middle">
+                <Form.Item name={`question-${qid}-skip_logic-dependent_to`}>
+                  <Select
+                    className="bg-grey"
+                    placeholder="Select question from list"
+                    options={skipLogicQuestion}
+                    style={{ width: "47.5vw" }}
+                  />
+                </Form.Item>
+                <Tooltip title="Delete question skip logic">
+                  <Button
+                    type="text"
+                    icon={<RiDeleteBinFill />}
+                    onClick={handleOnDeleteSkipLogic}
+                  />
+                </Tooltip>
+              </Space>
+            </div>
             <Row align="middle" justify="space-between" gutter={[24, 24]}>
               <Col span={12}>
                 {dependentQuestion && (
@@ -578,52 +575,65 @@ const Setting = ({
                     >
                       <Input />
                     </Form.Item>
-                    <Form.Item
-                      name={`question-${qid}-skip_logic-operator`}
-                      rules={[
-                        { required: true, message: "Please select operator" },
-                      ]}
-                    >
-                      <Select
-                        allowClear
-                        className="bg-grey"
-                        placeholder="Select operator"
-                        options={operators?.map((x) => {
-                          return {
-                            label: x,
-                            value: x,
-                          };
-                        })}
-                      />
-                    </Form.Item>
+                    <div className="field-wrapper">
+                      <div className="field-label">Logic</div>
+                      <Form.Item
+                        name={`question-${qid}-skip_logic-operator`}
+                        rules={[
+                          { required: true, message: "Please select operator" },
+                        ]}
+                      >
+                        <Select
+                          allowClear
+                          className="bg-grey"
+                          placeholder="Select logic"
+                          options={operators?.map((x) => {
+                            return {
+                              label: x,
+                              value: x,
+                            };
+                          })}
+                        />
+                      </Form.Item>
+                    </div>
                   </>
                 )}
               </Col>
               <Col span={12}>
                 {dependentQuestion?.type === "number" && (
-                  <Form.Item
-                    name={`question-${qid}-skip_logic-value`}
-                    rules={[{ required: true, message: "Please input value" }]}
-                  >
-                    <InputNumber className="bg-grey" />
-                  </Form.Item>
+                  <div className="field-wrapper">
+                    <div className="field-label">Value</div>
+                    <Form.Item
+                      name={`question-${qid}-skip_logic-value`}
+                      rules={[
+                        { required: true, message: "Please input value" },
+                      ]}
+                    >
+                      <InputNumber className="bg-grey" />
+                    </Form.Item>
+                  </div>
                 )}
                 {dependentQuestion?.type === "option" && (
-                  <Form.Item
-                    name={`question-${qid}-skip_logic-value`}
-                    rules={[{ required: true, message: "Please select value" }]}
-                  >
-                    <Select
-                      allowClear
-                      mode="multiple"
-                      className="bg-grey"
-                      placeholder="Select value"
-                      options={dependentQuestion?.option?.map((x) => ({
-                        label: x?.name,
-                        value: String(x?.id),
-                      }))}
-                    />
-                  </Form.Item>
+                  <div className="field-wrapper">
+                    <div className="field-label">Value</div>
+                    <Form.Item
+                      name={`question-${qid}-skip_logic-value`}
+                      rules={[
+                        { required: true, message: "Please select value" },
+                      ]}
+                    >
+                      <Select
+                        allowClear
+                        mode="multiple"
+                        className="bg-grey"
+                        placeholder="Select value"
+                        options={dependentQuestion?.option?.map((x) => ({
+                          label: x?.name,
+                          value: String(x?.id),
+                        }))}
+                      />
+                    </Form.Item>
+                  </div>
                 )}
               </Col>
             </Row>
