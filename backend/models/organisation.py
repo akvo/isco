@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from typing_extensions import TypedDict
 from sqlalchemy import Column, Integer, String
 from sqlalchemy import ForeignKey, Boolean, DateTime
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship
 from db.connection import Base
 from models.user import UserBase
 from models.organisation_isco import OrganisationIscoBase
@@ -46,9 +46,9 @@ class Organisation(Base):
         "OrganisationIsco",
         primaryjoin="OrganisationIsco.organisation==Organisation.id",
         backref="organisation_isco_detail")
-    member = relationship(
-        "MemberType",
-        backref=backref("organisation", uselist=False))
+    # member = relationship(
+    #     "MemberType",
+    #     backref=backref("organisation", uselist=False))
 
     def __init__(self, name: str, code: Optional[str],
                  active: Optional[bool], member_type: int):
