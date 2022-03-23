@@ -5,7 +5,7 @@ from models.question_group import QuestionGroupPayload, QuestionGroupDict
 from models.question_group import QuestionGroup, QuestionGroupBase
 from models.question_group_member_access import QuestionGroupMemberAccess
 from models.question_group_isco_access import QuestionGroupIscoAccess
-from db.crud_question import add_question
+from db.crud_question import add_question, delete_question_by_group
 
 
 def add_question_group(session: Session,
@@ -154,6 +154,8 @@ def delete_isco_access_by_group_id(session: Session, question_group: int):
 
 
 def delete_question_group(session: Session, id: int):
+    # delete question
+    delete_question_by_group(session=session, group=id)
     delete_member_access_by_group_id(session=session, question_group=id)
     delete_isco_access_by_group_id(session=session, question_group=id)
     question_group = get_question_group_by_id(session=session, id=id)

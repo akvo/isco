@@ -195,6 +195,27 @@ def delete_isco_access_by_question_id(session: Session, question: int):
     return isco_access
 
 
+def get_question_by_group(session: Session, group: int):
+    question = session.query(Question).filter(
+        Question.question_group == group)
+    return question
+
+
+def delete_question_by_group(session: Session, group: id):
+    # check if exist
+    question = get_question_by_group(session=session, group=group)
+    if question:
+        for q in question.all():
+            delete_member_access_by_question_id(
+                session=session, question=q.id)
+            delete_isco_access_by_question_id(
+                session=session, question=q.id)
+        question.delete()
+        session.commit()
+        session.flush()
+    return question
+
+
 def delete_question(session: Session, id: int):
     delete_member_access_by_question_id(session=session, question=id)
     delete_isco_access_by_question_id(session=session, question=id)
