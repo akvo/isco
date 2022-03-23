@@ -79,6 +79,15 @@ class SkipLogic(Base):
             "type": self.type
         }
 
+    @property
+    def serializeJson(self):
+        return {
+            "id": self.dependent_to,
+            "operator": self.operator,
+            "value": self.value,
+            "type": self.type.value
+        }
+
 
 class SkipLogicBase(BaseModel):
     id: int

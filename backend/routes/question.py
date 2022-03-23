@@ -1,5 +1,7 @@
 from http import HTTPStatus
 from fastapi import Depends, Request, APIRouter, Response
+from fastapi.security import HTTPBearer
+from fastapi.security import HTTPBasicCredentials as credentials
 from typing import List
 from sqlalchemy.orm import Session
 from db.connection import get_session
@@ -8,6 +10,7 @@ from models.question import QuestionBase, QuestionDict
 from models.question import QuestionPayload, QuestionType
 from models.question import RepeatingObjectType
 
+security = HTTPBearer()
 question_route = APIRouter()
 
 
@@ -17,7 +20,8 @@ question_route = APIRouter()
                      name="question:create",
                      tags=["Question"])
 def add(req: Request, payload: QuestionPayload,
-        session: Session = Depends(get_session)):
+        session: Session = Depends(get_session),
+        credentials: credentials = Depends(security)):
     question = crud.add_question(session=session, payload=payload)
     return question.serialize
 
@@ -30,7 +34,8 @@ def add(req: Request, payload: QuestionPayload,
     tags=["Question"])
 def create_default(req: Request, form_id: int,
                    question_group_id: int,
-                   session: Session = Depends(get_session)):
+                   session: Session = Depends(get_session),
+                   credentials: credentials = Depends(security)):
     payload = {
         "form": form_id,
         "question_group": question_group_id,
@@ -113,7 +118,8 @@ def get_by_id(req: Request, id: int,
                     name="question:put",
                     tags=["Question"])
 def update(req: Request, id: int, payload: QuestionPayload,
-           session: Session = Depends(get_session)):
+           session: Session = Depends(get_session),
+           credentials: credentials = Depends(security)):
     question = crud.update_question(session=session, id=id, payload=payload)
     return question.serialize
 
@@ -125,6 +131,7 @@ def update(req: Request, id: int, payload: QuestionPayload,
                        summary="delete question by id",
                        name="question:delete",
                        tags=["Question"])
-def delete(req: Request, id: int, session: Session = Depends(get_session)):
+def delete(req: Request, id: int, session: Session = Depends(get_session),
+           credentials: credentials = Depends(security)):
     crud.delete_question(session=session, id=id)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)

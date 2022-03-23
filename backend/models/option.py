@@ -63,10 +63,37 @@ class Option(Base):
             "order": self.order
         }
 
+    @property
+    def optionName(self):
+        return self.name
+
+    @property
+    def serializeJson(self):
+        translations = []
+        if self.translations:
+            translations = self.translations
+
+        return {
+            "code": self.code,
+            "name": self.name,
+            "order": self.order,
+            "translations": translations
+        }
+
 
 class OptionBase(BaseModel):
     id: int
     question: int
+    code: Optional[str] = None
+    name: str
+    translations: Optional[List[dict]] = []
+    order: Optional[int] = None
+
+    class Config:
+        orm_mode = True
+
+
+class OptionJson(BaseModel):
     code: Optional[str] = None
     name: str
     translations: Optional[List[dict]] = []

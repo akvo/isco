@@ -50,3 +50,9 @@ def delete_option(session: Session, id: int):
     session.delete(option)
     session.commit()
     session.flush()
+
+
+def get_option_by_ids(session: Session, ids: List[int]) -> OptionDict:
+    option = session.query(Option).filter(
+        Option.id.in_(ids)).all()
+    return option

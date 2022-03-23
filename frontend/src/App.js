@@ -1,11 +1,82 @@
 import "./App.scss";
 import React, { useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { Layout } from "./components";
-import { Home, Admin, ManageSurvey, ManageUser, SurveyEditor } from "./pages";
+import {
+  Home,
+  Admin,
+  ManageSurvey,
+  ManageUser,
+  SurveyEditor,
+  Login,
+  Register,
+  ErrorPage,
+} from "./pages";
+import { useCookies } from "react-cookie";
 import { store, api } from "./lib";
+import { useNotification } from "./util";
+
+const Secure = ({ element: Element, adminPage = false }) => {
+  const user = store.useState((s) => s?.user);
+  const [cookies] = useCookies(["AUTH_TOKEN"]);
+  const isAuth = cookies?.AUTH_TOKEN && cookies?.AUTH_TOKEN !== "undefined";
+  const isAuthAdmin = isAuth && user?.role?.includes("admin");
+  if (isAuthAdmin && adminPage) {
+    return <Element />;
+  }
+  if (isAuth && adminPage) {
+    return <ErrorPage status={403} />;
+  }
+  if (isAuth && !adminPage) {
+    return <Element />;
+  }
+  return <Navigate to="/login" />;
+};
 
 const App = () => {
+  const isLoggedIn = store.useState((s) => s?.isLoggedIn);
+  const [cookies, removeCookie] = useCookies(["AUTH_TOKEN"]);
+  const { notify } = useNotification();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    api.setToken(cookies.AUTH_TOKEN);
+    if (!location.pathname.includes("/register")) {
+      if (
+        cookies?.AUTH_TOKEN &&
+        cookies?.AUTH_TOKEN !== "undefined" &&
+        !isLoggedIn
+      ) {
+        api
+          .get("/user/me")
+          .then((res) => {
+            const { data } = res;
+            store.update((s) => {
+              s.isLoggedIn = true;
+              s.user = { ...data };
+            });
+          })
+          .catch((e) => {
+            const { status, statusText } = e.response;
+            console.error(status, statusText);
+            if (status === 401) {
+              removeCookie("AUTH_TOKEN");
+              api.setToken(null);
+              store.update((s) => {
+                s.isLoggedIn = false;
+                s.user = null;
+              });
+              notify({
+                type: "error",
+                message: "Your session has expired",
+              });
+            }
+            navigate("/login");
+          });
+      }
+    }
+  }, [cookies, isLoggedIn, notify, removeCookie, navigate]);
+
   useEffect(() => {
     Promise.all([
       api.get("/question/type"),
@@ -14,6 +85,7 @@ const App = () => {
       api.get("/skip_logic/operator"),
       api.get("/cascade/"),
       api.get("/question/repeating_object"),
+      api.get("/organisation/"),
     ]).then((res) => {
       const [
         question_type,
@@ -22,6 +94,7 @@ const App = () => {
         operator_type,
         cascade,
         repeating_object,
+        organisation,
       ] = res;
       store.update((s) => {
         s.optionValues = {
@@ -33,6 +106,7 @@ const App = () => {
           cascade: cascade?.data?.filter((c) => c?.type === "cascade"),
           nested: cascade?.data?.filter((c) => c?.type === "nested"),
           repeating_object_option: repeating_object?.data,
+          organisation: organisation?.data?.filter((o) => o?.active),
         };
       });
     });
@@ -43,16 +117,31 @@ const App = () => {
       <Layout.Header />
       <Layout.Body>
         <Routes>
-          <Route exact path="/" element={<Home />} />
-          <Route exact path="/home" element={<Home />} />
-          <Route exact path="/admin" element={<Admin />} />
-          <Route exact path="/manage-survey" element={<ManageSurvey />} />
-          <Route exact path="/manage-user" element={<ManageUser />} />
+          <Route exact path="/login" element={<Login />} />
+          <Route exact path="/register" element={<Register />} />
+          <Route exact path="/" element={<Secure element={Home} />} />
+          <Route exact path="/home" element={<Secure element={Home} />} />
+          <Route
+            exact
+            path="/admin"
+            element={<Secure element={Admin} adminPage={true} />}
+          />
+          <Route
+            exact
+            path="/manage-survey"
+            element={<Secure element={ManageSurvey} adminPage={true} />}
+          />
+          <Route
+            exact
+            path="/manage-user"
+            element={<Secure element={ManageUser} adminPage={true} />}
+          />
           <Route
             exact
             path="/survey-editor/:formId"
             element={<SurveyEditor />}
           />
+          <Route exact path="*" element={<ErrorPage status={404} />} />
         </Routes>
       </Layout.Body>
       <Layout.Footer />

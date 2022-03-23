@@ -25,9 +25,11 @@
 
     .ant-form-item-label > label {
       .translation-label {
-        min-width: 12vw;
-        max-width: 24vw;
+        width: 18vw;
         text-align: left;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        white-space: initial;
       }
     }
 
@@ -82,10 +84,6 @@
           .qge-setting-tab-body {
             padding: 12px 20px;
             border-bottom: 2px solid #777777;
-
-            .ant-form-item {
-              margin-bottom: 10px;
-            }
           }
         }
         .qge-button-wrapper {
@@ -104,116 +102,113 @@
         }
       }
     }
-  }
 
-  .question-editor-wrapper {
-    padding: 14px 14px 0 14px;
-    .question-card-wrapper {
-      padding: 0 14px;
-      background-color: $bg-grey;
+    .question-editor-wrapper {
+      padding: 14px 14px 0 14px;
+      .question-card-wrapper {
+        padding: 0 14px;
+        background-color: $bg-grey;
 
-      .left {
-        .ant-form-item {
-          margin: 0;
-        }
-
-        .ant-collapse > .ant-collapse-item {
-          border-bottom: none;
-        }
-
-        .ant-collapse
-          > .ant-collapse-item.ant-collapse-no-arrow
-          > .ant-collapse-header {
-          padding: 0;
-        }
-
-        .ant-row.ant-form-item {
-          width: 100%;
-        }
-
-        .ant-collapse-content > .ant-collapse-content-box {
-          padding: 0;
-        }
-
-        .question-number {
-          margin-right: 5px;
-          margin-top: 3px;
-          font-weight: 600;
-        }
-      }
-
-      .right {
-        position: absolute;
-        top: 12px;
-        right: 0;
-
-        .ant-space {
-          float: right;
-        }
-
-        .custom-dropdown-wrapper {
-          width: 14vw;
-          text-align: left;
-        }
-        .ant-form-item-explain-error {
-          text-align: left;
-        }
-      }
-    }
-
-    .question-menu-wrapper {
-      .active {
-        background-color: $white !important;
-        &:hover {
-          background-color: $white;
-        }
-      }
-    }
-
-    .panel-body-wrapper {
-      .button-wrapper {
-      }
-
-      .input-wrapper {
-        width: calc(100% - 40px);
-        background-color: $white;
-
-        .question-setting-wrapper {
-          padding: 20px;
-          border-bottom: 2px solid #777777;
-
+        .left {
           .ant-form-item {
-            margin-bottom: 12px;
+            margin: 0;
           }
 
-          // .ant-input {
-          //   margin-bottom: 12px;
-          // }
+          .ant-collapse > .ant-collapse-item {
+            border-bottom: none;
+          }
 
-          &.setting {
-            padding: 0 0 20px 0;
+          .ant-collapse
+            > .ant-collapse-item.ant-collapse-no-arrow
+            > .ant-collapse-header {
+            padding: 0;
+          }
 
-            .ant-tabs-content {
-              padding: 0 20px;
+          .ant-row.ant-form-item {
+            width: 100%;
+          }
+
+          .ant-collapse-content > .ant-collapse-content-box {
+            padding: 0;
+          }
+
+          .question-number {
+            margin-right: 5px;
+            margin-top: 3px;
+            font-weight: 600;
+          }
+        }
+
+        .right {
+          position: absolute;
+          top: 12px;
+          right: 0;
+
+          .ant-space {
+            float: right;
+          }
+
+          .custom-dropdown-wrapper {
+            width: 14vw;
+            text-align: left;
+          }
+          .ant-form-item-explain-error {
+            text-align: left;
+          }
+        }
+      }
+
+      .question-menu-wrapper {
+        .active {
+          background-color: $white !important;
+          &:hover {
+            background-color: $white;
+          }
+        }
+      }
+
+      .panel-body-wrapper {
+        .input-wrapper {
+          width: calc(100% - 40px);
+          background-color: $white;
+
+          .question-setting-wrapper {
+            padding: 20px;
+            border-bottom: 2px solid #777777;
+
+            .ant-form-item {
+              margin-bottom: 12px;
+            }
+
+            &.setting {
+              padding: 0 0 20px 0;
+
+              .ant-form-item {
+                margin-bottom: 24px;
+              }
+
+              .ant-tabs-content {
+                padding: 0 20px;
+              }
             }
           }
-        }
 
-        .question-button-wrapper {
-          float: right;
-          padding: 14px;
+          .question-button-wrapper {
+            float: right;
+            padding: 14px;
+          }
         }
       }
-    }
 
-    .translation-tab-wrapper {
-      background-color: $white;
-      width: 100%;
-      padding-top: 5px;
-      border-bottom: 1px solid #777777;
+      .translation-tab-wrapper {
+        background-color: $white;
+        width: 100%;
+        padding-top: 5px;
+        border-bottom: 1px solid #777777;
 
-      button.active {
-        border-bottom: 2px solid #777777;
+        button.active {
+          border-bottom: 2px solid #777777;
+        }
       }
     }
   }

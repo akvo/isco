@@ -13,7 +13,11 @@ import {
   Tooltip,
   Popconfirm,
 } from "antd";
-import { RiSettings5Fill, RiDeleteBinFill } from "react-icons/ri";
+import {
+  RiSettings5Fill,
+  RiDeleteBinFill,
+  RiListOrdered,
+} from "react-icons/ri";
 import { HiPlus } from "react-icons/hi";
 import { AiOutlineGroup } from "react-icons/ai";
 import { MdGTranslate } from "react-icons/md";
@@ -23,28 +27,79 @@ import orderBy from "lodash/orderBy";
 import { defaultRepeatingObject, defaultOption } from "../../lib/store";
 import { generateID } from "../../lib/util";
 import { isoLangs } from "../../lib";
+import { useNotification } from "../../util";
 
 const { TabPane } = Tabs;
 
-const QuestionGroupSetting = ({ questionGroup, repeat, onChangeRepeat }) => {
+const QuestionGroupSetting = ({
+  form,
+  questionGroup,
+  repeat,
+  onChangeRepeat,
+}) => {
   const state = store.useState((s) => s?.surveyEditor);
   const optionValues = store.useState((s) => s?.optionValues);
   const { member_type, isco_type } = optionValues;
   const { languages } = state;
   const qgId = questionGroup?.id;
   const { name, description } = questionGroup;
-
   const [groupTranslationVisible, setGroupTranslationVisible] = useState(false);
+
+  const memberAccessField = `question_group-${qgId}-member_access`;
+  const memberValue = form.getFieldValue(memberAccessField);
+  const memberOption = member_type?.map((item) => {
+    // disabled other value if all selected / id === 1
+    if (memberValue && memberValue?.includes(1)) {
+      return {
+        label: item?.name,
+        value: item?.id,
+        disabled: true,
+      };
+    }
+    return {
+      label: item?.name,
+      value: item?.id,
+    };
+  });
+
+  const iscoAccessField = `question_group-${qgId}-isco_access`;
+  const iscoValue = form.getFieldValue(iscoAccessField);
+  const iscoOption = isco_type?.map((item) => {
+    // disabled other value if all selected / id === 1
+    if (iscoValue && iscoValue?.includes(1)) {
+      return {
+        label: item?.name,
+        value: item?.id,
+        disabled: true,
+      };
+    }
+    return {
+      label: item?.name,
+      value: item?.id,
+    };
+  });
 
   return (
     <div className="qge-setting-wrapper">
       <Tabs
         tabBarExtraContent={
-          <Button
-            icon={<MdGTranslate />}
-            type="text"
-            onClick={() => setGroupTranslationVisible(!groupTranslationVisible)}
-          />
+          groupTranslationVisible ? (
+            <Tooltip title="Show section setting">
+              <Button
+                icon={<RiSettings5Fill />}
+                type="text"
+                onClick={() => setGroupTranslationVisible(false)}
+              />
+            </Tooltip>
+          ) : (
+            <Tooltip title="Show section translation setting">
+              <Button
+                icon={<MdGTranslate />}
+                type="text"
+                onClick={() => setGroupTranslationVisible(true)}
+              />
+            </Tooltip>
+          )
         }
       >
         {/* Group setting */}
@@ -58,12 +113,15 @@ const QuestionGroupSetting = ({ questionGroup, repeat, onChangeRepeat }) => {
                 className="qge-setting-tab-body"
               >
                 <Col span={10}>
-                  <Form.Item name={`question_group-${qgId}-description`}>
-                    <Input.TextArea
-                      rows={3}
-                      placeholder="Question Group Description"
-                    />
-                  </Form.Item>
+                  <div className="field-wrapper">
+                    <div className="field-label">Section Description</div>
+                    <Form.Item name={`question_group-${qgId}-description`}>
+                      <Input.TextArea
+                        rows={3}
+                        placeholder="Type section description here..."
+                      />
+                    </Form.Item>
+                  </div>
                   <Form.Item
                     name={`question_group-${qgId}-repeat`}
                     hidden
@@ -83,52 +141,57 @@ const QuestionGroupSetting = ({ questionGroup, repeat, onChangeRepeat }) => {
                   </Space>
                 </Col>
                 <Col span={7}>
-                  <Form.Item
-                    name={`question_group-${qgId}-member_access`}
-                    rules={[
-                      { required: true, message: "Please select member type" },
-                    ]}
-                  >
-                    <Select
-                      mode="multiple"
-                      showSearch={true}
-                      className="custom-dropdown-wrapper"
-                      placeholder="Member Type"
-                      options={member_type?.map((item) => ({
-                        label: item?.name,
-                        value: item?.id,
-                      }))}
-                      filterOption={(input, option) =>
-                        option.label
-                          .toLowerCase()
-                          .indexOf(input.toLowerCase()) >= 0
-                      }
-                    />
-                  </Form.Item>
+                  <div className="field-wrapper">
+                    <div className="field-label">Member Type</div>
+                    <Form.Item
+                      name={memberAccessField}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please select member type",
+                        },
+                      ]}
+                    >
+                      <Select
+                        allowClear
+                        mode="multiple"
+                        showSearch={true}
+                        className="custom-dropdown-wrapper"
+                        placeholder="Select Member Type"
+                        options={memberOption}
+                        filterOption={(input, option) =>
+                          option.label
+                            .toLowerCase()
+                            .indexOf(input.toLowerCase()) >= 0
+                        }
+                      />
+                    </Form.Item>
+                  </div>
                 </Col>
                 <Col span={7}>
-                  <Form.Item
-                    name={`question_group-${qgId}-isco_access`}
-                    rules={[
-                      { required: true, message: "Please select isco type" },
-                    ]}
-                  >
-                    <Select
-                      mode="multiple"
-                      showSearch={true}
-                      className="custom-dropdown-wrapper"
-                      placeholder="ISCO Type"
-                      options={isco_type?.map((item) => ({
-                        label: item?.name,
-                        value: item?.id,
-                      }))}
-                      filterOption={(input, option) =>
-                        option.label
-                          .toLowerCase()
-                          .indexOf(input.toLowerCase()) >= 0
-                      }
-                    />
-                  </Form.Item>
+                  <div className="field-wrapper">
+                    <div className="field-label">ISCO Type</div>
+                    <Form.Item
+                      name={iscoAccessField}
+                      rules={[
+                        { required: true, message: "Please select isco type" },
+                      ]}
+                    >
+                      <Select
+                        allowClear
+                        mode="multiple"
+                        showSearch={true}
+                        className="custom-dropdown-wrapper"
+                        placeholder="Select ISCO Type"
+                        options={iscoOption}
+                        filterOption={(input, option) =>
+                          option.label
+                            .toLowerCase()
+                            .indexOf(input.toLowerCase()) >= 0
+                        }
+                      />
+                    </Form.Item>
+                  </div>
                 </Col>
               </Row>
             </TabPane>
@@ -195,6 +258,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
   const [submitStatus, setSubmitStatus] = useState(null);
   const [repeat, setRepeat] = useState(false);
   const [saveBtnLoading, setSaveBtnLoading] = useState(false);
+  const { notify } = useNotification();
 
   useEffect(() => {
     if (questionGroup.id) {
@@ -304,10 +368,18 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
             ),
           };
         });
+        notify({
+          type: "success",
+          message: "Section deleted successfully.",
+        });
       })
       .catch((e) => {
         const { status, statusText } = e.response;
         console.error(status, statusText);
+        notify({
+          type: "error",
+          message: "Oops, something went wrong.",
+        });
       });
   };
 
@@ -337,10 +409,18 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
               ],
             };
           });
+          notify({
+            type: "success",
+            message: "Section saved successfully.",
+          });
         })
         .catch((e) => {
           const { status, statusText } = e.response;
           console.error(status, statusText);
+          notify({
+            type: "error",
+            message: "Oops, something went wrong.",
+          });
         })
         .finally(() => {
           setSubmitStatus(null);
@@ -367,6 +447,15 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
         repeating_objects: repeatingObject?.length > 0 ? repeatingObject : null,
         skip_logic: null,
         cascade: findQuestion?.cascade || null,
+      };
+
+      /**
+       * * add member/isco access value inherited from question group,
+       * * this will be changed in the future, to get member/isco value from dropdown on question editor */
+      data = {
+        ...data,
+        member_access: questionGroup?.member_access,
+        isco_access: questionGroup?.isco_access,
       };
 
       // delete question option before update
@@ -559,10 +648,18 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
               deletedOptions: [],
             };
           });
+          notify({
+            type: "success",
+            message: "Question saved successfully.",
+          });
         })
         .catch((e) => {
           const { status, statusText } = e.response;
           console.error(status, statusText);
+          notify({
+            type: "error",
+            message: "Oops, something went wrong.",
+          });
         })
         .finally(() => {
           setSubmitStatus(null);
@@ -605,8 +702,6 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
             ],
           };
         }
-
-        console.info("handleFormOnValuesChange", findQuestionGroup);
 
         const filterQuestionGroup = state?.questionGroup?.filter(
           (x) => x?.id !== questionGroup?.id
@@ -745,8 +840,6 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
           };
         }
 
-        console.info("handleFormOnValuesChange", findQuestion);
-
         const filterQuestionGroup = state?.questionGroup?.filter(
           (x) => x?.id !== questionGroup?.id
         );
@@ -806,18 +899,28 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
                     { required: true, message: "Please input section title" },
                   ]}
                 >
-                  <Input placeholder="Section Title" />
+                  <Input size="large" placeholder="Section Title" />
                 </Form.Item>
               </Col>
               <Col span={6} align="end" className="right">
                 <Space size={1} align="center">
-                  <Button
-                    type="text"
-                    icon={<RiSettings5Fill />}
-                    onClick={() =>
-                      setIsGroupSettingVisible(!isGroupSettingVisible)
-                    }
-                  />
+                  {isGroupSettingVisible ? (
+                    <Tooltip title="Show section question">
+                      <Button
+                        type="text"
+                        icon={<RiListOrdered />}
+                        onClick={() => setIsGroupSettingVisible(false)}
+                      />
+                    </Tooltip>
+                  ) : (
+                    <Tooltip title="Show section setting">
+                      <Button
+                        type="text"
+                        icon={<RiSettings5Fill />}
+                        onClick={() => setIsGroupSettingVisible(true)}
+                      />
+                    </Tooltip>
+                  )}
                   <Popconfirm
                     title="Delete section can't be undone."
                     okText="Delete"
@@ -826,7 +929,9 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
                       handleDeleteQuestionGroupButton(questionGroup)
                     }
                   >
-                    <Button type="text" icon={<RiDeleteBinFill />} />
+                    <Tooltip title="Delete this section">
+                      <Button type="text" icon={<RiDeleteBinFill />} />
+                    </Tooltip>
                   </Popconfirm>
                 </Space>
               </Col>

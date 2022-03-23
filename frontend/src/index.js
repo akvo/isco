@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router } from "react-router-dom";
 import { createBrowserHistory } from "history";
+import { CookiesProvider } from "react-cookie";
 import "antd/dist/antd.min.css";
 import "./index.scss"; // only to reset antd style
 import App from "./App";
@@ -10,9 +11,11 @@ import reportWebVitals from "./reportWebVitals";
 const history = createBrowserHistory();
 
 ReactDOM.render(
-  <Router history={history}>
-    <App />
-  </Router>,
+  <CookiesProvider>
+    <Router history={history}>
+      <App />
+    </Router>
+  </CookiesProvider>,
   document.getElementById("root")
 );
 

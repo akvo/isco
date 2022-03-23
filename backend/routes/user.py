@@ -75,7 +75,8 @@ def verify_email(req: Request, id: int,
                 name="user:filter_by_member_type",
                 tags=["User"])
 def filter_user_by_member(req: Request, member_type: int,
-                          session: Session = Depends(get_session)):
+                          session: Session = Depends(get_session),
+                          credentials: credentials = Depends(security)):
     user = crud_user.get_user_by_member_type(session=session,
                                              member_type=member_type)
     return [u.serialize for u in user]

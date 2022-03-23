@@ -1,5 +1,7 @@
 from http import HTTPStatus
 from fastapi import Depends, Request, APIRouter, Response
+from fastapi.security import HTTPBearer
+from fastapi.security import HTTPBasicCredentials as credentials
 from typing import List
 from sqlalchemy.orm import Session
 import db.crud_cascade as crud
@@ -8,6 +10,7 @@ from models.cascade import CascadeBase, CascadeDict, CascadePayload
 from models.cascade_list import CascadeListPayload, CascadeListBase
 from models.cascade_list import CascadeListDict
 
+security = HTTPBearer()
 cascade_route = APIRouter()
 
 
@@ -20,7 +23,8 @@ cascade_route = APIRouter()
                     name="cascade:create",
                     tags=["Cascade"])
 def add(req: Request, cascade: CascadePayload,
-        session: Session = Depends(get_session)):
+        session: Session = Depends(get_session),
+        credentials: credentials = Depends(security)):
     cascade = crud.add_cascade(session=session, payload=cascade)
     return cascade.serialize
 
@@ -51,7 +55,8 @@ def get_by_id(req: Request, id: int, session: Session = Depends(get_session)):
                    name="cascade:put",
                    tags=["Cascade"])
 def update(req: Request, id: int, payload: CascadePayload,
-           session: Session = Depends(get_session)):
+           session: Session = Depends(get_session),
+           credentials: credentials = Depends(security)):
     cascade = crud.update_cascade(session=session, id=id, payload=payload)
     return cascade.serialize
 
@@ -64,7 +69,8 @@ def update(req: Request, id: int, payload: CascadePayload,
                       summary="delete cascade by id",
                       name="cascade:delete",
                       tags=["Cascade"])
-def delete(req: Request, id: int, session: Session = Depends(get_session)):
+def delete(req: Request, id: int, session: Session = Depends(get_session),
+           credentials: credentials = Depends(security)):
     crud.delete_cascade(session=session, id=id)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)
 
@@ -78,7 +84,8 @@ def delete(req: Request, id: int, session: Session = Depends(get_session)):
                     name="cascade_list:create",
                     tags=["Cascade"])
 def add_cascade_list(req: Request, payload: CascadeListPayload,
-                     session: Session = Depends(get_session)):
+                     session: Session = Depends(get_session),
+                     credentials: credentials = Depends(security)):
     clist = crud.add_cascade_list(session=session, payload=payload)
     return clist.serialize
 
@@ -100,6 +107,7 @@ def get_cascade_list_by_id(req: Request, id: int,
                    name="cascade_list:put",
                    tags=["Cascade"])
 def update_cascade_list(req: Request, id: int, payload: CascadeListPayload,
-                        session: Session = Depends(get_session)):
+                        session: Session = Depends(get_session),
+                        credentials: credentials = Depends(security)):
     clist = crud.update_cascade_list(session=session, id=id, payload=payload)
     return clist.serialize

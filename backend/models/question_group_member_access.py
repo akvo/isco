@@ -7,6 +7,7 @@ from typing_extensions import TypedDict
 from sqlalchemy import Column, Integer
 from sqlalchemy import ForeignKey
 from db.connection import Base
+from sqlalchemy.orm import relationship, backref
 
 
 class QuestionGroupMemberAccessPayload(TypedDict):
@@ -25,6 +26,8 @@ class QuestionGroupMemberAccess(Base):
     id = Column(Integer, primary_key=True, index=True, nullable=True)
     question_group = Column(Integer, ForeignKey('question_group.id'))
     member_type = Column(Integer, ForeignKey('member_type.id'))
+    member = relationship("MemberType",
+                          backref=backref("member_type", uselist=False))
 
     def __init__(self, id: Optional[int], question_group: int,
                  member_type: int):
@@ -42,6 +45,10 @@ class QuestionGroupMemberAccess(Base):
             "question_group": self.question_group,
             "member_type": self.member_type
         }
+
+    @property
+    def memberName(self):
+        return self.member.name
 
 
 class QuestionGroupMemberAccessBase(BaseModel):

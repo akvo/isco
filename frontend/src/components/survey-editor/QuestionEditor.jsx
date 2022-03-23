@@ -10,12 +10,14 @@ import {
   Select,
   Collapse,
   Popconfirm,
+  Tooltip,
 } from "antd";
 import { RiSettings5Fill, RiDeleteBinFill } from "react-icons/ri";
 import { MdGTranslate } from "react-icons/md";
 import QuestionSetting from "./QuestionSetting";
 import { store, api } from "../../lib";
 import { isoLangs } from "../../lib";
+import { useNotification } from "../../util";
 
 const { Panel } = Collapse;
 
@@ -55,20 +57,23 @@ const TranslationTab = ({ activeLang, setActiveLang }) => {
 const QuestionMenu = ({ activeSetting, setActiveSetting }) => {
   return (
     <Space direction="vertical" size={1} className="question-menu-wrapper">
-      <Button
-        className={`${activeSetting === "setting" ? "active" : ""}`}
-        type="text"
-        icon={<RiSettings5Fill />}
-        onClick={() => setActiveSetting("setting")}
-      />
+      <Tooltip title="Show question setting">
+        <Button
+          className={`${activeSetting === "setting" ? "active" : ""}`}
+          type="text"
+          icon={<RiSettings5Fill />}
+          onClick={() => setActiveSetting("setting")}
+        />
+      </Tooltip>
       {/* <Button type="text" icon={<MdFileCopy />} /> */}
-      <Button
-        className={`${activeSetting === "translation" ? "active" : ""}`}
-        type="text"
-        icon={<MdGTranslate />}
-        onClick={() => setActiveSetting("translation")}
-      />
-      {/* <Button type="text" icon={<RiDeleteBinFill />} /> */}
+      <Tooltip title="Show question translation setting">
+        <Button
+          className={`${activeSetting === "translation" ? "active" : ""}`}
+          type="text"
+          icon={<MdGTranslate />}
+          onClick={() => setActiveSetting("translation")}
+        />
+      </Tooltip>
     </Space>
   );
 };
@@ -87,6 +92,7 @@ const QuestionEditor = ({
   const { question_type } = optionValues;
   const qId = question?.id;
   const panelKey = `qe-${qId}`;
+  const { notify } = useNotification();
 
   const [activePanel, setActivePanel] = useState(null);
   const [activeSetting, setActiveSetting] = useState("detail");
@@ -201,10 +207,18 @@ const QuestionEditor = ({
             questionGroup: [...filterQuestionGroup, deletedQuestionOnQg],
           };
         });
+        notify({
+          type: "success",
+          message: "Question deleted successfully.",
+        });
       })
       .catch((e) => {
         const { status, statusText } = e.response;
         console.error(status, statusText);
+        notify({
+          type: "error",
+          message: "Oops, something went wrong.",
+        });
       });
   };
 
@@ -220,17 +234,19 @@ const QuestionEditor = ({
                   showArrow={false}
                   header={
                     <>
-                      <Button
-                        className="question-number"
-                        type="text"
-                        size="small"
-                        onClick={() => {
-                          setActivePanel(panelKey);
-                          setActiveSetting("detail");
-                        }}
-                      >
-                        {`Q${index}`}
-                      </Button>
+                      <Tooltip title="Show question details">
+                        <Button
+                          className="question-number"
+                          type="text"
+                          size="small"
+                          onClick={() => {
+                            setActivePanel(panelKey);
+                            setActiveSetting("detail");
+                          }}
+                        >
+                          {`Q${index}`}
+                        </Button>
+                      </Tooltip>
                       {(activeSetting === "detail" ||
                         activeSetting === "setting") && (
                         <QuestionNameInput index={index} question={question} />
@@ -255,6 +271,7 @@ const QuestionEditor = ({
                       <QuestionSetting
                         form={form}
                         activeSetting={activeSetting}
+                        setActiveSetting={setActiveSetting}
                         questionGroup={questionGroup}
                         question={question}
                         handleFormOnValuesChange={handleFormOnValuesChange}
@@ -307,7 +324,9 @@ const QuestionEditor = ({
                   cancelText="Cancel"
                   onConfirm={() => handleDeleteQuestionButton(question)}
                 >
-                  <Button type="text" icon={<RiDeleteBinFill />} />
+                  <Tooltip title="Delete this question">
+                    <Button type="text" icon={<RiDeleteBinFill />} />
+                  </Tooltip>
                 </Popconfirm>
               </Space>
             </Col>

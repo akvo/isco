@@ -7,6 +7,7 @@ from typing_extensions import TypedDict
 from sqlalchemy import Column, Integer
 from sqlalchemy import ForeignKey
 from db.connection import Base
+from sqlalchemy.orm import relationship, backref
 
 
 class QuestionGroupIscoAccessPayload(TypedDict):
@@ -25,6 +26,8 @@ class QuestionGroupIscoAccess(Base):
     id = Column(Integer, primary_key=True, index=True, nullable=True)
     question_group = Column(Integer, ForeignKey('question_group.id'))
     isco_type = Column(Integer, ForeignKey('isco_type.id'))
+    isco = relationship("IscoType",
+                        backref=backref("member_type", uselist=False))
 
     def __init__(self, id: Optional[int], question_group: int,
                  isco_type: int):
@@ -42,6 +45,10 @@ class QuestionGroupIscoAccess(Base):
             "question_group": self.question_group,
             "isco_type": self.isco_type
         }
+
+    @property
+    def iscoName(self):
+        return self.isco.name
 
 
 class QuestionGroupIscoAccessBase(BaseModel):
