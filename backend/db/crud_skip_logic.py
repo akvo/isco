@@ -68,5 +68,5 @@ def get_skip_logic_by_dependent(session: Session, question: int):
     if skip_logic:
         raise HTTPException(
             status_code=422,
-            detail=f"This question used as dependency")
+            detail="This question used as dependency")
     return skip_logic
