@@ -40,9 +40,13 @@ const App = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    api.setToken(cookies.AUTH_TOKEN);
     if (!location.pathname.includes("/register")) {
-      if (cookies?.AUTH_TOKEN && !isLoggedIn) {
-        api.setToken(cookies.AUTH_TOKEN);
+      if (
+        cookies?.AUTH_TOKEN &&
+        cookies?.AUTH_TOKEN !== "undefined" &&
+        !isLoggedIn
+      ) {
         api
           .get("/user/me")
           .then((res) => {
