@@ -27,6 +27,7 @@ import orderBy from "lodash/orderBy";
 import { defaultRepeatingObject, defaultOption } from "../../lib/store";
 import { generateID } from "../../lib/util";
 import { isoLangs } from "../../lib";
+import { useNotification } from "../../util";
 
 const { TabPane } = Tabs;
 
@@ -257,6 +258,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
   const [submitStatus, setSubmitStatus] = useState(null);
   const [repeat, setRepeat] = useState(false);
   const [saveBtnLoading, setSaveBtnLoading] = useState(false);
+  const { notify } = useNotification();
 
   useEffect(() => {
     if (questionGroup.id) {
@@ -366,10 +368,18 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
             ),
           };
         });
+        notify({
+          type: "success",
+          message: "Section deleted successfully.",
+        });
       })
       .catch((e) => {
         const { status, statusText } = e.response;
         console.error(status, statusText);
+        notify({
+          type: "error",
+          message: "Opps, something went wrong.",
+        });
       });
   };
 
@@ -399,10 +409,18 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
               ],
             };
           });
+          notify({
+            type: "success",
+            message: "Section saved successfully.",
+          });
         })
         .catch((e) => {
           const { status, statusText } = e.response;
           console.error(status, statusText);
+          notify({
+            type: "error",
+            message: "Opps, something went wrong.",
+          });
         })
         .finally(() => {
           setSubmitStatus(null);
@@ -630,10 +648,18 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
               deletedOptions: [],
             };
           });
+          notify({
+            type: "success",
+            message: "Question saved successfully.",
+          });
         })
         .catch((e) => {
           const { status, statusText } = e.response;
           console.error(status, statusText);
+          notify({
+            type: "error",
+            message: "Opps, something went wrong.",
+          });
         })
         .finally(() => {
           setSubmitStatus(null);

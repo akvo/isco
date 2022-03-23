@@ -17,6 +17,7 @@ import { MdGTranslate } from "react-icons/md";
 import QuestionSetting from "./QuestionSetting";
 import { store, api } from "../../lib";
 import { isoLangs } from "../../lib";
+import { useNotification } from "../../util";
 
 const { Panel } = Collapse;
 
@@ -91,6 +92,7 @@ const QuestionEditor = ({
   const { question_type } = optionValues;
   const qId = question?.id;
   const panelKey = `qe-${qId}`;
+  const { notify } = useNotification();
 
   const [activePanel, setActivePanel] = useState(null);
   const [activeSetting, setActiveSetting] = useState("detail");
@@ -205,10 +207,18 @@ const QuestionEditor = ({
             questionGroup: [...filterQuestionGroup, deletedQuestionOnQg],
           };
         });
+        notify({
+          type: "success",
+          message: "Question deleted successfully.",
+        });
       })
       .catch((e) => {
         const { status, statusText } = e.response;
         console.error(status, statusText);
+        notify({
+          type: "error",
+          message: "Opps, something went wrong.",
+        });
       });
   };
 

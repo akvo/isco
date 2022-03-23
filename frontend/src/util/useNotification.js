@@ -5,7 +5,7 @@ import { message } from "antd";
 function useNotification() {
   return useMemo(() => {
     const notify = ({ type, message: content, ...props }) => {
-      message.config({ top: 20 });
+      message.config({ top: 10 });
       message.open({
         type,
         content,
