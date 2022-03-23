@@ -53,20 +53,22 @@ def delete_skip_logic(session: Session, id: int):
     session.flush()
 
 
-def delete_skip_logic_by_question(session: Session, question: int):
-    skip_logic = session.query(SkipLogic).filter(
-        SkipLogic.question == question)
-    skip_logic.delete()
-    session.commit()
-    session.flush()
-    return skip_logic
-
-
 def get_skip_logic_by_dependent(session: Session, question: int):
     skip_logic = session.query(SkipLogic).filter(
         SkipLogic.dependent_to == question).first()
     if skip_logic:
         raise HTTPException(
             status_code=422,
-            detail="This question used as dependency")
+            detail="This question used as a dependency for other question")
+    return skip_logic
+
+
+def delete_skip_logic_by_question(session: Session, question: int):
+    get_skip_logic_by_dependent(
+        session=session, question=question)
+    skip_logic = session.query(SkipLogic).filter(
+        SkipLogic.question == question)
+    skip_logic.delete()
+    session.commit()
+    session.flush()
     return skip_logic
