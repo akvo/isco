@@ -11,6 +11,7 @@ import {
   Tabs,
   Switch,
   Select,
+  Tooltip,
 } from "antd";
 import { RiDeleteBinFill } from "react-icons/ri";
 import { BiRadioCircle } from "react-icons/bi";
@@ -558,11 +559,13 @@ const Setting = ({
                   style={{ width: "47.5vw" }}
                 />
               </Form.Item>
-              <Button
-                type="text"
-                icon={<RiDeleteBinFill />}
-                onClick={handleOnDeleteSkipLogic}
-              />
+              <Tooltip title="Delete question skip logic">
+                <Button
+                  type="text"
+                  icon={<RiDeleteBinFill />}
+                  onClick={handleOnDeleteSkipLogic}
+                />
+              </Tooltip>
             </Space>
             <Row align="middle" justify="space-between" gutter={[24, 24]}>
               <Col span={12}>

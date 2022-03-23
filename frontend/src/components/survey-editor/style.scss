@@ -25,9 +25,11 @@
 
     .ant-form-item-label > label {
       .translation-label {
-        min-width: 12vw;
-        max-width: 24vw;
+        width: 18vw;
         text-align: left;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        white-space: initial;
       }
     }
 

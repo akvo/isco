@@ -13,7 +13,11 @@ import {
   Tooltip,
   Popconfirm,
 } from "antd";
-import { RiSettings5Fill, RiDeleteBinFill } from "react-icons/ri";
+import {
+  RiSettings5Fill,
+  RiDeleteBinFill,
+  RiListOrdered,
+} from "react-icons/ri";
 import { HiPlus } from "react-icons/hi";
 import { AiOutlineGroup } from "react-icons/ai";
 import { MdGTranslate } from "react-icons/md";
@@ -38,6 +42,7 @@ const QuestionGroupSetting = ({
   const { languages } = state;
   const qgId = questionGroup?.id;
   const { name, description } = questionGroup;
+  const [groupTranslationVisible, setGroupTranslationVisible] = useState(false);
 
   const memberAccessField = `question_group-${qgId}-member_access`;
   const memberValue = form.getFieldValue(memberAccessField);
@@ -73,17 +78,27 @@ const QuestionGroupSetting = ({
     };
   });
 
-  const [groupTranslationVisible, setGroupTranslationVisible] = useState(false);
-
   return (
     <div className="qge-setting-wrapper">
       <Tabs
         tabBarExtraContent={
-          <Button
-            icon={<MdGTranslate />}
-            type="text"
-            onClick={() => setGroupTranslationVisible(!groupTranslationVisible)}
-          />
+          groupTranslationVisible ? (
+            <Tooltip title="Show section setting">
+              <Button
+                icon={<RiSettings5Fill />}
+                type="text"
+                onClick={() => setGroupTranslationVisible(false)}
+              />
+            </Tooltip>
+          ) : (
+            <Tooltip title="Show section translation setting">
+              <Button
+                icon={<MdGTranslate />}
+                type="text"
+                onClick={() => setGroupTranslationVisible(true)}
+              />
+            </Tooltip>
+          )
         }
       >
         {/* Group setting */}
@@ -851,13 +866,23 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
               </Col>
               <Col span={6} align="end" className="right">
                 <Space size={1} align="center">
-                  <Button
-                    type="text"
-                    icon={<RiSettings5Fill />}
-                    onClick={() =>
-                      setIsGroupSettingVisible(!isGroupSettingVisible)
-                    }
-                  />
+                  {isGroupSettingVisible ? (
+                    <Tooltip title="Show section question">
+                      <Button
+                        type="text"
+                        icon={<RiListOrdered />}
+                        onClick={() => setIsGroupSettingVisible(false)}
+                      />
+                    </Tooltip>
+                  ) : (
+                    <Tooltip title="Show section setting">
+                      <Button
+                        type="text"
+                        icon={<RiSettings5Fill />}
+                        onClick={() => setIsGroupSettingVisible(true)}
+                      />
+                    </Tooltip>
+                  )}
                   <Popconfirm
                     title="Delete section can't be undone."
                     okText="Delete"
@@ -866,7 +891,9 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
                       handleDeleteQuestionGroupButton(questionGroup)
                     }
                   >
-                    <Button type="text" icon={<RiDeleteBinFill />} />
+                    <Tooltip title="Delete this section">
+                      <Button type="text" icon={<RiDeleteBinFill />} />
+                    </Tooltip>
                   </Popconfirm>
                 </Space>
               </Col>

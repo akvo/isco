@@ -10,6 +10,7 @@ import {
   Select,
   Collapse,
   Popconfirm,
+  Tooltip,
 } from "antd";
 import { RiSettings5Fill, RiDeleteBinFill } from "react-icons/ri";
 import { MdGTranslate } from "react-icons/md";
@@ -55,20 +56,23 @@ const TranslationTab = ({ activeLang, setActiveLang }) => {
 const QuestionMenu = ({ activeSetting, setActiveSetting }) => {
   return (
     <Space direction="vertical" size={1} className="question-menu-wrapper">
-      <Button
-        className={`${activeSetting === "setting" ? "active" : ""}`}
-        type="text"
-        icon={<RiSettings5Fill />}
-        onClick={() => setActiveSetting("setting")}
-      />
+      <Tooltip title="Show question setting">
+        <Button
+          className={`${activeSetting === "setting" ? "active" : ""}`}
+          type="text"
+          icon={<RiSettings5Fill />}
+          onClick={() => setActiveSetting("setting")}
+        />
+      </Tooltip>
       {/* <Button type="text" icon={<MdFileCopy />} /> */}
-      <Button
-        className={`${activeSetting === "translation" ? "active" : ""}`}
-        type="text"
-        icon={<MdGTranslate />}
-        onClick={() => setActiveSetting("translation")}
-      />
-      {/* <Button type="text" icon={<RiDeleteBinFill />} /> */}
+      <Tooltip title="Show question translation setting">
+        <Button
+          className={`${activeSetting === "translation" ? "active" : ""}`}
+          type="text"
+          icon={<MdGTranslate />}
+          onClick={() => setActiveSetting("translation")}
+        />
+      </Tooltip>
     </Space>
   );
 };
@@ -220,17 +224,19 @@ const QuestionEditor = ({
                   showArrow={false}
                   header={
                     <>
-                      <Button
-                        className="question-number"
-                        type="text"
-                        size="small"
-                        onClick={() => {
-                          setActivePanel(panelKey);
-                          setActiveSetting("detail");
-                        }}
-                      >
-                        {`Q${index}`}
-                      </Button>
+                      <Tooltip title="Show question details">
+                        <Button
+                          className="question-number"
+                          type="text"
+                          size="small"
+                          onClick={() => {
+                            setActivePanel(panelKey);
+                            setActiveSetting("detail");
+                          }}
+                        >
+                          {`Q${index}`}
+                        </Button>
+                      </Tooltip>
                       {(activeSetting === "detail" ||
                         activeSetting === "setting") && (
                         <QuestionNameInput index={index} question={question} />
@@ -308,7 +314,9 @@ const QuestionEditor = ({
                   cancelText="Cancel"
                   onConfirm={() => handleDeleteQuestionButton(question)}
                 >
-                  <Button type="text" icon={<RiDeleteBinFill />} />
+                  <Tooltip title="Delete this question">
+                    <Button type="text" icon={<RiDeleteBinFill />} />
+                  </Tooltip>
                 </Popconfirm>
               </Space>
             </Col>
