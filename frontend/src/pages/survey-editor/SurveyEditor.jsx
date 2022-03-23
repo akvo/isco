@@ -5,7 +5,7 @@ import { MainEditor } from "../../components";
 import { useParams } from "react-router-dom";
 import { store, api } from "../../lib";
 import { defaultRepeatingObject, defaultOption } from "../../lib/store";
-import { generateID } from "../../lib/util";
+import { generateID, generateQuestionCurrentOrder } from "../../lib/util";
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
@@ -58,6 +58,15 @@ const SurveyEditor = () => {
         console.error(status, statusText);
       });
   }, [formId]);
+
+  // generateCurrent order for every state update
+  useEffect(() => {
+    if (state?.id) {
+      store?.update((s) => {
+        s.surveyEditor = generateQuestionCurrentOrder(state);
+      });
+    }
+  }, [state]);
 
   const countAllQuestion = useMemo(() => {
     return state?.questionGroup?.flatMap((q) => q?.question)?.length;

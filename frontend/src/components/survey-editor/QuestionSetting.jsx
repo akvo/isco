@@ -16,7 +16,7 @@ import { RiDeleteBinFill } from "react-icons/ri";
 import { BiRadioCircle } from "react-icons/bi";
 import { HiPlus, HiMinus } from "react-icons/hi";
 import { store } from "../../lib";
-import orderBy from "lodash/orderBy";
+import { orderBy, take } from "lodash";
 import { defaultOption, defaultRepeatingObject } from "../../lib/store";
 import { generateID, insert } from "../../lib/util";
 import { isoLangs } from "../../lib";
@@ -410,7 +410,8 @@ const Setting = ({
   const qid = question?.id;
   const { type } = question;
   const allQuestion = state?.questionGroup?.flatMap((qg) => qg?.question);
-  const skipLogicQuestion = allQuestion
+  // take skip logic question by question current order
+  const skipLogicQuestion = take(allQuestion, question?.currentOrder)
     ?.filter((q) => ["option", "number"].includes(q?.type) && q?.id !== qid)
     ?.map((q) => ({
       label: q?.name,
