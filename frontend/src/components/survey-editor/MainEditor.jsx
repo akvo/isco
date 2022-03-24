@@ -7,25 +7,25 @@ import orderBy from "lodash/orderBy";
 
 const MainEditor = () => {
   const [form] = Form.useForm();
-  const state = store.useState((s) => s?.surveyEditor);
-  const formId = state?.id;
+  const surveyEditor = store.useState((s) => s?.surveyEditor);
+  const { id: formId, name, description, languages } = surveyEditor;
 
-  const { questionGroup } = state;
+  const { questionGroup } = surveyEditor;
   const [saveButtonLoading, setSaveButtonLoading] = useState(false);
 
   useEffect(() => {
     if (formId) {
       const formFields = {
-        "form-name": state?.name,
-        "form-description": state?.description,
-        "form-languages": state?.languages,
+        "form-name": name,
+        "form-description": description,
+        "form-languages": languages,
       };
       // set form fields initial value
       Object.keys(formFields).forEach((key) => {
         form.setFieldsValue({ [key]: formFields?.[key] });
       });
     }
-  }, [state, formId, form]);
+  }, [name, description, languages, formId, form]);
 
   const onSubmitForm = (values) => {
     setSaveButtonLoading(true);

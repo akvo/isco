@@ -70,19 +70,34 @@ const Question = ({
       });
   };
 
-  const handleMove = (currentOrder) => {
-    const { id, order } = isMoveQuestion;
+  const handleMove = (targetOrder) => {
+    const { id, order: selectedOrder } = isMoveQuestion;
     api
-      .put(`/move-question/${id}/${order}/${currentOrder}`)
+      .put(`/move-question/${id}/${selectedOrder}/${targetOrder}`)
       .then(() => {
         const updatedQuestionGroup = questionGroupState.map((qg) => {
           const questions = qg.question.map((q) => {
-            const newOrder =
-              q.order >= currentOrder && q.order !== order && q.order < order
-                ? q.order + 1
-                : q.order === order
-                ? currentOrder
-                : q.order;
+            let newOrder;
+            if (selectedOrder > targetOrder) {
+              newOrder =
+                q.order >= targetOrder &&
+                q.order !== selectedOrder &&
+                q.order < selectedOrder
+                  ? q.order + 1
+                  : q.order === selectedOrder
+                  ? targetOrder
+                  : q.order;
+            }
+            if (selectedOrder < targetOrder) {
+              newOrder =
+                q.order > selectedOrder &&
+                q.order < targetOrder &&
+                q.order !== selectedOrder
+                  ? q.order - 1
+                  : q.order === selectedOrder
+                  ? targetOrder - 1
+                  : q.order;
+            }
             return {
               ...q,
               order: newOrder,
@@ -105,6 +120,11 @@ const Question = ({
         console.error(e);
       });
   };
+
+  const disabled = isMoveQuestion.skip_logic?.filter((val) => {
+    return val.dependent_to <= question.id;
+  }).length;
+  // console.log(disabled);
 
   return (
     <>

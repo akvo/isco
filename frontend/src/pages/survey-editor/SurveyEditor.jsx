@@ -12,7 +12,8 @@ const { Title } = Typography;
 
 const SurveyEditor = () => {
   const { formId } = useParams();
-  const state = store.useState((s) => s?.surveyEditor);
+  const surveyEditor = store.useState((s) => s?.surveyEditor);
+  const { questionGroup } = surveyEditor;
 
   useEffect(() => {
     api
@@ -59,15 +60,17 @@ const SurveyEditor = () => {
       });
   }, [formId]);
 
+  console.log("a");
+
   const countAllQuestion = useMemo(() => {
-    return state?.questionGroup?.flatMap((q) => q?.question)?.length;
-  }, [state]);
+    return questionGroup?.flatMap((q) => q?.question)?.length;
+  }, [questionGroup]);
 
   const countMandatory = useMemo(() => {
-    return state?.questionGroup
+    return questionGroup
       ?.flatMap((q) => q?.question)
       ?.filter((q) => q?.mandatory)?.length;
-  }, [state]);
+  }, [questionGroup]);
 
   return (
     <div id="survey-editor">

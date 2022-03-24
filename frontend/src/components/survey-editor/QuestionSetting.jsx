@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Row,
   Col,
@@ -142,7 +142,7 @@ const Detail = ({
   setAllowOther,
   allowOther,
 }) => {
-  const state = store.useState((s) => s?.surveyEditor);
+  const surveyEditor = store.useState((s) => s?.surveyEditor);
   const tempStorage = store.useState((s) => s?.tempStorage);
   const { cascade, nested } = store.useState((s) => s?.optionValues);
   const { type, option, repeating_objects } = question;
@@ -151,7 +151,7 @@ const Detail = ({
   const cascadeValues = type === "cascade" ? cascade : nested;
 
   const handlePlusMinusOptionButton = (operation, opt, optIndex) => {
-    const filterQuestionGroup = state?.questionGroup?.filter(
+    const filterQuestionGroup = surveyEditor?.questionGroup?.filter(
       (qg) => qg?.id !== questionGroup?.id
     );
 
@@ -208,7 +208,7 @@ const Detail = ({
   };
 
   const handlePlusMinusRepeatingObjects = (operation, ro, roi) => {
-    const filterQuestionGroup = state?.questionGroup?.filter(
+    const filterQuestionGroup = surveyEditor?.questionGroup?.filter(
       (qg) => qg?.id !== questionGroup?.id
     );
 
@@ -392,13 +392,15 @@ const Setting = ({
   allowDecimal,
   setAllowDecimal,
 }) => {
-  const state = store?.useState((s) => s?.surveyEditor);
+  const surveyEditor = store?.useState((s) => s?.surveyEditor);
   const tempStorage = store?.useState((s) => s?.tempStorage);
   const optionValues = store?.useState((s) => s?.optionValues);
   const { operator_type } = optionValues;
   const qid = question?.id;
   const { type } = question;
-  const allQuestion = state?.questionGroup?.flatMap((qg) => qg?.question);
+  const allQuestion = surveyEditor?.questionGroup?.flatMap(
+    (qg) => qg?.question
+  );
   // take skip logic question by question current order
   const skipLogicQuestion = take(allQuestion, question?.order)
     ?.filter((q) => ["option", "number"].includes(q?.type) && q?.id !== qid)
@@ -411,16 +413,17 @@ const Setting = ({
     form?.getFieldValue(`question-${qid}-skip_logic-dependent_to`)
   );
   const dependentQuestion = allQuestion?.find((q) => q?.id === dependentId);
-  if (dependentQuestion) {
-    // set skip logic type
-    const type = {
-      [`question-${qid}-skip_logic-type`]: dependentQuestion?.type,
-    };
-    form.setFieldsValue(type);
-    setTimeout(() => {
-      handleFormOnValuesChange(type, form?.getFieldsValue());
-    }, 100);
-  }
+
+  useEffect(() => {
+    if (dependentQuestion?.id) {
+      // set skip logic type
+      const type = {
+        [`question-${qid}-skip_logic-type`]: dependentQuestion?.type,
+      };
+      form.setFieldsValue(type);
+      handleFormOnValuesChange(type, form.getFieldsValue());
+    }
+  }, [dependentQuestion, form]);
 
   const operators = dependentQuestion?.type.includes("option")
     ? operator_type?.filter((x) => x === "equal")
@@ -430,27 +433,21 @@ const Setting = ({
     const fieldValue = { [field]: val };
     form.setFieldsValue(fieldValue);
     setMandatory(val);
-    setTimeout(() => {
-      handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
-    }, 100);
+    handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
   };
 
   const handlePersonalDataChange = (val, field) => {
     const fieldValue = { [field]: val };
     form.setFieldsValue(fieldValue);
     setPersonalData(val);
-    setTimeout(() => {
-      handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
-    }, 100);
+    handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
   };
 
   const handleAllowDecimalChange = (val, field) => {
     const fieldValue = { [field]: val };
     form.setFieldsValue(fieldValue);
     setAllowDecimal(val);
-    setTimeout(() => {
-      handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
-    }, 100);
+    handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
   };
 
   const handleOnDeleteSkipLogic = () => {
@@ -459,12 +456,10 @@ const Setting = ({
       [`question-${qid}-skip_logic-dependent_to`]: "",
     };
     form.setFieldsValue(fieldValue);
-    setTimeout(() => {
-      handleFormOnValuesChange(
-        { [`question-${qid}-skip_logic`]: null },
-        form?.getFieldsValue()
-      );
-    }, 100);
+    handleFormOnValuesChange(
+      { [`question-${qid}-skip_logic`]: null },
+      form?.getFieldsValue()
+    );
     // store removed skip logic to delete when save button clicked
     const filterTempStorage = tempStorage.deletedSkipLogic?.filter(
       (x) => x?.id !== skipLogic?.id

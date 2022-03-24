@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Row,
   Col,
@@ -438,7 +438,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
       if (qId) {
         optionToDelete = optionToDelete?.filter((x) => x?.question === qId);
       }
-      optionToDelete?.forEach(async (opt) => {
+      optionToDelete?.forEach((opt) => {
         const { id } = opt;
         api
           .delete(`/option/${id}`)
