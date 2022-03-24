@@ -28,6 +28,7 @@ import { defaultRepeatingObject, defaultOption } from "../../lib/store";
 import { generateID } from "../../lib/util";
 import { isoLangs } from "../../lib";
 import { useNotification } from "../../util";
+import { take, takeRight } from "lodash";
 
 const { TabPane } = Tabs;
 
@@ -312,8 +313,14 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
     if (questionGroup?.question?.length > 0) {
       qGroups = questionGroup?.question;
     }
+    const prevQg = takeRight(take(state?.questionGroup, index), 1);
+    let prevQorder = prevQg.length
+      ? takeRight(prevQg[0]?.question, 1)?.[0]?.order
+      : 0;
+    prevQorder = prevQorder ? prevQorder : 0;
+    prevQorder = prevQorder + 1;
     api
-      .post(`/default_question/${formId}/${qgId}`)
+      .post(`/default_question/${formId}/${qgId}/${prevQorder}`)
       .then((res) => {
         const { data } = res;
         const newQg = {

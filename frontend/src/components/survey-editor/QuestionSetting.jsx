@@ -400,7 +400,7 @@ const Setting = ({
   const { type } = question;
   const allQuestion = state?.questionGroup?.flatMap((qg) => qg?.question);
   // take skip logic question by question current order
-  const skipLogicQuestion = take(allQuestion, question?.currentOrder)
+  const skipLogicQuestion = take(allQuestion, question?.order)
     ?.filter((q) => ["option", "number"].includes(q?.type) && q?.id !== qid)
     ?.map((q) => ({
       label: q?.name,

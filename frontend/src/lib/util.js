@@ -46,24 +46,3 @@ export const deleteQuestionSkipLogic = (
   });
   return;
 };
-
-export const generateQuestionCurrentOrder = (form) => {
-  const transform = orderBy(form?.questionGroup, ["order"])
-    ?.map((qg, qgi) => {
-      const currentOrder = take(form?.questionGroup, qgi).flatMap(
-        (q) => q?.question
-      ).length;
-      return {
-        ...qg,
-        question: qg.question.map((q) => ({
-          ...q,
-          currentOrder: currentOrder + q.order,
-        })),
-      };
-    })
-    ?.map((qg) => ({ ...qg, question: orderBy(qg?.question, ["order"]) }));
-  return {
-    ...form,
-    questionGroup: transform,
-  };
-};
