@@ -211,7 +211,7 @@ def reorder_question(session: Session, form: int,
                      exclude: Optional[int] = None,
                      question_group: Optional[int] = None,
                      only: Optional[List[int]] = None,
-                     order: Optional[int] = 0):
+                     order: Optional[int] = 1):
     if not exclude and not question_group and not only:
         return False
     questions = session.query(Question).filter(
@@ -224,7 +224,7 @@ def reorder_question(session: Session, form: int,
         questions = questions.filter(Question.id.in_(only))
     questions = questions.order_by(Question.order).all()
     for index, q in enumerate(questions):
-        q.order = index + 1 + order
+        q.order = index + order
     return questions
 
 

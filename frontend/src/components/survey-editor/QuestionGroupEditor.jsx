@@ -18,17 +18,15 @@ import {
   RiDeleteBinFill,
   RiListOrdered,
 } from "react-icons/ri";
-import { HiPlus } from "react-icons/hi";
 import { AiOutlineGroup } from "react-icons/ai";
 import { MdGTranslate } from "react-icons/md";
-import QuestionEditor from "./QuestionEditor";
 import { store, api } from "../../lib";
 import orderBy from "lodash/orderBy";
 import { defaultRepeatingObject, defaultOption } from "../../lib/store";
 import { generateID } from "../../lib/util";
 import { isoLangs } from "../../lib";
 import { useNotification } from "../../util";
-import { take, takeRight } from "lodash";
+import Question from "./Question";
 
 const { TabPane } = Tabs;
 
@@ -249,12 +247,10 @@ const QuestionGroupSetting = ({
 const QuestionGroupEditor = ({ index, questionGroup }) => {
   const [form] = Form.useForm();
   const state = store.useState((s) => s?.surveyEditor);
-  const formId = state?.id;
   const { deletedOptions, deletedSkipLogic } = store.useState(
     (s) => s?.tempStorage
   );
-  const { id, name, question } = questionGroup;
-  const isQuestionGroupSaved = id && name;
+  const { id, question } = questionGroup;
   const isQuestionGroupHasQuestion = question?.length > 0;
   const [isGroupSettingVisible, setIsGroupSettingVisible] = useState(false);
   const [isQuestionVisible, setIsQuestionVisible] = useState(false);
@@ -307,53 +303,6 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
     }, 100);
   };
 
-  const handleAddQuestionButton = (questionGroup) => {
-    const qgId = questionGroup?.id;
-    let qGroups = [];
-    if (questionGroup?.question?.length > 0) {
-      qGroups = questionGroup?.question;
-    }
-    const prevQg = takeRight(take(state?.questionGroup, index), 1);
-    let prevQorder = prevQg.length
-      ? takeRight(prevQg[0]?.question, 1)?.[0]?.order
-      : 0;
-    prevQorder = prevQorder ? prevQorder : 0;
-    prevQorder = prevQorder + 1;
-    api
-      .post(`/default_question/${formId}/${qgId}/${prevQorder}`)
-      .then((res) => {
-        const { data } = res;
-        const newQg = {
-          ...questionGroup,
-          question: [
-            ...qGroups,
-            {
-              ...data,
-              // add option default
-              option: [{ ...defaultOption, id: generateID() }],
-              // add repeating object default
-              repeating_objects: [
-                { ...defaultRepeatingObject, id: generateID() },
-              ],
-            },
-          ],
-        };
-        store.update((s) => {
-          s.surveyEditor = {
-            ...s.surveyEditor,
-            questionGroup: [
-              ...s.surveyEditor.questionGroup.filter((qg) => qg?.id !== qgId),
-              newQg,
-            ],
-          };
-        });
-      })
-      .catch((e) => {
-        const { status, statusText } = e.response;
-        console.error(status, statusText);
-      });
-  };
-
   const handleAddQuestionGroupButton = () => {
     const { id } = state;
     api
@@ -366,7 +315,6 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
             questionGroup: [...s.surveyEditor.questionGroup, data],
           };
         });
-        setIsGroupSettingVisible(true);
       })
       .catch((e) => {
         const { status, statusText } = e.response;
@@ -986,19 +934,22 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
                 </div>
               </>
             )}
-            {isQuestionVisible &&
-              orderBy(question, ["order"]).map((q, qi) => (
-                <QuestionEditor
-                  key={`question-key-${qi + 1}`}
-                  form={form}
-                  index={qi + 1}
-                  question={q}
-                  questionGroup={questionGroup}
-                  handleFormOnValuesChange={handleFormOnValuesChange}
-                  submitStatus={submitStatus}
-                  setSubmitStatus={setSubmitStatus}
-                />
-              ))}
+            {isQuestionVisible && (
+              <div className="question-editor-wrapper">
+                {orderBy(question, ["order"]).map((q, qi) => (
+                  <Question
+                    key={`question-${q?.id}`}
+                    index={qi}
+                    form={form}
+                    question={q}
+                    questionGroup={questionGroup}
+                    handleFormOnValuesChange={handleFormOnValuesChange}
+                    submitStatus={submitStatus}
+                    setSubmitStatus={setSubmitStatus}
+                  />
+                ))}
+              </div>
+            )}
           </Card>
         </Form>
       </Col>
@@ -1006,7 +957,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
       <Col span={1.5} align="center">
         <Card className="button-control-wrapper">
           <Space align="center" direction="vertical">
-            {isQuestionGroupSaved && (
+            {/* {isQuestionGroupSaved && (
               <Tooltip title="Add question">
                 <Button
                   ghost
@@ -1014,7 +965,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
                   onClick={() => handleAddQuestionButton(questionGroup)}
                 />
               </Tooltip>
-            )}
+            )} */}
             <Tooltip title="Add section">
               <Button
                 ghost

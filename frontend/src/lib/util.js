@@ -1,5 +1,4 @@
 import api from "./api";
-import { orderBy, take } from "lodash";
 
 export const generateID = () => {
   return Math.floor(100000000 + Math.random() * 900000000);

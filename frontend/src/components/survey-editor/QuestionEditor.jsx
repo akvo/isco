@@ -87,8 +87,9 @@ const QuestionEditor = ({
   submitStatus,
   setSubmitStatus,
 }) => {
-  const state = store.useState((s) => s?.surveyEditor);
-  const optionValues = store.useState((s) => s?.optionValues);
+  const { surveyEditor, optionValues } = store.useState((s) => s);
+  const { questionGroup: questionGroupState } = surveyEditor;
+
   const { question_type } = optionValues;
   const qId = question?.id;
   const panelKey = `qe-${qId}`;
@@ -100,7 +101,7 @@ const QuestionEditor = ({
   const [allowDecimal, setAllowDecimal] = useState(false);
   const [mandatory, setMandatory] = useState(false);
   const [personalData, setPersonalData] = useState(false);
-  const [activeLang, setActiveLang] = useState(state?.languages[0]);
+  const [activeLang, setActiveLang] = useState(surveyEditor?.languages[0]);
 
   useEffect(() => {
     if (qId) {
@@ -186,25 +187,29 @@ const QuestionEditor = ({
   }, [question, form, qId]);
 
   const handleDeleteQuestionButton = (question) => {
-    const { id } = question;
+    const { id, order } = question;
     api
       .delete(`/question/${id}`)
       .then(() => {
-        const filterQuestionGroup = state?.questionGroup?.filter(
-          (qg) => qg?.id !== questionGroup?.id
-        );
-        let deletedQuestionOnQg = questionGroup;
-        const filterQuestion = deletedQuestionOnQg?.question?.filter(
-          (q) => q?.id !== question?.id
-        );
-        deletedQuestionOnQg = {
-          ...deletedQuestionOnQg,
-          question: filterQuestion,
-        };
+        const updatedQuestionGroup = questionGroupState.map((qg) => {
+          const questions = qg.question
+            .filter((q) => q.id !== id)
+            .map((q) => {
+              const newOrder = q.order > order ? q.order - 1 : q.order;
+              return {
+                ...q,
+                order: newOrder,
+              };
+            });
+          return {
+            ...qg,
+            question: questions,
+          };
+        });
         store.update((s) => {
           s.surveyEditor = {
             ...s.surveyEditor,
-            questionGroup: [...filterQuestionGroup, deletedQuestionOnQg],
+            questionGroup: updatedQuestionGroup,
           };
         });
         notify({
@@ -230,7 +235,7 @@ const QuestionEditor = ({
   };
 
   return (
-    <Row key={`qe-${qId}`} className="question-editor-wrapper">
+    <Row key={`qe-${qId}`}>
       <Col span={24}>
         <Card className="question-card-wrapper">
           <Row align="middle" justify="space-between" gutter={[12, 12]}>
@@ -251,7 +256,7 @@ const QuestionEditor = ({
                             setActiveSetting("detail");
                           }}
                         >
-                          {`Q${index}`}
+                          {`Q${index + 1}`}
                         </Button>
                       </Tooltip>
                       {(activeSetting === "detail" ||

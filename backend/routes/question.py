@@ -64,7 +64,8 @@ def create_default(req: Request, form_id: int,
     if len(next_questions):
         next_questions_ids = [q.id for q in next_questions]
         crud.reorder_question(session=session, form=form_id,
-                              only=next_questions_ids, order=order)
+                              only=next_questions_ids,
+                              order=2 if order == 1 else order + 1)
     question = crud.add_question(session=session, payload=payload)
     return question.serialize
 

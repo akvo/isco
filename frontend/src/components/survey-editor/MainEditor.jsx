@@ -75,8 +75,8 @@ const MainEditor = () => {
               </Form>
               {orderBy(questionGroup, ["order"])?.map((qg, qgi) => (
                 <QuestionGroupEditor
-                  key={`question-group-key-${qgi + 1}`}
-                  index={qgi + 1}
+                  key={`question-group-key-${qgi}`}
+                  index={qgi}
                   questionGroup={qg}
                 />
               ))}
