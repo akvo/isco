@@ -1,6 +1,5 @@
 from fastapi import HTTPException, status
 from typing import List, Optional
-from sqlalchemy import and_
 from sqlalchemy.orm import Session
 from models.question import Question, QuestionBase
 from models.question import QuestionDict, QuestionPayload
@@ -15,20 +14,6 @@ from db.crud_skip_logic import delete_skip_logic_by_question
 def add_question(session: Session, payload: QuestionPayload,
                  member_access: Optional[List[int]] = None,
                  isco_access: Optional[List[int]] = None) -> QuestionDict:
-    last_question = session.query(Question).filter(
-        and_(Question.form == payload['form'],
-             Question.question_group == payload['question_group'])).order_by(
-                 Question.order.desc()).first()
-    if last_question:
-        last_question = last_question.order + 1
-    else:
-        last_question = 1
-
-    if "order" in payload:
-        order = payload['order']
-        if order:
-            last_question = order
-
     question = Question(id=None,
                         form=payload['form'],
                         question_group=payload['question_group'],
@@ -44,7 +29,7 @@ def add_question(session: Session, payload: QuestionPayload,
                         tooltip_translations=payload['tooltip_translations'],
                         cascade=payload['cascade'],
                         repeating_objects=payload['repeating_objects'],
-                        order=last_question)
+                        order=payload['order'])
     if payload['option']:
         for o in payload['option']:
             opt = Option(id=None,
@@ -222,12 +207,35 @@ def delete_question_by_group(session: Session, group: id):
     return question
 
 
+def reorder_question(session: Session, form: int,
+                     exclude: Optional[int] = None,
+                     question_group: Optional[int] = None,
+                     only: Optional[List[int]] = None,
+                     order: Optional[int] = 0):
+    if not exclude and not question_group and not only:
+        return False
+    questions = session.query(Question).filter(
+        Question.form == form)
+    if exclude:
+        questions = questions.filter(Question.id != exclude)
+    if question_group:
+        questions = questions.filter(Question.question_group != question_group)
+    if only:
+        questions = questions.filter(Question.id.in_(only))
+    questions = questions.order_by(Question.order).all()
+    for index, q in enumerate(questions):
+        q.order = index + 1 + order
+    return questions
+
+
 def delete_question(session: Session, id: int):
     delete_member_access_by_question_id(session=session, question=id)
     delete_isco_access_by_question_id(session=session, question=id)
     delete_option_by_question(session=session, question=id)
     delete_skip_logic_by_question(session=session, question=id)
     question = get_question_by_id(session=session, id=id)
+    form_id = question.form
     session.delete(question)
+    reorder_question(session=session, form=form_id, exclude=id)
     session.commit()
     session.flush()

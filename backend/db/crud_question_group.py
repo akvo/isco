@@ -6,6 +6,7 @@ from models.question_group import QuestionGroup, QuestionGroupBase
 from models.question_group_member_access import QuestionGroupMemberAccess
 from models.question_group_isco_access import QuestionGroupIscoAccess
 from db.crud_question import add_question, delete_question_by_group
+from db.crud_question import reorder_question
 
 
 def add_question_group(session: Session,
@@ -159,6 +160,8 @@ def delete_question_group(session: Session, id: int):
     delete_member_access_by_group_id(session=session, question_group=id)
     delete_isco_access_by_group_id(session=session, question_group=id)
     question_group = get_question_group_by_id(session=session, id=id)
+    form_id = question_group.form
     session.delete(question_group)
+    reorder_question(session=session, form=form_id, question_group=id)
     session.commit()
     session.flush()

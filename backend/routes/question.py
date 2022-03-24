@@ -3,12 +3,13 @@ from fastapi import Depends, Request, APIRouter, Response
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
 from typing import List
+from sqlalchemy import and_
 from sqlalchemy.orm import Session
 from db.connection import get_session
 import db.crud_question as crud
 from models.question import QuestionBase, QuestionDict
 from models.question import QuestionPayload, QuestionType
-from models.question import RepeatingObjectType
+from models.question import RepeatingObjectType, Question
 
 security = HTTPBearer()
 question_route = APIRouter()
@@ -27,13 +28,14 @@ def add(req: Request, payload: QuestionPayload,
 
 
 @question_route.post(
-    "/default_question/{form_id:path}/{question_group_id:path}",
+    "/default_question/{form_id:path}/{question_group_id:path}/{order:path}",
     response_model=QuestionBase,
     summary="add default question",
     name="question:create_default",
     tags=["Question"])
 def create_default(req: Request, form_id: int,
                    question_group_id: int,
+                   order: int,
                    session: Session = Depends(get_session),
                    credentials: credentials = Depends(security)):
     payload = {
@@ -51,12 +53,18 @@ def create_default(req: Request, form_id: int,
         "tooltip_translations": None,
         "cascade": None,
         "repeating_objects": None,
-        "order": None,
+        "order": order,
         "option": None,
         "member_access": None,
         "isco_access": None,
         "skip_logic": None,
     }
+    next_questions = session.query(Question).filter(
+        and_(Question.form == form_id, Question.order >= order)).all()
+    if len(next_questions):
+        next_questions_ids = [q.id for q in next_questions]
+        crud.reorder_question(session=session, form=form_id,
+                              only=next_questions_ids, order=order)
     question = crud.add_question(session=session, payload=payload)
     return question.serialize
 
