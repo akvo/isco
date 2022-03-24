@@ -39,7 +39,7 @@ def create_default(req: Request, form_id: int,
     payload = {
         "form": form_id,
         "question_group": question_group_id,
-        "name": "New question",
+        "name": "New question - please change name",
         "translations": None,
         "mandatory": False,
         "datapoint_name": False,

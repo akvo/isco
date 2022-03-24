@@ -35,7 +35,7 @@ def create_default(req: Request, form_id: int,
                    credentials: credentials = Depends(security)):
     payload = {
         "form": form_id,
-        "name": "New section title",
+        "name": "New section - please change name",
         "description": None,
         "translations": None,
         "repeat": False,

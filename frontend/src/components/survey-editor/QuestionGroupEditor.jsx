@@ -254,7 +254,9 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
   );
   const { id, name, question } = questionGroup;
   const isQuestionGroupSaved = id && name;
-  const [isGroupSettingVisible, setIsGroupSettingVisible] = useState(true);
+  const isQuestionGroupHasQuestion = question?.length > 0;
+  const [isGroupSettingVisible, setIsGroupSettingVisible] = useState(false);
+  const [isQuestionVisible, setIsQuestionVisible] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
   const [repeat, setRepeat] = useState(false);
   const [saveBtnLoading, setSaveBtnLoading] = useState(false);
@@ -285,6 +287,16 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
     }
   }, [questionGroup, form, id]);
 
+  const handleShowQuestionButton = () => {
+    setIsGroupSettingVisible(false);
+    setIsQuestionVisible(!isQuestionVisible);
+  };
+
+  const handleShowQuestionGroupSettingButton = () => {
+    setIsQuestionVisible(false);
+    setIsGroupSettingVisible(true);
+  };
+
   const onChangeRepeat = (val, fieldId) => {
     const repeatFieldValue = { [fieldId]: val };
     form.setFieldsValue(repeatFieldValue);
@@ -304,7 +316,6 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
       .post(`/default_question/${formId}/${qgId}`)
       .then((res) => {
         const { data } = res;
-        setIsGroupSettingVisible(false);
         const newQg = {
           ...questionGroup,
           question: [
@@ -348,6 +359,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
             questionGroup: [...s.surveyEditor.questionGroup, data],
           };
         });
+        setIsGroupSettingVisible(true);
       })
       .catch((e) => {
         const { status, statusText } = e.response;
@@ -866,7 +878,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
       className="question-group-editor-wrapper"
       align="bottom"
       justify="space-between"
-      gutter={[40, 12]}
+      gutter={[12, 12]}
     >
       <Col span={22}>
         <Form
@@ -896,23 +908,27 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
               </Col>
               <Col span={6} align="end" className="right">
                 <Space size={1} align="center">
-                  {isGroupSettingVisible ? (
-                    <Tooltip title="Show section question">
-                      <Button
-                        type="text"
-                        icon={<RiListOrdered />}
-                        onClick={() => setIsGroupSettingVisible(false)}
-                      />
-                    </Tooltip>
-                  ) : (
-                    <Tooltip title="Show section setting">
-                      <Button
-                        type="text"
-                        icon={<RiSettings5Fill />}
-                        onClick={() => setIsGroupSettingVisible(true)}
-                      />
-                    </Tooltip>
-                  )}
+                  <Tooltip
+                    title={`${
+                      isQuestionGroupHasQuestion
+                        ? "Show/hide section question"
+                        : "This section doesn't have question"
+                    }`}
+                  >
+                    <Button
+                      disabled={!isQuestionGroupHasQuestion}
+                      type="text"
+                      icon={<RiListOrdered />}
+                      onClick={() => handleShowQuestionButton()}
+                    />
+                  </Tooltip>
+                  <Tooltip title="Show section setting">
+                    <Button
+                      type="text"
+                      icon={<RiSettings5Fill />}
+                      onClick={() => handleShowQuestionGroupSettingButton()}
+                    />
+                  </Tooltip>
                   <Popconfirm
                     title="Delete section can't be undone."
                     okText="Delete"
@@ -928,7 +944,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
                 </Space>
               </Col>
             </Row>
-            {isGroupSettingVisible ? (
+            {isGroupSettingVisible && (
               <>
                 <QuestionGroupSetting
                   form={form}
@@ -962,7 +978,8 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
                   </Space>
                 </div>
               </>
-            ) : (
+            )}
+            {isQuestionVisible &&
               orderBy(question, ["order"]).map((q, qi) => (
                 <QuestionEditor
                   key={`question-key-${qi + 1}`}
@@ -974,13 +991,12 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
                   submitStatus={submitStatus}
                   setSubmitStatus={setSubmitStatus}
                 />
-              ))
-            )}
+              ))}
           </Card>
         </Form>
       </Col>
       {/* Button Add Section & Question */}
-      <Col span={2} align="center">
+      <Col span={1.5} align="center">
         <Card className="button-control-wrapper">
           <Space align="center" direction="vertical">
             {isQuestionGroupSaved && (

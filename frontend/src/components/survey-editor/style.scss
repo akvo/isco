@@ -95,12 +95,20 @@
       }
 
       .button-control-wrapper {
-        padding: 5px;
         border: 1px solid #777777;
         background-color: $bg-grey;
 
         .ant-card-body {
-          padding: 7px;
+          padding: 8px;
+        }
+
+        .ant-btn-icon-only {
+          padding: 1px 0.5px 0 0;
+        }
+        button {
+          min-height: 27px;
+          width: 27px;
+          height: 27px;
         }
       }
     }
