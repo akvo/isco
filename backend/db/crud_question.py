@@ -1,5 +1,6 @@
 from fastapi import HTTPException, status
 from typing import List, Optional
+from sqlalchemy import and_
 from sqlalchemy.orm import Session
 from models.question import Question, QuestionBase
 from models.question import QuestionDict, QuestionPayload
@@ -140,6 +141,22 @@ def update_question(session: Session, id: int,
     session.flush()
     session.refresh(question)
     return question
+
+
+def move_question(session: Session, id: int, order: int, current_order: int):
+    question = session.query(Question).filter(
+        Question.id == id).first()
+    question.order = current_order
+    questions = session.query(Question).filter(
+        and_(Question.form == question.form,
+             Question.order >= current_order,
+             Question.order != order,
+             Question.order < order,
+             Question.id != id)).order_by(Question.order).all()
+    for q in questions:
+        q.order = q.order + 1
+    session.commit()
+    session.flush()
 
 
 def get_member_access_by_question_id(session: Session,

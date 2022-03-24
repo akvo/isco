@@ -1,6 +1,6 @@
 import React from "react";
-import { Button } from "antd";
 import QuestionEditor from "./QuestionEditor";
+import AddMoveButton from "./AddMoveButton";
 import { store, api } from "../../lib";
 import { defaultOption, defaultRepeatingObject } from "../../lib/store";
 import { generateID } from "../../lib/util";
@@ -14,8 +14,16 @@ const Question = ({
   submitStatus,
   setSubmitStatus,
 }) => {
-  const surveyEditor = store.useState((s) => s?.surveyEditor);
+  const { surveyEditor, isMoveQuestion } = store.useState((s) => s);
   const { questionGroup: questionGroupState } = surveyEditor;
+
+  const AddMoveButtonText = !isMoveQuestion ? "Add new question" : "Move here";
+
+  const handleOnCancelMove = () => {
+    store.update((s) => {
+      s.isMoveQuestion = false;
+    });
+  };
 
   const handleAddQuestionButton = (order) => {
     const qgId = questionGroup?.id;
@@ -62,21 +70,59 @@ const Question = ({
       });
   };
 
+  const handleMove = (currentOrder) => {
+    const { id, order } = isMoveQuestion;
+    api
+      .put(`/move-question/${id}/${order}/${currentOrder}`)
+      .then(() => {
+        const updatedQuestionGroup = questionGroupState.map((qg) => {
+          const questions = qg.question.map((q) => {
+            const newOrder =
+              q.order >= currentOrder && q.order !== order && q.order < order
+                ? q.order + 1
+                : q.order === order
+                ? currentOrder
+                : q.order;
+            return {
+              ...q,
+              order: newOrder,
+            };
+          });
+          return {
+            ...qg,
+            question: questions,
+          };
+        });
+        store.update((s) => {
+          s.surveyEditor = {
+            ...s.surveyEditor,
+            questionGroup: updatedQuestionGroup,
+          };
+          s.isMoveQuestion = false;
+        });
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  };
+
   return (
     <>
       {!index && (
-        <Button
-          className="reorder-button"
-          size="small"
-          block
+        <AddMoveButton
+          text={AddMoveButtonText}
+          cancelButton={isMoveQuestion}
+          onCancel={handleOnCancelMove}
           onClick={() =>
-            handleAddQuestionButton(
-              question.order === 1 ? question.order : question.order - 1
-            )
+            !isMoveQuestion
+              ? handleAddQuestionButton(
+                  question.order === 1 ? question.order : question.order - 1
+                )
+              : handleMove(
+                  question.order === 1 ? question.order : question.order - 1
+                )
           }
-        >
-          Add new question here
-        </Button>
+        />
       )}
       <QuestionEditor
         index={index}
@@ -87,14 +133,16 @@ const Question = ({
         submitStatus={submitStatus}
         setSubmitStatus={setSubmitStatus}
       />
-      <Button
-        className="reorder-button"
-        size="small"
-        block
-        onClick={() => handleAddQuestionButton(question.order + 1)}
-      >
-        Add new question here
-      </Button>
+      <AddMoveButton
+        text={AddMoveButtonText}
+        cancelButton={isMoveQuestion}
+        onCancel={handleOnCancelMove}
+        onClick={() =>
+          !isMoveQuestion
+            ? handleAddQuestionButton(question.order + 1)
+            : handleMove(question.order + 1)
+        }
+      />
     </>
   );
 };

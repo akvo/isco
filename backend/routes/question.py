@@ -133,6 +133,21 @@ def update(req: Request, id: int, payload: QuestionPayload,
     return question.serialize
 
 
+@question_route.put(
+    "/move-question/{id:path}/{order:path}/{current_order:path}",
+    responses={204: {"model": None}},
+    status_code=HTTPStatus.NO_CONTENT,
+    summary="move question",
+    name="question:move",
+    tags=["Move"])
+def move(req: Request, id: int, order: int, current_order: int,
+         session: Session = Depends(get_session),
+         credentials: credentials = Depends(security)):
+    crud.move_question(session=session, id=id,
+                       order=order, current_order=current_order)
+    return Response(status_code=HTTPStatus.NO_CONTENT.value)
+
+
 @question_route.delete("/question/{id:path}",
                        responses={204: {
                            "model": None}},

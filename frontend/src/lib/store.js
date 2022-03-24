@@ -89,6 +89,7 @@ const defaultUIState = {
     deletedOptions: [],
     deletedSkipLogic: [],
   },
+  isMoveQuestion: false,
 };
 
 const store = new Store(defaultUIState);

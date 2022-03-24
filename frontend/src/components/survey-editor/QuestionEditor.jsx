@@ -12,7 +12,11 @@ import {
   Popconfirm,
   Tooltip,
 } from "antd";
-import { RiSettings5Fill, RiDeleteBinFill } from "react-icons/ri";
+import {
+  RiSettings5Fill,
+  RiDeleteBinFill,
+  RiDragMove2Fill,
+} from "react-icons/ri";
 import { MdGTranslate } from "react-icons/md";
 import QuestionSetting from "./QuestionSetting";
 import { store, api } from "../../lib";
@@ -246,6 +250,17 @@ const QuestionEditor = ({
                   showArrow={false}
                   header={
                     <>
+                      <Tooltip title="Click to move question">
+                        <Button
+                          type="text"
+                          icon={<RiDragMove2Fill />}
+                          onClick={() => {
+                            store.update((s) => {
+                              s.isMoveQuestion = question;
+                            });
+                          }}
+                        />
+                      </Tooltip>
                       <Tooltip title="Show question details">
                         <Button
                           className="question-number"
