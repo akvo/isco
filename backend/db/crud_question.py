@@ -143,18 +143,34 @@ def update_question(session: Session, id: int,
     return question
 
 
-def move_question(session: Session, id: int, order: int, current_order: int):
+def move_question(session: Session, id: int, selected_order: int,
+                  target_order: int):
     question = session.query(Question).filter(
         Question.id == id).first()
-    question.order = current_order
-    questions = session.query(Question).filter(
-        and_(Question.form == question.form,
-             Question.order >= current_order,
-             Question.order != order,
-             Question.order < order,
-             Question.id != id)).order_by(Question.order).all()
+    # question group id
+    questions = session.query(Question)
+    if (selected_order > target_order):
+        question.order = target_order
+        questions = questions.filter(
+            and_(Question.form == question.form,
+                 Question.order >= target_order,
+                 Question.order != selected_order,
+                 Question.order < selected_order,
+                 Question.id != id))
+    if (selected_order < target_order):
+        question.order = target_order - 1
+        questions = questions.filter(
+            and_(Question.form == question.form,
+                 Question.order > selected_order,
+                 Question.order < target_order,
+                 Question.order != selected_order,
+                 Question.id != id))
+    questions = questions.order_by(Question.order).all()
     for q in questions:
-        q.order = q.order + 1
+        if (selected_order > target_order):
+            q.order = q.order + 1
+        if (selected_order < target_order):
+            q.order = q.order - 1
     session.commit()
     session.flush()
 
