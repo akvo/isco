@@ -70,7 +70,7 @@ const MainEditor = () => {
                 <Button ghost icon={<AiOutlineGroup />} />
               </Tooltip>
             </div>
-            <Space direction="vertical" size="small">
+            <div>
               <Form form={form} name="survey-detail" onFinish={onSubmitForm}>
                 <Space direction="vertical">
                   <FormEditor
@@ -87,7 +87,7 @@ const MainEditor = () => {
                   questionGroup={qg}
                 />
               ))}
-            </Space>
+            </div>
           </Col>
         </Row>
         <Row align="middle">

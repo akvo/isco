@@ -38,10 +38,17 @@
     }
 
     .reorder-wrapper {
-      background-color: $white;
-      margin-top: 14px;
-      margin-bottom: 14px;
-      padding: 10px;
+      &.question {
+        background-color: $white;
+        margin-top: 14px;
+        margin-bottom: 14px;
+        padding: 10px;
+      }
+
+      &.question-group {
+        margin-bottom: 10px;
+        padding: 10px 0;
+      }
 
       .reorder-button {
         width: 135px;

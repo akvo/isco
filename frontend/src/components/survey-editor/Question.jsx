@@ -70,14 +70,33 @@ const Question = ({
       });
   };
 
-  const handleMove = (targetOrder) => {
-    const { id, order: selectedOrder } = isMoveQuestion;
+  const handleMove = (targetOrder, targetQuestionGroup) => {
+    const {
+      id: selectedQuestion,
+      order: selectedOrder,
+      question_group: selectedQuestionGroup,
+    } = isMoveQuestion;
+    const isMovedToOtherGroup = selectedQuestionGroup !== targetQuestionGroup;
     api
-      .put(`/move-question/${id}/${selectedOrder}/${targetOrder}`)
+      .put(
+        `/move-question/${selectedQuestion}/${selectedOrder}/${targetOrder}?target_group=${targetQuestionGroup}`
+      )
       .then(() => {
         const updatedQuestionGroup = questionGroupState.map((qg) => {
-          const questions = qg.question.map((q) => {
-            let newOrder;
+          let questions = qg.question;
+          // remove question from selected
+          if (isMovedToOtherGroup && qg.id === selectedQuestionGroup) {
+            questions = questions.filter((q) => q.id !== selectedQuestion);
+          }
+          // add question to target
+          if (isMovedToOtherGroup && qg.id === targetQuestionGroup) {
+            questions = [
+              ...questions,
+              { ...isMoveQuestion, question_group: targetQuestionGroup },
+            ];
+          }
+          questions = questions.map((q) => {
+            let newOrder = q.order;
             if (selectedOrder > targetOrder) {
               newOrder =
                 q.order >= targetOrder &&
@@ -130,6 +149,7 @@ const Question = ({
     <>
       {!index && (
         <AddMoveButton
+          className="question"
           text={AddMoveButtonText}
           cancelButton={isMoveQuestion}
           onCancel={handleOnCancelMove}
@@ -139,7 +159,8 @@ const Question = ({
                   question.order === 1 ? question.order : question.order - 1
                 )
               : handleMove(
-                  question.order === 1 ? question.order : question.order - 1
+                  question.order === 1 ? question.order : question.order - 1,
+                  question.question_group
                 )
           }
         />
@@ -154,13 +175,14 @@ const Question = ({
         setSubmitStatus={setSubmitStatus}
       />
       <AddMoveButton
+        className="question"
         text={AddMoveButtonText}
         cancelButton={isMoveQuestion}
         onCancel={handleOnCancelMove}
         onClick={() =>
           !isMoveQuestion
             ? handleAddQuestionButton(question.order + 1)
-            : handleMove(question.order + 1)
+            : handleMove(question.order + 1, question.question_group)
         }
       />
     </>

@@ -140,12 +140,14 @@ def update(req: Request, id: int, payload: QuestionPayload,
     summary="move question",
     name="question:move",
     tags=["Move"])
-def move(req: Request, id: int, selected_order: int, target_order: int,
+def move(req: Request, id: int, selected_order: int,
+         target_order: int, target_group: int,
          session: Session = Depends(get_session),
          credentials: credentials = Depends(security)):
     crud.move_question(session=session, id=id,
                        selected_order=selected_order,
-                       target_order=target_order)
+                       target_order=target_order,
+                       target_group=target_group)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)
 
 

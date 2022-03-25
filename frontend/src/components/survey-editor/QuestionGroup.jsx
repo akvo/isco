@@ -4,10 +4,12 @@ import AddMoveButton from "./AddMoveButton";
 import { store, api } from "../../lib";
 
 const QuestionGroup = ({ index, questionGroup }) => {
-  const { surveyEditor, isMoveQuestion } = store.useState((s) => s);
+  const { surveyEditor, isMoveQuestionGroup } = store.useState((s) => s);
   const { id: formId, questionGroup: questionGroupState } = surveyEditor;
 
-  const AddMoveButtonText = !isMoveQuestion ? "Add new section" : "Move here";
+  const AddMoveButtonText = !isMoveQuestionGroup
+    ? "Add new section"
+    : "Move here";
 
   const handleAddQuestionGroupButton = (order) => {
     api
@@ -35,8 +37,9 @@ const QuestionGroup = ({ index, questionGroup }) => {
     <>
       {!index && (
         <AddMoveButton
+          className="question-group"
           text={AddMoveButtonText}
-          cancelButton={isMoveQuestion}
+          cancelButton={isMoveQuestionGroup}
           // onCancel={handleOnCancelMove}
           onClick={() =>
             handleAddQuestionGroupButton(
@@ -49,8 +52,9 @@ const QuestionGroup = ({ index, questionGroup }) => {
       )}
       <QuestionGroupEditor index={index} questionGroup={questionGroup} />
       <AddMoveButton
+        className="question-group"
         text={AddMoveButtonText}
-        cancelButton={isMoveQuestion}
+        cancelButton={isMoveQuestionGroup}
         // onCancel={handleOnCancelMove}
         onClick={() => handleAddQuestionGroupButton(questionGroup.order + 1)}
       />

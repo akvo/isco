@@ -4,11 +4,16 @@ import { Button, Row, Space } from "antd";
 const AddMoveButton = ({
   text,
   onClick,
+  className,
   cancelButton = false,
   onCancel = () => {},
 }) => {
   return (
-    <Row align="middle" justify="start" className="reorder-wrapper">
+    <Row
+      align="middle"
+      justify="start"
+      className={`reorder-wrapper ${className}`}
+    >
       <Space>
         <Button
           type="secondary"

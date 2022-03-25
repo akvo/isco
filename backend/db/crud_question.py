@@ -144,11 +144,13 @@ def update_question(session: Session, id: int,
 
 
 def move_question(session: Session, id: int, selected_order: int,
-                  target_order: int):
+                  target_order: int, target_group: int):
     question = session.query(Question).filter(
         Question.id == id).first()
-    # question group id
+    # update question group id
+    question.question_group = target_group
     questions = session.query(Question)
+    # update order
     if (selected_order > target_order):
         question.order = target_order
         questions = questions.filter(
