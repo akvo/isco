@@ -6,6 +6,13 @@ from models.skip_logic import SkipLogicDict, SkipLogicPayload
 
 
 def add_skip_logic(session: Session, payload: SkipLogicPayload):
+    # check if there's skip logic before, and delete that
+    # remove this when maybe 1 question have more than 1 skip logic
+    skip_logic = session.query(SkipLogic).filter(
+        SkipLogic.question == payload['question'])
+    skip_logic.delete()
+    ##
+    # then post new skip logic
     skip_logic = SkipLogic(id=None,
                            question=payload['question'],
                            dependent_to=payload['dependent_to'],
