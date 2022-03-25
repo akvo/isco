@@ -17,6 +17,7 @@ import {
   RiSettings5Fill,
   RiDeleteBinFill,
   RiListOrdered,
+  RiDragMove2Fill,
 } from "react-icons/ri";
 import { MdGTranslate } from "react-icons/md";
 import { store, api } from "../../lib";
@@ -832,11 +833,27 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
               align="middle"
               justify="space-between"
             >
-              <Col span={18} align="start" className="left">
+              <Col span={1} align="start">
+                <Tooltip title="Click to move question">
+                  <Button
+                    type="text"
+                    icon={<RiDragMove2Fill />}
+                    onClick={() => {
+                      store.update((s) => {
+                        s.isMoveQuestionGroup = questionGroup;
+                      });
+                    }}
+                  />
+                </Tooltip>
+              </Col>
+              <Col span={17} align="start" className="left">
                 <Form.Item
                   name={`question_group-${id}-name`}
                   rules={[
-                    { required: true, message: "Please input section title" },
+                    {
+                      required: true,
+                      message: "Please input section title",
+                    },
                   ]}
                 >
                   <Input size="large" placeholder="Section Title" />

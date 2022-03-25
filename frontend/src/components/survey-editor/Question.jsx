@@ -72,21 +72,21 @@ const Question = ({
 
   const handleMove = (targetOrder, targetQuestionGroup) => {
     const {
-      id: selectedQuestion,
+      id: selectedQuestionId,
       order: selectedOrder,
       question_group: selectedQuestionGroup,
     } = isMoveQuestion;
     const isMovedToOtherGroup = selectedQuestionGroup !== targetQuestionGroup;
     api
       .put(
-        `/move-question/${selectedQuestion}/${selectedOrder}/${targetOrder}?target_group=${targetQuestionGroup}`
+        `/move-question/${selectedQuestionId}/${selectedOrder}/${targetOrder}?target_group=${targetQuestionGroup}`
       )
       .then(() => {
         const updatedQuestionGroup = questionGroupState.map((qg) => {
           let questions = qg.question;
           // remove question from selected
           if (isMovedToOtherGroup && qg.id === selectedQuestionGroup) {
-            questions = questions.filter((q) => q.id !== selectedQuestion);
+            questions = questions.filter((q) => q.id !== selectedQuestionId);
           }
           // add question to target
           if (isMovedToOtherGroup && qg.id === targetQuestionGroup) {
