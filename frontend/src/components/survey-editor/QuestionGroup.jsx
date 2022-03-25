@@ -93,7 +93,10 @@ const QuestionGroup = ({ index, questionGroup }) => {
                 questionGroupState.find((x) => x.id === targetGroupId).question,
                 1
               )[0].order;
-              newOrder = qIndex + prevQuestionOrder + 1;
+              newOrder =
+                targetGroupOrder <= 1
+                  ? qIndex + 1
+                  : qIndex + prevQuestionOrder + 1;
             }
           }
           if (selectedGroupOrder < targetGroupOrder) {
