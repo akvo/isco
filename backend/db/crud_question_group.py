@@ -182,23 +182,21 @@ def move_question_group(session: Session, id: int, selected_order: int,
             QuestionGroup
         ).filter(and_(
             QuestionGroup.order >= selected_order,
-            QuestionGroup.order <= target_order
+            QuestionGroup.order < target_order
         )).all()
         moved_group_ids = [mg.id for mg in moved_group]
         moved_q = session.query(Question).filter(
             Question.question_group.in_(moved_group_ids)).all()
         moved_q_length = len(moved_q)
         for q in selected_q:
-            print('a', q.order)
             q.order = q.order + moved_q_length
-            print('b', q.order, moved_q_length)
 
     groups = groups.order_by(QuestionGroup.order).all()
     for qg in groups:
         if (selected_order > target_order):
             qg.order = qg.order + 1
         if (selected_order < target_order):
-            qg.order = qg.order - 2
+            qg.order = qg.order - 1
     session.commit()
     session.flush()
 
