@@ -5,7 +5,8 @@ import { store, api } from "../../lib";
 import { orderBy, takeRight } from "lodash";
 
 const QuestionGroup = ({ index, questionGroup }) => {
-  const { surveyEditor, isMoveQuestionGroup } = store.useState((s) => s);
+  const { surveyEditor, isMoveQuestionGroup, isAddQuestionGroup } =
+    store.useState((s) => s);
   const { id: formId, questionGroup: questionGroupState } = surveyEditor;
 
   const AddMoveButtonText = !isMoveQuestionGroup
@@ -15,6 +16,7 @@ const QuestionGroup = ({ index, questionGroup }) => {
   const handleOnCancelMove = () => {
     store.update((s) => {
       s.isMoveQuestionGroup = false;
+      s.isAddQuestionGroup = false;
     });
   };
 
@@ -32,6 +34,7 @@ const QuestionGroup = ({ index, questionGroup }) => {
             ...s.surveyEditor,
             questionGroup: [...updatedQuestionGroup, data],
           };
+          s.isAddQuestionGroup = false;
         });
       })
       .catch((e) => {
@@ -139,7 +142,6 @@ const QuestionGroup = ({ index, questionGroup }) => {
                     newOrder = q.order + movedTargetGroupQuestionLength;
                   }
                 }
-                // console.log(newGroupOrder, qg.name, q.name, q.order, newOrder);
                 return {
                   ...q,
                   order: newOrder,
@@ -169,11 +171,11 @@ const QuestionGroup = ({ index, questionGroup }) => {
 
   return (
     <>
-      {!index && (
+      {!index && (isAddQuestionGroup || isMoveQuestionGroup) && (
         <AddMoveButton
           className="question-group"
           text={AddMoveButtonText}
-          cancelButton={isMoveQuestionGroup}
+          cancelButton={isMoveQuestionGroup || isAddQuestionGroup}
           onCancel={handleOnCancelMove}
           onClick={() =>
             !isMoveQuestionGroup
@@ -192,17 +194,19 @@ const QuestionGroup = ({ index, questionGroup }) => {
         />
       )}
       <QuestionGroupEditor index={index} questionGroup={questionGroup} />
-      <AddMoveButton
-        className="question-group"
-        text={AddMoveButtonText}
-        cancelButton={isMoveQuestionGroup}
-        onCancel={handleOnCancelMove}
-        onClick={() =>
-          !isMoveQuestionGroup
-            ? handleAddQuestionGroupButton(questionGroup.order + 1)
-            : handleMove(questionGroup.order + 1, questionGroup.id)
-        }
-      />
+      {(isAddQuestionGroup || isMoveQuestionGroup) && (
+        <AddMoveButton
+          className="question-group"
+          text={AddMoveButtonText}
+          cancelButton={isMoveQuestionGroup || isAddQuestionGroup}
+          onCancel={handleOnCancelMove}
+          onClick={() =>
+            !isMoveQuestionGroup
+              ? handleAddQuestionGroupButton(questionGroup.order + 1)
+              : handleMove(questionGroup.order + 1, questionGroup.id)
+          }
+        />
+      )}
     </>
   );
 };

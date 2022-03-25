@@ -6,9 +6,21 @@ import FormEditor from "./FormEditor";
 import QuestionGroup from "./QuestionGroup";
 import orderBy from "lodash/orderBy";
 
+const CustomWrapper = ({ isNotSpace, children }) => {
+  if (isNotSpace) {
+    return <div>{children}</div>;
+  }
+  return (
+    <Space direction="vertical" size={18}>
+      {children}
+    </Space>
+  );
+};
+
 const MainEditor = () => {
   const [form] = Form.useForm();
-  const surveyEditor = store.useState((s) => s?.surveyEditor);
+  const { surveyEditor, isAddQuestionGroup, isMoveQuestionGroup } =
+    store.useState((s) => s);
   const { id: formId, name, description, languages } = surveyEditor;
 
   const { questionGroup } = surveyEditor;
@@ -66,11 +78,21 @@ const MainEditor = () => {
           <Col span={24}>
             {/* Button Add Section */}
             <div className="button-control-wrapper">
-              <Tooltip title="Add section">
-                <Button ghost icon={<AiOutlineGroup />} />
+              <Tooltip title="Add new section">
+                <Button
+                  ghost
+                  icon={<AiOutlineGroup />}
+                  onClick={() =>
+                    store.update((s) => {
+                      s.isAddQuestionGroup = true;
+                    })
+                  }
+                />
               </Tooltip>
             </div>
-            <div>
+            <CustomWrapper
+              isNotSpace={isAddQuestionGroup || isMoveQuestionGroup}
+            >
               <Form form={form} name="survey-detail" onFinish={onSubmitForm}>
                 <Space direction="vertical">
                   <FormEditor
@@ -87,7 +109,7 @@ const MainEditor = () => {
                   questionGroup={qg}
                 />
               ))}
-            </div>
+            </CustomWrapper>
           </Col>
         </Row>
         <Row align="middle">

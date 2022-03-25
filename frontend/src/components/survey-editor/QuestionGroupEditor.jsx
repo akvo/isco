@@ -834,7 +834,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
               justify="space-between"
             >
               <Col span={1} align="start">
-                <Tooltip title="Click to move question">
+                <Tooltip title="Click to move section">
                   <Button
                     type="text"
                     icon={<RiDragMove2Fill />}
