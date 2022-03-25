@@ -76,7 +76,7 @@ class TestFormRoutes():
                   "description": "Question Group 1 Description",
                   "translations": None,
                   "repeat": False,
-                  "order": None,
+                  "order": 1,
                   "member_access": None,
                   "isco_access": None,
                   "question": None})

@@ -90,6 +90,8 @@ const defaultUIState = {
     deletedSkipLogic: [],
   },
   isMoveQuestion: false,
+  isMoveQuestionGroup: false,
+  isAddQuestionGroup: false,
 };
 
 const store = new Store(defaultUIState);

@@ -1,5 +1,5 @@
 from fastapi import HTTPException, status
-from typing import List
+from typing import List, Optional
 from sqlalchemy.orm import Session
 from models.question_group import QuestionGroupPayload, QuestionGroupDict
 from models.question_group import QuestionGroup, QuestionGroupBase
@@ -11,24 +11,11 @@ from db.crud_question import reorder_question
 
 def add_question_group(session: Session,
                        payload: QuestionGroupPayload) -> QuestionGroupBase:
-    last_question_group = session.query(QuestionGroup).filter(
-        QuestionGroup.form == payload['form']).order_by(
-            QuestionGroup.order.desc()).first()
-    if last_question_group:
-        last_question_group = last_question_group.order + 1
-    else:
-        last_question_group = 1
-
-    if "order" in payload:
-        order = payload['order']
-        if order:
-            last_question_group = order
-
     question_group = QuestionGroup(id=None,
                                    name=payload['name'],
                                    description=payload['description'],
                                    form=payload['form'],
-                                   order=last_question_group,
+                                   order=payload['order'],
                                    translations=payload['translations'],
                                    repeat=payload['repeat'])
     if payload['member_access']:
@@ -154,6 +141,23 @@ def delete_isco_access_by_group_id(session: Session, question_group: int):
     return isco_access
 
 
+def reorder_question_group(session: Session, form: int,
+                           exclude: Optional[int] = None,
+                           only: Optional[List[int]] = None,
+                           order: Optional[int] = 1):
+    if not exclude and not only:
+        return False
+    groups = session.query(QuestionGroup).filter(QuestionGroup.form == form)
+    if exclude:
+        groups = groups.filter(QuestionGroup.id != exclude)
+    if only:
+        groups = groups.filter(QuestionGroup.id.in_(only))
+    groups = groups.order_by(QuestionGroup.order).all()
+    for index, qg in enumerate(groups):
+        qg.order = index + order
+    return groups
+
+
 def delete_question_group(session: Session, id: int):
     # delete question
     delete_question_by_group(session=session, group=id)
@@ -163,5 +167,6 @@ def delete_question_group(session: Session, id: int):
     form_id = question_group.form
     session.delete(question_group)
     reorder_question(session=session, form=form_id, question_group=id)
+    reorder_question_group(session=session, form=form_id, exclude=id)
     session.commit()
     session.flush()

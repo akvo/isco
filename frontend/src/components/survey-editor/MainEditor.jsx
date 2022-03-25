@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Form, Space, Row, Col } from "antd";
+import { Form, Space, Row, Col, Tooltip, Button } from "antd";
 import { store, api } from "../../lib";
+import { AiOutlineGroup } from "react-icons/ai";
 import FormEditor from "./FormEditor";
-import QuestionGroupEditor from "./QuestionGroupEditor";
+import QuestionGroup from "./QuestionGroup";
 import orderBy from "lodash/orderBy";
 
 const MainEditor = () => {
@@ -63,7 +64,13 @@ const MainEditor = () => {
         <Row align="middle">
           {/* Form & Question Group */}
           <Col span={24}>
-            <Space direction="vertical" size="large">
+            {/* Button Add Section */}
+            <div className="button-control-wrapper">
+              <Tooltip title="Add section">
+                <Button ghost icon={<AiOutlineGroup />} />
+              </Tooltip>
+            </div>
+            <Space direction="vertical" size="small">
               <Form form={form} name="survey-detail" onFinish={onSubmitForm}>
                 <Space direction="vertical">
                   <FormEditor
@@ -74,7 +81,7 @@ const MainEditor = () => {
                 </Space>
               </Form>
               {orderBy(questionGroup, ["order"])?.map((qg, qgi) => (
-                <QuestionGroupEditor
+                <QuestionGroup
                   key={`question-group-key-${qgi}`}
                   index={qgi}
                   questionGroup={qg}

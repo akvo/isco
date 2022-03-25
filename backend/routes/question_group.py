@@ -4,10 +4,13 @@ from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
 from typing import List
 from sqlalchemy.orm import Session
+from sqlalchemy import and_
 import db.crud_question_group as crud
+import db.crud_question as crud_question
 from db.connection import get_session
 from models.question_group import QuestionGroupBase, QuestionGroupDict
-from models.question_group import QuestionGroupPayload
+from models.question_group import QuestionGroupPayload, QuestionGroup
+from models.question import QuestionType, Question
 
 security = HTTPBearer()
 question_group_route = APIRouter()
@@ -25,25 +28,77 @@ def add(req: Request, payload: QuestionGroupPayload,
     return question_group.serialize
 
 
-@question_group_route.post("/default_question_group/{form_id:path}",
-                           response_model=QuestionGroupBase,
-                           summary="add default question group",
-                           name="question_group:create_default",
-                           tags=["Question Group"])
-def create_default(req: Request, form_id: int,
+@question_group_route.post(
+    "/default_question_group/{form_id:path}/{order:path}",
+    response_model=QuestionGroupBase,
+    summary="add default question group",
+    name="question_group:create_default",
+    tags=["Question Group"])
+def create_default(req: Request, form_id: int, order: int,
                    session: Session = Depends(get_session),
                    credentials: credentials = Depends(security)):
+    prev_group = session.query(QuestionGroup).filter(and_(
+        QuestionGroup.form == form_id,
+        QuestionGroup.order < order)).order_by(
+            QuestionGroup.order.desc()).first()
+
+    question_order = 0
+    if prev_group:
+        question_order = session.query(Question).filter(and_(
+            Question.form == form_id,
+            Question.question_group == prev_group.id)).order_by(
+                Question.order.desc()).first().order
+
+    default_question = {
+        "form": form_id,
+        "question_group": None,
+        "name": "New question - please change name",
+        "translations": None,
+        "mandatory": False,
+        "datapoint_name": False,
+        "variable_name": None,
+        "type": QuestionType.input.value,
+        "personal_data": False,
+        "rule": None,
+        "tooltip": None,
+        "tooltip_translations": None,
+        "cascade": None,
+        "repeating_objects": None,
+        "order": question_order + 1,
+        "option": None,
+        "member_access": None,
+        "isco_access": None,
+        "skip_logic": None,
+    }
     payload = {
         "form": form_id,
         "name": "New section - please change name",
         "description": None,
         "translations": None,
         "repeat": False,
-        "order": None,
+        "order": order,
         "member_access": None,
         "isco_access": None,
-        "question": None
+        "question": [default_question]
     }
+    # reorder questions
+    next_questions = session.query(Question).filter(
+        and_(Question.form == form_id,
+             Question.order > question_order)).all()
+    if len(next_questions):
+        next_questions_ids = [q.id for q in next_questions]
+        crud_question.reorder_question(
+            session=session, form=form_id, only=next_questions_ids,
+            order=2 if question_order == 0 else question_order + 1)
+    # reorder question groups
+    next_groups = session.query(QuestionGroup).filter(
+        and_(QuestionGroup.form == form_id,
+             QuestionGroup.order >= order)).all()
+    if len(next_groups):
+        next_groups_ids = [qg.id for qg in next_groups]
+        crud.reorder_question_group(session=session, form=form_id,
+                                    only=next_groups_ids,
+                                    order=2 if order == 1 else order + 1)
     question_group = crud.add_question_group(session=session, payload=payload)
     return question_group.serialize
 

@@ -658,7 +658,7 @@ class TestQuestionRoutes():
             "description": "This is description",
             "translations": None,
             "repeat": False,
-            "order": None,
+            "order": 2,
             "member_access": [1],
             "isco_access": [1],
             "question": [

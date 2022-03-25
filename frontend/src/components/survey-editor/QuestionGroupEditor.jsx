@@ -18,7 +18,6 @@ import {
   RiDeleteBinFill,
   RiListOrdered,
 } from "react-icons/ri";
-import { AiOutlineGroup } from "react-icons/ai";
 import { MdGTranslate } from "react-icons/md";
 import { store, api } from "../../lib";
 import orderBy from "lodash/orderBy";
@@ -299,25 +298,6 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
     setTimeout(() => {
       handleFormOnValuesChange(repeatFieldValue, form?.getFieldsValue());
     }, 100);
-  };
-
-  const handleAddQuestionGroupButton = () => {
-    const { id } = surveyEditor;
-    api
-      .post(`/default_question_group/${id}`)
-      .then((res) => {
-        const { data } = res;
-        store.update((s) => {
-          s.surveyEditor = {
-            ...s.surveyEditor,
-            questionGroup: [...s.surveyEditor.questionGroup, data],
-          };
-        });
-      })
-      .catch((e) => {
-        const { status, statusText } = e.response;
-        console.error(status, statusText);
-      });
   };
 
   const handleDeleteQuestionGroupButton = (questionGroup) => {
@@ -836,7 +816,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
       justify="space-between"
       gutter={[12, 12]}
     >
-      <Col span={22}>
+      <Col span={24}>
         <Form
           form={form}
           name="survey-detail"
@@ -946,29 +926,6 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
             )}
           </Card>
         </Form>
-      </Col>
-      {/* Button Add Section & Question */}
-      <Col span={1.5} align="center">
-        <Card className="button-control-wrapper">
-          <Space align="center" direction="vertical">
-            {/* {isQuestionGroupSaved && (
-              <Tooltip title="Add question">
-                <Button
-                  ghost
-                  icon={<HiPlus />}
-                  onClick={() => handleAddQuestionButton(questionGroup)}
-                />
-              </Tooltip>
-            )} */}
-            <Tooltip title="Add section">
-              <Button
-                ghost
-                icon={<AiOutlineGroup />}
-                onClick={() => handleAddQuestionGroupButton(questionGroup)}
-              />
-            </Tooltip>
-          </Space>
-        </Card>
       </Col>
     </Row>
   );
