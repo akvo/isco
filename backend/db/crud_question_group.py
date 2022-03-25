@@ -1,10 +1,12 @@
 from fastapi import HTTPException, status
 from typing import List, Optional
 from sqlalchemy.orm import Session
+from sqlalchemy import and_
 from models.question_group import QuestionGroupPayload, QuestionGroupDict
 from models.question_group import QuestionGroup, QuestionGroupBase
 from models.question_group_member_access import QuestionGroupMemberAccess
 from models.question_group_isco_access import QuestionGroupIscoAccess
+from models.question import Question
 from db.crud_question import add_question, delete_question_by_group
 from db.crud_question import reorder_question
 
@@ -99,6 +101,106 @@ def update_question_group(session: Session, id: int,
     session.flush()
     session.refresh(question_group)
     return question_group
+
+
+def move_question_group(session: Session, id: int, selected_order: int,
+                        target_order: int, target_id: int):
+    group = session.query(QuestionGroup).filter(
+        QuestionGroup.id == id).first()
+    groups = session.query(QuestionGroup)
+
+    if (selected_order > target_order):
+        group.order = target_order
+        groups = groups.filter(
+            and_(QuestionGroup.form == group.form,
+                 QuestionGroup.order >= target_order,
+                 QuestionGroup.order != selected_order,
+                 QuestionGroup.order < selected_order,
+                 QuestionGroup.id != id))
+        # update question between group
+        between_group = session.query(
+            QuestionGroup
+        ).filter(and_(
+            QuestionGroup.order <= selected_order,
+            QuestionGroup.order >= target_order
+        )).all()
+        between_group_ids = [bg.id for bg in between_group]
+        between_question = session.query(
+            Question
+        ).filter(
+            Question.question_group.in_(between_group_ids)
+        ).all()
+        # selected question
+        selected_q = session.query(Question).filter(
+            Question.question_group == id).order_by(
+                Question.order).all()
+        selected_q_length = len(selected_q)
+        for bq in between_question:
+            bq.order = bq.order + selected_q_length
+        # update question inside selected/moved group
+        prev_order = session.query(
+            Question).filter(
+                Question.question_group == target_id
+            ).order_by(
+                Question.order.desc()).first().order
+        for index, sq in enumerate(selected_q):
+            if target_order <= 1:
+                sq.order = index + 1
+            else:
+                sq.order = index + prev_order + 1
+
+    if (selected_order < target_order):
+        group.order = target_order - 1
+        groups = groups.filter(
+            and_(QuestionGroup.form == group.form,
+                 QuestionGroup.order > selected_order,
+                 QuestionGroup.order < target_order,
+                 QuestionGroup.order != selected_order,
+                 QuestionGroup.id != id))
+        # update question between group
+        between_group = session.query(
+            QuestionGroup
+        ).filter(and_(
+            QuestionGroup.order < target_order,
+            QuestionGroup.order >= selected_order
+        )).all()
+        between_group_ids = [bg.id for bg in between_group]
+        between_question = session.query(
+            Question
+        ).filter(
+            Question.question_group.in_(between_group_ids)
+        ).all()
+        # selected question
+        selected_q = session.query(Question).filter(
+                Question.question_group == id).order_by(
+                    Question.order).all()
+        selected_q_length = len(selected_q)
+        for bq in between_question:
+            bq.order = bq.order - selected_q_length
+        # update question inside selected/moved group
+        moved_group = session.query(
+            QuestionGroup
+        ).filter(and_(
+            QuestionGroup.order >= selected_order,
+            QuestionGroup.order <= target_order
+        )).all()
+        moved_group_ids = [mg.id for mg in moved_group]
+        moved_q = session.query(Question).filter(
+            Question.question_group.in_(moved_group_ids)).all()
+        moved_q_length = len(moved_q)
+        for q in selected_q:
+            print('a', q.order)
+            q.order = q.order + moved_q_length
+            print('b', q.order, moved_q_length)
+
+    groups = groups.order_by(QuestionGroup.order).all()
+    for qg in groups:
+        if (selected_order > target_order):
+            qg.order = qg.order + 1
+        if (selected_order < target_order):
+            qg.order = qg.order - 2
+    session.commit()
+    session.flush()
 
 
 def get_member_access_by_question_group_id(session: Session,

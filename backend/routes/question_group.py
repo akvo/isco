@@ -137,6 +137,24 @@ def update(req: Request, id: int, payload: QuestionGroupPayload,
     return question_group.serialize
 
 
+@question_group_route.put(
+    "/move-question-group/{id:path}/{selected_order:path}/{target_order:path}",
+    responses={204: {"model": None}},
+    status_code=HTTPStatus.NO_CONTENT,
+    summary="move question group",
+    name="question_group:move",
+    tags=["Move"])
+def move(req: Request, id: int, selected_order: int,
+         target_order: int, target_id: int,
+         session: Session = Depends(get_session),
+         credentials: credentials = Depends(security)):
+    crud.move_question_group(session=session, id=id,
+                             selected_order=selected_order,
+                             target_order=target_order,
+                             target_id=target_id)
+    return Response(status_code=HTTPStatus.NO_CONTENT.value)
+
+
 @question_group_route.delete("/question_group/{id:path}",
                              responses={204: {
                                     "model": None
