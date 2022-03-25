@@ -60,8 +60,6 @@ const SurveyEditor = () => {
       });
   }, [formId]);
 
-  console.log("a");
-
   const countAllQuestion = useMemo(() => {
     return questionGroup?.flatMap((q) => q?.question)?.length;
   }, [questionGroup]);

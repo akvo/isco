@@ -121,9 +121,9 @@ const Question = ({
       });
   };
 
-  const disabled = isMoveQuestion.skip_logic?.filter((val) => {
-    return val.dependent_to <= question.id;
-  }).length;
+  // const disabled = isMoveQuestion.skip_logic?.filter((val) => {
+  //   return val.dependent_to <= question.id;
+  // }).length;
   // console.log(disabled);
 
   return (

@@ -165,12 +165,15 @@ const QuestionEditor = ({
           value?.forEach((val) => {
             Object.keys(val).forEach((key) => {
               const skipField = `${field}-${key}`;
-              let skipValue = String(val?.[key]);
-              if (val?.type?.includes("option")) {
-                skipValue = skipValue?.split("|");
+              let skipValue = val?.[key];
+              if (val?.type?.includes("option") && key === "value") {
+                if (String(skipValue)?.includes("|")) {
+                  //transform value from db
+                  skipValue = skipValue?.split("|")?.map((x) => parseInt(x));
+                }
                 skipValue = Array.isArray(skipValue)
                   ? skipValue
-                  : [skipValue || ""];
+                  : [parseInt(skipValue)];
               }
               form.setFieldsValue({ [skipField]: skipValue });
             });
@@ -298,12 +301,9 @@ const QuestionEditor = ({
                       <QuestionSetting
                         form={form}
                         activeSetting={activeSetting}
-                        setActiveSetting={setActiveSetting}
                         questionGroup={questionGroup}
                         question={question}
                         handleFormOnValuesChange={handleFormOnValuesChange}
-                        submitStatus={submitStatus}
-                        setSubmitStatus={setSubmitStatus}
                         allowOther={allowOther}
                         setAllowOther={setAllowOther}
                         allowDecimal={allowDecimal}
@@ -312,10 +312,36 @@ const QuestionEditor = ({
                         setMandatory={setMandatory}
                         personalData={personalData}
                         setPersonalData={setPersonalData}
-                        setActivePanel={setActivePanel}
                         activeLang={activeLang}
                         setActiveLang={setActiveLang}
                       />
+                      <div className="question-button-wrapper">
+                        <Space align="center">
+                          <Button
+                            onClick={() => {
+                              setActiveSetting("detail");
+                              setActivePanel(null);
+                            }}
+                          >
+                            Close
+                          </Button>
+                          <Button
+                            type="primary"
+                            ghost
+                            loading={
+                              submitStatus === `question-${question?.id}`
+                            }
+                            onClick={() => {
+                              setSubmitStatus(`question-${question?.id}`);
+                              setTimeout(() => {
+                                form.submit();
+                              }, 100);
+                            }}
+                          >
+                            Save
+                          </Button>
+                        </Space>
+                      </div>
                     </Col>
                   </Row>
                 </Panel>

@@ -392,27 +392,27 @@ const Setting = ({
   allowDecimal,
   setAllowDecimal,
 }) => {
-  const surveyEditor = store?.useState((s) => s?.surveyEditor);
-  const tempStorage = store?.useState((s) => s?.tempStorage);
-  const optionValues = store?.useState((s) => s?.optionValues);
+  const { surveyEditor, tempStorage, optionValues } = store.useState((s) => s);
+  const { questionGroup: questionGroupState } = surveyEditor;
   const { operator_type } = optionValues;
-  const qid = question?.id;
-  const { type } = question;
-  const allQuestion = surveyEditor?.questionGroup?.flatMap(
-    (qg) => qg?.question
-  );
+  const { id: qid } = question;
+
+  const allQuestion = questionGroupState?.flatMap((qg) => qg?.question);
   // take skip logic question by question current order
   const skipLogicQuestion = take(allQuestion, question?.order)
     ?.filter((q) => ["option", "number"].includes(q?.type) && q?.id !== qid)
     ?.map((q) => ({
       label: q?.name,
-      value: String(q?.id),
+      value: q?.id,
     }));
 
   const dependentId = parseInt(
     form?.getFieldValue(`question-${qid}-skip_logic-dependent_to`)
   );
   const dependentQuestion = allQuestion?.find((q) => q?.id === dependentId);
+  const operators = dependentQuestion?.type.includes("option")
+    ? operator_type?.filter((x) => x === "equal")
+    : operator_type;
 
   useEffect(() => {
     if (dependentQuestion?.id) {
@@ -423,11 +423,7 @@ const Setting = ({
       form.setFieldsValue(type);
       handleFormOnValuesChange(type, form.getFieldsValue());
     }
-  }, [dependentQuestion, form]);
-
-  const operators = dependentQuestion?.type.includes("option")
-    ? operator_type?.filter((x) => x === "equal")
-    : operator_type;
+  }, [dependentQuestion, form, qid, handleFormOnValuesChange]);
 
   const handleRequiredChange = (val, field) => {
     const fieldValue = { [field]: val };
@@ -624,7 +620,7 @@ const Setting = ({
                         placeholder="Select value"
                         options={dependentQuestion?.option?.map((x) => ({
                           label: x?.name,
-                          value: String(x?.id),
+                          value: x?.id,
                         }))}
                       />
                     </Form.Item>
@@ -635,7 +631,7 @@ const Setting = ({
           </Space>
         </TabPane>
         {/* Validation Criteria / Rule */}
-        {type === "number" && (
+        {question?.type === "number" && (
           <TabPane tab="Validation Criteria" key="validation-criteria">
             <Space direction="vertical" size="large">
               <div>
@@ -687,7 +683,7 @@ const Setting = ({
   );
 };
 
-const RenderLayout = ({
+const QuestionSetting = ({
   form,
   activeSetting,
   questionGroup,
@@ -741,75 +737,6 @@ const RenderLayout = ({
         />
       );
   }
-};
-
-const QuestionSetting = ({
-  form,
-  activeSetting,
-  setActiveSetting,
-  questionGroup,
-  question,
-  handleFormOnValuesChange,
-  submitStatus,
-  setSubmitStatus,
-  setAllowOther,
-  allowOther,
-  allowDecimal,
-  setAllowDecimal,
-  mandatory,
-  setMandatory,
-  personalData,
-  setPersonalData,
-  setActivePanel,
-  activeLang,
-  setActiveLang,
-}) => {
-  return (
-    <>
-      <RenderLayout
-        form={form}
-        activeSetting={activeSetting}
-        questionGroup={questionGroup}
-        question={question}
-        handleFormOnValuesChange={handleFormOnValuesChange}
-        allowOther={allowOther}
-        setAllowOther={setAllowOther}
-        allowDecimal={allowDecimal}
-        setAllowDecimal={setAllowDecimal}
-        mandatory={mandatory}
-        setMandatory={setMandatory}
-        personalData={personalData}
-        setPersonalData={setPersonalData}
-        activeLang={activeLang}
-        setActiveLang={setActiveLang}
-      />
-      <div className="question-button-wrapper">
-        <Space align="center">
-          <Button
-            onClick={() => {
-              setActiveSetting("detail");
-              setActivePanel(null);
-            }}
-          >
-            Close
-          </Button>
-          <Button
-            type="primary"
-            ghost
-            loading={submitStatus === `question-${question?.id}`}
-            onClick={() => {
-              setSubmitStatus(`question-${question?.id}`);
-              setTimeout(() => {
-                form.submit();
-              }, 100);
-            }}
-          >
-            Save
-          </Button>
-        </Space>
-      </div>
-    </>
-  );
 };
 
 export default QuestionSetting;

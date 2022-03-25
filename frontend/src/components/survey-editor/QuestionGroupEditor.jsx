@@ -36,10 +36,9 @@ const QuestionGroupSetting = ({
   repeat,
   onChangeRepeat,
 }) => {
-  const state = store.useState((s) => s?.surveyEditor);
-  const optionValues = store.useState((s) => s?.optionValues);
+  const { surveyEditor, optionValues } = store.useState((s) => s);
   const { member_type, isco_type } = optionValues;
-  const { languages } = state;
+  const { languages } = surveyEditor;
   const qgId = questionGroup?.id;
   const { name, description } = questionGroup;
   const [groupTranslationVisible, setGroupTranslationVisible] = useState(false);
@@ -246,12 +245,11 @@ const QuestionGroupSetting = ({
 
 const QuestionGroupEditor = ({ index, questionGroup }) => {
   const [form] = Form.useForm();
-  const state = store.useState((s) => s?.surveyEditor);
-  const { deletedOptions, deletedSkipLogic } = store.useState(
-    (s) => s?.tempStorage
-  );
+  const { surveyEditor, tempStorage } = store.useState((s) => s);
+  const { questionGroup: questionGroupState } = surveyEditor;
+  const { deletedOptions, deletedSkipLogic } = tempStorage;
   const { id, question } = questionGroup;
-  const isQuestionGroupHasQuestion = question?.length > 0;
+
   const [isGroupSettingVisible, setIsGroupSettingVisible] = useState(false);
   const [isQuestionVisible, setIsQuestionVisible] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
@@ -304,7 +302,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
   };
 
   const handleAddQuestionGroupButton = () => {
-    const { id } = state;
+    const { id } = surveyEditor;
     api
       .post(`/default_question_group/${id}`)
       .then((res) => {
@@ -628,199 +626,202 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
     }
   };
 
-  const handleFormOnValuesChange = (values /*allValues*/) => {
-    const question = questionGroup?.question;
-    Object.keys(values).forEach((key) => {
-      const field = key.split("-")[2];
-      const value = values?.[key];
-      // Handle Question group
-      if (key.includes("question_group")) {
-        let findQuestionGroup = questionGroup;
-        if (!field?.includes("translations")) {
-          findQuestionGroup = {
-            ...findQuestionGroup,
-            [field]: value,
-          };
-        }
-        if (field?.includes("translations")) {
-          const lang = key.split("-")[3];
-          const tKey = key.split("-")[4];
-          const transFilter = findQuestionGroup?.translations?.filter(
-            (x) => x?.language !== lang
-          );
-          findQuestionGroup = {
-            ...findQuestionGroup,
-            translations: [
-              ...transFilter,
-              {
-                ...findQuestionGroup?.translations?.find(
-                  (x) => x?.language === lang
-                ),
-                language: lang,
-                [tKey]: value,
-              },
-            ],
-          };
-        }
+  const handleFormOnValuesChange = useCallback(
+    (values /*allValues*/) => {
+      const question = questionGroup?.question;
+      Object.keys(values).forEach((key) => {
+        const field = key.split("-")[2];
+        const value = values?.[key];
+        // Handle Question group
+        if (key.includes("question_group")) {
+          let findQuestionGroup = questionGroup;
+          if (!field?.includes("translations")) {
+            findQuestionGroup = {
+              ...findQuestionGroup,
+              [field]: value,
+            };
+          }
+          if (field?.includes("translations")) {
+            const lang = key.split("-")[3];
+            const tKey = key.split("-")[4];
+            const transFilter = findQuestionGroup?.translations?.filter(
+              (x) => x?.language !== lang
+            );
+            findQuestionGroup = {
+              ...findQuestionGroup,
+              translations: [
+                ...transFilter,
+                {
+                  ...findQuestionGroup?.translations?.find(
+                    (x) => x?.language === lang
+                  ),
+                  language: lang,
+                  [tKey]: value,
+                },
+              ],
+            };
+          }
 
-        const filterQuestionGroup = state?.questionGroup?.filter(
-          (x) => x?.id !== questionGroup?.id
-        );
-        store.update((s) => {
-          s.surveyEditor = {
-            ...s.surveyEditor,
-            questionGroup: [...filterQuestionGroup, findQuestionGroup],
-          };
-        });
-      }
-      // Handle Question
-      if (key.includes("question") && !key.includes("question_group")) {
-        const qid = parseInt(key.split("-")[1]);
-        // update question state
-        let findQuestion = question?.find((q) => q?.id === qid);
-        if (
-          ![
-            "option",
-            "repeating_objects_field",
-            "repeating_objects_value",
-            "rule",
-            "skip_logic",
-            "translations",
-          ].includes(field)
-        ) {
-          findQuestion = {
-            ...findQuestion,
-            [field]: value,
-          };
+          const filterQuestionGroup = questionGroupState.filter(
+            (x) => x?.id !== questionGroup?.id
+          );
+          store.update((s) => {
+            s.surveyEditor = {
+              ...s.surveyEditor,
+              questionGroup: [...filterQuestionGroup, findQuestionGroup],
+            };
+          });
         }
-        if (field.includes("option")) {
-          const optId = key.split("-")[3];
-          findQuestion = {
-            ...findQuestion,
-            option: findQuestion?.option?.map((opt) => {
-              if (String(opt?.id) === String(optId)) {
+        // Handle Question
+        if (key.includes("question") && !key.includes("question_group")) {
+          const qid = parseInt(key.split("-")[1]);
+          // update question surveyEditor
+          let findQuestion = question?.find((q) => q?.id === qid);
+          if (
+            ![
+              "option",
+              "repeating_objects_field",
+              "repeating_objects_value",
+              "rule",
+              "skip_logic",
+              "translations",
+            ].includes(field)
+          ) {
+            findQuestion = {
+              ...findQuestion,
+              [field]: value,
+            };
+          }
+          if (field.includes("option")) {
+            const optId = key.split("-")[3];
+            findQuestion = {
+              ...findQuestion,
+              option: findQuestion?.option?.map((opt) => {
+                if (String(opt?.id) === String(optId)) {
+                  return {
+                    ...opt,
+                    name: value,
+                  };
+                }
+                return opt;
+              }),
+            };
+          }
+          if (field.includes("repeating_objects")) {
+            const roId = key.split("-")[3];
+            const roKey = field.split("_")[2];
+            findQuestion = {
+              ...findQuestion,
+              repeating_objects: findQuestion?.repeating_objects?.map((ro) => {
+                if (String(ro?.id) === String(roId)) {
+                  return {
+                    ...ro,
+                    [roKey]: value,
+                  };
+                }
+                return ro;
+              }),
+            };
+          }
+          if (field.includes("rule")) {
+            const ruleType = key.split("-")[3];
+            findQuestion = {
+              ...findQuestion,
+              rule: {
+                ...findQuestion?.rule,
+                [ruleType]: value,
+              },
+            };
+          }
+          if (field.includes("skip_logic")) {
+            const skipKey = key.split("-")[3];
+            findQuestion = {
+              ...findQuestion,
+              skip_logic: skipKey
+                ? [
+                    {
+                      ...findQuestion?.skip_logic?.[0],
+                      flag: findQuestion?.skip_logic?.[0]?.id || "post",
+                      question: qid,
+                      [skipKey]: value,
+                    },
+                  ]
+                : null,
+            };
+          }
+          if (field.includes("translations") && !key.includes("option")) {
+            const lang = key.split("-")[3];
+            const tKey = key.split("-")[4];
+            const transFilter = findQuestion?.translations?.filter(
+              (x) => x?.language !== lang
+            );
+            findQuestion = {
+              ...findQuestion,
+              translations: [
+                ...transFilter,
+                {
+                  ...findQuestion?.translations?.find(
+                    (x) => x?.language === lang
+                  ),
+                  language: lang,
+                  [tKey]: value,
+                },
+              ],
+            };
+          }
+          if (field.includes("translations") && key.includes("option")) {
+            const lang = key.split("-")[3];
+            const tKey = key.split("-")[4];
+            const optId = parseInt(key.split("-")[5]);
+            const optKey = tKey.split("_")[1];
+            const updatedQuestionOption = findQuestion?.option?.map((opt) => {
+              if (opt?.id === optId) {
+                const filterOption = opt?.translations?.filter(
+                  (x) => x?.language !== lang
+                );
                 return {
                   ...opt,
-                  name: value,
+                  translations: [
+                    ...filterOption,
+                    {
+                      ...opt?.translations?.find((x) => x?.language === lang),
+                      language: lang,
+                      [optKey]: value,
+                    },
+                  ],
                 };
               }
               return opt;
-            }),
-          };
-        }
-        if (field.includes("repeating_objects")) {
-          const roId = key.split("-")[3];
-          const roKey = field.split("_")[2];
-          findQuestion = {
-            ...findQuestion,
-            repeating_objects: findQuestion?.repeating_objects?.map((ro) => {
-              if (String(ro?.id) === String(roId)) {
-                return {
-                  ...ro,
-                  [roKey]: value,
-                };
-              }
-              return ro;
-            }),
-          };
-        }
-        if (field.includes("rule")) {
-          const ruleType = key.split("-")[3];
-          findQuestion = {
-            ...findQuestion,
-            rule: {
-              ...findQuestion?.rule,
-              [ruleType]: value,
-            },
-          };
-        }
-        if (field.includes("skip_logic")) {
-          const skipKey = key.split("-")[3];
-          findQuestion = {
-            ...findQuestion,
-            skip_logic: skipKey
-              ? [
-                  {
-                    ...findQuestion?.skip_logic[0],
-                    flag: findQuestion?.skip_logic[0]?.id || "post",
-                    question: qid,
-                    [skipKey]: value,
-                  },
-                ]
-              : null,
-          };
-        }
-        if (field.includes("translations") && !key.includes("option")) {
-          const lang = key.split("-")[3];
-          const tKey = key.split("-")[4];
-          const transFilter = findQuestion?.translations?.filter(
-            (x) => x?.language !== lang
-          );
-          findQuestion = {
-            ...findQuestion,
-            translations: [
-              ...transFilter,
-              {
-                ...findQuestion?.translations?.find(
-                  (x) => x?.language === lang
-                ),
-                language: lang,
-                [tKey]: value,
-              },
-            ],
-          };
-        }
-        if (field.includes("translations") && key.includes("option")) {
-          const lang = key.split("-")[3];
-          const tKey = key.split("-")[4];
-          const optId = parseInt(key.split("-")[5]);
-          const optKey = tKey.split("_")[1];
-          const updatedQuestionOption = findQuestion?.option?.map((opt) => {
-            if (opt?.id === optId) {
-              const filterOption = opt?.translations?.filter(
-                (x) => x?.language !== lang
-              );
-              return {
-                ...opt,
-                translations: [
-                  ...filterOption,
-                  {
-                    ...opt?.translations?.find((x) => x?.language === lang),
-                    language: lang,
-                    [optKey]: value,
-                  },
-                ],
-              };
-            }
-            return opt;
-          });
-          findQuestion = {
-            ...findQuestion,
-            option: [...updatedQuestionOption],
-          };
-        }
+            });
+            findQuestion = {
+              ...findQuestion,
+              option: [...updatedQuestionOption],
+            };
+          }
 
-        const filterQuestionGroup = state?.questionGroup?.filter(
-          (x) => x?.id !== questionGroup?.id
-        );
-        const filterQuestion = questionGroup?.question?.filter(
-          (x) => x?.id !== qid
-        );
-        store.update((s) => {
-          s.surveyEditor = {
-            ...s.surveyEditor,
-            questionGroup: [
-              ...filterQuestionGroup,
-              {
-                ...questionGroup,
-                question: [...filterQuestion, findQuestion],
-              },
-            ],
-          };
-        });
-      }
-    });
-  };
+          const filterQuestionGroup = questionGroupState.filter(
+            (x) => x?.id !== questionGroup?.id
+          );
+          const filterQuestion = questionGroup?.question?.filter(
+            (x) => x?.id !== qid
+          );
+          store.update((s) => {
+            s.surveyEditor = {
+              ...s.surveyEditor,
+              questionGroup: [
+                ...filterQuestionGroup,
+                {
+                  ...questionGroup,
+                  question: [...filterQuestion, findQuestion],
+                },
+              ],
+            };
+          });
+        }
+      });
+    },
+    [questionGroupState, questionGroup]
+  );
 
   const handleFormOnFinishFailed = () => {
     setSubmitStatus(null);
@@ -863,15 +864,8 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
               </Col>
               <Col span={6} align="end" className="right">
                 <Space size={1} align="center">
-                  <Tooltip
-                    title={`${
-                      isQuestionGroupHasQuestion
-                        ? "Show/hide section question"
-                        : "This section doesn't have question"
-                    }`}
-                  >
+                  <Tooltip title={"Show/hide section question"}>
                     <Button
-                      disabled={!isQuestionGroupHasQuestion}
                       type="text"
                       icon={<RiListOrdered />}
                       onClick={() => handleShowQuestionButton()}
