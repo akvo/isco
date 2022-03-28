@@ -218,7 +218,7 @@ const QuestionGroup = ({ index, questionGroup }) => {
           cancelButton={isMoveQuestionGroup || isAddQuestionGroup}
           onCancel={handleOnCancelMove}
           disabled={
-            disable.length || isMoveQuestionGroup?.order === questionGroup?.id
+            disable.length || isMoveQuestionGroup?.id === questionGroup?.id
           }
           onClick={() =>
             !isMoveQuestionGroup
