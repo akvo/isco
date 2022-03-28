@@ -243,7 +243,7 @@ const QuestionGroupSetting = ({
   );
 };
 
-const QuestionGroupEditor = ({ index, questionGroup }) => {
+const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
   const [form] = Form.useForm();
   const { surveyEditor, tempStorage } = store.useState((s) => s);
   const { questionGroup: questionGroupState } = surveyEditor;
@@ -828,7 +828,11 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
           <Card
             className={
               !isQuestionVisible
-                ? "qge-card-wrapper"
+                ? isMoving
+                  ? "qge-card-wrapper is-move"
+                  : "qge-card-wrapper"
+                : isMoving
+                ? "qge-card-wrapper active is-move"
                 : "qge-card-wrapper active"
             }
           >

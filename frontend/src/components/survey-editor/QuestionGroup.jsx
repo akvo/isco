@@ -169,6 +169,28 @@ const QuestionGroup = ({ index, questionGroup }) => {
       });
   };
 
+  const allQuestions = questionGroupState
+    .map((x) => x.question)
+    .flatMap((x) => x);
+
+  const allDependencies = allQuestions.filter((x) => {
+    if (isMoveQuestionGroup) {
+      const skip_logics = isMoveQuestionGroup.question
+        .filter((q) => q.skip_logic.length)
+        .flatMap((q) => q)
+        .map((q) => q.skip_logic)
+        .flatMap((q) => q)
+        .map((q) => q.dependent_to);
+      return skip_logics.includes(x.id);
+    }
+    return false;
+  });
+
+  const disable = questionGroup.question.filter((x) => {
+    const hasHighOrder = allDependencies.map((d) => d.order >= x.order);
+    return hasHighOrder.length;
+  });
+
   return (
     <>
       {!index && (isAddQuestionGroup || isMoveQuestionGroup) && (
@@ -177,6 +199,9 @@ const QuestionGroup = ({ index, questionGroup }) => {
           text={AddMoveButtonText}
           cancelButton={isMoveQuestionGroup || isAddQuestionGroup}
           onCancel={handleOnCancelMove}
+          disabled={
+            disable.length || isMoveQuestionGroup?.id === questionGroup?.id
+          }
           onClick={() =>
             !isMoveQuestionGroup
               ? handleAddQuestionGroupButton(
@@ -193,13 +218,18 @@ const QuestionGroup = ({ index, questionGroup }) => {
           }
         />
       )}
-      <QuestionGroupEditor index={index} questionGroup={questionGroup} />
+      <QuestionGroupEditor
+        index={index}
+        questionGroup={questionGroup}
+        isMoving={isMoveQuestionGroup?.id === questionGroup?.id}
+      />
       {(isAddQuestionGroup || isMoveQuestionGroup) && (
         <AddMoveButton
           className="question-group"
           text={AddMoveButtonText}
           cancelButton={isMoveQuestionGroup || isAddQuestionGroup}
           onCancel={handleOnCancelMove}
+          disabled={disable.length}
           onClick={() =>
             !isMoveQuestionGroup
               ? handleAddQuestionGroupButton(questionGroup.order + 1)

@@ -93,6 +93,10 @@
         background-color: #f5f9ff;
         border: 1px solid #777777;
 
+        &.is-move {
+          background-color: #e8c8c8;
+        }
+
         &.active {
           .ant-card-body {
             padding: 12px 0px;
