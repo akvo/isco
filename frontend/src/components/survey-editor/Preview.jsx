@@ -22,11 +22,14 @@ const Preview = () => {
   useEffect(() => {
     const allQuestion = questionGroup.flatMap((qg) => qg.question);
     let transformedQuestionGroup = questionGroup;
-    if (selectedMember && selectedIsco) {
-      transformedQuestionGroup.filter(
-        (qg) =>
-          qg.member_access.includes(selectedMember) &&
-          qg.isco_access.includes(selectedIsco)
+    if (selectedMember) {
+      transformedQuestionGroup = transformedQuestionGroup.filter((qg) =>
+        qg.member_access.includes(selectedMember)
+      );
+    }
+    if (selectedIsco) {
+      transformedQuestionGroup = transformedQuestionGroup.filter((qg) =>
+        qg.isco_access.includes(selectedIsco)
       );
     }
     transformedQuestionGroup = transformedQuestionGroup.map((qg) => {
@@ -137,10 +140,12 @@ const Preview = () => {
   ]);
 
   const handleOnChangeMember = (val) => {
+    setIsLoading(true);
     setSelectedMember(val);
   };
 
   const handleOnChangeIsco = (val) => {
+    setIsLoading(true);
     setSelectedIsco(val);
   };
 
@@ -159,6 +164,7 @@ const Preview = () => {
           <div className="field-wrapper">
             <div className="field-label">Member Type</div>
             <Select
+              allowClear
               className="custom-dropdown-wrapper bg-grey"
               placeholder="Select Member Type"
               options={member_type.map((x) => ({ label: x.name, value: x.id }))}
@@ -169,6 +175,7 @@ const Preview = () => {
           <div className="field-wrapper">
             <div className="field-label">ISCO Type</div>
             <Select
+              allowClear
               className="custom-dropdown-wrapper bg-grey"
               placeholder="Select ISCO Type"
               options={isco_type.map((x) => ({ label: x.name, value: x.id }))}

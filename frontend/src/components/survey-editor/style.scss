@@ -261,5 +261,23 @@
       border-bottom: 2px solid #777777;
       margin-bottom: 14px;
     }
+
+    // customize webform/akvo-react-form style
+    .arf-field-cascade-api {
+      margin-top: -65px;
+      padding: 0 20px;
+    }
+
+    .ant-select.arf-cascade-api-select.ant-select-single.ant-select-show-arrow {
+      margin-bottom: 10px;
+    }
+
+    .arf-next {
+      button {
+        background-color: transparent;
+        border: 2px solid #777777;
+      }
+    }
+    // end customize webform/akvo-react-form style
   }
 }
