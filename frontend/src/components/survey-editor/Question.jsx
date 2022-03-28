@@ -140,10 +140,36 @@ const Question = ({
       });
   };
 
-  // const disabled = isMoveQuestion.skip_logic?.filter((val) => {
-  //   return val.dependent_to <= question.id;
-  // }).length;
-  // console.log(disabled);
+  const allQuestions = questionGroupState
+    .map((x) => x.question)
+    .flatMap((x) => x);
+
+  const dependencies = allQuestions
+    .filter((x) => {
+      if (isMoveQuestion) {
+        return isMoveQuestion.skip_logic
+          .map((s) => s.dependent_to)
+          .includes(x.id);
+      }
+      return false;
+    })
+    .filter((x) => {
+      return x.order > question.order;
+    });
+
+  const targetDependencies = allQuestions
+    .filter((x) => {
+      if (isMoveQuestion) {
+        return question.order >= x.order;
+      }
+      return false;
+    })
+    .map((x) => x.skip_logic)
+    .flatMap((x) => x)
+    .map((x) => allQuestions.find((a) => a.id === x.id))
+    .filter((x) => x.id === isMoveQuestion?.id);
+
+  const disable = [...dependencies, ...targetDependencies];
 
   return (
     <>
@@ -153,6 +179,7 @@ const Question = ({
           text={AddMoveButtonText}
           cancelButton={isMoveQuestion}
           onCancel={handleOnCancelMove}
+          disabled={dependencies.length}
           onClick={() =>
             !isMoveQuestion
               ? handleAddQuestionButton(
@@ -173,12 +200,14 @@ const Question = ({
         handleFormOnValuesChange={handleFormOnValuesChange}
         submitStatus={submitStatus}
         setSubmitStatus={setSubmitStatus}
+        toggleMove={isMoveQuestion?.id}
       />
       <AddMoveButton
         className="question"
         text={AddMoveButtonText}
         cancelButton={isMoveQuestion}
         onCancel={handleOnCancelMove}
+        disabled={disable.length}
         onClick={() =>
           !isMoveQuestion
             ? handleAddQuestionButton(question.order + 1)

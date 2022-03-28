@@ -472,7 +472,7 @@ const Setting = ({
     <div className="question-setting-wrapper setting">
       <Tabs size="small">
         {/* Question Options */}
-        <TabPane tab="Question Options" key="question-option">
+        <TabPane tab="Settings" key="question-option">
           <>
             <div className="field-wrapper">
               <div className="field-label">Variable name (Custom ID)</div>
