@@ -157,7 +157,7 @@ const Question = ({
       return x.order > question.order;
     });
 
-  const dependentOn = allQuestions
+  const targetDependencies = allQuestions
     .filter((x) => {
       if (isMoveQuestion) {
         return question.order >= x.order;
@@ -169,7 +169,7 @@ const Question = ({
     .map((x) => allQuestions.find((a) => a.id === x.id))
     .filter((x) => x.id === isMoveQuestion?.id);
 
-  const disable = [...dependencies, ...dependentOn];
+  const disable = [...dependencies, ...targetDependencies];
 
   return (
     <>
