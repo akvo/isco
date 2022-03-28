@@ -28,7 +28,6 @@ const Preview = () => {
           qg.isco_access.includes(selectedIsco)
       );
     }
-
     transformedQuestionGroup = transformedQuestionGroup.map((qg) => {
       const questions = qg.question.map((q) => {
         let qVal = {
@@ -107,14 +106,12 @@ const Preview = () => {
         question: questions,
       };
     });
-
     const transformedForm = {
       name: formName,
       description: formDescription,
       languages: formLang,
       question_group: transformedQuestionGroup,
     };
-
     setFormValue(transformedForm);
     setIsLoading(false);
   }, [

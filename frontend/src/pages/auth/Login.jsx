@@ -29,7 +29,7 @@ const Login = () => {
         });
         setTimeout(() => {
           navigate("/home");
-        }, 100);
+        }, 1000);
       })
       .catch((e) => {
         console.error(e);

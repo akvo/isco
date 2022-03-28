@@ -76,6 +76,7 @@ const SurveyEditor = () => {
         <Col span={24}>
           <Card className="card-wrapper">
             <Tabs
+              destroyInactiveTabPane={true}
               tabBarExtraContent={
                 <Space align="middle">
                   <Title

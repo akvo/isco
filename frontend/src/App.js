@@ -55,12 +55,13 @@ const App = () => {
               s.isLoggedIn = true;
               s.user = { ...data };
             });
+            navigate("/home");
           })
           .catch((e) => {
             const { status, statusText } = e.response;
             console.error(status, statusText);
             if (status === 401) {
-              removeCookie("AUTH_TOKEN");
+              removeCookie("AUTH_TOKEN", { path: "/" });
               api.setToken(null);
               store.update((s) => {
                 s.isLoggedIn = false;
@@ -139,7 +140,7 @@ const App = () => {
           <Route
             exact
             path="/survey-editor/:formId"
-            element={<SurveyEditor />}
+            element={<Secure element={SurveyEditor} adminPage={true} />}
           />
           <Route exact path="*" element={<ErrorPage status={404} />} />
         </Routes>
