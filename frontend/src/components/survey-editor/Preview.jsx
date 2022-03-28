@@ -17,19 +17,25 @@ const Preview = () => {
   const [formValue, setFormValue] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [selectedMember, setSelectedMember] = useState(null);
+
+  const allAccessId = 1;
   const [selectedIsco, setSelectedIsco] = useState(null);
 
   useEffect(() => {
     const allQuestion = questionGroup.flatMap((qg) => qg.question);
     let transformedQuestionGroup = questionGroup;
     if (selectedMember) {
-      transformedQuestionGroup = transformedQuestionGroup.filter((qg) =>
-        qg.member_access.includes(selectedMember)
+      transformedQuestionGroup = transformedQuestionGroup.filter(
+        (qg) =>
+          qg.member_access.includes(selectedMember) ||
+          qg.member_access.includes(allAccessId)
       );
     }
     if (selectedIsco) {
-      transformedQuestionGroup = transformedQuestionGroup.filter((qg) =>
-        qg.isco_access.includes(selectedIsco)
+      transformedQuestionGroup = transformedQuestionGroup.filter(
+        (qg) =>
+          qg.isco_access.includes(selectedIsco) ||
+          qg.member_access.includes(allAccessId)
       );
     }
     transformedQuestionGroup = transformedQuestionGroup.map((qg) => {
