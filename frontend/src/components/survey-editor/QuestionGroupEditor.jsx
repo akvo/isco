@@ -296,9 +296,7 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
     const repeatFieldValue = { [fieldId]: val };
     form.setFieldsValue(repeatFieldValue);
     setRepeat(val);
-    setTimeout(() => {
-      handleFormOnValuesChange(repeatFieldValue, form?.getFieldsValue());
-    }, 100);
+    handleFormOnValuesChange(repeatFieldValue, form?.getFieldsValue());
   };
 
   const handleDeleteQuestionGroupButton = (questionGroup) => {

@@ -119,6 +119,7 @@ const Preview = () => {
       });
       return {
         ...qg,
+        repeatable: qg.repeat,
         question: orderBy(questions, ["order"]),
       };
     });
