@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from "react";
 import "./style.scss";
 import { Row, Col, Card, Tabs, Typography, Space } from "antd";
-import { MainEditor } from "../../components";
+import { MainEditor, Preview } from "../../components";
 import { useParams } from "react-router-dom";
 import { store, api } from "../../lib";
 import { defaultRepeatingObject, defaultOption } from "../../lib/store";
@@ -89,7 +89,7 @@ const SurveyEditor = () => {
                 <MainEditor />
               </TabPane>
               <TabPane tab="Preview" key="preview">
-                Content Preview
+                <Preview />
               </TabPane>
             </Tabs>
           </Card>
