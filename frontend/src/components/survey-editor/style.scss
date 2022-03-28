@@ -1,251 +1,257 @@
 @import "../../variables";
 
 #root {
-  #main-form-editor {
-    .ant-tabs-nav {
-      padding: 0 10px;
-    }
-
-    .ant-tabs-tab .ant-tabs-tab-btn {
-      color: #777777 !important;
-    }
-
-    .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
-      color: #777777 !important;
-    }
-
-    .ant-space.ant-space-vertical {
-      width: 100%;
-    }
-
-    .ant-btn-icon-only {
-      color: #777777;
-      padding-top: 5px;
-    }
-
-    .ant-form-item-label > label {
-      .translation-label {
-        width: 18vw;
-        text-align: left;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-        white-space: initial;
-      }
-    }
-
-    .ant-form-item-label > label:after {
-      content: " ";
-    }
-
-    .reorder-wrapper {
-      &.question {
-        background-color: $white;
-        margin-top: 14px;
-        margin-bottom: 14px;
-        padding: 10px;
-      }
-
-      &.question-group {
-        margin-bottom: 10px;
-        padding: 10px 0;
-      }
-
-      .reorder-button {
-        width: 135px;
-        font-size: 12px;
-        line-height: 0;
-        min-height: 0;
-        padding: 5px 0;
-      }
-    }
-
-    .form-editor-wrapper {
-      padding-bottom: 24px;
-      border-bottom: 2px solid #777777;
-
-      .ant-input {
-        width: 40%;
-      }
-    }
-
-    .button-control-wrapper {
-      // border: 1px solid #777777;
-      // background-color: $bg-grey;
-      position: absolute;
-      right: 0;
-      top: 315px;
-
-      .ant-card-body {
-        padding: 8px;
-        width: fit-content;
-      }
-
-      // .ant-btn-icon-only {
-      //   padding: 1px 0.5px 0 0;
-      // }
-      button {
-        min-height: 35px;
-        width: 35px;
-        height: 35px;
-      }
-    }
-
-    .question-group-editor-wrapper {
-      .qge-card-wrapper {
-        background-color: #f5f9ff;
-        border: 1px solid #777777;
-
-        .ant-card-body {
-          padding: 12px 0;
+    #main-form-editor {
+        .ant-tabs-nav {
+            padding: 0 10px;
         }
 
-        .section-title-row {
-          border-bottom: 2px solid #777777;
-          padding-bottom: 12px;
-          padding-left: 14px;
-
-          .ant-form-item-explain-error {
-            margin-left: 10px;
-          }
-
-          .left {
-            // .ant-input {
-            //   border: none;
-            // }
-
-            .ant-form-item {
-              margin: 0;
-            }
-          }
-
-          .right {
-            padding-right: 10px;
-            .ant-space {
-              float: right;
-            }
-          }
+        .ant-tabs-tab .ant-tabs-tab-btn {
+            color: #777777 !important;
         }
 
-        .qge-setting-wrapper {
-          .qge-setting-tab-body {
-            padding: 12px 20px;
-            border-bottom: 2px solid #777777;
-          }
+        .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+            color: #777777 !important;
         }
-        .qge-button-wrapper {
-          padding: 12px 20px;
-          float: right;
-        }
-      }
-    }
 
-    .question-editor-wrapper {
-      padding: 0 14px 0 14px;
-      .question-card-wrapper {
-        padding: 0 14px;
-        background-color: $bg-grey;
-
-        .left {
-          .ant-form-item {
-            margin: 0;
-          }
-
-          .ant-collapse > .ant-collapse-item {
-            border-bottom: none;
-          }
-
-          .ant-collapse
-            > .ant-collapse-item.ant-collapse-no-arrow
-            > .ant-collapse-header {
-            padding: 0;
-          }
-
-          .ant-row.ant-form-item {
+        .ant-space.ant-space-vertical {
             width: 100%;
-          }
-
-          .ant-collapse-content > .ant-collapse-content-box {
-            padding: 0;
-          }
-
-          .question-number {
-            margin-right: 5px;
-            margin-top: 3px;
-            font-weight: 600;
-          }
         }
 
-        .right {
-          position: absolute;
-          top: 12px;
-          right: 0;
-
-          .ant-space {
-            float: right;
-          }
-
-          .custom-dropdown-wrapper {
-            width: 14vw;
-            text-align: left;
-          }
-          .ant-form-item-explain-error {
-            text-align: left;
-          }
+        .ant-btn-icon-only {
+            color: #777777;
+            padding-top: 5px;
         }
-      }
 
-      .question-menu-wrapper {
-        .active {
-          background-color: $white !important;
-          &:hover {
-            background-color: $white;
-          }
+        .ant-form-item-label > label {
+            .translation-label {
+                width: 18vw;
+                text-align: left;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+                white-space: initial;
+            }
         }
-      }
 
-      .panel-body-wrapper {
-        .input-wrapper {
-          width: calc(100% - 40px);
-          background-color: $white;
+        .ant-form-item-label > label:after {
+            content: " ";
+        }
 
-          .question-setting-wrapper {
-            padding: 20px;
+        .reorder-wrapper {
+            &.question {
+                background-color: $white;
+                margin-top: 14px;
+                margin-bottom: 14px;
+                padding: 10px;
+            }
+
+            &.question-group {
+                margin-bottom: 10px;
+                padding: 10px 0;
+            }
+
+            .reorder-button {
+                width: 135px;
+                font-size: 12px;
+                line-height: 0;
+                min-height: 0;
+                padding: 5px 0;
+            }
+        }
+
+        .form-editor-wrapper {
+            padding-bottom: 24px;
             border-bottom: 2px solid #777777;
 
-            .ant-form-item {
-              margin-bottom: 12px;
+            .ant-input {
+                width: 40%;
+            }
+        }
+
+        .button-control-wrapper {
+            // border: 1px solid #777777;
+            // background-color: $bg-grey;
+            position: absolute;
+            right: 0;
+            top: 315px;
+            z-index: 99;
+
+            .ant-card-body {
+                padding: 8px;
+                width: fit-content;
             }
 
-            &.setting {
-              padding: 0 0 20px 0;
-
-              .ant-form-item {
-                margin-bottom: 24px;
-              }
-
-              .ant-tabs-content {
-                padding: 0 20px;
-              }
+            // .ant-btn-icon-only {
+            //   padding: 1px 0.5px 0 0;
+            // }
+            button {
+                min-height: 35px;
+                width: 35px;
+                height: 35px;
             }
-          }
-
-          .question-button-wrapper {
-            float: right;
-            padding: 14px;
-          }
         }
-      }
 
-      .translation-tab-wrapper {
-        background-color: $white;
-        width: 100%;
-        padding-top: 5px;
-        border-bottom: 1px solid #777777;
+        .question-group-editor-wrapper {
+            .qge-card-wrapper {
+                background-color: #f5f9ff;
+                border: 1px solid #777777;
 
-        button.active {
-          border-bottom: 2px solid #777777;
+                .ant-card-body {
+                    padding: 12px 0;
+                }
+
+                .section-title-row {
+                    border-bottom: 2px solid #777777;
+                    padding-bottom: 12px;
+                    padding-left: 14px;
+
+                    .ant-form-item-explain-error {
+                        margin-left: 10px;
+                    }
+
+                    .left {
+                        // .ant-input {
+                        //   border: none;
+                        // }
+
+                        .ant-form-item {
+                            margin: 0;
+                        }
+                    }
+
+                    .right {
+                        padding-right: 10px;
+
+                        .ant-space {
+                            float: right;
+                        }
+                    }
+                }
+
+                .qge-setting-wrapper {
+                    .qge-setting-tab-body {
+                        padding: 12px 20px;
+                        border-bottom: 2px solid #777777;
+                    }
+                }
+
+                .qge-button-wrapper {
+                    padding: 12px 20px;
+                    float: right;
+                }
+            }
         }
-      }
+
+        .question-editor-wrapper {
+            padding: 0 14px 0 14px;
+
+            .question-card-wrapper {
+                padding: 0 14px;
+                background-color: $bg-grey;
+
+                .left {
+                    .ant-form-item {
+                        margin: 0;
+                    }
+
+                    .ant-collapse > .ant-collapse-item {
+                        border-bottom: none;
+                    }
+
+                    .ant-collapse
+                    > .ant-collapse-item.ant-collapse-no-arrow
+                    > .ant-collapse-header {
+                        padding: 0;
+                    }
+
+                    .ant-row.ant-form-item {
+                        width: 100%;
+                    }
+
+                    .ant-collapse-content > .ant-collapse-content-box {
+                        padding: 0;
+                    }
+
+                    .question-number {
+                        margin-right: 5px;
+                        margin-top: 3px;
+                        font-weight: 600;
+                    }
+                }
+
+                .right {
+                    position: absolute;
+                    top: 12px;
+                    right: 0;
+
+                    .ant-space {
+                        float: right;
+                    }
+
+                    .custom-dropdown-wrapper {
+                        width: 14vw;
+                        text-align: left;
+                    }
+
+                    .ant-form-item-explain-error {
+                        text-align: left;
+                    }
+                }
+            }
+
+            .question-menu-wrapper {
+                .active {
+                    background-color: $white !important;
+
+                    &:hover {
+                        background-color: $white;
+                    }
+                }
+            }
+
+            .panel-body-wrapper {
+                .input-wrapper {
+                    width: calc(100% - 40px);
+                    background-color: $white;
+
+                    .question-setting-wrapper {
+                        padding: 20px;
+                        border-bottom: 2px solid #777777;
+
+                        .ant-form-item {
+                            margin-bottom: 12px;
+                        }
+
+                        &.setting {
+                            padding: 0 0 20px 0;
+
+                            .ant-form-item {
+                                margin-bottom: 24px;
+                            }
+
+                            .ant-tabs-content {
+                                padding: 0 20px;
+                            }
+                        }
+                    }
+
+                    .question-button-wrapper {
+                        float: right;
+                        padding: 14px;
+                    }
+                }
+            }
+
+            .translation-tab-wrapper {
+                background-color: $white;
+                width: 100%;
+                padding-top: 5px;
+                border-bottom: 1px solid #777777;
+
+                button.active {
+                    border-bottom: 2px solid #777777;
+                }
+            }
+        }
     }
-  }
 }
