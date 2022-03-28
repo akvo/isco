@@ -67,6 +67,16 @@ class CascadeList(Base):
             "children": self.children
         }
 
+    @property
+    def serializeWithoutChildren(self):
+        return {
+            "id": self.id,
+            "parent": self.parent,
+            "code": self.code,
+            "name": self.name,
+            "path": self.path,
+        }
+
 
 class CascadeListBase(BaseModel):
     id: int

@@ -1,5 +1,6 @@
 from fastapi import HTTPException, status
 from typing import List
+from sqlalchemy import and_
 from sqlalchemy.orm import Session
 from models.cascade import Cascade, CascadeBase
 from models.cascade import CascadeDict, CascadePayload
@@ -76,6 +77,22 @@ def add_cascade_list(session: Session, payload: CascadeListPayload):
     session.commit()
     session.flush()
     session.refresh(clist)
+    return clist
+
+
+def get_cascade_list_by_cascade_id(session: Session,
+                                   cascade_id: int, path: int):
+    path_tmp = None
+    if path:
+        path_tmp = f"{path}."
+    clist = session.query(
+        CascadeList).filter(and_(
+            CascadeList.cascade == cascade_id,
+            CascadeList.path == path_tmp)).all()
+    if clist is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"cascade list {id} not found")
     return clist
 
 

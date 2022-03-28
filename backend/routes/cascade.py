@@ -39,6 +39,19 @@ def get(req: Request, session: Session = Depends(get_session)):
     return [c.serialize for c in cascade]
 
 
+@cascade_route.get("/cascade/list/{cascade_id:path}/{path:path}",
+                   response_model=List[dict],
+                   summary="get cascade list by cascade id",
+                   name="cascade_list:get_by_cascade_id",
+                   tags=["Cascade"])
+def get_cascade_list_by_cascade_id(req: Request, cascade_id: int, path: int,
+                                   session: Session = Depends(get_session)):
+    clist = crud.get_cascade_list_by_cascade_id(session=session,
+                                                cascade_id=cascade_id,
+                                                path=path)
+    return [c.serializeWithoutChildren for c in clist]
+
+
 @cascade_route.get("/cascade/{id:path}",
                    response_model=CascadeBase,
                    summary="get cascade by id",
