@@ -90,6 +90,7 @@ const QuestionEditor = ({
   handleFormOnValuesChange,
   submitStatus,
   setSubmitStatus,
+  toggleMove = false,
 }) => {
   const { surveyEditor, optionValues } = store.useState((s) => s);
   const { questionGroup: questionGroupState } = surveyEditor;
@@ -244,7 +245,13 @@ const QuestionEditor = ({
   return (
     <Row key={`qe-${qId}`}>
       <Col span={24}>
-        <Card className="question-card-wrapper">
+        <Card
+          className={
+            toggleMove == question.id
+              ? "question-card-wrapper is-move"
+              : "question-card-wrapper"
+          }
+        >
           <Row align="middle" justify="space-between" gutter={[12, 12]}>
             <Col span={18} align="start" className="left">
               <Collapse ghost activeKey={activePanel}>

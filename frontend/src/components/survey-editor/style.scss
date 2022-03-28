@@ -149,6 +149,10 @@
         padding: 0 14px;
         background-color: $bg-grey;
 
+        &.is-move {
+          background-color: #e8c8c8;
+        }
+
         .left {
           .ant-form-item {
             margin: 0;

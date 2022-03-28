@@ -6,6 +6,7 @@ const AddMoveButton = ({
   onClick,
   className,
   cancelButton = false,
+  disabled = false,
   onCancel = () => {},
 }) => {
   return (
@@ -20,6 +21,7 @@ const AddMoveButton = ({
           className="reorder-button"
           size="small"
           onClick={onClick}
+          disabled={disabled}
         >
           {text}
         </Button>
