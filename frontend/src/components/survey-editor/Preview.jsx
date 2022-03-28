@@ -3,6 +3,7 @@ import "akvo-react-form/dist/index.css"; /* REQUIRED */
 import { Webform } from "akvo-react-form";
 import { store } from "../../lib";
 import { Space, Select } from "antd";
+import orderBy from "lodash/orderBy";
 
 const Preview = () => {
   const { surveyEditor, optionValues } = store.useState((s) => s);
@@ -44,6 +45,18 @@ const Preview = () => {
           qVal = {
             ...qVal,
             option: options,
+          };
+        }
+        // cascade
+        if (q.cascade) {
+          const cascadeURL = `${location.origin}/api/cascade/list/${q.cascade}`;
+          qVal = {
+            ...qVal,
+            api: {
+              endpoint: cascadeURL,
+              initial: 0,
+              list: false,
+            },
           };
         }
         // transform dependency
@@ -103,14 +116,14 @@ const Preview = () => {
       });
       return {
         ...qg,
-        question: questions,
+        question: orderBy(questions, ["order"]),
       };
     });
     const transformedForm = {
       name: formName,
       description: formDescription,
       languages: formLang,
-      question_group: transformedQuestionGroup,
+      question_group: orderBy(transformedQuestionGroup, ["order"]),
     };
     setFormValue(transformedForm);
     setIsLoading(false);
