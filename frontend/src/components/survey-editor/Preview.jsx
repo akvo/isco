@@ -15,69 +15,98 @@ const Preview = () => {
   const { member_type, isco_type } = optionValues;
   const [formValue, setFormValue] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedMember, setSelectedMember] = useState(1); // All id
-  const [selectedIsco, setSelectedIsco] = useState(1); // All id
+  const [selectedMember, setSelectedMember] = useState(null);
+  const [selectedIsco, setSelectedIsco] = useState(null);
 
   useEffect(() => {
     const allQuestion = questionGroup.flatMap((qg) => qg.question);
-    const transformedQuestionGroup = questionGroup
-      .filter(
+    let transformedQuestionGroup = questionGroup;
+    if (selectedMember && selectedIsco) {
+      transformedQuestionGroup.filter(
         (qg) =>
           qg.member_access.includes(selectedMember) &&
           qg.isco_access.includes(selectedIsco)
-      )
-      .map((qg) => {
-        const questions = qg.question.map((q) => {
-          let qVal = {
-            id: q.id,
-            name: q.name,
-            description: q.description,
-            order: q.order,
-            type: q.type,
-            required: q.mandatory,
-          };
-          // option values
-          if (q.option.length) {
-            const options = q.option.filter((o) => o.name && o.id);
-            qVal = {
-              ...qVal,
-              option: options,
-            };
-          }
-          // transform dependency
-          if (q.skip_logic.length) {
-            const dependency = q.skip_logic.map((sk) => {
-              if (sk.type === "option") {
-                let answerIds = [sk.value];
-                if (sk.value.includes("|")) {
-                  answerIds = sk.value.split("|");
-                }
-                const findQ = allQuestion.find((q) => q.id === sk.dependent_to);
-                const dependentOptions = answerIds.map((id) => {
-                  const findOpt = findQ.option.find(
-                    (o) => o.id === parseInt(id)
-                  );
-                  return findOpt.name;
-                });
-                return {
-                  id: sk.dependent_to,
-                  options: dependentOptions,
-                };
-              }
-              return {};
-            });
-            qVal = {
-              ...qVal,
-              dependency: dependency,
-            };
-          }
-          return qVal;
-        });
-        return {
-          ...qg,
-          question: questions,
+      );
+    }
+
+    transformedQuestionGroup = transformedQuestionGroup.map((qg) => {
+      const questions = qg.question.map((q) => {
+        let qVal = {
+          id: q.id,
+          name: q.name,
+          description: q.description,
+          order: q.order,
+          type: q.type,
+          required: q.mandatory,
         };
+        // option values
+        if (q.option.length) {
+          const options = q.option.filter((o) => o.name && o.id);
+          qVal = {
+            ...qVal,
+            option: options,
+          };
+        }
+        // transform dependency
+        if (q.skip_logic.length) {
+          const dependency = q.skip_logic.map((sk) => {
+            // option
+            if (sk.type === "option") {
+              let answerIds = [sk.value];
+              if (sk.value.includes("|")) {
+                answerIds = sk.value.split("|");
+              }
+              const findQ = allQuestion.find((q) => q.id === sk.dependent_to);
+              const dependentOptions = answerIds.map((id) => {
+                const findOpt = findQ.option.find((o) => o.id === parseInt(id));
+                return findOpt.name;
+              });
+              return {
+                id: sk.dependent_to,
+                options: dependentOptions,
+              };
+            }
+            // number
+            if (sk.type === "number") {
+              let logic;
+              switch (sk.operator) {
+                case "not_equal":
+                  logic = "not_equal";
+                  break;
+                case "greater_than":
+                  logic = "min";
+                  break;
+                case "greater_than_or_equal":
+                  logic = "min";
+                  break;
+                case "less_than":
+                  logic = "max";
+                  break;
+                case "less_than_or_equal":
+                  logic = "max";
+                  break;
+                default:
+                  logic = "equal";
+                  break;
+              }
+              return {
+                id: sk.dependent_to,
+                [logic]: parseInt(sk.value),
+              };
+            }
+          });
+          qVal = {
+            ...qVal,
+            dependency: dependency,
+          };
+        }
+        return qVal;
       });
+      return {
+        ...qg,
+        question: questions,
+      };
+    });
 
     const transformedForm = {
       name: formName,
