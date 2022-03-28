@@ -81,9 +81,6 @@
         width: fit-content;
       }
 
-      // .ant-btn-icon-only {
-      //   padding: 1px 0.5px 0 0;
-      // }
       button {
         min-height: 35px;
         width: 35px;
@@ -96,12 +93,22 @@
         background-color: #f5f9ff;
         border: 1px solid #777777;
 
+        &.active {
+          .ant-card-body {
+            padding: 12px 0px;
+          }
+
+          .section-title-row {
+            border-bottom: 2px solid #777777;
+          }
+        }
+
         .ant-card-body {
-          padding: 12px 0;
+          padding: 12px 0px 0px;
         }
 
         .section-title-row {
-          border-bottom: 2px solid #777777;
+          border-bottom: 1px solid #777777;
           padding-bottom: 12px;
           padding-left: 14px;
 
@@ -110,10 +117,6 @@
           }
 
           .left {
-            // .ant-input {
-            //   border: none;
-            // }
-
             .ant-form-item {
               margin: 0;
             }
@@ -166,6 +169,22 @@
             > .ant-collapse-item.ant-collapse-no-arrow
             > .ant-collapse-header {
             padding: 0;
+
+            .ant-btn-icon-only.btn-move {
+              &.active {
+                margin-right: 18px;
+              }
+            }
+
+            .ant-btn-icon-only.btn-edit {
+              &.active {
+                width: 0px;
+
+                svg {
+                  width: 0px;
+                }
+              }
+            }
           }
 
           .ant-row.ant-form-item {
@@ -266,7 +285,7 @@
       margin-bottom: 14px;
     }
 
-    // customize webform/akvo-react-form style
+    /* customize webform/akvo-react-form style */
     .arf-field-cascade-api {
       margin-top: -65px;
       padding: 0 20px;
@@ -283,19 +302,22 @@
       }
     }
 
-    // repeat group
+    /* repeat group */
     .ant-input-group.ant-input-group-compact {
       display: inline-block;
     }
+
     button.ant-btn.ant-btn-default.ant-btn-sm.ant-btn-icon-only {
       min-height: 0;
       background-color: #777777;
       color: $white;
+
       &.arf-disabled {
         background-color: #eaeaea;
         color: $black;
       }
     }
-    // end customize webform/akvo-react-form style
+
+    /* end customize webform/akvo-react-form style */
   }
 }

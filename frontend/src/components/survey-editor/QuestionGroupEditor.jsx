@@ -825,7 +825,13 @@ const QuestionGroupEditor = ({ index, questionGroup }) => {
           onFinish={handleFormOnFinish}
           onFinishFailed={handleFormOnFinishFailed}
         >
-          <Card className="qge-card-wrapper">
+          <Card
+            className={
+              !isQuestionVisible
+                ? "qge-card-wrapper"
+                : "qge-card-wrapper active"
+            }
+          >
             <Row
               className="section-title-row"
               align="middle"

@@ -167,7 +167,8 @@ const Question = ({
     .map((x) => x.skip_logic)
     .flatMap((x) => x)
     .map((x) => allQuestions.find((a) => a.id === x.id))
-    .filter((x) => x.id === isMoveQuestion?.id);
+    .filter((x) => x.id === isMoveQuestion?.id)
+    .filter((x) => x.skip_logic.length);
 
   const disable = [...dependencies, ...targetDependencies];
 
@@ -179,7 +180,7 @@ const Question = ({
           text={AddMoveButtonText}
           cancelButton={isMoveQuestion}
           onCancel={handleOnCancelMove}
-          disabled={dependencies.length}
+          disabled={disable.length || isMoveQuestion?.id === question?.id}
           onClick={() =>
             !isMoveQuestion
               ? handleAddQuestionButton(
@@ -207,7 +208,11 @@ const Question = ({
         text={AddMoveButtonText}
         cancelButton={isMoveQuestion}
         onCancel={handleOnCancelMove}
-        disabled={disable.length}
+        disabled={
+          disable.length ||
+          isMoveQuestion?.id === question?.id ||
+          isMoveQuestion.order - 1 === question.order
+        }
         onClick={() =>
           !isMoveQuestion
             ? handleAddQuestionButton(question.order + 1)

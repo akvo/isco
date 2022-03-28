@@ -16,6 +16,7 @@ import {
   RiSettings5Fill,
   RiDeleteBinFill,
   RiDragMove2Fill,
+  RiEditFill,
 } from "react-icons/ri";
 import { MdGTranslate } from "react-icons/md";
 import QuestionSetting from "./QuestionSetting";
@@ -262,12 +263,28 @@ const QuestionEditor = ({
                     <>
                       <Tooltip title="Click to move question">
                         <Button
+                          className={
+                            activePanel ? "btn-move active" : "btn-move"
+                          }
                           type="text"
                           icon={<RiDragMove2Fill />}
                           onClick={() => {
                             store.update((s) => {
                               s.isMoveQuestion = question;
                             });
+                          }}
+                        />
+                      </Tooltip>
+                      <Tooltip title="Show question details">
+                        <Button
+                          className={
+                            activePanel ? "btn-edit active" : "btn-edit"
+                          }
+                          type="text"
+                          icon={<RiEditFill />}
+                          onClick={() => {
+                            setActivePanel(panelKey);
+                            setActiveSetting("detail");
                           }}
                         />
                       </Tooltip>
