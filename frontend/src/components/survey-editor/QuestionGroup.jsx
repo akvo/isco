@@ -2,7 +2,7 @@ import React from "react";
 import QuestionGroupEditor from "./QuestionGroupEditor";
 import AddMoveButton from "./AddMoveButton";
 import { store, api } from "../../lib";
-import { orderBy, takeRight } from "lodash";
+import { orderBy, takeRight, intersection } from "lodash";
 
 const QuestionGroup = ({ index, questionGroup }) => {
   const { surveyEditor, isMoveQuestionGroup, isAddQuestionGroup } =
@@ -169,11 +169,12 @@ const QuestionGroup = ({ index, questionGroup }) => {
       });
   };
 
-  const allQuestions = questionGroupState
+  const allPrevQuestions = questionGroupState
+    .filter((x) => x.order > questionGroup.order)
     .map((x) => x.question)
     .flatMap((x) => x);
 
-  const allDependencies = allQuestions.filter((x) => {
+  const allPrevDependencies = allPrevQuestions.filter((x) => {
     if (isMoveQuestionGroup) {
       const skip_logics = isMoveQuestionGroup.question
         .filter((q) => q.skip_logic.length)
@@ -187,9 +188,26 @@ const QuestionGroup = ({ index, questionGroup }) => {
   });
 
   const disable = questionGroup.question.filter((x) => {
-    const hasHighOrder = allDependencies.map((d) => d.order >= x.order);
+    const hasHighOrder = allPrevDependencies.map((d) => d.order >= x.order);
     return hasHighOrder.length;
   });
+
+  const allTargetDependencies = questionGroupState
+    .filter((x) => {
+      if (isMoveQuestionGroup?.id !== questionGroup.id) {
+        return x.order <= questionGroup.order;
+      }
+      return false;
+    })
+    .map((x) => x.question)
+    .flatMap((x) => x)
+    .map((x) => x.skip_logic)
+    .flatMap((x) => x)
+    .filter((x) =>
+      isMoveQuestionGroup
+        ? isMoveQuestionGroup.question.map((q) => q.id).includes(x.dependent_to)
+        : false
+    );
 
   return (
     <>
@@ -200,7 +218,7 @@ const QuestionGroup = ({ index, questionGroup }) => {
           cancelButton={isMoveQuestionGroup || isAddQuestionGroup}
           onCancel={handleOnCancelMove}
           disabled={
-            disable.length || isMoveQuestionGroup?.id === questionGroup?.id
+            disable.length || isMoveQuestionGroup?.order === questionGroup?.id
           }
           onClick={() =>
             !isMoveQuestionGroup
@@ -229,7 +247,12 @@ const QuestionGroup = ({ index, questionGroup }) => {
           text={AddMoveButtonText}
           cancelButton={isMoveQuestionGroup || isAddQuestionGroup}
           onCancel={handleOnCancelMove}
-          disabled={disable.length}
+          disabled={
+            disable.length ||
+            allTargetDependencies.length ||
+            isMoveQuestionGroup?.id === questionGroup.id ||
+            isMoveQuestionGroup?.order - 1 === questionGroup.order
+          }
           onClick={() =>
             !isMoveQuestionGroup
               ? handleAddQuestionGroupButton(questionGroup.order + 1)
