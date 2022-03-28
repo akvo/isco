@@ -247,7 +247,7 @@ const QuestionEditor = ({
       <Col span={24}>
         <Card
           className={
-            toggleMove == question.id
+            toggleMove === question.id
               ? "question-card-wrapper is-move"
               : "question-card-wrapper"
           }
