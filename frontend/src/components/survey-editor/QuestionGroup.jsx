@@ -2,7 +2,7 @@ import React from "react";
 import QuestionGroupEditor from "./QuestionGroupEditor";
 import AddMoveButton from "./AddMoveButton";
 import { store, api } from "../../lib";
-import { orderBy, takeRight, intersection } from "lodash";
+import { orderBy, takeRight } from "lodash";
 
 const QuestionGroup = ({ index, questionGroup }) => {
   const { surveyEditor, isMoveQuestionGroup, isAddQuestionGroup } =
