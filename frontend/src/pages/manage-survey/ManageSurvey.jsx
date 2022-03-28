@@ -31,16 +31,15 @@ const ManageSurvey = () => {
 
   const handleEditButton = (record) => {
     const { id, has_question_group } = record;
-    // if not has question group, create first question group
+    // if doesn't have question group, create first question group
     if (!has_question_group) {
       api
-        .post(`/default_question_group/${id}`)
-        .catch((e) => {
-          const { status, statusText } = e.response;
-          console.error(status, statusText);
-        })
-        .finally(() => {
+        .post(`/default_question_group/${id}/1`)
+        .then(() => {
           navigate(`/survey-editor/${id}`);
+        })
+        .catch((e) => {
+          console.error(e);
         });
       return;
     }
