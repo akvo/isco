@@ -15,29 +15,12 @@ import {
 } from "antd";
 import { FaSearch } from "react-icons/fa";
 import { store, api } from "../../lib";
+import capitalize from "lodash/capitalize";
+import moment from "moment";
 
 const { Title } = Typography;
 
 const columns = [
-  // {
-  //   title: "",
-  //   dataIndex: "",
-  //   key: "status",
-  //   render: (record) => {
-  //     if (!record?.info) {
-  //       return "";
-  //     }
-  //     return (
-  //       <Tooltip
-  //         key={`${record?.id}-${record?.key}`}
-  //         title={record?.info}
-  //         placement="left"
-  //       >
-  //         <FaInfoCircle />
-  //       </Tooltip>
-  //     );
-  //   },
-  // },
   {
     title: "Name",
     dataIndex: "name",
@@ -49,19 +32,31 @@ const columns = [
     key: "email",
   },
   {
+    title: "Organization",
+    dataIndex: "organisation_name",
+    key: "organisation_name",
+  },
+  {
     title: "Verified on",
     dataIndex: "email_verified",
     key: "email_verified",
+    render: (value) => moment(value).format("MMMM Do YYYY, h:mm a"),
   },
   {
     title: "Role",
     dataIndex: "role",
     key: "role",
+    render: (value) =>
+      value
+        .split("_")
+        .map((x) => capitalize(x))
+        .join(" "),
   },
 ];
 
 const ManageUser = () => {
-  const { isLoggedIn, user } = store.useState((s) => s);
+  const { isLoggedIn, user, optionValues } = store.useState((s) => s);
+  const { organisation } = optionValues;
 
   const [form] = Form.useForm();
   const [isPendingUserShown, setIsPendingUserShown] = useState(false);
@@ -69,20 +64,40 @@ const ManageUser = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
 
-  const pageSize = 5;
+  const pageSize = 10;
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState(null);
+  const [orgFilter, setOrgFilter] = useState(null);
 
   const showPendingUserOption = false;
   const showOrganisationFilter = user?.role === "secretariat_admin";
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (isLoggedIn && organisation.length) {
       setIsLoading(true);
+      let url = `/user?page=${page}&limit=${pageSize}`;
+      if (search) {
+        url = `${url}&search=${search}`;
+      }
+      if (orgFilter) {
+        url = `${url}&organisation=${orgFilter}`;
+      }
       api
-        .get(`/user?page=${page}&limit=${pageSize}`)
+        .get(url)
         .then((res) => {
-          const { data } = res;
-          setData(data);
+          const data = res?.data?.data?.map((d) => {
+            const findOrganisation = organisation.find(
+              (o) => o.id === d.organisation
+            );
+            return {
+              ...d,
+              organisation_name: findOrganisation?.name,
+            };
+          });
+          setData({
+            ...res?.data,
+            data: data,
+          });
         })
         .catch((e) => {
           console.error(e);
@@ -92,7 +107,7 @@ const ManageUser = () => {
           setIsLoading(false);
         });
     }
-  }, [isLoggedIn, page]);
+  }, [isLoggedIn, page, search, organisation, orgFilter]);
 
   return (
     <div id="manage-user">
@@ -132,6 +147,7 @@ const ManageUser = () => {
                   className="input-search"
                   placeholder="Search user by name or email"
                   prefix={<FaSearch />}
+                  onChange={(val) => setSearch(val.target.value)}
                 />
                 {showOrganisationFilter && (
                   <Select
@@ -139,7 +155,15 @@ const ManageUser = () => {
                     showSearch
                     className="organisation-dropdown-wrapper"
                     placeholder="Organization"
-                    options={[]}
+                    options={
+                      organisation.length
+                        ? organisation.map((o) => ({
+                            label: o.name,
+                            value: o.id,
+                          }))
+                        : []
+                    }
+                    onChange={(val) => setOrgFilter(val)}
                   />
                 )}
               </Space>

@@ -23,10 +23,14 @@
         .ant-input {
           border: none;
         }
+
+        .ant-input-prefix {
+          margin-right: 14px;
+        }
       }
 
       .organisation-dropdown-wrapper {
-        width: 15rem;
+        width: 20rem;
       }
 
       .member-dropdown-wrapper {
