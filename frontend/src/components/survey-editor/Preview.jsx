@@ -168,7 +168,7 @@ const Preview = () => {
     const transformedForm = {
       name: formName,
       description: formDescription,
-      languages: formLang,
+      languages: ["en", ...formLang],
       question_group: orderBy(transformedQuestionGroup, ["order"]),
     };
     setFormValue(transformedForm);
