@@ -444,10 +444,10 @@ const Setting = ({
 
   const handleOnDeleteSkipLogic = () => {
     const skipLogic = question?.skip_logic?.[0];
-    const fieldValue = {
-      [`question-${qid}-skip_logic-dependent_to`]: "",
-    };
-    form.setFieldsValue(fieldValue);
+    const fields = ["dependent_to", "operator", "value"].map(
+      (x) => `question-${qid}-skip_logic-${x}`
+    );
+    form.resetFields(fields);
     handleFormOnValuesChange(
       { [`question-${qid}-skip_logic`]: null },
       form?.getFieldsValue()
