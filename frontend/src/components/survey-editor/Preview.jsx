@@ -75,6 +75,13 @@ const Preview = () => {
             rule: q.rule,
           };
         }
+        // translations
+        if (q.translations.length) {
+          qVal = {
+            ...qVal,
+            translations: q.translations,
+          };
+        }
         // tooltip translations
         if (q.tooltip) {
           let tooltip = {
