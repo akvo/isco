@@ -1,4 +1,5 @@
 from fastapi import HTTPException, status
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 from models.user import User, UserBase, UserDict
 from datetime import datetime
@@ -50,20 +51,33 @@ def get_user_by_member_type(session: Session, member_type: int) -> UserDict:
     return user
 
 
-def count(session: Session, organisation: Optional[int] = None) -> int:
+def filter_user(session: Session, search: Optional[str] = None,
+                organisation: Optional[int] = None):
+    user = session.query(User)
+    if search:
+        user = user.filter(or_(
+            User.name.ilike("%{}%".format(search.lower().strip())),
+            User.email.ilike("%{}%".format(search.lower().strip())),
+        ))
     if organisation:
-        return session.query(User).filter(
-            User.organisation == organisation).count()
-    return session.query(User).count()
+        user = user.filter(User.organisation == organisation)
+    return user
+
+
+def count(session: Session, search: Optional[str] = None,
+          organisation: Optional[int] = None) -> int:
+    user = filter_user(session=session, search=search,
+                       organisation=organisation)
+    user = user.count()
+    return user
 
 
 def get_all_user(session: Session,
+                 search: Optional[str] = None,
                  organisation: Optional[int] = None,
                  skip: int = 0,
                  limit: int = 10) -> List[UserDict]:
-    if organisation:
-        return session.query(User).filter(
-            User.organisation == organisation).order_by(
-                User.id.desc()).offset(skip).limit(limit).all()
-    return session.query(User).order_by(
-        User.id.desc()).offset(skip).limit(limit).all()
+    user = filter_user(session=session, search=search,
+                       organisation=organisation)
+    user = user.order_by(User.id.desc()).offset(skip).limit(limit).all()
+    return user

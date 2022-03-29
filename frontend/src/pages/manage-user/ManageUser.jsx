@@ -12,7 +12,7 @@ import {
   Form,
   Input,
   Select,
-  Checkbox,
+  // Checkbox,
 } from "antd";
 import { FaSearch, FaInfoCircle } from "react-icons/fa";
 import { dataSources } from "./static";
@@ -59,16 +59,16 @@ const columns = [
     dataIndex: "role",
     key: "role",
   },
-  {
-    title: "Surveys",
-    dataIndex: "access",
-    key: "access",
-  },
+  // {
+  //   title: "Surveys",
+  //   dataIndex: "access",
+  //   key: "access",
+  // },
 ];
 
 const ManageUser = () => {
   const [form] = Form.useForm();
-  const [isPendingUserShown, setIsPendingUserShown] = useState(false);
+  // const [isPendingUserShown, setIsPendingUserShown] = useState(false);
   const [isAddUserVisible, setIsAddUserVisible] = useState(false);
 
   return (
@@ -107,7 +107,7 @@ const ManageUser = () => {
               <Space>
                 <Input
                   className="input-search"
-                  placeholder="Search Users"
+                  placeholder="Search user by name or email"
                   prefix={<FaSearch />}
                 />
                 <Select
@@ -115,14 +115,14 @@ const ManageUser = () => {
                   placeholder="Organization"
                   options={[]}
                 />
-                <Select
+                {/* <Select
                   className="member-dropdown-wrapper"
                   placeholder="Member Type"
                   options={[]}
-                />
+                /> */}
               </Space>
             </Col>
-            <Col span={4} align="end">
+            {/* <Col span={4} align="end">
               <Space size={0.05} align="center">
                 <Button
                   type="text"
@@ -132,7 +132,7 @@ const ManageUser = () => {
                 </Button>{" "}
                 <Checkbox checked={isPendingUserShown} />
               </Space>
-            </Col>
+            </Col> */}
           </Row>
           <Row>
             <Col span={24}>
