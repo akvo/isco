@@ -98,6 +98,6 @@ class UserBase(BaseModel):
 
 class UserResponse(BaseModel):
     current: int
-    data: List[UserBase]
+    data: List[UserDict]
     total: int
     total_page: int

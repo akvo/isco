@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 from typing import Optional
 from jose import JWTError, jwt, exceptions
 from passlib.context import CryptContext
+from models.user import UserRole
 from db import crud_user
 
 
@@ -92,6 +93,18 @@ def verify_user(session: Session, authenticated):
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Please check your email inbox to verify email account")
     return user.serialize
+
+
+def verify_admin(session: Session, authenticated):
+    user = verify_user(session=session, authenticated=authenticated)
+    role = user['role']
+    secretariat_admin = UserRole.secretariat_admin
+    member_admin = UserRole.member_admin
+    if role != secretariat_admin and role != member_admin:
+        raise HTTPException(
+            status_code=403,
+            detail="You don't have data access, please contact admin")
+    return user
 
 
 def check_query(keywords):

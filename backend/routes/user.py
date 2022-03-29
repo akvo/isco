@@ -1,3 +1,4 @@
+from math import ceil
 from middleware import Token, authenticate_user
 from middleware import create_access_token, verify_user
 from fastapi import Depends, HTTPException, status, APIRouter, Request
@@ -6,9 +7,10 @@ from fastapi.security import HTTPBasicCredentials as credentials
 from sqlalchemy.orm import Session
 from db.connection import get_session
 from models.user import UserDict, UserBase
+from models.user import UserResponse, UserRole
 from pydantic import SecretStr
 from db import crud_user
-from middleware import get_password_hash
+from middleware import get_password_hash, verify_admin
 from typing import List, Optional
 
 security = HTTPBearer()
@@ -33,6 +35,38 @@ def login(req: Request, email: str, password: SecretStr,
         )
     access_token = create_access_token(data={"email": user.email})
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+@user_route.get("/user/",
+                response_model=UserResponse,
+                summary="get all users",
+                name="user:get_all",
+                tags=["User"])
+def get_all(req: Request, page: int = 1, limit: int = 10,
+            session: Session = Depends(get_session),
+            credentials: credentials = Depends(security)):
+    admin = verify_admin(session=session,
+                         authenticated=req.state.authenticated)
+    organisation = None
+    # if role member admin, filter user by member admin organisation id
+    if admin['role'] == UserRole.member_admin:
+        organisation = admin['organisation']
+    user = crud_user.get_all_user(session=session, organisation=organisation,
+                                  skip=(limit * (page - 1)), limit=limit)
+    if not user:
+        raise HTTPException(status_code=404, detail="Not found")
+    # count total user
+    total = crud_user.count(session=session, organisation=organisation)
+    user = [u.serialize for u in user]
+    total_page = ceil(total / limit) if total > 0 else 0
+    if total_page < page:
+        raise HTTPException(status_code=404, detail="Not found")
+    return {
+        'current': page,
+        'data': user,
+        'total': total,
+        'total_page': total_page
+    }
 
 
 @user_route.get("/user/me",

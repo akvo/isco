@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from models.user import User, UserBase, UserDict
 from datetime import datetime
 import db.crud_organisation as crud_org
+from typing import List, Optional
 
 
 def get_user_by_email(session: Session, email: str) -> User:
@@ -47,3 +48,22 @@ def get_user_by_member_type(session: Session, member_type: int) -> UserDict:
     user = session.query(User).filter(
         User.organisation.in_(org_ids)).all()
     return user
+
+
+def count(session: Session, organisation: Optional[int] = None) -> int:
+    if organisation:
+        return session.query(User).filter(
+            User.organisation == organisation).count()
+    return session.query(User).count()
+
+
+def get_all_user(session: Session,
+                 organisation: Optional[int] = None,
+                 skip: int = 0,
+                 limit: int = 10) -> List[UserDict]:
+    if organisation:
+        return session.query(User).filter(
+            User.organisation == organisation).order_by(
+                User.id.desc()).offset(skip).limit(limit).all()
+    return session.query(User).order_by(
+        User.id.desc()).offset(skip).limit(limit).all()
