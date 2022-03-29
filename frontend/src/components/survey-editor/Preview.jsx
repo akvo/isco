@@ -75,6 +75,28 @@ const Preview = () => {
             rule: q.rule,
           };
         }
+        // tooltip translations
+        if (q.tooltip) {
+          let tooltip = {
+            text: q.tooltip,
+          };
+          if (q.tooltip_translations.length) {
+            const transformTooltipTranslation = q.tooltip_translations.map(
+              (t) => ({
+                language: t.language,
+                text: t.tooltip_translations,
+              })
+            );
+            tooltip = {
+              ...tooltip,
+              translations: transformTooltipTranslation,
+            };
+          }
+          qVal = {
+            ...qVal,
+            tooltip: tooltip,
+          };
+        }
         // transform dependency
         if (q.skip_logic.length) {
           const dependency = q.skip_logic.map((sk) => {
