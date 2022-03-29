@@ -37,7 +37,7 @@ def login(req: Request, email: str, password: SecretStr,
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@user_route.get("/user/",
+@user_route.get("/user",
                 response_model=UserResponse,
                 summary="get all users",
                 name="user:get_all",
