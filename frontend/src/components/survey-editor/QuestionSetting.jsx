@@ -29,19 +29,14 @@ const RenderOptionInput = ({ question, handlePlusMinusOptionButton }) => {
   const option = question?.option;
 
   return orderBy(option, ["order"])?.map((opt, optIndex) => (
-    <Row
-      key={`option-${opt?.id}`}
-      align="middle"
-      justify="space-between"
-      gutter={[12, 12]}
-    >
+    <Row key={`option-${opt?.id}`} justify="space-between" gutter={[12, 12]}>
       <Col span={22}>
         <Form.Item
           label={<BiRadioCircle />}
           name={`question-${qId}-option-${opt?.id}`}
-          rules={[{ required: true, message: "Please option value" }]}
+          rules={[{ required: true, message: "Please input option value" }]}
         >
-          <Input placeholder="Enter an answer option" />
+          <Input className="bg-grey" placeholder="Enter an answer option" />
         </Form.Item>
       </Col>
       <Col span={2}>
@@ -51,15 +46,11 @@ const RenderOptionInput = ({ question, handlePlusMinusOptionButton }) => {
             icon={<HiPlus />}
             onClick={() => handlePlusMinusOptionButton("add", opt, optIndex)}
           />
-          {option.length > 1 && (
-            <Button
-              type="text"
-              icon={<HiMinus />}
-              onClick={() =>
-                handlePlusMinusOptionButton("remove", opt, optIndex)
-              }
-            />
-          )}
+          <Button
+            type="text"
+            icon={<HiMinus />}
+            onClick={() => handlePlusMinusOptionButton("remove", opt, optIndex)}
+          />
         </Space>
       </Col>
     </Row>
@@ -84,7 +75,6 @@ const RenderRepeatingObjectInput = ({
   return repeating_objects?.map((ro, roi) => (
     <Row
       key={`repeating-object-${ro?.id || roi}`}
-      align="middle"
       justify="space-between"
       gutter={[12, 12]}
     >
@@ -97,6 +87,7 @@ const RenderRepeatingObjectInput = ({
               <Select
                 allowClear
                 placeholder="Select field value"
+                className="bg-grey"
                 options={repeating_object_option?.map((x) => ({
                   label: x,
                   value: x,
@@ -108,26 +99,24 @@ const RenderRepeatingObjectInput = ({
             <Form.Item
               name={`question-${qId}-repeating_objects_value-${ro?.id || roi}`}
             >
-              <Input placeholder="Value" />
+              <Input placeholder="Value" className="bg-grey" />
             </Form.Item>
           </Col>
         </Row>
       </Col>
       <Col span={2}>
-        <Space size={1} align="middle">
+        <Space size={1} align="center">
           <Button
             type="text"
             icon={<HiPlus />}
             disabled={repeating_object_option?.length === 0}
             onClick={() => handlePlusMinusRepeatingObjects("add", ro, roi)}
           />
-          {repeating_objects.length > 1 && (
-            <Button
-              type="text"
-              icon={<HiMinus />}
-              onClick={() => handlePlusMinusRepeatingObjects("remove", ro, roi)}
-            />
-          )}
+          <Button
+            type="text"
+            icon={<HiMinus />}
+            onClick={() => handlePlusMinusRepeatingObjects("remove", ro, roi)}
+          />
         </Space>
       </Col>
     </Row>
@@ -185,6 +174,17 @@ const Detail = ({
       });
     }
 
+    // add new default option value if all deleted
+    if (updatedOption.length === 0) {
+      updatedOption = [
+        {
+          ...defaultOption,
+          id: generateID(),
+          order: 1,
+        },
+      ];
+    }
+
     const questionGroupWithUpdatedQuestionOption = {
       ...questionGroup,
       question: [
@@ -231,6 +231,13 @@ const Detail = ({
       updatedRepeatingObject = question?.repeating_objects?.filter(
         (op) => op?.id !== ro?.id || op?.field !== ro?.field
       );
+    }
+
+    // add new default repeating objects if all deleted
+    if (updatedRepeatingObject.length === 0) {
+      updatedRepeatingObject = [
+        { ...defaultRepeatingObject, id: generateID(), order: 1 },
+      ];
     }
 
     const questionGroupWithUpdatedRepeatingObject = {
