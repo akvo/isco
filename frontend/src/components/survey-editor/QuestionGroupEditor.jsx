@@ -43,39 +43,39 @@ const QuestionGroupSetting = ({
   const { name, description } = questionGroup;
   const [groupTranslationVisible, setGroupTranslationVisible] = useState(false);
 
-  const memberAccessField = `question_group-${qgId}-member_access`;
-  const memberValue = form.getFieldValue(memberAccessField);
-  const memberOption = member_type?.map((item) => {
-    // disabled other value if all selected / id === 1
-    if (memberValue && memberValue?.includes(1)) {
+  const disabledOptions = (dropdownValues, selectedValue) => {
+    return dropdownValues?.map((item) => {
+      const hasValue = selectedValue && selectedValue.length;
+      // disabled other value if all selected / id === 1
+      if (hasValue && selectedValue?.includes(1) && item?.id !== 1) {
+        return {
+          label: item?.name,
+          value: item?.id,
+          disabled: true,
+        };
+      }
+      // disabled all if other value selected / id !== 1
+      if (hasValue && !selectedValue?.includes(1) && item?.id === 1) {
+        return {
+          label: item?.name,
+          value: item?.id,
+          disabled: true,
+        };
+      }
       return {
         label: item?.name,
         value: item?.id,
-        disabled: true,
       };
-    }
-    return {
-      label: item?.name,
-      value: item?.id,
-    };
-  });
+    });
+  };
+
+  const memberAccessField = `question_group-${qgId}-member_access`;
+  const memberValue = form.getFieldValue(memberAccessField);
+  const memberOption = disabledOptions(member_type, memberValue);
 
   const iscoAccessField = `question_group-${qgId}-isco_access`;
   const iscoValue = form.getFieldValue(iscoAccessField);
-  const iscoOption = isco_type?.map((item) => {
-    // disabled other value if all selected / id === 1
-    if (iscoValue && iscoValue?.includes(1)) {
-      return {
-        label: item?.name,
-        value: item?.id,
-        disabled: true,
-      };
-    }
-    return {
-      label: item?.name,
-      value: item?.id,
-    };
-  });
+  const iscoOption = disabledOptions(isco_type, iscoValue);
 
   return (
     <div className="qge-setting-wrapper">
