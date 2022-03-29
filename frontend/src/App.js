@@ -34,18 +34,13 @@ const Secure = ({ element: Element, adminPage = false }) => {
 };
 
 const App = () => {
-  const isLoggedIn = store.useState((s) => s?.isLoggedIn);
   const [cookies, removeCookie] = useCookies(["AUTH_TOKEN"]);
   const { notify } = useNotification();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!location.pathname.includes("/register")) {
-      if (
-        cookies?.AUTH_TOKEN &&
-        cookies?.AUTH_TOKEN !== "undefined" &&
-        !isLoggedIn
-      ) {
+      if (cookies?.AUTH_TOKEN && cookies?.AUTH_TOKEN !== "undefined") {
         api.setToken(cookies.AUTH_TOKEN);
         api
           .get("/user/me")
@@ -55,13 +50,12 @@ const App = () => {
               s.isLoggedIn = true;
               s.user = { ...data };
             });
-            navigate("/home");
           })
           .catch((e) => {
             const { status, statusText } = e.response;
             console.error(status, statusText);
             if (status === 401) {
-              removeCookie("AUTH_TOKEN", { path: "/" });
+              removeCookie("AUTH_TOKEN");
               api.setToken(null);
               store.update((s) => {
                 s.isLoggedIn = false;
@@ -76,7 +70,7 @@ const App = () => {
           });
       }
     }
-  }, [cookies, isLoggedIn, notify, removeCookie, navigate]);
+  }, [cookies, notify, removeCookie, navigate]);
 
   useEffect(() => {
     Promise.all([

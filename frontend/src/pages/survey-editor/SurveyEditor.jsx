@@ -12,53 +12,55 @@ const { Title } = Typography;
 
 const SurveyEditor = () => {
   const { formId } = useParams();
-  const surveyEditor = store.useState((s) => s?.surveyEditor);
+  const { isLoggedIn, surveyEditor } = store.useState((s) => s);
   const { questionGroup } = surveyEditor;
 
   useEffect(() => {
-    api
-      .get(`survey_editor/${formId}`)
-      .then((res) => {
-        const { data } = res;
-        store.update((s) => {
-          s.surveyEditor = {
-            ...s.surveyEditor,
-            id: data?.id,
-            name: data?.name,
-            description: data?.description,
-            languages: data?.languages,
-            questionGroup: data?.question_group?.map((qg) => {
-              return {
-                ...qg,
-                question: qg?.question?.map((q) => {
-                  let option = q?.option;
-                  let repeating_objects = q?.repeating_objects;
-                  // add option default
-                  if (option?.length === 0) {
-                    option = [{ ...defaultOption, id: generateID() }];
-                  }
-                  // add repeating object default
-                  if (!repeating_objects || repeating_objects?.length === 0) {
-                    repeating_objects = [
-                      { ...defaultRepeatingObject, id: generateID() },
-                    ];
-                  }
-                  return {
-                    ...q,
-                    option: option,
-                    repeating_objects: repeating_objects,
-                  };
-                }),
-              };
-            }),
-          };
+    if (formId && isLoggedIn) {
+      api
+        .get(`survey_editor/${formId}`)
+        .then((res) => {
+          const { data } = res;
+          store.update((s) => {
+            s.surveyEditor = {
+              ...s.surveyEditor,
+              id: data?.id,
+              name: data?.name,
+              description: data?.description,
+              languages: data?.languages,
+              questionGroup: data?.question_group?.map((qg) => {
+                return {
+                  ...qg,
+                  question: qg?.question?.map((q) => {
+                    let option = q?.option;
+                    let repeating_objects = q?.repeating_objects;
+                    // add option default
+                    if (option?.length === 0) {
+                      option = [{ ...defaultOption, id: generateID() }];
+                    }
+                    // add repeating object default
+                    if (!repeating_objects || repeating_objects?.length === 0) {
+                      repeating_objects = [
+                        { ...defaultRepeatingObject, id: generateID() },
+                      ];
+                    }
+                    return {
+                      ...q,
+                      option: option,
+                      repeating_objects: repeating_objects,
+                    };
+                  }),
+                };
+              }),
+            };
+          });
+        })
+        .catch((e) => {
+          const { status, statusText } = e.response;
+          console.error(status, statusText);
         });
-      })
-      .catch((e) => {
-        const { status, statusText } = e.response;
-        console.error(status, statusText);
-      });
-  }, [formId]);
+    }
+  }, [formId, isLoggedIn]);
 
   const countAllQuestion = useMemo(() => {
     return questionGroup?.flatMap((q) => q?.question)?.length;
