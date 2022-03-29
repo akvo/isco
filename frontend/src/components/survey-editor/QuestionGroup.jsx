@@ -169,6 +169,11 @@ const QuestionGroup = ({ index, questionGroup }) => {
       });
   };
 
+  /* get target dependencies */
+  const allQuestions = questionGroupState
+    .map((x) => x.question)
+    .flatMap((x) => x);
+
   const allPrevQuestions = questionGroupState
     .filter((x) => x.order > questionGroup.order)
     .map((x) => x.question)
@@ -192,12 +197,10 @@ const QuestionGroup = ({ index, questionGroup }) => {
     return hasHighOrder.length;
   });
 
+  /* get selected dependencies */
   const allTargetDependencies = questionGroupState
     .filter((x) => {
-      if (isMoveQuestionGroup?.id !== questionGroup.id) {
-        return x.order <= questionGroup.order;
-      }
-      return false;
+      return x.order <= questionGroup.order;
     })
     .map((x) => x.question)
     .flatMap((x) => x)
@@ -207,7 +210,10 @@ const QuestionGroup = ({ index, questionGroup }) => {
       isMoveQuestionGroup
         ? isMoveQuestionGroup.question.map((q) => q.id).includes(x.dependent_to)
         : false
-    );
+    )
+    .map((x) => allQuestions.find((q) => q.id === x.question))
+    .filter((x) => x.question_group !== isMoveQuestionGroup?.id)
+    .filter((x) => questionGroup.question.filter((q) => q.order >= x.order));
 
   return (
     <>
