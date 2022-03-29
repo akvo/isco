@@ -31,8 +31,7 @@ const Login = () => {
           navigate("/home");
         }, 1000);
       })
-      .catch((e) => {
-        console.error(e);
+      .catch(() => {
         notify({
           type: "error",
           message: "Email password doesn't match.",

@@ -193,17 +193,6 @@ const QuestionGroupSetting = ({
                 </Col>
               </Row>
             </TabPane>
-            {/* <TabPane tab="Skip Logic" key="skip-logic">
-          <Space direction="vertical" className="qge-setting-tab-body">
-            <div>
-              This question will only be displayed if the following conditions
-              apply
-            </div>
-            <Form.Item name={`question_group-${qgId}-skip_logic`}>
-              <Select placeholder="Select question from list" options={[]} />
-            </Form.Item>
-          </Space>
-        </TabPane> */}
           </>
         )}
 
@@ -256,6 +245,10 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
   const [repeat, setRepeat] = useState(false);
   const [saveBtnLoading, setSaveBtnLoading] = useState(false);
   const { notify } = useNotification();
+
+  const allQuestions = questionGroupState
+    .map((x) => x.question)
+    .flatMap((x) => x);
 
   useEffect(() => {
     if (questionGroup.id) {
@@ -498,6 +491,9 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
       // post skip logic
       if (skipLogic?.length > 0) {
         skipLogic?.forEach((ski) => {
+          const findDependentToQuestion = allQuestions.find(
+            (x) => x.id === ski?.dependent_to
+          );
           const skipPayload = {
             question: ski?.question,
             dependent_to: ski?.dependent_to,
@@ -505,7 +501,7 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
             value: Array.isArray(ski?.value)
               ? ski?.value?.join("|")
               : String(ski?.value),
-            type: ski?.type,
+            type: findDependentToQuestion?.type,
           };
           if (ski?.flag === "post") {
             api

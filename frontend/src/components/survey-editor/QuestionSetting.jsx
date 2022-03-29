@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   Row,
   Col,
@@ -414,17 +414,6 @@ const Setting = ({
     ? operator_type?.filter((x) => x === "equal")
     : operator_type;
 
-  useEffect(() => {
-    if (dependentQuestion?.id) {
-      // set skip logic type
-      const type = {
-        [`question-${qid}-skip_logic-type`]: dependentQuestion?.type,
-      };
-      form.setFieldsValue(type);
-      handleFormOnValuesChange(type, form.getFieldsValue());
-    }
-  }, [dependentQuestion, form, qid, handleFormOnValuesChange]);
-
   const handleRequiredChange = (val, field) => {
     const fieldValue = { [field]: val };
     form.setFieldsValue(fieldValue);
@@ -559,13 +548,6 @@ const Setting = ({
               <Col span={12}>
                 {dependentQuestion && (
                   <>
-                    <Form.Item
-                      name={`question-${qid}-skip_logic-type`}
-                      hidden
-                      noStyle
-                    >
-                      <Input />
-                    </Form.Item>
                     <div className="field-wrapper">
                       <div className="field-label">Logic</div>
                       <Form.Item
