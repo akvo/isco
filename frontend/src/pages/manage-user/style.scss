@@ -26,7 +26,7 @@
       }
 
       .organisation-dropdown-wrapper {
-        width: 10rem;
+        width: 15rem;
       }
 
       .member-dropdown-wrapper {
@@ -81,14 +81,19 @@
         color: #777777;
       }
       .ant-pagination-item {
-        background-color: #777777;
+        background-color: transparent;
         border-radius: 5px;
-        border: none;
-        color: $white;
-
+        border: 2px solid #777777;
+        a {
+          color: #777777;
+        }
+      }
+      .ant-pagination-item-active {
         a {
           color: $white;
         }
+        background: transparent;
+        background-color: #777777;
       }
     }
   }

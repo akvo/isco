@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./style.scss";
 import {
   Row,
@@ -6,39 +6,38 @@ import {
   Typography,
   Table,
   Button,
-  Tooltip,
   Space,
   Modal,
   Form,
   Input,
   Select,
-  // Checkbox,
+  Checkbox,
 } from "antd";
-import { FaSearch, FaInfoCircle } from "react-icons/fa";
-import { dataSources } from "./static";
+import { FaSearch } from "react-icons/fa";
+import { store, api } from "../../lib";
 
 const { Title } = Typography;
 
 const columns = [
-  {
-    title: "",
-    dataIndex: "",
-    key: "status",
-    render: (record) => {
-      if (!record?.info) {
-        return "";
-      }
-      return (
-        <Tooltip
-          key={`${record?.id}-${record?.key}`}
-          title={record?.info}
-          placement="left"
-        >
-          <FaInfoCircle />
-        </Tooltip>
-      );
-    },
-  },
+  // {
+  //   title: "",
+  //   dataIndex: "",
+  //   key: "status",
+  //   render: (record) => {
+  //     if (!record?.info) {
+  //       return "";
+  //     }
+  //     return (
+  //       <Tooltip
+  //         key={`${record?.id}-${record?.key}`}
+  //         title={record?.info}
+  //         placement="left"
+  //       >
+  //         <FaInfoCircle />
+  //       </Tooltip>
+  //     );
+  //   },
+  // },
   {
     title: "Name",
     dataIndex: "name",
@@ -59,17 +58,41 @@ const columns = [
     dataIndex: "role",
     key: "role",
   },
-  // {
-  //   title: "Surveys",
-  //   dataIndex: "access",
-  //   key: "access",
-  // },
 ];
 
 const ManageUser = () => {
+  const { isLoggedIn, user } = store.useState((s) => s);
+
   const [form] = Form.useForm();
-  // const [isPendingUserShown, setIsPendingUserShown] = useState(false);
+  const [isPendingUserShown, setIsPendingUserShown] = useState(false);
   const [isAddUserVisible, setIsAddUserVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState([]);
+
+  const pageSize = 5;
+  const [page, setPage] = useState(1);
+
+  const showPendingUserOption = false;
+  const showOrganisationFilter = user?.role === "secretariat_admin";
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      setIsLoading(true);
+      api
+        .get(`/user?page=${page}&limit=${pageSize}`)
+        .then((res) => {
+          const { data } = res;
+          setData(data);
+        })
+        .catch((e) => {
+          console.error(e);
+          setData([]);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  }, [isLoggedIn, page]);
 
   return (
     <div id="manage-user">
@@ -110,29 +133,30 @@ const ManageUser = () => {
                   placeholder="Search user by name or email"
                   prefix={<FaSearch />}
                 />
-                <Select
-                  className="organisation-dropdown-wrapper"
-                  placeholder="Organization"
-                  options={[]}
-                />
-                {/* <Select
-                  className="member-dropdown-wrapper"
-                  placeholder="Member Type"
-                  options={[]}
-                /> */}
+                {showOrganisationFilter && (
+                  <Select
+                    allowClear
+                    showSearch
+                    className="organisation-dropdown-wrapper"
+                    placeholder="Organization"
+                    options={[]}
+                  />
+                )}
               </Space>
             </Col>
-            {/* <Col span={4} align="end">
-              <Space size={0.05} align="center">
-                <Button
-                  type="text"
-                  onClick={() => setIsPendingUserShown(!isPendingUserShown)}
-                >
-                  Show Pending Users
-                </Button>{" "}
-                <Checkbox checked={isPendingUserShown} />
-              </Space>
-            </Col> */}
+            {showPendingUserOption && (
+              <Col span={4} align="end">
+                <Space size={0.05} align="center">
+                  <Button
+                    type="text"
+                    onClick={() => setIsPendingUserShown(!isPendingUserShown)}
+                  >
+                    Show Pending Users
+                  </Button>{" "}
+                  <Checkbox checked={isPendingUserShown} />
+                </Space>
+              </Col>
+            )}
           </Row>
           <Row>
             <Col span={24}>
@@ -140,16 +164,15 @@ const ManageUser = () => {
                 rowKey={(record) => `${record?.key}-${record?.id}`}
                 className="table-wrapper"
                 columns={columns}
-                dataSource={dataSources}
-                expandable={{
-                  expandedRowRender: (record) => (
-                    <p
-                      key={`${record.id}-description`}
-                      className="expanded-description"
-                    >
-                      {record.description}
-                    </p>
-                  ),
+                dataSource={data?.data || []}
+                loading={isLoading}
+                pagination={{
+                  current: data?.current,
+                  pageSize: pageSize,
+                  total: data?.total,
+                  onChange: (val) => {
+                    setPage(val);
+                  },
                 }}
               />
             </Col>
