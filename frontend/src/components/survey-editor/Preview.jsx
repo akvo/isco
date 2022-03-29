@@ -68,6 +68,13 @@ const Preview = () => {
             },
           };
         }
+        // rule
+        if (q.rule) {
+          qVal = {
+            ...qVal,
+            rule: q.rule,
+          };
+        }
         // transform dependency
         if (q.skip_logic.length) {
           const dependency = q.skip_logic.map((sk) => {
