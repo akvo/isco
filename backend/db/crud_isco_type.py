@@ -27,6 +27,12 @@ def get_isco_type_by_id(session: Session, id: int) -> IscoTypeBase:
     return isco_type
 
 
+def get_isco_type_by_name(session: Session, name: str):
+    member_type = session.query(
+        IscoType).filter(IscoType.name == name).first()
+    return member_type
+
+
 def update_isco_type(session: Session, id: int,
                      payload: IscoTypePayload) -> IscoTypeDict:
     isco_type = get_isco_type_by_id(session=session, id=id)

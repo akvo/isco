@@ -7,7 +7,14 @@ member_values = [
     'DISCO - Traders',
     'Retail',
     'Standard Setting Organisation',
-    'Other'
+    'Other',
+    'Civil Society'
 ]
 
-isco_values = ['All', 'ISCO']
+isco_values = [
+    'All',
+    'ISCO',
+    'GISCO',
+    'DISCO',
+    'Beyond Chocolate'
+]
