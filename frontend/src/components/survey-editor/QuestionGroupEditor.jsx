@@ -333,7 +333,7 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
     let qId = null;
     let data = {};
     // Save Question Group
-    if (submitStatus === "question-group") {
+    if (submitStatus === "group") {
       const findQuestionGroup = questionGroup;
       data = {
         ...findQuestionGroup,
@@ -373,10 +373,7 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
         });
     }
     // Save Question
-    if (
-      submitStatus.includes("question") &&
-      !submitStatus?.includes("question-group")
-    ) {
+    if (submitStatus.includes("question")) {
       qId = parseInt(submitStatus?.split("-")[1]);
       const findQuestion = questionGroup?.question?.find((q) => q?.id === qId);
       const qgId = findQuestion?.question_group;
@@ -724,7 +721,11 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
                 : null,
             };
           }
-          if (field.includes("translations") && !key.includes("option")) {
+          if (
+            field.includes("translations") &&
+            !key.includes("option") &&
+            !key.includes("tooltip")
+          ) {
             const lang = key.split("-")[3];
             const tKey = key.split("-")[4];
             const transFilter = findQuestion?.translations?.filter(
@@ -736,6 +737,27 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
                 ...transFilter,
                 {
                   ...findQuestion?.translations?.find(
+                    (x) => x?.language === lang
+                  ),
+                  language: lang,
+                  [tKey]: value,
+                },
+              ],
+            };
+          }
+          if (field.includes("translations") && key.includes("tooltip")) {
+            const lang = key.split("-")[3];
+            const tKey = key.split("-")[4];
+            const tooltipTransFilter =
+              findQuestion?.tooltip_translations?.filter(
+                (x) => x?.language !== lang
+              );
+            findQuestion = {
+              ...findQuestion,
+              tooltip_translations: [
+                ...tooltipTransFilter,
+                {
+                  ...findQuestion?.tooltip_translations?.find(
                     (x) => x?.language === lang
                   ),
                   language: lang,
@@ -917,7 +939,7 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
                       loading={saveBtnLoading}
                       onClick={() => {
                         setSaveBtnLoading(true);
-                        setSubmitStatus("question-group");
+                        setSubmitStatus("group");
                         setTimeout(() => {
                           form.submit();
                         }, 100);

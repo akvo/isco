@@ -191,6 +191,17 @@ const QuestionEditor = ({
             });
           });
         }
+        // Load tooltip translations
+        if (key === "tooltip_translations") {
+          const tooltipTransField = `question-${qId}-translations`;
+          value?.forEach((val) => {
+            const lang = val?.language;
+            Object.keys(val).forEach((key) => {
+              const transField = `${tooltipTransField}-${lang}-${key}`;
+              form.setFieldsValue({ [transField]: val?.[key] });
+            });
+          });
+        }
       });
     }
   }, [question, form, qId]);

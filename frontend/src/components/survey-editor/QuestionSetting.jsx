@@ -365,7 +365,7 @@ const Translation = ({ question, activeLang }) => {
         <div className="question-setting-wrapper">
           <Form.Item
             label={<div className="translation-label">{tooltip}</div>}
-            name={`${fieldNamePrefix}-tooltip`}
+            name={`${fieldNamePrefix}-tooltip_translations`}
           >
             <Input className="bg-grey" placeholder={placeholder} />
           </Form.Item>
