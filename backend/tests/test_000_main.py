@@ -24,3 +24,13 @@ def test_read_main():
     response = client.get("/")
     assert response.json() == "OK"
     assert response.status_code == 200
+
+
+def test_read_credentials():
+    if 'GOOGLE_APPLICATION_CREDENTIALS' in os.environ:
+        service_account = os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
+        credentials = os.path.exists(service_account)
+        assert credentials is True
+    else:
+        print("SKIPPING READ CREDENTIAL TEST")
+        assert True is True
