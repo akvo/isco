@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import "akvo-react-form/dist/index.css"; /* REQUIRED */
 import { Webform } from "akvo-react-form";
-import { store } from "../../lib";
+import { api, store } from "../../lib";
 import { Space, Select } from "antd";
-import orderBy from "lodash/orderBy";
+import { orderBy, isEmpty } from "lodash";
+
+const generateTreeName = (obj) => {
+  return `${obj.id}_${obj.cascade}_tree`;
+};
 
 const Preview = () => {
   const { surveyEditor, optionValues } = store.useState((s) => s);
@@ -15,171 +19,208 @@ const Preview = () => {
   } = surveyEditor;
   const { member_type, isco_type } = optionValues;
   const [formValue, setFormValue] = useState({});
+  const [treeObj, setTreeObj] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedMember, setSelectedMember] = useState(null);
 
   const allAccessId = 1;
+  const [selectedMember, setSelectedMember] = useState(null);
   const [selectedIsco, setSelectedIsco] = useState(null);
+  const allQuestion = questionGroup.flatMap((qg) => qg.question);
+  const nestedListQuestions = allQuestion.filter(
+    (q) => q.type === "nested_list"
+  );
+
+  const formPreviewValue = useMemo(
+    () =>
+      nestedListQuestions.length ? { ...formValue, tree: treeObj } : formValue,
+    [nestedListQuestions, formValue, treeObj]
+  );
 
   useEffect(() => {
-    const allQuestion = questionGroup.flatMap((qg) => qg.question);
-    let transformedQuestionGroup = questionGroup;
-    if (selectedMember) {
-      transformedQuestionGroup = transformedQuestionGroup.filter(
-        (qg) =>
-          qg.member_access.includes(selectedMember) ||
-          qg.member_access.includes(allAccessId)
-      );
+    if (nestedListQuestions.length && isEmpty(treeObj)) {
+      nestedListQuestions.forEach(async (q) => {
+        const treeName = generateTreeName(q);
+        const res = await api.get(`/nested/list/${q.cascade}`);
+        setTreeObj({
+          ...treeObj,
+          [treeName]: res?.data,
+        });
+      });
     }
-    if (selectedIsco) {
-      transformedQuestionGroup = transformedQuestionGroup.filter(
-        (qg) =>
-          qg.isco_access.includes(selectedIsco) ||
-          qg.member_access.includes(allAccessId)
-      );
-    }
-    transformedQuestionGroup = transformedQuestionGroup.map((qg) => {
-      const questions = qg.question.map((q) => {
-        let qVal = {
-          id: q.id,
-          name: q.name,
-          description: q.description,
-          order: q.order,
-          type: q.type,
-          required: q.mandatory,
-        };
-        // option values
-        if (q.option.length) {
-          const options = q.option.filter((o) => o.name && o.id);
-          qVal = {
-            ...qVal,
-            option: options,
+  }, [nestedListQuestions, treeObj]);
+
+  useEffect(() => {
+    if (allQuestion.length && isEmpty(formValue)) {
+      let transformedQuestionGroup = questionGroup;
+      if (selectedMember) {
+        transformedQuestionGroup = transformedQuestionGroup.filter(
+          (qg) =>
+            qg.member_access.includes(selectedMember) ||
+            qg.member_access.includes(allAccessId)
+        );
+      }
+      if (selectedIsco) {
+        transformedQuestionGroup = transformedQuestionGroup.filter(
+          (qg) =>
+            qg.isco_access.includes(selectedIsco) ||
+            qg.member_access.includes(allAccessId)
+        );
+      }
+      transformedQuestionGroup = transformedQuestionGroup.map((qg) => {
+        const questions = qg.question.map((q) => {
+          let qVal = {
+            id: q.id,
+            name: q.name,
+            description: q.description,
+            order: q.order,
+            type: q.type,
+            required: q.mandatory,
           };
-        }
-        // cascade
-        if (q.cascade) {
-          const cascadeURL = `${location.origin}/api/cascade/list/${q.cascade}`;
-          qVal = {
-            ...qVal,
-            api: {
-              endpoint: cascadeURL,
-              initial: 0,
-              list: false,
-            },
-          };
-        }
-        // rule
-        if (q.rule) {
-          qVal = {
-            ...qVal,
-            rule: q.rule,
-          };
-        }
-        // translations
-        if (q.translations.length) {
-          qVal = {
-            ...qVal,
-            translations: q.translations,
-          };
-        }
-        // tooltip translations
-        if (q.tooltip) {
-          let tooltip = {
-            text: q.tooltip,
-          };
-          if (q.tooltip_translations.length) {
-            const transformTooltipTranslation = q.tooltip_translations.map(
-              (t) => ({
-                language: t.language,
-                text: t.tooltip_translations,
-              })
-            );
-            tooltip = {
-              ...tooltip,
-              translations: transformTooltipTranslation,
+          // option values
+          if (q.option.length) {
+            const options = q.option.filter((o) => o.name && o.id);
+            qVal = {
+              ...qVal,
+              option: options,
             };
           }
-          qVal = {
-            ...qVal,
-            tooltip: tooltip,
-          };
-        }
-        // transform dependency
-        if (q.skip_logic.length) {
-          const dependency = q.skip_logic.map((sk) => {
-            // option
-            if (sk.type === "option") {
-              let answerIds = [sk.value];
-              if (sk.value.includes("|")) {
-                answerIds = sk.value.split("|");
-              }
-              const findQ = allQuestion.find((q) => q.id === sk.dependent_to);
-              const dependentOptions = answerIds.map((id) => {
-                const findOpt = findQ.option.find((o) => o.id === parseInt(id));
-                return findOpt.name;
-              });
-              return {
-                id: sk.dependent_to,
-                options: dependentOptions,
+          // nested list
+          if (q.cascade && q.type === "nested_list") {
+            qVal = {
+              ...qVal,
+              type: "tree",
+              option: generateTreeName(q),
+            };
+          }
+          // cascade
+          if (q.cascade && q.type === "cascade") {
+            const cascadeURL = `${location.origin}/api/cascade/list/${q.cascade}`;
+            qVal = {
+              ...qVal,
+              api: {
+                endpoint: cascadeURL,
+                initial: 0,
+                list: false,
+              },
+            };
+          }
+          // rule
+          if (q.rule) {
+            qVal = {
+              ...qVal,
+              rule: q.rule,
+            };
+          }
+          // translations
+          if (q.translations.length) {
+            qVal = {
+              ...qVal,
+              translations: q.translations,
+            };
+          }
+          // tooltip translations
+          if (q.tooltip) {
+            let tooltip = {
+              text: q.tooltip,
+            };
+            if (q.tooltip_translations.length) {
+              const transformTooltipTranslation = q.tooltip_translations.map(
+                (t) => ({
+                  language: t.language,
+                  text: t.tooltip_translations,
+                })
+              );
+              tooltip = {
+                ...tooltip,
+                translations: transformTooltipTranslation,
               };
             }
-            // number
-            if (sk.type === "number") {
-              let logic;
-              switch (sk.operator) {
-                case "not_equal":
-                  logic = "not_equal";
-                  break;
-                case "greater_than":
-                  logic = "min";
-                  break;
-                case "greater_than_or_equal":
-                  logic = "min";
-                  break;
-                case "less_than":
-                  logic = "max";
-                  break;
-                case "less_than_or_equal":
-                  logic = "max";
-                  break;
-                default:
-                  logic = "equal";
-                  break;
+            qVal = {
+              ...qVal,
+              tooltip: tooltip,
+            };
+          }
+          // transform dependency
+          if (q.skip_logic.length) {
+            const dependency = q.skip_logic.map((sk) => {
+              // option
+              if (sk.type === "option") {
+                let answerIds = [sk.value];
+                if (sk.value.includes("|")) {
+                  answerIds = sk.value.split("|");
+                }
+                const findQ = allQuestion.find((q) => q.id === sk.dependent_to);
+                const dependentOptions = answerIds.map((id) => {
+                  const findOpt = findQ.option.find(
+                    (o) => o.id === parseInt(id)
+                  );
+                  return findOpt.name;
+                });
+                return {
+                  id: sk.dependent_to,
+                  options: dependentOptions,
+                };
               }
-              return {
-                id: sk.dependent_to,
-                [logic]: parseInt(sk.value),
-              };
-            }
-          });
-          qVal = {
-            ...qVal,
-            dependency: dependency,
-          };
-        }
-        return qVal;
+              // number
+              if (sk.type === "number") {
+                let logic;
+                switch (sk.operator) {
+                  case "not_equal":
+                    logic = "not_equal";
+                    break;
+                  case "greater_than":
+                    logic = "min";
+                    break;
+                  case "greater_than_or_equal":
+                    logic = "min";
+                    break;
+                  case "less_than":
+                    logic = "max";
+                    break;
+                  case "less_than_or_equal":
+                    logic = "max";
+                    break;
+                  default:
+                    logic = "equal";
+                    break;
+                }
+                return {
+                  id: sk.dependent_to,
+                  [logic]: parseInt(sk.value),
+                };
+              }
+            });
+            qVal = {
+              ...qVal,
+              dependency: dependency,
+            };
+          }
+          return qVal;
+        });
+        return {
+          ...qg,
+          repeatable: qg.repeat,
+          question: orderBy(questions, ["order"]),
+        };
       });
-      return {
-        ...qg,
-        repeatable: qg.repeat,
-        question: orderBy(questions, ["order"]),
+      const transformedForm = {
+        name: formName,
+        description: formDescription,
+        languages: ["en", ...formLang],
+        question_group: orderBy(transformedQuestionGroup, ["order"]),
       };
-    });
-    const transformedForm = {
-      name: formName,
-      description: formDescription,
-      languages: ["en", ...formLang],
-      question_group: orderBy(transformedQuestionGroup, ["order"]),
-    };
-    setFormValue(transformedForm);
-    setIsLoading(false);
+      setFormValue(transformedForm);
+      setIsLoading(false);
+    }
   }, [
     formName,
     formDescription,
     formLang,
+    allQuestion,
     questionGroup,
     selectedIsco,
     selectedMember,
+    formValue,
   ]);
 
   const handleOnChangeMember = (val) => {
@@ -230,7 +271,11 @@ const Preview = () => {
       </div>
       <div className="full-width">
         {!isLoading && (
-          <Webform forms={formValue} onChange={onChange} onFinish={onFinish} />
+          <Webform
+            forms={formPreviewValue}
+            onChange={onChange}
+            onFinish={onFinish}
+          />
         )}
       </div>
     </div>
