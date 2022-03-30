@@ -79,7 +79,7 @@ def update_question_group(session: Session, id: int,
     # Add member access
     if payload['member_access']:
         delete_member_access_by_group_id(session=session,
-                                         question_group=id)
+                                         question_group=[id])
         for ma in payload['member_access']:
             member = QuestionGroupMemberAccess(
                 id=None,
@@ -89,7 +89,7 @@ def update_question_group(session: Session, id: int,
     # Add isco access
     if payload['isco_access']:
         delete_isco_access_by_group_id(session=session,
-                                       question_group=id)
+                                       question_group=[id])
         for ia in payload['isco_access']:
             isco = QuestionGroupIscoAccess(
                 id=None,
@@ -202,40 +202,42 @@ def move_question_group(session: Session, id: int, selected_order: int,
 
 
 def get_member_access_by_question_group_id(session: Session,
-                                           question_group: int) -> List:
+                                           question_group: List[int]) -> List:
     member_access = session.query(
         QuestionGroupMemberAccess).filter(
-            QuestionGroupMemberAccess.question_group == question_group)
+            QuestionGroupMemberAccess.question_group.in_(question_group))
     return member_access
 
 
-def delete_member_access_by_group_id(session: Session, question_group: int):
+def delete_member_access_by_group_id(session: Session,
+                                     question_group: List[int]):
     # check if exist
     member_access = get_member_access_by_question_group_id(
         session=session, question_group=question_group)
     if member_access:
         # delete
-        member_access.delete()
+        member_access.delete(False)
         session.commit()
         session.flush()
     return member_access
 
 
 def get_isco_access_by_question_group_id(session: Session,
-                                         question_group: int) -> List:
+                                         question_group: List[int]) -> List:
     isco_access = session.query(
         QuestionGroupIscoAccess).filter(
-            QuestionGroupIscoAccess.question_group == question_group)
+            QuestionGroupIscoAccess.question_group.in_(question_group))
     return isco_access
 
 
-def delete_isco_access_by_group_id(session: Session, question_group: int):
+def delete_isco_access_by_group_id(session: Session,
+                                   question_group: List[int]):
     # check if exist
     isco_access = get_isco_access_by_question_group_id(
         session=session, question_group=question_group)
     if isco_access:
         # delete
-        isco_access.delete()
+        isco_access.delete(False)
         session.commit()
         session.flush()
     return isco_access
@@ -260,9 +262,9 @@ def reorder_question_group(session: Session, form: int,
 
 def delete_question_group(session: Session, id: int):
     # delete question
-    delete_question_by_group(session=session, group=id)
-    delete_member_access_by_group_id(session=session, question_group=id)
-    delete_isco_access_by_group_id(session=session, question_group=id)
+    delete_question_by_group(session=session, group=[id])
+    delete_member_access_by_group_id(session=session, question_group=[id])
+    delete_isco_access_by_group_id(session=session, question_group=[id])
     question_group = get_question_group_by_id(session=session, id=id)
     form_id = question_group.form
     session.delete(question_group)

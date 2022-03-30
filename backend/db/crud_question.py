@@ -218,16 +218,16 @@ def delete_isco_access_by_question_id(session: Session, question: List[int]):
 
 
 def get_question_by_group(session: Session, group: int):
-    question = session.query(Question).filter(
+    questions = session.query(Question).filter(
         Question.question_group.in_(group))
-    return question
+    return questions
 
 
 def delete_question_by_group(session: Session, group: List[int]):
     # check if exist
-    question = get_question_by_group(session=session, group=group)
-    if question:
-        question_ids = [q.id for q in question.all()]
+    questions = get_question_by_group(session=session, group=group)
+    if questions:
+        question_ids = [q.id for q in questions.all()]
         delete_member_access_by_question_id(
                 session=session, question=question_ids)
         delete_isco_access_by_question_id(
@@ -236,10 +236,10 @@ def delete_question_by_group(session: Session, group: List[int]):
             session=session, question=question_ids)
         delete_skip_logic_by_question(
             session=session, question=question_ids)
-        question.delete()
+        questions.delete(False)
         session.commit()
         session.flush()
-    return question
+    return questions
 
 
 def reorder_question(session: Session, form: int,
