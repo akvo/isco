@@ -7,6 +7,7 @@ from models.question_group import QuestionGroup
 from models.question import QuestionType
 from db.crud_question_group import delete_question_by_group
 import db.crud_option as crud_option
+from db.crud_cascade import get_cascade_list_by_cascade_id
 from models.skip_logic import OperatorType
 
 
@@ -66,7 +67,7 @@ def get_order(data):
 def generate_webform_json(session: Session, id: int):
     form = get_form_by_id(session=session, id=id)
     form = form.serializeJson
-
+    tree_obj = {}
     # Sort question group by order
     form['question_group'].sort(key=get_order)
     for qg in form['question_group']:
@@ -76,6 +77,26 @@ def generate_webform_json(session: Session, id: int):
             if 'option' in q:
                 # Sort option by order
                 q['option'].sort(key=get_order)
+            # need to do transform for cascade / send api
+            if q['type'] == QuestionType.cascade.value:
+                # need to change URL/api
+                q.update({
+                    "api": {
+                        "endpoint": f"URL/api/cascade/list/{q['cascade']}",
+                        "initial": 0,
+                        "list": False,
+                    }
+                })
+            # need to dp transform for nested_list
+            if q['type'] == QuestionType.nested_list.value:
+                # get tree
+                name = f"{q['id']}_{q['cascade']}_tree"
+                tree = get_cascade_list_by_cascade_id(
+                    session=session, cascade_id=q['cascade'])
+                tree = [t.transformToTree for t in tree]
+                tree_obj.update({name: tree})
+                q['type'] = "tree"
+                q['option'] = name
             if 'dependency' in q:
                 # Transform dependency
                 for d in q['dependency']:
@@ -102,6 +123,8 @@ def generate_webform_json(session: Session, id: int):
                     del d['operator']
                     del d['value']
                     del d['type']
+    if tree_obj:
+        form.update({"tree": tree_obj})
     # need to define the version
     filename = f"{id}_{form['name']}.json"
     filepath = f"./tmp/{filename}"

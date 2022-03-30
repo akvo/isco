@@ -109,6 +109,7 @@ class FormJson(BaseModel):
     description: Optional[str] = None
     languages: Optional[List[str]] = None
     question_group: Optional[List[dict]] = []
+    tree: Optional[dict] = None
 
     class Config:
         orm_mode = True
