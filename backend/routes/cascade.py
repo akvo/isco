@@ -2,7 +2,7 @@ from http import HTTPStatus
 from fastapi import Depends, Request, APIRouter, Response
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
-from typing import List
+from typing import List, Optional
 from sqlalchemy.orm import Session
 import db.crud_cascade as crud
 from db.connection import get_session
@@ -39,16 +39,32 @@ def get(req: Request, session: Session = Depends(get_session)):
     return [c.serialize for c in cascade]
 
 
+@cascade_route.get("/nested/list/{cascade_id}",
+                   response_model=List[dict],
+                   summary="get nested list by cascade id",
+                   name="nested_list:get_by_cascade_id",
+                   tags=["Cascade"])
+def get_nested_list_by_cascade_id(req: Request, cascade_id: int,
+                                  transform: Optional[int] = 1,
+                                  session: Session = Depends(get_session)):
+    clist = crud.get_cascade_list_by_cascade_id(session=session,
+                                                cascade_id=cascade_id)
+    if transform:
+        return [c.transformToTree for c in clist]
+    return [c.serialize for c in clist]
+
+
 @cascade_route.get("/cascade/list/{cascade_id:path}/{path:path}",
                    response_model=List[dict],
-                   summary="get cascade list by cascade id",
-                   name="cascade_list:get_by_cascade_id",
+                   summary="get cascade list by cascade id and path",
+                   name="cascade_list:get_by_cascade_id_and_path",
                    tags=["Cascade"])
-def get_cascade_list_by_cascade_id(req: Request, cascade_id: int, path: int,
-                                   session: Session = Depends(get_session)):
-    clist = crud.get_cascade_list_by_cascade_id(session=session,
-                                                cascade_id=cascade_id,
-                                                path=path)
+def get_cascade_list_by_cascade_id_path(req: Request,
+                                        cascade_id: int, path: int,
+                                        session: Session = Depends(
+                                            get_session)):
+    clist = crud.get_cascade_list_by_cascade_id_path(
+        session=session, cascade_id=cascade_id, path=path)
     return [c.serializeWithoutChildren for c in clist]
 
 

@@ -77,6 +77,18 @@ class CascadeList(Base):
             "path": self.path,
         }
 
+    @property
+    def transformToTree(self):
+        tree_value = {
+            "title": self.name,
+            "value": self.name,
+        }
+        if self.children:
+            tree_value.update({
+                "children": [
+                    c.transformToTree for c in self.children]})
+        return tree_value
+
 
 class CascadeListBase(BaseModel):
     id: int

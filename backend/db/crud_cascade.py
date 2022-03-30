@@ -80,8 +80,20 @@ def add_cascade_list(session: Session, payload: CascadeListPayload):
     return clist
 
 
-def get_cascade_list_by_cascade_id(session: Session,
-                                   cascade_id: int, path: int):
+def get_cascade_list_by_cascade_id(session: Session, cascade_id: int):
+    clist = session.query(
+        CascadeList).filter(and_(
+            CascadeList.level == 1,
+            CascadeList.cascade == cascade_id)).all()
+    if not clist:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"cascade list {id} not found")
+    return clist
+
+
+def get_cascade_list_by_cascade_id_path(session: Session,
+                                        cascade_id: int, path: int):
     path_tmp = None
     if path:
         path_tmp = f"{path}."
@@ -89,7 +101,7 @@ def get_cascade_list_by_cascade_id(session: Session,
         CascadeList).filter(and_(
             CascadeList.cascade == cascade_id,
             CascadeList.path == path_tmp)).all()
-    if clist is None:
+    if not clist:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"cascade list {id} not found")
