@@ -60,9 +60,9 @@ def delete_skip_logic(session: Session, id: int):
     session.flush()
 
 
-def get_skip_logic_by_dependent(session: Session, question: int):
+def get_skip_logic_by_dependent(session: Session, question: List[int]):
     skip_logic = session.query(SkipLogic).filter(
-        SkipLogic.dependent_to == question).first()
+        SkipLogic.dependent_to.in_(question)).all()
     if skip_logic:
         raise HTTPException(
             status_code=422,
@@ -70,12 +70,12 @@ def get_skip_logic_by_dependent(session: Session, question: int):
     return skip_logic
 
 
-def delete_skip_logic_by_question(session: Session, question: int):
+def delete_skip_logic_by_question(session: Session, question: List[int]):
     get_skip_logic_by_dependent(
         session=session, question=question)
     skip_logic = session.query(SkipLogic).filter(
-        SkipLogic.question == question)
-    skip_logic.delete()
+        SkipLogic.question.in_(question))
+    skip_logic.delete(False)
     session.commit()
     session.flush()
     return skip_logic

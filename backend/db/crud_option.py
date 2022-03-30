@@ -65,3 +65,12 @@ def delete_option_by_question(session: Session, question: int):
     session.commit()
     session.flush()
     return option
+
+
+def delete_option_by_question_ids(session: Session, question: List[int]):
+    option = session.query(Option).filter(
+        Option.question.in_(question))
+    option.delete(False)
+    session.commit()
+    session.flush()
+    return option

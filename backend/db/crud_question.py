@@ -8,7 +8,7 @@ from models.option import Option
 from models.question_member_access import QuestionMemberAccess
 from models.question_isco_access import QuestionIscoAccess
 from models.skip_logic import SkipLogic
-from db.crud_option import delete_option_by_question
+from db.crud_option import delete_option_by_question_ids
 from db.crud_skip_logic import delete_skip_logic_by_question
 
 
@@ -120,7 +120,7 @@ def update_question(session: Session, id: int,
     # Add member access
     if payload['member_access']:
         delete_member_access_by_question_id(
-            session=session, question=id)
+            session=session, question=[id])
         for ma in payload['member_access']:
             member = QuestionMemberAccess(
                 id=None,
@@ -130,7 +130,7 @@ def update_question(session: Session, id: int,
     # Add isco access
     if payload['isco_access']:
         delete_isco_access_by_question_id(
-            session=session, question=id)
+            session=session, question=[id])
         for ia in payload['isco_access']:
             isco = QuestionIscoAccess(
                 id=None,
@@ -181,37 +181,37 @@ def get_member_access_by_question_id(session: Session,
                                      question: int) -> List:
     member_access = session.query(
         QuestionMemberAccess).filter(
-            QuestionMemberAccess.question == question)
+            QuestionMemberAccess.question.in_(question))
     return member_access
 
 
-def delete_member_access_by_question_id(session: Session, question: int):
+def delete_member_access_by_question_id(session: Session, question: List[int]):
     # check if exist
     member_access = get_member_access_by_question_id(
         session=session, question=question)
     if member_access:
         # delete
-        member_access.delete()
+        member_access.delete(False)
         session.commit()
         session.flush()
     return member_access
 
 
 def get_isco_access_by_question_id(session: Session,
-                                   question: int) -> List:
+                                   question: List[int]) -> List:
     isco_access = session.query(
         QuestionIscoAccess).filter(
-            QuestionIscoAccess.question == question)
+            QuestionIscoAccess.question.in_(question))
     return isco_access
 
 
-def delete_isco_access_by_question_id(session: Session, question: int):
+def delete_isco_access_by_question_id(session: Session, question: List[int]):
     # check if exist
     isco_access = get_isco_access_by_question_id(
         session=session, question=question)
     if isco_access:
         # delete
-        isco_access.delete()
+        isco_access.delete(False)
         session.commit()
         session.flush()
     return isco_access
@@ -219,23 +219,23 @@ def delete_isco_access_by_question_id(session: Session, question: int):
 
 def get_question_by_group(session: Session, group: int):
     question = session.query(Question).filter(
-        Question.question_group == group)
+        Question.question_group.in_(group))
     return question
 
 
-def delete_question_by_group(session: Session, group: id):
+def delete_question_by_group(session: Session, group: List[int]):
     # check if exist
     question = get_question_by_group(session=session, group=group)
     if question:
-        for q in question.all():
-            delete_member_access_by_question_id(
-                session=session, question=q.id)
-            delete_isco_access_by_question_id(
-                session=session, question=q.id)
-            delete_option_by_question(
-                session=session, question=q.id)
-            delete_skip_logic_by_question(
-                session=session, question=q.id)
+        question_ids = [q.id for q in question.all()]
+        delete_member_access_by_question_id(
+                session=session, question=question_ids)
+        delete_isco_access_by_question_id(
+            session=session, question=question_ids)
+        delete_option_by_question_ids(
+            session=session, question=question_ids)
+        delete_skip_logic_by_question(
+            session=session, question=question_ids)
         question.delete()
         session.commit()
         session.flush()
@@ -264,10 +264,10 @@ def reorder_question(session: Session, form: int,
 
 
 def delete_question(session: Session, id: int):
-    delete_member_access_by_question_id(session=session, question=id)
-    delete_isco_access_by_question_id(session=session, question=id)
-    delete_option_by_question(session=session, question=id)
-    delete_skip_logic_by_question(session=session, question=id)
+    delete_member_access_by_question_id(session=session, question=[id])
+    delete_isco_access_by_question_id(session=session, question=[id])
+    delete_option_by_question_ids(session=session, question=[id])
+    delete_skip_logic_by_question(session=session, question=[id])
     question = get_question_by_id(session=session, id=id)
     form_id = question.form
     session.delete(question)
