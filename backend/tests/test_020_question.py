@@ -104,7 +104,8 @@ class TestQuestionRoutes():
             "rule": None,
             "tooltip": "Question 1 tooltip",
             "tooltip_translations": [
-                {"language": "id", "text": "Keterangan Pertanyaan 1"}],
+                {"language": "id",
+                 "tooltip_translations": "Keterangan Pertanyaan 1"}],
             "cascade": None,
             "repeating_objects": [
                 {
@@ -147,7 +148,8 @@ class TestQuestionRoutes():
             "skip_logic": [],
             "tooltip": 'Question 1 tooltip',
             "tooltip_translations": [
-                {"language": "id", "text": "Keterangan Pertanyaan 1"}],
+                {"language": "id",
+                 "tooltip_translations": "Keterangan Pertanyaan 1"}],
             "translations": [
                 {"language": "id", "text": "Pertanyaan 1"}],
             "type": "option",

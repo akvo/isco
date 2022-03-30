@@ -10,6 +10,7 @@ from db.connection import get_session
 from models.form import FormBase, FormDict, FormDictWithGroupStatus
 from models.form import FormPayload, FormJson
 from models.question import QuestionType
+from models.skip_logic import OperatorType
 
 security = HTTPBearer()
 form_route = APIRouter()
@@ -104,19 +105,33 @@ def get_webform_by_id(req: Request, form_id: int,
         # Sort question by order
         qg['question'].sort(key=get_order)
         for q in qg['question']:
-            # Sort option by order
-            q['option'].sort(key=get_order)
-            # Transform dependency
-            for d in q['dependency']:
-                if d['type'] == QuestionType.option.value:
-                    ids = d['value'].split('|')
-                    option = crud_option.get_option_by_ids(session=session,
-                                                           ids=ids)
-                    option = [opt.optionName for opt in option]
-                    d['options'] = option
-                    del d['value']
+            if 'option' in q:
+                # Sort option by order
+                q['option'].sort(key=get_order)
+            if 'dependency' in q:
+                # Transform dependency
+                for d in q['dependency']:
+                    d.update({"id": d['dependent_to']})
+                    if d['type'] == QuestionType.option.value:
+                        ids = d['value'].split('|')
+                        option = crud_option.get_option_by_ids(
+                            session=session, ids=ids)
+                        option = [opt.optionName for opt in option]
+                        d.update({"options": option})
+                    if d['type'] == QuestionType.number.value:
+                        d['value'] = int(d['value'])
+                        operator = d['operator']
+                        if d['operator'] == OperatorType.greater_than:
+                            operator = "min"
+                        if d['operator'] == OperatorType.greater_than_or_equal:
+                            operator = "min"
+                        if d['operator'] == OperatorType.less_than:
+                            operator = "max"
+                        if d['operator'] == OperatorType.less_than_or_equal:
+                            operator = "max"
+                        d.update({operator: d['value']})
+                    del d['id']
                     del d['operator']
-                if d['type'] == QuestionType.number.value:
-                    d['value'] = int(d['value'])
-
+                    del d['value']
+                    del d['type']
     return form

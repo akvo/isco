@@ -10,7 +10,7 @@ from sqlalchemy.orm import relationship
 import sqlalchemy.dialects.postgresql as pg
 from db.connection import Base
 from datetime import datetime
-from models.question import QuestionBase, QuestionJson
+from models.question import QuestionBase
 from models.question import QuestionPayload
 
 
@@ -102,20 +102,18 @@ class QuestionGroup(Base):
 
     @property
     def serializeJson(self):
-        translations = []
-        if self.translations:
-            translations = self.translations
-
-        return {
+        group = {
             "name": self.name,
             "description": self.description,
-            "translations": translations,
             "order": self.order,
             "repeatable": self.repeat,
             "member_access": [ma.memberName for ma in self.member_access],
             "isco_access": [ia.iscoName for ia in self.isco_access],
             "question": [q.serializeJson for q in self.question]
         }
+        if self.translations:
+            group.update({"translations": self.translations})
+        return group
 
 
 class QuestionGroupBase(BaseModel):
@@ -142,7 +140,7 @@ class QuestionGroupJson(BaseModel):
     repeatable: bool
     member_access: Optional[List[str]] = []
     isco_access: Optional[List[str]] = []
-    question: Optional[List[QuestionJson]] = []
+    question: Optional[List[dict]] = []
 
     class Config:
         orm_mode = True

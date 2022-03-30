@@ -199,31 +199,45 @@ class Question(Base):
 
     @property
     def serializeJson(self):
-        translations = []
-        if self.translations:
-            translations = self.translations
-
-        repeating_objects = []
-        if self.repeating_objects:
-            repeating_objects = self.repeating_objects
-
-        return {
+        question = {
             "id": self.id,
             "name": self.name,
             "required": self.mandatory,
             "datapoint_name": self.datapoint_name,
             "type": self.type,
             "order": self.order,
-            "translations": translations,
-            "variable_name": self.variable_name,
-            "personal_data": self.personal_data,
-            "rule": self.rule,
-            "tooltip": {"text": self.tooltip} if self.tooltip else None,
-            "cascade": self.cascade,
-            "repeating_objects": repeating_objects,
-            "option": [opt.serializeJson for opt in self.option],
-            "dependency": [skip.serializeJson for skip in self.skip_logic]
         }
+        if self.rule:
+            question.update({"rule": self.rule})
+        if self.personal_data:
+            question.update({"personal_data": self.personal_data})
+        if self.variable_name:
+            question.update({"variable_name": self.variable_name})
+        if self.cascade:
+            question.update({"cascade": self.cascade})
+        if self.translations:
+            question.update({"translations": self.translations})
+        if self.option:
+            question.update({
+                "option": [opt.serializeJson for opt in self.option]})
+        if self.repeating_objects:
+            question.update({"repeating_objects": self.repeating_objects})
+        if self.tooltip:
+            tooltip = {"text": self.tooltip}
+            if self.tooltip_translations:
+                temp = []
+                for t in self.tooltip_translations:
+                    temp.append({
+                        "language": t['language'],
+                        "text": t['tooltip_translations']
+                    })
+                tooltip.update({"translations": temp})
+            question.update({"tooltip": tooltip})
+        if self.skip_logic:
+            question.update({
+                "dependency": [
+                    skip.serializeJson for skip in self.skip_logic]})
+        return question
 
 
 class QuestionBase(BaseModel):

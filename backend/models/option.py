@@ -69,16 +69,14 @@ class Option(Base):
 
     @property
     def serializeJson(self):
-        translations = []
-        if self.translations:
-            translations = self.translations
-
-        return {
+        option = {
             "code": self.code,
             "name": self.name,
             "order": self.order,
-            "translations": translations
         }
+        if self.translations:
+            option.update({"translations": self.translations})
+        return option
 
 
 class OptionBase(BaseModel):
