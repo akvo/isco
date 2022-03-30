@@ -1,5 +1,5 @@
 from fastapi import HTTPException, status
-from typing import List
+from typing import List, Optional
 from sqlalchemy.orm import Session
 from models.skip_logic import SkipLogic, SkipLogicBase
 from models.skip_logic import SkipLogicDict, SkipLogicPayload
@@ -70,9 +70,10 @@ def get_skip_logic_by_dependent(session: Session, question: List[int]):
     return skip_logic
 
 
-def delete_skip_logic_by_question(session: Session, question: List[int]):
-    get_skip_logic_by_dependent(
-        session=session, question=question)
+def delete_skip_logic_by_question(session: Session, question: List[int],
+                                  dependency: Optional[bool] = True):
+    if dependency:
+        get_skip_logic_by_dependent(session=session, question=question)
     skip_logic = session.query(SkipLogic).filter(
         SkipLogic.question.in_(question))
     skip_logic.delete(False)

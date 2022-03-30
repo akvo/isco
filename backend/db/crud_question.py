@@ -223,7 +223,8 @@ def get_question_by_group(session: Session, group: int):
     return questions
 
 
-def delete_question_by_group(session: Session, group: List[int]):
+def delete_question_by_group(session: Session, group: List[int],
+                             dependency: Optional[bool] = True):
     # check if exist
     questions = get_question_by_group(session=session, group=group)
     if questions:
@@ -235,7 +236,7 @@ def delete_question_by_group(session: Session, group: List[int]):
         delete_option_by_question_ids(
             session=session, question=question_ids)
         delete_skip_logic_by_question(
-            session=session, question=question_ids)
+            session=session, question=question_ids, dependency=dependency)
         questions.delete(False)
         session.commit()
         session.flush()

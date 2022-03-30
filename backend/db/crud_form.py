@@ -2,6 +2,8 @@ from fastapi import HTTPException, status
 from typing import List
 from sqlalchemy.orm import Session
 from models.form import Form, FormDict, FormBase, FormPayload
+from models.question_group import QuestionGroup
+from db.crud_question_group import delete_question_by_group
 
 
 def add_form(session: Session, payload: FormPayload):
@@ -40,6 +42,13 @@ def update_form(session: Session, id: int, payload: FormPayload) -> FormDict:
 
 
 def delete_form(session: Session, id: int):
+    # delete question group
+    groups = session.query(QuestionGroup).filter(
+        QuestionGroup.form == id).all()
+    if groups:
+        group_ids = [g.id for g in groups]
+        delete_question_by_group(session=session, group=group_ids,
+                                 dependency=False)
     form = get_form_by_id(session=session, id=id)
     session.delete(form)
     session.commit()
