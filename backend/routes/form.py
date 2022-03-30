@@ -5,12 +5,9 @@ from fastapi.security import HTTPBasicCredentials as credentials
 from typing import List
 from sqlalchemy.orm import Session
 import db.crud_form as crud
-import db.crud_option as crud_option
 from db.connection import get_session
 from models.form import FormBase, FormDict, FormDictWithGroupStatus
 from models.form import FormPayload, FormJson
-from models.question import QuestionType
-from models.skip_logic import OperatorType
 
 security = HTTPBearer()
 form_route = APIRouter()
@@ -85,10 +82,6 @@ def get_survey_editor_by_id(req: Request, form_id: int,
     return form.serialize
 
 
-def get_order(data):
-    return data['order']
-
-
 @form_route.get("/webform/{form_id:path}",
                 response_model=FormJson,
                 summary="load webform json by form id",
@@ -96,42 +89,5 @@ def get_order(data):
                 tags=["Form"])
 def get_webform_by_id(req: Request, form_id: int,
                       session: Session = Depends(get_session)):
-    form = crud.get_form_by_id(session=session, id=form_id)
-    form = form.serializeJson
-
-    # Sort question group by order
-    form['question_group'].sort(key=get_order)
-    for qg in form['question_group']:
-        # Sort question by order
-        qg['question'].sort(key=get_order)
-        for q in qg['question']:
-            if 'option' in q:
-                # Sort option by order
-                q['option'].sort(key=get_order)
-            if 'dependency' in q:
-                # Transform dependency
-                for d in q['dependency']:
-                    d.update({"id": d['dependent_to']})
-                    if d['type'] == QuestionType.option.value:
-                        ids = d['value'].split('|')
-                        option = crud_option.get_option_by_ids(
-                            session=session, ids=ids)
-                        option = [opt.optionName for opt in option]
-                        d.update({"options": option})
-                    if d['type'] == QuestionType.number.value:
-                        d['value'] = int(d['value'])
-                        operator = d['operator']
-                        if d['operator'] == OperatorType.greater_than:
-                            operator = "min"
-                        if d['operator'] == OperatorType.greater_than_or_equal:
-                            operator = "min"
-                        if d['operator'] == OperatorType.less_than:
-                            operator = "max"
-                        if d['operator'] == OperatorType.less_than_or_equal:
-                            operator = "max"
-                        d.update({operator: d['value']})
-                    del d['id']
-                    del d['operator']
-                    del d['value']
-                    del d['type']
+    form = crud.generate_webform_json(session=session, id=form_id)
     return form

@@ -204,7 +204,7 @@ class Question(Base):
             "name": self.name,
             "required": self.mandatory,
             "datapoint_name": self.datapoint_name,
-            "type": self.type,
+            "type": self.type.value,
             "order": self.order,
         }
         if self.rule:

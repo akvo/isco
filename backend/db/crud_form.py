@@ -1,9 +1,13 @@
+import json
 from fastapi import HTTPException, status
 from typing import List
 from sqlalchemy.orm import Session
 from models.form import Form, FormDict, FormBase, FormPayload
 from models.question_group import QuestionGroup
+from models.question import QuestionType
 from db.crud_question_group import delete_question_by_group
+import db.crud_option as crud_option
+from models.skip_logic import OperatorType
 
 
 def add_form(session: Session, payload: FormPayload):
@@ -53,3 +57,54 @@ def delete_form(session: Session, id: int):
     session.delete(form)
     session.commit()
     session.flush()
+
+
+def get_order(data):
+    return data['order']
+
+
+def generate_webform_json(session: Session, id: int):
+    form = get_form_by_id(session=session, id=id)
+    form = form.serializeJson
+
+    # Sort question group by order
+    form['question_group'].sort(key=get_order)
+    for qg in form['question_group']:
+        # Sort question by order
+        qg['question'].sort(key=get_order)
+        for q in qg['question']:
+            if 'option' in q:
+                # Sort option by order
+                q['option'].sort(key=get_order)
+            if 'dependency' in q:
+                # Transform dependency
+                for d in q['dependency']:
+                    d.update({"id": d['dependent_to']})
+                    if d['type'] == QuestionType.option.value:
+                        ids = d['value'].split('|')
+                        option = crud_option.get_option_by_ids(
+                            session=session, ids=ids)
+                        option = [opt.optionName for opt in option]
+                        d.update({"options": option})
+                    if d['type'] == QuestionType.number.value:
+                        d['value'] = int(d['value'])
+                        operator = d['operator']
+                        if d['operator'] == OperatorType.greater_than:
+                            operator = "min"
+                        if d['operator'] == OperatorType.greater_than_or_equal:
+                            operator = "min"
+                        if d['operator'] == OperatorType.less_than:
+                            operator = "max"
+                        if d['operator'] == OperatorType.less_than_or_equal:
+                            operator = "max"
+                        d.update({operator: d['value']})
+                    del d['id']
+                    del d['operator']
+                    del d['value']
+                    del d['type']
+    # need to define the version
+    filename = f"{id}_{form['name']}.json"
+    filepath = f"./tmp/{filename}"
+    with open(filepath, "w") as outfile:
+        json.dump(form, outfile)
+    return form
