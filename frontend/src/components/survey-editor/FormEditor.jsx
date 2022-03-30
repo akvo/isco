@@ -10,6 +10,13 @@ const FormEditor = ({
 }) => {
   const optionValues = store.useState((s) => s?.optionValues);
   const { languages } = optionValues;
+  // filter en from languages list, because that the default value
+  const filterLangs = languages
+    ?.filter((l) => l.code !== "en")
+    ?.map((lang) => ({
+      label: lang?.name,
+      value: lang?.code,
+    }));
 
   return (
     <Row className="form-editor-wrapper">
@@ -41,10 +48,7 @@ const FormEditor = ({
               showSearch={true}
               className="custom-dropdown-wrapper bg-grey"
               placeholder="Languages"
-              options={languages?.map((lang) => ({
-                label: lang?.name,
-                value: lang?.code,
-              }))}
+              options={filterLangs}
               filterOption={(input, option) =>
                 option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
