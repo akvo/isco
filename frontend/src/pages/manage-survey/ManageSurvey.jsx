@@ -7,14 +7,12 @@ import {
   Typography,
   Table,
   Button,
-  Tooltip,
   Space,
   Modal,
   Form,
   Popconfirm,
 } from "antd";
 import { RiPencilFill, RiDeleteBinFill } from "react-icons/ri";
-import { FaInfoCircle } from "react-icons/fa";
 import { FormEditor } from "../../components";
 import { api } from "../../lib";
 import { useNotification } from "../../util";
@@ -69,47 +67,32 @@ const ManageSurvey = () => {
 
   const columns = [
     {
-      title: "",
-      dataIndex: "",
-      key: "status",
-      render: (record) => {
-        if (!record?.status) {
-          return "";
-        }
-        return (
-          <Tooltip
-            key={`${record?.id}-${record?.key}`}
-            title={record?.status}
-            placement="left"
-          >
-            <FaInfoCircle />
-          </Tooltip>
-        );
-      },
-    },
-    {
       title: "Name",
       dataIndex: "name",
       key: "name",
       className: "bg-grey title",
+      width: "25%",
     },
     {
-      title: "Added By",
-      dataIndex: "user",
-      key: "user",
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
       className: "bg-grey",
+      width: "50%",
     },
     {
       title: "Date Created",
       dataIndex: "created",
       key: "created",
       className: "bg-grey",
+      width: "15%",
     },
     {
       title: "Action",
       dataIndex: "",
       key: "action",
       className: "bg-grey",
+      width: "10%",
       render: (record) => {
         return (
           <Space key={`${record?.id}-${record?.key}`}>
@@ -120,12 +103,6 @@ const ManageSurvey = () => {
               type="text"
               onClick={() => handleEditButton(record)}
             />
-            {/* <Button
-              className="action-btn"
-              icon={<MdFileCopy />}
-              shape="circle"
-              type="text"
-            /> */}
             <Popconfirm
               title="Delete survey can't be undone."
               okText="Delete"
@@ -152,7 +129,6 @@ const ManageSurvey = () => {
       .then((res) => {
         const data = res?.data?.map((item) => ({
           ...item,
-          user: "John Doe",
           status: null,
         }));
         setDataSource(data);
@@ -240,17 +216,6 @@ const ManageSurvey = () => {
                 className="table-wrapper"
                 columns={columns}
                 dataSource={dataSource}
-                expandable={{
-                  defaultExpandAllRows: true,
-                  expandedRowRender: (record) => (
-                    <p
-                      key={`${record.id}-description`}
-                      className="expanded-description"
-                    >
-                      {record.description}
-                    </p>
-                  ),
-                }}
               />
             </Col>
           </Row>
