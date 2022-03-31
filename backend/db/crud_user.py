@@ -52,7 +52,7 @@ def get_user_by_member_type(session: Session, member_type: int) -> UserDict:
 
 
 def filter_user(session: Session, search: Optional[str] = None,
-                organisation: Optional[int] = None):
+                organisation: Optional[List[int]] = None):
     user = session.query(User)
     if search:
         user = user.filter(or_(
@@ -60,12 +60,12 @@ def filter_user(session: Session, search: Optional[str] = None,
             User.email.ilike("%{}%".format(search.lower().strip())),
         ))
     if organisation:
-        user = user.filter(User.organisation == organisation)
+        user = user.filter(User.organisation.in_(organisation))
     return user
 
 
 def count(session: Session, search: Optional[str] = None,
-          organisation: Optional[int] = None) -> int:
+          organisation: Optional[List[int]] = None) -> int:
     user = filter_user(session=session, search=search,
                        organisation=organisation)
     user = user.count()
@@ -74,7 +74,7 @@ def count(session: Session, search: Optional[str] = None,
 
 def get_all_user(session: Session,
                  search: Optional[str] = None,
-                 organisation: Optional[int] = None,
+                 organisation: Optional[List[int]] = None,
                  skip: int = 0,
                  limit: int = 10) -> List[UserDict]:
     user = filter_user(session=session, search=search,

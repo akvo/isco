@@ -1,7 +1,7 @@
 from math import ceil
 from middleware import Token, authenticate_user
 from middleware import create_access_token, verify_user
-from fastapi import Depends, HTTPException, status, APIRouter, Request
+from fastapi import Depends, HTTPException, status, APIRouter, Request, Query
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
 from sqlalchemy.orm import Session
@@ -44,25 +44,25 @@ def login(req: Request, email: str, password: SecretStr,
                 tags=["User"])
 def get_all(req: Request, page: int = 1, limit: int = 10,
             search: Optional[str] = None,
-            organisation: Optional[int] = None,
+            organisation: Optional[List[int]] = Query(None),
             session: Session = Depends(get_session),
             credentials: credentials = Depends(security)):
     admin = verify_admin(session=session,
                          authenticated=req.state.authenticated)
-    org_id = None
+    org_ids = None
     if organisation:
-        org_id = organisation
+        org_ids = organisation
     # if role member admin, filter user by member admin organisation id
     if admin.role == UserRole.member_admin:
-        org_id = admin.organisation
+        org_ids = admin.organisation
     user = crud_user.get_all_user(session=session, search=search,
-                                  organisation=org_id,
+                                  organisation=org_ids,
                                   skip=(limit * (page - 1)), limit=limit)
     if not user:
         raise HTTPException(status_code=404, detail="Not found")
     # count total user
     total = crud_user.count(session=session, search=search,
-                            organisation=org_id)
+                            organisation=org_ids)
     user = [u.serialize for u in user]
     total_page = ceil(total / limit) if total > 0 else 0
     if total_page < page:
