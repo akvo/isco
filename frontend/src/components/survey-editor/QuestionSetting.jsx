@@ -24,7 +24,11 @@ import { isoLangs } from "../../lib";
 
 const { TabPane } = Tabs;
 
-const RenderOptionInput = ({ question, handlePlusMinusOptionButton }) => {
+const RenderOptionInput = ({
+  question,
+  handlePlusMinusOptionButton,
+  handleOrderingOption,
+}) => {
   const qId = question?.id;
   const options = question?.option;
 
@@ -36,7 +40,7 @@ const RenderOptionInput = ({ question, handlePlusMinusOptionButton }) => {
       <Button
         type="text"
         icon={<HiArrowSmUp />}
-        onClick={() => console.log(order - 1)}
+        onClick={() => handleOrderingOption(order, order - 1)}
       />
     );
   };
@@ -49,7 +53,7 @@ const RenderOptionInput = ({ question, handlePlusMinusOptionButton }) => {
       <Button
         type="text"
         icon={<HiArrowSmDown />}
-        onClick={() => console.log(order + 1)}
+        onClick={() => handleOrderingOption(order, order + 1)}
       />
     );
   };
@@ -163,9 +167,57 @@ const Detail = ({
   const tempStorage = store.useState((s) => s?.tempStorage);
   const { cascade, nested } = store.useState((s) => s?.optionValues);
   const { type, option, repeating_objects } = question;
+  const { questionGroup: questionGroupState } = surveyEditor;
   const qId = question?.id;
 
   const cascadeValues = type === "cascade" ? cascade : nested;
+
+  const handleOrderingOption = (selectedOrder, targetOrder) => {
+    const updatedQuestionGroup = questionGroupState.map((qg) => {
+      const updatedQuestion = qg.question.map((q) => {
+        let options = q.option;
+        if (q.id === qId) {
+          options = q.option.map((o) => {
+            let newOrder = o.order;
+            if (selectedOrder > targetOrder) {
+              newOrder =
+                o.order === selectedOrder
+                  ? targetOrder
+                  : o.order >= targetOrder && o.order < selectedOrder
+                  ? o.order + 1
+                  : o.order;
+            }
+            if (selectedOrder < targetOrder) {
+              newOrder =
+                o.order === selectedOrder
+                  ? targetOrder
+                  : o.order > selectedOrder && o.order <= targetOrder
+                  ? o.order - 1
+                  : o.order;
+            }
+            return {
+              ...o,
+              order: newOrder,
+            };
+          });
+        }
+        return {
+          ...q,
+          option: options,
+        };
+      });
+      return {
+        ...qg,
+        question: updatedQuestion,
+      };
+    });
+    store.update((s) => {
+      s.surveyEditor = {
+        ...s.surveyEditor,
+        questionGroup: updatedQuestionGroup,
+      };
+    });
+  };
 
   const handlePlusMinusOptionButton = (operation, opt, optIndex) => {
     const filterQuestionGroup = surveyEditor?.questionGroup?.filter(
@@ -334,6 +386,7 @@ const Detail = ({
               <RenderOptionInput
                 question={question}
                 handlePlusMinusOptionButton={handlePlusMinusOptionButton}
+                handleOrderingOption={handleOrderingOption}
               />
             </div>
           </div>
