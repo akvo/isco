@@ -54,7 +54,7 @@ def get_all(req: Request, page: int = 1, limit: int = 10,
         org_ids = organisation
     # if role member admin, filter user by member admin organisation id
     if admin.role == UserRole.member_admin:
-        org_ids = admin.organisation
+        org_ids = [admin.organisation]
     user = crud_user.get_all_user(session=session, search=search,
                                   organisation=org_ids,
                                   skip=(limit * (page - 1)), limit=limit)

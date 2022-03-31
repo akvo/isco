@@ -74,6 +74,7 @@ const ManageUser = () => {
   const [memberValue, setMemberValue] = useState([]);
   const [iscoValue, setIscoValue] = useState([]);
   const showPendingUserOption = false;
+  const showAddNewUser = false;
   const showOrganisationFilter = user?.role === "secretariat_admin";
 
   useEffect(() => {
@@ -188,18 +189,20 @@ const ManageUser = () => {
                 Manage Users
               </Title>
             </Col>
-            <Col span={12} align="end">
-              <Button
-                className="button-add"
-                type="primary"
-                ghost
-                onClick={() => {
-                  setIsAddUserVisible(true);
-                }}
-              >
-                New User
-              </Button>
-            </Col>
+            {showAddNewUser && (
+              <Col span={12} align="end">
+                <Button
+                  className="button-add"
+                  type="primary"
+                  ghost
+                  onClick={() => {
+                    setIsAddUserVisible(true);
+                  }}
+                >
+                  New User
+                </Button>
+              </Col>
+            )}
           </Row>
           <Row
             className="filter-wrapper"
