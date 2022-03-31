@@ -107,16 +107,9 @@ class TestUserAuthentication():
             "active": True,
             "code": None,
             "id": 1,
-            "isco_type": [
-                {
-                    "id": 1,
-                    "isco_type": 1,
-                    "organisation": 1
-                }
-            ],
+            "isco_type": [1],
             "member_type": 1,
-            "name": "staff Akvo",
-            "users": []
+            "name": "staff Akvo"
         }
 
     @pytest.mark.asyncio

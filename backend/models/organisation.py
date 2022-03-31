@@ -8,8 +8,6 @@ from sqlalchemy import Column, Integer, String
 from sqlalchemy import ForeignKey, Boolean, DateTime
 from sqlalchemy.orm import relationship
 from db.connection import Base
-from models.user import UserBase
-from models.organisation_isco import OrganisationIscoBase
 from models.organisation_isco import OrganisationIscoPayload
 from datetime import datetime
 
@@ -28,6 +26,7 @@ class OrganisationDict(TypedDict):
     name: str
     active: bool
     member_type: int
+    isco_type: Optional[List[int]] = []
 
 
 class Organisation(Base):
@@ -67,8 +66,7 @@ class Organisation(Base):
             "code": self.code,
             "name": self.name,
             "active": self.active,
-            "users": self.users,
-            "isco_type": self.isco_type,
+            "isco_type": [i.isco_type for i in self.isco_type],
             "member_type": self.member_type
         }
 
@@ -79,8 +77,7 @@ class OrganisationBase(BaseModel):
     name: str
     active: bool
     member_type: int
-    users: Optional[List[UserBase]] = []
-    isco_type: Optional[List[OrganisationIscoBase]] = []
+    isco_type: Optional[List[int]] = []
 
     class Config:
         orm_mode = True

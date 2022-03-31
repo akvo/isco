@@ -10,6 +10,7 @@ from sqlalchemy import Column, Integer, String
 from sqlalchemy import Enum, DateTime
 from sqlalchemy import ForeignKey
 from db.connection import Base
+from models.organisation import OrganisationDict
 
 
 class UserRole(enum.Enum):
@@ -21,6 +22,15 @@ class UserRole(enum.Enum):
 class UserDict(TypedDict):
     id: int
     organisation: int
+    name: str
+    email: str
+    email_verified: Optional[datetime] = None
+    role: UserRole
+
+
+class UserOrgDict(TypedDict):
+    id: int
+    organisation: OrganisationDict
     name: str
     email: str
     email_verified: Optional[datetime] = None

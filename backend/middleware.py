@@ -92,12 +92,12 @@ def verify_user(session: Session, authenticated):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Please check your email inbox to verify email account")
-    return user.serialize
+    return user
 
 
 def verify_admin(session: Session, authenticated):
     user = verify_user(session=session, authenticated=authenticated)
-    role = user['role']
+    role = user.role
     secretariat_admin = UserRole.secretariat_admin
     member_admin = UserRole.member_admin
     if role != secretariat_admin and role != member_admin:

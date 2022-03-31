@@ -6,10 +6,10 @@ from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
 from sqlalchemy.orm import Session
 from db.connection import get_session
-from models.user import UserDict, UserBase
+from models.user import UserDict, UserBase, UserOrgDict
 from models.user import UserResponse, UserRole
 from pydantic import SecretStr
-from db import crud_user
+from db import crud_user, crud_organisation
 from middleware import get_password_hash, verify_admin
 from typing import List, Optional
 
@@ -53,8 +53,8 @@ def get_all(req: Request, page: int = 1, limit: int = 10,
     if organisation:
         org_id = organisation
     # if role member admin, filter user by member admin organisation id
-    if admin['role'] == UserRole.member_admin:
-        org_id = admin['organisation']
+    if admin.role == UserRole.member_admin:
+        org_id = admin.organisation
     user = crud_user.get_all_user(session=session, search=search,
                                   organisation=org_id,
                                   skip=(limit * (page - 1)), limit=limit)
@@ -76,14 +76,18 @@ def get_all(req: Request, page: int = 1, limit: int = 10,
 
 
 @user_route.get("/user/me",
-                response_model=UserDict,
+                response_model=UserOrgDict,
                 summary="get account information",
                 name="user:me",
                 tags=["User"])
 def me(req: Request, session: Session = Depends(get_session),
        credentials: credentials = Depends(security)):
     user = verify_user(session=session, authenticated=req.state.authenticated)
-    return user
+    organisation = crud_organisation.get_organisation_by_id(
+        session=session, id=user.organisation)
+    res = user.serialize
+    res['organisation'] = organisation.serialize
+    return res
 
 
 @user_route.post("/user/register",
