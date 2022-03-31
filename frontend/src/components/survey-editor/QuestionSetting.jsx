@@ -230,7 +230,7 @@ const Detail = ({
 
     let updatedOption = [];
     if (operation === "add") {
-      updatedOption = insert(option, optIndex + 1, {
+      updatedOption = insert(orderBy(option, ["order"]), optIndex + 1, {
         ...defaultOption,
         id: generateID(),
       })?.map((op, opi) => ({
