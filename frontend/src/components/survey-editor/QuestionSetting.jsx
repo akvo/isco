@@ -241,6 +241,11 @@ const Detail = ({
 
     if (operation === "remove") {
       updatedOption = question?.option?.filter((op) => op?.id !== opt?.id);
+      // reordering option
+      updatedOption = orderBy(updatedOption, ["order"]).map((o, oi) => ({
+        ...o,
+        order: oi + 1,
+      }));
       // store removed option to delete when save button clicked
       const storage = tempStorage;
       const filterTempStorage = storage.deletedOptions?.filter(
