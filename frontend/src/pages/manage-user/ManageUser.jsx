@@ -255,7 +255,7 @@ const ManageUser = () => {
                       allowClear
                       showSearch
                       className="member-dropdown-wrapper"
-                      placeholder="ISCO Type"
+                      placeholder="ISCO"
                       options={
                         isco_type.length
                           ? isco_type.map((o) => ({

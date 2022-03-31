@@ -146,7 +146,7 @@ const QuestionGroupSetting = ({
                       rules={[
                         {
                           required: true,
-                          message: "Please select member type",
+                          message: "Please select Member Type",
                         },
                       ]}
                     >
@@ -168,11 +168,11 @@ const QuestionGroupSetting = ({
                 </Col>
                 <Col span={7}>
                   <div className="field-wrapper">
-                    <div className="field-label">ISCO Type</div>
+                    <div className="field-label">ISCO</div>
                     <Form.Item
                       name={iscoAccessField}
                       rules={[
-                        { required: true, message: "Please select isco type" },
+                        { required: true, message: "Please select ISCO" },
                       ]}
                     >
                       <Select
@@ -180,7 +180,7 @@ const QuestionGroupSetting = ({
                         mode="multiple"
                         showSearch={true}
                         className="custom-dropdown-wrapper"
-                        placeholder="Select ISCO Type"
+                        placeholder="Select ISCO"
                         options={iscoOption}
                         filterOption={(input, option) =>
                           option.label
