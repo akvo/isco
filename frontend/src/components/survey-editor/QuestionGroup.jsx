@@ -23,6 +23,12 @@ const QuestionGroup = ({ index, questionGroup }) => {
   };
 
   const handleAddQuestionGroupButton = (order) => {
+    store.update((s) => {
+      s.loadingScreen = {
+        active: true,
+        text: "Saving new section",
+      };
+    });
     api
       .post(`/default_question_group/${formId}/${order}`)
       .then((res) => {
@@ -51,10 +57,24 @@ const QuestionGroup = ({ index, questionGroup }) => {
       })
       .catch((e) => {
         console.error(e);
+      })
+      .finally(() => {
+        store.update((s) => {
+          s.loadingScreen = {
+            active: false,
+            text: "",
+          };
+        });
       });
   };
 
   const handleMove = (targetGroupOrder, targetGroupId) => {
+    store.update((s) => {
+      s.loadingScreen = {
+        active: true,
+        text: "Saving section",
+      };
+    });
     const { id: selectedGroupId, order: selectedGroupOrder } =
       isMoveQuestionGroup;
     api
@@ -177,6 +197,14 @@ const QuestionGroup = ({ index, questionGroup }) => {
       })
       .catch((e) => {
         console.error(e);
+      })
+      .finally(() => {
+        store.update((s) => {
+          s.loadingScreen = {
+            active: false,
+            text: "",
+          };
+        });
       });
   };
 

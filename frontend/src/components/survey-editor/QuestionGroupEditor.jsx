@@ -293,6 +293,12 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
   };
 
   const handleDeleteQuestionGroupButton = (questionGroup) => {
+    store.update((s) => {
+      s.loadingScreen = {
+        active: true,
+        text: "Deleting section",
+      };
+    });
     const { id } = questionGroup;
     api
       .delete(`/question_group/${id}`)
@@ -304,6 +310,10 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
               (qg) => qg?.id !== id
             ),
           };
+          s.loadingScreen = {
+            active: false,
+            text: "",
+          };
         });
         notify({
           type: "success",
@@ -311,8 +321,13 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
         });
       })
       .catch((e) => {
-        const { status, statusText } = e.response;
-        console.error(status, statusText);
+        store.update((s) => {
+          s.loadingScreen = {
+            active: false,
+            text: "",
+          };
+        });
+        const { status } = e.response;
         if (status === 422) {
           notify({
             type: "warning",

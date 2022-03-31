@@ -68,6 +68,10 @@ const defaultSurveyEditor = {
 };
 
 const defaultUIState = {
+  loadingScreen: {
+    active: false,
+    text: "Loading",
+  },
   isLoggedIn: false,
   user: null,
   optionValues: {

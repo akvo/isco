@@ -42,6 +42,12 @@ const MainEditor = () => {
 
   const onSubmitForm = (values) => {
     setSaveButtonLoading(true);
+    store.update((s) => {
+      s.loadingScreen = {
+        active: true,
+        text: "Saving survey detail",
+      };
+    });
     let data = {};
     Object.keys(values)?.forEach((key) => {
       const field = key.split("-")[1];
@@ -67,6 +73,12 @@ const MainEditor = () => {
       })
       .finally(() => {
         setSaveButtonLoading(false);
+        store.update((s) => {
+          s.loadingScreen = {
+            active: false,
+            text: "",
+          };
+        });
       });
   };
 

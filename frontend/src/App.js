@@ -2,6 +2,7 @@ import "./App.scss";
 import React, { useEffect } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { Layout } from "./components";
+import { DimScreen } from "./components/util";
 import {
   Home,
   Admin,
@@ -34,6 +35,7 @@ const Secure = ({ element: Element, adminPage = false }) => {
 };
 
 const App = () => {
+  const loadingScreen = store.useState((s) => s.loadingScreen);
   const [cookies, removeCookie] = useCookies(["AUTH_TOKEN"]);
   const { notify } = useNotification();
   const navigate = useNavigate();
@@ -108,39 +110,42 @@ const App = () => {
   }, []);
 
   return (
-    <Layout>
-      <Layout.Header />
-      <Layout.Body>
-        <Routes>
-          <Route exact path="/login" element={<Login />} />
-          <Route exact path="/register" element={<Register />} />
-          <Route exact path="/" element={<Secure element={Home} />} />
-          <Route exact path="/home" element={<Secure element={Home} />} />
-          <Route
-            exact
-            path="/admin"
-            element={<Secure element={Admin} adminPage={true} />}
-          />
-          <Route
-            exact
-            path="/manage-survey"
-            element={<Secure element={ManageSurvey} adminPage={true} />}
-          />
-          <Route
-            exact
-            path="/manage-user"
-            element={<Secure element={ManageUser} adminPage={true} />}
-          />
-          <Route
-            exact
-            path="/survey-editor/:formId"
-            element={<Secure element={SurveyEditor} adminPage={true} />}
-          />
-          <Route exact path="*" element={<ErrorPage status={404} />} />
-        </Routes>
-      </Layout.Body>
-      <Layout.Footer />
-    </Layout>
+    <>
+      {loadingScreen?.active && <DimScreen text={loadingScreen.text} />}
+      <Layout>
+        <Layout.Header />
+        <Layout.Body>
+          <Routes>
+            <Route exact path="/login" element={<Login />} />
+            <Route exact path="/register" element={<Register />} />
+            <Route exact path="/" element={<Secure element={Home} />} />
+            <Route exact path="/home" element={<Secure element={Home} />} />
+            <Route
+              exact
+              path="/admin"
+              element={<Secure element={Admin} adminPage={true} />}
+            />
+            <Route
+              exact
+              path="/manage-survey"
+              element={<Secure element={ManageSurvey} adminPage={true} />}
+            />
+            <Route
+              exact
+              path="/manage-user"
+              element={<Secure element={ManageUser} adminPage={true} />}
+            />
+            <Route
+              exact
+              path="/survey-editor/:formId"
+              element={<Secure element={SurveyEditor} adminPage={true} />}
+            />
+            <Route exact path="*" element={<ErrorPage status={404} />} />
+          </Routes>
+        </Layout.Body>
+        <Layout.Footer />
+      </Layout>
+    </>
   );
 };
 
