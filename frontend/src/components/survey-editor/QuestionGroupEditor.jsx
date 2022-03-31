@@ -18,8 +18,8 @@ import {
   RiDeleteBinFill,
   RiListOrdered,
   RiDragMove2Fill,
+  RiTranslate2,
 } from "react-icons/ri";
-import { MdGTranslate } from "react-icons/md";
 import { store, api } from "../../lib";
 import orderBy from "lodash/orderBy";
 import { defaultRepeatingObject, defaultOption } from "../../lib/store";
@@ -92,7 +92,7 @@ const QuestionGroupSetting = ({
           ) : (
             <Tooltip title="Show section translation setting">
               <Button
-                icon={<MdGTranslate />}
+                icon={<RiTranslate2 />}
                 type="text"
                 onClick={() => setGroupTranslationVisible(true)}
               />

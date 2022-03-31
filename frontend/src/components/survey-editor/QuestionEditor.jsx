@@ -17,8 +17,8 @@ import {
   RiDeleteBinFill,
   RiDragMove2Fill,
   RiEditFill,
+  RiTranslate2,
 } from "react-icons/ri";
-import { MdGTranslate } from "react-icons/md";
 import QuestionSetting from "./QuestionSetting";
 import { store, api } from "../../lib";
 import { isoLangs } from "../../lib";
@@ -76,7 +76,7 @@ const QuestionMenu = ({ activeSetting, setActiveSetting }) => {
         <Button
           className={`${activeSetting === "translation" ? "active" : ""}`}
           type="text"
-          icon={<MdGTranslate />}
+          icon={<RiTranslate2 />}
           onClick={() => setActiveSetting("translation")}
         />
       </Tooltip>
