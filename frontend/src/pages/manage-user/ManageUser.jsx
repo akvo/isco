@@ -56,7 +56,7 @@ const columns = [
 
 const ManageUser = () => {
   const { isLoggedIn, user, optionValues } = store.useState((s) => s);
-  const { organisation } = optionValues;
+  const { organisation, member_type, isco_type } = optionValues;
 
   const [form] = Form.useForm();
   const [isPendingUserShown, setIsPendingUserShown] = useState(false);
@@ -68,7 +68,11 @@ const ManageUser = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState(null);
   const [orgFilter, setOrgFilter] = useState(null);
-
+  const [memberFilter, setMemberFilter] = useState(null);
+  const [iscoFilter, setIscoFilter] = useState(null);
+  const [organisationValue, setOrganisationValue] = useState([]);
+  const [memberValue, setMemberValue] = useState([]);
+  const [iscoValue, setIscoValue] = useState([]);
   const showPendingUserOption = false;
   const showOrganisationFilter = user?.role === "secretariat_admin";
 
@@ -81,6 +85,12 @@ const ManageUser = () => {
       }
       if (orgFilter) {
         url = `${url}&organisation=${orgFilter}`;
+      }
+      if (memberFilter && !orgFilter) {
+        url = `${url}${memberFilter.map((x) => `&organisation=${x}`).join("")}`;
+      }
+      if (iscoFilter && !orgFilter) {
+        url = `${url}${iscoFilter.map((x) => `&organisation=${x}`).join("")}`;
       }
       api
         .get(url)
@@ -107,7 +117,62 @@ const ManageUser = () => {
           setIsLoading(false);
         });
     }
-  }, [isLoggedIn, page, search, organisation, orgFilter]);
+  }, [
+    isLoggedIn,
+    page,
+    search,
+    organisation,
+    orgFilter,
+    memberFilter,
+    iscoFilter,
+  ]);
+
+  const handleOrganisationFilter = (org) => {
+    setOrganisationValue(org);
+    setMemberValue([]);
+    setIscoValue([]);
+    setOrgFilter(org);
+    setMemberFilter(null);
+    setIscoFilter(null);
+  };
+
+  const handleMemberFilter = (member) => {
+    setMemberValue(member);
+    setOrganisationValue([]);
+    setOrgFilter(null);
+    let orgIds = organisation;
+    if (iscoFilter) {
+      orgIds = orgIds.filter((o) => iscoFilter.includes(o.id));
+    }
+    if (member === 1) {
+      // for All vallue
+      orgIds = orgIds.map((o) => o.id);
+    } else {
+      orgIds = orgIds.filter((o) => o.member_type === member).map((o) => o.id);
+    }
+    orgIds = orgIds.length ? orgIds : null;
+    setMemberFilter(orgIds);
+  };
+
+  const handleIscoFilter = (isco) => {
+    setIscoValue(isco);
+    setOrganisationValue([]);
+    setOrgFilter(null);
+    let orgIds = organisation;
+    if (memberFilter) {
+      orgIds = orgIds.filter((o) => memberFilter.includes(o.id));
+    }
+    if (isco === 1) {
+      // for All vallue
+      orgIds = orgIds.map((o) => o.id);
+    } else {
+      orgIds = orgIds
+        .filter((o) => o.isco_type.includes(isco))
+        .map((o) => o.id);
+    }
+    orgIds = orgIds.length ? orgIds : null;
+    setIscoFilter(orgIds);
+  };
 
   return (
     <div id="manage-user">
@@ -150,21 +215,56 @@ const ManageUser = () => {
                   onChange={(val) => setSearch(val.target.value)}
                 />
                 {showOrganisationFilter && (
-                  <Select
-                    allowClear
-                    showSearch
-                    className="organisation-dropdown-wrapper"
-                    placeholder="Organization"
-                    options={
-                      organisation.length
-                        ? organisation.map((o) => ({
-                            label: o.name,
-                            value: o.id,
-                          }))
-                        : []
-                    }
-                    onChange={(val) => setOrgFilter(val)}
-                  />
+                  <>
+                    <Select
+                      allowClear
+                      showSearch
+                      className="organisation-dropdown-wrapper"
+                      placeholder="Organization"
+                      options={
+                        organisation.length
+                          ? organisation.map((o) => ({
+                              label: o.name,
+                              value: o.id,
+                            }))
+                          : []
+                      }
+                      onChange={handleOrganisationFilter}
+                      value={organisationValue}
+                    />
+                    <Select
+                      allowClear
+                      showSearch
+                      className="member-dropdown-wrapper"
+                      placeholder="Member Type"
+                      options={
+                        member_type.length
+                          ? member_type.map((o) => ({
+                              label: o.name,
+                              value: o.id,
+                            }))
+                          : []
+                      }
+                      onChange={handleMemberFilter}
+                      value={memberValue}
+                    />
+                    <Select
+                      allowClear
+                      showSearch
+                      className="member-dropdown-wrapper"
+                      placeholder="ISCO Type"
+                      options={
+                        isco_type.length
+                          ? isco_type.map((o) => ({
+                              label: o.name,
+                              value: o.id,
+                            }))
+                          : []
+                      }
+                      onChange={handleIscoFilter}
+                      value={iscoValue}
+                    />
+                  </>
                 )}
               </Space>
             </Col>
