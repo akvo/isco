@@ -13,7 +13,6 @@ member_values = [
 
 isco_values = [
     'All',
-    'ISCO',
     'GISCO',
     'DISCO',
     'Beyond Chocolate'
