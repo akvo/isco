@@ -102,4 +102,9 @@ body {
     }
     // End of Form Style
   }
+
+  // dropdown list z-index
+  .ant-select-dropdown {
+    z-index: 10001;
+  }
 }

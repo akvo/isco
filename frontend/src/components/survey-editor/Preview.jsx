@@ -262,11 +262,11 @@ const Preview = () => {
             />
           </div>
           <div className="field-wrapper">
-            <div className="field-label">ISCO Type</div>
+            <div className="field-label">ISCO</div>
             <Select
               allowClear
               className="custom-dropdown-wrapper bg-grey"
-              placeholder="Select ISCO Type"
+              placeholder="Select ISCO"
               options={isco_type.map((x) => ({ label: x.name, value: x.id }))}
               value={[selectedIsco]}
               onChange={handleOnChangeIsco}
