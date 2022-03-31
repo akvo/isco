@@ -16,7 +16,7 @@ class TestFormToJson():
         # get form
         res = await client.get(
             app.url_path_for("form:get_webform_by_id", form_id=1))
+        print(res.json())
         assert res.status_code == 200
         res = res.json()
         res = json.dumps(res, indent=2, sort_keys=False)
-        # print(res)

@@ -67,7 +67,7 @@ def get_order(data):
 def generate_webform_json(session: Session, id: int):
     form = get_form_by_id(session=session, id=id)
     form = form.serializeJson
-    tree_obj = {}
+    cascade_ids = []
     # Sort question group by order
     form['question_group'].sort(key=get_order)
     for qg in form['question_group']:
@@ -90,11 +90,8 @@ def generate_webform_json(session: Session, id: int):
             # need to dp transform for nested_list
             if q['type'] == QuestionType.nested_list.value:
                 # get tree
-                name = f"{q['id']}_{q['cascade']}_tree"
-                tree = get_cascade_list_by_cascade_id(
-                    session=session, cascade_id=q['cascade'])
-                tree = [t.transformToTree for t in tree]
-                tree_obj.update({name: tree})
+                cascade_ids.append(q['cascade'])
+                name = f"tree_{q['cascade']}"
                 q['type'] = "tree"
                 q['option'] = name
             if 'dependency' in q:
@@ -123,10 +120,16 @@ def generate_webform_json(session: Session, id: int):
                     del d['operator']
                     del d['value']
                     del d['type']
-    if tree_obj:
-        form.update({"tree": tree_obj})
+    # fetch nested list / tree data
+    if len(cascade_ids):
+        tree_obj = get_cascade_list_by_cascade_id(session=session,
+                                                  cascade_id=cascade_ids)
+        if tree_obj:
+            form.update({"tree": tree_obj})
     # need to define the version
-    filename = f"{id}_{form['name']}.json"
+    form_name = form['name'].lower().split(" ")
+    form_name = "_".join(form_name)
+    filename = f"{id}_{form_name}.json"
     filepath = f"./tmp/{filename}"
     with open(filepath, "w") as outfile:
         json.dump(form, outfile)

@@ -1,5 +1,5 @@
 from fastapi import HTTPException, status
-from typing import List
+from typing import List, Optional
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
 from models.cascade import Cascade, CascadeBase
@@ -80,16 +80,32 @@ def add_cascade_list(session: Session, payload: CascadeListPayload):
     return clist
 
 
-def get_cascade_list_by_cascade_id(session: Session, cascade_id: int):
+def get_cascade_list_by_cascade_id(session: Session,
+                                   cascade_id: List[int],
+                                   transform: Optional[int] = 1):
+    cascades = session.query(Cascade).filter(
+        Cascade.id.in_(cascade_id)).all()
     clist = session.query(
         CascadeList).filter(and_(
             CascadeList.level == 1,
-            CascadeList.cascade == cascade_id)).all()
-    if not clist:
+            CascadeList.cascade.in_(cascade_id))).all()
+    if not cascades or not clist:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"cascade list {id} not found")
-    return clist
+            detail=f"cascade list {cascade_id} not found")
+    data = {}
+    for c in cascades:
+        key = f"tree_{c.id}"
+        trees = []
+        for val in clist:
+            if c.id == val.cascade:
+                if transform:
+                    tree_obj = val.transformToTree
+                else:
+                    tree_obj = val.serialize
+                trees.append(tree_obj)
+        data.update({key: trees})
+    return data
 
 
 def get_cascade_list_by_cascade_id_path(session: Session,

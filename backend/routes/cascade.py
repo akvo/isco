@@ -39,19 +39,19 @@ def get(req: Request, session: Session = Depends(get_session)):
     return [c.serialize for c in cascade]
 
 
-@cascade_route.get("/nested/list/{cascade_id}",
-                   response_model=List[dict],
-                   summary="get nested list by cascade id",
+@cascade_route.get("/nested/list",
+                   response_model=dict,
+                   summary="get nested list by cascade_id ex: 1|2|3",
                    name="nested_list:get_by_cascade_id",
                    tags=["Cascade"])
-def get_nested_list_by_cascade_id(req: Request, cascade_id: int,
+def get_nested_list_by_cascade_id(req: Request, cascade_id: str,
                                   transform: Optional[int] = 1,
                                   session: Session = Depends(get_session)):
-    clist = crud.get_cascade_list_by_cascade_id(session=session,
-                                                cascade_id=cascade_id)
-    if transform:
-        return [c.transformToTree for c in clist]
-    return [c.serialize for c in clist]
+    ids = cascade_id.split("|")
+    data = crud.get_cascade_list_by_cascade_id(session=session,
+                                               cascade_id=ids,
+                                               transform=transform)
+    return data
 
 
 @cascade_route.get("/cascade/list/{cascade_id:path}/{path:path}",
