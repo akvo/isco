@@ -4,7 +4,7 @@ from typing import List
 from sqlalchemy.orm import Session
 from models.form import Form, FormDict, FormBase, FormPayload
 from models.question_group import QuestionGroup
-from models.question import QuestionType
+from models.question import QuestionType, RepeatingObjectType
 from db.crud_question_group import delete_question_by_group
 import db.crud_option as crud_option
 from db.crud_cascade import get_cascade_list_by_cascade_id
@@ -94,6 +94,11 @@ def generate_webform_json(session: Session, id: int):
                 name = f"tree_{q['cascade']}"
                 q['type'] = "tree"
                 q['option'] = name
+            if 'repeating_objects' in q and q['repeating_objects']:
+                for r in q['repeating_objects']:
+                    if r['field'] == RepeatingObjectType.unit.value:
+                        q['addonAfter'] = r['value']
+                del q['repeating_objects']
             if 'dependency' in q:
                 # Transform dependency
                 for d in q['dependency']:
