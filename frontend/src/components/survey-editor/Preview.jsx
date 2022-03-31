@@ -138,9 +138,10 @@ const Preview = () => {
           }
           // repeating objects
           if (q.repeating_objects.length && q.repeating_objects?.[0]?.field) {
+            const unit = q.repeating_objects.find((r) => r.field === "unit");
             qVal = {
               ...qVal,
-              component: <p>Unit Component</p>,
+              addonAfter: unit.value,
             };
           }
           // transform dependency
