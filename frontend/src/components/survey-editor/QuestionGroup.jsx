@@ -3,6 +3,8 @@ import QuestionGroupEditor from "./QuestionGroupEditor";
 import AddMoveButton from "./AddMoveButton";
 import { store, api } from "../../lib";
 import { orderBy, takeRight } from "lodash";
+import { defaultOption, defaultRepeatingObject } from "../../lib/store";
+import { generateID } from "../../lib/util";
 
 const QuestionGroup = ({ index, questionGroup }) => {
   const { surveyEditor, isMoveQuestionGroup, isAddQuestionGroup } =
@@ -24,7 +26,17 @@ const QuestionGroup = ({ index, questionGroup }) => {
     api
       .post(`/default_question_group/${formId}/${order}`)
       .then((res) => {
-        const { data } = res;
+        const updatedQuestion = res.data.question.map((q) => ({
+          ...q,
+          // add option default
+          option: [{ ...defaultOption, id: generateID() }],
+          // add repeating object default
+          repeating_objects: [{ ...defaultRepeatingObject, id: generateID() }],
+        }));
+        const data = {
+          ...res.data,
+          question: updatedQuestion,
+        };
         const updatedQuestionGroup = questionGroupState.map((qg) => {
           const newOrder = qg.order >= order ? qg.order + 1 : qg.order;
           return { ...qg, order: newOrder };
@@ -38,8 +50,7 @@ const QuestionGroup = ({ index, questionGroup }) => {
         });
       })
       .catch((e) => {
-        const { status, statusText } = e.response;
-        console.error(status, statusText);
+        console.error(e);
       });
   };
 
