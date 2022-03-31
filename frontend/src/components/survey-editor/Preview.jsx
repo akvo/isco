@@ -3,11 +3,7 @@ import "akvo-react-form/dist/index.css"; /* REQUIRED */
 import { Webform } from "akvo-react-form";
 import { api, store } from "../../lib";
 import { Space, Select } from "antd";
-import { orderBy, isEmpty } from "lodash";
-
-const generateTreeName = (obj) => {
-  return `${obj.id}_${obj.cascade}_tree`;
-};
+import { orderBy, isEmpty, uniqBy } from "lodash";
 
 const Preview = () => {
   const { surveyEditor, optionValues } = store.useState((s) => s);
@@ -38,14 +34,15 @@ const Preview = () => {
 
   useEffect(() => {
     if (nestedListQuestions.length && isEmpty(treeObj)) {
-      nestedListQuestions.forEach(async (q) => {
-        const treeName = generateTreeName(q);
-        const res = await api.get(`/nested/list/${q.cascade}`);
-        setTreeObj({
-          ...treeObj,
-          [treeName]: res?.data,
-        });
-      });
+      const cascadeIds = uniqBy(nestedListQuestions, "cascade")
+        .map((q) => q.cascade)
+        .join("|");
+      api
+        .get(`/nested/list?cascade_id=${cascadeIds}`)
+        .then((res) => {
+          setTreeObj(res?.data);
+        })
+        .catch((e) => console.error(e));
     }
   }, [nestedListQuestions, treeObj]);
 
@@ -89,7 +86,7 @@ const Preview = () => {
             qVal = {
               ...qVal,
               type: "tree",
-              option: generateTreeName(q),
+              option: `tree_${q.cascade}`,
             };
           }
           // cascade
