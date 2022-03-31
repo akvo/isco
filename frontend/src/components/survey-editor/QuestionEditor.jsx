@@ -23,6 +23,7 @@ import QuestionSetting from "./QuestionSetting";
 import { store, api } from "../../lib";
 import { isoLangs } from "../../lib";
 import { useNotification } from "../../util";
+import capitalize from "lodash/capitalize";
 
 const { Panel } = Collapse;
 
@@ -396,7 +397,10 @@ const QuestionEditor = ({
                     className="custom-dropdown-wrapper"
                     placeholder="Question Type"
                     options={question_type?.map((item) => ({
-                      label: item.split("_").join(" "),
+                      label: item
+                        .split("_")
+                        .map((x) => capitalize(x))
+                        .join(" "),
                       value: item,
                     }))}
                     filterOption={(input, option) =>
