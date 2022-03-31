@@ -68,7 +68,6 @@ const Preview = () => {
           let qVal = {
             id: q.id,
             name: q.name,
-            description: q.description,
             order: q.order,
             type: q.type,
             required: q.mandatory,
@@ -135,6 +134,13 @@ const Preview = () => {
             qVal = {
               ...qVal,
               tooltip: tooltip,
+            };
+          }
+          // repeating objects
+          if (q.repeating_objects.length && q.repeating_objects?.[0]?.field) {
+            qVal = {
+              ...qVal,
+              component: <p>Unit Component</p>,
             };
           }
           // transform dependency
@@ -221,13 +227,15 @@ const Preview = () => {
   ]);
 
   const handleOnChangeMember = (val) => {
-    setIsLoading(true);
     setSelectedMember(val);
+    setIsLoading(true);
+    setFormValue({});
   };
 
   const handleOnChangeIsco = (val) => {
     setIsLoading(true);
     setSelectedIsco(val);
+    setFormValue({});
   };
 
   const onChange = ({ current, values, progress }) => {
