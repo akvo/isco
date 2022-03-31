@@ -15,7 +15,7 @@ import {
 } from "antd";
 import { RiDeleteBinFill } from "react-icons/ri";
 import { BiRadioCircle } from "react-icons/bi";
-import { HiPlus, HiMinus } from "react-icons/hi";
+import { HiPlus, HiMinus, HiArrowSmUp, HiArrowSmDown } from "react-icons/hi";
 import { store } from "../../lib";
 import { orderBy, take } from "lodash";
 import { defaultOption, defaultRepeatingObject } from "../../lib/store";
@@ -26,11 +26,37 @@ const { TabPane } = Tabs;
 
 const RenderOptionInput = ({ question, handlePlusMinusOptionButton }) => {
   const qId = question?.id;
-  const option = question?.option;
+  const options = question?.option;
 
-  return orderBy(option, ["order"])?.map((opt, optIndex) => (
+  const ButtonUp = ({ index, order }) => {
+    if (!index) {
+      return "";
+    }
+    return (
+      <Button
+        type="text"
+        icon={<HiArrowSmUp />}
+        onClick={() => console.log(order - 1)}
+      />
+    );
+  };
+
+  const ButtonDown = ({ index, order }) => {
+    if (index === options.length - 1) {
+      return "";
+    }
+    return (
+      <Button
+        type="text"
+        icon={<HiArrowSmDown />}
+        onClick={() => console.log(order + 1)}
+      />
+    );
+  };
+
+  return orderBy(options, ["order"])?.map((opt, optIndex) => (
     <Row key={`option-${opt?.id}`} justify="space-between" gutter={[12, 12]}>
-      <Col span={22}>
+      <Col span={19}>
         <Form.Item
           label={<BiRadioCircle />}
           name={`question-${qId}-option-${opt?.id}`}
@@ -39,8 +65,10 @@ const RenderOptionInput = ({ question, handlePlusMinusOptionButton }) => {
           <Input className="bg-grey" placeholder="Enter an answer option" />
         </Form.Item>
       </Col>
-      <Col span={2}>
-        <Space size={1} align="center">
+      <Col span={2} align="end">
+        <Space size={1} align="center" className="float-right">
+          <ButtonUp index={optIndex} order={opt.order} />
+          <ButtonDown index={optIndex} order={opt.order} />
           <Button
             type="text"
             icon={<HiPlus />}
