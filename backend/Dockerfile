@@ -1,4 +1,4 @@
-FROM amancevice/pandas:0.24.2-slim
+FROM python:3.8.5
 
 WORKDIR /usr/src/app
 
