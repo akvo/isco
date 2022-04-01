@@ -118,17 +118,19 @@ def generate_webform_json(session: Session, id: int):
                         option = [opt.optionName for opt in option]
                         d.update({"options": option})
                     if d['type'] == QuestionType.number.value:
-                        d['value'] = int(d['value'])
+                        value = int(d['value'])
                         operator = d['operator']
                         if d['operator'] == OperatorType.greater_than:
                             operator = "min"
+                            value = value + 1
                         if d['operator'] == OperatorType.greater_than_or_equal:
                             operator = "min"
                         if d['operator'] == OperatorType.less_than:
                             operator = "max"
+                            value = value - 1
                         if d['operator'] == OperatorType.less_than_or_equal:
                             operator = "max"
-                        d.update({operator: d['value']})
+                        d.update({operator: value})
                     del d['id']
                     del d['operator']
                     del d['value']
