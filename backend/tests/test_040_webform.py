@@ -22,6 +22,7 @@ class TestFormToJson():
         assert res.status_code == 200
         res = res.json()
         assert len(res['question_group']) > 0
+        assert "en" in res["languages"]
 
     @pytest.mark.asyncio
     async def test_publish_form(self, app: FastAPI, session: Session,
