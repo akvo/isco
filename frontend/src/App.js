@@ -11,6 +11,7 @@ import {
   Login,
   Register,
   ErrorPage,
+  WebformPage,
 } from "./pages";
 import { useCookies } from "react-cookie";
 import { store, api } from "./lib";
@@ -135,6 +136,11 @@ const App = () => {
             exact
             path="/survey-editor/:formId"
             element={<Secure element={SurveyEditor} adminPage={true} />}
+          />
+          <Route
+            exact
+            path="/webform/:formId"
+            element={<Secure element={WebformPage} />}
           />
           <Route exact path="*" element={<ErrorPage status={404} />} />
         </Routes>

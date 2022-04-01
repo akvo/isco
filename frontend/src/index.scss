@@ -89,6 +89,12 @@ body {
       }
     }
 
+    .ant-input-number-group-addon {
+      border: none;
+      background-color: $white;
+      border-bottom: 1px solid #777777;
+    }
+
     .ant-select.bg-grey {
       .ant-select-selector {
         background-color: #eeeeee;

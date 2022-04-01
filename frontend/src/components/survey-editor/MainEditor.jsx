@@ -25,6 +25,7 @@ const MainEditor = () => {
 
   const { questionGroup } = surveyEditor;
   const [saveButtonLoading, setSaveButtonLoading] = useState(false);
+  const [publishButtonLoading, setPublishButtonLoading] = useState(false);
 
   useEffect(() => {
     if (formId) {
@@ -70,6 +71,26 @@ const MainEditor = () => {
       });
   };
 
+  const handlePublishForm = () => {
+    setPublishButtonLoading(true);
+    api
+      .post(`/form/publish?form_id=${formId}`)
+      .then((res) => {
+        store.update((s) => {
+          s.surveyEditor = {
+            ...s.surveyEditor,
+            ...res.data,
+          };
+        });
+      })
+      .catch((e) => {
+        console.error(e);
+      })
+      .finally(() => {
+        setPublishButtonLoading(false);
+      });
+  };
+
   return (
     <div id="main-form-editor">
       <Space direction="vertical" size="large">
@@ -93,15 +114,40 @@ const MainEditor = () => {
             <CustomWrapper
               isNotSpace={isAddQuestionGroup || isMoveQuestionGroup}
             >
-              <Form form={form} name="survey-detail" onFinish={onSubmitForm}>
-                <Space direction="vertical">
-                  <FormEditor
-                    form={form}
-                    showSaveButton={true}
-                    saveButtonLoading={saveButtonLoading}
-                  />
-                </Space>
-              </Form>
+              <Row align="middle" className="form-editor-wrapper">
+                {/* Button */}
+                <Col span={24}>
+                  <Row align="start" justify="space-between">
+                    <Col span={14} align="start" onClick={() => form.submit()}>
+                      <Form
+                        form={form}
+                        name="survey-detail"
+                        onFinish={onSubmitForm}
+                      >
+                        <Space direction="vertical">
+                          <FormEditor
+                            form={form}
+                            showSaveButton={true}
+                            saveButtonLoading={saveButtonLoading}
+                          />
+                        </Space>
+                      </Form>
+                    </Col>
+                    <Col span={10} align="end">
+                      <Button
+                        className="float-right"
+                        type="primary"
+                        onClick={() => handlePublishForm()}
+                        loading={publishButtonLoading}
+                        disabled={publishButtonLoading}
+                      >
+                        Publish
+                      </Button>
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+
               {orderBy(questionGroup, ["order"])?.map((qg, qgi) => (
                 <QuestionGroup
                   key={`question-group-key-${qgi}`}
@@ -111,25 +157,6 @@ const MainEditor = () => {
               ))}
             </CustomWrapper>
           </Col>
-        </Row>
-        <Row align="middle">
-          {/* Button */}
-          {/* <Col span={22}>
-              <Row align="middle" justify="space-between">
-                <Col span={12} align="start" onClick={() => form.submit()}>
-                  <Button>Save</Button>
-                </Col>
-                <Col span={12} align="end">
-                  <Button
-                    className="float-right"
-                    type="primary"
-                    onClick={() => form.submit()}
-                  >
-                    Deploy
-                  </Button>
-                </Col>
-              </Row>
-            </Col> */}
         </Row>
       </Space>
     </div>

@@ -19,7 +19,7 @@ const FormEditor = ({
     }));
 
   return (
-    <Row className="form-editor-wrapper">
+    <Row>
       <Col span={24}>
         <div className="field-wrapper">
           <div className="field-label">Survey Name</div>

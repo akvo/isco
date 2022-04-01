@@ -11,6 +11,7 @@ blocks:
       secrets:
         - name: GCP
         - name: docker-hub-credentials
+        - name: coveralls
       prologue:
         commands:
           - echo "${DOCKER_PASSWORD}" | docker login --username "${DOCKER_USERNAME}" --password-stdin
@@ -25,5 +26,6 @@ blocks:
       jobs:
         - name: 'Build & Test'
           commands:
+            - export COVERALLS_REPO_TOKEN="${COVERALLS_ISCO_TOKEN}"
             - ./ci/build.sh
             - ./ci/deploy.sh

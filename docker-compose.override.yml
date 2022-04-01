@@ -21,5 +21,9 @@ services:
   backend:
     volumes:
       - ./backend:/app:delegated
+      - ../akvo-config/k8s-secrets/test/isco:/credentials/:ro
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/credentials/isco-service-account.json
+      - WEBDOMAIN=isco.akvotest.org
 volumes:
   pg-admin-data:

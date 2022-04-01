@@ -6,3 +6,4 @@ export { default as SurveyEditor } from "./survey-editor/SurveyEditor";
 export { default as Login } from "./auth/Login";
 export { default as Register } from "./auth/Register";
 export { default as ErrorPage } from "./error/ErrorPage";
+export { default as WebformPage } from "./webform/WebformPage";

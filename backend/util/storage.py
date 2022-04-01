@@ -3,14 +3,12 @@ import shutil
 from pathlib import Path
 from google.cloud import storage
 
-bucket_name = "isco_test"
-if 'BUCKET_NAME' in os.environ:
-    bucket_name = os.environ["BUCKET_NAME"]
+BUCKET_NAME = "isco-storage"
 
 
 def create_bucket_object(return_tuple: bool = False):
     storage_client = storage.Client()
-    bucket = storage_client.bucket(bucket_name)
+    bucket = storage_client.bucket(BUCKET_NAME)
     if return_tuple:
         return storage_client, bucket
     return bucket
@@ -25,6 +23,7 @@ def upload(file: str, folder: str,
     if TESTING:
         fake_storage = f"./tmp/fake-storage/{filename}"
         shutil.copy2(file, fake_storage)
+        os.remove(file)
         return fake_storage
     # upload to gcloud
     bucket = create_bucket_object()

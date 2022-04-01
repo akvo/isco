@@ -1,0 +1,40 @@
+@import "../../variables";
+
+#root {
+  #webform {
+    /* customize webform/akvo-react-form style */
+    .arf-field-cascade-api {
+      margin-top: -65px;
+      padding: 0 20px;
+    }
+
+    .ant-select.arf-cascade-api-select.ant-select-single.ant-select-show-arrow {
+      margin-bottom: 10px;
+    }
+
+    .arf-next {
+      button {
+        background-color: transparent;
+        border: 2px solid #777777;
+      }
+    }
+
+    /* repeat group */
+    .ant-input-group.ant-input-group-compact {
+      display: inline-block;
+    }
+
+    button.ant-btn.ant-btn-default.ant-btn-sm.ant-btn-icon-only {
+      min-height: 0;
+      background-color: #777777;
+      color: $white;
+
+      &.arf-disabled {
+        background-color: #eaeaea;
+        color: $black;
+      }
+    }
+
+    /* end customize webform/akvo-react-form style */
+  }
+}

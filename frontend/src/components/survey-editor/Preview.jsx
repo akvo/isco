@@ -138,9 +138,10 @@ const Preview = () => {
           }
           // repeating objects
           if (q.repeating_objects.length && q.repeating_objects?.[0]?.field) {
+            const unit = q.repeating_objects.find((r) => r.field === "unit");
             qVal = {
               ...qVal,
-              component: <p>Unit Component</p>,
+              addonAfter: unit.value,
             };
           }
           // transform dependency
@@ -167,18 +168,21 @@ const Preview = () => {
               // number
               if (sk.type === "number") {
                 let logic;
+                let value = parseInt(sk.value);
                 switch (sk.operator) {
                   case "not_equal":
                     logic = "not_equal";
                     break;
                   case "greater_than":
                     logic = "min";
+                    value = value + 1;
                     break;
                   case "greater_than_or_equal":
                     logic = "min";
                     break;
                   case "less_than":
                     logic = "max";
+                    value = value - 1;
                     break;
                   case "less_than_or_equal":
                     logic = "max";
@@ -189,7 +193,7 @@ const Preview = () => {
                 }
                 return {
                   id: sk.dependent_to,
-                  [logic]: parseInt(sk.value),
+                  [logic]: value,
                 };
               }
             });

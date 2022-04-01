@@ -154,7 +154,7 @@ const Question = ({
       return false;
     })
     .filter((x) => {
-      return x.order > question.order;
+      return x.order >= question.order;
     });
 
   const targetDependencies = allQuestions
@@ -164,11 +164,11 @@ const Question = ({
       }
       return false;
     })
-    .map((x) => x.skip_logic)
+    .map((x) => x?.skip_logic)
     .flatMap((x) => x)
-    .map((x) => allQuestions.find((a) => a.id === x.id))
-    .filter((x) => x.id === isMoveQuestion?.id)
-    .filter((x) => x.skip_logic.length);
+    .map((x) => allQuestions?.find((a) => a?.id === x?.id))
+    .filter((x) => x?.id === isMoveQuestion?.id)
+    .filter((x) => x?.skip_logic?.length);
 
   const disable = [...dependencies, ...targetDependencies];
 
