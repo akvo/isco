@@ -25,7 +25,7 @@ def upgrade():
         sa.Column('data', sa.Integer(), sa.ForeignKey('data.id')),
         sa.Column('value', sa.Float(), nullable=True),
         sa.Column('text', sa.Text(), nullable=True),
-        sa.Column('list', pg.ARRAY(sa.String()), nullable=True),
+        sa.Column('options', pg.ARRAY(sa.String()), nullable=True),
         sa.Column('created',
                   sa.DateTime(),
                   nullable=True,
