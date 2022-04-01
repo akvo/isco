@@ -11,8 +11,6 @@ services:
       - pg-data:/var/lib/postgresql/data
       - ./db/script:/script:ro
     restart: always
-    ports:
-      - 5432:5432
   backend:
     image: eu.gcr.io/akvo-lumen/isco/backend:latest
     volumes:
