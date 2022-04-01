@@ -16,8 +16,8 @@ services:
   backend:
     image: eu.gcr.io/akvo-lumen/isco/backend:latest
     volumes:
-      - ./backend:/app:delegated
-    working_dir: /app
+      - ./:/app:delegated
+    working_dir: /app/backend
     command: tail -f /dev/null
     environment:
       - DATABASE_URL=postgresql://isco_user:password@db:5432/isco
