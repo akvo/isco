@@ -35,7 +35,10 @@ class FormDictWithGroupStatus(TypedDict):
     name: str
     description: Optional[str] = None
     languages: Optional[List[str]] = None
+    version: Optional[float] = None
+    url: Optional[str] = None
     created: str
+    published: Optional[str] = None
     has_question_group: bool
 
 
@@ -83,13 +86,19 @@ class Form(Base):
         }
 
     @property
-    def serializeWithGroupStatus(self) -> FormDict:
+    def serializeWithGroupStatus(self) -> FormDictWithGroupStatus:
+        published = None
+        if self.published:
+            published = self.published.strftime("%d-%m-%Y")
         return {
             "id": self.id,
             "name": self.name,
             "description": self.description,
             "languages": self.languages,
+            "version": self.version,
+            "url": self.url,
             "created": self.created.strftime("%d-%m-%Y"),
+            "published": published,
             "has_question_group": len(self.question_group) > 0
         }
 

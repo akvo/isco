@@ -13,12 +13,13 @@ const { Title } = Typography;
 const SurveyEditor = () => {
   const { formId } = useParams();
   const { isLoggedIn, surveyEditor } = store.useState((s) => s);
-  const { questionGroup } = surveyEditor;
+  const { questionGroup, version } = surveyEditor;
+  const versionNumber = version ? version : 0.0;
 
   useEffect(() => {
     if (formId && isLoggedIn) {
       api
-        .get(`survey_editor/${formId}`)
+        .get(`/survey_editor/${formId}`)
         .then((res) => {
           const { data } = res;
           store.update((s) => {
@@ -84,7 +85,8 @@ const SurveyEditor = () => {
                   <Title
                     level={5}
                   >{`${countMandatory} / ${countAllQuestion}`}</Title>
-                  <div>Mandatory Questions</div>
+                  <div>Mandatory Questions</div>|
+                  <div>Version: {versionNumber}</div>
                 </Space>
               }
             >

@@ -78,21 +78,37 @@ const ManageSurvey = () => {
       dataIndex: "description",
       key: "description",
       className: "bg-grey",
-      width: "50%",
+      width: "40%",
+    },
+    {
+      title: "Version",
+      dataIndex: "version",
+      key: "version",
+      className: "bg-grey",
+      width: "5%",
+      render: (value) => (value ? value : 0.0),
     },
     {
       title: "Date Created",
       dataIndex: "created",
       key: "created",
       className: "bg-grey",
-      width: "15%",
+      width: "10%",
+    },
+    {
+      title: "Date Published",
+      dataIndex: "published",
+      key: "published",
+      className: "bg-grey",
+      width: "12%",
+      render: (value) => (value ? value : "-"),
     },
     {
       title: "Action",
       dataIndex: "",
       key: "action",
       className: "bg-grey",
-      width: "10%",
+      width: "8%",
       render: (record) => {
         return (
           <Space key={`${record?.id}-${record?.key}`}>
