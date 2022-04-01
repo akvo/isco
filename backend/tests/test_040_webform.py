@@ -14,11 +14,11 @@ account = Acc(email=None, token=None)
 
 class TestFormToJson():
     @pytest.mark.asyncio
-    async def test_get_form(self, app: FastAPI, session: Session,
-                            client: AsyncClient) -> None:
+    async def test_transform_form(self, app: FastAPI, session: Session,
+                                  client: AsyncClient) -> None:
         # get form
         res = await client.get(
-            app.url_path_for("form:get_webform_by_id", form_id=1))
+            app.url_path_for("form:transform", form_id=1))
         assert res.status_code == 200
         res = res.json()
         assert len(res['question_group']) > 0

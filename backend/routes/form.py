@@ -1,3 +1,4 @@
+import requests as r
 from http import HTTPStatus
 from fastapi import Depends, Request, APIRouter, Response
 from fastapi.security import HTTPBearer
@@ -36,16 +37,6 @@ def get(req: Request, session: Session = Depends(get_session)):
     return [f.serializeWithGroupStatus for f in form]
 
 
-@form_route.get("/form/{id:path}",
-                response_model=FormBase,
-                summary="get form by id",
-                name="form:get_by_id",
-                tags=["Form"])
-def get_by_id(req: Request, id: int, session: Session = Depends(get_session)):
-    form = crud.get_form_by_id(session=session, id=id)
-    return form.serialize
-
-
 @form_route.put("/form/{id:path}",
                 response_model=FormDict,
                 summary="update form",
@@ -69,15 +60,36 @@ def get_survey_editor_by_id(req: Request, form_id: int,
     return form.serialize
 
 
-@form_route.get("/webform/{form_id:path}",
-                response_model=FormJson,
-                summary="load webform json by form id",
-                name="form:get_webform_by_id",
+@form_route.get("/webform/{form_id}",
+                summary="load form form bucket",
+                name="form:webform",
                 tags=["Form"])
-def get_webform_by_id(req: Request, form_id: int,
-                      session: Session = Depends(get_session)):
+def get_form_from_bucket(req: Request, form_id: int,
+                         session: Session = Depends(get_session)):
+    form = crud.get_form_by_id(session=session, id=form_id)
+    webform = r.get(form.url)
+    return webform.json()
+
+
+@form_route.get("/form/transform/{form_id}",
+                response_model=FormJson,
+                summary="transform form value by form id",
+                name="form:transform",
+                tags=["Form"])
+def transform_form_by_id(req: Request, form_id: int,
+                         session: Session = Depends(get_session)):
     form = crud.generate_webform_json(session=session, id=form_id)
     return form
+
+
+@form_route.get("/form/{id:path}",
+                response_model=FormBase,
+                summary="get form by id",
+                name="form:get_by_id",
+                tags=["Form"])
+def get_by_id(req: Request, id: int, session: Session = Depends(get_session)):
+    form = crud.get_form_by_id(session=session, id=id)
+    return form.serialize
 
 
 @form_route.post("/form/publish",
