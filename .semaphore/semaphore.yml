@@ -14,7 +14,8 @@ blocks:
         - name: coveralls
       prologue:
         commands:
-          - echo "${DOCKER_PASSWORD}" | docker login --username "${DOCKER_USERNAME}" --password-stdin
+          - echo "${DOCKER_PASSWORD}" | docker login --username
+            "${DOCKER_USERNAME}" --password-stdin
           - export CI_COMMIT="${SEMAPHORE_GIT_SHA:0:7}"
           - export CI_BRANCH="${SEMAPHORE_GIT_BRANCH}"
           - export CI_TAG="${SEMAPHORE_GIT_TAG_NAME}"
@@ -22,10 +23,10 @@ blocks:
           - export CI_COMMIT_RANGE="${SEMAPHORE_GIT_COMMIT_RANGE}"
           - export CLOUDSDK_CORE_DISABLE_PROMPTS=1
           - export COMPOSE_INTERACTIVE_NO_CLI=1
-          - export COVERALLS_REPO_TOKEN="${COVERALLS_ISCO_TOKEN}"
           - checkout
       jobs:
         - name: 'Build & Test'
           commands:
+            - export COVERALLS_REPO_TOKEN="${COVERALLS_ISCO_TOKEN}"
             - ./ci/build.sh
             - ./ci/deploy.sh

@@ -15,7 +15,7 @@ services:
     ports:
       - 5432:5432
   backend:
-    image: amancevice/pandas:0.24.2-slim
+    image: python:3.8.5
     working_dir: /app
     command: ["./dev.sh"]
     volumes:
