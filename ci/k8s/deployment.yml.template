@@ -49,6 +49,8 @@ spec:
                 secretKeyRef:
                   name: isco
                   key: secret-key
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /secrets/credentials.json
           readinessProbe:
             httpGet:
               path: /health-check
