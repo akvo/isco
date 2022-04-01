@@ -107,6 +107,15 @@ def verify_admin(session: Session, authenticated):
     return user
 
 
+def verify_super_admin(session: Session, authenticated):
+    user = verify_user(session=session, authenticated=authenticated)
+    if user.role != UserRole.secretariat_admin:
+        raise HTTPException(
+            status_code=403,
+            detail="You don't have data access, super admin only")
+    return user
+
+
 def check_query(keywords):
     keys = []
     if not keywords:

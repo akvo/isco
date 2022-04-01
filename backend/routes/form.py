@@ -8,6 +8,7 @@ import db.crud_form as crud
 from db.connection import get_session
 from models.form import FormBase, FormDict, FormDictWithGroupStatus
 from models.form import FormPayload, FormJson
+from middleware import verify_super_admin
 
 security = HTTPBearer()
 form_route = APIRouter()
@@ -99,6 +100,7 @@ def publish_form_by_id(req: Request, form_id: int,
 def delete_publish_form_by_id(req: Request, form_id: int,
                               session: Session = Depends(get_session),
                               credentials: credentials = Depends(security)):
+    verify_super_admin(session=session, authenticated=req.state.authenticated)
     form = crud.delete_publish_form(session=session, id=form_id)
     return form.serialize
 
