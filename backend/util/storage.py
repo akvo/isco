@@ -23,6 +23,7 @@ def upload(file: str, folder: str,
     if TESTING:
         fake_storage = f"./tmp/fake-storage/{filename}"
         shutil.copy2(file, fake_storage)
+        os.remove(file)
         return fake_storage
     # upload to gcloud
     bucket = create_bucket_object()
