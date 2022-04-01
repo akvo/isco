@@ -131,6 +131,12 @@ def generate_webform_json(session: Session, id: int):
                                                   cascade_id=cascade_ids)
         if tree_obj:
             form.update({"tree": tree_obj})
+
+    return form
+
+
+def publish_form(session: Session, id: int):
+    form = generate_webform_json(session=session, id=id)
     # need to define the version
     form_name = form['name'].lower().split(" ")
     form_name = "_".join(form_name)
@@ -138,4 +144,4 @@ def generate_webform_json(session: Session, id: int):
     filepath = f"./tmp/{filename}"
     with open(filepath, "w") as outfile:
         json.dump(form, outfile)
-    return form
+    return filepath
