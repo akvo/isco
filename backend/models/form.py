@@ -65,9 +65,9 @@ class Form(Base):
 
     @property
     def serialize(self) -> FormDict:
-        updated = self.updated
+        updated = None
         if self.updated:
-            self.updated.strftime("%d-%m-%Y")
+            updated = self.updated.strftime("%d-%m-%Y")
         return {
             "id": self.id,
             "name": self.name,
