@@ -18,7 +18,7 @@ services:
     volumes:
       - ./backend:/app:delegated
     working_dir: /app
-    command: "pytest -rP"
+    command: ["./test.sh"]
     environment:
       - DATABASE_URL=postgresql://isco_user:password@db:5432/isco
       - SECRET_KEY=36ca26dbc9f6a435aa7ad404491d1650cd9485eef9ca8ea60501495b0526d4df
