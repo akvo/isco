@@ -111,6 +111,7 @@ class FormBase(BaseModel):
     description: Optional[str] = None
     languages: Optional[List[str]] = None
     version: Optional[float] = None
+    url: Optional[str] = None
     question_group: Optional[List[QuestionGroupBase]] = []
 
     class Config:

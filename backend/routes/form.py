@@ -57,20 +57,6 @@ def update(req: Request, id: int, payload: FormPayload,
     return form.serialize
 
 
-@form_route.delete("/form/{id:path}",
-                   responses={204: {
-                       "model": None
-                    }},
-                   status_code=HTTPStatus.NO_CONTENT,
-                   summary="delete form by id",
-                   name="form:delete",
-                   tags=["Form"])
-def delete(req: Request, id: int, session: Session = Depends(get_session),
-           credentials: credentials = Depends(security)):
-    crud.delete_form(session=session, id=id)
-    return Response(status_code=HTTPStatus.NO_CONTENT.value)
-
-
 @form_route.get("/survey_editor/{form_id:path}",
                 response_model=FormBase,
                 summary="load survey editor data by id",
@@ -98,8 +84,34 @@ def get_webform_by_id(req: Request, form_id: int,
                  summary="publish a form",
                  name="form:publish",
                  tags=["Form"])
-def publish_form(req: Request, form_id: int,
-                 session: Session = Depends(get_session),
-                 credentials: credentials = Depends(security)):
+def publish_form_by_id(req: Request, form_id: int,
+                       session: Session = Depends(get_session),
+                       credentials: credentials = Depends(security)):
     form = crud.publish_form(session=session, id=form_id)
     return form.serialize
+
+
+@form_route.delete("/form/delete_from_bucket/{form_id}",
+                   response_model=FormDict,
+                   summary="delete json from bucket",
+                   name="form:delete_publish",
+                   tags=["Form"])
+def delete_publish_form_by_id(req: Request, form_id: int,
+                              session: Session = Depends(get_session),
+                              credentials: credentials = Depends(security)):
+    form = crud.delete_publish_form(session=session, id=form_id)
+    return form.serialize
+
+
+@form_route.delete("/form/{id:path}",
+                   responses={204: {
+                       "model": None
+                    }},
+                   status_code=HTTPStatus.NO_CONTENT,
+                   summary="delete form by id",
+                   name="form:delete",
+                   tags=["Form"])
+def delete(req: Request, id: int, session: Session = Depends(get_session),
+           credentials: credentials = Depends(security)):
+    crud.delete_form(session=session, id=id)
+    return Response(status_code=HTTPStatus.NO_CONTENT.value)

@@ -142,7 +142,9 @@ def generate_webform_json_file(session: Session, id: int,
     form = generate_webform_json(session=session, id=id)
     form_name = form['name'].lower().split(" ")
     form_name = "_".join(form_name)
-    version_number = form['version'] + 1
+    version_number = form['version']
+    version_number = version_number if version_number else 0
+    version_number = version_number + 1
     if version:
         version_number = version
     filename = f"{id}_{form_name}_v{version_number}.json"
@@ -155,7 +157,9 @@ def generate_webform_json_file(session: Session, id: int,
 def publish_form(session: Session, id: int):
     form = get_form_by_id(session=session, id=id)
     # generate version
-    version = form.version + 1
+    version = form.version
+    version = version if version else 0
+    version = version + 1
     # generate and upload file to bucket
     filepath = generate_webform_json_file(
         session=session, id=id, version=version)
@@ -165,6 +169,22 @@ def publish_form(session: Session, id: int):
     form.version = version
     form.url = upload
     form.published = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%-S")
+    session.commit()
+    session.flush()
+    session.refresh(form)
+    return form
+
+
+def delete_publish_form(session: Session, id: int):
+    form = get_form_by_id(session=session, id=id)
+    # delete
+    url = form.url
+    delete = storage.delete(url)
+    # update form version
+    if delete:
+        form.version = None
+        form.url = None
+        form.published = None
     session.commit()
     session.flush()
     session.refresh(form)
