@@ -34,7 +34,9 @@ class TestFormRoutes():
                        "description": "Form Description",
                        "id": 1,
                        "languages": None,
-                       "name": "Form Test"}
+                       "name": "Form Test",
+                       "updated": None,
+                       "version": 0.0}
 
     @pytest.mark.asyncio
     async def test_update_form(self, app: FastAPI, session: Session,
@@ -57,7 +59,9 @@ class TestFormRoutes():
                        "description": "Form Description",
                        "id": 1,
                        "languages": ["id"],
-                       "name": "Form Test"}
+                       "name": "Form Test",
+                       "updated": None,
+                       "version": 0.0}
 
     @pytest.mark.asyncio
     async def test_add_question_group(self, app: FastAPI,  session: Session,
