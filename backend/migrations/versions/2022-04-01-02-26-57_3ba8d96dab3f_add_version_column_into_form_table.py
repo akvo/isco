@@ -25,7 +25,12 @@ def upgrade():
     )
     op.add_column(
         'form',
-        sa.Column('updated', sa.DateTime(),
+        sa.Column('url', sa.Text(),
+                  nullable=True),
+    )
+    op.add_column(
+        'form',
+        sa.Column('published', sa.DateTime(),
                   nullable=True,
                   onupdate=sa.text('(CURRENT_TIMESTAMP)')),
     )
@@ -33,4 +38,5 @@ def upgrade():
 
 def downgrade():
     op.drop_column('form', 'version')
-    op.drop_column('form', 'updated')
+    op.drop_column('form', 'url')
+    op.drop_column('form', 'published')

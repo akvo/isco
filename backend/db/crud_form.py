@@ -1,12 +1,13 @@
 import json
+import db.crud_option as crud_option
+import util.storage as storage
 from fastapi import HTTPException, status
-from typing import List
+from typing import List, Optional
 from sqlalchemy.orm import Session
 from models.form import Form, FormDict, FormBase, FormPayload
 from models.question_group import QuestionGroup
 from models.question import QuestionType, RepeatingObjectType
 from db.crud_question_group import delete_question_by_group
-import db.crud_option as crud_option
 from db.crud_cascade import get_cascade_list_by_cascade_id
 from models.skip_logic import OperatorType
 from datetime import datetime
@@ -136,12 +137,15 @@ def generate_webform_json(session: Session, id: int):
     return form
 
 
-def generate_webform_json_file(session: Session, id: int):
+def generate_webform_json_file(session: Session, id: int,
+                               version: Optional[float] = None):
     form = generate_webform_json(session=session, id=id)
-    # need to define the version
     form_name = form['name'].lower().split(" ")
     form_name = "_".join(form_name)
-    filename = f"{id}_{form_name}_{form['version']}.json"
+    version_number = form['version'] + 1
+    if version:
+        version_number = version
+    filename = f"{id}_{form_name}_v{version_number}.json"
     filepath = f"./tmp/{filename}"
     with open(filepath, "w") as outfile:
         json.dump(form, outfile)
@@ -149,12 +153,19 @@ def generate_webform_json_file(session: Session, id: int):
 
 
 def publish_form(session: Session, id: int):
-    # update form version
     form = get_form_by_id(session=session, id=id)
-    form.version = form.version + 1
-    form.updated = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%-S")
+    # generate version
+    version = form.version + 1
+    # generate and upload file to bucket
+    filepath = generate_webform_json_file(
+        session=session, id=id, version=version)
+    upload = storage.upload(
+        file=filepath, folder="forms", public=True)
+    # update form version
+    form.version = version
+    form.url = upload
+    form.published = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%-S")
     session.commit()
     session.flush()
     session.refresh(form)
-    generate_webform_json(session=session, id=id)
     return form

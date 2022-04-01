@@ -93,13 +93,13 @@ def get_webform_by_id(req: Request, form_id: int,
     return form
 
 
-@form_route.post("/survey/publish",
+@form_route.post("/form/publish",
                  response_model=FormDict,
-                 summary="publish a survey",
-                 name="form:publish_survey",
+                 summary="publish a form",
+                 name="form:publish",
                  tags=["Form"])
-def publish_survey(req: Request, form_id: int,
-                   session: Session = Depends(get_session),
-                   credentials: credentials = Depends(security)):
+def publish_form(req: Request, form_id: int,
+                 session: Session = Depends(get_session),
+                 credentials: credentials = Depends(security)):
     form = crud.publish_form(session=session, id=form_id)
     return form.serialize

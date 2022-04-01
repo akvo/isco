@@ -35,7 +35,8 @@ class TestFormRoutes():
                        "id": 1,
                        "languages": None,
                        "name": "Form Test",
-                       "updated": None,
+                       "published": None,
+                       "url": None,
                        "version": 0.0}
 
     @pytest.mark.asyncio
@@ -60,5 +61,6 @@ class TestFormRoutes():
                        "id": 1,
                        "languages": ["id"],
                        "name": "Form Test",
-                       "updated": None,
+                       "published": None,
+                       "url": None,
                        "version": 0.0}

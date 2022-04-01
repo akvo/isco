@@ -25,8 +25,9 @@ class FormDict(TypedDict):
     description: Optional[str] = None
     languages: Optional[List[str]] = None
     version: Optional[float] = None
+    url: Optional[str] = None
     created: Optional[str] = None
-    updated: Optional[str] = None
+    published: Optional[str] = None
 
 
 class FormDictWithGroupStatus(TypedDict):
@@ -46,7 +47,8 @@ class Form(Base):
     languages = Column(pg.ARRAY(String), nullable=True)
     created = Column(DateTime, default=datetime.utcnow)
     version = Column(Float, nullable=True, default=0.0)
-    updated = Column(DateTime, nullable=True)
+    url = Column(Text, nullable=True)
+    published = Column(DateTime, nullable=True)
     question_group = relationship("QuestionGroup",
                                   cascade="all, delete",
                                   passive_deletes=True,
@@ -65,17 +67,18 @@ class Form(Base):
 
     @property
     def serialize(self) -> FormDict:
-        updated = None
-        if self.updated:
-            updated = self.updated.strftime("%d-%m-%Y")
+        published = None
+        if self.published:
+            published = self.published.strftime("%d-%m-%Y")
         return {
             "id": self.id,
             "name": self.name,
             "description": self.description,
             "languages": self.languages,
             "version": self.version,
+            "url": self.url,
             "created": self.created.strftime("%d-%m-%Y"),
-            "updated": updated,
+            "published": published,
             "question_group": [qg.serialize for qg in self.question_group]
         }
 

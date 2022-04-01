@@ -32,10 +32,11 @@ class TestFormToJson():
         assert form["id"] == 1
         # publish form
         res = await client.post(
-            app.url_path_for("form:publish_survey"),
+            app.url_path_for("form:publish"),
             headers={"Authorization": f"Bearer {account.token}"},
             params={"form_id": 1})
         assert res.status_code == 200
         res = res.json()
         assert res["version"] == form["version"] + 1
-        assert res["updated"] is not None
+        assert res["url"] is not None
+        assert res["published"] is not None
