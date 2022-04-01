@@ -5,7 +5,7 @@ from typing_extensions import TypedDict
 from typing import List, Optional
 from pydantic import BaseModel
 from sqlalchemy import Column, Integer, String
-from sqlalchemy import Text, DateTime
+from sqlalchemy import Text, DateTime, Float
 from sqlalchemy.orm import relationship
 import sqlalchemy.dialects.postgresql as pg
 from db.connection import Base
@@ -24,7 +24,9 @@ class FormDict(TypedDict):
     name: str
     description: Optional[str] = None
     languages: Optional[List[str]] = None
-    created: str
+    version: Optional[float] = None
+    created: Optional[str] = None
+    updated: Optional[str] = None
 
 
 class FormDictWithGroupStatus(TypedDict):
@@ -43,14 +45,16 @@ class Form(Base):
     description = Column(Text, nullable=True)
     languages = Column(pg.ARRAY(String), nullable=True)
     created = Column(DateTime, default=datetime.utcnow)
+    version = Column(Float, nullable=True, default=0.0)
+    updated = Column(DateTime, nullable=True)
     question_group = relationship("QuestionGroup",
                                   cascade="all, delete",
                                   passive_deletes=True,
                                   backref="form_detail")
 
     def __init__(self, id: Optional[int], name: str,
-                 languages: Optional[List[str]],
-                 description: Optional[str]):
+                 description: Optional[str],
+                 languages: Optional[List[str]]):
         self.id = id
         self.name = name
         self.description = description
@@ -61,12 +65,17 @@ class Form(Base):
 
     @property
     def serialize(self) -> FormDict:
+        updated = self.updated
+        if self.updated:
+            self.updated.strftime("%d-%m-%Y")
         return {
             "id": self.id,
             "name": self.name,
             "description": self.description,
             "languages": self.languages,
+            "version": self.version,
             "created": self.created.strftime("%d-%m-%Y"),
+            "updated": updated,
             "question_group": [qg.serialize for qg in self.question_group]
         }
 
@@ -88,7 +97,8 @@ class Form(Base):
             "name": self.name,
             "description": self.description,
             "languages": self.languages,
-            "question_group": [qg.serializeJson for qg in self.question_group]
+            "question_group": [qg.serializeJson for qg in self.question_group],
+            "version": self.version
         }
 
 
@@ -97,6 +107,7 @@ class FormBase(BaseModel):
     name: str
     description: Optional[str] = None
     languages: Optional[List[str]] = None
+    version: Optional[float] = None
     question_group: Optional[List[QuestionGroupBase]] = []
 
     class Config:
@@ -108,6 +119,7 @@ class FormJson(BaseModel):
     name: str
     description: Optional[str] = None
     languages: Optional[List[str]] = None
+    version: Optional[float] = None
     question_group: Optional[List[dict]] = []
     tree: Optional[dict] = None
 
