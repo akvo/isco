@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2155
 
-set -eu
+set -euo pipefail
+
 pip -q install --upgrade pip
 pip -q install --cache-dir=.pip -r requirements.txt
 pip check
