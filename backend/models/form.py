@@ -113,6 +113,14 @@ class Form(Base):
             "version": self.version
         }
 
+    @property
+    def list_of_questions(self) -> TypedDict:
+        question_list = {}
+        for qg in self.question_group:
+            for q in qg.question:
+                question_list.update({q.id: q.type})
+        return question_list
+
 
 class FormBase(BaseModel):
     id: int

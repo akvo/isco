@@ -91,7 +91,7 @@ class Answer(Base):
         return answer
 
     @property
-    def dicted(self) -> TypedDict:
+    def to_dict(self) -> TypedDict:
         return {
             self.question: {
                 "value": self.text or self.value or self.options,
