@@ -60,7 +60,7 @@ const Preview = () => {
         transformedQuestionGroup = transformedQuestionGroup.filter(
           (qg) =>
             qg.isco_access.includes(selectedIsco) ||
-            qg.member_access.includes(allAccessId)
+            qg.isco_access.includes(allAccessId)
         );
       }
       transformedQuestionGroup = transformedQuestionGroup.map((qg) => {

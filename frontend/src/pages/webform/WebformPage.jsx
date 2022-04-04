@@ -2,26 +2,48 @@ import React, { useState, useEffect } from "react";
 import "./style.scss";
 import { useParams } from "react-router-dom";
 import { Webform } from "akvo-react-form";
-import { api } from "../../lib";
+import { api, store } from "../../lib";
 import { useNotification } from "../../util";
+import { intersection, isEmpty } from "lodash";
 
 const WebformPage = () => {
+  const user = store.useState((s) => s.user);
+  const { member: userMember, isco: userIsco } = user.organisation;
+  const allAccess = "All";
+
   const { formId } = useParams();
-  const [formValue, setFormValue] = useState(false);
+  const [formValue, setFormValue] = useState({});
   const { notify } = useNotification();
 
   useEffect(() => {
-    if (!formValue && formId) {
+    if (isEmpty(formValue) && formId && user) {
       api
         .get(`/webform/${formId}`)
         .then((res) => {
-          setFormValue(res?.data);
+          const { data } = res;
+          // Filter survey detail by user login, using member/isco name
+          let transformedQuestionGroup = data.question_group;
+          if (userMember) {
+            transformedQuestionGroup = transformedQuestionGroup.filter(
+              (qg) =>
+                qg.member_access.includes(userMember) ||
+                qg.member_access.includes(allAccess)
+            );
+          }
+          if (!isEmpty(userIsco)) {
+            transformedQuestionGroup = transformedQuestionGroup.filter(
+              (qg) =>
+                intersection(qg.isco_access, userIsco) ||
+                qg.isco_access.includes(allAccess)
+            );
+          }
+          setFormValue({ ...data, question_group: transformedQuestionGroup });
         })
         .catch((e) => {
           console.error(e);
         });
     }
-  }, [formValue, formId]);
+  }, [formValue, formId, user, userMember, userIsco]);
 
   const onChange = ({ current, values, progress }) => {
     console.info(current, values, progress);
@@ -56,7 +78,7 @@ const WebformPage = () => {
 
   return (
     <div id="webform" className="container">
-      {formValue && (
+      {!isEmpty(formValue) && (
         <Webform forms={formValue} onChange={onChange} onFinish={onFinish} />
       )}
     </div>
