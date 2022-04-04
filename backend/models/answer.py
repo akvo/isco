@@ -15,6 +15,7 @@ from db.connection import Base
 
 class AnswerDict(TypedDict):
     question: int
+    repeat_index: Optional[int] = None
     value: Union[int, float, str, bool, dict, List[str], List[int],
                  List[float], None]
 
@@ -34,6 +35,7 @@ class Answer(Base):
     text = Column(Text, nullable=True)
     value = Column(Float, nullable=True)
     options = Column(pg.ARRAY(String), nullable=True)
+    repeat_index = Column(Integer, nullable=True, default=0)
     created = Column(DateTime, nullable=True)
     updated = Column(DateTime, nullable=True)
     question_detail = relationship("Question", backref="answer")
@@ -45,12 +47,14 @@ class Answer(Base):
                  text: Optional[str] = None,
                  value: Optional[float] = None,
                  options: Optional[List[str]] = None,
+                 repeat_index: Optional[int] = None,
                  updated: Optional[datetime] = None):
         self.question = question
         self.data = data
         self.text = text
         self.value = value
         self.options = options
+        self.repeat_index = repeat_index
         self.updated = updated
         self.created = created
 
@@ -66,6 +70,7 @@ class Answer(Base):
             "text": self.text,
             "value": self.value,
             "options": self.options,
+            "repeat_index": self.repeat_index,
             "created": self.created,
             "updated": self.updated,
         }
@@ -74,6 +79,7 @@ class Answer(Base):
     def formatted(self) -> AnswerDict:
         answer = {
             "question": self.question,
+            "repeat_index": self.repeat_index
         }
         type = self.question_detail.type
         if type in [QuestionType.input, QuestionType.text, QuestionType.date]:
@@ -93,6 +99,7 @@ class Answer(Base):
         return {
             self.question: {
                 "value": self.text or self.value or self.options,
+                "repeat_index": self.repeat_index,
                 "data": self
             }
         }
@@ -161,6 +168,7 @@ class AnswerBase(BaseModel):
     text: Optional[str] = None
     value: Optional[float] = None
     options: Optional[List[str]] = None
+    repeat_index: Optional[int] = None
     created: Optional[datetime] = None
     updated: Optional[datetime] = None
 

@@ -66,7 +66,9 @@ def add(req: Request,
     names = []
     for a in answers:
         q = crud_question.get_question_by_id(session=session, id=a["question"])
-        answer = Answer(question=q.id, created=datetime.now())
+        answer = Answer(question=q.id,
+                        created=datetime.now(),
+                        repeat_index=a["repeat_index"])
         if q.type in [QuestionType.input, QuestionType.text,
                       QuestionType.date]:
             answer.text = a["value"]
@@ -185,16 +187,19 @@ def update_by_id(req: Request,
             execute = "update"
         else:
             execute = "new"
-        if execute == "update" and a["value"] != checked[
-                a["question"]]["value"]:
+        if execute == "update" and (a["value"] != checked[
+            a["question"]]["value"] or a["repeat_index"] != checked[
+                a["question"]]["repeat_index"]):
             answer = checked[a["question"]]["data"]
             a = crud_answer.update_answer(session=session,
                                           answer=answer,
+                                          repeat_index=a["repeat_index"],
                                           type=questions[a["question"]],
                                           value=a["value"])
         if execute == "new":
             answer = Answer(question=a["question"],
-                            data=data.id, created=datetime.now())
+                            data=data.id, created=datetime.now(),
+                            repeat_index=a["repeat_index"])
             a = crud_answer.add_answer(session=session,
                                        answer=answer,
                                        type=questions[a["question"]],

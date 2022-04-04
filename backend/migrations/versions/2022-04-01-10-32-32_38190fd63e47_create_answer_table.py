@@ -26,6 +26,7 @@ def upgrade():
         sa.Column('value', sa.Float(), nullable=True),
         sa.Column('text', sa.Text(), nullable=True),
         sa.Column('options', pg.ARRAY(sa.String()), nullable=True),
+        sa.Column('repeat_index', sa.Integer(), nullable=True, default=0),
         sa.Column('created',
                   sa.DateTime(),
                   nullable=True,

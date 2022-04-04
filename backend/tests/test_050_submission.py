@@ -29,12 +29,15 @@ class TestSubmissionRoutes():
             app.url_path_for("data:create", form_id=1, submitted=0),
             json=[{
                 "question": 1,
+                "repeat_index": 0,
                 "value": "Option 1"
             }, {
                 "question": 2,
+                "repeat_index": 0,
                 "value": "Depend to Q1 Option 1"
             }, {
                 "question": 3,
+                "repeat_index": 0,
                 "value": "Male"
             }],
             headers={"Authorization": f"Bearer {account.token}"})
@@ -53,14 +56,17 @@ class TestSubmissionRoutes():
             "answer": [
                 {
                     "question": 1,
+                    "repeat_index": 0,
                     "value": "Option 1"
                 },
                 {
                     "question": 2,
+                    "repeat_index": 0,
                     "value": "Depend to Q1 Option 1"
                 },
                 {
                     "question": 3,
+                    "repeat_index": 0,
                     "value": "Male"
                 }
             ]
@@ -81,9 +87,11 @@ class TestSubmissionRoutes():
             app.url_path_for("data:update", id=1, submitted=0),
             json=[{
                 "question": 3,
+                "repeat_index": 0,
                 "value": "Female"
             }, {
                 "question": 4,
+                "repeat_index": 0,
                 "value": 20
             }],
             headers={"Authorization": f"Bearer {account.token}"})
@@ -102,18 +110,22 @@ class TestSubmissionRoutes():
             "answer": [
                 {
                     "question": 1,
+                    "repeat_index": 0,
                     "value": "Option 1"
                 },
                 {
                     "question": 2,
+                    "repeat_index": 0,
                     "value": "Depend to Q1 Option 1"
                 },
                 {
                     "question": 3,
+                    "repeat_index": 0,
                     "value": "Female"
                 },
                 {
                     "question": 4,
+                    "repeat_index": 0,
                     "value": 20
                 }
             ]
@@ -135,12 +147,15 @@ class TestSubmissionRoutes():
             app.url_path_for("data:update", id=1, submitted=1),
             json=[{
                 "question": 3,
+                "repeat_index": 0,
                 "value": "Male"
             }, {
                 "question": 4,
+                "repeat_index": 0,
                 "value": 25
             }, {
                 "question": 5,
+                "repeat_index": 0,
                 "value": 75
             }],
             headers={"Authorization": f"Bearer {account.token}"})
@@ -159,22 +174,27 @@ class TestSubmissionRoutes():
             "answer": [
                 {
                     "question": 1,
+                    "repeat_index": 0,
                     "value": "Option 1"
                 },
                 {
                     "question": 2,
+                    "repeat_index": 0,
                     "value": "Depend to Q1 Option 1"
                 },
                 {
                     "question": 3,
+                    "repeat_index": 0,
                     "value": "Male"
                 },
                 {
                     "question": 4,
+                    "repeat_index": 0,
                     "value": 25
                 },
                 {
                     "question": 5,
+                    "repeat_index": 0,
                     "value": 75
                 }
             ]
@@ -187,18 +207,23 @@ class TestSubmissionRoutes():
             app.url_path_for("data:create", form_id=1, submitted=1),
             json=[{
                 "question": 1,
+                "repeat_index": 0,
                 "value": "Option 1"
             }, {
                 "question": 2,
+                "repeat_index": 0,
                 "value": "Direct submit"
             }, {
                 "question": 3,
+                "repeat_index": 0,
                 "value": "Female"
             }, {
                 "question": 4,
+                "repeat_index": 0,
                 "value": 35
             }, {
                 "question": 5,
+                "repeat_index": 0,
                 "value": 55
             }],
             headers={"Authorization": f"Bearer {account.token}"})
@@ -217,22 +242,27 @@ class TestSubmissionRoutes():
             "answer": [
                 {
                     "question": 1,
+                    "repeat_index": 0,
                     "value": "Option 1"
                 },
                 {
                     "question": 2,
+                    "repeat_index": 0,
                     "value": "Direct submit"
                 },
                 {
                     "question": 3,
+                    "repeat_index": 0,
                     "value": "Female"
                 },
                 {
                     "question": 4,
+                    "repeat_index": 0,
                     "value": 35
                 },
                 {
                     "question": 5,
+                    "repeat_index": 0,
                     "value": 55
                 }
             ]
@@ -263,22 +293,27 @@ class TestSubmissionRoutes():
             "answer": [
                 {
                     "question": 1,
+                    "repeat_index": 0,
                     "value": "Option 1"
                 },
                 {
                     "question": 2,
+                    "repeat_index": 0,
                     "value": "Direct submit"
                 },
                 {
                     "question": 3,
+                    "repeat_index": 0,
                     "value": "Female"
                 },
                 {
                     "question": 4,
+                    "repeat_index": 0,
                     "value": 35
                 },
                 {
                     "question": 5,
+                    "repeat_index": 0,
                     "value": 55
                 }
             ]
