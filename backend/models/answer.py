@@ -76,18 +76,16 @@ class Answer(Base):
             "question": self.question,
         }
         type = self.question_detail.type
-        if type == QuestionType.administration:
-            answer.update({"value": self.value})
-        if type in [QuestionType.text, QuestionType.geo, QuestionType.date]:
+        if type in [QuestionType.input, QuestionType.text, QuestionType.date]:
             answer.update({"value": self.text})
         if type == QuestionType.number:
             answer.update({"value": self.value})
         if type == QuestionType.option:
             answer.update({"value": self.options[0]})
-        if type == QuestionType.multiple_option:
+        if type in [QuestionType.multiple_option,
+                    QuestionType.cascade,
+                    QuestionType.nested_list]:
             answer.update({"value": self.options})
-        if type == QuestionType.photo:
-            answer.update({"value": self.value})
         return answer
 
     @property
@@ -102,18 +100,18 @@ class Answer(Base):
     @property
     def only_value(self) -> List:
         type = self.question_detail.type
-        if type in [QuestionType.administration, QuestionType.number]:
+        if type in [QuestionType.number]:
             return self.value
-        if type in [QuestionType.text, QuestionType.geo, QuestionType.date]:
+        if type in [QuestionType.input, QuestionType.text, QuestionType.date]:
             return self.text
         if type == QuestionType.number:
             return self.value
         if type == QuestionType.option:
             return self.options[0] if self.options else None
-        if type == QuestionType.multiple_option:
+        if type in [QuestionType.multiple_option,
+                    QuestionType.cascade,
+                    QuestionType.nested_list]:
             return self.options
-        if type == QuestionType.photo:
-            return self.text
         return None
 
     @property
@@ -121,18 +119,16 @@ class Answer(Base):
         date = self.updated or self.created
         type = self.question_detail.type
         answer = None
-        if type == QuestionType.administration:
-            answer = self.value
-        if type in [QuestionType.text, QuestionType.geo, QuestionType.date]:
+        if type in [QuestionType.input, QuestionType.text, QuestionType.date]:
             answer = self.text
         if type == QuestionType.number:
             answer = self.value
         if type == QuestionType.option:
             answer = self.options[0] if self.options else None
-        if type == QuestionType.multiple_option:
+        if type in [QuestionType.multiple_option,
+                    QuestionType.cascade,
+                    QuestionType.nested_list]:
             answer = self.options
-        if type == QuestionType.photo:
-            answer = self.text
         return {
             "value": answer,
             "date": date.strftime("%B %d, %Y"),
@@ -143,18 +139,18 @@ class Answer(Base):
         answer = None
         q = self.question_detail
         qname = f"{self.question_detail.id}|{self.question_detail.name}"
-        if q.type == QuestionType.administration:
-            answer = self.value
-        if q.type in [QuestionType.text, QuestionType.geo, QuestionType.date]:
+        if q.type in [QuestionType.input,
+                      QuestionType.text,
+                      QuestionType.date]:
             answer = self.text
         if q.type == QuestionType.number:
             answer = self.value
         if q.type == QuestionType.option:
             answer = self.options[0] if self.options else None
-        if q.type == QuestionType.multiple_option:
+        if q.type in [QuestionType.multiple_option,
+                      QuestionType.cascade,
+                      QuestionType.nested_list]:
             answer = "|".join(self.options) if self.options else None
-        if q.type == QuestionType.photo:
-            answer = self.text
         return {qname: answer}
 
 

@@ -36,20 +36,20 @@ def add_answer(
     session.add(answer)
     session.commit()
     session.flush()
-    session.refresh(answer)
+    # session.refresh(answer)
     return answer
 
 
 def update_answer(
-    session: Session, answer: Answer, user: int,
-    type: QuestionType, value: Union[int, float, str, bool, List[str],
-                                     List[int], List[float]]
+    session: Session, answer: Answer, type: QuestionType,
+    value: Union[int, float, str, bool, List[str],
+                 List[int], List[float]]
 ) -> AnswerDict:
     answer.updated = datetime.now()
     answer = append_value(answer, value, type)
     session.commit()
     session.flush()
-    session.refresh(answer)
+    # session.refresh(answer)
     return answer
 
 

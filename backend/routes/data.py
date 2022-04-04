@@ -48,15 +48,15 @@ def get(req: Request,
     }
 
 
-@data_route.post("/data/form/{form_id:path}",
+@data_route.post("/data/form/{form_id}/{submitted:path}",
                  response_model=DataDict,
                  summary="add new data",
                  name="data:create",
                  tags=["Data"])
 def add(req: Request,
         form_id: int,
+        submitted: int,
         answers: List[AnswerDict],
-        submitted: Optional[int] = 0,
         session: Session = Depends(get_session),
         credentials: credentials = Depends(security)):
     user = verify_editor(session=session,
@@ -70,8 +70,12 @@ def add(req: Request,
         if q.type in [QuestionType.input, QuestionType.text,
                       QuestionType.date]:
             answer.text = a["value"]
+            if q.datapoint_name:
+                names.append(a["value"])
         if q.type == QuestionType.number:
             answer.value = a["value"]
+            if q.datapoint_name:
+                names.append(str(a["value"]))
         if q.type == QuestionType.option:
             answer.options = [a["value"]]
         if q.type == QuestionType.multiple_option:
@@ -142,18 +146,19 @@ def bulk_delete(req: Request,
     return Response(status_code=HTTPStatus.NO_CONTENT.value)
 
 
-@data_route.put("/data/{id:path}",
+@data_route.put("/data/{id}/{submitted:path}",
                 response_model=DataDict,
                 summary="update data",
                 name="data:update",
                 tags=["Data"])
 def update_by_id(req: Request,
                  id: int,
+                 submitted: int,
                  answers: List[AnswerDict],
-                 submitted: Optional[int] = 0,
                  session: Session = Depends(get_session),
                  credentials: credentials = Depends(security)):
-    user = verify_editor(req.state.authenticated, session)
+    user = verify_editor(session=session,
+                         authenticated=req.state.authenticated)
     submitted_by = None
     submitted_date = None
     if submitted:
