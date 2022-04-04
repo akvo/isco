@@ -131,7 +131,7 @@ def generate_webform_json(session: Session, id: int):
                         if d['operator'] == OperatorType.less_than_or_equal:
                             operator = "max"
                         d.update({operator: value})
-                    del d['id']
+                    del d['dependent_to']
                     del d['operator']
                     del d['value']
                     del d['type']
