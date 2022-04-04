@@ -37,17 +37,11 @@ class Organisation(Base):
     active = Column(Boolean)
     created = Column(DateTime, default=datetime.utcnow)
     member_type = Column(Integer, ForeignKey('member_type.id'))
-    users = relationship(
-        "User",
-        primaryjoin="User.organisation==Organisation.id",
-        backref="organisation_detail")
     isco_type = relationship(
         "OrganisationIsco",
         primaryjoin="OrganisationIsco.organisation==Organisation.id",
         backref="organisation_isco_detail")
-    # member = relationship(
-    #     "MemberType",
-    #     backref=backref("organisation", uselist=False))
+    member = relationship("MemberType", backref="organisation")
 
     def __init__(self, name: str, code: Optional[str],
                  active: Optional[bool], member_type: int):

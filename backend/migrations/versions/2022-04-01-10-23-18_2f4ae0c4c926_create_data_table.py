@@ -24,6 +24,8 @@ def upgrade():
         sa.Column('form', sa.Integer(), sa.ForeignKey('form.id')),
         sa.Column('name', sa.String(), nullable=True),
         sa.Column('geo', pg.ARRAY(sa.Float()), nullable=True),
+        sa.Column('created_by', sa.Integer(), sa.ForeignKey('user.id')),
+        sa.Column('submitted_by', sa.Integer(), sa.ForeignKey('user.id')),
         sa.Column('created',
                   sa.DateTime(),
                   nullable=True,
@@ -38,6 +40,12 @@ def upgrade():
         sa.PrimaryKeyConstraint('id'),
         sa.ForeignKeyConstraint(['form'], ['form.id'],
                                 name='form_data_constraint',
+                                ondelete='CASCADE'),
+        sa.ForeignKeyConstraint(['created_by'], ['user.id'],
+                                name='created_by_data_constraint',
+                                ondelete='CASCADE'),
+        sa.ForeignKeyConstraint(['submitted_by'], ['user.id'],
+                                name='submitted_by_data_constraint',
                                 ondelete='CASCADE'),
     )
     op.create_index(op.f('ix_data_id'), 'data', ['id'], unique=True)
