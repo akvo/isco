@@ -137,7 +137,11 @@ const App = () => {
             path="/survey-editor/:formId"
             element={<Secure element={SurveyEditor} adminPage={true} />}
           />
-          <Route exact path="/webform/:formId" element={<WebformPage />} />
+          <Route
+            exact
+            path="/webform/:formId"
+            element={<Secure element={WebformPage} />}
+          />
           <Route exact path="*" element={<ErrorPage status={404} />} />
         </Routes>
       </Layout.Body>
