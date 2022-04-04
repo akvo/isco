@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Form, Space, Row, Col, Tooltip, Button } from "antd";
+import { Form, Space, Row, Col, Tooltip, Button, Popconfirm } from "antd";
 import { store, api } from "../../lib";
 import { AiOutlineGroup } from "react-icons/ai";
 import FormEditor from "./FormEditor";
@@ -134,15 +134,22 @@ const MainEditor = () => {
                       </Form>
                     </Col>
                     <Col span={10} align="end">
-                      <Button
-                        className="float-right"
-                        type="primary"
-                        onClick={() => handlePublishForm()}
-                        loading={publishButtonLoading}
-                        disabled={publishButtonLoading}
+                      <Popconfirm
+                        placement="left"
+                        title="This will make all the changes of the survey available to all users."
+                        okText="Ok"
+                        cancelText="Cancel"
+                        onConfirm={() => handlePublishForm()}
                       >
-                        Publish
-                      </Button>
+                        <Button
+                          className="float-right"
+                          type="primary"
+                          loading={publishButtonLoading}
+                          disabled={publishButtonLoading}
+                        >
+                          Publish
+                        </Button>
+                      </Popconfirm>
                     </Col>
                   </Row>
                 </Col>
