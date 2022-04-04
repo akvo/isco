@@ -51,6 +51,11 @@ spec:
                   key: secret-key
             - name: GOOGLE_APPLICATION_CREDENTIALS
               value: /secrets/credentials.json
+          volumeMounts:
+            - name: isco-secrets
+              mountPath: /secrets/credentials.json
+              subPath: isco-service-account.json
+              readOnly: true
           readinessProbe:
             httpGet:
               path: /health-check
@@ -68,3 +73,7 @@ spec:
             limits:
               cpu: "500m"
               memory: "1024Mi"
+      volumes:
+        - name: isco-secrets
+          secret:
+            secretName: isco
