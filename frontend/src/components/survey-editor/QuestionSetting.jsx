@@ -15,7 +15,7 @@ import {
 } from "antd";
 import { RiDeleteBinFill } from "react-icons/ri";
 import { BiRadioCircle } from "react-icons/bi";
-import { HiPlus, HiMinus } from "react-icons/hi";
+import { HiPlus, HiMinus, HiArrowSmUp, HiArrowSmDown } from "react-icons/hi";
 import { store } from "../../lib";
 import { orderBy, take } from "lodash";
 import { defaultOption, defaultRepeatingObject } from "../../lib/store";
@@ -24,13 +24,43 @@ import { isoLangs } from "../../lib";
 
 const { TabPane } = Tabs;
 
-const RenderOptionInput = ({ question, handlePlusMinusOptionButton }) => {
+const RenderOptionInput = ({
+  question,
+  handlePlusMinusOptionButton,
+  handleOrderingOption,
+}) => {
   const qId = question?.id;
-  const option = question?.option;
+  const options = question?.option;
 
-  return orderBy(option, ["order"])?.map((opt, optIndex) => (
+  const ButtonUp = ({ index, order }) => {
+    if (!index) {
+      return "";
+    }
+    return (
+      <Button
+        type="text"
+        icon={<HiArrowSmUp />}
+        onClick={() => handleOrderingOption(order, order - 1)}
+      />
+    );
+  };
+
+  const ButtonDown = ({ index, order }) => {
+    if (index === options.length - 1) {
+      return "";
+    }
+    return (
+      <Button
+        type="text"
+        icon={<HiArrowSmDown />}
+        onClick={() => handleOrderingOption(order, order + 1)}
+      />
+    );
+  };
+
+  return orderBy(options, ["order"])?.map((opt, optIndex) => (
     <Row key={`option-${opt?.id}`} justify="space-between" gutter={[12, 12]}>
-      <Col span={22}>
+      <Col span={19}>
         <Form.Item
           label={<BiRadioCircle />}
           name={`question-${qId}-option-${opt?.id}`}
@@ -39,8 +69,10 @@ const RenderOptionInput = ({ question, handlePlusMinusOptionButton }) => {
           <Input className="bg-grey" placeholder="Enter an answer option" />
         </Form.Item>
       </Col>
-      <Col span={2}>
-        <Space size={1} align="center">
+      <Col span={2} align="end">
+        <Space size={1} align="center" className="float-right">
+          <ButtonUp index={optIndex} order={opt.order} />
+          <ButtonDown index={optIndex} order={opt.order} />
           <Button
             type="text"
             icon={<HiPlus />}
@@ -135,9 +167,57 @@ const Detail = ({
   const tempStorage = store.useState((s) => s?.tempStorage);
   const { cascade, nested } = store.useState((s) => s?.optionValues);
   const { type, option, repeating_objects } = question;
+  const { questionGroup: questionGroupState } = surveyEditor;
   const qId = question?.id;
 
   const cascadeValues = type === "cascade" ? cascade : nested;
+
+  const handleOrderingOption = (selectedOrder, targetOrder) => {
+    const updatedQuestionGroup = questionGroupState.map((qg) => {
+      const updatedQuestion = qg.question.map((q) => {
+        let options = q.option;
+        if (q.id === qId) {
+          options = q.option.map((o) => {
+            let newOrder = o.order;
+            if (selectedOrder > targetOrder) {
+              newOrder =
+                o.order === selectedOrder
+                  ? targetOrder
+                  : o.order >= targetOrder && o.order < selectedOrder
+                  ? o.order + 1
+                  : o.order;
+            }
+            if (selectedOrder < targetOrder) {
+              newOrder =
+                o.order === selectedOrder
+                  ? targetOrder
+                  : o.order > selectedOrder && o.order <= targetOrder
+                  ? o.order - 1
+                  : o.order;
+            }
+            return {
+              ...o,
+              order: newOrder,
+            };
+          });
+        }
+        return {
+          ...q,
+          option: options,
+        };
+      });
+      return {
+        ...qg,
+        question: updatedQuestion,
+      };
+    });
+    store.update((s) => {
+      s.surveyEditor = {
+        ...s.surveyEditor,
+        questionGroup: updatedQuestionGroup,
+      };
+    });
+  };
 
   const handlePlusMinusOptionButton = (operation, opt, optIndex) => {
     const filterQuestionGroup = surveyEditor?.questionGroup?.filter(
@@ -150,7 +230,7 @@ const Detail = ({
 
     let updatedOption = [];
     if (operation === "add") {
-      updatedOption = insert(option, optIndex + 1, {
+      updatedOption = insert(orderBy(option, ["order"]), optIndex + 1, {
         ...defaultOption,
         id: generateID(),
       })?.map((op, opi) => ({
@@ -161,6 +241,11 @@ const Detail = ({
 
     if (operation === "remove") {
       updatedOption = question?.option?.filter((op) => op?.id !== opt?.id);
+      // reordering option
+      updatedOption = orderBy(updatedOption, ["order"]).map((o, oi) => ({
+        ...o,
+        order: oi + 1,
+      }));
       // store removed option to delete when save button clicked
       const storage = tempStorage;
       const filterTempStorage = storage.deletedOptions?.filter(
@@ -306,6 +391,7 @@ const Detail = ({
               <RenderOptionInput
                 question={question}
                 handlePlusMinusOptionButton={handlePlusMinusOptionButton}
+                handleOrderingOption={handleOrderingOption}
               />
             </div>
           </div>

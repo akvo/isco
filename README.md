@@ -1,6 +1,6 @@
 # ISCO
 
-[![Build Status](https://akvo.semaphoreci.com/badges/isco/branches/main.svg?style=shields)](https://akvo.semaphoreci.com/projects/isco) [![Repo Size](https://img.shields.io/github/repo-size/akvo/isco)](https://img.shields.io/github/repo-size/akvo/isco) [![Languages](https://img.shields.io/github/languages/count/akvo/isco)](https://img.shields.io/github/languages/count/akvo/isco) [![Issues](https://img.shields.io/github/issues/akvo/isco)](https://img.shields.io/github/issues/akvo/isco) [![Last Commit](https://img.shields.io/github/last-commit/akvo/isco/main)](https://img.shields.io/github/last-commit/akvo/isco/main)
+[![Build Status](https://akvo.semaphoreci.com/badges/isco/branches/main.svg?style=shields)](https://akvo.semaphoreci.com/projects/isco) [![Repo Size](https://img.shields.io/github/repo-size/akvo/isco)](https://img.shields.io/github/repo-size/akvo/isco) [![Languages](https://img.shields.io/github/languages/count/akvo/isco)](https://img.shields.io/github/languages/count/akvo/isco) [![Issues](https://img.shields.io/github/issues/akvo/isco)](https://img.shields.io/github/issues/akvo/isco) [![Last Commit](https://img.shields.io/github/last-commit/akvo/isco/main)](https://img.shields.io/github/last-commit/akvo/isco/main) [![Coverage Status](https://coveralls.io/repos/github/akvo/isco/badge.svg?branch=main)](https://coveralls.io/github/akvo/isco?branch=main)
 
 ## Prerequisite
 - Docker > v19
