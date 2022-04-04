@@ -26,7 +26,9 @@ class OrganisationDict(TypedDict):
     name: str
     active: bool
     member_type: int
+    member: str
     isco_type: Optional[List[int]] = []
+    isco: Optional[List[str]] = []
 
 
 class Organisation(Base):
@@ -55,13 +57,21 @@ class Organisation(Base):
 
     @property
     def serialize(self) -> OrganisationDict:
+        isco = []
+        isco_type = []
+        if self.isco_type:
+            serialize = [i.serialize for i in self.isco_type]
+            isco = [s["isco"] for s in serialize]
+            isco_type = [s["isco_type"] for s in serialize]
         return {
             "id": self.id,
             "code": self.code,
             "name": self.name,
             "active": self.active,
-            "isco_type": [i.isco_type for i in self.isco_type],
-            "member_type": self.member_type
+            "isco_type": isco_type,
+            "isco": isco,
+            "member_type": self.member_type,
+            "member": self.member.name,
         }
 
 

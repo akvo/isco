@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from typing_extensions import TypedDict
 from sqlalchemy import Column, Integer
 from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship
 from db.connection import Base
 
 
@@ -18,6 +19,7 @@ class OrganisationIscoDict(TypedDict):
     id: int
     organisation: int
     isco_type: int
+    isco: str
 
 
 class OrganisationIsco(Base):
@@ -25,6 +27,7 @@ class OrganisationIsco(Base):
     id = Column(Integer, primary_key=True, index=True, nullable=True)
     organisation = Column(Integer, ForeignKey('organisation.id'))
     isco_type = Column(Integer, ForeignKey('isco_type.id'))
+    isco = relationship("IscoType", backref="organisation_isco")
 
     def __init__(self, id: Optional[int],
                  organisation: int, isco_type: int):
@@ -40,7 +43,8 @@ class OrganisationIsco(Base):
         return {
             "id": self.id,
             "organisation": self.organisation,
-            "isco_type": self.isco_type
+            "isco_type": self.isco_type,
+            "isco": self.isco.name
         }
 
 
