@@ -49,6 +49,11 @@ spec:
                 secretKeyRef:
                   name: isco
                   key: secret-key
+            - name: WEBDOMAIN
+              valueFrom:
+                secretKeyRef:
+                  name: isco
+                  key: webdomain
             - name: GOOGLE_APPLICATION_CREDENTIALS
               value: /secrets/credentials.json
           volumeMounts:
