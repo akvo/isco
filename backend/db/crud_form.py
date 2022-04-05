@@ -84,6 +84,9 @@ def generate_webform_json(session: Session, id: int):
     for qg in form['question_group']:
         # Sort question by order
         qg['question'].sort(key=get_order)
+        # repeat text
+        if qg['repeatable']:
+            qg['repeat_text'] = "Add another"
         for q in qg['question']:
             # OPTION
             if 'option' in q:

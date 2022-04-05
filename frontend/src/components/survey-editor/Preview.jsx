@@ -221,6 +221,15 @@ const Preview = () => {
           }
           return qVal;
         });
+        // repeatable
+        if (qg.repeat) {
+          return {
+            ...qg,
+            repeatable: qg.repeat,
+            repeat_text: "Add another",
+            question: orderBy(questions, ["order"]),
+          };
+        }
         return {
           ...qg,
           repeatable: qg.repeat,
