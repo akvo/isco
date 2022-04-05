@@ -490,7 +490,10 @@ const Setting = ({
   const { operator_type } = optionValues;
   const { id: qid } = question;
 
-  const allQuestion = questionGroupState?.flatMap((qg) => qg?.question);
+  const allQuestion = orderBy(
+    questionGroupState?.flatMap((qg) => qg?.question),
+    ["order"]
+  );
   // take skip logic question by question current order
   const skipLogicQuestion = take(allQuestion, question?.order)
     ?.filter((q) => ["option", "number"].includes(q?.type) && q?.id !== qid)
