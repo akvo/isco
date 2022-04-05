@@ -9,8 +9,9 @@ import db.crud_form as crud
 from db.crud_data import check_member_submission_exists
 from db.connection import get_session
 from models.form import FormBase, FormDict, FormDictWithGroupStatus
-from models.form import FormPayload, FormJson
+from models.form import FormPayload, FormJson, FormOptions
 from middleware import verify_super_admin, verify_editor
+from util.survey_config import MEMBER_SURVEY
 
 security = HTTPBearer()
 form_route = APIRouter()
@@ -48,38 +49,6 @@ def update(req: Request, id: int, payload: FormPayload,
            credentials: credentials = Depends(security)):
     form = crud.update_form(session=session, id=id, payload=payload)
     return form.serialize
-
-
-@form_route.get("/survey_editor/{form_id:path}",
-                response_model=FormBase,
-                summary="load survey editor data by id",
-                name="form:get_survey_editor_by_id",
-                tags=["Form"])
-def get_survey_editor_by_id(req: Request, form_id: int,
-                            session: Session = Depends(get_session)):
-    form = crud.get_form_by_id(session=session, id=form_id)
-    return form.serialize
-
-
-@form_route.get("/webform/{form_id}",
-                summary="load form form bucket",
-                name="form:webform",
-                tags=["Form"])
-def get_form_from_bucket(req: Request, form_id: int,
-                         session: Session = Depends(get_session),
-                         credentials: credentials = Depends(security)):
-    user = verify_editor(session=session,
-                         authenticated=req.state.authenticated)
-    # check if user organisation already have a member survey saved/submitted
-    exists = check_member_submission_exists(session=session,
-                                            form=form_id,
-                                            organisation=user.organisation)
-    if exists:
-        raise HTTPException(status_code=208,
-                            detail="Submission already reported")
-    form = crud.get_form_by_id(session=session, id=form_id)
-    webform = r.get(form.url)
-    return webform.json()
 
 
 @form_route.get("/form/transform/{form_id}",
@@ -140,3 +109,55 @@ def delete(req: Request, id: int, session: Session = Depends(get_session),
            credentials: credentials = Depends(security)):
     crud.delete_form(session=session, id=id)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)
+
+
+@form_route.get("/survey_editor/{form_id:path}",
+                response_model=FormBase,
+                summary="load survey editor data by id",
+                name="form:get_survey_editor_by_id",
+                tags=["Form"])
+def get_survey_editor_by_id(req: Request, form_id: int,
+                            session: Session = Depends(get_session)):
+    form = crud.get_form_by_id(session=session, id=form_id)
+    return form.serialize
+
+
+@form_route.get("/webform/list",
+                response_model=List[FormOptions],
+                summary="load form options value",
+                name="form:get_webform_options",
+                tags=["Form"])
+def get_form_options(req: Request, session: Session = Depends(get_session),
+                     credentials: credentials = Depends(security)):
+    user = verify_editor(session=session,
+                         authenticated=req.state.authenticated)
+    # check if user organisation already have a member survey saved/submitted
+    exists = check_member_submission_exists(session=session,
+                                            organisation=user.organisation)
+    forms = crud.get_webform_list(session=session)
+    forms = [f.to_options for f in forms]
+    if exists:
+        for f in forms:
+            if f['value'] in MEMBER_SURVEY:
+                f['disabled'] = True
+    return forms
+
+
+@form_route.get("/webform/{form_id}",
+                summary="load form form bucket",
+                name="form:webform",
+                tags=["Form"])
+def get_form_from_bucket(req: Request, form_id: int,
+                         session: Session = Depends(get_session),
+                         credentials: credentials = Depends(security)):
+    user = verify_editor(session=session,
+                         authenticated=req.state.authenticated)
+    # check if user organisation already have a member survey saved/submitted
+    exists = check_member_submission_exists(session=session,
+                                            organisation=user.organisation)
+    if exists:
+        raise HTTPException(status_code=208,
+                            detail="Submission already reported")
+    form = crud.get_form_by_id(session=session, id=form_id)
+    webform = r.get(form.url)
+    return webform.json()

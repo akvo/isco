@@ -42,6 +42,12 @@ class FormDictWithGroupStatus(TypedDict):
     has_question_group: bool
 
 
+class FormOptions(TypedDict):
+    label: str
+    value: int
+    disabled: bool
+
+
 class Form(Base):
     __tablename__ = "form"
     id = Column(Integer, primary_key=True, index=True, nullable=True)
@@ -120,6 +126,14 @@ class Form(Base):
             for q in qg.question:
                 question_list.update({q.id: q.type})
         return question_list
+
+    @property
+    def to_options(self) -> FormOptions:
+        return {
+            "label": self.name,
+            "value": self.id,
+            "disabled": False,
+        }
 
 
 class FormBase(BaseModel):

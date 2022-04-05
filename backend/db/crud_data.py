@@ -90,8 +90,7 @@ def download(session: Session, form: int):
     return [d.to_data_frame for d in data]
 
 
-def check_member_submission_exists(session: Session,
-                                   form: int, organisation: int):
+def check_member_submission_exists(session: Session, organisation: int):
     users = session.query(User).filter(User.organisation == organisation).all()
     user_ids = [u.id for u in users]
     # check created_by in users

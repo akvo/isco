@@ -12,7 +12,7 @@ sys.path.append("..")
 account = Acc(email=None, token=None)
 
 
-class TestFormToJson():
+class TestWebformRoutes():
     @pytest.mark.asyncio
     async def test_transform_form(self, app: FastAPI, session: Session,
                                   client: AsyncClient) -> None:
@@ -23,6 +23,21 @@ class TestFormToJson():
         res = res.json()
         assert len(res['question_group']) > 0
         assert "en" in res["languages"]
+
+    @pytest.mark.asyncio
+    async def test_get_form_options(self, app: FastAPI, session: Session,
+                                    client: AsyncClient) -> None:
+        # get form
+        res = await client.get(
+            app.url_path_for("form:get_webform_options"),
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 200
+        res = res.json()
+        assert res == [{
+            "disabled": False,
+            "label": "Form Test",
+            "value": 1
+        }]
 
     @pytest.mark.asyncio
     async def test_publish_form(self, app: FastAPI, session: Session,
