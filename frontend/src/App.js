@@ -1,7 +1,7 @@
 import "./App.scss";
 import React, { useEffect } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
-import { Layout } from "./components";
+import { Layout, SaveFormDataModal } from "./components";
 import {
   Home,
   Admin,
@@ -35,6 +35,7 @@ const Secure = ({ element: Element, adminPage = false }) => {
 };
 
 const App = () => {
+  const { saveFormData } = store.useState((s) => s.notificationModal);
   const [cookies, removeCookie] = useCookies(["AUTH_TOKEN"]);
   const { notify } = useNotification();
   const navigate = useNavigate();
@@ -140,6 +141,13 @@ const App = () => {
           <Route exact path="/survey" element={<Secure element={Survey} />} />
           <Route exact path="*" element={<ErrorPage status={404} />} />
         </Routes>
+
+        {/* Modal */}
+        <SaveFormDataModal
+          visible={saveFormData.visible}
+          onOk={saveFormData.onOk}
+          onCancel={saveFormData.onCancel}
+        />
       </Layout.Body>
       <Layout.Footer />
     </Layout>
