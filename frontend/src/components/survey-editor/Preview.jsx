@@ -60,7 +60,7 @@ const Preview = () => {
         transformedQuestionGroup = transformedQuestionGroup.filter(
           (qg) =>
             qg.isco_access.includes(selectedIsco) ||
-            qg.member_access.includes(allAccessId)
+            qg.isco_access.includes(allAccessId)
         );
       }
       transformedQuestionGroup = transformedQuestionGroup.map((qg) => {
@@ -139,10 +139,12 @@ const Preview = () => {
           // repeating objects
           if (q.repeating_objects.length && q.repeating_objects?.[0]?.field) {
             const unit = q.repeating_objects.find((r) => r.field === "unit");
-            qVal = {
-              ...qVal,
-              addonAfter: unit.value,
-            };
+            if (unit) {
+              qVal = {
+                ...qVal,
+                addonAfter: unit.value,
+              };
+            }
           }
           // transform dependency
           if (q.skip_logic.length) {
