@@ -51,10 +51,18 @@ const WebformPage = () => {
 
   const onFinish = (values) => {
     const transformValues = Object.keys(values).map((key) => {
+      let question = key;
+      let repeatIndex = 0;
+      // manage repeat index
+      if (key.includes("-")) {
+        const split = key.split("-");
+        question = split[0];
+        repeatIndex = parseInt(split[1]);
+      }
       return {
-        question: key,
+        question: question,
         value: values[key],
-        repeat_index: 0,
+        repeat_index: repeatIndex,
       };
     });
     api
