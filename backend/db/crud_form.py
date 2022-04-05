@@ -131,7 +131,7 @@ def generate_webform_json(session: Session, id: int):
                         if d['operator'] == OperatorType.less_than_or_equal:
                             operator = "max"
                         d.update({operator: value})
-                    del d['id']
+                    del d['dependent_to']
                     del d['operator']
                     del d['value']
                     del d['type']
@@ -155,6 +155,7 @@ def generate_webform_json_file(session: Session, id: int,
     version_number = version_number + 1
     if version:
         version_number = version
+    form['version'] = version_number
     filename = f"{id}_{form_name}_v{version_number}.json"
     filepath = f"./tmp/{filename}"
     with open(filepath, "w") as outfile:
