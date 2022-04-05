@@ -123,7 +123,7 @@ def get_survey_editor_by_id(req: Request, form_id: int,
     return form.serialize
 
 
-@form_route.get("/webform/list",
+@form_route.get("/webform/options",
                 response_model=List[FormOptions],
                 summary="load form options value",
                 name="form:get_webform_options",
