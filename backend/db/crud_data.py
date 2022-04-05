@@ -2,10 +2,12 @@ from datetime import datetime
 from typing import List, Optional
 from typing_extensions import TypedDict
 from sqlalchemy.orm import Session
-from sqlalchemy import desc
+from sqlalchemy import desc, and_
 from models.data import Data, DataDict
 from models.answer import Answer
 from models.answer import AnswerBase
+from models.user import User
+from util.survey_config import MEMBER_SURVEY
 
 
 class PaginatedData(TypedDict):
@@ -86,3 +88,13 @@ def download(session: Session, form: int):
     data = session.query(Data).filter(
         Data.form == form).order_by(desc(Data.id)).all()
     return [d.to_data_frame for d in data]
+
+
+def check_member_submission_exists(session: Session,
+                                   form: int, organisation: int):
+    users = session.query(User).filter(User.organisation == organisation).all()
+    user_ids = [u.id for u in users]
+    # check created_by in users
+    count = session.query(Data).filter(and_(
+        Data.form.in_(MEMBER_SURVEY), Data.created_by.in_(user_ids))).count()
+    return count > 0

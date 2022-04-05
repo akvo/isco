@@ -1,15 +1,16 @@
 import requests as r
 from http import HTTPStatus
-from fastapi import Depends, Request, APIRouter, Response
+from fastapi import Depends, Request, APIRouter, Response, HTTPException
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
 from typing import List
 from sqlalchemy.orm import Session
 import db.crud_form as crud
+from db.crud_data import check_member_submission_exists
 from db.connection import get_session
 from models.form import FormBase, FormDict, FormDictWithGroupStatus
 from models.form import FormPayload, FormJson
-from middleware import verify_super_admin
+from middleware import verify_super_admin, verify_editor
 
 security = HTTPBearer()
 form_route = APIRouter()
@@ -65,7 +66,17 @@ def get_survey_editor_by_id(req: Request, form_id: int,
                 name="form:webform",
                 tags=["Form"])
 def get_form_from_bucket(req: Request, form_id: int,
-                         session: Session = Depends(get_session)):
+                         session: Session = Depends(get_session),
+                         credentials: credentials = Depends(security)):
+    user = verify_editor(session=session,
+                         authenticated=req.state.authenticated)
+    # check if user organisation already have a member survey saved/submitted
+    exists = check_member_submission_exists(session=session,
+                                            form=form_id,
+                                            organisation=user.organisation)
+    if exists:
+        raise HTTPException(status_code=208,
+                            detail="Submission already reported")
     form = crud.get_form_by_id(session=session, id=form_id)
     webform = r.get(form.url)
     return webform.json()
