@@ -139,10 +139,27 @@ const Preview = () => {
           // repeating objects
           if (q.repeating_objects.length && q.repeating_objects?.[0]?.field) {
             const unit = q.repeating_objects.find((r) => r.field === "unit");
-            qVal = {
-              ...qVal,
-              addonAfter: unit.value,
-            };
+            const indicator = q.repeating_objects.find(
+              (r) => r.field === "indicator"
+            );
+            if (unit) {
+              qVal = {
+                ...qVal,
+                addonAfter: unit.value,
+              };
+            }
+            if (indicator) {
+              const values = indicator.value.split("|");
+              let prefix = "Indicator";
+              prefix = values.length > 1 ? `${prefix}s` : prefix;
+              qVal = {
+                ...qVal,
+                extra: {
+                  placement: "before",
+                  content: `${prefix}: ${values.join(", ")}`,
+                },
+              };
+            }
           }
           // transform dependency
           if (q.skip_logic.length) {
