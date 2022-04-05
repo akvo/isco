@@ -25,21 +25,6 @@ class TestWebformRoutes():
         assert "en" in res["languages"]
 
     @pytest.mark.asyncio
-    async def test_get_form_options(self, app: FastAPI, session: Session,
-                                    client: AsyncClient) -> None:
-        # get form
-        res = await client.get(
-            app.url_path_for("form:get_webform_options"),
-            headers={"Authorization": f"Bearer {account.token}"})
-        assert res.status_code == 200
-        res = res.json()
-        assert res == [{
-            "disabled": False,
-            "label": "Form Test",
-            "value": 1
-        }]
-
-    @pytest.mark.asyncio
     async def test_publish_form(self, app: FastAPI, session: Session,
                                 client: AsyncClient) -> None:
         # get form
@@ -58,6 +43,21 @@ class TestWebformRoutes():
         assert res["url"] is not None
         assert res["published"] is not None
         assert storage.check(res["url"]) is True
+
+    @pytest.mark.asyncio
+    async def test_get_form_options(self, app: FastAPI, session: Session,
+                                    client: AsyncClient) -> None:
+        # get form
+        res = await client.get(
+            app.url_path_for("form:get_webform_options"),
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 200
+        res = res.json()
+        assert res == [{
+            "disabled": False,
+            "label": "Form Test",
+            "value": 1
+        }]
 
     @pytest.mark.asyncio
     async def test_delete_publish_form(self, app: FastAPI, session: Session,

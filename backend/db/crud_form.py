@@ -4,7 +4,6 @@ import db.crud_option as crud_option
 import util.storage as storage
 from fastapi import HTTPException, status
 from typing import List, Optional
-from sqlalchemy import or_
 from sqlalchemy.orm import Session
 from models.form import Form, FormDict, FormBase, FormPayload
 from models.question_group import QuestionGroup
@@ -13,7 +12,6 @@ from db.crud_question_group import delete_question_by_group
 from db.crud_cascade import get_cascade_list_by_cascade_id
 from models.skip_logic import OperatorType
 from datetime import datetime
-from util.survey_config import MEMBER_SURVEY, PROJECT_SURVEY
 
 webdomain = os.environ["WEBDOMAIN"]
 
@@ -65,13 +63,6 @@ def delete_form(session: Session, id: int):
     session.delete(form)
     session.commit()
     session.flush()
-
-
-def get_webform_list(session: Session):
-    form = session.query(Form).filter(or_(
-        Form.id.in_(MEMBER_SURVEY),
-        Form.id.in_(PROJECT_SURVEY),)).all()
-    return form
 
 
 def get_order(data):

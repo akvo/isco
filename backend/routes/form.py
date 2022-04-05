@@ -4,14 +4,15 @@ from fastapi import Depends, Request, APIRouter, Response, HTTPException
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
 from typing import List
+from sqlalchemy import or_, null
 from sqlalchemy.orm import Session
 import db.crud_form as crud
 from db.crud_data import check_member_submission_exists
 from db.connection import get_session
 from models.form import FormBase, FormDict, FormDictWithGroupStatus
-from models.form import FormPayload, FormJson, FormOptions
+from models.form import FormPayload, FormJson, FormOptions, Form
 from middleware import verify_super_admin, verify_editor
-from util.survey_config import MEMBER_SURVEY
+from util.survey_config import MEMBER_SURVEY, PROJECT_SURVEY
 
 security = HTTPBearer()
 form_route = APIRouter()
@@ -134,7 +135,10 @@ def get_form_options(req: Request, session: Session = Depends(get_session),
     # check if user organisation already have a member survey saved/submitted
     exists = check_member_submission_exists(session=session,
                                             organisation=user.organisation)
-    forms = crud.get_webform_list(session=session)
+    forms = session.query(Form).filter(
+        Form.published != null()).filter(or_(
+            Form.id.in_(MEMBER_SURVEY),
+            Form.id.in_(PROJECT_SURVEY),)).all()
     forms = [f.to_options for f in forms]
     if exists:
         for f in forms:
