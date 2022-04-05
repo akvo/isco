@@ -1,3 +1,4 @@
+import os
 import json
 import db.crud_option as crud_option
 import util.storage as storage
@@ -11,6 +12,8 @@ from db.crud_question_group import delete_question_by_group
 from db.crud_cascade import get_cascade_list_by_cascade_id
 from models.skip_logic import OperatorType
 from datetime import datetime
+
+webdomain = os.environ["WEBDOMAIN"]
 
 
 def add_form(session: Session, payload: FormPayload):
@@ -87,14 +90,15 @@ def generate_webform_json(session: Session, id: int):
                 q['option'].sort(key=get_order)
             # need to do transform for cascade / send api
             if q['type'] == QuestionType.cascade.value:
-                # need to change URL/api
+                url = f"{webdomain}/api/cascade/list/{q['cascade']}"
                 q.update({
                     "api": {
-                        "endpoint": f"URL/api/cascade/list/{q['cascade']}",
+                        "endpoint": url,
                         "initial": 0,
                         "list": False,
                     }
                 })
+                del q["cascade"]
             # need to dp transform for nested_list
             if q['type'] == QuestionType.nested_list.value:
                 # get tree
@@ -102,6 +106,7 @@ def generate_webform_json(session: Session, id: int):
                 name = f"tree_{q['cascade']}"
                 q['type'] = "tree"
                 q['option'] = name
+                del q["cascade"]
             if 'repeating_objects' in q and q['repeating_objects']:
                 for r in q['repeating_objects']:
                     if r['field'] == RepeatingObjectType.unit.value:
