@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import "./style.scss";
 import { Row, Col, Select, Button, Space } from "antd";
 import WebformPage from "./WebformPage";
 
 const Survey = () => {
+  const [selectedForm, setSelectedForm] = useState(null);
+
   return (
     <div id="survey" className="container">
       <Row>
@@ -21,14 +23,14 @@ const Survey = () => {
         <Col span={16} className="saved-form-wrapper">
           <p>Pick a previously saved form</p>
           <Row align="middle" justify="space-between" gutter={[12, 12]}>
-            <Col span={16}>
+            <Col span={14}>
               <Select
                 className="bg-grey"
                 placeholder="Select..."
                 options={[]}
               />
             </Col>
-            <Col span={8}>
+            <Col span={10}>
               <Space>
                 <Button>Refresh</Button>
                 <Button>Open</Button>
@@ -56,7 +58,7 @@ const Survey = () => {
       <br />
       <hr />
       {/* Webform load here */}
-      <WebformPage formId={1} />
+      {selectedForm && <WebformPage formId={selectedForm} />}
     </div>
   );
 };
