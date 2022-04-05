@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./style.scss";
+import { Spin } from "antd";
 import { Webform } from "akvo-react-form";
 import { api, store } from "../../lib";
 import { useNotification } from "../../util";
@@ -96,8 +97,12 @@ const WebformPage = ({ formId }) => {
 
   return (
     <div id="webform">
-      {!isEmpty(formValue) && (
+      {!isEmpty(formValue) ? (
         <Webform forms={formValue} onChange={onChange} onFinish={onFinish} />
+      ) : (
+        <div className="loading-wrapper">
+          <Spin />
+        </div>
       )}
     </div>
   );

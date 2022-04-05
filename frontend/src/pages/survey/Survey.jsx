@@ -1,10 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./style.scss";
 import { Row, Col, Select, Button, Space } from "antd";
 import WebformPage from "./WebformPage";
+import { api, store } from "../../lib";
 
 const Survey = () => {
+  const user = store.useState((s) => s.user);
   const [selectedForm, setSelectedForm] = useState(null);
+  const [formLoaded, setFormLoaded] = useState(null);
+  const [formOptions, setFormOptions] = useState([]);
+
+  useEffect(() => {
+    if (user) {
+      api
+        .get("/webform/options")
+        .then((res) => {
+          setFormOptions(res.data);
+        })
+        .catch((e) => {
+          console.error(e);
+        });
+    }
+  }, [user]);
+
+  const handleOnChangeNewForm = (val) => {
+    setSelectedForm(val);
+  };
+
+  const handleOnClickOpenNewForm = () => {
+    if (selectedForm) {
+      setFormLoaded(selectedForm);
+      setSelectedForm([]);
+    }
+  };
 
   return (
     <div id="survey" className="container">
@@ -46,11 +74,15 @@ const Survey = () => {
               <Select
                 className="bg-grey"
                 placeholder="Select..."
-                options={[]}
+                options={formOptions}
+                onChange={handleOnChangeNewForm}
+                value={selectedForm}
               />
             </Col>
             <Col span={6}>
-              <Button block>Open</Button>
+              <Button block onClick={handleOnClickOpenNewForm}>
+                Open
+              </Button>
             </Col>
           </Row>
         </Col>
@@ -58,7 +90,7 @@ const Survey = () => {
       <br />
       <hr />
       {/* Webform load here */}
-      {selectedForm && <WebformPage formId={selectedForm} />}
+      {formLoaded && <WebformPage formId={formLoaded} />}
     </div>
   );
 };
