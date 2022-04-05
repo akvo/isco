@@ -146,7 +146,17 @@ const App = () => {
         <SaveFormDataModal
           visible={saveFormData.visible}
           onOk={saveFormData.onOk}
-          onCancel={saveFormData.onCancel}
+          onCancel={() => {
+            store.update((s) => {
+              s.notificationModal = {
+                ...s.notificationModal,
+                saveFormData: {
+                  ...s.notificationModal.saveFormData,
+                  visible: false,
+                },
+              };
+            });
+          }}
         />
       </Layout.Body>
       <Layout.Footer />

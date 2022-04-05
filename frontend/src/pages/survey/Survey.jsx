@@ -27,10 +27,40 @@ const Survey = () => {
     setSelectedForm(val);
   };
 
+  const onOkModal = () => {
+    setFormLoaded(null);
+    store.update((s) => {
+      s.notificationModal = {
+        ...s.notificationModal,
+        saveFormData: {
+          ...s.notificationModal.saveFormData,
+          visible: false,
+        },
+      };
+    });
+    setTimeout(() => {
+      setFormLoaded(selectedForm);
+    }, 100);
+  };
+
   const handleOnClickOpenNewForm = () => {
+    if (formLoaded) {
+      // show modal
+      store.update((s) => {
+        s.notificationModal = {
+          ...s.notificationModal,
+          saveFormData: {
+            ...s.notificationModal.saveFormData,
+            visible: true,
+            onOk: () => onOkModal(),
+          },
+        };
+      });
+      return;
+    }
     if (selectedForm) {
       setFormLoaded(selectedForm);
-      setSelectedForm([]);
+      return;
     }
   };
 
