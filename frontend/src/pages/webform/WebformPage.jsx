@@ -5,6 +5,7 @@ import { Webform } from "akvo-react-form";
 import { api, store } from "../../lib";
 import { useNotification } from "../../util";
 import { intersection, isEmpty } from "lodash";
+import ErrorPage from "../error/ErrorPage";
 
 const WebformPage = () => {
   const user = store.useState((s) => s.user);
@@ -13,6 +14,7 @@ const WebformPage = () => {
 
   const { formId } = useParams();
   const [formValue, setFormValue] = useState({});
+  const [errorPage, setErrorPage] = useState(false);
   const { notify } = useNotification();
 
   useEffect(() => {
@@ -20,24 +22,30 @@ const WebformPage = () => {
       api
         .get(`/webform/${formId}`)
         .then((res) => {
-          const { data } = res;
-          // Filter survey detail by user login, using member/isco name
-          let transformedQuestionGroup = data.question_group;
-          if (userMember) {
-            transformedQuestionGroup = transformedQuestionGroup.filter(
-              (qg) =>
-                qg.member_access.includes(userMember) ||
-                qg.member_access.includes(allAccess)
-            );
+          const { data, status } = res;
+          // submission already submitted
+          if (status === 208) {
+            setErrorPage(true);
           }
-          if (!isEmpty(userIsco)) {
-            transformedQuestionGroup = transformedQuestionGroup.filter(
-              (qg) =>
-                intersection(qg.isco_access, userIsco) ||
-                qg.isco_access.includes(allAccess)
-            );
+          if (status === 200) {
+            // Filter survey detail by user login, using member/isco name
+            let transformedQuestionGroup = data.question_group;
+            if (userMember) {
+              transformedQuestionGroup = transformedQuestionGroup.filter(
+                (qg) =>
+                  qg.member_access.includes(userMember) ||
+                  qg.member_access.includes(allAccess)
+              );
+            }
+            if (!isEmpty(userIsco)) {
+              transformedQuestionGroup = transformedQuestionGroup.filter(
+                (qg) =>
+                  intersection(qg.isco_access, userIsco) ||
+                  qg.isco_access.includes(allAccess)
+              );
+            }
+            setFormValue({ ...data, question_group: transformedQuestionGroup });
           }
-          setFormValue({ ...data, question_group: transformedQuestionGroup });
         })
         .catch((e) => {
           console.error(e);
@@ -83,6 +91,10 @@ const WebformPage = () => {
         });
       });
   };
+
+  if (errorPage) {
+    return <ErrorPage status="submission-exist" />;
+  }
 
   return (
     <div id="webform" className="container">
