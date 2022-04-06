@@ -112,6 +112,7 @@ def generate_webform_json(session: Session, id: int):
                 name = f"tree_{q['cascade']}"
                 q['type'] = "tree"
                 q['option'] = name
+                q['checkStrategy'] = "children"
                 del q["cascade"]
             # REPEATING OBJECTS
             if 'repeating_objects' in q and q['repeating_objects']:

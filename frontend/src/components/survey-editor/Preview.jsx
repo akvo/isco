@@ -98,6 +98,7 @@ const Preview = () => {
             qVal = {
               ...qVal,
               type: "tree",
+              checkStrategy: "children",
               option: `tree_${q.cascade}`,
             };
           }
