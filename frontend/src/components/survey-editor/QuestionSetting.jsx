@@ -494,12 +494,15 @@ const Setting = ({
     ["order"]
   );
   // take skip logic question by question current order
-  const skipLogicQuestion = take(allQuestion, question?.order)
-    ?.filter((q) => skipLogicQuestionType.includes(q?.type) && q?.id !== qid)
-    ?.map((q) => ({
-      label: q?.name,
-      value: q?.id,
-    }));
+  const skipLogicQuestion = orderBy(
+    take(allQuestion, question?.order)?.filter(
+      (q) => skipLogicQuestionType.includes(q?.type) && q?.id !== qid
+    ),
+    ["order"]
+  )?.map((q) => ({
+    label: q?.name,
+    value: q?.id,
+  }));
 
   const dependentId = parseInt(
     form?.getFieldValue(`question-${qid}-skip_logic-dependent_to`)
