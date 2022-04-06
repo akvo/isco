@@ -6,6 +6,7 @@ import { api, store } from "../../lib";
 import { useNotification } from "../../util";
 import { intersection, isEmpty } from "lodash";
 import ErrorPage from "../error/ErrorPage";
+import { CommentField } from "../../components";
 
 const WebformPage = ({ formId }) => {
   const user = store.useState((s) => s.user);
@@ -43,6 +44,33 @@ const WebformPage = ({ formId }) => {
                   qg.isco_access.includes(allAccess)
               );
             }
+            // enable comment field
+            transformedQuestionGroup = transformedQuestionGroup.map((qg) => {
+              const updatedQuestion = qg.question.map((q) => {
+                let extra = [
+                  {
+                    placement: "after",
+                    content: (
+                      <CommentField
+                        onChange={() => console.info(q.id)}
+                        onDelete={() => console.info(q.id)}
+                      />
+                    ),
+                  },
+                ];
+                if (q?.extra) {
+                  extra = [...extra, q.extra];
+                }
+                return {
+                  ...q,
+                  extra: extra,
+                };
+              });
+              return {
+                ...qg,
+                question: updatedQuestion,
+              };
+            });
             setFormValue({ ...data, question_group: transformedQuestionGroup });
           }
         })

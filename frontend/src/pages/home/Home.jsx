@@ -1,8 +1,11 @@
 import React from "react";
 import "./style.scss";
 import { Row, Col, Button, Space } from "antd";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
+  const navigate = useNavigate();
+
   return (
     <div id="home">
       <Row className="home-landing" align="middle" justify="center">
@@ -24,7 +27,11 @@ const Home = () => {
             </p>
           </Space>
           <div className="start-btn-wrapper">
-            <Button type="primary" size="large" to="#">
+            <Button
+              type="primary"
+              size="large"
+              onClick={() => navigate("/survey")}
+            >
               Click here to start the survey
             </Button>
           </div>
