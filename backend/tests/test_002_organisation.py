@@ -39,7 +39,9 @@ class TestOrganisationRoutes():
             "active": True,
             "code": "Akvo",
             "id": 1,
+            "isco": ["All"],
             "isco_type": [1],
+            "member": "All",
             "member_type": 1,
             "name": "Akvo"
         }

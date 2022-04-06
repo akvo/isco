@@ -42,6 +42,12 @@ class FormDictWithGroupStatus(TypedDict):
     has_question_group: bool
 
 
+class FormOptions(TypedDict):
+    label: str
+    value: int
+    disabled: bool
+
+
 class Form(Base):
     __tablename__ = "form"
     id = Column(Integer, primary_key=True, index=True, nullable=True)
@@ -111,6 +117,22 @@ class Form(Base):
             "languages": self.languages,
             "question_group": [qg.serializeJson for qg in self.question_group],
             "version": self.version
+        }
+
+    @property
+    def list_of_questions(self) -> TypedDict:
+        question_list = {}
+        for qg in self.question_group:
+            for q in qg.question:
+                question_list.update({q.id: q.type})
+        return question_list
+
+    @property
+    def to_options(self) -> FormOptions:
+        return {
+            "label": self.name,
+            "value": self.id,
+            "disabled": False,
         }
 
 

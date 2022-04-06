@@ -93,6 +93,12 @@ const defaultUIState = {
   isMoveQuestion: false,
   isMoveQuestionGroup: false,
   isAddQuestionGroup: false,
+  notificationModal: {
+    saveFormData: {
+      visible: false,
+      onOk: () => {},
+    },
+  },
 };
 
 const store = new Store(defaultUIState);

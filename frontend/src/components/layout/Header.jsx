@@ -79,7 +79,7 @@ const Header = ({ className = "header", ...props }) => {
             <Space size="large" align="center">
               {isLoggedIn && (
                 <>
-                  <Link to="#">Survey</Link>
+                  <Link to="/survey">Survey</Link>
                   <Link to="#">Download</Link>
                 </>
               )}

@@ -28,6 +28,12 @@ const ErrorPage = ({ status = 500 }) => {
           subTitle: "Sorry, the page you visited does not exist.",
           extra: <BackHome />,
         };
+      case "submission-exist":
+        return {
+          title: "Submission already submitted.",
+          subTitle: "Member questionnaire can only be submitted once.",
+          extra: <BackHome />,
+        };
       default:
         return {
           status: status,
