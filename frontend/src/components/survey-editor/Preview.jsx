@@ -150,7 +150,7 @@ const Preview = () => {
           if (q.skip_logic.length) {
             const dependency = q.skip_logic.map((sk) => {
               // option
-              if (sk.type === "option") {
+              if (["option", "multiple_option"].includes(sk.type)) {
                 let answerIds = [sk.value];
                 if (sk.value.includes("|")) {
                   answerIds = sk.value.split("|");
