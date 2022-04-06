@@ -1,0 +1,76 @@
+{
+  "name": "Other countries",
+  "type": "cascade",
+  "cascades": [
+    {
+      "name": "Brazil",
+      "level": 1,
+      "childrens": []
+    },
+    {
+      "name": "Cameroon",
+      "level": 1,
+      "childrens": []
+    },
+    {
+      "name": "Colombia",
+      "level": 1,
+      "childrens": []
+    },
+    {
+      "name": "Dominican Republic",
+      "level": 1,
+      "childrens": []
+    },
+    {
+      "name": "DRC (Democratic Republic of the Congo)",
+      "level": 1,
+      "childrens": []
+    },
+    {
+      "name": "Ecuador",
+      "level": 1,
+      "childrens": []
+    },
+    {
+      "name": "Indonesia",
+      "level": 1,
+      "childrens": []
+    },
+    {
+      "name": "Mexico",
+      "level": 1,
+      "childrens": []
+    },
+    {
+      "name": "Nicaragua",
+      "level": 1,
+      "childrens": []
+    },
+    {
+      "name": "Nigeria",
+      "level": 1,
+      "childrens": []
+    },
+    {
+      "name": "Papua New Guinea",
+      "level": 1,
+      "childrens": []
+    },
+    {
+      "name": "Peru",
+      "level": 1,
+      "childrens": []
+    },
+    {
+      "name": "Philippines",
+      "level": 1,
+      "childrens": []
+    },
+    {
+      "name": "Vietnam",
+      "level": 1,
+      "childrens": []
+    }
+  ]
+}

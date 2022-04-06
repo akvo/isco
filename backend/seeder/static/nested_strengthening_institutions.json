@@ -1,0 +1,80 @@
+{
+  "name": "Strengthening institutions",
+  "type": "nested",
+  "cascades": [
+    {
+      "name": "Government",
+      "level": 1,
+      "childrens": [
+        {
+          "name": "Awareness raising",
+          "level": 2
+        },
+        {
+          "name": "Capacity building",
+          "level": 2
+        },
+        {
+          "name": "Financial support",
+          "level": 2
+        },
+        {
+          "name": "Technical support",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "name": "Farmer organization(s)",
+      "level": 1,
+      "childrens": [
+        {
+          "name": "Awareness raising",
+          "level": 2
+        },
+        {
+          "name": "Capacity building",
+          "level": 2
+        },
+        {
+          "name": "Financial support",
+          "level": 2
+        },
+        {
+          "name": "Technical support",
+          "level": 2
+        },
+        {
+          "name": "Professionalization support",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "name": "Civil society",
+      "level": 1,
+      "childrens": [
+        {
+          "name": "Awareness raising",
+          "level": 2
+        },
+        {
+          "name": "Capacity building",
+          "level": 2
+        },
+        {
+          "name": "Financial support",
+          "level": 2
+        },
+        {
+          "name": "Technical support",
+          "level": 2
+        },
+        {
+          "name": "Professionalization support",
+          "level": 2
+        }
+      ]
+    }
+  ]
+}
