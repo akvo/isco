@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "akvo-react-form": "^1.4.0",
+    "akvo-react-form": "^1.4.1",
     "antd": "^4.19.1",
     "axios": "^0.26.1",
     "lodash": "^4.17.21",
