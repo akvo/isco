@@ -101,10 +101,18 @@ const Preview = () => {
             };
           }
           // rule
-          if (q.rule) {
+          if (q.rule && !q.rule?.allow_other) {
             qVal = {
               ...qVal,
               rule: q.rule,
+            };
+          }
+          // allow other
+          if (q.rule && q.rule?.allow_other) {
+            qVal = {
+              ...qVal,
+              allowOther: q.rule.allow_other,
+              allowOtherText: "Other",
             };
           }
           // translations
