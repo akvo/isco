@@ -1,3 +1,4 @@
+import os
 import json
 import db.crud_option as crud_option
 import util.storage as storage
@@ -11,6 +12,8 @@ from db.crud_question_group import delete_question_by_group
 from db.crud_cascade import get_cascade_list_by_cascade_id
 from models.skip_logic import OperatorType
 from datetime import datetime
+
+webdomain = os.environ["WEBDOMAIN"]
 
 
 def add_form(session: Session, payload: FormPayload):
@@ -83,34 +86,52 @@ def generate_webform_json(session: Session, id: int):
     for qg in form['question_group']:
         # Sort question by order
         qg['question'].sort(key=get_order)
+        # repeat text
+        if qg['repeatable']:
+            qg['repeat_text'] = "Add another"
         for q in qg['question']:
+            # OPTION
             if 'option' in q:
                 # Sort option by order
                 q['option'].sort(key=get_order)
-            # need to do transform for cascade / send api
+            # CASCADE
             if q['type'] == QuestionType.cascade.value:
-                # need to change URL/api
+                url = f"{webdomain}/api/cascade/list/{q['cascade']}"
                 q.update({
                     "api": {
-                        "endpoint": f"URL/api/cascade/list/{q['cascade']}",
+                        "endpoint": url,
                         "initial": 0,
                         "list": False,
                     }
                 })
-            # need to dp transform for nested_list
+                del q["cascade"]
+            # NESTED LIST
             if q['type'] == QuestionType.nested_list.value:
                 # get tree
                 cascade_ids.append(q['cascade'])
                 name = f"tree_{q['cascade']}"
                 q['type'] = "tree"
                 q['option'] = name
+                q['checkStrategy'] = "children"
+                del q["cascade"]
+            # REPEATING OBJECTS
             if 'repeating_objects' in q and q['repeating_objects']:
                 for r in q['repeating_objects']:
                     if r['field'] == RepeatingObjectType.unit.value:
                         q['addonAfter'] = r['value']
+                    if r['field'] == RepeatingObjectType.indicator.value:
+                        values = r['value'].split("|")
+                        prefix = "Indicator"
+                        if len(values) > 1:
+                            prefix = "Indicators"
+                        content = ", ".join(values)
+                        q['extra'] = [{
+                            "placement": "before",
+                            "content": f"{prefix}: {content}"
+                        }]
                 del q['repeating_objects']
+            # SKIP LOGIC
             if 'dependency' in q:
-                # Transform dependency
                 for d in q['dependency']:
                     d.update({"id": d['dependent_to']})
                     if d['type'] in options_type:

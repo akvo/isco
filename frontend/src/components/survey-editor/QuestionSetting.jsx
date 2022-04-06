@@ -13,9 +13,14 @@ import {
   Select,
   Tooltip,
 } from "antd";
+import { AiOutlineFieldNumber } from "react-icons/ai";
 import { RiDeleteBinFill } from "react-icons/ri";
 import { BiRadioCircle } from "react-icons/bi";
 import { HiPlus, HiMinus, HiArrowSmUp, HiArrowSmDown } from "react-icons/hi";
+import {
+  MdOutlineRadioButtonChecked,
+  MdOutlineLibraryAddCheck,
+} from "react-icons/md";
 import { store } from "../../lib";
 import { orderBy, take } from "lodash";
 import { defaultOption, defaultRepeatingObject } from "../../lib/store";
@@ -499,10 +504,24 @@ const Setting = ({
       (q) => skipLogicQuestionType.includes(q?.type) && q?.id !== qid
     ),
     ["order"]
-  )?.map((q) => ({
-    label: q?.name,
-    value: q?.id,
-  }));
+  )?.map((q) => {
+    let icon = <AiOutlineFieldNumber style={{ marginRight: "8px" }} />;
+    if (q?.type === "option") {
+      icon = <MdOutlineRadioButtonChecked style={{ marginRight: "8px" }} />;
+    }
+    if (q?.type === "multiple_option") {
+      icon = <MdOutlineLibraryAddCheck style={{ marginRight: "8px" }} />;
+    }
+    return {
+      label: (
+        <Row align="middle">
+          {icon} {q?.name}
+        </Row>
+      ),
+      text: q?.name,
+      value: q?.id,
+    };
+  });
 
   const dependentId = parseInt(
     form?.getFieldValue(`question-${qid}-skip_logic-dependent_to`)
@@ -633,7 +652,7 @@ const Setting = ({
                     options={skipLogicQuestion}
                     style={{ width: "47.5vw" }}
                     filterOption={(input, option) =>
-                      option.label.toLowerCase().indexOf(input.toLowerCase()) >=
+                      option.text.toLowerCase().indexOf(input.toLowerCase()) >=
                       0
                     }
                   />

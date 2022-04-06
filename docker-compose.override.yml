@@ -24,6 +24,6 @@ services:
       - ../akvo-config/k8s-secrets/test/isco:/credentials/:ro
     environment:
       - GOOGLE_APPLICATION_CREDENTIALS=/credentials/isco-service-account.json
-      - WEBDOMAIN=isco.akvotest.org
+      - WEBDOMAIN=http://localhost:3000
 volumes:
   pg-admin-data:

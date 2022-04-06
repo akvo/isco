@@ -105,12 +105,7 @@ class TestQuestionRoutes():
                 {"language": "id",
                  "tooltip_translations": "Keterangan Pertanyaan 1"}],
             "cascade": None,
-            "repeating_objects": [
-                {
-                    "field": "unit",
-                    "value": "cm",
-                },
-            ],
+            "repeating_objects": None,
             "order": 1,
             "option": None,
             "member_access": None,
@@ -136,12 +131,7 @@ class TestQuestionRoutes():
             "order": 1,
             "personal_data": False,
             "question_group": 1,
-            "repeating_objects": [
-                {
-                    "field": "unit",
-                    "value": "cm",
-                },
-            ],
+            "repeating_objects": [],
             "rule": None,
             "skip_logic": [],
             "tooltip": 'Question 1 tooltip',

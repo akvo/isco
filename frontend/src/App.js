@@ -1,7 +1,7 @@
 import "./App.scss";
 import React, { useEffect } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
-import { Layout } from "./components";
+import { Layout, SaveFormDataModal } from "./components";
 import {
   Home,
   Admin,
@@ -11,7 +11,7 @@ import {
   Login,
   Register,
   ErrorPage,
-  WebformPage,
+  Survey,
 } from "./pages";
 import { useCookies } from "react-cookie";
 import { store, api } from "./lib";
@@ -35,6 +35,7 @@ const Secure = ({ element: Element, adminPage = false }) => {
 };
 
 const App = () => {
+  const { saveFormData } = store.useState((s) => s.notificationModal);
   const [cookies, removeCookie] = useCookies(["AUTH_TOKEN"]);
   const { notify } = useNotification();
   const navigate = useNavigate();
@@ -137,13 +138,26 @@ const App = () => {
             path="/survey-editor/:formId"
             element={<Secure element={SurveyEditor} adminPage={true} />}
           />
-          <Route
-            exact
-            path="/webform/:formId"
-            element={<Secure element={WebformPage} />}
-          />
+          <Route exact path="/survey" element={<Secure element={Survey} />} />
           <Route exact path="*" element={<ErrorPage status={404} />} />
         </Routes>
+
+        {/* Modal */}
+        <SaveFormDataModal
+          visible={saveFormData.visible}
+          onOk={saveFormData.onOk}
+          onCancel={() => {
+            store.update((s) => {
+              s.notificationModal = {
+                ...s.notificationModal,
+                saveFormData: {
+                  ...s.notificationModal.saveFormData,
+                  visible: false,
+                },
+              };
+            });
+          }}
+        />
       </Layout.Body>
       <Layout.Footer />
     </Layout>

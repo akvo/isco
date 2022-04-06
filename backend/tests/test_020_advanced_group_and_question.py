@@ -267,6 +267,30 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "member_access": None,
                     "isco_access": None,
                     "skip_logic": None
+                },
+                {
+                    "form": None,
+                    "question_group": None,
+                    "name": "Weight",
+                    "translations": None,
+                    "mandatory": True,
+                    "datapoint_name": False,
+                    "variable_name": None,
+                    "type": QuestionType.number.value,
+                    "personal_data": False,
+                    "rule": None,
+                    "tooltip": None,
+                    "tooltip_translations": None,
+                    "cascade": None,
+                    "repeating_objects": [{
+                        "field": "unit",
+                        "value": "kilograms",
+                    }],
+                    "order": 2,
+                    "option": None,
+                    "member_access": None,
+                    "isco_access": None,
+                    "skip_logic": None
                 }
             ]
         }
@@ -300,6 +324,31 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "personal_data": False,
                     "question_group": 2,
                     "repeating_objects": [],
+                    "rule": None,
+                    "skip_logic": [],
+                    "tooltip": None,
+                    "tooltip_translations": [],
+                    "translations": [],
+                    "type": "number",
+                    "variable_name": None
+                },
+                {
+                    "cascade": None,
+                    "datapoint_name": False,
+                    "form": 1,
+                    "id": 5,
+                    "isco_access": [1],
+                    "mandatory": True,
+                    "member_access": [1],
+                    "name": 'Weight',
+                    "option": [],
+                    "order": 2,
+                    "personal_data": False,
+                    "question_group": 2,
+                    "repeating_objects": [{
+                        "field": "unit",
+                        "value": "kilograms",
+                    }],
                     "rule": None,
                     "skip_logic": [],
                     "tooltip": None,
