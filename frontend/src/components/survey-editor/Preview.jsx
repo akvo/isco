@@ -214,6 +214,14 @@ const Preview = () => {
           }
           return qVal;
         });
+        if (qg.repeat) {
+          return {
+            ...qg,
+            repeatable: qg.repeat,
+            repeatButtonPlacement: "bottom",
+            question: orderBy(questions, ["order"]),
+          };
+        }
         return {
           ...qg,
           repeatable: qg.repeat,
