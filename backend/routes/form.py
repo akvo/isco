@@ -144,6 +144,7 @@ def get_form_options(req: Request, session: Session = Depends(get_session),
         for f in forms:
             if f['value'] in MEMBER_SURVEY:
                 f['disabled'] = True
+                f['label'] = f"{f['label']} (submitted)"
     return forms
 
 
