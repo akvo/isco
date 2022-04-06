@@ -293,6 +293,14 @@
       margin-bottom: 14px;
     }
 
+    .comment-field-wrapper {
+      margin-top: -10px;
+      .button-placement {
+        float: right;
+        margin-bottom: 8px;
+      }
+    }
+
     /* customize webform/akvo-react-form style */
     .arf-form-header {
       button {
@@ -327,6 +335,13 @@
       margin-bottom: 18px;
       padding-top: 14px;
       padding-bottom: 14px;
+    }
+
+    /* Question group description */
+    .arf-description {
+      background-color: #f3f3f3;
+      padding: 8px;
+      font-style: italic;
     }
 
     button.ant-btn.ant-btn-default.ant-btn-sm.ant-btn-icon-only {

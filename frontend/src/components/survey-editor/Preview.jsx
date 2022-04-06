@@ -73,10 +73,17 @@ const Preview = () => {
             type: q.type,
             required: q.mandatory,
             // add comment field
-            extra: {
-              placement: "after",
-              content: <CommentField onChange={() => console.info(q.id)} />,
-            },
+            extra: [
+              {
+                placement: "after",
+                content: (
+                  <CommentField
+                    onChange={() => console.info(q.id)}
+                    onDelete={() => console.info(q.id)}
+                  />
+                ),
+              },
+            ],
           };
           // option values
           if (q.option.length) {
@@ -168,7 +175,13 @@ const Preview = () => {
               prefix = values.length > 1 ? `${prefix}s` : prefix;
               qVal = {
                 ...qVal,
-                name: `${q.name} - ${prefix}: ${values.join(", ")}`,
+                extra: [
+                  ...qVal.extra,
+                  {
+                    placement: "before",
+                    content: `${prefix}: ${values.join(", ")}`,
+                  },
+                ],
               };
             }
           }
