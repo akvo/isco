@@ -120,7 +120,9 @@ const Survey = () => {
       <br />
       <hr />
       {/* Webform load here */}
-      {formLoaded && <WebformPage formId={formLoaded} />}
+      {formLoaded && (
+        <WebformPage formId={formLoaded} setFormLoaded={setFormLoaded} />
+      )}
     </div>
   );
 };

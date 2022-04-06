@@ -8,7 +8,7 @@ import { intersection, isEmpty } from "lodash";
 import ErrorPage from "../error/ErrorPage";
 import { CommentField } from "../../components";
 
-const WebformPage = ({ formId }) => {
+const WebformPage = ({ formId, setFormLoaded }) => {
   const user = store.useState((s) => s.user);
   const { member: userMember, isco: userIsco } = user.organisation;
   const allAccess = "All";
@@ -109,6 +109,8 @@ const WebformPage = ({ formId }) => {
           type: "success",
           message: "Subission submitted successfully.",
         });
+        setFormLoaded(null);
+        setFormValue({});
       })
       .catch((e) => {
         console.error(e);
@@ -120,7 +122,7 @@ const WebformPage = ({ formId }) => {
   };
 
   if (errorPage) {
-    return <ErrorPage status="submission-exist" />;
+    return <ErrorPage status="submission-exist" showButton={false} />;
   }
 
   return (
