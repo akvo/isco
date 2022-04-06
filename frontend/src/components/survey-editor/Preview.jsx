@@ -3,7 +3,8 @@ import "akvo-react-form/dist/index.css"; /* REQUIRED */
 import { Webform } from "akvo-react-form";
 import { api, store } from "../../lib";
 import { Space, Select } from "antd";
-import { orderBy, isEmpty, uniqBy } from "lodash";
+import { orderBy, isEmpty, uniqBy, intersection } from "lodash";
+import CommentField from "./CommentField";
 
 const Preview = () => {
   const { surveyEditor, optionValues } = store.useState((s) => s);
@@ -19,8 +20,8 @@ const Preview = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const allAccessId = 1;
-  const [selectedMember, setSelectedMember] = useState(null);
-  const [selectedIsco, setSelectedIsco] = useState(null);
+  const [selectedMember, setSelectedMember] = useState([]);
+  const [selectedIsco, setSelectedIsco] = useState([]);
   const allQuestion = questionGroup.flatMap((qg) => qg.question);
   const nestedListQuestions = allQuestion.filter(
     (q) => q.type === "nested_list"
@@ -49,17 +50,17 @@ const Preview = () => {
   useEffect(() => {
     if (allQuestion.length && isEmpty(formValue)) {
       let transformedQuestionGroup = questionGroup;
-      if (selectedMember) {
+      if (selectedMember && selectedMember.length) {
         transformedQuestionGroup = transformedQuestionGroup.filter(
           (qg) =>
             qg.member_access.includes(selectedMember) ||
             qg.member_access.includes(allAccessId)
         );
       }
-      if (selectedIsco) {
+      if (selectedIsco && selectedIsco.length) {
         transformedQuestionGroup = transformedQuestionGroup.filter(
           (qg) =>
-            qg.isco_access.includes(selectedIsco) ||
+            intersection(qg.isco_access, selectedIsco).length ||
             qg.isco_access.includes(allAccessId)
         );
       }
@@ -71,6 +72,11 @@ const Preview = () => {
             order: q.order,
             type: q.type,
             required: q.mandatory,
+            // add comment field
+            extra: {
+              placement: "after",
+              content: <CommentField onChange={() => console.info(q.id)} />,
+            },
           };
           // option values
           if (q.option.length) {
@@ -162,10 +168,7 @@ const Preview = () => {
               prefix = values.length > 1 ? `${prefix}s` : prefix;
               qVal = {
                 ...qVal,
-                extra: {
-                  placement: "before",
-                  content: `${prefix}: ${values.join(", ")}`,
-                },
+                name: `${q.name} - ${prefix}: ${values.join(", ")}`,
               };
             }
           }
@@ -292,22 +295,33 @@ const Preview = () => {
             <div className="field-label">Member Type</div>
             <Select
               allowClear
+              showSearch
               className="custom-dropdown-wrapper bg-grey"
               placeholder="Select Member Type"
               options={member_type.map((x) => ({ label: x.name, value: x.id }))}
-              value={[selectedMember]}
+              value={selectedMember}
               onChange={handleOnChangeMember}
+              filterOption={(input, option) =>
+                option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+              style={{ width: "20rem" }}
             />
           </div>
           <div className="field-wrapper">
             <div className="field-label">ISCO</div>
             <Select
+              mode="multiple"
               allowClear
+              showSearch
               className="custom-dropdown-wrapper bg-grey"
               placeholder="Select ISCO"
               options={isco_type.map((x) => ({ label: x.name, value: x.id }))}
-              value={[selectedIsco]}
+              value={selectedIsco}
               onChange={handleOnChangeIsco}
+              filterOption={(input, option) =>
+                option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+              style={{ width: "24rem" }}
             />
           </div>
         </Space>

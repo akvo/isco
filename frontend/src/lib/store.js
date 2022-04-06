@@ -95,7 +95,7 @@ const defaultUIState = {
   isAddQuestionGroup: false,
   notificationModal: {
     saveFormData: {
-      visible: true,
+      visible: false,
       onOk: () => {},
     },
   },

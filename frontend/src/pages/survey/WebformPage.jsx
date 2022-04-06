@@ -39,7 +39,7 @@ const WebformPage = ({ formId }) => {
             if (!isEmpty(userIsco)) {
               transformedQuestionGroup = transformedQuestionGroup.filter(
                 (qg) =>
-                  intersection(qg.isco_access, userIsco) ||
+                  intersection(qg.isco_access, userIsco).length ||
                   qg.isco_access.includes(allAccess)
               );
             }
