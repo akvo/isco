@@ -624,10 +624,15 @@ const Setting = ({
               <Space align="middle">
                 <Form.Item name={`question-${qid}-skip_logic-dependent_to`}>
                   <Select
+                    showSearch
                     className="bg-grey"
                     placeholder="Select question from list"
                     options={skipLogicQuestion}
                     style={{ width: "47.5vw" }}
+                    filterOption={(input, option) =>
+                      option.label.toLowerCase().indexOf(input.toLowerCase()) >=
+                      0
+                    }
                   />
                 </Form.Item>
                 <Tooltip title="Delete question skip logic">
