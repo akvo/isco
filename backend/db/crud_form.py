@@ -69,6 +69,8 @@ def get_order(data):
 def generate_webform_json(session: Session, id: int):
     form = get_form_by_id(session=session, id=id)
     form = form.serializeJson
+    options_type = [QuestionType.option.value,
+                    QuestionType.multiple_option.value]
     cascade_ids = []
     # add default lang into form languages
     default_lang = ["en"]
@@ -111,7 +113,7 @@ def generate_webform_json(session: Session, id: int):
                 # Transform dependency
                 for d in q['dependency']:
                     d.update({"id": d['dependent_to']})
-                    if d['type'] == QuestionType.option.value:
+                    if d['type'] in options_type:
                         ids = d['value'].split('|')
                         option = crud_option.get_option_by_ids(
                             session=session, ids=ids)

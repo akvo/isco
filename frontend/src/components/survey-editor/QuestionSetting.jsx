@@ -351,9 +351,7 @@ const Detail = ({
     const fieldValue = { [field]: val };
     form.setFieldsValue(fieldValue);
     setAllowOther(val);
-    setTimeout(() => {
-      handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
-    }, 100);
+    handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
   };
 
   return (
@@ -489,18 +487,22 @@ const Setting = ({
   const { questionGroup: questionGroupState } = surveyEditor;
   const { operator_type } = optionValues;
   const { id: qid } = question;
+  const skipLogicQuestionType = ["option", "number", "multiple_option"];
 
   const allQuestion = orderBy(
     questionGroupState?.flatMap((qg) => qg?.question),
     ["order"]
   );
   // take skip logic question by question current order
-  const skipLogicQuestion = take(allQuestion, question?.order)
-    ?.filter((q) => ["option", "number"].includes(q?.type) && q?.id !== qid)
-    ?.map((q) => ({
-      label: q?.name,
-      value: q?.id,
-    }));
+  const skipLogicQuestion = orderBy(
+    take(allQuestion, question?.order)?.filter(
+      (q) => skipLogicQuestionType.includes(q?.type) && q?.id !== qid
+    ),
+    ["order"]
+  )?.map((q) => ({
+    label: q?.name,
+    value: q?.id,
+  }));
 
   const dependentId = parseInt(
     form?.getFieldValue(`question-${qid}-skip_logic-dependent_to`)
@@ -625,10 +627,15 @@ const Setting = ({
               <Space align="middle">
                 <Form.Item name={`question-${qid}-skip_logic-dependent_to`}>
                   <Select
+                    showSearch
                     className="bg-grey"
                     placeholder="Select question from list"
                     options={skipLogicQuestion}
                     style={{ width: "47.5vw" }}
+                    filterOption={(input, option) =>
+                      option.label.toLowerCase().indexOf(input.toLowerCase()) >=
+                      0
+                    }
                   />
                 </Form.Item>
                 <Tooltip title="Delete question skip logic">
@@ -682,7 +689,9 @@ const Setting = ({
                     </Form.Item>
                   </div>
                 )}
-                {dependentQuestion?.type === "option" && (
+                {["option", "multiple_option"].includes(
+                  dependentQuestion?.type
+                ) && (
                   <div className="field-wrapper">
                     <div className="field-label">Value</div>
                     <Form.Item

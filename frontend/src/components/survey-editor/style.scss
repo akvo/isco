@@ -332,6 +332,16 @@
       }
     }
 
+    button.ant-btn.ant-btn-primary.ant-btn-icon-only {
+      border: none;
+      background: transparent;
+      color: $black;
+      box-shadow: none;
+      &:disabled {
+        color: #777777;
+      }
+    }
+
     /* end customize webform/akvo-react-form style */
   }
 }

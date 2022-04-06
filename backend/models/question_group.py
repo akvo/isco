@@ -111,6 +111,8 @@ class QuestionGroup(Base):
             "isco_access": [ia.iscoName for ia in self.isco_access],
             "question": [q.serializeJson for q in self.question]
         }
+        if self.repeat:
+            group.update({"repeatButtonPlacement": "bottom"})
         if self.translations:
             group.update({"translations": self.translations})
         return group
