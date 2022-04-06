@@ -208,7 +208,11 @@ class Question(Base):
             "order": self.order,
         }
         if self.rule:
-            question.update({"rule": self.rule})
+            if "allow_other" not in self.rule:
+                question.update({"rule": self.rule})
+            if "allow_other" in self.rule:
+                question.update({"allowOther": self.rule['allow_other']})
+                question.update({"allowOtherText": "Other"})
         if self.personal_data:
             question.update({"personal_data": self.personal_data})
         if self.variable_name:

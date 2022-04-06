@@ -101,10 +101,18 @@ const Preview = () => {
             };
           }
           // rule
-          if (q.rule) {
+          if (q.rule && !q.rule?.allow_other) {
             qVal = {
               ...qVal,
               rule: q.rule,
+            };
+          }
+          // allow other
+          if (q.rule && q.rule?.allow_other) {
+            qVal = {
+              ...qVal,
+              allowOther: q.rule.allow_other,
+              allowOtherText: "Other",
             };
           }
           // translations
@@ -165,7 +173,7 @@ const Preview = () => {
           if (q.skip_logic.length) {
             const dependency = q.skip_logic.map((sk) => {
               // option
-              if (sk.type === "option") {
+              if (["option", "multiple_option"].includes(sk.type)) {
                 let answerIds = [sk.value];
                 if (sk.value.includes("|")) {
                   answerIds = sk.value.split("|");
@@ -226,7 +234,7 @@ const Preview = () => {
           return {
             ...qg,
             repeatable: qg.repeat,
-            repeat_text: "Add another",
+            repeatButtonPlacement: "bottom",
             question: orderBy(questions, ["order"]),
           };
         }
