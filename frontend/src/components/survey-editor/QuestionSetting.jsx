@@ -351,9 +351,7 @@ const Detail = ({
     const fieldValue = { [field]: val };
     form.setFieldsValue(fieldValue);
     setAllowOther(val);
-    setTimeout(() => {
-      handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
-    }, 100);
+    handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
   };
 
   return (
@@ -489,6 +487,7 @@ const Setting = ({
   const { questionGroup: questionGroupState } = surveyEditor;
   const { operator_type } = optionValues;
   const { id: qid } = question;
+  const skipLogicQuestionType = ["option", "number", "multiple_option"];
 
   const allQuestion = orderBy(
     questionGroupState?.flatMap((qg) => qg?.question),
@@ -496,7 +495,7 @@ const Setting = ({
   );
   // take skip logic question by question current order
   const skipLogicQuestion = take(allQuestion, question?.order)
-    ?.filter((q) => ["option", "number"].includes(q?.type) && q?.id !== qid)
+    ?.filter((q) => skipLogicQuestionType.includes(q?.type) && q?.id !== qid)
     ?.map((q) => ({
       label: q?.name,
       value: q?.id,
@@ -682,7 +681,9 @@ const Setting = ({
                     </Form.Item>
                   </div>
                 )}
-                {dependentQuestion?.type === "option" && (
+                {["option", "multiple_option"].includes(
+                  dependentQuestion?.type
+                ) && (
                   <div className="field-wrapper">
                     <div className="field-label">Value</div>
                     <Form.Item
