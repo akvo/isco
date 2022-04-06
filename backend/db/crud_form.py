@@ -124,10 +124,10 @@ def generate_webform_json(session: Session, id: int):
                         if len(values) > 1:
                             prefix = "Indicators"
                         content = ", ".join(values)
-                        q['extra'] = {
+                        q['extra'] = [{
                             "placement": "before",
                             "content": f"{prefix}: {content}"
-                        }
+                        }]
                 del q['repeating_objects']
             # SKIP LOGIC
             if 'dependency' in q:
