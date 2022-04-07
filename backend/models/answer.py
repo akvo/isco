@@ -16,6 +16,7 @@ from db.connection import Base
 class AnswerDict(TypedDict):
     question: int
     repeat_index: Optional[int] = None
+    comment: Optional[str] = None
     value: Union[int, float, str, bool, dict, List[str], List[int],
                  List[float], None]
 
@@ -35,6 +36,7 @@ class Answer(Base):
     text = Column(Text, nullable=True)
     value = Column(Float, nullable=True)
     options = Column(pg.ARRAY(String), nullable=True)
+    comment = Column(Text, nullable=True)
     repeat_index = Column(Integer, nullable=True, default=0)
     created = Column(DateTime, nullable=True)
     updated = Column(DateTime, nullable=True)
@@ -47,6 +49,7 @@ class Answer(Base):
                  text: Optional[str] = None,
                  value: Optional[float] = None,
                  options: Optional[List[str]] = None,
+                 comment: Optional[str] = None,
                  repeat_index: Optional[int] = None,
                  updated: Optional[datetime] = None):
         self.question = question
@@ -54,6 +57,7 @@ class Answer(Base):
         self.text = text
         self.value = value
         self.options = options
+        self.comment = comment
         self.repeat_index = repeat_index
         self.updated = updated
         self.created = created
@@ -70,6 +74,7 @@ class Answer(Base):
             "text": self.text,
             "value": self.value,
             "options": self.options,
+            "comment": self.comment,
             "repeat_index": self.repeat_index,
             "created": self.created,
             "updated": self.updated,
@@ -79,7 +84,8 @@ class Answer(Base):
     def formatted(self) -> AnswerDict:
         answer = {
             "question": self.question,
-            "repeat_index": self.repeat_index
+            "repeat_index": self.repeat_index,
+            "comment": self.comment
         }
         type = self.question_detail.type
         if type in [QuestionType.input, QuestionType.text, QuestionType.date]:
@@ -100,6 +106,7 @@ class Answer(Base):
             self.question: {
                 "value": self.text or self.value or self.options,
                 "repeat_index": self.repeat_index,
+                "comment": self.comment,
                 "data": self
             }
         }
@@ -138,6 +145,8 @@ class Answer(Base):
             answer = self.options
         return {
             "value": answer,
+            "repeat_index": self.repeat_index,
+            "comment": self.comment,
             "date": date.strftime("%B %d, %Y"),
         }
 
@@ -168,6 +177,7 @@ class AnswerBase(BaseModel):
     text: Optional[str] = None
     value: Optional[float] = None
     options: Optional[List[str]] = None
+    comment: Optional[List[str]] = None
     repeat_index: Optional[int] = None
     created: Optional[datetime] = None
     updated: Optional[datetime] = None
