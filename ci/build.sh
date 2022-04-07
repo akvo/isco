@@ -6,6 +6,8 @@ set -exuo pipefail
 BACKEND_CHANGES=0
 FRONTEND_CHANGES=0
 
+[[ -n "${CI_TAG:=}" ]] && { echo "Skip build"; exit 0; }
+
 COMMIT_CONTENT=$(git diff --name-only "${CI_COMMIT_RANGE}")
 
 if grep -q "backend" <<< "${COMMIT_CONTENT}"
@@ -30,8 +32,6 @@ then
     FRONTEND_CHANGES=1
 fi
 
-
-[[ -n "${CI_TAG:=}" ]] && { echo "Skip build"; exit 0; }
 
 image_prefix="eu.gcr.io/akvo-lumen/isco"
 
