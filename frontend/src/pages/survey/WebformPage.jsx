@@ -20,6 +20,7 @@ const WebformPage = ({ formId, setFormLoaded }) => {
   const [deletedComment, setDeletedComment] = useState(null);
   const { notify } = useNotification();
 
+  // transform & filter form definition
   useEffect(() => {
     if (isEmpty(formValue) && formId && user) {
       api

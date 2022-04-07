@@ -53,7 +53,7 @@ const Preview = () => {
       if (selectedMember && selectedMember.length) {
         transformedQuestionGroup = transformedQuestionGroup.filter(
           (qg) =>
-            qg.member_access.includes(selectedMember) ||
+            intersection(qg.member_access, selectedMember).length ||
             qg.member_access.includes(allAccessId)
         );
       }
@@ -306,8 +306,8 @@ const Preview = () => {
   };
 
   const handleOnChangeIsco = (val) => {
-    setIsLoading(true);
     setSelectedIsco(val);
+    setIsLoading(true);
     setFormValue({});
   };
 
@@ -326,6 +326,7 @@ const Preview = () => {
           <div className="field-wrapper">
             <div className="field-label">Member Type</div>
             <Select
+              mode="multiple"
               allowClear
               showSearch
               className="custom-dropdown-wrapper bg-grey"
@@ -336,7 +337,7 @@ const Preview = () => {
               filterOption={(input, option) =>
                 option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
-              style={{ width: "20rem" }}
+              style={{ width: "22rem" }}
             />
           </div>
           <div className="field-wrapper">
@@ -353,7 +354,7 @@ const Preview = () => {
               filterOption={(input, option) =>
                 option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
-              style={{ width: "24rem" }}
+              style={{ width: "22rem" }}
             />
           </div>
         </Space>
