@@ -3,10 +3,10 @@
 
 set -exuo pipefail
 
+[[ -n "${CI_TAG:=}" ]] && { echo "Skip build"; exit 0; }
+
 BACKEND_CHANGES=0
 FRONTEND_CHANGES=0
-
-[[ -n "${CI_TAG:=}" ]] && { echo "Skip build"; exit 0; }
 
 COMMIT_CONTENT=$(git diff --name-only "${CI_COMMIT_RANGE}")
 
