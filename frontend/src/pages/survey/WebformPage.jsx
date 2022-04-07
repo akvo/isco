@@ -14,7 +14,7 @@ const SaveButton = ({ onClick, isSaving }) => (
   </Button>
 );
 
-const WebformPage = ({ formId, setFormLoaded /*initialValues*/ }) => {
+const WebformPage = ({ formId, setFormLoaded, initialValues }) => {
   const { notify } = useNotification();
 
   const user = store.useState((s) => s.user);
@@ -32,6 +32,13 @@ const WebformPage = ({ formId, setFormLoaded /*initialValues*/ }) => {
   const [disableSubmit, setDisableSubmit] = useState(true);
   // save savedData here, for loaded form this must be saved when loading form value
   const [savedData, setSavedData] = useState(null);
+
+  // manage savedData state
+  useEffect(() => {
+    if (!isEmpty(initialValues) && isEmpty(savedData)) {
+      setSavedData(initialValues);
+    }
+  }, [initialValues, savedData]);
 
   // transform & filter form definition
   useEffect(() => {
@@ -249,6 +256,7 @@ const WebformPage = ({ formId, setFormLoaded /*initialValues*/ }) => {
 
   return (
     <div id="webform">
+      {/* TODO::loading need to wait for initialValues if load saved submssion */}
       {!isEmpty(formValue) ? (
         <Webform
           forms={formValue}
