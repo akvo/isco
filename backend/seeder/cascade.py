@@ -1,6 +1,5 @@
-from db.truncator import truncate
 from db.connection import Base, SessionLocal, engine
-from db.crud_cascade import add_cascade
+from db.crud_cascade import add_cascade, get_cascade_by_name
 from seeder.static.static_cascade import cascade_values
 from seeder.static.static_nested import nested_values
 
@@ -9,14 +8,17 @@ from seeder.static.static_nested import nested_values
 Base.metadata.create_all(bind=engine)
 session = SessionLocal()
 
-action_truncate = truncate(session=session, table="cascade")
-print(action_truncate)
-action_truncate = truncate(session=session, table="cascade_list")
-print(action_truncate)
-
-cascade = add_cascade(session=session, payload=cascade_values)
+cascade = get_cascade_by_name(session=session,
+                              name=cascade_values['name'],
+                              ctype=cascade_values['type'])
+if not cascade:
+    cascade = add_cascade(session=session, payload=cascade_values)
 print("Seeding Cascade Done")
 
 
-nested_list = add_cascade(session=session, payload=nested_values)
+nested_list = get_cascade_by_name(session=session,
+                                  name=nested_values['name'],
+                                  ctype=nested_values['type'])
+if not nested_list:
+    nested_list = add_cascade(session=session, payload=nested_values)
 print("Seeding Nested List Done")

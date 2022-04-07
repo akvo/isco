@@ -243,6 +243,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
             "description": "This is description",
             "translations": None,
             "repeat": False,
+            "repeat_text": None,
             "order": 2,
             "member_access": [1],
             "isco_access": [1],
@@ -309,6 +310,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
             "name": "Question Group 2",
             "order": 2,
             "repeat": False,
+            "repeat_text": None,
             "question": [
                 {
                     "cascade": None,

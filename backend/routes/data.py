@@ -68,7 +68,8 @@ def add(req: Request,
         q = crud_question.get_question_by_id(session=session, id=a["question"])
         answer = Answer(question=q.id,
                         created=datetime.now(),
-                        repeat_index=a["repeat_index"])
+                        repeat_index=a["repeat_index"],
+                        comment=a["comment"])
         if q.type in [QuestionType.input, QuestionType.text,
                       QuestionType.date]:
             answer.text = a["value"]
@@ -187,19 +188,24 @@ def update_by_id(req: Request,
             execute = "update"
         else:
             execute = "new"
-        if execute == "update" and (a["value"] != checked[
-            a["question"]]["value"] or a["repeat_index"] != checked[
-                a["question"]]["repeat_index"]):
-            answer = checked[a["question"]]["data"]
+        last_answer = checked[a["question"]] if execute == "update" else []
+        if execute == "update" and (
+            a["value"] != last_answer["value"] or a[
+                "repeat_index"] != last_answer["repeat_index"] or a[
+                    "comment"] != last_answer["comment"]):
+            answer = last_answer["data"]
             a = crud_answer.update_answer(session=session,
                                           answer=answer,
                                           repeat_index=a["repeat_index"],
+                                          comment=a["comment"],
                                           type=questions[a["question"]],
                                           value=a["value"])
         if execute == "new":
             answer = Answer(question=a["question"],
-                            data=data.id, created=datetime.now(),
-                            repeat_index=a["repeat_index"])
+                            data=data.id,
+                            created=datetime.now(),
+                            repeat_index=a["repeat_index"],
+                            comment=a["comment"])
             a = crud_answer.add_answer(session=session,
                                        answer=answer,
                                        type=questions[a["question"]],

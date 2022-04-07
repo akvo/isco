@@ -19,7 +19,8 @@ def add_question_group(session: Session,
                                    form=payload['form'],
                                    order=payload['order'],
                                    translations=payload['translations'],
-                                   repeat=payload['repeat'])
+                                   repeat=payload['repeat'],
+                                   repeat_text=payload['repeat_text'])
     if payload['member_access']:
         for ma in payload['member_access']:
             member = QuestionGroupMemberAccess(
@@ -76,6 +77,7 @@ def update_question_group(session: Session, id: int,
     question_group.order = payload['order']
     question_group.translations = payload['translations']
     question_group.repeat = payload['repeat']
+    question_group.repeat_text = payload['repeat_text']
     # Add member access
     if payload['member_access']:
         delete_member_access_by_group_id(session=session,

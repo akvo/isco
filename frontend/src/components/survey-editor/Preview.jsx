@@ -53,7 +53,7 @@ const Preview = () => {
       if (selectedMember && selectedMember.length) {
         transformedQuestionGroup = transformedQuestionGroup.filter(
           (qg) =>
-            qg.member_access.includes(selectedMember) ||
+            intersection(qg.member_access, selectedMember).length ||
             qg.member_access.includes(allAccessId)
         );
       }
@@ -65,6 +65,7 @@ const Preview = () => {
         );
       }
       transformedQuestionGroup = transformedQuestionGroup.map((qg) => {
+        let group = qg;
         const questions = qg.question.map((q) => {
           let qVal = {
             id: q.id,
@@ -248,18 +249,35 @@ const Preview = () => {
         });
         // repeatable
         if (qg.repeat) {
-          return {
-            ...qg,
+          group = {
+            ...group,
             repeatable: qg.repeat,
+            repeatText: qg.repeat_text,
             repeatButtonPlacement: "bottom",
             question: orderBy(questions, ["order"]),
           };
         }
-        return {
-          ...qg,
+        if (qg?.translations && qg.translations.length) {
+          const translations = qg.translations.map((t) => {
+            if (t?.repeat_text) {
+              return {
+                ...t,
+                repeatText: t.repeat_text,
+              };
+            }
+            return t;
+          });
+          group = {
+            ...group,
+            translations: translations,
+          };
+        }
+        group = {
+          ...group,
           repeatable: qg.repeat,
           question: orderBy(questions, ["order"]),
         };
+        return group;
       });
       const transformedForm = {
         name: formName,
@@ -288,8 +306,8 @@ const Preview = () => {
   };
 
   const handleOnChangeIsco = (val) => {
-    setIsLoading(true);
     setSelectedIsco(val);
+    setIsLoading(true);
     setFormValue({});
   };
 
@@ -308,6 +326,7 @@ const Preview = () => {
           <div className="field-wrapper">
             <div className="field-label">Member Type</div>
             <Select
+              mode="multiple"
               allowClear
               showSearch
               className="custom-dropdown-wrapper bg-grey"
@@ -318,7 +337,7 @@ const Preview = () => {
               filterOption={(input, option) =>
                 option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
-              style={{ width: "20rem" }}
+              style={{ width: "22rem" }}
             />
           </div>
           <div className="field-wrapper">
@@ -335,7 +354,7 @@ const Preview = () => {
               filterOption={(input, option) =>
                 option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
-              style={{ width: "24rem" }}
+              style={{ width: "22rem" }}
             />
           </div>
         </Space>

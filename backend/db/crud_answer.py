@@ -43,11 +43,13 @@ def add_answer(
 def update_answer(
     session: Session, answer: Answer, type: QuestionType,
     repeat_index: int,
+    comment: str,
     value: Union[int, float, str, bool, List[str],
                  List[int], List[float]]
 ) -> AnswerDict:
     answer.updated = datetime.now()
     answer.repeat_index = repeat_index
+    answer.comment = comment
     answer = append_value(answer, value, type)
     session.commit()
     session.flush()

@@ -15,8 +15,12 @@ const WebformPage = ({ formId, setFormLoaded }) => {
 
   const [formValue, setFormValue] = useState({});
   const [errorPage, setErrorPage] = useState(false);
+  const [answer, setAnswer] = useState([]);
+  const [comment, setComment] = useState({});
+  const [deletedComment, setDeletedComment] = useState(null);
   const { notify } = useNotification();
 
+  // transform & filter form definition
   useEffect(() => {
     if (isEmpty(formValue) && formId && user) {
       api
@@ -52,8 +56,8 @@ const WebformPage = ({ formId, setFormLoaded }) => {
                     placement: "after",
                     content: (
                       <CommentField
-                        onChange={() => console.info(q.id)}
-                        onDelete={() => console.info(q.id)}
+                        onChange={(val) => onChangeComment(q.id, val)}
+                        onDelete={() => onDeleteComment(q.id)}
                       />
                     ),
                   },
@@ -80,45 +84,110 @@ const WebformPage = ({ formId, setFormLoaded }) => {
     }
   }, [formValue, formId, user, userMember, userIsco]);
 
-  const onChange = ({ current, values, progress }) => {
-    console.info(current, values, progress);
+  // set comment
+  useEffect(() => {
+    if (!isEmpty(comment) && answer.length) {
+      const { qid, comment: commentValue } = comment;
+      const findAnswer = answer.find((x) => x.question === qid);
+      if (findAnswer) {
+        // update answer
+        const updatedAnswer = answer.map((a) => {
+          let update = a;
+          if (a.question === qid) {
+            update = {
+              ...update,
+              comment: commentValue,
+            };
+          }
+          return update;
+        });
+        setAnswer(updatedAnswer);
+        setComment({});
+      }
+    }
+  }, [comment, answer]);
+
+  // delete comment
+  useEffect(() => {
+    if (deletedComment && answer.length) {
+      const findAnswer = answer.find((x) => x.question === deletedComment);
+      if (findAnswer) {
+        // update answer
+        const updatedAnswer = answer.map((a) => {
+          let update = a;
+          if (a.question === deletedComment) {
+            update = {
+              ...update,
+              comment: null,
+            };
+          }
+          return update;
+        });
+        setAnswer(updatedAnswer);
+        setDeletedComment(null);
+      }
+    }
+  }, [deletedComment, answer]);
+
+  const onChange = ({ /*current,*/ values /*, progress*/ }) => {
+    // console.info(current, progress);
+    const transformValues = Object.keys(values)
+      .map((key) => {
+        let question = key;
+        let repeatIndex = 0;
+        // manage repeat index
+        if (key.includes("-")) {
+          const split = key.split("-");
+          question = split[0];
+          repeatIndex = parseInt(split[1]);
+        }
+        // find comment
+        const qid = parseInt(question);
+        const findAnswer = answer.find((x) => x.question === qid);
+        return {
+          question: qid,
+          value: values[key],
+          repeat_index: repeatIndex,
+          comment: findAnswer ? findAnswer?.comment : null,
+        };
+      })
+      .filter((x) => x.value);
+    setAnswer(transformValues);
   };
 
-  const onFinish = (values) => {
-    const transformValues = Object.keys(values).map((key) => {
-      let question = key;
-      let repeatIndex = 0;
-      // manage repeat index
-      if (key.includes("-")) {
-        const split = key.split("-");
-        question = split[0];
-        repeatIndex = parseInt(split[1]);
-      }
-      return {
-        question: question,
-        value: values[key],
-        repeat_index: repeatIndex,
-      };
+  const onChangeComment = (qid, val) => {
+    setComment({
+      qid: qid,
+      comment: val.target.value,
     });
-    api
-      .post(`/data/form/${formId}/1`, transformValues, {
-        "content-type": "application/json",
-      })
-      .then(() => {
-        notify({
-          type: "success",
-          message: "Subission submitted successfully.",
+  };
+
+  const onDeleteComment = (qid) => {
+    setDeletedComment(qid);
+  };
+
+  const onFinish = (/*values*/) => {
+    if (answer.length) {
+      api
+        .post(`/data/form/${formId}/1`, answer, {
+          "content-type": "application/json",
+        })
+        .then(() => {
+          notify({
+            type: "success",
+            message: "Subission submitted successfully.",
+          });
+          setFormLoaded(null);
+          setFormValue({});
+        })
+        .catch((e) => {
+          console.error(e);
+          notify({
+            type: "error",
+            message: "Oops, something when wrong.",
+          });
         });
-        setFormLoaded(null);
-        setFormValue({});
-      })
-      .catch((e) => {
-        console.error(e);
-        notify({
-          type: "error",
-          message: "Oops, something when wrong.",
-        });
-      });
+    }
   };
 
   if (errorPage) {
