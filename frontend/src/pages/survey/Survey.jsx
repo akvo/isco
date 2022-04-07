@@ -9,13 +9,15 @@ const Survey = () => {
   const [selectedForm, setSelectedForm] = useState(null);
   const [formLoaded, setFormLoaded] = useState(null);
   const [formOptions, setFormOptions] = useState([]);
+  const [savedSubmissions, setSavedSubmissions] = useState([]);
 
   useEffect(() => {
     if (user) {
-      api
-        .get("/webform/options")
+      Promise.all([api.get("/webform/options"), api.get("/data/saved")])
         .then((res) => {
-          setFormOptions(res.data);
+          const [webforms, savedData] = res;
+          setFormOptions(webforms.data);
+          setSavedSubmissions(savedData.data);
         })
         .catch((e) => {
           console.error(e);
@@ -83,9 +85,16 @@ const Survey = () => {
           <Row align="middle" justify="space-between" gutter={[12, 12]}>
             <Col span={14}>
               <Select
+                showSearch
                 className="bg-grey"
                 placeholder="Select..."
-                options={[]}
+                options={savedSubmissions.map((x) => ({
+                  label: x.name,
+                  value: x.id,
+                }))}
+                filterOption={(input, option) =>
+                  option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               />
             </Col>
             <Col span={10}>
@@ -102,11 +111,15 @@ const Survey = () => {
           <Row align="middle" justify="space-between" gutter={[12, 12]}>
             <Col span={18}>
               <Select
+                showSearch
                 className="bg-grey"
                 placeholder="Select..."
                 options={formOptions}
                 onChange={handleOnChangeNewForm}
                 value={selectedForm}
+                filterOption={(input, option) =>
+                  option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               />
             </Col>
             <Col span={6}>

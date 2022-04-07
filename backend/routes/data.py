@@ -114,8 +114,7 @@ def get_saved_data_by_organisation(req: Request,
     data = crud.get_data_by_organisation(session=session,
                                          organisation=user.organisation)
     if not data:
-        raise HTTPException(status_code=404,
-                            detail="no saved data")
+        return []
     return [d.to_options for d in data]
 
 
