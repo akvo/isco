@@ -277,7 +277,6 @@ const Preview = () => {
           repeatable: qg.repeat,
           question: orderBy(questions, ["order"]),
         };
-        console.log(group);
         return group;
       });
       const transformedForm = {
