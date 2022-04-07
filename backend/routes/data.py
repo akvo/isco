@@ -193,8 +193,10 @@ def update_by_id(req: Request,
     current_answers = crud_answer.get_answer_by_data_and_question(
         session=session, data=id, questions=[a["question"] for a in answers])
     checked = {}
+    # dict key is pair of questionid_repeat_index
     [checked.update(a.to_dict) for a in current_answers]
     for a in answers:
+        key = f"{a['question']}_{a['repeat_index']}"
         execute = "update"
         if a["question"] not in list(questions):
             raise HTTPException(
@@ -202,17 +204,17 @@ def update_by_id(req: Request,
                 detail="question {} is not part of this form".format(
                     a["question"]))
         a.update({"type": questions[a["question"]]})
+        last_answer = []
         if a["type"] == QuestionType.option:
             a.update({"value": [a["value"]]})
-        if a['question'] in list(checked):
+        if key in list(checked):
             execute = "update"
+            last_answer = checked[key]
         else:
             execute = "new"
-        last_answer = checked[a["question"]] if execute == "update" else []
         if execute == "update" and (
             a["value"] != last_answer["value"] or a[
-                "repeat_index"] != last_answer["repeat_index"] or a[
-                    "comment"] != last_answer["comment"]):
+                "comment"] != last_answer["comment"]):
             answer = last_answer["data"]
             a = crud_answer.update_answer(session=session,
                                           answer=answer,

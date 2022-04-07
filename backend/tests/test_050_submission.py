@@ -98,6 +98,21 @@ class TestSubmissionRoutes():
                 "comment": "Add comment on update",
                 "value": "Female"
             }, {
+                "question": 1,
+                "repeat_index": 1,
+                "comment": None,
+                "value": "Option 1"
+            }, {
+                "question": 2,
+                "repeat_index": 1,
+                "comment": None,
+                "value": "Test repeat"
+            }, {
+                "question": 3,
+                "repeat_index": 1,
+                "comment": None,
+                "value": "Male"
+            }, {
                 "question": 4,
                 "comment": "Q4 comment",
                 "repeat_index": 0,
@@ -137,6 +152,24 @@ class TestSubmissionRoutes():
                     "value": "Female"
                 },
                 {
+                    "comment": None,
+                    "question": 1,
+                    "repeat_index": 1,
+                    "value": "Option 1"
+                },
+                {
+                    "comment": None,
+                    "question": 2,
+                    "repeat_index": 1,
+                    "value": "Test repeat"
+                },
+                {
+                    "comment": None,
+                    "question": 3,
+                    "repeat_index": 1,
+                    "value": "Male"
+                },
+                {
                     "comment": "Q4 comment",
                     "question": 4,
                     "repeat_index": 0,
@@ -164,6 +197,11 @@ class TestSubmissionRoutes():
                 "repeat_index": 0,
                 "comment": "Q3 comment",
                 "value": "Male"
+            }, {
+                "question": 3,
+                "repeat_index": 1,
+                "comment": "Q3 comment 1",
+                "value": "Female"
             }, {
                 "question": 4,
                 "repeat_index": 0,
@@ -207,6 +245,24 @@ class TestSubmissionRoutes():
                     "question": 3,
                     "repeat_index": 0,
                     "value": "Male"
+                },
+                {
+                    "comment": None,
+                    "question": 1,
+                    "repeat_index": 1,
+                    "value": "Option 1"
+                },
+                {
+                    "comment": None,
+                    "question": 2,
+                    "repeat_index": 1,
+                    "value": "Test repeat"
+                },
+                {
+                    "comment": "Q3 comment 1",
+                    "question": 3,
+                    "repeat_index": 1,
+                    "value": "Female"
                 },
                 {
                     "comment": "Q4 comment",

@@ -103,7 +103,7 @@ class Answer(Base):
     @property
     def to_dict(self) -> TypedDict:
         return {
-            self.question: {
+            f"{self.question}_{self.repeat_index}": {
                 "value": self.text or self.value or self.options,
                 "repeat_index": self.repeat_index,
                 "comment": self.comment,
