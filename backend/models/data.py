@@ -41,6 +41,7 @@ class DataOptionDict(TypedDict):
     form: int
     name: str
     organisation: str
+    created_by: str
     created: Optional[str] = None
 
 
@@ -138,12 +139,19 @@ class Data(Base):
 
     @property
     def to_options(self) -> DataOptionDict:
+        organisation = self.organisation_detail.name
+        created_by = self.created_by_user.name
+        created = self.created.strftime("%B %d, %Y")
+        name = f"{organisation} - {created_by} - {created}"
+        if self.name:
+            name = self.name
         return {
             "id": self.id,
-            "name": self.name,
+            "name": name,
             "form": self.form,
-            "organisation": self.organisation_detail.name,
-            "created": self.created.strftime("%B %d, %Y"),
+            "organisation": organisation,
+            "created_by": created_by,
+            "created": created,
         }
 
 

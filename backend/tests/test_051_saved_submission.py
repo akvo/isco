@@ -59,8 +59,9 @@ class TestSavedSubmissionRoute():
         assert len(res) > 0
         assert res[0] == {
             "created": today,
+            "created_by": "John Doe",
             "form": 1,
             "id": 3,
-            "name": "",
+            "name": f"Akvo - John Doe - {today}",
             "organisation": "Akvo",
         }
