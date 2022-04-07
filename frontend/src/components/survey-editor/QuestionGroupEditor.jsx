@@ -40,7 +40,7 @@ const QuestionGroupSetting = ({
   const { member_type, isco_type } = optionValues;
   const { languages } = surveyEditor;
   const qgId = questionGroup?.id;
-  const { name, description } = questionGroup;
+  const { name, description, repeat_text } = questionGroup;
   const [groupTranslationVisible, setGroupTranslationVisible] = useState(false);
 
   const disabledOptions = (dropdownValues, selectedValue) => {
@@ -127,15 +127,28 @@ const QuestionGroupSetting = ({
                   >
                     <Input />
                   </Form.Item>
-                  <Space>
-                    Repeat{" "}
-                    <Switch
-                      size="small"
-                      onChange={(val) =>
-                        onChangeRepeat(val, `question_group-${qgId}-repeat`)
-                      }
-                      checked={repeat}
-                    />
+                  <Space size="large" style={{ height: "40px" }}>
+                    <Space size="small">
+                      Repeat{" "}
+                      <Switch
+                        size="small"
+                        onChange={(val) =>
+                          onChangeRepeat(val, `question_group-${qgId}-repeat`)
+                        }
+                        checked={repeat}
+                      />
+                    </Space>
+                    {repeat && (
+                      <Form.Item
+                        name={`question_group-${qgId}-repeat_text`}
+                        style={{ marginTop: "20px" }}
+                      >
+                        <Input
+                          placeholder="Type repeat text here..."
+                          style={{ width: "345px" }}
+                        />
+                      </Form.Item>
+                    )}
                   </Space>
                 </Col>
                 <Col span={7}>
@@ -220,6 +233,20 @@ const QuestionGroupSetting = ({
                   >
                     <Input.TextArea
                       rows={3}
+                      placeholder={`Enter ${isoLangs?.[lang]?.name} translation`}
+                    />
+                  </Form.Item>
+                </div>
+              )}
+              {repeat && repeat_text && (
+                <div className="qge-setting-tab-body">
+                  <Form.Item
+                    label={
+                      <div className="translation-label">{repeat_text}</div>
+                    }
+                    name={`question_group-${qgId}-translations-${lang}-repeat_text`}
+                  >
+                    <Input
                       placeholder={`Enter ${isoLangs?.[lang]?.name} translation`}
                     />
                   </Form.Item>

@@ -65,6 +65,7 @@ const Preview = () => {
         );
       }
       transformedQuestionGroup = transformedQuestionGroup.map((qg) => {
+        let group = qg;
         const questions = qg.question.map((q) => {
           let qVal = {
             id: q.id,
@@ -248,18 +249,36 @@ const Preview = () => {
         });
         // repeatable
         if (qg.repeat) {
-          return {
-            ...qg,
+          group = {
+            ...group,
             repeatable: qg.repeat,
+            repeatText: qg.repeat_text,
             repeatButtonPlacement: "bottom",
             question: orderBy(questions, ["order"]),
           };
         }
-        return {
-          ...qg,
+        if (qg?.translations && qg.translations.length) {
+          const translations = qg.translations.map((t) => {
+            if (t?.repeat_text) {
+              return {
+                ...t,
+                repeatText: t.repeat_text,
+              };
+            }
+            return t;
+          });
+          group = {
+            ...group,
+            translations: translations,
+          };
+        }
+        group = {
+          ...group,
           repeatable: qg.repeat,
           question: orderBy(questions, ["order"]),
         };
+        console.log(group);
+        return group;
       });
       const transformedForm = {
         name: formName,

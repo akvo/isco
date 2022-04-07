@@ -124,6 +124,7 @@ class QuestionGroup(Base):
             translations = []
             for lang in self.translations:
                 tmp = {
+                    "language": lang['language'],
                     "name": lang['name'],
                     "description": lang['description']
                 }
