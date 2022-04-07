@@ -14,6 +14,7 @@ from models.answer import AnswerDict, AnswerBase
 from .form import Form
 from .answer import Answer
 from .user import User
+from .organisation import Organisation
 
 
 class GeoData(BaseModel):
@@ -28,6 +29,7 @@ class DataDict(TypedDict):
     geo: Optional[GeoData] = None
     created: Optional[str] = None
     created_by: str
+    organisation: str
     submitted_by: Optional[str] = None
     updated: Optional[str] = None
     submitted: Optional[str] = None
@@ -48,6 +50,7 @@ class Data(Base):
     name = Column(String)
     geo = Column(pg.ARRAY(Float), nullable=True)
     created_by = Column(Integer, ForeignKey(User.id))
+    organisation = Column(Integer(), ForeignKey(Organisation.id))
     submitted_by = Column(Integer, ForeignKey(User.id), nullable=True)
     created = Column(DateTime, nullable=True)
     updated = Column(DateTime, nullable=True)
@@ -58,15 +61,18 @@ class Data(Base):
                           backref="answer",
                           order_by=Answer.id.asc())
     created_by_user = relationship(User, foreign_keys=[created_by])
+    organisation_detail = relationship(Organisation,
+                                       foreign_keys=[organisation])
     submitted_by_user = relationship(User, foreign_keys=[submitted_by])
 
     def __init__(self, name: str, form: int, geo: List[float],
-                 created_by: int, submitted_by: int, updated: datetime,
-                 created: datetime, submitted: datetime):
+                 created_by: int, organisation: int, submitted_by: int,
+                 updated: datetime, created: datetime, submitted: datetime):
         self.name = name
         self.form = form
         self.geo = geo
         self.created_by = created_by
+        self.organisation = organisation
         self.submitted_by = submitted_by
         self.created = created
         self.updated = updated
@@ -86,6 +92,7 @@ class Data(Base):
                 "long": self.geo[1]
             } if self.geo else None,
             "created_by": self.created_by_user.name,
+            "organisation": self.organisation_detail.name,
             "submitted_by":
             self.submitted_by_user.name if self.submitted_by else None,
             "created": self.created.strftime("%B %d, %Y"),
@@ -106,6 +113,8 @@ class Data(Base):
             f"{self.geo[0], self.geo[1]}" if self.geo else None,
             "created_by":
             self.created_by_user.name,
+            "organisation":
+            self.organisation_detail.name,
             "submitted_by":
             self.submitted_by_user.name if self.submitted_by else None,
             "created_at":
@@ -126,6 +135,7 @@ class DataBase(BaseModel):
     name: str
     geo: Optional[GeoData] = None
     created_by: str
+    organisation: str
     submitted_by: Optional[str] = None
     created: Optional[str] = None
     updated: Optional[str] = None

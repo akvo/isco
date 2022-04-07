@@ -94,6 +94,7 @@ def add(req: Request,
                          name=name,
                          geo=geo,
                          created_by=user.id,
+                         organisation=user.organisation,
                          answers=answerlist,
                          submitted=submitted)
     return data.serialize
