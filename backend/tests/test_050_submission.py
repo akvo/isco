@@ -30,14 +30,17 @@ class TestSubmissionRoutes():
             json=[{
                 "question": 1,
                 "repeat_index": 0,
+                "comment": None,
                 "value": "Option 1"
             }, {
                 "question": 2,
                 "repeat_index": 0,
+                "comment": "This is comment",
                 "value": "Depend to Q1 Option 1"
             }, {
                 "question": 3,
                 "repeat_index": 0,
+                "comment": None,
                 "value": "Male"
             }],
             headers={"Authorization": f"Bearer {account.token}"})
@@ -55,16 +58,19 @@ class TestSubmissionRoutes():
             "submitted": None,
             "answer": [
                 {
+                    "comment": None,
                     "question": 1,
                     "repeat_index": 0,
                     "value": "Option 1"
                 },
                 {
+                    "comment": "This is comment",
                     "question": 2,
                     "repeat_index": 0,
                     "value": "Depend to Q1 Option 1"
                 },
                 {
+                    "comment": None,
                     "question": 3,
                     "repeat_index": 0,
                     "value": "Male"
@@ -88,9 +94,11 @@ class TestSubmissionRoutes():
             json=[{
                 "question": 3,
                 "repeat_index": 0,
+                "comment": "Add comment on update",
                 "value": "Female"
             }, {
                 "question": 4,
+                "comment": "Q4 comment",
                 "repeat_index": 0,
                 "value": 20
             }],
@@ -109,21 +117,25 @@ class TestSubmissionRoutes():
             "submitted": None,
             "answer": [
                 {
+                    "comment": None,
                     "question": 1,
                     "repeat_index": 0,
                     "value": "Option 1"
                 },
                 {
+                    "comment": "This is comment",
                     "question": 2,
                     "repeat_index": 0,
                     "value": "Depend to Q1 Option 1"
                 },
                 {
+                    "comment": "Add comment on update",
                     "question": 3,
                     "repeat_index": 0,
                     "value": "Female"
                 },
                 {
+                    "comment": "Q4 comment",
                     "question": 4,
                     "repeat_index": 0,
                     "value": 20
@@ -148,14 +160,17 @@ class TestSubmissionRoutes():
             json=[{
                 "question": 3,
                 "repeat_index": 0,
+                "comment": "Q3 comment",
                 "value": "Male"
             }, {
                 "question": 4,
                 "repeat_index": 0,
+                "comment": "Q4 comment",
                 "value": 25
             }, {
                 "question": 5,
                 "repeat_index": 0,
+                "comment": "Q5 comment",
                 "value": 75
             }],
             headers={"Authorization": f"Bearer {account.token}"})
@@ -173,26 +188,31 @@ class TestSubmissionRoutes():
             "submitted": today,
             "answer": [
                 {
+                    "comment": None,
                     "question": 1,
                     "repeat_index": 0,
                     "value": "Option 1"
                 },
                 {
+                    "comment": "This is comment",
                     "question": 2,
                     "repeat_index": 0,
                     "value": "Depend to Q1 Option 1"
                 },
                 {
+                    "comment": "Q3 comment",
                     "question": 3,
                     "repeat_index": 0,
                     "value": "Male"
                 },
                 {
+                    "comment": "Q4 comment",
                     "question": 4,
                     "repeat_index": 0,
                     "value": 25
                 },
                 {
+                    "comment": "Q5 comment",
                     "question": 5,
                     "repeat_index": 0,
                     "value": 75
@@ -208,22 +228,27 @@ class TestSubmissionRoutes():
             json=[{
                 "question": 1,
                 "repeat_index": 0,
+                "comment": None,
                 "value": "Option 1"
             }, {
                 "question": 2,
                 "repeat_index": 0,
+                "comment": None,
                 "value": "Direct submit"
             }, {
                 "question": 3,
                 "repeat_index": 0,
+                "comment": None,
                 "value": "Female"
             }, {
                 "question": 4,
                 "repeat_index": 0,
+                "comment": None,
                 "value": 35
             }, {
                 "question": 5,
                 "repeat_index": 0,
+                "comment": "Q5 comment",
                 "value": 55
             }],
             headers={"Authorization": f"Bearer {account.token}"})
@@ -241,26 +266,31 @@ class TestSubmissionRoutes():
             "submitted": today,
             "answer": [
                 {
+                    "comment": None,
                     "question": 1,
                     "repeat_index": 0,
                     "value": "Option 1"
                 },
                 {
+                    "comment": None,
                     "question": 2,
                     "repeat_index": 0,
                     "value": "Direct submit"
                 },
                 {
+                    "comment": None,
                     "question": 3,
                     "repeat_index": 0,
                     "value": "Female"
                 },
                 {
+                    "comment": None,
                     "question": 4,
                     "repeat_index": 0,
                     "value": 35
                 },
                 {
+                    "comment": "Q5 comment",
                     "question": 5,
                     "repeat_index": 0,
                     "value": 55
@@ -292,26 +322,31 @@ class TestSubmissionRoutes():
             "submitted": today,
             "answer": [
                 {
+                    "comment": None,
                     "question": 1,
                     "repeat_index": 0,
                     "value": "Option 1"
                 },
                 {
+                    "comment": None,
                     "question": 2,
                     "repeat_index": 0,
                     "value": "Direct submit"
                 },
                 {
+                    "comment": None,
                     "question": 3,
                     "repeat_index": 0,
                     "value": "Female"
                 },
                 {
+                    "comment": None,
                     "question": 4,
                     "repeat_index": 0,
                     "value": 35
                 },
                 {
+                    "comment": "Q5 comment",
                     "question": 5,
                     "repeat_index": 0,
                     "value": 55
