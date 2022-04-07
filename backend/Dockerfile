@@ -10,4 +10,4 @@ RUN set -e; \
     pip check
 
 
-CMD ["sh", "./run.sh"]
+CMD ["sh", "./run-prod.sh"]

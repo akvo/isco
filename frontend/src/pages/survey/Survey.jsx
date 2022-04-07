@@ -9,13 +9,25 @@ const Survey = () => {
   const [selectedForm, setSelectedForm] = useState(null);
   const [formLoaded, setFormLoaded] = useState(null);
   const [formOptions, setFormOptions] = useState([]);
+  const [savedSubmissions, setSavedSubmissions] = useState([]);
+  const [selectedSavedSubmission, setSelectedSavedSubmission] = useState(null);
+  const [initialValues, setInitialValues] = useState(null);
+
+  const loadInitialValues = (dataId) =>
+    api
+      .get(`/data/${dataId}`)
+      .then((res) => {
+        setInitialValues(res.data);
+      })
+      .catch((e) => console.error(e));
 
   useEffect(() => {
     if (user) {
-      api
-        .get("/webform/options")
+      Promise.all([api.get("/webform/options"), api.get("/data/saved")])
         .then((res) => {
-          setFormOptions(res.data);
+          const [webforms, savedData] = res;
+          setFormOptions(webforms.data);
+          setSavedSubmissions(savedData.data);
         })
         .catch((e) => {
           console.error(e);
@@ -27,8 +39,14 @@ const Survey = () => {
     setSelectedForm(val);
   };
 
+  const handleOnChangeSavedSubmissionDropdown = (dataId) => {
+    const findData = savedSubmissions.find((x) => x.id === dataId);
+    setSelectedSavedSubmission(findData);
+  };
+
   const onOkModal = () => {
     setFormLoaded(null);
+    setInitialValues(null);
     store.update((s) => {
       s.notificationModal = {
         ...s.notificationModal,
@@ -39,7 +57,15 @@ const Survey = () => {
       };
     });
     setTimeout(() => {
-      setFormLoaded(selectedForm);
+      if (selectedForm) {
+        setFormLoaded(selectedForm);
+        return;
+      }
+      if (selectedSavedSubmission) {
+        setFormLoaded(selectedSavedSubmission.form);
+        loadInitialValues(selectedSavedSubmission.id);
+        return;
+      }
     }, 100);
   };
 
@@ -64,6 +90,28 @@ const Survey = () => {
     }
   };
 
+  const handleOnClickOpenSavedForm = () => {
+    if (formLoaded) {
+      // show modal
+      store.update((s) => {
+        s.notificationModal = {
+          ...s.notificationModal,
+          saveFormData: {
+            ...s.notificationModal.saveFormData,
+            visible: true,
+            onOk: () => onOkModal(),
+          },
+        };
+      });
+      return;
+    }
+    if (selectedSavedSubmission) {
+      setFormLoaded(selectedSavedSubmission.form);
+      loadInitialValues(selectedSavedSubmission.id);
+      return;
+    }
+  };
+
   return (
     <div id="survey" className="container">
       <Row>
@@ -83,15 +131,24 @@ const Survey = () => {
           <Row align="middle" justify="space-between" gutter={[12, 12]}>
             <Col span={14}>
               <Select
+                showSearch
                 className="bg-grey"
                 placeholder="Select..."
-                options={[]}
+                options={savedSubmissions.map((x) => ({
+                  label: x.name,
+                  value: x.id,
+                }))}
+                value={selectedSavedSubmission?.id}
+                filterOption={(input, option) =>
+                  option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+                onChange={handleOnChangeSavedSubmissionDropdown}
               />
             </Col>
             <Col span={10}>
               <Space>
                 <Button>Refresh</Button>
-                <Button>Open</Button>
+                <Button onClick={handleOnClickOpenSavedForm}>Open</Button>
                 <Button>Collaborators</Button>
               </Space>
             </Col>
@@ -102,11 +159,15 @@ const Survey = () => {
           <Row align="middle" justify="space-between" gutter={[12, 12]}>
             <Col span={18}>
               <Select
+                showSearch
                 className="bg-grey"
                 placeholder="Select..."
                 options={formOptions}
                 onChange={handleOnChangeNewForm}
                 value={selectedForm}
+                filterOption={(input, option) =>
+                  option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               />
             </Col>
             <Col span={6}>
@@ -121,7 +182,11 @@ const Survey = () => {
       <hr />
       {/* Webform load here */}
       {formLoaded && (
-        <WebformPage formId={formLoaded} setFormLoaded={setFormLoaded} />
+        <WebformPage
+          formId={formLoaded}
+          setFormLoaded={setFormLoaded}
+          initialValues={initialValues}
+        />
       )}
     </div>
   );

@@ -13,7 +13,7 @@ from db import crud_form
 from models.answer import Answer, AnswerDict
 from models.question import QuestionType
 from db.connection import get_session
-from models.data import DataResponse, DataDict
+from models.data import DataResponse, DataDict, DataOptionDict
 from middleware import verify_editor, verify_super_admin
 
 security = HTTPBearer()
@@ -57,6 +57,7 @@ def add(req: Request,
         form_id: int,
         submitted: int,
         answers: List[AnswerDict],
+        locked_by: Optional[int] = None,
         session: Session = Depends(get_session),
         credentials: credentials = Depends(security)):
     user = verify_editor(session=session,
@@ -93,10 +94,30 @@ def add(req: Request,
                          form=form_id,
                          name=name,
                          geo=geo,
+                         locked_by=locked_by,
                          created_by=user.id,
+                         organisation=user.organisation,
                          answers=answerlist,
                          submitted=submitted)
     return data.serialize
+
+
+@data_route.get("/data/saved",
+                response_model=List[DataOptionDict],
+                summary="get saved data by login user organisation",
+                name="data:get_saved_data_by_organisation",
+                tags=["Data"])
+def get_saved_data_by_organisation(req: Request,
+                                   session: Session = Depends(get_session),
+                                   credentials: credentials = Depends(security)
+                                   ):
+    user = verify_editor(session=session,
+                         authenticated=req.state.authenticated)
+    data = crud.get_data_by_organisation(session=session,
+                                         organisation=user.organisation)
+    if not data:
+        return []
+    return [d.to_options for d in data]
 
 
 @data_route.get("/data/{id:path}",
@@ -158,6 +179,7 @@ def update_by_id(req: Request,
                  id: int,
                  submitted: int,
                  answers: List[AnswerDict],
+                 locked_by: Optional[int] = None,
                  session: Session = Depends(get_session),
                  credentials: credentials = Depends(security)):
     user = verify_editor(session=session,
@@ -173,8 +195,10 @@ def update_by_id(req: Request,
     current_answers = crud_answer.get_answer_by_data_and_question(
         session=session, data=id, questions=[a["question"] for a in answers])
     checked = {}
+    # dict key is pair of questionid_repeat_index
     [checked.update(a.to_dict) for a in current_answers]
     for a in answers:
+        key = f"{a['question']}_{a['repeat_index']}"
         execute = "update"
         if a["question"] not in list(questions):
             raise HTTPException(
@@ -182,17 +206,17 @@ def update_by_id(req: Request,
                 detail="question {} is not part of this form".format(
                     a["question"]))
         a.update({"type": questions[a["question"]]})
+        last_answer = []
         if a["type"] == QuestionType.option:
             a.update({"value": [a["value"]]})
-        if a['question'] in list(checked):
+        if key in list(checked):
             execute = "update"
+            last_answer = checked[key]
         else:
             execute = "new"
-        last_answer = checked[a["question"]] if execute == "update" else []
         if execute == "update" and (
             a["value"] != last_answer["value"] or a[
-                "repeat_index"] != last_answer["repeat_index"] or a[
-                    "comment"] != last_answer["comment"]):
+                "comment"] != last_answer["comment"]):
             answer = last_answer["data"]
             a = crud_answer.update_answer(session=session,
                                           answer=answer,
@@ -211,6 +235,7 @@ def update_by_id(req: Request,
                                        type=questions[a["question"]],
                                        value=a["value"])
         if execute:
+            data.locked_by = locked_by
             data.updated = datetime.now()
             data.submitted = submitted_date
             data.submitted_by = submitted_by

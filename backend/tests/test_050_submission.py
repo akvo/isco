@@ -27,6 +27,7 @@ class TestSubmissionRoutes():
                              client: AsyncClient) -> None:
         res = await client.post(
             app.url_path_for("data:create", form_id=1, submitted=0),
+            params={"locked_by": 1},
             json=[{
                 "question": 1,
                 "repeat_index": 0,
@@ -51,8 +52,10 @@ class TestSubmissionRoutes():
             "form": 1,
             "name": "Depend to Q1 Option 1",
             "geo": None,
+            "locked_by": 1,
             "created": today,
             "created_by": "John Doe",
+            "organisation": "Akvo",
             "submitted_by": None,
             "updated": None,
             "submitted": None,
@@ -97,6 +100,21 @@ class TestSubmissionRoutes():
                 "comment": "Add comment on update",
                 "value": "Female"
             }, {
+                "question": 1,
+                "repeat_index": 1,
+                "comment": None,
+                "value": "Option 1"
+            }, {
+                "question": 2,
+                "repeat_index": 1,
+                "comment": None,
+                "value": "Test repeat"
+            }, {
+                "question": 3,
+                "repeat_index": 1,
+                "comment": None,
+                "value": "Male"
+            }, {
                 "question": 4,
                 "comment": "Q4 comment",
                 "repeat_index": 0,
@@ -110,8 +128,10 @@ class TestSubmissionRoutes():
             "form": 1,
             "name": "Depend to Q1 Option 1",
             "geo": None,
+            "locked_by": None,
             "created": today,
             "created_by": "John Doe",
+            "organisation": "Akvo",
             "submitted_by": None,
             "updated": today,
             "submitted": None,
@@ -133,6 +153,24 @@ class TestSubmissionRoutes():
                     "question": 3,
                     "repeat_index": 0,
                     "value": "Female"
+                },
+                {
+                    "comment": None,
+                    "question": 1,
+                    "repeat_index": 1,
+                    "value": "Option 1"
+                },
+                {
+                    "comment": None,
+                    "question": 2,
+                    "repeat_index": 1,
+                    "value": "Test repeat"
+                },
+                {
+                    "comment": None,
+                    "question": 3,
+                    "repeat_index": 1,
+                    "value": "Male"
                 },
                 {
                     "comment": "Q4 comment",
@@ -157,11 +195,17 @@ class TestSubmissionRoutes():
         # update data
         res = await client.put(
             app.url_path_for("data:update", id=1, submitted=1),
+            params={"locked_by": 1},
             json=[{
                 "question": 3,
                 "repeat_index": 0,
                 "comment": "Q3 comment",
                 "value": "Male"
+            }, {
+                "question": 3,
+                "repeat_index": 1,
+                "comment": "Q3 comment 1",
+                "value": "Female"
             }, {
                 "question": 4,
                 "repeat_index": 0,
@@ -181,8 +225,10 @@ class TestSubmissionRoutes():
             "form": 1,
             "name": "Depend to Q1 Option 1",
             "geo": None,
+            "locked_by": 1,
             "created": today,
             "created_by": "John Doe",
+            "organisation": "Akvo",
             "submitted_by": "John Doe",
             "updated": today,
             "submitted": today,
@@ -206,6 +252,24 @@ class TestSubmissionRoutes():
                     "value": "Male"
                 },
                 {
+                    "comment": None,
+                    "question": 1,
+                    "repeat_index": 1,
+                    "value": "Option 1"
+                },
+                {
+                    "comment": None,
+                    "question": 2,
+                    "repeat_index": 1,
+                    "value": "Test repeat"
+                },
+                {
+                    "comment": "Q3 comment 1",
+                    "question": 3,
+                    "repeat_index": 1,
+                    "value": "Female"
+                },
+                {
                     "comment": "Q4 comment",
                     "question": 4,
                     "repeat_index": 0,
@@ -225,6 +289,7 @@ class TestSubmissionRoutes():
                                client: AsyncClient) -> None:
         res = await client.post(
             app.url_path_for("data:create", form_id=1, submitted=1),
+            params={"locked_by": 1},
             json=[{
                 "question": 1,
                 "repeat_index": 0,
@@ -259,8 +324,10 @@ class TestSubmissionRoutes():
             "form": 1,
             "name": "Direct submit",
             "geo": None,
+            "locked_by": 1,
             "created": today,
             "created_by": "John Doe",
+            "organisation": "Akvo",
             "submitted_by": "John Doe",
             "updated": today,
             "submitted": today,
@@ -315,8 +382,10 @@ class TestSubmissionRoutes():
             "form": 1,
             "name": "Direct submit",
             "geo": None,
+            "locked_by": 1,
             "created": today,
             "created_by": "John Doe",
+            "organisation": "Akvo",
             "submitted_by": "John Doe",
             "updated": today,
             "submitted": today,

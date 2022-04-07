@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./style.scss";
-import { Spin } from "antd";
+import { Spin, Button } from "antd";
 import { Webform } from "akvo-react-form";
 import { api, store } from "../../lib";
 import { useNotification } from "../../util";
@@ -8,7 +8,15 @@ import { intersection, isEmpty } from "lodash";
 import ErrorPage from "../error/ErrorPage";
 import { CommentField } from "../../components";
 
-const WebformPage = ({ formId, setFormLoaded }) => {
+const SaveButton = ({ onClick, isSaving }) => (
+  <Button loading={isSaving} onClick={onClick}>
+    Save
+  </Button>
+);
+
+const WebformPage = ({ formId, setFormLoaded, initialValues }) => {
+  const { notify } = useNotification();
+
   const user = store.useState((s) => s.user);
   const { member: userMember, isco: userIsco } = user.organisation;
   const allAccess = "All";
@@ -18,7 +26,19 @@ const WebformPage = ({ formId, setFormLoaded }) => {
   const [answer, setAnswer] = useState([]);
   const [comment, setComment] = useState({});
   const [deletedComment, setDeletedComment] = useState(null);
-  const { notify } = useNotification();
+  const [isSaving, setIsSaving] = useState(false);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [disableSubmit, setDisableSubmit] = useState(true);
+  // save savedData here, for loaded form this must be saved when loading form value
+  const [savedData, setSavedData] = useState(null);
+
+  // manage savedData state
+  useEffect(() => {
+    if (!isEmpty(initialValues) && isEmpty(savedData)) {
+      setSavedData(initialValues);
+    }
+  }, [initialValues, savedData]);
 
   // transform & filter form definition
   useEffect(() => {
@@ -152,6 +172,7 @@ const WebformPage = ({ formId, setFormLoaded }) => {
         };
       })
       .filter((x) => x.value);
+    setDisableSubmit(transformValues.length === 0);
     setAnswer(transformValues);
   };
 
@@ -168,10 +189,15 @@ const WebformPage = ({ formId, setFormLoaded }) => {
 
   const onFinish = (/*values*/) => {
     if (answer.length) {
-      api
-        .post(`/data/form/${formId}/1`, answer, {
-          "content-type": "application/json",
-        })
+      setIsSubmitting(true);
+      const endpoint = !savedData
+        ? api.post(`/data/form/${formId}/1`, answer, {
+            "content-type": "application/json",
+          })
+        : api.put(`/data/${savedData?.id}/1`, answer, {
+            "content-type": "application/json",
+          });
+      endpoint
         .then(() => {
           notify({
             type: "success",
@@ -186,6 +212,40 @@ const WebformPage = ({ formId, setFormLoaded }) => {
             type: "error",
             message: "Oops, something when wrong.",
           });
+        })
+        .finally(() => {
+          setIsSubmitting(false);
+        });
+    }
+  };
+
+  const handleOnClickSaveButton = () => {
+    if (answer.length) {
+      setIsSaving(true);
+      const endpoint = !savedData
+        ? api.post(`/data/form/${formId}/0`, answer, {
+            "content-type": "application/json",
+          })
+        : api.put(`/data/${savedData?.id}/0`, answer, {
+            "content-type": "application/json",
+          });
+      endpoint
+        .then((res) => {
+          setSavedData(res.data);
+          notify({
+            type: "success",
+            message: "Subission saved successfully.",
+          });
+        })
+        .catch((e) => {
+          console.error(e);
+          notify({
+            type: "error",
+            message: "Oops, something when wrong.",
+          });
+        })
+        .finally(() => {
+          setIsSaving(false);
         });
     }
   };
@@ -196,8 +256,20 @@ const WebformPage = ({ formId, setFormLoaded }) => {
 
   return (
     <div id="webform">
+      {/* TODO::loading need to wait for initialValues if load saved submssion */}
       {!isEmpty(formValue) ? (
-        <Webform forms={formValue} onChange={onChange} onFinish={onFinish} />
+        <Webform
+          forms={formValue}
+          onChange={onChange}
+          onFinish={onFinish}
+          extraButton={
+            <SaveButton onClick={handleOnClickSaveButton} isSaving={isSaving} />
+          }
+          submitButtonSetting={{
+            loading: isSubmitting,
+            disabled: disableSubmit,
+          }}
+        />
       ) : (
         <div className="loading-wrapper">
           <Spin />

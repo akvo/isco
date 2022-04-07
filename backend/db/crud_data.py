@@ -2,11 +2,10 @@ from datetime import datetime
 from typing import List, Optional
 from typing_extensions import TypedDict
 from sqlalchemy.orm import Session
-from sqlalchemy import desc, and_
-from models.data import Data, DataDict
+from sqlalchemy import desc, and_, null
+from models.data import Data, DataDict, DataOptionDict
 from models.answer import Answer
 from models.answer import AnswerBase
-from models.user import User
 from util.survey_config import MEMBER_SURVEY
 
 
@@ -18,7 +17,9 @@ class PaginatedData(TypedDict):
 def add_data(session: Session,
              name: str,
              form: int,
+             locked_by: int,
              created_by: int,
+             organisation: int,
              answers: List[AnswerBase],
              submitted: Optional[int] = 0,
              geo: Optional[List[float]] = None) -> DataDict:
@@ -32,7 +33,9 @@ def add_data(session: Session,
     data = Data(name=name,
                 form=form,
                 geo=geo,
+                locked_by=locked_by,
                 created_by=created_by,
+                organisation=organisation,
                 submitted_by=submitted_by,
                 created=datetime.now(),
                 updated=updated,
@@ -79,6 +82,13 @@ def get_data_by_id(session: Session, id: int) -> DataDict:
     return session.query(Data).filter(Data.id == id).first()
 
 
+def get_data_by_organisation(session: Session,
+                             organisation: int) -> List[DataOptionDict]:
+    data = session.query(Data).filter(and_(
+        Data.organisation == organisation, Data.submitted == null())).all()
+    return data
+
+
 def count(session: Session, form: int) -> int:
     data = session.query(Data).filter(Data.form == form).count()
     return data
@@ -90,10 +100,14 @@ def download(session: Session, form: int):
     return [d.to_data_frame for d in data]
 
 
-def check_member_submission_exists(session: Session, organisation: int):
-    users = session.query(User).filter(User.organisation == organisation).all()
-    user_ids = [u.id for u in users]
-    # check created_by in users
-    count = session.query(Data).filter(and_(
-        Data.form.in_(MEMBER_SURVEY), Data.created_by.in_(user_ids))).count()
-    return count > 0
+def check_member_submission_exists(session: Session,
+                                   organisation: int,
+                                   saved: Optional[bool] = False):
+    data = session.query(Data).filter(and_(
+        Data.form.in_(MEMBER_SURVEY), Data.organisation == organisation))
+    # filter by not submitted
+    if saved:
+        data = data.filter(Data.submitted == null())
+        return data.count() < 0
+    data = data.count()
+    return data > 0
