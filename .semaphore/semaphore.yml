@@ -30,3 +30,12 @@ blocks:
             - export COVERALLS_REPO_TOKEN="${COVERALLS_ISCO_TOKEN}"
             - ./ci/build.sh
             - ./ci/deploy.sh
+  - name: "Promote to production"
+    run:
+      when: "tag =~ '.*'"
+    task:
+      jobs:
+        - name: Promote to production
+          commands:
+            - checkout
+            - ./ci/deploy.sh
