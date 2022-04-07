@@ -4,6 +4,7 @@ from pathlib import Path
 from google.cloud import storage
 
 BUCKET_NAME = "isco-storage"
+BUCKET_FOLDER = os.environ['BUCKET_FOLDER']
 
 
 def create_bucket_object(return_tuple: bool = False):
@@ -27,7 +28,7 @@ def upload(file: str, folder: str,
         return fake_storage
     # upload to gcloud
     bucket = create_bucket_object()
-    destination_blob_name = f"{folder}/{filename}"
+    destination_blob_name = f"{BUCKET_FOLDER}/{folder}/{filename}"
     blob = bucket.blob(destination_blob_name)
     blob.upload_from_filename(file)
     os.remove(file)
@@ -61,7 +62,7 @@ def delete(url: str):
         return url
     # delete from gcloud
     bucket = create_bucket_object()
-    blob = bucket.blob(f"{folder}/{filename}")
+    blob = bucket.blob(f"{BUCKET_FOLDER}/{folder}/{filename}")
     blob.delete()
     return blob.name
 
