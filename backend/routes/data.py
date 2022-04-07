@@ -13,7 +13,7 @@ from db import crud_form
 from models.answer import Answer, AnswerDict
 from models.question import QuestionType
 from db.connection import get_session
-from models.data import DataResponse, DataDict
+from models.data import DataResponse, DataDict, DataOptionDict
 from middleware import verify_editor, verify_super_admin
 
 security = HTTPBearer()
@@ -98,6 +98,25 @@ def add(req: Request,
                          answers=answerlist,
                          submitted=submitted)
     return data.serialize
+
+
+@data_route.get("/data/saved",
+                response_model=List[DataOptionDict],
+                summary="get saved data by login user organisation",
+                name="data:get_saved_data_by_organisation",
+                tags=["Data"])
+def get_saved_data_by_organisation(req: Request,
+                                   session: Session = Depends(get_session),
+                                   credentials: credentials = Depends(security)
+                                   ):
+    user = verify_editor(session=session,
+                         authenticated=req.state.authenticated)
+    data = crud.get_data_by_organisation(session=session,
+                                         organisation=user.organisation)
+    if not data:
+        raise HTTPException(status_code=404,
+                            detail="no saved data")
+    return [d.to_options for d in data]
 
 
 @data_route.get("/data/{id:path}",

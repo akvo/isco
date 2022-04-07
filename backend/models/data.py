@@ -36,6 +36,14 @@ class DataDict(TypedDict):
     answer: List[AnswerDict]
 
 
+class DataOptionDict(TypedDict):
+    id: int
+    form: int
+    name: str
+    organisation: str
+    created: Optional[str] = None
+
+
 class DataResponse(BaseModel):
     current: int
     data: List[DataDict]
@@ -127,6 +135,16 @@ class Data(Base):
         for a in self.answer:
             data.update(a.to_data_frame)
         return data
+
+    @property
+    def to_options(self) -> DataOptionDict:
+        return {
+            "id": self.id,
+            "name": self.name,
+            "form": self.form,
+            "organisation": self.organisation_detail.name,
+            "created": self.created.strftime("%B %d, %Y"),
+        }
 
 
 class DataBase(BaseModel):

@@ -2,11 +2,10 @@ from datetime import datetime
 from typing import List, Optional
 from typing_extensions import TypedDict
 from sqlalchemy.orm import Session
-from sqlalchemy import desc, and_
-from models.data import Data, DataDict
+from sqlalchemy import desc, and_, null
+from models.data import Data, DataDict, DataOptionDict
 from models.answer import Answer
 from models.answer import AnswerBase
-from models.user import User
 from util.survey_config import MEMBER_SURVEY
 
 
@@ -81,6 +80,13 @@ def get_data_by_id(session: Session, id: int) -> DataDict:
     return session.query(Data).filter(Data.id == id).first()
 
 
+def get_data_by_organisation(session: Session,
+                             organisation: int) -> List[DataOptionDict]:
+    data = session.query(Data).filter(and_(
+        Data.organisation == organisation, Data.submitted == null())).all()
+    return data
+
+
 def count(session: Session, form: int) -> int:
     data = session.query(Data).filter(Data.form == form).count()
     return data
@@ -93,9 +99,7 @@ def download(session: Session, form: int):
 
 
 def check_member_submission_exists(session: Session, organisation: int):
-    users = session.query(User).filter(User.organisation == organisation).all()
-    user_ids = [u.id for u in users]
-    # check created_by in users
     count = session.query(Data).filter(and_(
-        Data.form.in_(MEMBER_SURVEY), Data.created_by.in_(user_ids))).count()
+        Data.form.in_(MEMBER_SURVEY),
+        Data.organisation == organisation)).count()
     return count > 0
