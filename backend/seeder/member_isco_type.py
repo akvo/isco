@@ -1,4 +1,3 @@
-# from db.truncator import truncate
 from db.connection import Base, SessionLocal, engine
 import db.crud_member_type as crud_member
 import db.crud_isco_type as crud_isco
@@ -10,8 +9,6 @@ from seeder.static.static_member_isco import member_values, isco_values
 Base.metadata.create_all(bind=engine)
 session = SessionLocal()
 
-# action_member = truncate(session=session, table="member_type")
-# print(action_member)
 for m in member_values:
     member = crud_member.get_member_type_by_name(session=session, name=m)
     if not member:
@@ -20,8 +17,6 @@ for m in member_values:
             session=session, payload=payload)
 print("Seeding Member Type Done")
 
-# action_isco = truncate(session=session, table="isco_type")
-# print(action_isco)
 for i in isco_values:
     isco = crud_isco.get_isco_type_by_name(session=session, name=i)
     if not isco:

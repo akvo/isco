@@ -8,7 +8,8 @@ member_values = [
     'Retail',
     'Standard Setting Organisation',
     'Other',
-    'Civil Society'
+    'Civil Society',
+    'Government'
 ]
 
 isco_values = [
