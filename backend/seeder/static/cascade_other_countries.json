@@ -3,6 +3,11 @@
   "type": "cascade",
   "cascades": [
     {
+      "name": "Aggregated reporting",
+      "level": 1,
+      "childrens": []
+    },
+    {
       "name": "Brazil",
       "level": 1,
       "childrens": []
@@ -69,6 +74,11 @@
     },
     {
       "name": "Vietnam",
+      "level": 1,
+      "childrens": []
+    },
+    {
+      "name": "Other, please specify in the comments field at the end of this repeated group",
       "level": 1,
       "childrens": []
     }
