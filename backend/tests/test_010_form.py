@@ -40,13 +40,25 @@ class TestFormRoutes():
                        "version": 0.0}
 
     @pytest.mark.asyncio
-    async def test_update_form(self, app: FastAPI, session: Session,
-                               client: AsyncClient) -> None:
+    async def test_get_form_by_id(self, app: FastAPI, session: Session,
+                                  client: AsyncClient) -> None:
         # get form
         res = await client.get(app.url_path_for("form:get_by_id", id=1))
         assert res.status_code == 200
         res = res.json()
-        assert res["id"] == 1
+        assert res == {
+            'description': 'Form Description',
+            'id': 1,
+            'languages': None,
+            'name': 'Form Test',
+            'question_group': [],
+            'url': None,
+            'version': 0.0,
+        }
+
+    @pytest.mark.asyncio
+    async def test_update_form(self, app: FastAPI, session: Session,
+                               client: AsyncClient) -> None:
         # update form
         res = await client.put(
             app.url_path_for("form:put", id=1),
