@@ -27,6 +27,7 @@ class TestSubmissionRoutes():
                              client: AsyncClient) -> None:
         res = await client.post(
             app.url_path_for("data:create", form_id=1, submitted=0),
+            params={"locked_by": 1},
             json=[{
                 "question": 1,
                 "repeat_index": 0,
@@ -51,6 +52,7 @@ class TestSubmissionRoutes():
             "form": 1,
             "name": "Depend to Q1 Option 1",
             "geo": None,
+            "locked_by": 1,
             "created": today,
             "created_by": "John Doe",
             "organisation": "Akvo",
@@ -126,6 +128,7 @@ class TestSubmissionRoutes():
             "form": 1,
             "name": "Depend to Q1 Option 1",
             "geo": None,
+            "locked_by": None,
             "created": today,
             "created_by": "John Doe",
             "organisation": "Akvo",
@@ -192,6 +195,7 @@ class TestSubmissionRoutes():
         # update data
         res = await client.put(
             app.url_path_for("data:update", id=1, submitted=1),
+            params={"locked_by": 1},
             json=[{
                 "question": 3,
                 "repeat_index": 0,
@@ -221,6 +225,7 @@ class TestSubmissionRoutes():
             "form": 1,
             "name": "Depend to Q1 Option 1",
             "geo": None,
+            "locked_by": 1,
             "created": today,
             "created_by": "John Doe",
             "organisation": "Akvo",
@@ -284,6 +289,7 @@ class TestSubmissionRoutes():
                                client: AsyncClient) -> None:
         res = await client.post(
             app.url_path_for("data:create", form_id=1, submitted=1),
+            params={"locked_by": 1},
             json=[{
                 "question": 1,
                 "repeat_index": 0,
@@ -318,6 +324,7 @@ class TestSubmissionRoutes():
             "form": 1,
             "name": "Direct submit",
             "geo": None,
+            "locked_by": 1,
             "created": today,
             "created_by": "John Doe",
             "organisation": "Akvo",
@@ -375,6 +382,7 @@ class TestSubmissionRoutes():
             "form": 1,
             "name": "Direct submit",
             "geo": None,
+            "locked_by": 1,
             "created": today,
             "created_by": "John Doe",
             "organisation": "Akvo",

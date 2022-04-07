@@ -57,6 +57,7 @@ def add(req: Request,
         form_id: int,
         submitted: int,
         answers: List[AnswerDict],
+        locked_by: Optional[int] = None,
         session: Session = Depends(get_session),
         credentials: credentials = Depends(security)):
     user = verify_editor(session=session,
@@ -93,6 +94,7 @@ def add(req: Request,
                          form=form_id,
                          name=name,
                          geo=geo,
+                         locked_by=locked_by,
                          created_by=user.id,
                          organisation=user.organisation,
                          answers=answerlist,
@@ -177,6 +179,7 @@ def update_by_id(req: Request,
                  id: int,
                  submitted: int,
                  answers: List[AnswerDict],
+                 locked_by: Optional[int] = None,
                  session: Session = Depends(get_session),
                  credentials: credentials = Depends(security)):
     user = verify_editor(session=session,
@@ -232,6 +235,7 @@ def update_by_id(req: Request,
                                        type=questions[a["question"]],
                                        value=a["value"])
         if execute:
+            data.locked_by = locked_by
             data.updated = datetime.now()
             data.submitted = submitted_date
             data.submitted_by = submitted_by

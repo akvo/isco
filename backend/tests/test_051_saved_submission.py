@@ -18,6 +18,7 @@ class TestSavedSubmissionRoute():
                              client: AsyncClient) -> None:
         res = await client.post(
             app.url_path_for("data:create", form_id=1, submitted=0),
+            params={"locked_by": 1},
             json=[{
                 "question": 1,
                 "repeat_index": 0,
@@ -32,6 +33,7 @@ class TestSavedSubmissionRoute():
             "form": 1,
             "name": "",
             "geo": None,
+            "locked_by": 1,
             "created": today,
             "created_by": "John Doe",
             "organisation": "Akvo",
@@ -62,6 +64,7 @@ class TestSavedSubmissionRoute():
             "created_by": "John Doe",
             "form": 1,
             "id": 3,
+            "locked_by": 1,
             "name": f"Akvo - John Doe - {today}",
             "organisation": "Akvo",
         }

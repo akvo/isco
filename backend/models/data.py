@@ -6,7 +6,8 @@ from typing_extensions import TypedDict
 from typing import Optional, List
 from pydantic import BaseModel
 from pydantic import confloat
-from sqlalchemy import Column, Integer, Float, String, ForeignKey, DateTime
+from sqlalchemy import Column, ForeignKey
+from sqlalchemy import DateTime, Integer, Float, String
 import sqlalchemy.dialects.postgresql as pg
 from sqlalchemy.orm import relationship
 from db.connection import Base
@@ -27,6 +28,7 @@ class DataDict(TypedDict):
     form: int
     name: str
     geo: Optional[GeoData] = None
+    locked_by: Optional[int] = None
     created: Optional[str] = None
     created_by: str
     organisation: str
@@ -41,6 +43,7 @@ class DataOptionDict(TypedDict):
     form: int
     name: str
     organisation: str
+    locked_by: Optional[int] = None
     created_by: str
     created: Optional[str] = None
 
@@ -58,6 +61,7 @@ class Data(Base):
     form = Column(Integer, ForeignKey(Form.id))
     name = Column(String)
     geo = Column(pg.ARRAY(Float), nullable=True)
+    locked_by = Column(Integer, ForeignKey(User.id), nullable=True)
     created_by = Column(Integer, ForeignKey(User.id))
     organisation = Column(Integer(), ForeignKey(Organisation.id))
     submitted_by = Column(Integer, ForeignKey(User.id), nullable=True)
@@ -73,13 +77,15 @@ class Data(Base):
     organisation_detail = relationship(Organisation,
                                        foreign_keys=[organisation])
     submitted_by_user = relationship(User, foreign_keys=[submitted_by])
+    locked_by_user = relationship(User, foreign_keys=[locked_by])
 
-    def __init__(self, name: str, form: int, geo: List[float],
+    def __init__(self, name: str, form: int, geo: List[float], locked_by: int,
                  created_by: int, organisation: int, submitted_by: int,
                  updated: datetime, created: datetime, submitted: datetime):
         self.name = name
         self.form = form
         self.geo = geo
+        self.locked_by = locked_by
         self.created_by = created_by
         self.organisation = organisation
         self.submitted_by = submitted_by
@@ -100,6 +106,7 @@ class Data(Base):
                 "lat": self.geo[0],
                 "long": self.geo[1]
             } if self.geo else None,
+            "locked_by": self.locked_by,
             "created_by": self.created_by_user.name,
             "organisation": self.organisation_detail.name,
             "submitted_by":
@@ -120,6 +127,7 @@ class Data(Base):
             "datapoint_name": self.name,
             "geolocation":
             f"{self.geo[0], self.geo[1]}" if self.geo else None,
+            "locked_by": self.locked_by,
             "created_by":
             self.created_by_user.name,
             "organisation":
@@ -149,6 +157,7 @@ class Data(Base):
             "id": self.id,
             "name": name,
             "form": self.form,
+            "locked_by": self.locked_by,
             "organisation": organisation,
             "created_by": created_by,
             "created": created,
@@ -160,6 +169,7 @@ class DataBase(BaseModel):
     form: int
     name: str
     geo: Optional[GeoData] = None
+    locked_by: Optional[int] = None
     created_by: str
     organisation: str
     submitted_by: Optional[str] = None
