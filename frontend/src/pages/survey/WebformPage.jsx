@@ -14,7 +14,7 @@ const SaveButton = ({ onClick, isSaving }) => (
   </Button>
 );
 
-const WebformPage = ({ formId, setFormLoaded }) => {
+const WebformPage = ({ formId, setFormLoaded /*initialValues*/ }) => {
   const { notify } = useNotification();
 
   const user = store.useState((s) => s.user);

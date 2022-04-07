@@ -159,7 +159,8 @@ def get_form_from_bucket(req: Request, form_id: int,
                          authenticated=req.state.authenticated)
     # check if user organisation already have a member survey saved/submitted
     exists = check_member_submission_exists(session=session,
-                                            organisation=user.organisation)
+                                            organisation=user.organisation,
+                                            saved=True)
     if exists:
         raise HTTPException(status_code=208,
                             detail="Submission already reported")

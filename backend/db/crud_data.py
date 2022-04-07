@@ -98,8 +98,14 @@ def download(session: Session, form: int):
     return [d.to_data_frame for d in data]
 
 
-def check_member_submission_exists(session: Session, organisation: int):
-    count = session.query(Data).filter(and_(
-        Data.form.in_(MEMBER_SURVEY),
-        Data.organisation == organisation)).count()
-    return count > 0
+def check_member_submission_exists(session: Session,
+                                   organisation: int,
+                                   saved: Optional[bool] = False):
+    data = session.query(Data).filter(and_(
+        Data.form.in_(MEMBER_SURVEY), Data.organisation == organisation))
+    # filter by not submitted
+    if saved:
+        data = data.filter(Data.submitted == null())
+        return data.count() < 0
+    data = data.count()
+    return data > 0

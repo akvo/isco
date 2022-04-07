@@ -10,6 +10,16 @@ const Survey = () => {
   const [formLoaded, setFormLoaded] = useState(null);
   const [formOptions, setFormOptions] = useState([]);
   const [savedSubmissions, setSavedSubmissions] = useState([]);
+  const [selectedSavedSubmission, setSelectedSavedSubmission] = useState(null);
+  const [initialValues, setInitialValues] = useState(null);
+
+  const loadInitialValues = (dataId) =>
+    api
+      .get(`/data/${dataId}`)
+      .then((res) => {
+        setInitialValues(res.data);
+      })
+      .catch((e) => console.error(e));
 
   useEffect(() => {
     if (user) {
@@ -29,8 +39,14 @@ const Survey = () => {
     setSelectedForm(val);
   };
 
+  const handleOnChangeSavedSubmissionDropdown = (dataId) => {
+    const findData = savedSubmissions.find((x) => x.id === dataId);
+    setSelectedSavedSubmission(findData);
+  };
+
   const onOkModal = () => {
     setFormLoaded(null);
+    setInitialValues(null);
     store.update((s) => {
       s.notificationModal = {
         ...s.notificationModal,
@@ -41,7 +57,15 @@ const Survey = () => {
       };
     });
     setTimeout(() => {
-      setFormLoaded(selectedForm);
+      if (selectedForm) {
+        setFormLoaded(selectedForm);
+        return;
+      }
+      if (selectedSavedSubmission) {
+        setFormLoaded(selectedSavedSubmission.form);
+        loadInitialValues(selectedSavedSubmission.id);
+        return;
+      }
     }, 100);
   };
 
@@ -62,6 +86,28 @@ const Survey = () => {
     }
     if (selectedForm) {
       setFormLoaded(selectedForm);
+      return;
+    }
+  };
+
+  const handleOnClickOpenSavedForm = () => {
+    if (formLoaded) {
+      // show modal
+      store.update((s) => {
+        s.notificationModal = {
+          ...s.notificationModal,
+          saveFormData: {
+            ...s.notificationModal.saveFormData,
+            visible: true,
+            onOk: () => onOkModal(),
+          },
+        };
+      });
+      return;
+    }
+    if (selectedSavedSubmission) {
+      setFormLoaded(selectedSavedSubmission.form);
+      loadInitialValues(selectedSavedSubmission.id);
       return;
     }
   };
@@ -92,15 +138,17 @@ const Survey = () => {
                   label: x.name,
                   value: x.id,
                 }))}
+                value={selectedSavedSubmission?.id}
                 filterOption={(input, option) =>
                   option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
                 }
+                onChange={handleOnChangeSavedSubmissionDropdown}
               />
             </Col>
             <Col span={10}>
               <Space>
                 <Button>Refresh</Button>
-                <Button>Open</Button>
+                <Button onClick={handleOnClickOpenSavedForm}>Open</Button>
                 <Button>Collaborators</Button>
               </Space>
             </Col>
@@ -134,7 +182,11 @@ const Survey = () => {
       <hr />
       {/* Webform load here */}
       {formLoaded && (
-        <WebformPage formId={formLoaded} setFormLoaded={setFormLoaded} />
+        <WebformPage
+          formId={formLoaded}
+          setFormLoaded={setFormLoaded}
+          initialValues={initialValues}
+        />
       )}
     </div>
   );
