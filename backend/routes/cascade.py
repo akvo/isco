@@ -42,7 +42,7 @@ def get(req: Request, session: Session = Depends(get_session)):
 @cascade_route.get("/nested/list",
                    response_model=dict,
                    summary="get nested list by cascade_id ex: 1|2|3",
-                   name="nested_list:get_by_cascade_id",
+                   name="nested_list:get_tree_value",
                    tags=["Cascade"])
 def get_nested_list_by_cascade_id(req: Request, cascade_id: str,
                                   transform: Optional[int] = 1,

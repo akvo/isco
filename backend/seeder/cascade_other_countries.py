@@ -14,3 +14,5 @@ data = json.load(open(source_file))
 
 cascade_seeder(session=session, data=data)
 print(f"Seeding {filename} done")
+
+session.close()
