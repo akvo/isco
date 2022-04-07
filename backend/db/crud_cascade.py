@@ -45,6 +45,12 @@ def get_cascade_by_id(session: Session, id: int) -> CascadeBase:
     return cascade
 
 
+def get_cascade_by_name(session: Session, name: str, ctype: str):
+    cascade = session.query(Cascade).filter(and_(
+        Cascade.name == name, Cascade.type == ctype)).first()
+    return cascade
+
+
 def update_cascade(session: Session,
                    id: int, payload: CascadePayload) -> CascadeDict:
     cascade = get_cascade_by_id(session=session, id=id)
@@ -130,6 +136,19 @@ def get_cascade_list_by_id(session: Session, id: int) -> CascadeListDict:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"cascade list {id} not found")
+    return clist
+
+
+def get_cascade_list_by_name(session: Session,
+                             name: str,
+                             cascade: int,
+                             parent: Optional[int] = None):
+    clist = session.query(CascadeList).filter(and_(
+        CascadeList.name == name,
+        CascadeList.cascade == cascade))
+    if parent:
+        clist = clist.filter(CascadeList.parent == parent)
+    clist = clist.first()
     return clist
 
 
