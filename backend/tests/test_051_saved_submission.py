@@ -14,6 +14,30 @@ today = datetime.today().strftime("%B %d, %Y")
 
 class TestSavedSubmissionRoute():
     @pytest.mark.asyncio
+    async def test_update_submitted_data(self, app: FastAPI,
+                                         session: Session,
+                                         client: AsyncClient) -> None:
+        # get data by id
+        res = await client.get(
+            app.url_path_for("data:get_by_id", id=1),
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 200
+        res = res.json()
+        assert res["id"] == 1
+        # update data
+        res = await client.put(
+            app.url_path_for("data:update", id=1, submitted=1),
+            params={"locked_by": 1},
+            json=[{
+                "question": 5,
+                "repeat_index": 0,
+                "comment": "Q5 comment",
+                "value": 80
+            }],
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 208
+
+    @pytest.mark.asyncio
     async def test_save_data(self, app: FastAPI, session: Session,
                              client: AsyncClient) -> None:
         res = await client.post(

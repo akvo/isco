@@ -177,5 +177,8 @@ def get_form_from_bucket(req: Request, form_id: int,
     results = {"form": webform}
     if data_id:
         data = get_data_by_id(session=session, id=data_id, submitted=False)
+        if not data:
+            raise HTTPException(status_code=208,
+                                detail="Submission already reported")
         results.update({"initial_values": data.serialize})
     return results

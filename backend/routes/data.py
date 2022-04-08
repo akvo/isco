@@ -184,6 +184,13 @@ def update_by_id(req: Request,
                  credentials: credentials = Depends(security)):
     user = verify_editor(session=session,
                          authenticated=req.state.authenticated)
+    # check data status before update
+    # to prevent update submitted data
+    current_data = crud.get_data_by_id(session=session,
+                                       id=id, submitted=False)
+    if not current_data:
+        raise HTTPException(status_code=208,
+                            detail="Submission already reported")
     submitted_by = None
     submitted_date = None
     if submitted:

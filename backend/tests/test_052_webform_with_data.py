@@ -14,6 +14,23 @@ account = Acc(email=None, token=None)
 
 class TestWebformWithDataRoutes():
     @pytest.mark.asyncio
+    async def test_get_webform_from_bucket_with_submitted_values(
+        self,
+        app: FastAPI,
+        session: Session,
+        client: AsyncClient
+    ) -> None:
+        # get form
+        res = await client.get(
+            app.url_path_for(
+                "form:get_webform_from_bucket",
+                form_id=1
+            ),
+            params={"data_id": 1},
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 208
+
+    @pytest.mark.asyncio
     async def test_get_webform_from_bucket_with_initial_values(
         self,
         app: FastAPI,
