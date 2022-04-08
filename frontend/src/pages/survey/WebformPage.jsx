@@ -14,7 +14,12 @@ const SaveButton = ({ onClick, isSaving }) => (
   </Button>
 );
 
-const WebformPage = ({ formId, setFormLoaded, selectedSavedSubmission }) => {
+const WebformPage = ({
+  formId,
+  setFormLoaded,
+  selectedSavedSubmission,
+  setReloadDropdownValue,
+}) => {
   const { notify } = useNotification();
 
   const user = store.useState((s) => s.user);
@@ -241,6 +246,7 @@ const WebformPage = ({ formId, setFormLoaded, selectedSavedSubmission }) => {
         })
         .finally(() => {
           setIsSubmitting(false);
+          setReloadDropdownValue(true);
         });
     }
   };
@@ -272,6 +278,7 @@ const WebformPage = ({ formId, setFormLoaded, selectedSavedSubmission }) => {
         })
         .finally(() => {
           setIsSaving(false);
+          setReloadDropdownValue(true);
         });
     }
   };

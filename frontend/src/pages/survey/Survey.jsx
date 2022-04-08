@@ -11,9 +11,10 @@ const Survey = () => {
   const [formOptions, setFormOptions] = useState([]);
   const [savedSubmissions, setSavedSubmissions] = useState([]);
   const [selectedSavedSubmission, setSelectedSavedSubmission] = useState(null);
+  const [reloadDropdownValue, setReloadDropdownValue] = useState(true);
 
   useEffect(() => {
-    if (user) {
+    if (user && reloadDropdownValue) {
       Promise.all([api.get("/webform/options"), api.get("/data/saved")])
         .then((res) => {
           const [webforms, savedData] = res;
@@ -22,9 +23,12 @@ const Survey = () => {
         })
         .catch((e) => {
           console.error(e);
+        })
+        .finally(() => {
+          setReloadDropdownValue(false);
         });
     }
-  }, [user]);
+  }, [user, reloadDropdownValue]);
 
   const handleOnChangeNewForm = (val) => {
     setSelectedForm(val);
@@ -174,6 +178,7 @@ const Survey = () => {
           formId={formLoaded}
           setFormLoaded={setFormLoaded}
           selectedSavedSubmission={selectedSavedSubmission}
+          setReloadDropdownValue={setReloadDropdownValue}
         />
       )}
     </div>
