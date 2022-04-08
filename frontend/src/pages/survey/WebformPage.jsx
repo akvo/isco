@@ -37,7 +37,7 @@ const WebformPage = ({ formId, setFormLoaded, selectedSavedSubmission }) => {
   // transform & filter form definition
   useEffect(() => {
     if (isEmpty(formValue) && formId && user) {
-      const { id: savedDataId } = selectedSavedSubmission;
+      const savedDataId = selectedSavedSubmission?.id;
       let url = `/webform/${formId}`;
       if (savedDataId) {
         url = `${url}?data_id=${savedDataId}`;
