@@ -29,7 +29,7 @@ prepare_deployment () {
 
     sed "s/\${CI_COMMIT}/${CI_COMMIT}/g;" \
         ci/k8s/deployment.yml.template \
-        | "s/\${BUCKET_FOLDER}/${cluster}/g;"> ci/k8s/deployment.yml
+        | sed "s/\${BUCKET_FOLDER}/${cluster}/g;" > ci/k8s/deployment.yml
 }
 
 apply_deployment () {

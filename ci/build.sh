@@ -3,6 +3,8 @@
 
 set -exuo pipefail
 
+[[ -n "${CI_TAG:=}" ]] && { echo "Skip build"; exit 0; }
+
 BACKEND_CHANGES=0
 FRONTEND_CHANGES=0
 
@@ -30,8 +32,6 @@ then
     FRONTEND_CHANGES=1
 fi
 
-
-[[ -n "${CI_TAG:=}" ]] && { echo "Skip build"; exit 0; }
 
 image_prefix="eu.gcr.io/akvo-lumen/isco"
 
