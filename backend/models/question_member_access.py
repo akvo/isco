@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from typing_extensions import TypedDict
 from sqlalchemy import Column, Integer
 from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship, backref
 from db.connection import Base
 
 
@@ -25,6 +26,8 @@ class QuestionMemberAccess(Base):
     id = Column(Integer, primary_key=True, index=True, nullable=True)
     question = Column(Integer, ForeignKey('question.id'))
     member_type = Column(Integer, ForeignKey('member_type.id'))
+    q_member = relationship("MemberType",
+                            backref=backref("q_member_type", uselist=False))
 
     def __init__(self, id: Optional[int], question: int, member_type: int):
         self.id = id
@@ -41,6 +44,10 @@ class QuestionMemberAccess(Base):
             "question": self.question,
             "member_type": self.member_type
         }
+
+    @property
+    def memberName(self) -> str:
+        return self.q_member.name
 
 
 class QuestionMemberAccessBase(BaseModel):
