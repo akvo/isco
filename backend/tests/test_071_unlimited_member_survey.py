@@ -8,50 +8,37 @@ from sqlalchemy.orm import Session
 
 pytestmark = pytest.mark.asyncio
 sys.path.append("..")
-account = Acc(email=None, token=None)
+# set to different account
+account = Acc(email="galih@test.org", token=None)
+org_name = "Organisation DISCO - Traders Member and DISCO isco"
 today = datetime.today().strftime("%B %d, %Y")
 
 
-class TestSavedSubmissionRoute():
+class TestCreateUnlimitedMemberQuestionnaire():
     @pytest.mark.asyncio
-    async def test_get_disabled_form_options(self, app: FastAPI,
-                                             session: Session,
-                                             client: AsyncClient) -> None:
+    async def test_get_webform_from_bucket(self, app: FastAPI,
+                                           session: Session,
+                                           client: AsyncClient) -> None:
         # get form
         res = await client.get(
-            app.url_path_for("form:get_webform_options"),
+            app.url_path_for(
+                "form:get_webform_from_bucket",
+                form_id=1
+            ),
             headers={"Authorization": f"Bearer {account.token}"})
         assert res.status_code == 200
         res = res.json()
-        assert res == [{
-            "disabled": True,
-            "label": "Form Test (submitted)",
-            "value": 1
-        }]
-
-    @pytest.mark.asyncio
-    async def test_update_submitted_data(self, app: FastAPI,
-                                         session: Session,
-                                         client: AsyncClient) -> None:
-        # get data by id
-        res = await client.get(
-            app.url_path_for("data:get_by_id", id=1),
-            headers={"Authorization": f"Bearer {account.token}"})
-        assert res.status_code == 200
-        res = res.json()
-        assert res["id"] == 1
-        # update data
-        res = await client.put(
-            app.url_path_for("data:update", id=1, submitted=1),
-            params={"locked_by": 1},
-            json=[{
-                "question": 5,
-                "repeat_index": 0,
-                "comment": "Q5 comment",
-                "value": 80
-            }],
-            headers={"Authorization": f"Bearer {account.token}"})
-        assert res.status_code == 208
+        assert "form" in res
+        form = res["form"]
+        assert form["id"] == 1
+        assert "en" in form["languages"]
+        assert len(form['question_group']) > 0
+        for qg in form["question_group"]:
+            assert len(qg["member_access"]) > 0
+            assert len(qg["isco_access"]) > 0
+            for q in qg["question"]:
+                assert len(q["member_access"]) > 0
+                assert len(q["isco_access"]) > 0
 
     @pytest.mark.asyncio
     async def test_save_data(self, app: FastAPI, session: Session,
@@ -69,14 +56,14 @@ class TestSavedSubmissionRoute():
         assert res.status_code == 200
         res = res.json()
         assert res == {
-            "id": 3,
+            "id": 4,
             "form": 1,
             "name": "",
             "geo": None,
             "locked_by": 1,
             "created": today,
-            "created_by": "John Doe",
-            "organisation": "Akvo",
+            "created_by": "Galih",
+            "organisation": org_name,
             "submitted_by": None,
             "updated": None,
             "submitted": None,
@@ -101,10 +88,42 @@ class TestSavedSubmissionRoute():
         assert len(res) > 0
         assert res[0] == {
             "created": today,
-            "created_by": "John Doe",
+            "created_by": "Galih",
             "form": 1,
-            "id": 3,
+            "id": 4,
             "locked_by": 1,
-            "name": f"Akvo - John Doe - {today}",
-            "organisation": "Akvo",
+            "name": f"{org_name} - Galih - {today}",
+            "organisation": org_name,
         }
+
+    @pytest.mark.asyncio
+    async def test_get_second_webform_from_bucket(
+        self,
+        app: FastAPI,
+        session: Session,
+        client: AsyncClient
+    ) -> None:
+        # get form
+        res = await client.get(
+            app.url_path_for(
+                "form:get_webform_from_bucket",
+                form_id=1
+            ),
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 200
+
+    @pytest.mark.asyncio
+    async def test_get_third_webform_from_bucket(
+        self,
+        app: FastAPI,
+        session: Session,
+        client: AsyncClient
+    ) -> None:
+        # get form
+        res = await client.get(
+            app.url_path_for(
+                "form:get_webform_from_bucket",
+                form_id=1
+            ),
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 200
