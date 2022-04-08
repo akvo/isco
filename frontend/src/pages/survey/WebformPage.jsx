@@ -14,12 +14,7 @@ const SaveButton = ({ onClick, isSaving }) => (
   </Button>
 );
 
-const WebformPage = ({
-  isLoading,
-  formId,
-  setFormLoaded,
-  selectedSavedSubmission,
-}) => {
+const WebformPage = ({ formId, setFormLoaded, selectedSavedSubmission }) => {
   const { notify } = useNotification();
 
   const user = store.useState((s) => s.user);
@@ -38,22 +33,6 @@ const WebformPage = ({
   // save savedData here, for loaded form this must be saved when loading form value
   const [savedData, setSavedData] = useState(null);
   const [initialAnswers, setInitialAnswers] = useState([]);
-
-  // manage savedData state
-  // useEffect(() => {
-  //   if (!isEmpty(initialValues) && isEmpty(savedData)) {
-  //     setSavedData(initialValues);
-  //     const answers = initialValues.answer.map((a) => {
-  //       const { question, repeat_index, comment, value } = a;
-  //       return {
-  //         question: question,
-  //         repeatIndex: repeat_index,
-  //         value: value,
-  //       };
-  //     });
-  //     setInitialAnswers(answers);
-  //   }
-  // }, [initialValues, savedData]);
 
   // transform & filter form definition
   useEffect(() => {
@@ -95,7 +74,6 @@ const WebformPage = ({
             // enable comment field
             transformedQuestionGroup = transformedQuestionGroup.map((qg) => {
               let updatedQuestions = qg.question.map((q) => {
-                console.log(commentValues[q.id]);
                 let extra = [
                   {
                     placement: "after",
@@ -306,7 +284,7 @@ const WebformPage = ({
 
   return (
     <div id="webform">
-      {!isEmpty(formValue) && !isLoading ? (
+      {!isEmpty(formValue) ? (
         <Webform
           forms={formValue}
           onChange={onChange}

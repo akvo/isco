@@ -11,21 +11,6 @@ const Survey = () => {
   const [formOptions, setFormOptions] = useState([]);
   const [savedSubmissions, setSavedSubmissions] = useState([]);
   const [selectedSavedSubmission, setSelectedSavedSubmission] = useState(null);
-  const [initialValues, setInitialValues] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-
-  // const loadInitialValues = (dataId) => {
-  //   setIsLoading(true);
-  //   api
-  //     .get(`/data/${dataId}`)
-  //     .then((res) => {
-  //       setInitialValues(res.data);
-  //     })
-  //     .catch((e) => console.error(e))
-  //     .finally(() => {
-  //       setIsLoading(false);
-  //     });
-  // };
 
   useEffect(() => {
     if (user) {
@@ -52,7 +37,6 @@ const Survey = () => {
 
   const onOkModal = () => {
     setFormLoaded(null);
-    // setInitialValues(null);
     store.update((s) => {
       s.notificationModal = {
         ...s.notificationModal,
@@ -69,7 +53,6 @@ const Survey = () => {
       }
       if (selectedSavedSubmission) {
         setFormLoaded(selectedSavedSubmission.form);
-        // loadInitialValues(selectedSavedSubmission.id);
         return;
       }
     }, 100);
@@ -113,7 +96,6 @@ const Survey = () => {
     }
     if (selectedSavedSubmission) {
       setFormLoaded(selectedSavedSubmission.form);
-      // loadInitialValues(selectedSavedSubmission.id);
       return;
     }
   };
@@ -189,7 +171,6 @@ const Survey = () => {
       {/* Webform load here */}
       {formLoaded && (
         <WebformPage
-          // isLoading={isLoading}
           formId={formLoaded}
           setFormLoaded={setFormLoaded}
           selectedSavedSubmission={selectedSavedSubmission}
