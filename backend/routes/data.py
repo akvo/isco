@@ -65,6 +65,12 @@ def add(req: Request,
         credentials: credentials = Depends(security)):
     user = verify_editor(session=session,
                          authenticated=req.state.authenticated)
+    # check if submission exist
+    exist = crud.check_member_submission_exists(
+        session=session, organisation=user.organisation)
+    if exist:
+        raise HTTPException(status_code=208,
+                            detail="Submission already reported")
     geo = None
     answerlist = []
     names = []

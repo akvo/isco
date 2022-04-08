@@ -73,6 +73,51 @@ class TestSubmissionRoutes():
         }
 
     @pytest.mark.asyncio
+    async def test_get_webform_from_bucket_with_initial_values(
+        self,
+        app: FastAPI,
+        session: Session,
+        client: AsyncClient
+    ) -> None:
+        # get form
+        res = await client.get(
+            app.url_path_for(
+                "form:get_webform_from_bucket",
+                form_id=1
+            ),
+            params={"data_id": 1},
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 200
+        res = res.json()
+        assert "form" in res
+        assert "initial_values" in res
+        assert res["initial_values"] == {
+            'created': today,
+            'created_by': 'John Doe',
+            'form': 1,
+            'geo': None,
+            'id': 1,
+            'locked_by': 1,
+            'name': 'Depend to Q1 Option 1',
+            'organisation': 'Akvo',
+            'submitted': None,
+            'submitted_by': None,
+            'updated': None,
+            'answer': [{'comment': None,
+                        'question': 1,
+                        'repeat_index': 0,
+                        'value': 'Option 1'},
+                       {'comment': 'This is comment',
+                        'question': 2,
+                        'repeat_index': 0,
+                        'value': 'Depend to Q1 Option 1'},
+                       {'comment': None,
+                        'question': 3,
+                        'repeat_index': 0,
+                        'value': 'Male'}],
+            }
+
+    @pytest.mark.asyncio
     async def test_update_data(self, app: FastAPI, session: Session,
                                client: AsyncClient) -> None:
         # get data by id
@@ -419,108 +464,4 @@ class TestSubmissionRoutes():
                 "value": 55
             }],
             headers={"Authorization": f"Bearer {account.token}"})
-        assert res.status_code == 200
-        res = res.json()
-        assert res == {
-            "id": 2,
-            "form": 1,
-            "name": "Direct submit",
-            "geo": None,
-            "locked_by": 1,
-            "created": today,
-            "created_by": "John Doe",
-            "organisation": "Akvo",
-            "submitted_by": "John Doe",
-            "updated": today,
-            "submitted": today,
-            "answer": [
-                {
-                    "comment": None,
-                    "question": 1,
-                    "repeat_index": 0,
-                    "value": "Option 1"
-                },
-                {
-                    "comment": None,
-                    "question": 2,
-                    "repeat_index": 0,
-                    "value": "Direct submit"
-                },
-                {
-                    "comment": None,
-                    "question": 3,
-                    "repeat_index": 0,
-                    "value": "Female"
-                },
-                {
-                    "comment": None,
-                    "question": 4,
-                    "repeat_index": 0,
-                    "value": 35
-                },
-                {
-                    "comment": "Q5 comment",
-                    "question": 5,
-                    "repeat_index": 0,
-                    "value": 55
-                }
-            ]
-        }
-
-    @pytest.mark.asyncio
-    async def test_get_all_data(self, app: FastAPI, session: Session,
-                                client: AsyncClient) -> None:
-        res = await client.get(
-            app.url_path_for("data:get", form_id=1),
-            headers={"Authorization": f"Bearer {account.token}"})
-        assert res.status_code == 200
-        res = res.json()
-        assert res["current"] == 1
-        assert res["total"] is not None
-        assert res["total_page"] is not None
-        assert len(res["data"]) > 0
-        assert res["data"][0] == {
-            "id": 2,
-            "form": 1,
-            "name": "Direct submit",
-            "geo": None,
-            "locked_by": 1,
-            "created": today,
-            "created_by": "John Doe",
-            "organisation": "Akvo",
-            "submitted_by": "John Doe",
-            "updated": today,
-            "submitted": today,
-            "answer": [
-                {
-                    "comment": None,
-                    "question": 1,
-                    "repeat_index": 0,
-                    "value": "Option 1"
-                },
-                {
-                    "comment": None,
-                    "question": 2,
-                    "repeat_index": 0,
-                    "value": "Direct submit"
-                },
-                {
-                    "comment": None,
-                    "question": 3,
-                    "repeat_index": 0,
-                    "value": "Female"
-                },
-                {
-                    "comment": None,
-                    "question": 4,
-                    "repeat_index": 0,
-                    "value": 35
-                },
-                {
-                    "comment": "Q5 comment",
-                    "question": 5,
-                    "repeat_index": 0,
-                    "value": 55
-                }
-            ]
-        }
+        assert res.status_code == 208
