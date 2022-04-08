@@ -102,6 +102,16 @@ class TestSubmissionRoutes():
         res = await client.put(
             app.url_path_for("data:update", id=1, submitted=0),
             json=[{
+                "question": 1,
+                "repeat_index": 0,
+                "comment": None,
+                "value": "Option 1"
+            }, {
+                "question": 2,
+                "repeat_index": 0,
+                "comment": "This is comment",
+                "value": "Depend to Q1 Option 1"
+            }, {
                 "question": 3,
                 "repeat_index": 0,
                 "comment": "Add comment on update",
@@ -189,6 +199,87 @@ class TestSubmissionRoutes():
         }
 
     @pytest.mark.asyncio
+    async def test_update_data_with_deleted_repeat(
+        self,
+        app: FastAPI,
+        session: Session,
+        client: AsyncClient
+    ) -> None:
+        # get data by id
+        res = await client.get(
+            app.url_path_for("data:get_by_id", id=1),
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 200
+        res = res.json()
+        assert res["id"] == 1
+        # update data
+        res = await client.put(
+            app.url_path_for("data:update", id=1, submitted=0),
+            json=[{
+                "comment": None,
+                "question": 1,
+                "repeat_index": 0,
+                "value": "Option 1"
+            }, {
+                "comment": "This is comment",
+                "question": 2,
+                "repeat_index": 0,
+                "value": "Depend to Q1 Option 1"
+            }, {
+                "comment": "Add comment on update",
+                "question": 3,
+                "repeat_index": 0,
+                "value": "Female"
+            }, {
+                "question": 4,
+                "comment": "Q4 comment",
+                "repeat_index": 0,
+                "value": 20
+            }],
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 200
+        res = res.json()
+        assert res == {
+            "id": 1,
+            "form": 1,
+            "name": "Depend to Q1 Option 1",
+            "geo": None,
+            "locked_by": None,
+            "created": today,
+            "created_by": "John Doe",
+            "organisation": "Akvo",
+            "submitted_by": None,
+            "updated": today,
+            "submitted": None,
+            "answer": [
+                {
+                    "comment": None,
+                    "question": 1,
+                    "repeat_index": 0,
+                    "value": "Option 1"
+                },
+                {
+                    "comment": "This is comment",
+                    "question": 2,
+                    "repeat_index": 0,
+                    "value": "Depend to Q1 Option 1"
+                },
+                {
+                    "comment": "Add comment on update",
+                    "question": 3,
+                    "repeat_index": 0,
+                    "value": "Female"
+                },
+                {
+                    "comment": "Q4 comment",
+                    "question": 4,
+                    "repeat_index": 0,
+                    "value": 20
+                }
+            ]
+        }
+
+    @pytest.mark.asyncio
     async def test_update_then_submit_data(self, app: FastAPI,
                                            session: Session,
                                            client: AsyncClient) -> None:
@@ -204,10 +295,30 @@ class TestSubmissionRoutes():
             app.url_path_for("data:update", id=1, submitted=1),
             params={"locked_by": 1},
             json=[{
+                "comment": None,
+                "question": 1,
+                "repeat_index": 0,
+                "value": "Option 1"
+            }, {
+                "comment": "This is comment",
+                "question": 2,
+                "repeat_index": 0,
+                "value": "Depend to Q1 Option 1"
+            }, {
                 "question": 3,
                 "repeat_index": 0,
                 "comment": "Q3 comment",
                 "value": "Male"
+            }, {
+                "question": 1,
+                "repeat_index": 1,
+                "comment": None,
+                "value": "Option 1"
+            }, {
+                "question": 2,
+                "repeat_index": 1,
+                "comment": None,
+                "value": "Test repeat"
             }, {
                 "question": 3,
                 "repeat_index": 1,
@@ -259,6 +370,12 @@ class TestSubmissionRoutes():
                     "value": "Male"
                 },
                 {
+                    "comment": "Q4 comment",
+                    "question": 4,
+                    "repeat_index": 0,
+                    "value": 25
+                },
+                {
                     "comment": None,
                     "question": 1,
                     "repeat_index": 1,
@@ -275,12 +392,6 @@ class TestSubmissionRoutes():
                     "question": 3,
                     "repeat_index": 1,
                     "value": "Female"
-                },
-                {
-                    "comment": "Q4 comment",
-                    "question": 4,
-                    "repeat_index": 0,
-                    "value": 25
                 },
                 {
                     "comment": "Q5 comment",

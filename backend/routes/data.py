@@ -5,12 +5,15 @@ from fastapi import Depends, Request, Response, APIRouter, HTTPException, Query
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
 from typing import List, Optional
+from sqlalchemy import and_
 from sqlalchemy.orm import Session
+from sqlalchemy.sql.expression import true
 import db.crud_data as crud
 from db import crud_question
 from db import crud_answer
 from db import crud_form
 from models.answer import Answer, AnswerDict
+from models.question_group import QuestionGroup
 from models.question import QuestionType
 from db.connection import get_session
 from models.data import DataResponse, DataDict, DataOptionDict
@@ -186,9 +189,8 @@ def update_by_id(req: Request,
                          authenticated=req.state.authenticated)
     # check data status before update
     # to prevent update submitted data
-    current_data = crud.get_data_by_id(session=session,
-                                       id=id, submitted=False)
-    if not current_data:
+    data = crud.get_data_by_id(session=session, id=id, submitted=False)
+    if not data:
         raise HTTPException(status_code=208,
                             detail="Submission already reported")
     submitted_by = None
@@ -196,16 +198,32 @@ def update_by_id(req: Request,
     if submitted:
         submitted_by = user.id
         submitted_date = datetime.now()
-    data = crud.get_data_by_id(session=session, id=id)
     form = crud_form.get_form_by_id(session=session, id=data.form)
+
+    # get repeatable question ids
+    repeat_qids = []
+    repeat_group = session.query(
+        QuestionGroup).filter(and_(
+            QuestionGroup.form == form.id,
+            QuestionGroup.repeat == true())).all()
+    repeat_group = [g.get_question_ids for g in repeat_group]
+    for group in repeat_group:
+        for x in group:
+            repeat_qids.append(x)
+    # get current repeat group answer
+    current_repeat = crud_answer.get_answer_by_data_and_question(
+        session=session, data=data.id, questions=repeat_qids)
+
     questions = form.list_of_questions
     current_answers = crud_answer.get_answer_by_data_and_question(
         session=session, data=id, questions=[a["question"] for a in answers])
     checked = {}
+    checked_payload = {}
     # dict key is pair of questionid_repeat_index
     [checked.update(a.to_dict) for a in current_answers]
     for a in answers:
         key = f"{a['question']}_{a['repeat_index']}"
+        checked_payload.update({key: a})
         execute = "update"
         if a["question"] not in list(questions):
             raise HTTPException(
@@ -247,4 +265,12 @@ def update_by_id(req: Request,
             data.submitted = submitted_date
             data.submitted_by = submitted_by
             data = crud.update_data(session=session, data=data)
+    # check deleted repeat question group value
+    # logic: checked value not in answers, that the deleted repeat group
+    # delete answer by answer id
+    current_repeat = [a.format_with_answer_id for a in current_repeat]
+    for c in current_repeat:
+        c_key = f"{c['question']}_{c['repeat_index']}"
+        if c_key not in checked_payload:
+            crud_answer.delete_answer_by_id(session=session, id=c['id'])
     return data.serialize

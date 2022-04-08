@@ -13,6 +13,15 @@ import sqlalchemy.dialects.postgresql as pg
 from db.connection import Base
 
 
+class AnswerDictWithId(TypedDict):
+    id: int
+    question: int
+    repeat_index: Optional[int] = None
+    comment: Optional[str] = None
+    value: Union[int, float, str, bool, dict, List[str], List[int],
+                 List[float], None]
+
+
 class AnswerDict(TypedDict):
     question: int
     repeat_index: Optional[int] = None
@@ -83,6 +92,27 @@ class Answer(Base):
     @property
     def formatted(self) -> AnswerDict:
         answer = {
+            "question": self.question,
+            "repeat_index": self.repeat_index,
+            "comment": self.comment
+        }
+        type = self.question_detail.type
+        if type in [QuestionType.input, QuestionType.text, QuestionType.date]:
+            answer.update({"value": self.text})
+        if type == QuestionType.number:
+            answer.update({"value": self.value})
+        if type == QuestionType.option:
+            answer.update({"value": self.options[0]})
+        if type in [QuestionType.multiple_option,
+                    QuestionType.cascade,
+                    QuestionType.nested_list]:
+            answer.update({"value": self.options})
+        return answer
+
+    @property
+    def format_with_answer_id(self) -> AnswerDictWithId:
+        answer = {
+            "id": self.id,
             "question": self.question,
             "repeat_index": self.repeat_index,
             "comment": self.comment
