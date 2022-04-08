@@ -16,13 +16,18 @@ class TestWebformRoutes():
     @pytest.mark.asyncio
     async def test_transform_form(self, app: FastAPI, session: Session,
                                   client: AsyncClient) -> None:
-        # get form
-        res = await client.get(
-            app.url_path_for("form:transform", form_id=1))
+        res = await client.get(app.url_path_for("form:transform", form_id=1))
         assert res.status_code == 200
         res = res.json()
-        assert len(res['question_group']) > 0
+        assert res["id"] == 1
         assert "en" in res["languages"]
+        assert len(res['question_group']) > 0
+        for qg in res["question_group"]:
+            assert len(qg["member_access"]) > 0
+            assert len(qg["isco_access"]) > 0
+            for q in qg["question"]:
+                assert len(q["member_access"]) > 0
+                assert len(q["isco_access"]) > 0
 
     @pytest.mark.asyncio
     async def test_publish_form(self, app: FastAPI, session: Session,
@@ -45,6 +50,31 @@ class TestWebformRoutes():
         assert storage.check(res["url"]) is True
 
     @pytest.mark.asyncio
+    async def test_get_webform_from_bucket(self, app: FastAPI,
+                                           session: Session,
+                                           client: AsyncClient) -> None:
+        # get form
+        res = await client.get(
+            app.url_path_for(
+                "form:get_webform_from_bucket",
+                form_id=1
+            ),
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 200
+        res = res.json()
+        assert "form" in res
+        form = res["form"]
+        assert form["id"] == 1
+        assert "en" in form["languages"]
+        assert len(form['question_group']) > 0
+        for qg in form["question_group"]:
+            assert len(qg["member_access"]) > 0
+            assert len(qg["isco_access"]) > 0
+            for q in qg["question"]:
+                assert len(q["member_access"]) > 0
+                assert len(q["isco_access"]) > 0
+
+    @pytest.mark.asyncio
     async def test_get_form_options(self, app: FastAPI, session: Session,
                                     client: AsyncClient) -> None:
         # get form
@@ -58,22 +88,3 @@ class TestWebformRoutes():
             "label": "Form Test",
             "value": 1
         }]
-
-    @pytest.mark.asyncio
-    async def test_delete_publish_form(self, app: FastAPI, session: Session,
-                                       client: AsyncClient) -> None:
-        # get form
-        form = await client.get(app.url_path_for("form:get_by_id", id=1))
-        assert form.status_code == 200
-        form = form.json()
-        assert form["id"] == 1
-        # delete publish form
-        res = await client.delete(
-            app.url_path_for("form:delete_publish", form_id=1),
-            headers={"Authorization": f"Bearer {account.token}"})
-        assert res.status_code == 200
-        res = res.json()
-        assert res["version"] is None
-        assert res["url"] is None
-        assert res["published"] is None
-        assert storage.check(form["url"]) is False

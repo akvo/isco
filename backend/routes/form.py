@@ -1,13 +1,15 @@
+import os
+import json
 import requests as r
 from http import HTTPStatus
 from fastapi import Depends, Request, APIRouter, Response, HTTPException
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
-from typing import List
+from typing import List, Optional
 from sqlalchemy import or_, null
 from sqlalchemy.orm import Session
 import db.crud_form as crud
-from db.crud_data import check_member_submission_exists
+from db.crud_data import check_member_submission_exists, get_data_by_id
 from db.connection import get_session
 from models.form import FormBase, FormDict, FormDictWithGroupStatus
 from models.form import FormPayload, FormJson, FormOptions, Form
@@ -150,9 +152,10 @@ def get_form_options(req: Request, session: Session = Depends(get_session),
 
 @form_route.get("/webform/{form_id}",
                 summary="load form form bucket",
-                name="form:webform",
+                name="form:get_webform_from_bucket",
                 tags=["Form"])
 def get_form_from_bucket(req: Request, form_id: int,
+                         data_id: Optional[int] = None,
                          session: Session = Depends(get_session),
                          credentials: credentials = Depends(security)):
     user = verify_editor(session=session,
@@ -165,5 +168,17 @@ def get_form_from_bucket(req: Request, form_id: int,
         raise HTTPException(status_code=208,
                             detail="Submission already reported")
     form = crud.get_form_by_id(session=session, id=form_id)
-    webform = r.get(form.url)
-    return webform.json()
+    TESTING = os.environ.get("TESTING")
+    if TESTING:
+        webform = json.load(open(form.url))
+    else:
+        webform = r.get(form.url)
+        webform = webform.json()
+    results = {"form": webform}
+    if data_id:
+        data = get_data_by_id(session=session, id=data_id, submitted=False)
+        if not data:
+            raise HTTPException(status_code=208,
+                                detail="Submission already reported")
+        results.update({"initial_values": data.serialize})
+    return results

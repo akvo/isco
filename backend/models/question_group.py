@@ -106,6 +106,10 @@ class QuestionGroup(Base):
         }
 
     @property
+    def get_question_ids(self) -> List[int]:
+        return [q.only_id for q in self.question]
+
+    @property
     def serializeJson(self):
         group = {
             "name": self.name,

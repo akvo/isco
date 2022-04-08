@@ -14,7 +14,12 @@ const SaveButton = ({ onClick, isSaving }) => (
   </Button>
 );
 
-const WebformPage = ({ formId, setFormLoaded, initialValues }) => {
+const WebformPage = ({
+  formId,
+  setFormLoaded,
+  selectedSavedSubmission,
+  setReloadDropdownValue,
+}) => {
   const { notify } = useNotification();
 
   const user = store.useState((s) => s.user);
@@ -32,27 +37,47 @@ const WebformPage = ({ formId, setFormLoaded, initialValues }) => {
   const [disableSubmit, setDisableSubmit] = useState(true);
   // save savedData here, for loaded form this must be saved when loading form value
   const [savedData, setSavedData] = useState(null);
-
-  // manage savedData state
-  useEffect(() => {
-    if (!isEmpty(initialValues) && isEmpty(savedData)) {
-      setSavedData(initialValues);
-    }
-  }, [initialValues, savedData]);
+  const [initialAnswers, setInitialAnswers] = useState([]);
 
   // transform & filter form definition
   useEffect(() => {
     if (isEmpty(formValue) && formId && user) {
+      const savedDataId = selectedSavedSubmission?.id;
+      let url = `/webform/${formId}`;
+      if (savedDataId) {
+        url = `${url}?data_id=${savedDataId}`;
+      }
       api
-        .get(`/webform/${formId}`)
+        .get(url)
         .then((res) => {
           const { data, status } = res;
+          const { form, initial_values } = data;
           // submission already submitted
           if (status === 208) {
             setErrorPage(true);
           }
           if (status === 200) {
-            let transformedQuestionGroup = data.question_group;
+            let commentValues = {};
+
+            if (initial_values) {
+              setSavedData(initial_values);
+              const answers = initial_values.answer.map((a) => {
+                const { question, repeat_index, comment } = a;
+                commentValues = {
+                  ...commentValues,
+                  [question]: comment,
+                };
+                return {
+                  ...a,
+                  repeatIndex: repeat_index,
+                };
+              });
+              setInitialAnswers(answers);
+              setAnswer(answers);
+              setComment(commentValues);
+            }
+
+            let transformedQuestionGroup = form.question_group;
             // enable comment field
             transformedQuestionGroup = transformedQuestionGroup.map((qg) => {
               let updatedQuestions = qg.question.map((q) => {
@@ -63,6 +88,9 @@ const WebformPage = ({ formId, setFormLoaded, initialValues }) => {
                       <CommentField
                         onChange={(val) => onChangeComment(q.id, val)}
                         onDelete={() => onDeleteComment(q.id)}
+                        defaultValue={
+                          commentValues?.[q.id] ? commentValues?.[q.id] : null
+                        }
                       />
                     ),
                   },
@@ -107,13 +135,13 @@ const WebformPage = ({ formId, setFormLoaded, initialValues }) => {
           console.error(e);
         });
     }
-  }, [formValue, formId, user, userMember, userIsco]);
+  }, [formValue, formId, user, userMember, userIsco, selectedSavedSubmission]);
 
-  // set comment
+  // set comment to answer value
   useEffect(() => {
     if (!isEmpty(comment) && answer.length) {
-      const { qid, comment: commentValue } = comment;
-      const findAnswer = answer.find((x) => x.question === qid);
+      const qid = parseInt(Object.keys(comment)[0]);
+      const findAnswer = answer.find((x) => parseInt(x.question) === qid);
       if (findAnswer) {
         // update answer
         const updatedAnswer = answer.map((a) => {
@@ -121,7 +149,7 @@ const WebformPage = ({ formId, setFormLoaded, initialValues }) => {
           if (a.question === qid) {
             update = {
               ...update,
-              comment: commentValue,
+              comment: comment?.[qid] || null,
             };
           }
           return update;
@@ -155,7 +183,6 @@ const WebformPage = ({ formId, setFormLoaded, initialValues }) => {
   }, [deletedComment, answer]);
 
   const onChange = ({ /*current,*/ values /*, progress*/ }) => {
-    // console.info(current, progress);
     const transformValues = Object.keys(values)
       .map((key) => {
         let question = key;
@@ -183,8 +210,7 @@ const WebformPage = ({ formId, setFormLoaded, initialValues }) => {
 
   const onChangeComment = (qid, val) => {
     setComment({
-      qid: qid,
-      comment: val.target.value,
+      [qid]: val.target.value,
     });
   };
 
@@ -220,6 +246,7 @@ const WebformPage = ({ formId, setFormLoaded, initialValues }) => {
         })
         .finally(() => {
           setIsSubmitting(false);
+          setReloadDropdownValue(true);
         });
     }
   };
@@ -251,6 +278,7 @@ const WebformPage = ({ formId, setFormLoaded, initialValues }) => {
         })
         .finally(() => {
           setIsSaving(false);
+          setReloadDropdownValue(true);
         });
     }
   };
@@ -261,7 +289,6 @@ const WebformPage = ({ formId, setFormLoaded, initialValues }) => {
 
   return (
     <div id="webform">
-      {/* TODO::loading need to wait for initialValues if load saved submssion */}
       {!isEmpty(formValue) ? (
         <Webform
           forms={formValue}
@@ -274,6 +301,7 @@ const WebformPage = ({ formId, setFormLoaded, initialValues }) => {
             loading: isSubmitting,
             disabled: disableSubmit,
           }}
+          initialValue={initialAnswers}
         />
       ) : (
         <div className="loading-wrapper">

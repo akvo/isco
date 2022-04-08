@@ -78,6 +78,7 @@ class Data(Base):
                                        foreign_keys=[organisation])
     submitted_by_user = relationship(User, foreign_keys=[submitted_by])
     locked_by_user = relationship(User, foreign_keys=[locked_by])
+    form_detail = relationship(Form, foreign_keys=[form])
 
     def __init__(self, name: str, form: int, geo: List[float], locked_by: int,
                  created_by: int, organisation: int, submitted_by: int,
@@ -147,10 +148,11 @@ class Data(Base):
 
     @property
     def to_options(self) -> DataOptionDict:
+        form = self.form_detail.name
         organisation = self.organisation_detail.name
         created_by = self.created_by_user.name
         created = self.created.strftime("%B %d, %Y")
-        name = f"{organisation} - {created_by} - {created}"
+        name = f"{form} - {organisation} - {created_by} - {created}"
         if self.name:
             name = self.name
         return {

@@ -161,6 +161,10 @@ class Question(Base):
         return f"<Question {self.id}>"
 
     @property
+    def only_id(self) -> int:
+        return self.id
+
+    @property
     def serialize(self) -> QuestionDict:
         translations = []
         if self.translations:

@@ -70,3 +70,8 @@ def get_answer_by_data_and_question(session: Session, data: int,
                                     questions: List[int]) -> List[AnswerBase]:
     return session.query(Answer).filter(
         and_(Answer.question.in_(questions), Answer.data == data)).all()
+
+
+def delete_answer_by_id(session: Session, id: int) -> None:
+    session.query(Answer).filter(Answer.id == id).delete()
+    session.commit()

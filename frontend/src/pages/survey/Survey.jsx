@@ -11,18 +11,10 @@ const Survey = () => {
   const [formOptions, setFormOptions] = useState([]);
   const [savedSubmissions, setSavedSubmissions] = useState([]);
   const [selectedSavedSubmission, setSelectedSavedSubmission] = useState(null);
-  const [initialValues, setInitialValues] = useState(null);
-
-  const loadInitialValues = (dataId) =>
-    api
-      .get(`/data/${dataId}`)
-      .then((res) => {
-        setInitialValues(res.data);
-      })
-      .catch((e) => console.error(e));
+  const [reloadDropdownValue, setReloadDropdownValue] = useState(true);
 
   useEffect(() => {
-    if (user) {
+    if (user && reloadDropdownValue) {
       Promise.all([api.get("/webform/options"), api.get("/data/saved")])
         .then((res) => {
           const [webforms, savedData] = res;
@@ -31,9 +23,12 @@ const Survey = () => {
         })
         .catch((e) => {
           console.error(e);
+        })
+        .finally(() => {
+          setReloadDropdownValue(false);
         });
     }
-  }, [user]);
+  }, [user, reloadDropdownValue]);
 
   const handleOnChangeNewForm = (val) => {
     setSelectedForm(val);
@@ -46,7 +41,6 @@ const Survey = () => {
 
   const onOkModal = () => {
     setFormLoaded(null);
-    setInitialValues(null);
     store.update((s) => {
       s.notificationModal = {
         ...s.notificationModal,
@@ -63,7 +57,6 @@ const Survey = () => {
       }
       if (selectedSavedSubmission) {
         setFormLoaded(selectedSavedSubmission.form);
-        loadInitialValues(selectedSavedSubmission.id);
         return;
       }
     }, 100);
@@ -107,7 +100,6 @@ const Survey = () => {
     }
     if (selectedSavedSubmission) {
       setFormLoaded(selectedSavedSubmission.form);
-      loadInitialValues(selectedSavedSubmission.id);
       return;
     }
   };
@@ -185,7 +177,8 @@ const Survey = () => {
         <WebformPage
           formId={formLoaded}
           setFormLoaded={setFormLoaded}
-          initialValues={initialValues}
+          selectedSavedSubmission={selectedSavedSubmission}
+          setReloadDropdownValue={setReloadDropdownValue}
         />
       )}
     </div>

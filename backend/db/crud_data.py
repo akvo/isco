@@ -6,7 +6,9 @@ from sqlalchemy import desc, and_, null
 from models.data import Data, DataDict, DataOptionDict
 from models.answer import Answer
 from models.answer import AnswerBase
+from models.organisation_isco import OrganisationIsco
 from util.survey_config import MEMBER_SURVEY
+from util.survey_config import MEMBER_SURVEY_UNLIMITED_ISCO
 
 
 class PaginatedData(TypedDict):
@@ -78,8 +80,16 @@ def get_data(session: Session, form: int, skip: int,
     return PaginatedData(data=data, count=count)
 
 
-def get_data_by_id(session: Session, id: int) -> DataDict:
-    return session.query(Data).filter(Data.id == id).first()
+def get_data_by_id(session: Session, id: int,
+                   submitted: Optional[bool] = None) -> DataDict:
+    data = session.query(Data).filter(Data.id == id)
+    if submitted is None:
+        return data.first()
+    if submitted:
+        data = data.filter(Data.submitted != null())
+    else:
+        data = data.filter(Data.submitted == null())
+    return data.first()
 
 
 def get_data_by_organisation(session: Session,
@@ -103,11 +113,23 @@ def download(session: Session, form: int):
 def check_member_submission_exists(session: Session,
                                    organisation: int,
                                    saved: Optional[bool] = False):
+    # handle unlimited member questionnaire
+    # for organisation ISCO contains DISCO
+    check_org = session.query(OrganisationIsco).filter(
+        and_(
+            OrganisationIsco.organisation == organisation,
+            OrganisationIsco.isco_type.in_(
+                MEMBER_SURVEY_UNLIMITED_ISCO))).first()
+    if check_org:
+        return False
+    # handle limited member questionnaire
     data = session.query(Data).filter(and_(
         Data.form.in_(MEMBER_SURVEY), Data.organisation == organisation))
     # filter by not submitted
     if saved:
         data = data.filter(Data.submitted == null())
-        return data.count() < 0
+        if not data.all():
+            return False
+        return False if data.count() == 1 else True
     data = data.count()
     return data > 0
