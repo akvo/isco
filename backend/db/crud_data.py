@@ -6,9 +6,9 @@ from sqlalchemy import desc, and_, null
 from models.data import Data, DataDict, DataOptionDict
 from models.answer import Answer
 from models.answer import AnswerBase
-from models.organisation import Organisation
+from models.organisation_isco import OrganisationIsco
 from util.survey_config import MEMBER_SURVEY
-from util.survey_config import MEMBER_SURVEY_UNLIMITED_MEMBER
+from util.survey_config import MEMBER_SURVEY_UNLIMITED_ISCO
 
 
 class PaginatedData(TypedDict):
@@ -113,12 +113,13 @@ def download(session: Session, form: int):
 def check_member_submission_exists(session: Session,
                                    organisation: int,
                                    saved: Optional[bool] = False):
-    # handle unlimited member questionnaire for DISCO Member
-    check_org = session.query(Organisation).filter(
+    # handle unlimited member questionnaire
+    # for organisation ISCO contains DISCO
+    check_org = session.query(OrganisationIsco).filter(
         and_(
-            Organisation.id == organisation,
-            Organisation.member_type.in_(
-                MEMBER_SURVEY_UNLIMITED_MEMBER))).first()
+            OrganisationIsco.organisation == organisation,
+            OrganisationIsco.isco_type.in_(
+                MEMBER_SURVEY_UNLIMITED_ISCO))).first()
     if check_org:
         return False
     # handle limited member questionnaire
