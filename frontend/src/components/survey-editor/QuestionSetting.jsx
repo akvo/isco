@@ -26,6 +26,7 @@ import { orderBy, take } from "lodash";
 import { defaultOption, defaultRepeatingObject } from "../../lib/store";
 import { generateID, insert } from "../../lib/util";
 import { isoLangs } from "../../lib";
+import { generateDisabledOptions } from "./QuestionGroupEditor";
 
 const { TabPane } = Tabs;
 
@@ -490,9 +491,17 @@ const Setting = ({
 }) => {
   const { surveyEditor, tempStorage, optionValues } = store.useState((s) => s);
   const { questionGroup: questionGroupState } = surveyEditor;
-  const { operator_type } = optionValues;
+  const { operator_type, member_type, isco_type } = optionValues;
   const { id: qid } = question;
   const skipLogicQuestionType = ["option", "number", "multiple_option"];
+
+  const memberAccessField = `question-${qid}-member_access`;
+  const memberValue = form.getFieldValue(memberAccessField);
+  const memberOption = generateDisabledOptions(member_type, memberValue);
+
+  const iscoAccessField = `question-${qid}-isco_access`;
+  const iscoValue = form.getFieldValue(iscoAccessField);
+  const iscoOption = generateDisabledOptions(isco_type, iscoValue);
 
   const allQuestion = orderBy(
     questionGroupState?.flatMap((qg) => qg?.question),
@@ -580,6 +589,48 @@ const Setting = ({
         {/* Question Options */}
         <TabPane tab="Settings" key="question-option">
           <>
+            <Row align="middle" justify="space-evenly" gutter={[12, 12]}>
+              <Col span={9}>
+                <div className="field-wrapper">
+                  <div className="field-label">Member Type</div>
+                  <Form.Item name={memberAccessField}>
+                    <Select
+                      allowClear
+                      mode="multiple"
+                      showSearch={true}
+                      className="custom-dropdown-wrapper bg-grey"
+                      placeholder="Select Member Type"
+                      options={memberOption}
+                      filterOption={(input, option) =>
+                        option.label
+                          .toLowerCase()
+                          .indexOf(input.toLowerCase()) >= 0
+                      }
+                    />
+                  </Form.Item>
+                </div>
+              </Col>
+              <Col span={9}>
+                <div className="field-wrapper">
+                  <div className="field-label">ISCO</div>
+                  <Form.Item name={iscoAccessField}>
+                    <Select
+                      allowClear
+                      mode="multiple"
+                      showSearch={true}
+                      className="custom-dropdown-wrapper bg-grey"
+                      placeholder="Select ISCO"
+                      options={iscoOption}
+                      filterOption={(input, option) =>
+                        option.label
+                          .toLowerCase()
+                          .indexOf(input.toLowerCase()) >= 0
+                      }
+                    />
+                  </Form.Item>
+                </div>
+              </Col>
+            </Row>
             <div className="field-wrapper">
               <div className="field-label">Variable name (Custom ID)</div>
               <Form.Item name={`question-${qid}-variable_name`}>

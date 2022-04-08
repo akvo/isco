@@ -118,9 +118,9 @@ def update_question(session: Session, id: int,
     question.repeating_objects = payload['repeating_objects']
     question.order = payload['order']
     # Add member access
+    delete_member_access_by_question_id(
+        session=session, question=[id])
     if payload['member_access']:
-        delete_member_access_by_question_id(
-            session=session, question=[id])
         for ma in payload['member_access']:
             member = QuestionMemberAccess(
                 id=None,
@@ -128,9 +128,9 @@ def update_question(session: Session, id: int,
                 member_type=ma)
             question.member_access.append(member)
     # Add isco access
+    delete_isco_access_by_question_id(
+        session=session, question=[id])
     if payload['isco_access']:
-        delete_isco_access_by_question_id(
-            session=session, question=[id])
         for ia in payload['isco_access']:
             isco = QuestionIscoAccess(
                 id=None,

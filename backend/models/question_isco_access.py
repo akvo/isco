@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from typing_extensions import TypedDict
 from sqlalchemy import Column, Integer
 from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship, backref
 from db.connection import Base
 
 
@@ -25,6 +26,8 @@ class QuestionIscoAccess(Base):
     id = Column(Integer, primary_key=True, index=True, nullable=True)
     question = Column(Integer, ForeignKey('question.id'))
     isco_type = Column(Integer, ForeignKey('isco_type.id'))
+    q_isco = relationship("IscoType",
+                          backref=backref("q_isco_type", uselist=False))
 
     def __init__(self, id: Optional[int], question: int, isco_type: int):
         self.id = id
@@ -41,6 +44,10 @@ class QuestionIscoAccess(Base):
             "question": self.question,
             "isco_type": self.isco_type
         }
+
+    @property
+    def iscoName(self) -> str:
+        return self.q_isco.name
 
 
 class QuestionIscoAccessBase(BaseModel):

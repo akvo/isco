@@ -50,29 +50,31 @@ const Preview = () => {
   useEffect(() => {
     if (allQuestion.length && isEmpty(formValue)) {
       let transformedQuestionGroup = questionGroup;
-      if (selectedMember && selectedMember.length) {
-        transformedQuestionGroup = transformedQuestionGroup.filter(
-          (qg) =>
-            intersection(qg.member_access, selectedMember).length ||
-            qg.member_access.includes(allAccessId)
-        );
-      }
-      if (selectedIsco && selectedIsco.length) {
-        transformedQuestionGroup = transformedQuestionGroup.filter(
-          (qg) =>
-            intersection(qg.isco_access, selectedIsco).length ||
-            qg.isco_access.includes(allAccessId)
-        );
-      }
       transformedQuestionGroup = transformedQuestionGroup.map((qg) => {
         let group = qg;
-        const questions = qg.question.map((q) => {
+        let questions = qg.question;
+        /**
+         * Step 1. When map questions, we need to remap membes/isco access,
+         *         if question doesn't have member/isco access, inherit group member/isco access.
+         * Step 2. After this, all questions will have access,
+         *         then we can filter it by member/isco selected from dropdown */
+        questions = questions.map((q) => {
+          /** Step 1 */
+          const qMemberAccess = q.member_access.length
+            ? q.member_access
+            : qg.member_access;
+          const qIscoAccess = q.isco_access.length
+            ? q.isco_access
+            : qg.isco_access;
+          /** End Step 1 */
           let qVal = {
             id: q.id,
             name: q.name,
             order: q.order,
             type: q.type,
             required: q.mandatory,
+            member_access: qMemberAccess,
+            isco_access: qIscoAccess,
             // add comment field
             extra: [
               {
@@ -247,6 +249,22 @@ const Preview = () => {
           }
           return qVal;
         });
+        /** Step 2 */
+        if (selectedMember && selectedMember.length) {
+          questions = questions.filter(
+            (q) =>
+              intersection(q.member_access, selectedMember).length ||
+              q.member_access.includes(allAccessId)
+          );
+        }
+        if (selectedIsco && selectedIsco.length) {
+          questions = questions.filter(
+            (q) =>
+              intersection(q.isco_access, selectedIsco).length ||
+              q.isco_access.includes(allAccessId)
+          );
+        }
+        /** End Step 2 */
         // repeatable
         if (qg.repeat) {
           group = {
@@ -279,6 +297,11 @@ const Preview = () => {
         };
         return group;
       });
+      /** filter group which doesn't have questions
+       * after question filtered by member/isco access */
+      transformedQuestionGroup = transformedQuestionGroup.filter(
+        (qg) => qg.question.length
+      );
       const transformedForm = {
         name: formName,
         description: formDescription,
