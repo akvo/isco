@@ -68,6 +68,8 @@ const WebformPage = ({ formId, setFormLoaded, selectedSavedSubmission }) => {
                 };
               });
               setInitialAnswers(answers);
+              setAnswer(answers);
+              setComment(commentValues);
             }
 
             let transformedQuestionGroup = form.question_group;
@@ -81,12 +83,8 @@ const WebformPage = ({ formId, setFormLoaded, selectedSavedSubmission }) => {
                       <CommentField
                         onChange={(val) => onChangeComment(q.id, val)}
                         onDelete={() => onDeleteComment(q.id)}
-                        value={
-                          comment?.[q.id]
-                            ? comment?.[q.id]
-                            : commentValues?.[q.id]
-                            ? commentValues?.[q.id]
-                            : null
+                        defaultValue={
+                          commentValues?.[q.id] ? commentValues?.[q.id] : null
                         }
                       />
                     ),
@@ -134,7 +132,7 @@ const WebformPage = ({ formId, setFormLoaded, selectedSavedSubmission }) => {
     }
   }, [formValue, formId, user, userMember, userIsco, selectedSavedSubmission]);
 
-  // set comment
+  // set comment to answer value
   useEffect(() => {
     if (!isEmpty(comment) && answer.length) {
       const qid = parseInt(Object.keys(comment)[0]);
