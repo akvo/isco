@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Row, Col, Input, Button } from "antd";
 import { PlusSquareFilled, DeleteFilled } from "@ant-design/icons";
 
-const CommentField = ({ onChange, onDelete }) => {
+const CommentField = ({ onChange, onDelete, value }) => {
   const [showField, setShowField] = useState(false);
 
   return (
@@ -26,7 +26,9 @@ const CommentField = ({ onChange, onDelete }) => {
         )}
       </Col>
       <Col span="24">
-        {showField && <Input.TextArea rows={3} onChange={onChange} />}
+        {showField && (
+          <Input.TextArea rows={3} onChange={onChange} value={value} />
+        )}
       </Col>
     </Row>
   );
