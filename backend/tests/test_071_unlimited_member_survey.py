@@ -92,7 +92,7 @@ class TestCreateUnlimitedMemberQuestionnaire():
             "form": 1,
             "id": 2,
             "locked_by": 2,
-            "name": f"{org_name} - Galih - {today}",
+            "name": f"Form Test - {org_name} - Galih - {today}",
             "organisation": org_name,
         }
 
