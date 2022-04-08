@@ -4,6 +4,7 @@ from main import app
 from fastapi.testclient import TestClient
 from middleware import create_access_token
 from middleware import decode_token
+import util.survey_config as config
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(BASE_DIR)
@@ -34,3 +35,10 @@ def test_read_credentials():
     else:
         print("SKIPPING READ CREDENTIAL TEST")
         assert True is True
+
+
+def test_survey_config():
+    assert config.MEMBER_SURVEY
+    assert config.PROJECT_SURVEY
+    assert config.MEMBER_SURVEY_UNLIMITED_MEMBER
+    assert config.MEMBER_SURVEY_UNLIMITED_ISCO
