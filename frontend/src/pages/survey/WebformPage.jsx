@@ -52,25 +52,10 @@ const WebformPage = ({ formId, setFormLoaded, initialValues }) => {
             setErrorPage(true);
           }
           if (status === 200) {
-            // Filter survey detail by user login, using member/isco name
             let transformedQuestionGroup = data.question_group;
-            if (userMember) {
-              transformedQuestionGroup = transformedQuestionGroup.filter(
-                (qg) =>
-                  qg.member_access.includes(userMember) ||
-                  qg.member_access.includes(allAccess)
-              );
-            }
-            if (!isEmpty(userIsco)) {
-              transformedQuestionGroup = transformedQuestionGroup.filter(
-                (qg) =>
-                  intersection(qg.isco_access, userIsco).length ||
-                  qg.isco_access.includes(allAccess)
-              );
-            }
             // enable comment field
             transformedQuestionGroup = transformedQuestionGroup.map((qg) => {
-              const updatedQuestion = qg.question.map((q) => {
+              let updatedQuestions = qg.question.map((q) => {
                 let extra = [
                   {
                     placement: "after",
@@ -90,11 +75,31 @@ const WebformPage = ({ formId, setFormLoaded, initialValues }) => {
                   extra: extra,
                 };
               });
+              // Filter survey detail by user login, using member/isco name
+              if (userMember) {
+                updatedQuestions = updatedQuestions.filter(
+                  (q) =>
+                    q.member_access.includes(userMember) ||
+                    q.member_access.includes(allAccess)
+                );
+              }
+              if (!isEmpty(userIsco)) {
+                updatedQuestions = updatedQuestions.filter(
+                  (q) =>
+                    intersection(q.isco_access, userIsco).length ||
+                    q.isco_access.includes(allAccess)
+                );
+              }
               return {
                 ...qg,
-                question: updatedQuestion,
+                question: updatedQuestions,
               };
             });
+            /** filter group which doesn't have questions
+             * after question filtered by member/isco access */
+            transformedQuestionGroup = transformedQuestionGroup.filter(
+              (qg) => qg.question.length
+            );
             setFormValue({ ...data, question_group: transformedQuestionGroup });
           }
         })

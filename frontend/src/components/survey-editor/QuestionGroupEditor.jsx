@@ -30,6 +30,32 @@ import Question from "./Question";
 
 const { TabPane } = Tabs;
 
+export const generateDisabledOptions = (dropdownValues, selectedValue) => {
+  return dropdownValues?.map((item) => {
+    const hasValue = selectedValue && selectedValue.length;
+    // disabled other value if all selected / id === 1
+    if (hasValue && selectedValue?.includes(1) && item?.id !== 1) {
+      return {
+        label: item?.name,
+        value: item?.id,
+        disabled: true,
+      };
+    }
+    // disabled all if other value selected / id !== 1
+    if (hasValue && !selectedValue?.includes(1) && item?.id === 1) {
+      return {
+        label: item?.name,
+        value: item?.id,
+        disabled: true,
+      };
+    }
+    return {
+      label: item?.name,
+      value: item?.id,
+    };
+  });
+};
+
 const QuestionGroupSetting = ({
   form,
   questionGroup,
@@ -43,39 +69,13 @@ const QuestionGroupSetting = ({
   const { name, description, repeat_text } = questionGroup;
   const [groupTranslationVisible, setGroupTranslationVisible] = useState(false);
 
-  const disabledOptions = (dropdownValues, selectedValue) => {
-    return dropdownValues?.map((item) => {
-      const hasValue = selectedValue && selectedValue.length;
-      // disabled other value if all selected / id === 1
-      if (hasValue && selectedValue?.includes(1) && item?.id !== 1) {
-        return {
-          label: item?.name,
-          value: item?.id,
-          disabled: true,
-        };
-      }
-      // disabled all if other value selected / id !== 1
-      if (hasValue && !selectedValue?.includes(1) && item?.id === 1) {
-        return {
-          label: item?.name,
-          value: item?.id,
-          disabled: true,
-        };
-      }
-      return {
-        label: item?.name,
-        value: item?.id,
-      };
-    });
-  };
-
   const memberAccessField = `question_group-${qgId}-member_access`;
   const memberValue = form.getFieldValue(memberAccessField);
-  const memberOption = disabledOptions(member_type, memberValue);
+  const memberOption = generateDisabledOptions(member_type, memberValue);
 
   const iscoAccessField = `question_group-${qgId}-isco_access`;
   const iscoValue = form.getFieldValue(iscoAccessField);
-  const iscoOption = disabledOptions(isco_type, iscoValue);
+  const iscoOption = generateDisabledOptions(isco_type, iscoValue);
 
   return (
     <div className="qge-setting-wrapper">
@@ -106,11 +106,11 @@ const QuestionGroupSetting = ({
             <TabPane tab="Section Settings" key="group-setting">
               <Row
                 align="top"
-                justify="space-between"
+                justify="space-evenly"
                 gutter={[24, 12]}
                 className="qge-setting-tab-body"
               >
-                <Col span={10}>
+                <Col span={9}>
                   <div className="field-wrapper">
                     <div className="field-label">Section Description</div>
                     <Form.Item name={`question_group-${qgId}-description`}>
@@ -151,6 +151,7 @@ const QuestionGroupSetting = ({
                     )}
                   </Space>
                 </Col>
+                <Col span={1}>&nbsp;</Col>
                 <Col span={7}>
                   <div className="field-wrapper">
                     <div className="field-label">Member Type</div>
@@ -418,13 +419,10 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
         cascade: findQuestion?.cascade || null,
       };
 
-      /**
-       * * add member/isco access value inherited from question group,
-       * * this will be changed in the future, to get member/isco value from dropdown on question editor */
       data = {
         ...data,
-        member_access: questionGroup?.member_access,
-        isco_access: questionGroup?.isco_access,
+        member_access: findQuestion?.member_access,
+        isco_access: findQuestion?.isco_access,
       };
 
       // delete question option before update

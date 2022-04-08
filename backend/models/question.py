@@ -199,6 +199,16 @@ class Question(Base):
 
     @property
     def serializeJson(self):
+        group_detail = self.question_group_detail
+        group_member = [ma.memberName for ma in group_detail.member_access]
+        group_isco = [ia.iscoName for ia in group_detail.isco_access]
+        # inherit group member/isco access if question member/isco []
+        question_member = group_member
+        if (self.member_access):
+            question_member = [ma.memberName for ma in self.member_access]
+        question_isco = group_isco
+        if (self.isco_access):
+            question_isco = [ia.iscoName for ia in self.isco_access]
         question = {
             "id": self.id,
             "name": self.name,
@@ -206,6 +216,8 @@ class Question(Base):
             "datapoint_name": self.datapoint_name,
             "type": self.type.value,
             "order": self.order,
+            "member_access": question_member,
+            "isco_access": question_isco
         }
         if self.rule:
             if "allow_other" not in self.rule:

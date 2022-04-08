@@ -21,6 +21,13 @@ class TestSubmissionRoutes():
         res = res.json()
         assert res["id"] == 1
         assert len(res['question_group']) > 0
+        assert "en" in res["languages"]
+        for qg in res["question_group"]:
+            assert len(qg["member_access"]) > 0
+            assert len(qg["isco_access"]) > 0
+            for q in qg["question"]:
+                assert len(q["member_access"]) > 0
+                assert len(q["isco_access"]) > 0
 
     @pytest.mark.asyncio
     async def test_save_data(self, app: FastAPI, session: Session,

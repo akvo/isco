@@ -47,7 +47,7 @@ class QuestionGroupMemberAccess(Base):
         }
 
     @property
-    def memberName(self):
+    def memberName(self) -> str:
         return self.member.name
 
 

@@ -27,7 +27,7 @@ class QuestionGroupIscoAccess(Base):
     question_group = Column(Integer, ForeignKey('question_group.id'))
     isco_type = Column(Integer, ForeignKey('isco_type.id'))
     isco = relationship("IscoType",
-                        backref=backref("member_type", uselist=False))
+                        backref=backref("isco_type", uselist=False))
 
     def __init__(self, id: Optional[int], question_group: int,
                  isco_type: int):
@@ -47,7 +47,7 @@ class QuestionGroupIscoAccess(Base):
         }
 
     @property
-    def iscoName(self):
+    def iscoName(self) -> str:
         return self.isco.name
 
 

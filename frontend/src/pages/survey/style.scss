@@ -54,6 +54,13 @@
         padding-bottom: 14px;
       }
 
+      /* Question group description */
+      .arf-description {
+        background-color: #f3f3f3;
+        padding: 8px;
+        font-style: italic;
+      }
+
       button.ant-btn.ant-btn-default.ant-btn-sm.ant-btn-icon-only {
         min-height: 0;
         background-color: #777777;
@@ -62,6 +69,16 @@
         &.arf-disabled {
           background-color: #eaeaea;
           color: $black;
+        }
+      }
+
+      button.ant-btn.ant-btn-primary.ant-btn-icon-only {
+        border: none;
+        background: transparent;
+        color: $black;
+        box-shadow: none;
+        &:disabled {
+          color: #777777;
         }
       }
 
