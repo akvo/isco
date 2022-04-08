@@ -78,8 +78,16 @@ def get_data(session: Session, form: int, skip: int,
     return PaginatedData(data=data, count=count)
 
 
-def get_data_by_id(session: Session, id: int) -> DataDict:
-    return session.query(Data).filter(Data.id == id).first()
+def get_data_by_id(session: Session, id: int,
+                   submitted: Optional[bool] = None) -> DataDict:
+    data = session.query(Data).filter(Data.id == id)
+    if submitted is None:
+        return data.first()
+    if submitted:
+        data = data.filter(Data.submitted != null())
+    else:
+        data = data.filter(Data.submitted == null())
+    return data.first()
 
 
 def get_data_by_organisation(session: Session,
