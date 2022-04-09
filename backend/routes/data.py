@@ -67,7 +67,7 @@ def add(req: Request,
                          authenticated=req.state.authenticated)
     # check if submission exist
     exist = crud.check_member_submission_exists(
-        session=session, organisation=user.organisation)
+        session=session, form=form_id, organisation=user.organisation)
     if exist:
         raise HTTPException(status_code=208,
                             detail="Submission already reported")

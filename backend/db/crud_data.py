@@ -7,7 +7,7 @@ from models.data import Data, DataDict, DataOptionDict
 from models.answer import Answer
 from models.answer import AnswerBase
 from models.organisation_isco import OrganisationIsco
-from util.survey_config import MEMBER_SURVEY
+from util.survey_config import MEMBER_SURVEY, PROJECT_SURVEY
 from util.survey_config import MEMBER_SURVEY_UNLIMITED_ISCO
 
 
@@ -112,7 +112,11 @@ def download(session: Session, form: int):
 
 def check_member_submission_exists(session: Session,
                                    organisation: int,
+                                   form: Optional[int] = None,
                                    saved: Optional[bool] = False):
+    # handle unlimited project questionnaire
+    if form and form in PROJECT_SURVEY:
+        return False
     # handle unlimited member questionnaire
     # for organisation ISCO contains DISCO
     check_org = session.query(OrganisationIsco).filter(

@@ -162,6 +162,7 @@ def get_form_from_bucket(req: Request, form_id: int,
                          authenticated=req.state.authenticated)
     # check if user organisation already have a member survey saved/submitted
     exists = check_member_submission_exists(session=session,
+                                            form=form_id,
                                             organisation=user.organisation,
                                             saved=True)
     if exists:

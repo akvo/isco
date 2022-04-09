@@ -127,8 +127,9 @@ const Survey = () => {
                 className="bg-grey"
                 placeholder="Select..."
                 options={savedSubmissions.map((x) => ({
-                  label: x.name,
+                  label: `${x.name}${x.locked_by ? " (locked)" : ""}`,
                   value: x.id,
+                  disabled: x.locked_by ? x.locked_by !== user.id : false,
                 }))}
                 value={selectedSavedSubmission?.id}
                 filterOption={(input, option) =>

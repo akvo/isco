@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./style.scss";
-import { Spin, Button } from "antd";
+import { Spin, Button, Checkbox } from "antd";
 import { Webform } from "akvo-react-form";
 import { api, store } from "../../lib";
 import { useNotification } from "../../util";
@@ -12,6 +12,12 @@ const SaveButton = ({ onClick, isSaving }) => (
   <Button loading={isSaving} onClick={onClick}>
     Save
   </Button>
+);
+
+const LockedCheckbox = ({ onChange, isLocked }) => (
+  <>
+    <Checkbox checked={isLocked} onChange={onChange} /> Locked
+  </>
 );
 
 const WebformPage = ({
@@ -29,9 +35,12 @@ const WebformPage = ({
   const [formValue, setFormValue] = useState({});
   const [errorPage, setErrorPage] = useState(false);
   const [answer, setAnswer] = useState([]);
+
   const [comment, setComment] = useState({});
   const [deletedComment, setDeletedComment] = useState(null);
+
   const [isSaving, setIsSaving] = useState(false);
+  const [isLocked, setIsLocked] = useState(true);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [disableSubmit, setDisableSubmit] = useState(true);
@@ -59,7 +68,8 @@ const WebformPage = ({
           if (status === 200) {
             let commentValues = {};
 
-            if (initial_values) {
+            if (initial_values && !savedData) {
+              setIsLocked(initial_values.locked_by);
               setSavedData(initial_values);
               const answers = initial_values.answer.map((a) => {
                 const { question, repeat_index, comment } = a;
@@ -135,7 +145,15 @@ const WebformPage = ({
           console.error(e);
         });
     }
-  }, [formValue, formId, user, userMember, userIsco, selectedSavedSubmission]);
+  }, [
+    formValue,
+    formId,
+    user,
+    userMember,
+    userIsco,
+    selectedSavedSubmission,
+    savedData,
+  ]);
 
   // set comment to answer value
   useEffect(() => {
@@ -221,15 +239,25 @@ const WebformPage = ({
   const onFinish = (/*values*/) => {
     if (answer.length) {
       setIsSubmitting(true);
-      const endpoint = !savedData
-        ? api.post(`/data/form/${formId}/1`, answer, {
+      let url = !savedData?.id
+        ? `/data/form/${formId}/1`
+        : `/data/${savedData.id}/1`;
+      if (isLocked) {
+        url = `${url}?locked_by=${user.id}`;
+      }
+      const endpoint = !savedData?.id
+        ? api.post(url, answer, {
             "content-type": "application/json",
           })
-        : api.put(`/data/${savedData?.id}/1`, answer, {
+        : api.put(url, answer, {
             "content-type": "application/json",
           });
       endpoint
-        .then(() => {
+        .then((res) => {
+          if (res.status === 208) {
+            setErrorPage(true);
+            return;
+          }
           notify({
             type: "success",
             message: "Subission submitted successfully.",
@@ -254,15 +282,26 @@ const WebformPage = ({
   const handleOnClickSaveButton = () => {
     if (answer.length) {
       setIsSaving(true);
-      const endpoint = !savedData
-        ? api.post(`/data/form/${formId}/0`, answer, {
+      let url = !savedData?.id
+        ? `/data/form/${formId}/0`
+        : `/data/${savedData.id}/0`;
+      if (isLocked) {
+        url = `${url}?locked_by=${user.id}`;
+      }
+      const endpoint = !savedData?.id
+        ? api.post(url, answer, {
             "content-type": "application/json",
           })
-        : api.put(`/data/${savedData?.id}/0`, answer, {
+        : api.put(url, answer, {
             "content-type": "application/json",
           });
       endpoint
         .then((res) => {
+          // submission already submitted
+          if (res.status === 208) {
+            setErrorPage(true);
+            return;
+          }
           setSavedData(res.data);
           notify({
             type: "success",
@@ -295,7 +334,16 @@ const WebformPage = ({
           onChange={onChange}
           onFinish={onFinish}
           extraButton={
-            <SaveButton onClick={handleOnClickSaveButton} isSaving={isSaving} />
+            <>
+              <SaveButton
+                onClick={handleOnClickSaveButton}
+                isSaving={isSaving}
+              />
+              <LockedCheckbox
+                onChange={(val) => setIsLocked(val.target.checked)}
+                isLocked={isLocked}
+              />
+            </>
           }
           submitButtonSetting={{
             loading: isSubmitting,
