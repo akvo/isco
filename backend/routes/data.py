@@ -199,6 +199,10 @@ def update_by_id(req: Request,
     if not data:
         raise HTTPException(status_code=208,
                             detail="Submission already reported")
+    # if locked, allow update only by locked_by === user id
+    if data.locked_by and data.locked_by != user.id:
+        raise HTTPException(status_code=401,
+                            detail="Submission is locked")
     submitted_by = None
     submitted_date = None
     if submitted:
