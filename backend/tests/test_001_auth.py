@@ -85,7 +85,7 @@ class TestUserAuthentication():
     async def test_add_organisation(self, app: FastAPI, session: Session,
                                     client: AsyncClient) -> None:
         # create organisation
-        payload = {
+        payload = [{
             "code": None,
             "name": "staff Akvo",
             "active": True,
@@ -96,21 +96,64 @@ class TestUserAuthentication():
                     "isco_type": 1
                 }
             ],
-        }
-        res = crud_organisation.add_organisation(
-            session=session, payload=payload)
+        }, {
+            "code": None,
+            "name": "staff GISCO Secretariat",
+            "active": True,
+            "member_type": 1,
+            "isco_type": [
+                {
+                    "organisation": None,
+                    "isco_type": 1
+                }
+            ],
+        }, {
+            "code": None,
+            "name": "Organisation DISCO - Traders Member and DISCO isco",
+            "active": True,
+            "member_type": 4,
+            "isco_type": [
+                {
+                    "organisation": None,
+                    "isco_type": 3
+                }
+            ],
+        }]
+        for p in payload:
+            crud_organisation.add_organisation(
+                session=session, payload=p)
         res = await client.get(
-            app.url_path_for("organisation:get_by_id", id=1))
+            app.url_path_for("organisation:get_all"))
         assert res.status_code == 200
         res = res.json()
-        assert res == {
-            "active": True,
-            "code": None,
-            "id": 1,
-            "isco_type": [1],
-            "member_type": 1,
-            "name": "staff Akvo"
-        }
+        assert res == [{
+            'active': True,
+            'code': None,
+            'id': 1,
+            'isco': ['All'],
+            'isco_type': [1],
+            'member': 'All',
+            'member_type': 1,
+            'name': 'staff Akvo'
+        }, {
+            'active': True,
+            'code': None,
+            'id': 2,
+            'isco': ['All'],
+            'isco_type': [1],
+            'member': 'All',
+            'member_type': 1,
+            'name': 'staff GISCO Secretariat'
+        }, {
+            'active': True,
+            'code': None,
+            'id': 3,
+            'isco': ['DISCO'],
+            'isco_type': [3],
+            'member': 'DISCO - Traders',
+            'member_type': 4,
+            'name': 'Organisation DISCO - Traders Member and DISCO isco'
+        }]
 
     @pytest.mark.asyncio
     async def test_user_register(self, app: FastAPI, session: Session,

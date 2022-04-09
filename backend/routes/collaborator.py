@@ -16,11 +16,14 @@ collaborator_route = APIRouter()
                          summary="add new collaborator",
                          name="collaborator:create",
                          tags=["Collaborator"])
-def add(req: Request, data: int, payload: CollaboratorPayload,
+def add(req: Request, data: int, payload: List[CollaboratorPayload],
         session: Session = Depends(get_session),
         credentials: credentials = Depends(security)):
-    collaborators = crud.add_collaborator(
-        session=session, data=data, payload=payload)
+    collaborators = []
+    for p in payload:
+        collaborator = crud.add_collaborator(
+            session=session, data=data, payload=p)
+        collaborators.append(collaborator)
     return [c.serialize for c in collaborators]
 
 
@@ -29,27 +32,27 @@ def add(req: Request, data: int, payload: CollaboratorPayload,
                         summary="update member type",
                         name="collaborator:put",
                         tags=["Collaborator"])
-def update(req: Request, data: int, payload: CollaboratorPayload,
+def update(req: Request, data: int, payload: List[CollaboratorPayload],
            session: Session = Depends(get_session),
            credentials: credentials = Depends(security)):
     # get collaborator by data as current collaborator
     current_collabs = crud.get_collaborator_by_data(session=session, data=data)
     current_collabs = [c.serialize for c in current_collabs]
     # to add
-    to_add = []
     for p in payload:
-        if not any(current['organisation'] == p['organisation']
+        if not any(p['organisation'] == current['organisation']
                    for current in current_collabs):
-            to_add.append(p)
+            crud.add_collaborator(
+                session=session, data=data, payload=p)
     # to delete
     to_delete = []
     for current in current_collabs:
-        if not any(p['organisation'] == current['organisation']
+        if not any(current['organisation'] == p['organisation']
                    for p in payload):
             to_delete.append(current['id'])
     crud.delete_collaborator_by_ids(session=session, ids=to_delete)
-    collaborators = crud.add_collaborator(
-        session=session, data=data, payload=payload)
+    # get all collaborator by data id
+    collaborators = crud.get_collaborator_by_data(session=session, data=data)
     return [c.serialize for c in collaborators]
 
 
@@ -59,6 +62,7 @@ def update(req: Request, data: int, payload: CollaboratorPayload,
                         name="collaborator:get_by_data_id",
                         tags=["Collaborator"])
 def get_by_data_id(req: Request, data: int,
-                   session: Session = Depends(get_session)):
-    collaborator = crud.get_collaborator_by_data(session=session, data=data)
-    return collaborator.serialize
+                   session: Session = Depends(get_session),
+                   credentials: credentials = Depends(security)):
+    collaborators = crud.get_collaborator_by_data(session=session, data=data)
+    return [c.serialize for c in collaborators]

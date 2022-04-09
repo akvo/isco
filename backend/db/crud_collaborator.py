@@ -6,16 +6,15 @@ from models.collaborator import CollaboratorDict, CollaboratorPayload
 
 def add_collaborator(session: Session,
                      data: int,
-                     payload: List[CollaboratorPayload]) -> CollaboratorDict:
-    collaborators = [
-        Collaborator(id=None,
-                     data=data,
-                     organisation=p['organisation']) for p in payload]
-    session.bulk_save_objects(collaborators)
+                     payload: CollaboratorPayload) -> CollaboratorDict:
+    collaborator = Collaborator(id=None,
+                                data=data,
+                                organisation=payload["organisation"])
+    session.add(collaborator)
     session.commit()
     session.flush()
-    session.refresh(collaborators)
-    return collaborators
+    session.refresh(collaborator)
+    return collaborator
 
 
 def get_collaborator_by_organisation(session: Session,
