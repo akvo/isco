@@ -16,7 +16,6 @@ const Preview = () => {
   } = surveyEditor;
   const { member_type, isco_type } = optionValues;
   const [formValue, setFormValue] = useState({});
-  // const [treeObj, setTreeObj] = useState({});
   const [isLoading, setIsLoading] = useState(true);
 
   const allAccessId = 1;
@@ -28,11 +27,6 @@ const Preview = () => {
     (q) => q.type === "nested_list"
   );
 
-  // const formPreviewValue = useMemo(
-  //   () => (!isEmpty(treeObj) ? { ...formValue, tree: treeObj } : formValue),
-  //   [formValue, treeObj]
-  // );
-
   const fetchNestedList = useCallback(async () => {
     let data = null;
     if (nestedListQuestions.length) {
@@ -42,7 +36,6 @@ const Preview = () => {
       await api
         .get(`/nested/list?cascade_id=${cascadeIds}`)
         .then((res) => {
-          // setTreeObj(res?.data);
           data = res.data;
         })
         .catch((e) => {
