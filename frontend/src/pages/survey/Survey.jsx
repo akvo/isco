@@ -267,12 +267,17 @@ const Survey = () => {
                   />
                 </Col>
                 <Col span={10}>
-                  <Button
-                    onClick={handleOnClickAddCollaborator}
-                    disabled={!selectedCollaborators.length}
-                  >
-                    Add
-                  </Button>
+                  <Space>
+                    <Button
+                      onClick={handleOnClickAddCollaborator}
+                      disabled={!selectedCollaborators.length}
+                    >
+                      Add
+                    </Button>
+                    <Button onClick={() => setShowCollaboratorForm(false)}>
+                      Close
+                    </Button>
+                  </Space>
                 </Col>
               </Row>
             )}
