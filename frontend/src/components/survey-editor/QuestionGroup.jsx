@@ -2,7 +2,7 @@ import React from "react";
 import QuestionGroupEditor from "./QuestionGroupEditor";
 import AddMoveButton from "./AddMoveButton";
 import { store, api } from "../../lib";
-import { orderBy, takeRight } from "lodash";
+import { maxBy, orderBy, takeRight } from "lodash";
 import { defaultOption, defaultRepeatingObject } from "../../lib/store";
 import { generateID } from "../../lib/util";
 
@@ -185,28 +185,22 @@ const QuestionGroup = ({ index, questionGroup }) => {
     .map((x) => x.question)
     .flatMap((x) => x);
 
-  const allPrevQuestions = questionGroupState
-    .filter((x) => x.order < isMoveQuestionGroup.order)
-    .map((x) => x.question)
-    .flatMap((x) => x);
+  const maxOrder =
+    maxBy(
+      allQuestions.filter((x) => {
+        if (isMoveQuestionGroup) {
+          const skip_logics = isMoveQuestionGroup.question
+            .map((x) => x.skip_logic)
+            .flatMap((x) => x)
+            .map((x) => x.dependent_to);
+          return skip_logics.includes(x.id);
+        }
+        return false;
+      }),
+      "order"
+    )?.order || 0;
 
-  const allPrevDependencies = allPrevQuestions.filter((x) => {
-    if (isMoveQuestionGroup) {
-      const skip_logics = isMoveQuestionGroup.question
-        .filter((q) => q.skip_logic.length)
-        .flatMap((q) => q)
-        .map((q) => q.skip_logic)
-        .flatMap((q) => q)
-        .map((q) => q.dependent_to);
-      return skip_logics.includes(x.id);
-    }
-    return false;
-  });
-
-  const disable = questionGroup.question.filter((x) => {
-    const hasHighOrder = allPrevDependencies.map((d) => d.order >= x.order);
-    return hasHighOrder.length;
-  });
+  const disable = questionGroup.question.filter((x) => x.order < maxOrder);
 
   /* get selected dependencies */
   const allTargetDependencies = questionGroupState

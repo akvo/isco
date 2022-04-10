@@ -48,6 +48,7 @@ def create_default(req: Request, form_id: int, order: int,
             Question.form == form_id,
             Question.question_group == prev_group.id)).order_by(
                 Question.order.desc()).first().order
+    print(question_order)
 
     default_question = {
         "form": form_id,
@@ -90,7 +91,7 @@ def create_default(req: Request, form_id: int, order: int,
         next_questions_ids = [q.id for q in next_questions]
         crud_question.reorder_question(
             session=session, form=form_id, only=next_questions_ids,
-            order=2 if question_order == 0 else question_order + 1)
+            order=2 if question_order == 0 else question_order + 2)
     # reorder question groups
     next_groups = session.query(QuestionGroup).filter(
         and_(QuestionGroup.form == form_id,
