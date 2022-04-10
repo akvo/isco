@@ -179,7 +179,6 @@ const QuestionGroup = ({ index, questionGroup }) => {
         console.error(e);
       });
   };
-
   /* get target dependencies */
   const allQuestions = questionGroupState
     .map((x) => x.question)
@@ -200,7 +199,22 @@ const QuestionGroup = ({ index, questionGroup }) => {
       "order"
     )?.order || 0;
 
-  const disable = questionGroup.question.filter((x) => x.order < maxOrder);
+  const prevQuestions = questionGroupState
+    .filter((qg) => {
+      if (isMoveQuestionGroup) {
+        return qg.order < isMoveQuestionGroup.order;
+      }
+      return [];
+    })
+    .filter((qg) => {
+      return qg.order > questionGroup.order;
+    })
+    .map((x) => x.question)
+    .flatMap((x) => x);
+
+  const disable = prevQuestions
+    ? prevQuestions.filter((x) => x.order <= maxOrder)
+    : [];
 
   /* get selected dependencies */
   const allTargetDependencies = questionGroupState
