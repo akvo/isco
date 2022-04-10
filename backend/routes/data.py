@@ -12,6 +12,7 @@ import db.crud_data as crud
 from db import crud_question
 from db import crud_answer
 from db import crud_form
+from db import crud_collaborator
 from models.answer import Answer, AnswerDict
 from models.question_group import QuestionGroup
 from models.question import QuestionType
@@ -122,8 +123,16 @@ def get_saved_data_by_organisation(req: Request,
                                    ):
     user = verify_editor(session=session,
                          authenticated=req.state.authenticated)
-    data = crud.get_data_by_organisation(session=session,
-                                         organisation=user.organisation)
+    # get saved data from logged user organisation
+    data = crud.get_data_by_organisation(
+        session=session, organisation=user.organisation)
+    # check for collaborator
+    collabs = crud_collaborator.get_collaborator_by_organisation(
+        session=session, organisation=user.organisation)
+    if collabs:
+        collab_data = crud.get_data_by_ids(
+            session=session, ids=[c.only_data_id for c in collabs])
+        data = [*data, *collab_data]
     if not data:
         return []
     return [d.to_options for d in data]

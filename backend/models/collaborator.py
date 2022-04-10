@@ -41,6 +41,10 @@ class Collaborator(Base):
             "organisation": self.organisation,
         }
 
+    @property
+    def only_data_id(self) -> int:
+        return self.data
+
 
 class CollaboratorBase(BaseModel):
     id: int

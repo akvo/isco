@@ -76,6 +76,9 @@ const Survey = () => {
   };
 
   const handleOnChangeSavedSubmissionDropdown = (dataId) => {
+    setShowCollaboratorForm(false);
+    setCollaborators(null);
+    setSelectedCollaborators([]);
     const findData = savedSubmissions.find((x) => x.id === dataId);
     // disable add collaborator button
     if (user.organisation.name === findData.organisation) {
@@ -264,12 +267,17 @@ const Survey = () => {
                   />
                 </Col>
                 <Col span={10}>
-                  <Button
-                    onClick={handleOnClickAddCollaborator}
-                    disabled={!selectedCollaborators.length}
-                  >
-                    Add
-                  </Button>
+                  <Space>
+                    <Button
+                      onClick={handleOnClickAddCollaborator}
+                      disabled={!selectedCollaborators.length}
+                    >
+                      Add
+                    </Button>
+                    <Button onClick={() => setShowCollaboratorForm(false)}>
+                      Close
+                    </Button>
+                  </Space>
                 </Col>
               </Row>
             )}
