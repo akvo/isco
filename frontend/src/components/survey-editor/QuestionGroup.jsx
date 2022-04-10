@@ -234,6 +234,10 @@ const QuestionGroup = ({ index, questionGroup }) => {
     .filter((x) => x.question_group !== isMoveQuestionGroup?.id)
     .filter((x) => questionGroup.question.filter((q) => q.order >= x.order));
 
+  if (isMoveQuestionGroup) {
+    console.log(questionGroup.order, disable, maxOrder);
+  }
+
   return (
     <>
       {!index && (isAddQuestionGroup || isMoveQuestionGroup) && (

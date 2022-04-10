@@ -356,6 +356,28 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
       });
   };
 
+  const updateSkipLogic = (skipPayload, skip) => {
+    store.update((s) => {
+      s.surveyEditor = {
+        ...s.surveyEditor,
+        questionGroup: s.surveyEditor.questionGroup.map((qg) => {
+          return {
+            ...qg,
+            question: qg.question.map((q) => {
+              if (skip?.question === q.id) {
+                return {
+                  ...q,
+                  skip_logic: [skipPayload],
+                };
+              }
+              return q;
+            }),
+          };
+        }),
+      };
+    });
+  };
+
   const handleFormOnFinish = () => {
     const { id } = questionGroup;
     let qId = null;
@@ -530,6 +552,9 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
               .post(`/skip_logic`, skipPayload, {
                 "content-type": "application/json",
               })
+              .then(() => {
+                updateSkipLogic(skipPayload, ski);
+              })
               .catch((e) => {
                 const { status, statusText } = e.response;
                 console.error(status, statusText);
@@ -538,6 +563,9 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
             api
               .put(`/skip_logic/${ski?.id}`, skipPayload, {
                 "content-type": "application/json",
+              })
+              .then(() => {
+                updateSkipLogic(skipPayload, ski);
               })
               .catch((e) => {
                 const { status, statusText } = e.response;
