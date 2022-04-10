@@ -4,7 +4,7 @@ import { Spin, Button, Checkbox } from "antd";
 import { Webform } from "akvo-react-form";
 import { api, store } from "../../lib";
 import { useNotification } from "../../util";
-import { intersection, isEmpty } from "lodash";
+import { intersection, isEmpty, orderBy } from "lodash";
 import ErrorPage from "../error/ErrorPage";
 import { CommentField } from "../../components";
 
@@ -34,7 +34,7 @@ const reorderAnswersRepeatIndex = (formValue, answer) => {
   );
   const reorderedRepeatIndex = repeatQuestions
     .map((id) => {
-      return repeatValues
+      return orderBy(repeatValues, ["repeat_index"])
         .filter((x) => x.question === id)
         .map((v, vi) => ({
           ...v,
