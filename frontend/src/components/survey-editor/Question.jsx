@@ -144,33 +144,39 @@ const Question = ({
     .map((x) => x.question)
     .flatMap((x) => x);
 
-  const dependencies = allQuestions
-    .filter((x) => {
-      if (isMoveQuestion) {
-        return isMoveQuestion.skip_logic
-          .map((s) => s.dependent_to)
-          .includes(x.id);
-      }
-      return false;
-    })
-    .filter((x) => {
-      return x.order >= question.order;
-    });
+  const allPrevDependencies = allQuestions.filter((x) => {
+    if (isMoveQuestion) {
+      return isMoveQuestion.skip_logic
+        .map((s) => s.dependent_to)
+        .includes(x.id);
+    }
+    return false;
+  });
 
-  const targetDependencies = allQuestions
+  const prevDependencies = allPrevDependencies.filter((x) => {
+    return x.order > question.order;
+  });
+
+  const topButtonDependencies = allPrevDependencies.filter((x) => {
+    return x.order >= question.order;
+  });
+
+  const nextDependencies = allQuestions
     .filter((x) => {
       if (isMoveQuestion) {
-        return question.order >= x.order;
+        return x.order > isMoveQuestion.order && x.skip_logic.length;
       }
       return false;
     })
-    .map((x) => x?.skip_logic)
+    .filter((x) => x.order <= question.order)
+    .map((x) => x.skip_logic.map((s) => ({ ...s, order: x.order })))
     .flatMap((x) => x)
-    .map((x) => allQuestions?.find((a) => a?.id === x?.id))
-    .filter((x) => x?.id === isMoveQuestion?.id)
-    .filter((x) => x?.skip_logic?.length);
+    .filter((x) => x.dependent_to === isMoveQuestion?.id);
 
-  const disable = [...dependencies, ...targetDependencies];
+  const disable =
+    question.order <= isMoveQuestion?.order
+      ? prevDependencies
+      : nextDependencies;
 
   return (
     <>
@@ -180,7 +186,9 @@ const Question = ({
           text={AddMoveButtonText}
           cancelButton={isMoveQuestion}
           onCancel={handleOnCancelMove}
-          disabled={disable.length || isMoveQuestion?.id === question?.id}
+          disabled={
+            topButtonDependencies.length || isMoveQuestion?.id === question?.id
+          }
           onClick={() =>
             !isMoveQuestion
               ? handleAddQuestionButton(
@@ -208,11 +216,7 @@ const Question = ({
         text={AddMoveButtonText}
         cancelButton={isMoveQuestion}
         onCancel={handleOnCancelMove}
-        disabled={
-          disable.length ||
-          isMoveQuestion?.id === question?.id ||
-          isMoveQuestion.order - 1 === question.order
-        }
+        disabled={disable.length || isMoveQuestion?.id === question?.id}
         onClick={() =>
           !isMoveQuestion
             ? handleAddQuestionButton(question.order + 1)
