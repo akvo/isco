@@ -210,12 +210,12 @@ const QuestionGroup = ({ index, questionGroup }) => {
     .map((x) => x.question)
     .flatMap((x) => x);
 
-  const disable = prevQuestions
+  const prevDependencies = prevQuestions
     ? prevQuestions.filter((x) => x.order <= minOrder)
     : [];
 
   /* get selected dependencies */
-  const allTargetDependencies = questionGroupState
+  const nextDependencies = questionGroupState
     .filter((x) => {
       return x.order <= questionGroup.order;
     })
@@ -234,6 +234,11 @@ const QuestionGroup = ({ index, questionGroup }) => {
     .filter((x) => x.question_group !== isMoveQuestionGroup?.id)
     .filter((x) => questionGroup.question.filter((q) => q.order >= x.order));
 
+  const disabled =
+    isMoveQuestionGroup.order >= questionGroup.order
+      ? prevDependencies.length
+      : nextDependencies.length;
+
   return (
     <>
       {!index && (isAddQuestionGroup || isMoveQuestionGroup) && (
@@ -243,7 +248,8 @@ const QuestionGroup = ({ index, questionGroup }) => {
           cancelButton={isMoveQuestionGroup || isAddQuestionGroup}
           onCancel={handleOnCancelMove}
           disabled={
-            disable.length || isMoveQuestionGroup?.id === questionGroup?.id
+            prevDependencies.length ||
+            isMoveQuestionGroup?.id === questionGroup?.id
           }
           onClick={() =>
             !isMoveQuestionGroup
@@ -272,12 +278,7 @@ const QuestionGroup = ({ index, questionGroup }) => {
           text={AddMoveButtonText}
           cancelButton={isMoveQuestionGroup || isAddQuestionGroup}
           onCancel={handleOnCancelMove}
-          disabled={
-            (!disable.length && allTargetDependencies.length) ||
-            allTargetDependencies.length ||
-            isMoveQuestionGroup?.id === questionGroup.id ||
-            isMoveQuestionGroup?.order - 1 === questionGroup.order
-          }
+          disabled={disabled || isMoveQuestionGroup?.id === questionGroup.id}
           onClick={() =>
             !isMoveQuestionGroup
               ? handleAddQuestionGroupButton(questionGroup.order + 1)
