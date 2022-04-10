@@ -11,42 +11,7 @@ sys.path.append("..")
 account = Acc(email="support@akvo.org", token=None)
 
 
-class TestAddUserDisco():
-    @pytest.mark.asyncio
-    async def test_add_disco_organisation(
-        self,
-        app: FastAPI,
-        session: Session,
-        client: AsyncClient
-    ) -> None:
-        # create organisation
-        payload = {
-            "code": None,
-            "name": "Organisation DISCO - Traders Member and DISCO isco",
-            "active": True,
-            "member_type": 4,
-            "isco_type": [
-                {
-                    "organisation": None,
-                    "isco_type": 3
-                }
-            ],
-        }
-        res = await client.post(
-            app.url_path_for("organisation:create"),
-            headers={"Authorization": f"Bearer {account.token}"},
-            json=payload)
-        assert res.status_code == 200
-        res = res.json()
-        assert res == {
-            'active': True,
-            'code': None,
-            'id': 2,
-            'isco_type': [3],
-            'member_type': 4,
-            'name': 'Organisation DISCO - Traders Member and DISCO isco',
-        }
-
+class TestUserDisco():
     @pytest.mark.asyncio
     async def test_user_register(self, app: FastAPI, session: Session,
                                  client: AsyncClient) -> None:
@@ -57,7 +22,7 @@ class TestAddUserDisco():
             "phone_number": None,
             "password": "test",
             "role": UserRole.secretariat_admin.value,
-            "organisation": 2
+            "organisation": 3
         }
         res = await client.post(
             app.url_path_for("user:register"), json=user_payload)
@@ -68,7 +33,7 @@ class TestAddUserDisco():
             "email_verified": None,
             "id": 2,
             "name": "Galih",
-            "organisation": 2,
+            "organisation": 3,
             "role": "secretariat_admin"
         }
 

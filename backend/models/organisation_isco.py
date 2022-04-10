@@ -8,6 +8,7 @@ from sqlalchemy import Column, Integer
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from db.connection import Base
+from models.isco_type import IscoType
 
 
 class OrganisationIscoPayload(TypedDict):
@@ -27,7 +28,7 @@ class OrganisationIsco(Base):
     id = Column(Integer, primary_key=True, index=True, nullable=True)
     organisation = Column(Integer, ForeignKey('organisation.id'))
     isco_type = Column(Integer, ForeignKey('isco_type.id'))
-    isco = relationship("IscoType", backref="organisation_isco")
+    isco = relationship(IscoType, backref="organisation_isco")
 
     def __init__(self, id: Optional[int],
                  organisation: int, isco_type: int):

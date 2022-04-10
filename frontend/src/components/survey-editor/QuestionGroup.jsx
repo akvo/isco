@@ -186,7 +186,7 @@ const QuestionGroup = ({ index, questionGroup }) => {
     .flatMap((x) => x);
 
   const allPrevQuestions = questionGroupState
-    .filter((x) => x.order > questionGroup.order)
+    .filter((x) => x.order < isMoveQuestionGroup.order)
     .map((x) => x.question)
     .flatMap((x) => x);
 

@@ -8,7 +8,8 @@ from sqlalchemy import Column, Integer, String
 from sqlalchemy import ForeignKey, Boolean, DateTime
 from sqlalchemy.orm import relationship
 from db.connection import Base
-from models.organisation_isco import OrganisationIscoPayload
+from models.organisation_isco import OrganisationIsco, OrganisationIscoPayload
+from models.member_type import MemberType
 from datetime import datetime
 
 
@@ -40,10 +41,10 @@ class Organisation(Base):
     created = Column(DateTime, default=datetime.utcnow)
     member_type = Column(Integer, ForeignKey('member_type.id'))
     isco_type = relationship(
-        "OrganisationIsco",
+        OrganisationIsco,
         primaryjoin="OrganisationIsco.organisation==Organisation.id",
         backref="organisation_isco_detail")
-    member = relationship("MemberType", backref="organisation")
+    member = relationship(MemberType, backref="organisation")
 
     def __init__(self, name: str, code: Optional[str],
                  active: Optional[bool], member_type: int):
