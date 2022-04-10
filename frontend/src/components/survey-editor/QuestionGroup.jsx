@@ -2,7 +2,7 @@ import React from "react";
 import QuestionGroupEditor from "./QuestionGroupEditor";
 import AddMoveButton from "./AddMoveButton";
 import { store, api } from "../../lib";
-import { maxBy, orderBy, takeRight } from "lodash";
+import { minBy, orderBy, takeRight } from "lodash";
 import { defaultOption, defaultRepeatingObject } from "../../lib/store";
 import { generateID } from "../../lib/util";
 
@@ -179,14 +179,13 @@ const QuestionGroup = ({ index, questionGroup }) => {
         console.error(e);
       });
   };
-
   /* get target dependencies */
   const allQuestions = questionGroupState
     .map((x) => x.question)
     .flatMap((x) => x);
 
-  const maxOrder =
-    maxBy(
+  const minOrder =
+    minBy(
       allQuestions.filter((x) => {
         if (isMoveQuestionGroup) {
           const skip_logics = isMoveQuestionGroup.question
@@ -200,10 +199,23 @@ const QuestionGroup = ({ index, questionGroup }) => {
       "order"
     )?.order || 0;
 
-  const disable = questionGroup.question.filter((x) => x.order < maxOrder);
+  const prevQuestions = questionGroupState
+    .filter((qg) => {
+      if (isMoveQuestionGroup) {
+        return qg.order < isMoveQuestionGroup.order;
+      }
+      return [];
+    })
+    .filter((qg) => qg.order >= questionGroup.order)
+    .map((x) => x.question)
+    .flatMap((x) => x);
+
+  const prevDependencies = prevQuestions
+    ? prevQuestions.filter((x) => x.order <= minOrder)
+    : [];
 
   /* get selected dependencies */
-  const allTargetDependencies = questionGroupState
+  const nextDependencies = questionGroupState
     .filter((x) => {
       return x.order <= questionGroup.order;
     })
@@ -213,12 +225,19 @@ const QuestionGroup = ({ index, questionGroup }) => {
     .flatMap((x) => x)
     .filter((x) =>
       isMoveQuestionGroup
-        ? isMoveQuestionGroup.question.map((q) => q.id).includes(x.dependent_to)
+        ? isMoveQuestionGroup.question
+            .map((q) => q.id)
+            .includes(x?.dependent_to)
         : false
     )
     .map((x) => allQuestions.find((q) => q.id === x.question))
     .filter((x) => x.question_group !== isMoveQuestionGroup?.id)
     .filter((x) => questionGroup.question.filter((q) => q.order >= x.order));
+
+  const disabled =
+    isMoveQuestionGroup.order >= questionGroup.order
+      ? prevDependencies.length
+      : nextDependencies.length;
 
   return (
     <>
@@ -229,7 +248,8 @@ const QuestionGroup = ({ index, questionGroup }) => {
           cancelButton={isMoveQuestionGroup || isAddQuestionGroup}
           onCancel={handleOnCancelMove}
           disabled={
-            disable.length || isMoveQuestionGroup?.id === questionGroup?.id
+            prevDependencies.length ||
+            isMoveQuestionGroup?.id === questionGroup?.id
           }
           onClick={() =>
             !isMoveQuestionGroup
@@ -258,12 +278,7 @@ const QuestionGroup = ({ index, questionGroup }) => {
           text={AddMoveButtonText}
           cancelButton={isMoveQuestionGroup || isAddQuestionGroup}
           onCancel={handleOnCancelMove}
-          disabled={
-            disable.length ||
-            allTargetDependencies.length ||
-            isMoveQuestionGroup?.id === questionGroup.id ||
-            isMoveQuestionGroup?.order - 1 === questionGroup.order
-          }
+          disabled={disabled || isMoveQuestionGroup?.id === questionGroup.id}
           onClick={() =>
             !isMoveQuestionGroup
               ? handleAddQuestionGroupButton(questionGroup.order + 1)
