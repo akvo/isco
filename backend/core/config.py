@@ -11,6 +11,7 @@ from routes.skip_logic import skip_logic_route
 from routes.member_type import member_type_route
 from routes.isco_type import isco_type_route
 from routes.data import data_route
+from routes.collaborator import collaborator_route
 
 app = FastAPI(
     root_path="/api",
@@ -38,6 +39,7 @@ app.include_router(option_route)
 app.include_router(cascade_route)
 app.include_router(skip_logic_route)
 app.include_router(data_route)
+app.include_router(collaborator_route)
 
 
 @app.get("/", tags=["Dev"])

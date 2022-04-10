@@ -19,27 +19,6 @@ def datenow():
 
 class TestLoadData():
     @pytest.mark.asyncio
-    async def test_get_all_organisation(
-        self,
-        app: FastAPI,
-        session: Session,
-        client: AsyncClient
-    ) -> None:
-        res = await client.get(app.url_path_for("organisation:get_all"))
-        assert res.status_code == 200
-        res = res.json()
-        assert res[0] == {
-            'active': True,
-            'code': 'Akvo',
-            'id': 1,
-            'isco': ['All'],
-            'isco_type': [1],
-            'member': 'All',
-            'member_type': 1,
-            'name': 'Akvo'
-        }
-
-    @pytest.mark.asyncio
     async def test_get_all_user(
         self,
         app: FastAPI,
