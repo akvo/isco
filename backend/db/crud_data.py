@@ -92,6 +92,12 @@ def get_data_by_id(session: Session, id: int,
     return data.first()
 
 
+def get_data_by_ids(session: Session, ids: List[int]) -> List[DataOptionDict]:
+    data = session.query(Data).filter(and_(
+        Data.id.in_(ids), Data.submitted == null())).all()
+    return data
+
+
 def get_data_by_organisation(session: Session,
                              organisation: int) -> List[DataOptionDict]:
     data = session.query(Data).filter(and_(
