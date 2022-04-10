@@ -138,7 +138,7 @@ const WebformPage = ({
             transformedQuestionGroup = transformedQuestionGroup.filter(
               (qg) => qg.question.length
             );
-            setFormValue({ ...data, question_group: transformedQuestionGroup });
+            setFormValue({ ...form, question_group: transformedQuestionGroup });
           }
         })
         .catch((e) => {
@@ -200,7 +200,7 @@ const WebformPage = ({
     }
   }, [deletedComment, answer]);
 
-  const onChange = ({ /*current,*/ values /*, progress*/ }) => {
+  const onChange = ({ /*current*/ values /*progress*/ }) => {
     const transformValues = Object.keys(values)
       .map((key) => {
         let question = key;
