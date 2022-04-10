@@ -1,5 +1,6 @@
 import os
 import json
+from uuid import uuid4
 from db.connection import Base, SessionLocal, engine
 from db import crud_user
 from models.user import UserRole, UserBase
@@ -23,7 +24,8 @@ for d in data:
             name=d['name'], email=d['email'],
             phone_numer=None, password=password,
             role=UserRole.secretariat_admin.value,
-            organisation=d['organisation_id'])
+            organisation=d['organisation_id'],
+            inviitation=str(uuid4()))
         user = crud_user.add_user(session=session, payload=payload)
         user = crud_user.verify_user_email(session=session, id=user.id)
         print(f"Seed {user.name} done")

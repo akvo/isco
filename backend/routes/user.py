@@ -97,7 +97,8 @@ def me(req: Request, session: Session = Depends(get_session),
                  tags=["User"])
 def register(req: Request, payload: UserBase,
              session: Session = Depends(get_session)):
-    payload.password = get_password_hash(payload.password)
+    if (payload.password):
+        payload.password = get_password_hash(payload.password)
     user = crud_user.add_user(session=session, payload=payload)
     return user.serialize
 
