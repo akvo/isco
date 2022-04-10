@@ -20,6 +20,32 @@ const LockedCheckbox = ({ onChange, isLocked }) => (
   </>
 );
 
+const reorderAnswersRepeatIndex = (formValue, answer) => {
+  // reordered repeat index answer
+  const repeatQuestions = formValue.question_group
+    .filter((qg) => qg.repeatable)
+    .flatMap((qg) => qg.question)
+    .map((q) => q.id);
+  const nonRepeatValues = answer.filter(
+    (x) => !intersection([x.question], repeatQuestions).length
+  );
+  const repeatValues = answer.filter(
+    (x) => intersection([x.question], repeatQuestions).length
+  );
+  const reorderedRepeatIndex = repeatQuestions
+    .map((id) => {
+      return repeatValues
+        .filter((x) => x.question === id)
+        .map((v, vi) => ({
+          ...v,
+          repeat_index: vi,
+        }));
+    })
+    .flatMap((x) => x);
+  return nonRepeatValues.concat(reorderedRepeatIndex);
+  // end  of reorder repeat index
+};
+
 const WebformPage = ({
   formId,
   setFormLoaded,
@@ -238,6 +264,7 @@ const WebformPage = ({
 
   const onFinish = (/*values*/) => {
     if (answer.length) {
+      const payload = reorderAnswersRepeatIndex(formValue, answer);
       setIsSubmitting(true);
       let url = !savedData?.id
         ? `/data/form/${formId}/1`
@@ -246,10 +273,10 @@ const WebformPage = ({
         url = `${url}?locked_by=${user.id}`;
       }
       const endpoint = !savedData?.id
-        ? api.post(url, answer, {
+        ? api.post(url, payload, {
             "content-type": "application/json",
           })
-        : api.put(url, answer, {
+        : api.put(url, payload, {
             "content-type": "application/json",
           });
       endpoint
@@ -281,6 +308,7 @@ const WebformPage = ({
 
   const handleOnClickSaveButton = () => {
     if (answer.length) {
+      const payload = reorderAnswersRepeatIndex(formValue, answer);
       setIsSaving(true);
       let url = !savedData?.id
         ? `/data/form/${formId}/0`
@@ -289,10 +317,10 @@ const WebformPage = ({
         url = `${url}?locked_by=${user.id}`;
       }
       const endpoint = !savedData?.id
-        ? api.post(url, answer, {
+        ? api.post(url, payload, {
             "content-type": "application/json",
           })
-        : api.put(url, answer, {
+        : api.put(url, payload, {
             "content-type": "application/json",
           });
       endpoint
