@@ -82,7 +82,10 @@ const Survey = () => {
     setSelectedCollaborators([]);
     const findData = savedSubmissions.find((x) => x.id === dataId);
     // disable add collaborator button
-    if (user.organisation.name === findData.organisation) {
+    if (
+      user.organisation.name === findData.organisation &&
+      findData.form_type === "project"
+    ) {
       setDisableAddCollaboratorButton(false);
     }
     setSelectedSavedSubmission(findData);
