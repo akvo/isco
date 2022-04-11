@@ -178,6 +178,28 @@ class TestUserAuthentication():
         }
 
     @pytest.mark.asyncio
+    async def test_user_invitation(self, app: FastAPI, session: Session,
+                                   client: AsyncClient) -> None:
+        user = session.query(User).filter(
+            User.email == "support@akvo.org").first()
+        res = await client.get(
+            app.url_path_for("user:invitation", invitation=user.invitation))
+        assert res.status_code == 200
+        res = res.json()
+        assert res == {
+            "id": 1,
+            "invitation": user.invitation,
+            "email": "support@akvo.org",
+            "name": "John Doe",
+        }
+        res = await client.post(app.url_path_for("user:invitation",
+                                                 invitation=user.invitation),
+                                params={"password": "test"})
+        res = res.json()
+        assert res['access_token'] is not None
+        assert res['token_type'] == 'bearer'
+
+    @pytest.mark.asyncio
     async def test_verify_user_email(self, app: FastAPI, session: Session,
                                      client: AsyncClient) -> None:
         res = await client.put(app.url_path_for("user:verify_email", id=1))

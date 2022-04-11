@@ -20,6 +20,13 @@ class UserRole(enum.Enum):
     member_user = 'member_user'
 
 
+class UserInvitation(TypedDict):
+    id: int
+    name: str
+    email: str
+    invitation: Optional[str] = None
+
+
 class UserDict(TypedDict):
     id: int
     organisation: int

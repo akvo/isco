@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
-from models.user import User, UserBase, UserDict
+from models.user import User, UserBase, UserDict, UserInvitation
 from datetime import datetime
 import db.crud_organisation as crud_org
 from typing import List, Optional
@@ -88,3 +88,23 @@ def get_all_user(session: Session,
                        organisation=organisation)
     user = user.order_by(User.id.desc()).offset(skip).limit(limit).all()
     return user
+
+
+def get_invitation(session: Session, invitation: str) -> UserInvitation:
+    user = session.query(User).filter(User.invitation == invitation).first()
+    if not user:
+        return None
+    return user.serialize
+
+
+def accept_invitation(session: Session,
+                      invitation: str,
+                      password=str) -> UserInvitation:
+    user = session.query(User).filter(User.invitation == invitation).first()
+    if not user:
+        return None
+    user.password = password
+    session.commit()
+    session.flush()
+    session.refresh(user)
+    return user.serialize
