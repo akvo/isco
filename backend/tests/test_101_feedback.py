@@ -3,7 +3,7 @@ import pytest
 from fastapi import FastAPI
 from httpx import AsyncClient
 from sqlalchemy.orm import Session
-from tests.test_000_main import Acc
+from .test_000_main import Acc
 
 pytestmark = pytest.mark.asyncio
 sys.path.append("..")
