@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "akvo-react-form": "^1.4.4",
+    "akvo-react-form": "^1.4.5",
     "antd": "^4.19.1",
     "axios": "^0.26.1",
     "lodash": "^4.17.21",
@@ -26,6 +26,7 @@
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
+    "buffer": "^6.0.3",
     "cross-env": "^7.0.3",
     "eslint": "^8.7.0",
     "eslint-config-prettier": "^8.3.0",
