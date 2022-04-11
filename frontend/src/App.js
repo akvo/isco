@@ -12,6 +12,8 @@ import {
   Register,
   ErrorPage,
   Survey,
+  Feedback,
+  Definition,
 } from "./pages";
 import { useCookies } from "react-cookie";
 import { store, api } from "./lib";
@@ -116,6 +118,7 @@ const App = () => {
         <Routes>
           <Route exact path="/login" element={<Login />} />
           <Route exact path="/register" element={<Register />} />
+          <Route exact path="/definition" element={<Definition />} />
           <Route exact path="/" element={<Secure element={Home} />} />
           <Route exact path="/home" element={<Secure element={Home} />} />
           <Route
@@ -139,6 +142,11 @@ const App = () => {
             element={<Secure element={SurveyEditor} adminPage={true} />}
           />
           <Route exact path="/survey" element={<Secure element={Survey} />} />
+          <Route
+            exact
+            path="/feedback"
+            element={<Secure element={Feedback} />}
+          />
           <Route exact path="*" element={<ErrorPage status={404} />} />
         </Routes>
 
