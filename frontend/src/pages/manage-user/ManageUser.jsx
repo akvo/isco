@@ -3,22 +3,60 @@ import "./style.scss";
 import {
   Row,
   Col,
-  Typography,
   Table,
   Button,
   Space,
-  Modal,
-  Form,
   Input,
   Select,
   Checkbox,
+  Typography,
+  Tooltip,
+  Tag,
 } from "antd";
+import { ClockCircleOutlined, CheckCircleOutlined } from "@ant-design/icons";
 import { FaSearch } from "react-icons/fa";
+import AddUser from "./AddUser";
 import { store, api } from "../../lib";
 import capitalize from "lodash/capitalize";
 import moment from "moment";
 
 const { Title } = Typography;
+
+const InvitationCopy = ({ invitation }) => {
+  const [copied, setCopied] = useState(false);
+  return (
+    <Tooltip
+      placement="top"
+      title={
+        copied ? (
+          <Space>
+            <CheckCircleOutlined twoToneColor="#52c41a" />
+            Copied
+          </Space>
+        ) : (
+          "Copy invitation link to Clipboard"
+        )
+      }
+    >
+      <Tag
+        style={{ cursor: "pointer" }}
+        icon={<ClockCircleOutlined />}
+        onClick={(e) => {
+          e.preventDefault();
+          navigator.clipboard.writeText(
+            `${window.location.origin}/verify/${invitation}`
+          );
+          setCopied(true);
+          setTimeout(() => {
+            setCopied(false);
+          }, 1000);
+        }}
+      >
+        Pending Verification
+      </Tag>
+    </Tooltip>
+  );
+};
 
 const columns = [
   {
@@ -40,7 +78,13 @@ const columns = [
     title: "Verified on",
     dataIndex: "email_verified",
     key: "email_verified",
-    render: (value) => moment(value).format("MMMM Do YYYY, h:mm a"),
+    render: (value, data) => {
+      return value ? (
+        moment(value).format("MMMM Do YYYY, h:mm a")
+      ) : (
+        <InvitationCopy {...data} />
+      );
+    },
   },
   {
     title: "Role",
@@ -58,10 +102,10 @@ const ManageUser = () => {
   const { isLoggedIn, user, optionValues } = store.useState((s) => s);
   const { organisation, member_type, isco_type } = optionValues;
 
-  const [form] = Form.useForm();
   const [isPendingUserShown, setIsPendingUserShown] = useState(false);
   const [isAddUserVisible, setIsAddUserVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [reload, setReload] = useState(0);
   const [data, setData] = useState([]);
 
   const pageSize = 10;
@@ -74,7 +118,7 @@ const ManageUser = () => {
   const [memberValue, setMemberValue] = useState([]);
   const [iscoValue, setIscoValue] = useState([]);
   const showPendingUserOption = false;
-  const showAddNewUser = false;
+  const showAddNewUser = true;
   const showOrganisationFilter = user?.role === "secretariat_admin";
 
   useEffect(() => {
@@ -126,6 +170,7 @@ const ManageUser = () => {
     orgFilter,
     memberFilter,
     iscoFilter,
+    reload,
   ]);
 
   const handleOrganisationFilter = (org) => {
@@ -308,92 +353,12 @@ const ManageUser = () => {
       </Row>
 
       {/* New User Modal */}
-      <Modal
-        forceRender={true}
-        title={<Title level={4}>Account Details</Title>}
-        visible={isAddUserVisible}
-        footer={
-          <Space>
-            <Button onClick={() => setIsAddUserVisible(false)}>Cancel</Button>
-            <Button type="primary" ghost onClick={() => form.submit()}>
-              Add User
-            </Button>
-          </Space>
-        }
-        onCancel={() => setIsAddUserVisible(false)}
-      >
-        <Form
-          form={form}
-          name="account-detail"
-          onFinish={(values) => console.info(values)}
-          onFinishFailed={(values, errorFields) =>
-            console.info(values, errorFields)
-          }
-        >
-          <Row gutter={[12, 12]}>
-            <Col span={12}>
-              <Form.Item
-                name="firstname"
-                rules={[{ required: true, message: "Please input first name" }]}
-              >
-                <Input className="bg-grey" placeholder="First Name" />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                name="lastname"
-                rules={[{ required: true, message: "Please input last name" }]}
-              >
-                <Input className="bg-grey" placeholder="Last Name" />
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Row>
-            <Col span={22}>
-              <Form.Item
-                name="email"
-                rules={[{ required: true, message: "Please input email" }]}
-              >
-                <Input className="bg-grey" placeholder="Email address" />
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Space size={12}>
-            <Form.Item
-              name="role"
-              rules={[{ required: true, message: "Please select role" }]}
-            >
-              <Select
-                className="custom-dropdown-wrapper bg-grey"
-                placeholder="Role"
-                options={[]}
-              />
-            </Form.Item>
-            <Form.Item
-              name="organisation"
-              rules={[
-                { required: true, message: "Please select organization" },
-              ]}
-            >
-              <Select
-                className="custom-dropdown-wrapper bg-grey"
-                placeholder="Organization"
-                options={[]}
-              />
-            </Form.Item>
-          </Space>
-
-          <Form.Item name="access">
-            <Select
-              className="custom-dropdown-wrapper bg-grey"
-              placeholder="Questionnaires"
-              options={[]}
-            />
-          </Form.Item>
-        </Form>
-      </Modal>
+      <AddUser
+        isAddUserVisible={isAddUserVisible}
+        setIsAddUserVisible={setIsAddUserVisible}
+        setReload={setReload}
+        reload={reload}
+      />
     </div>
   );
 };
