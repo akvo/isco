@@ -102,6 +102,7 @@ class TestCollaboratorRoutes():
             'created': today,
             'created_by': 'Galih',
             'form': 1,
+            'form_type': 'member',
             'id': 2,
             'locked_by': 2,
             'name': f'Form Test - {org_name} - Galih - {today}',
