@@ -8,3 +8,4 @@ export { default as Register } from "./auth/Register";
 export { default as ErrorPage } from "./error/ErrorPage";
 export { default as Survey } from "./survey/Survey";
 export { default as Feedback } from "./feedback/Feedback";
+export { default as Definition } from "./definition/Definition";
