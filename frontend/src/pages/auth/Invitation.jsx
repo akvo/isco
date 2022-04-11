@@ -77,10 +77,10 @@ const Invitation = () => {
       <Space direction="vertical">
         <Row align="middle" justify="space-between" gutter={[12, 12]}>
           <Col span={24} align="start">
-            <p>
+            <h2>
               Welcome{" "}
               <b>{guess.name.length ? `${guess.name} (${guess.email})` : ""}</b>
-            </p>
+            </h2>
           </Col>
         </Row>
         <Row align="middle" justify="space-between" gutter={[12, 12]}>

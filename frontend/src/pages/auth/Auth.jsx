@@ -18,11 +18,32 @@ const Auth = ({ children }) => {
             <Title className="title" level={2}>
               Monitoring for 2021 data
             </Title>
-            <Space>
-              <Image width={180} src="/images/beyond.jpg" preview={false} />
-              <Image width={260} src="/images/gisco.jpg" preview={false} />
-              <Image width={180} src="/images/disco.png" preview={false} />
-            </Space>
+            <Row align="middle">
+              <Col>
+                <Image
+                  width={193}
+                  height={60}
+                  src="/images/beyond.jpg"
+                  preview={false}
+                />
+              </Col>
+              <Col>
+                <Image
+                  width={233}
+                  height={60}
+                  src="/images/gisco.jpg"
+                  preview={false}
+                />
+              </Col>
+              <Col>
+                <Image
+                  width={175}
+                  height={70}
+                  src="/images/disco.png"
+                  preview={false}
+                />
+              </Col>
+            </Row>
           </Space>
         </Col>
         <Col span={10}>{children}</Col>
