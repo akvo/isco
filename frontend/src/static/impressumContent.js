@@ -45,6 +45,22 @@ const icEn = (handleShow) => {
               <a href="mailto:snoeck@idhtrade.org">snoeck@idhtrade.org</a>{" "}
               <br />
             </p>
+            <br />
+            <br />
+            <h3>DISCO</h3> <hr />
+            <p>
+              IDH, Sustainable Trade Initiative <br />
+              Arthur van Schendelstraat 500 <br />
+              3511 MH Utrecht <br />
+            </p>
+            <p>
+              Contact: Mark de Waard <br />
+              Email:{" "}
+              <a href="mailto:deWaard@idhtrade.org">
+                deWaard@idhtrade.org
+              </a>{" "}
+              <br />
+            </p>
           </Fragment>
         ),
       },
@@ -158,6 +174,22 @@ const icDe = (handleShow) => {
               Kontakt: Charles Snoeck <br />
               Email:{" "}
               <a href="mailto:snoeck@idhtrade.org">snoeck@idhtrade.org</a>{" "}
+              <br />
+            </p>
+            <br />
+            <br />
+            <h3>DISCO</h3> <hr />
+            <p>
+              IDH, Sustainable Trade Initiative <br />
+              Arthur van Schendelstraat 500 <br />
+              3511 MH Utrecht <br />
+            </p>
+            <p>
+              Kontakt: Mark de Waard <br />
+              Email:{" "}
+              <a href="mailto:deWaard@idhtrade.org">
+                deWaard@idhtrade.org
+              </a>{" "}
               <br />
             </p>
           </Fragment>
