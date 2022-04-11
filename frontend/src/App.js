@@ -13,6 +13,8 @@ import {
   Invitation,
   ErrorPage,
   Survey,
+  Feedback,
+  Definition,
 } from "./pages";
 import { useCookies } from "react-cookie";
 import { store, api } from "./lib";
@@ -146,6 +148,11 @@ const App = () => {
             element={<Secure element={SurveyEditor} adminPage={true} />}
           />
           <Route exact path="/survey" element={<Secure element={Survey} />} />
+          <Route
+            exact
+            path="/feedback"
+            element={<Secure element={Feedback} />}
+          />
           <Route exact path="*" element={<ErrorPage status={404} />} />
         </Routes>
 

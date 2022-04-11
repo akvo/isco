@@ -4,7 +4,7 @@ import { Spin, Button, Checkbox } from "antd";
 import { Webform } from "akvo-react-form";
 import { api, store } from "../../lib";
 import { useNotification } from "../../util";
-import { intersection, isEmpty } from "lodash";
+import { intersection, isEmpty, orderBy } from "lodash";
 import ErrorPage from "../error/ErrorPage";
 import { CommentField } from "../../components";
 
@@ -19,6 +19,32 @@ const LockedCheckbox = ({ onChange, isLocked }) => (
     <Checkbox checked={isLocked} onChange={onChange} /> Locked
   </>
 );
+
+const reorderAnswersRepeatIndex = (formValue, answer) => {
+  // reordered repeat index answer
+  const repeatQuestions = formValue.question_group
+    .filter((qg) => qg.repeatable)
+    .flatMap((qg) => qg.question)
+    .map((q) => q.id);
+  const nonRepeatValues = answer.filter(
+    (x) => !intersection([x.question], repeatQuestions).length
+  );
+  const repeatValues = answer.filter(
+    (x) => intersection([x.question], repeatQuestions).length
+  );
+  const reorderedRepeatIndex = repeatQuestions
+    .map((id) => {
+      return orderBy(repeatValues, ["repeat_index"])
+        .filter((x) => x.question === id)
+        .map((v, vi) => ({
+          ...v,
+          repeat_index: vi,
+        }));
+    })
+    .flatMap((x) => x);
+  return nonRepeatValues.concat(reorderedRepeatIndex);
+  // end  of reorder repeat index
+};
 
 const WebformPage = ({
   formId,
@@ -138,7 +164,7 @@ const WebformPage = ({
             transformedQuestionGroup = transformedQuestionGroup.filter(
               (qg) => qg.question.length
             );
-            setFormValue({ ...data, question_group: transformedQuestionGroup });
+            setFormValue({ ...form, question_group: transformedQuestionGroup });
           }
         })
         .catch((e) => {
@@ -200,7 +226,7 @@ const WebformPage = ({
     }
   }, [deletedComment, answer]);
 
-  const onChange = ({ /*current,*/ values /*, progress*/ }) => {
+  const onChange = ({ /*current*/ values /*progress*/ }) => {
     const transformValues = Object.keys(values)
       .map((key) => {
         let question = key;
@@ -238,6 +264,7 @@ const WebformPage = ({
 
   const onFinish = (/*values*/) => {
     if (answer.length) {
+      const payload = reorderAnswersRepeatIndex(formValue, answer);
       setIsSubmitting(true);
       let url = !savedData?.id
         ? `/data/form/${formId}/1`
@@ -246,10 +273,10 @@ const WebformPage = ({
         url = `${url}?locked_by=${user.id}`;
       }
       const endpoint = !savedData?.id
-        ? api.post(url, answer, {
+        ? api.post(url, payload, {
             "content-type": "application/json",
           })
-        : api.put(url, answer, {
+        : api.put(url, payload, {
             "content-type": "application/json",
           });
       endpoint
@@ -281,6 +308,7 @@ const WebformPage = ({
 
   const handleOnClickSaveButton = () => {
     if (answer.length) {
+      const payload = reorderAnswersRepeatIndex(formValue, answer);
       setIsSaving(true);
       let url = !savedData?.id
         ? `/data/form/${formId}/0`
@@ -289,10 +317,10 @@ const WebformPage = ({
         url = `${url}?locked_by=${user.id}`;
       }
       const endpoint = !savedData?.id
-        ? api.post(url, answer, {
+        ? api.post(url, payload, {
             "content-type": "application/json",
           })
-        : api.put(url, answer, {
+        : api.put(url, payload, {
             "content-type": "application/json",
           });
       endpoint

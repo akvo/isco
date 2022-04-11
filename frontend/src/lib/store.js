@@ -71,6 +71,10 @@ const defaultSurveyEditor = {
 const defaultUIState = {
   isLoggedIn: false,
   user: null,
+  language: {
+    active: "en",
+    langs: { en: "English", de: "German" },
+  },
   optionValues: {
     languages: Object.keys(isoLangs)?.map((key) => ({
       ...isoLangs[key],

@@ -83,10 +83,10 @@ const Header = ({ className = "header", ...props }) => {
                   <Link to="#">Download</Link>
                 </>
               )}
-              <Link to="#">Definitions</Link>
+              <Link to="/definition">Definitions</Link>
               {isLoggedIn && (
                 <>
-                  <Link to="#">Feedback</Link>
+                  <Link to="/feedback">Feedback</Link>
                   <Link to="#">Impressum</Link>
                   <Link to="#">FAQ</Link>
                 </>
