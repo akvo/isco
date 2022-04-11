@@ -2,12 +2,13 @@
 # Keep the code clean and CLEAR
 
 import enum
+from uuid import uuid4
 from pydantic import BaseModel
 from datetime import datetime
 from typing import List, Optional
 from typing_extensions import TypedDict
 from sqlalchemy import Column, Integer, String
-from sqlalchemy import Enum, DateTime
+from sqlalchemy import Enum, DateTime, Text
 from sqlalchemy import ForeignKey
 from db.connection import Base
 from models.organisation import OrganisationDict
@@ -19,6 +20,13 @@ class UserRole(enum.Enum):
     member_user = 'member_user'
 
 
+class UserInvitation(TypedDict):
+    id: int
+    name: str
+    email: str
+    invitation: Optional[str] = None
+
+
 class UserDict(TypedDict):
     id: int
     organisation: int
@@ -26,6 +34,7 @@ class UserDict(TypedDict):
     email: str
     email_verified: Optional[datetime] = None
     role: UserRole
+    invitation: Optional[str] = None
 
 
 class UserOrgDict(TypedDict):
@@ -35,6 +44,7 @@ class UserOrgDict(TypedDict):
     email: str
     email_verified: Optional[datetime] = None
     role: UserRole
+    invitation: Optional[str] = None
 
 
 class UserSimple(TypedDict):
@@ -61,15 +71,17 @@ class User(Base):
     last_activity = Column(DateTime, nullable=True, default=datetime.utcnow)
     created = Column(DateTime, default=datetime.utcnow)
     organisation = Column(Integer, ForeignKey('organisation.id'))
+    invitation = Column(Text, nullable=True)
 
     def __init__(self, email: str, password: str, name: str, phone_number: str,
-                 role: UserRole, organisation: int):
+                 role: UserRole, organisation: int, invitation: Optional[str]):
         self.email = email
         self.password = password
         self.name = name
         self.phone_number = phone_number
         self.role = role
         self.organisation = organisation
+        self.invitation = invitation
 
     def __repr__(self) -> int:
         return f"<User {self.id}>"
@@ -83,24 +95,23 @@ class User(Base):
             "role": self.role,
             "email_verified": self.email_verified,
             "organisation": self.organisation,
-            "last_activity": self.last_activity
+            "last_activity": self.last_activity,
+            "invitation": self.invitation,
         }
 
     @property
     def recipient(self) -> UserRecipient:
-        return {
-            "Email": self.email,
-            "Name": self.name
-        }
+        return {"Email": self.email, "Name": self.name}
 
 
 class UserBase(BaseModel):
     name: str
     email: str
     phone_number: Optional[str] = None
-    password: str
-    role: UserRole
+    password: Optional[str] = str(uuid4())
+    role: Optional[UserRole] = UserRole.member_user
     organisation: int
+    invitation: Optional[str] = str(uuid4())
 
     class Config:
         orm_mode = True
