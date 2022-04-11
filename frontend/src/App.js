@@ -10,6 +10,7 @@ import {
   SurveyEditor,
   Login,
   Register,
+  Invitation,
   ErrorPage,
   Survey,
   Feedback,
@@ -122,6 +123,11 @@ const App = () => {
         <Routes>
           <Route exact path="/login" element={<Login />} />
           <Route exact path="/register" element={<Register />} />
+          <Route
+            exact
+            path="/invitation/:invitationId"
+            element={<Invitation />}
+          />
           <Route exact path="/definition" element={<Definition />} />
           <Route exact path="/" element={<Secure element={Home} />} />
           <Route exact path="/home" element={<Secure element={Home} />} />
