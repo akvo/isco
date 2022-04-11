@@ -1,0 +1,16 @@
+@import "../../variables";
+
+#root {
+  #feedback {
+    margin-top: 48px;
+
+    .ant-card {
+      border-radius: 5px;
+
+      .ant-card-head {
+        background: #eeeeee;
+        font-style: italic;
+      }
+    }
+  }
+}
