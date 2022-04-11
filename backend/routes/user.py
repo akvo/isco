@@ -6,7 +6,7 @@ from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
 from sqlalchemy.orm import Session
 from db.connection import get_session
-from models.user import UserDict, UserBase, UserOrgDict
+from models.user import UserDict, UserBase, UserOrgDict, UserInvitation
 from models.user import UserResponse, UserRole
 from pydantic import SecretStr
 from db import crud_user, crud_organisation
@@ -22,7 +22,9 @@ user_route = APIRouter()
                  summary="user login",
                  name="user:login",
                  tags=["User"])
-def login(req: Request, email: str, password: SecretStr,
+def login(req: Request,
+          email: str,
+          password: SecretStr,
           session: Session = Depends(get_session)):
     user = authenticate_user(session=session,
                              email=email,
@@ -42,7 +44,9 @@ def login(req: Request, email: str, password: SecretStr,
                 summary="get all users",
                 name="user:get_all",
                 tags=["User"])
-def get_all(req: Request, page: int = 1, limit: int = 10,
+def get_all(req: Request,
+            page: int = 1,
+            limit: int = 10,
             search: Optional[str] = None,
             organisation: Optional[List[int]] = Query(None),
             session: Session = Depends(get_session),
@@ -55,13 +59,16 @@ def get_all(req: Request, page: int = 1, limit: int = 10,
     # if role member admin, filter user by member admin organisation id
     if admin.role == UserRole.member_admin:
         org_ids = [admin.organisation]
-    user = crud_user.get_all_user(session=session, search=search,
+    user = crud_user.get_all_user(session=session,
+                                  search=search,
                                   organisation=org_ids,
-                                  skip=(limit * (page - 1)), limit=limit)
+                                  skip=(limit * (page - 1)),
+                                  limit=limit)
     if not user:
         raise HTTPException(status_code=404, detail="Not found")
     # count total user
-    total = crud_user.count(session=session, search=search,
+    total = crud_user.count(session=session,
+                            search=search,
                             organisation=org_ids)
     user = [u.serialize for u in user]
     total_page = ceil(total / limit) if total > 0 else 0
@@ -80,7 +87,8 @@ def get_all(req: Request, page: int = 1, limit: int = 10,
                 summary="get account information",
                 name="user:me",
                 tags=["User"])
-def me(req: Request, session: Session = Depends(get_session),
+def me(req: Request,
+       session: Session = Depends(get_session),
        credentials: credentials = Depends(security)):
     user = verify_user(session=session, authenticated=req.state.authenticated)
     organisation = crud_organisation.get_organisation_by_id(
@@ -95,9 +103,11 @@ def me(req: Request, session: Session = Depends(get_session),
                  summary="use register",
                  name="user:register",
                  tags=["User"])
-def register(req: Request, payload: UserBase,
+def register(req: Request,
+             payload: UserBase,
              session: Session = Depends(get_session)):
-    payload.password = get_password_hash(payload.password)
+    if (payload.password):
+        payload.password = get_password_hash(payload.password)
     user = crud_user.add_user(session=session, payload=payload)
     return user.serialize
 
@@ -107,7 +117,8 @@ def register(req: Request, payload: UserBase,
                 summary="verify user email",
                 name="user:verify_email",
                 tags=["User"])
-def verify_email(req: Request, id: int,
+def verify_email(req: Request,
+                 id: int,
                  session: Session = Depends(get_session)):
     user = crud_user.verify_user_email(session=session, id=id)
     return user.serialize
@@ -118,9 +129,43 @@ def verify_email(req: Request, id: int,
                 summary="filter user by member type",
                 name="user:filter_by_member_type",
                 tags=["User"])
-def filter_user_by_member(req: Request, member_type: int,
+def filter_user_by_member(req: Request,
+                          member_type: int,
                           session: Session = Depends(get_session),
                           credentials: credentials = Depends(security)):
     user = crud_user.get_user_by_member_type(session=session,
                                              member_type=member_type)
     return [u.serialize for u in user]
+
+
+@user_route.get("/user/invitation/{invitation:path}",
+                response_model=UserInvitation,
+                summary="get invitation detail",
+                name="user:invitation",
+                tags=["User"])
+def invitation(req: Request,
+               invitation: str,
+               session: Session = Depends(get_session)):
+    user = crud_user.get_invitation(session=session, invitation=invitation)
+    if not user:
+        raise HTTPException(status_code=404, detail="Not found")
+    return user
+
+
+@user_route.post("/user/invitation/{invitation:path}",
+                 response_model=Token,
+                 summary="get invitation detail",
+                 name="user:invitation",
+                 tags=["User"])
+def change_password(req: Request,
+                    invitation: str,
+                    password: SecretStr,
+                    session: Session = Depends(get_session)):
+    password = get_password_hash(password.get_secret_value())
+    user = crud_user.accept_invitation(session=session,
+                                       invitation=invitation,
+                                       password=password)
+    if not user:
+        raise HTTPException(status_code=404, detail="Not found")
+    access_token = create_access_token(data={"email": user["email"]})
+    return {"access_token": access_token, "token_type": "bearer"}

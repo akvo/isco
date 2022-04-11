@@ -3,7 +3,7 @@ import pytest
 from fastapi import FastAPI
 from httpx import AsyncClient
 from sqlalchemy.orm import Session
-from models.user import UserRole
+from models.user import User, UserRole
 from tests.test_000_main import Acc
 
 sys.path.append("..")
@@ -27,11 +27,14 @@ class TestUserDisco():
         res = await client.post(
             app.url_path_for("user:register"), json=user_payload)
         assert res.status_code == 200
+        invitation_link = session.query(User).filter(
+            User.email == user_payload["email"]).first().invitation
         res = res.json()
         assert res == {
             "email": "galih@test.org",
             "email_verified": None,
             "id": 2,
+            "invitation": invitation_link,
             "name": "Galih",
             "organisation": 3,
             "role": "secretariat_admin"

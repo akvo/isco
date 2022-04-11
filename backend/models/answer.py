@@ -104,9 +104,10 @@ class Answer(Base):
         if type == QuestionType.option:
             answer.update({"value": self.options[0]})
         if type in [QuestionType.multiple_option,
-                    QuestionType.cascade,
                     QuestionType.nested_list]:
             answer.update({"value": self.options})
+        if type == QuestionType.cascade:
+            answer.update({"value": [int(o) for o in self.options]})
         return answer
 
     @property
@@ -125,9 +126,10 @@ class Answer(Base):
         if type == QuestionType.option:
             answer.update({"value": self.options[0]})
         if type in [QuestionType.multiple_option,
-                    QuestionType.cascade,
                     QuestionType.nested_list]:
             answer.update({"value": self.options})
+        if type == QuestionType.cascade:
+            answer.update({"value": [int(o) for o in self.options]})
         return answer
 
     @property
@@ -156,6 +158,8 @@ class Answer(Base):
                     QuestionType.cascade,
                     QuestionType.nested_list]:
             return self.options
+        if type == QuestionType.cascade:
+            return [int(o) for o in self.options]
         return None
 
     @property
@@ -172,7 +176,9 @@ class Answer(Base):
         if type in [QuestionType.multiple_option,
                     QuestionType.cascade,
                     QuestionType.nested_list]:
-            answer = self.options
+            return self.options
+        if type == QuestionType.cascade:
+            return [int(o) for o in self.options]
         return {
             "value": answer,
             "repeat_index": self.repeat_index,
