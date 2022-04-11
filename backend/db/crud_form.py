@@ -153,6 +153,10 @@ def generate_webform_json(session: Session, id: int):
                             value = value - 1
                         if d['operator'] == OperatorType.less_than_or_equal:
                             operator = "max"
+                        if d['operator'] == OperatorType.equal:
+                            operator = "equal"
+                        if d['operator'] == OperatorType.not_equal:
+                            operator = "notEqual"
                         d.update({operator: value})
                     del d['dependent_to']
                     del d['operator']
