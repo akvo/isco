@@ -48,7 +48,6 @@ def create_default(req: Request, form_id: int, order: int,
             Question.form == form_id,
             Question.question_group == prev_group.id)).order_by(
                 Question.order.desc()).first().order
-    print(question_order)
 
     default_question = {
         "form": form_id,
