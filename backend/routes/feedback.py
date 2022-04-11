@@ -32,12 +32,12 @@ def add(req: Request, payload: FeedbackPayload,
     return feedback.serialize
 
 
-@feedback_route.get("/feedback",
+@feedback_route.get("/feedback/",
                     response_model=List[FeedbackDict],
                     summary="get all feedback",
                     name="feedback:get_all",
                     tags=["Feedback"])
-def get_by_data_id(req: Request, session: Session = Depends(get_session),
-                   credentials: credentials = Depends(security)):
+def get_data(req: Request, session: Session = Depends(get_session),
+             credentials: credentials = Depends(security)):
     feedbacks = crud.get_feedback(session=session)
     return [f.serialize for f in feedbacks]

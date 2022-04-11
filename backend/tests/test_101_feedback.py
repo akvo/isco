@@ -3,8 +3,7 @@ import pytest
 from fastapi import FastAPI
 from httpx import AsyncClient
 from sqlalchemy.orm import Session
-from tests.test_000_main import Acc
-from models.feedback import FeedbackCategory
+from .test_000_main import Acc
 
 pytestmark = pytest.mark.asyncio
 sys.path.append("..")
@@ -20,7 +19,7 @@ class TestFeedbackRoutes():
             app.url_path_for("feedback:create"),
             json={
                 "title": "Feedback title",
-                "category": FeedbackCategory.questionnaire.value,
+                "category": "questionnaire",
                 "content": "This is feedback for questionnaire"
             },
             headers={"Authorization": f"Bearer {account.token}"})
@@ -30,7 +29,7 @@ class TestFeedbackRoutes():
             "id": 1,
             "user": 1,
             "title": "Feedback title",
-            "category": FeedbackCategory.questionnaire.value,
+            "category": "questionnaire",
             "content": "This is feedback for questionnaire"
         }
 
@@ -46,6 +45,6 @@ class TestFeedbackRoutes():
             "id": 1,
             "user": 1,
             "title": "Feedback title",
-            "category": FeedbackCategory.questionnaire.value,
+            "category": "questionnaire",
             "content": "This is feedback for questionnaire"
         }]
