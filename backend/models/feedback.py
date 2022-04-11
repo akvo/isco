@@ -36,7 +36,7 @@ class Feedback(Base):
     id = Column(Integer, primary_key=True, index=True, nullable=True)
     user = Column(Integer, ForeignKey('user.id'))
     title = Column(String, nullable=False)
-    category = Column(String(FeedbackCategory), nullable=False)
+    category = Column(String, nullable=False)
     content = Column(String, nullable=False)
     created = Column(DateTime, nullable=True)
 
