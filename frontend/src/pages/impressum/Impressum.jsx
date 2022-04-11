@@ -10,9 +10,17 @@ const Impressum = () => {
   const language = store.useState((s) => s.language);
   const { active: activeLang } = language;
 
-  // const [show, setShow] = useState(false);
-  // const handleClose = () => setShow(false);
-  const handleShow = () => console.info(true);
+  const handleShow = () => {
+    store.update((s) => {
+      s.notificationModal = {
+        ...s.notificationModal,
+        dataSecurity: {
+          ...s.notificationModal.dataSecurity,
+          visible: true,
+        },
+      };
+    });
+  };
 
   const content = useMemo(() => {
     const value = impressumContent(handleShow);
