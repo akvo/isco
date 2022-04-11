@@ -1,0 +1,20 @@
+@import "../../variables.scss";
+
+#root {
+  #impressum {
+    margin-top: 48px;
+    h3 {
+      color: $cacao;
+    }
+
+    .ant-collapse {
+      .ant-collapse-item {
+        .ant-collapse-header {
+          svg {
+            color: $cacao;
+          }
+        }
+      }
+    }
+  }
+}

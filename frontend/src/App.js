@@ -14,6 +14,7 @@ import {
   Survey,
   Feedback,
   Definition,
+  Impressum,
 } from "./pages";
 import { useCookies } from "react-cookie";
 import { store, api } from "./lib";
@@ -146,6 +147,11 @@ const App = () => {
             exact
             path="/feedback"
             element={<Secure element={Feedback} />}
+          />
+          <Route
+            exact
+            path="/impressum"
+            element={<Secure element={Impressum} />}
           />
           <Route exact path="*" element={<ErrorPage status={404} />} />
         </Routes>
