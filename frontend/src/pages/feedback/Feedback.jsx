@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from "react";
 import "./style.scss";
 import { Row, Col, Card, Form, Input, Select, Space, Button } from "antd";
+import { api } from "../../lib";
+import { useNotification } from "../../util";
+
+const categories = ["Questionnaire", "Tool", "Other"];
 
 const Feedback = () => {
   const [form] = Form.useForm();
+  const { notify } = useNotification();
   const [reloadCaptcha, setReloadCaptcha] = useState(true);
   const [captchaValue, setCaptchaValue] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (reloadCaptcha) {
@@ -30,6 +36,34 @@ const Feedback = () => {
     }
   }, [reloadCaptcha]);
 
+  const handleOnFormFinish = ({ title, category, content }) => {
+    setSubmitting(true);
+    const payload = {
+      title: title,
+      category: category,
+      content: content,
+    };
+    api
+      .post("/feedback", payload)
+      .then(() => {
+        form.resetFields();
+        notify({
+          type: "success",
+          message: "Your feedback has been sent successfully.",
+        });
+      })
+      .catch(() => {
+        notify({
+          type: "error",
+          message: "Oops, something went wrong.",
+        });
+      })
+      .finally(() => {
+        setReloadCaptcha(true);
+        setSubmitting(false);
+      });
+  };
+
   return (
     <div id="feedback" className="container">
       <Row align="middle" justify="center">
@@ -39,10 +73,7 @@ const Feedback = () => {
               form={form}
               name="feedback-form"
               layout="vertical"
-              onFinish={(values) => console.info(values)}
-              onFinishFailed={(values, errorFields) =>
-                console.error(values, errorFields)
-              }
+              onFinish={handleOnFormFinish}
               scrollToFirstError={true}
             >
               <Space direction="vertical" style={{ width: "100%" }}>
@@ -62,12 +93,18 @@ const Feedback = () => {
                     { required: true, message: "Please select category" },
                   ]}
                 >
-                  <Select className="bg-grey" options={[]} />
+                  <Select
+                    className="bg-grey"
+                    options={categories.map((x) => ({
+                      label: x,
+                      value: x.toLowerCase(),
+                    }))}
+                  />
                 </Form.Item>
                 {/* TextArea */}
                 <Form.Item
                   label="Feedback"
-                  name="text"
+                  name="content"
                   rules={[
                     { required: true, message: "Please input your feedback" },
                   ]}
@@ -104,6 +141,7 @@ const Feedback = () => {
                   type="primary"
                   ghost
                   block
+                  loading={submitting}
                   onClick={() => form.submit()}
                 >
                   Submit
