@@ -11,7 +11,9 @@ member_values = [
     'Civil Society',
     'Government',
     "DISCO - Retail",
-    "GISCO - Small Industry"
+    "GISCO - Small Industry",
+    "DISCO - Small Manufacturers"
+    "DISCO - Large Manufacturers"
 ]
 
 isco_values = [
