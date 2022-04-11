@@ -9,7 +9,9 @@ member_values = [
     'Standard Setting Organisation',
     'Other',
     'Civil Society',
-    'Government'
+    'Government',
+    "DISCO - Retail",
+    "GISCO - Small Industry"
 ]
 
 isco_values = [
