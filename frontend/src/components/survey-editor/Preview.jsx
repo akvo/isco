@@ -93,7 +93,7 @@ const Preview = () => {
               const options = q.option.filter((o) => o.name && o.id);
               qVal = {
                 ...qVal,
-                option: options,
+                option: orderBy(options, ["order"]),
               };
             }
             // nested list
