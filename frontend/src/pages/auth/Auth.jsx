@@ -20,11 +20,12 @@ const Auth = ({ children }) => {
             </Title>
             <Space>
               <Image width={180} src="/images/beyond.jpg" preview={false} />
-              <Image width={280} src="/images/gisco.jpg" preview={false} />
+              <Image width={260} src="/images/gisco.jpg" preview={false} />
+              <Image width={180} src="/images/disco.png" preview={false} />
             </Space>
           </Space>
         </Col>
-        <Col span={12}>{children}</Col>
+        <Col span={10}>{children}</Col>
       </Row>
     </div>
   );

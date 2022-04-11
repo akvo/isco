@@ -1,7 +1,7 @@
 import "./App.scss";
 import React, { useEffect } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
-import { Layout, SaveFormDataModal } from "./components";
+import { Layout, SaveFormDataModal, DataSecurityModal } from "./components";
 import {
   Home,
   Admin,
@@ -15,6 +15,7 @@ import {
   Survey,
   Feedback,
   Definition,
+  Impressum,
 } from "./pages";
 import { useCookies } from "react-cookie";
 import { store, api } from "./lib";
@@ -38,7 +39,10 @@ const Secure = ({ element: Element, adminPage = false }) => {
 };
 
 const App = () => {
-  const { saveFormData } = store.useState((s) => s.notificationModal);
+  const { notificationModal, language } = store.useState((s) => s);
+  const { saveFormData, dataSecurity } = notificationModal;
+  const { active: activeLang } = language;
+
   const [cookies, removeCookie] = useCookies(["AUTH_TOKEN"]);
   const { notify } = useNotification();
   const navigate = useNavigate();
@@ -153,6 +157,11 @@ const App = () => {
             path="/feedback"
             element={<Secure element={Feedback} />}
           />
+          <Route
+            exact
+            path="/impressum"
+            element={<Secure element={Impressum} />}
+          />
           <Route exact path="*" element={<ErrorPage status={404} />} />
         </Routes>
 
@@ -166,6 +175,21 @@ const App = () => {
                 ...s.notificationModal,
                 saveFormData: {
                   ...s.notificationModal.saveFormData,
+                  visible: false,
+                },
+              };
+            });
+          }}
+        />
+        <DataSecurityModal
+          visible={dataSecurity.visible}
+          activeLang={activeLang}
+          onCancel={() => {
+            store.update((s) => {
+              s.notificationModal = {
+                ...s.notificationModal,
+                dataSecurity: {
+                  ...s.notificationModal.dataSecurity,
                   visible: false,
                 },
               };

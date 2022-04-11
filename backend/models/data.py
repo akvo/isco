@@ -16,6 +16,7 @@ from .form import Form
 from .answer import Answer
 from .user import User
 from .organisation import Organisation
+from util.survey_config import MEMBER_SURVEY, PROJECT_SURVEY
 
 
 class GeoData(BaseModel):
@@ -46,6 +47,7 @@ class DataOptionDict(TypedDict):
     locked_by: Optional[int] = None
     created_by: str
     created: Optional[str] = None
+    form_type: Optional[str] = None
 
 
 class DataResponse(BaseModel):
@@ -155,10 +157,16 @@ class Data(Base):
         name = f"{form} - {organisation} - {created_by} - {created}"
         if self.name:
             name = self.name
+        form_type = None
+        if self.form in MEMBER_SURVEY:
+            form_type = "member"
+        if self.form in PROJECT_SURVEY:
+            form_type = "project"
         return {
             "id": self.id,
             "name": name,
             "form": self.form,
+            "form_type": form_type,
             "locked_by": self.locked_by,
             "organisation": organisation,
             "created_by": created_by,
