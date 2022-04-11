@@ -47,7 +47,7 @@ const Login = () => {
       <Space direction="vertical">
         <Row align="middle" justify="space-between" gutter={[12, 12]}>
           <Col span={12} align="start">
-            <p>Login</p>
+            <h2>Login User</h2>
           </Col>
           {/* <Col span={12} align="end">
             <p className="float-right">

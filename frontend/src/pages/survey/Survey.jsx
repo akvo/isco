@@ -4,6 +4,7 @@ import { Row, Col, Select, Button, Space } from "antd";
 import WebformPage from "./WebformPage";
 import { api, store } from "../../lib";
 import { useNotification } from "../../util";
+import { Link } from "react-router-dom";
 
 const Survey = () => {
   const { notify } = useNotification();
@@ -81,7 +82,10 @@ const Survey = () => {
     setSelectedCollaborators([]);
     const findData = savedSubmissions.find((x) => x.id === dataId);
     // disable add collaborator button
-    if (user.organisation.name === findData.organisation) {
+    if (
+      user.organisation.name === findData.organisation &&
+      findData.form_type === "project"
+    ) {
       setDisableAddCollaboratorButton(false);
     }
     setSelectedSavedSubmission(findData);
@@ -191,12 +195,26 @@ const Survey = () => {
     }
   };
 
+  const handleOnClickDataSecurity = () => {
+    store.update((s) => {
+      s.notificationModal = {
+        ...s.notificationModal,
+        dataSecurity: {
+          ...s.notificationModal.dataSecurity,
+          visible: true,
+        },
+      };
+    });
+  };
+
   return (
     <div id="survey" className="container">
       <Row>
         <p>
-          Data security provisions for the data that will be submitted as part
-          of this survey.
+          <Link to="#" onClick={handleOnClickDataSecurity}>
+            Data security provisions
+          </Link>{" "}
+          for the data that will be submitted as part of this survey.
         </p>
       </Row>
       <Row

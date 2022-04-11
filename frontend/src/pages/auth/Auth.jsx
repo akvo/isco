@@ -12,20 +12,41 @@ const Auth = ({ children }) => {
         className="auth-form-container"
         align="middle"
         justify="space-between"
-        gutter={[64, 24]}
       >
         <Col span={12}>
-          <Space direction="vertical">
+          <Space direction="vertical" size={20}>
             <Title className="title" level={2}>
               Monitoring for 2021 data
             </Title>
-            <Space size={50}>
-              <Image height={65} src="/images/beyond.jpg" preview={false} />
-              <Image height={65} src="/images/gisco.jpg" preview={false} />
-            </Space>
+            <Row align="middle">
+              <Col>
+                <Image
+                  width={193}
+                  height={60}
+                  src="/images/beyond.jpg"
+                  preview={false}
+                />
+              </Col>
+              <Col>
+                <Image
+                  width={233}
+                  height={60}
+                  src="/images/gisco.jpg"
+                  preview={false}
+                />
+              </Col>
+              <Col>
+                <Image
+                  width={175}
+                  height={70}
+                  src="/images/disco.png"
+                  preview={false}
+                />
+              </Col>
+            </Row>
           </Space>
         </Col>
-        <Col span={12}>{children}</Col>
+        <Col span={10}>{children}</Col>
       </Row>
     </div>
   );

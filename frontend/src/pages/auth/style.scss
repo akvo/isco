@@ -6,18 +6,23 @@
 
     .ant-space.ant-space-vertical {
       width: 100%;
+      position: relative;
     }
 
     .auth-landing {
       position: relative;
-      height: 20vh;
+      height: 30vh;
       background-image: url("../../../public/images/cacao-seeds.jpg");
       background-size: cover;
       background-position: 50%;
     }
 
     .auth-form-container {
-      padding: 128px 10%;
+      margin: auto;
+      padding: 0px 85px;
+      position: absolute;
+      top: 50%;
+      width: 100%;
 
       .title {
         color: $cacao;
@@ -30,6 +35,15 @@
           margin-bottom: 12px;
         }
       }
+    }
+
+    .checkbox-criteria {
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      font-weight: $font-weight-bold;
+      color: $cacao;
     }
   }
 }
