@@ -12,7 +12,7 @@ member_values = [
     'Government',
     "DISCO - Retail",
     "GISCO - Small Industry",
-    "DISCO - Small Manufacturers"
+    "DISCO - Small Manufacturers",
     "DISCO - Large Manufacturers"
 ]
 
