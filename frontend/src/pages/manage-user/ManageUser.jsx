@@ -44,7 +44,7 @@ const InvitationCopy = ({ invitation }) => {
         onClick={(e) => {
           e.preventDefault();
           navigator.clipboard.writeText(
-            `${window.location.origin}/verify/${invitation}`
+            `${window.location.origin}/user/invitation/${invitation}`
           );
           setCopied(true);
           setTimeout(() => {
