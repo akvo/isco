@@ -102,6 +102,9 @@ const defaultUIState = {
       visible: false,
       onOk: () => {},
     },
+    dataSecurity: {
+      visible: false,
+    },
   },
 };
 

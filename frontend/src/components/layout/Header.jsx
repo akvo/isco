@@ -87,7 +87,7 @@ const Header = ({ className = "header", ...props }) => {
               {isLoggedIn && (
                 <>
                   <Link to="/feedback">Feedback</Link>
-                  <Link to="#">Impressum</Link>
+                  <Link to="/impressum">Impressum</Link>
                   <Link to="#">FAQ</Link>
                 </>
               )}

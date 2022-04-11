@@ -14,18 +14,19 @@ const Auth = ({ children }) => {
         justify="space-between"
         gutter={[64, 24]}
       >
-        <Col span={12}>
+        <Col span={14}>
           <Space direction="vertical">
             <Title className="title" level={2}>
               Monitoring for 2021 data
             </Title>
-            <Space size={50}>
+            <Space size={35}>
               <Image height={65} src="/images/beyond.jpg" preview={false} />
               <Image height={65} src="/images/gisco.jpg" preview={false} />
+              <Image height={65} src="/images/disco.png" preview={false} />
             </Space>
           </Space>
         </Col>
-        <Col span={12}>{children}</Col>
+        <Col span={10}>{children}</Col>
       </Row>
     </div>
   );
