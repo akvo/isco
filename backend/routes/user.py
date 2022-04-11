@@ -91,7 +91,7 @@ def me(req: Request, session: Session = Depends(get_session),
 
 
 @user_route.post("/user/register",
-                 response_model=UserDict,
+                 # response_model=UserDict,
                  summary="use register",
                  name="user:register",
                  tags=["User"])
