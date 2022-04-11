@@ -15,7 +15,7 @@ const Impressum = () => {
   const handleShow = () => console.info(true);
 
   const content = useMemo(() => {
-    let value = impressumContent(handleShow);
+    const value = impressumContent(handleShow);
     return value[activeLang];
   }, [activeLang]);
 
