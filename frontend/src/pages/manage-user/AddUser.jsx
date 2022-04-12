@@ -38,6 +38,7 @@ const AddUser = ({
   const { organisation } = optionValues;
   const isAdd = !selectedUser;
   const disableFields = selectedUser !== null;
+  const requiredFields = isAdd ? true : false;
 
   const modalTitle = isAdd ? "New User" : "Update User";
   const buttonOkText = isAdd ? "Add User" : "Update User";
@@ -157,7 +158,12 @@ const AddUser = ({
             <Form.Item
               name="first_name"
               label="First Name"
-              rules={[{ required: true, message: "Please input first name" }]}
+              rules={[
+                {
+                  required: requiredFields,
+                  message: "Please input first name",
+                },
+              ]}
             >
               <Input
                 className="bg-grey"
@@ -170,7 +176,9 @@ const AddUser = ({
             <Form.Item
               name="last_name"
               label="Last Name"
-              rules={[{ required: true, message: "Please input last name" }]}
+              rules={[
+                { required: requiredFields, message: "Please input last name" },
+              ]}
             >
               <Input
                 className="bg-grey"
@@ -186,7 +194,9 @@ const AddUser = ({
             <Form.Item
               name="email"
               label="Email"
-              rules={[{ required: true, message: "Please input email" }]}
+              rules={[
+                { required: requiredFields, message: "Please input email" },
+              ]}
             >
               <Input
                 className="bg-grey"
