@@ -26,8 +26,8 @@ for d in data:
                 "code": None,
                 "name": d['name'],
                 "active": d['active'],
-                "member_type": member.id,
-                "isco_type": []
+                "member_type": [member.id],
+                "isco_type": [1]
             }
             org = crud_organisation.add_organisation(
                 session=session, payload=payload)
