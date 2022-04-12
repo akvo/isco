@@ -1,6 +1,6 @@
 {
   "name": "Members",
-  "type": "cascade",
+  "type": "nested",
   "cascades": [
     {
       "name": "Baronie",
