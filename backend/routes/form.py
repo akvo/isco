@@ -42,6 +42,18 @@ def get(req: Request, session: Session = Depends(get_session)):
     return [f.serializeWithGroupStatus for f in form]
 
 
+@form_route.get("/form/published",
+                response_model=List[FormOptions],
+                summary="get all published form",
+                name="form:get_published",
+                tags=["Form"])
+def get_published_form(req: Request,
+                       session: Session = Depends(get_session),
+                       credentials: credentials = Depends(security)):
+    forms = session.query(Form).filter(Form.published != null()).all()
+    return [f.to_options for f in forms]
+
+
 @form_route.put("/form/{id:path}",
                 response_model=FormDict,
                 summary="update form",
