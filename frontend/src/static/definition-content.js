@@ -34,6 +34,124 @@ const definitionContent = {
       ),
     },
     {
+      i: "Child Labour",
+      t: "Child Labour",
+      d: (
+        <Fragment>
+          <div>
+            The term “child labour” is often defined as work that deprives
+            children of their childhood, their potential and their dignity, and
+            that is harmful to physical and mental development. It refers to
+            work that:
+            <ul style={{ marginLeft: "25px" }}>
+              <li>
+                is mentally, physically, socially or morally dangerous and
+                harmful to children; and/or
+              </li>
+              <li>
+                interferes with their schooling by: depriving them of the
+                opportunity to attend school; obliging them to leave school
+                prematurely; or requiring them to attempt to combine school
+                attendance with excessively long and heavy work.
+              </li>
+            </ul>
+            Whilst child labour takes many different forms, a priority is to
+            eliminate without delay the worst forms of child labour as defined
+            by Article 3 of ILO Convention No. 182:
+            <ul style={{ marginLeft: "25px" }}>
+              <li>
+                all forms of slavery or practices similar to slavery, such as
+                the sale and trafficking of children, debt bondage and serfdom
+                and forced or compulsory labour, including forced or compulsory
+                recruitment of children for use in armed conflict;
+              </li>
+              <li>
+                the use, procuring or offering of a child for prostitution, for
+                the production of pornography or for pornographic performances;
+              </li>
+              <li>
+                the use, procuring or offering of a child for illicit
+                activities, in particular for the production and trafficking of
+                drugs as defined in the relevant international treaties;
+              </li>
+              <li>
+                work which, by its nature or the circumstances in which it is
+                carried out, is likely to harm the health, safety or morals of
+                children.
+              </li>
+            </ul>
+            <i>
+              The definition builds on Convention No.138 on Minimum Age and
+              Convention No. 182 on the Worst Forms of Child Labour.
+              <br />
+              Cited from: ILO (n.d.). What is child labour (IPEC) (ilo.org).
+            </i>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Child Labour Monitoring and Remediation Systems (CLMRS)",
+      t: "Child Labour Monitoring and Remediation Systems (CLMRS)",
+      d: (
+        <Fragment>
+          <div>
+            Child Labour Monitoring and Remediation Systems (CLMRS) must
+            implement the following core activities:
+            <ul style={{ marginLeft: "25px" }}>
+              <li>
+                Raise awareness on child labour and resulting harm amongst
+                farmers, children and the wider community.
+              </li>
+              <li>
+                Identify children in child labour through active, regular and
+                repeated monitoring, using standardized data collection tools.
+              </li>
+              <li>
+                Provide support (prevention and remediation) to children in
+                child labour, and others at risk, and document the support
+                provided.
+              </li>
+              <li>
+                Follow-up with children identified in child labour and continue
+                to monitor their status on a regular basis until they have
+                stopped engaging in child labour and have satisfactory
+                alternatives
+              </li>
+            </ul>
+            CLMRS and equivalent systems are a means of targeting prevention,
+            mitigation and remediation assistance to children involved in or
+            at-risk of child labour, as well as to their families and
+            communities. These systems are currently implemented by governments,
+            civil society actors and businesses. Appropriately designed and
+            implemented, CLMRS can support the implementation of due diligence
+            expectations placed on companies under the UN Guiding Principles for
+            Business and Human Rights that are being increasingly transposed
+            into law. CLMRS alone cannot address all dimensions of child labour
+            as a complex structural challenge. Other complementary and mutually
+            reinforcing efforts are also required to tackle child labour
+            holistically and address the socio-economic pressures and other root
+            causes. <br />
+            <a
+              href="https://cocoainitiative.org/wp-content/uploads/2021/04/ICI_CLMRS_Benchmarking-study.pdf"
+              target="_blank"
+              rel="noreferrer"
+              style={{ fontSize: "14px" }}
+            >
+              <i>
+                https://cocoainitiative.org/wp-content/uploads/2021/04/ICI_CLMRS_Benchmarking-study.pdf{" "}
+              </i>
+            </a>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "CLMRS",
+      t: "CLMRS",
+      d: "Please refer to the definition of “Child Labour Monitoring and Remediation Systems (CLMRS)”",
+    },
+    {
       i: "Farming household",
       t: "Farming household",
       d: "The farming household corresponds to a smallholder cocoa producing family. The number of farming households, thus corresponds to the number of (smallholder) cocoa farms.",
@@ -381,6 +499,135 @@ const definitionContent = {
           </div>
         </Fragment>
       ),
+    },
+    {
+      i: "Child Labour",
+      t: "Kinderarbeit",
+      d: (
+        <Fragment>
+          <div>
+            Der Begriff „Kinderarbeit“ wird oft definiert als Arbeit, die Kinder
+            ihrer Kindheit, ihres Potentials und ihrer Würde beraubt, und die
+            schädlich für deren körperliche und geistige Entwicklung ist. Er
+            bezieht sich auf Arbeit, die:
+            <ul style={{ marginLeft: "25px" }}>
+              <li>
+                geistig, körperlich, sozial und / oder moralisch gefährlich oder
+                schädlich für Kinder ist; und / oder
+              </li>
+              <li>
+                deren Schulbildung dahingehend beeinträchtigt, dass: sie Kindern
+                die Möglichkeit nimmt, zur Schule zu gehen; sie Kinder zwingt,
+                frühzeitig von der Schule abzugehen; oder sie Kindern
+                abverlangt, die Schulteilnahme mit der zeitintensiven und
+                körperlich anstrengenden Arbeit zu vereinbaren.
+              </li>
+            </ul>
+            Kinderarbeit kann viele Ausprägungen annehmen, dabei ist eine
+            Priorität, die schlimmsten Formen der Kinderarbeit – definiert in
+            Artikel 3 des ILO Übereinkommens Nr. 182 – unverzüglich zu
+            beseitigen:
+            <ul style={{ marginLeft: "25px" }}>
+              <li>
+                alle Formen der Sklaverei oder alle sklavereiähnlichen
+                Praktiken, wie den Verkauf von Kindern und den Kinderhandel,
+                Schuldknechtschaft und Leibeigenschaft sowie Zwangs- oder
+                Pflichtarbeit, einschließlich der Zwangs- oder
+                Pflichtrekrutierung von Kindern für den Einsatz in bewaffneten
+                Konflikten;
+              </li>
+              <li>
+                das Heranziehen, Vermitteln oder Anbieten eines Kindes zur
+                Prostitution, zur Herstellung von Pornographie oder zu
+                pornographischen Darbietungen;
+              </li>
+              <li>
+                das Heranziehen, Vermitteln oder Anbieten eines Kindes zu
+                unerlaubten Tätigkeiten, insbesondere zur Gewinnung von und zum
+                Handel mit Drogen, wie diese in den einschlägigen
+                internationalen Übereinkünften definiert sind;
+              </li>
+              <li>
+                Arbeit, die ihrer Natur nach oder aufgrund der Umstände, unter
+                denen sie verrichtet wird, voraussichtlich für die Gesundheit,
+                die Sicherheit oder die Sittlichkeit von Kindern schädlich ist.
+              </li>
+            </ul>
+            <i>
+              Die Definition basiert auf den ILO Übereinkommen Nr. 138 über das
+              Mindestalter für die Zulassung zur Beschäftigung und Nr. 182 über
+              die schlimmsten Formen von Kinderarbeit.
+              <br />
+              Zitiert aus: ILO (1999). Übereinkommen 182: Übereinkommen über das
+              Verbot und unverzügliche Maßnahmen zur Beseitigung der schlimmsten
+              Formen der Kinderarbeit (ilo.org).
+            </i>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Child Labour Monitoring and Remediation Systems (CLMRS)",
+      t: "Child Labour Monitoring and Remediation Systems (CLMRS)",
+      d: (
+        <Fragment>
+          <div>
+            Child Labour Monitoring and Remediation Systems (CLMRS) müssen die
+            folgenden Kernaktivitäten beinhalten:
+            <ul style={{ marginLeft: "25px" }}>
+              <li>
+                Stärkung des Bewusstseins bei Bäuerinnen und Bauern, Kindern und
+                der breiteren Bevölkerung bezüglich der Gefahren von
+                Kinderarbeit
+              </li>
+              <li>
+                Identifizierung von Kindern in Kinderarbeit durch aktives und
+                regelmäßiges Monitoring mithilfe standardisierter Methoden zur
+                Datenerfassung.
+              </li>
+              <li>
+                Unterstützung von Kindern in Kinderarbeit (Beendigung) und von
+                gefährdeten Kindern (Prävention) und Dokumentation dieser
+                Unterstützung.
+              </li>
+              <li>
+                Follow-ups mit identifizierten Kindern in Kinderarbeit und
+                regelmäßiges Überprüfen deren Status‘ bis sie sich nicht mehr in
+                Kinderarbeit befinden und zur Schule gehen.
+              </li>
+            </ul>
+            CLMRS und vergleichbare Systeme sind Werkzeuge zur Unterstützung von
+            Kindern in Kinderarbeit oder mit erhöhtem Risiko, in Kinderarbeit zu
+            fallen, sowie deren Familien und Gemeinden in der Prävention,
+            Linderung und Beendigung von Kinderarbeit. Diese Systeme können von
+            Regierungen, zivilgesellschaftlichen Akteuren und Unternehmen
+            umgesetzt werden. Richtig konzipiert und umgesetzt, können CLMRS die
+            von Unternehmen im Rahmen der UN-Leitprinzipien für Wirtschaft und
+            Menschenrechte erwartete Erfüllung von Sorgfaltspflichten
+            unterstützen, die zunehmend in nationaler und supranationaler
+            Gesetzgebung verankert werden. CLMRS können aufgrund der Komplexität
+            der Thematik nicht alle Dimensionen der Kinderarbeit adressieren.
+            Daher sind weitere, komplementäre und sich gegenseitig verstärkende
+            Anstrengungen erforderlich, um Kinderarbeit und deren Grundursachen
+            ganzheitlich zu bekämpfen. <br />
+            <a
+              href="https://cocoainitiative.org/wp-content/uploads/2021/04/ICI_CLMRS_Benchmarking-study.pdf"
+              target="_blank"
+              rel="noreferrer"
+              style={{ fontSize: "14px" }}
+            >
+              <i>
+                https://cocoainitiative.org/wp-content/uploads/2021/04/ICI_CLMRS_Benchmarking-study.pdf{" "}
+              </i>
+            </a>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "CLMRS",
+      t: "CLMRS",
+      d: "Siehe Definition „Child Labour Monitoring and Remediation Systems (CLMRS)”",
     },
     {
       i: "Farming household",
