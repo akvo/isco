@@ -1,7 +1,8 @@
 from fastapi import HTTPException, status
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
-from models.user import User, UserBase, UserDict, UserInvitation
+from models.user import User, UserBase, UserDict
+from models.user import UserInvitation, UserUpdateByAdmin
 from datetime import datetime
 import db.crud_organisation as crud_org
 from typing import List, Optional
@@ -27,7 +28,8 @@ def add_user(session: Session, payload: UserBase) -> UserDict:
                 password=payload.password,
                 role=payload.role,
                 organisation=payload.organisation,
-                invitation=payload.invitation)
+                invitation=payload.invitation,
+                questionnaires=payload.questionnaires)
     session.add(user)
     session.commit()
     session.flush()
@@ -38,6 +40,18 @@ def add_user(session: Session, payload: UserBase) -> UserDict:
 def verify_user_email(session: Session, id: int) -> UserDict:
     user = get_user_by_id(session=session, id=id)
     user.email_verified = datetime.utcnow()
+    session.commit()
+    session.flush()
+    session.refresh(user)
+    return user
+
+
+def update_user_by_admin(session: Session,
+                         id: int, payload: UserBase) -> UserUpdateByAdmin:
+    user = get_user_by_id(session=session, id=id)
+    user.organisation = payload['organisation']
+    user.role = payload['role']
+    user.questionnaires = payload['questionnaires']
     session.commit()
     session.flush()
     session.refresh(user)

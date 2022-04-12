@@ -10,6 +10,7 @@ from typing_extensions import TypedDict
 from sqlalchemy import Column, Integer, String
 from sqlalchemy import Enum, DateTime, Text
 from sqlalchemy import ForeignKey
+import sqlalchemy.dialects.postgresql as pg
 from db.connection import Base
 from models.organisation import OrganisationDict
 
@@ -27,6 +28,12 @@ class UserInvitation(TypedDict):
     invitation: Optional[str] = None
 
 
+class UserUpdateByAdmin(TypedDict):
+    organisation: int
+    role: UserRole
+    questionnaires: Optional[List[int]] = None
+
+
 class UserDict(TypedDict):
     id: int
     organisation: int
@@ -35,6 +42,7 @@ class UserDict(TypedDict):
     email_verified: Optional[datetime] = None
     role: UserRole
     invitation: Optional[str] = None
+    questionnaires: Optional[List[int]] = None
 
 
 class UserOrgDict(TypedDict):
@@ -45,6 +53,7 @@ class UserOrgDict(TypedDict):
     email_verified: Optional[datetime] = None
     role: UserRole
     invitation: Optional[str] = None
+    questionnaires: Optional[List[int]] = None
 
 
 class UserSimple(TypedDict):
@@ -72,9 +81,11 @@ class User(Base):
     created = Column(DateTime, default=datetime.utcnow)
     organisation = Column(Integer, ForeignKey('organisation.id'))
     invitation = Column(Text, nullable=True)
+    questionnaires = Column(pg.ARRAY(Integer), nullable=True)
 
     def __init__(self, email: str, password: str, name: str, phone_number: str,
-                 role: UserRole, organisation: int, invitation: Optional[str]):
+                 role: UserRole, organisation: int, invitation: Optional[str],
+                 questionnaires: Optional[List[int]]):
         self.email = email
         self.password = password
         self.name = name
@@ -82,6 +93,7 @@ class User(Base):
         self.role = role
         self.organisation = organisation
         self.invitation = invitation
+        self.questionnaires = questionnaires
 
     def __repr__(self) -> int:
         return f"<User {self.id}>"
@@ -97,6 +109,7 @@ class User(Base):
             "organisation": self.organisation,
             "last_activity": self.last_activity,
             "invitation": self.invitation,
+            "questionnaires": self.questionnaires
         }
 
     @property
@@ -112,6 +125,7 @@ class UserBase(BaseModel):
     role: Optional[UserRole] = UserRole.member_user
     organisation: int
     invitation: Optional[str] = str(uuid4())
+    questionnaires: Optional[List[int]] = None
 
     class Config:
         orm_mode = True
