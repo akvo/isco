@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: eu.gcr.io/akvo-lumen/isco/frontend:${CI_COMMIT}
+          image: ${IMAGE_PREFIX}/frontend:${CI_COMMIT}
           ports:
             - containerPort: 80
           resources:
@@ -35,7 +35,7 @@ spec:
               cpu: "200m"
               memory: "64Mi"
         - name: backend
-          image: eu.gcr.io/akvo-lumen/isco/backend:${CI_COMMIT}
+          image: ${IMAGE_PREFIX}/backend:${CI_COMMIT}
           ports:
             - containerPort: 5000
           env:
