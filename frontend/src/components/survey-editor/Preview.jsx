@@ -90,7 +90,14 @@ const Preview = () => {
             };
             // option values
             if (q.option.length) {
-              const options = q.option.filter((o) => o.name && o.id);
+              const options = q.option
+                .filter((o) => o.name && o.id)
+                .map((o) => ({
+                  code: o.code,
+                  name: o.name,
+                  order: o.order,
+                  translations: o.translations,
+                }));
               qVal = {
                 ...qVal,
                 option: orderBy(options, ["order"]),
