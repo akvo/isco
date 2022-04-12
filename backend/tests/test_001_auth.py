@@ -159,7 +159,8 @@ class TestUserAuthentication():
             "phone_number": None,
             "password": "test",
             "role": UserRole.secretariat_admin.value,
-            "organisation": 1
+            "organisation": 1,
+            "questionnaires": [1],
         }
         res = await client.post(app.url_path_for("user:register"),
                                 json=user_payload)
@@ -174,7 +175,9 @@ class TestUserAuthentication():
             "invitation": invitation_link,
             "name": "John Doe",
             "organisation": 1,
-            "role": "secretariat_admin"
+            "role": "secretariat_admin",
+            "questionnaires": [1],
+            "phone_number": None,
         }
 
     @pytest.mark.asyncio

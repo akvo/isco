@@ -7,10 +7,10 @@ from fastapi.security import HTTPBasicCredentials as credentials
 from sqlalchemy.orm import Session
 from db.connection import get_session
 from models.user import UserDict, UserBase, UserOrgDict, UserInvitation
-from models.user import UserResponse, UserRole
+from models.user import UserResponse, UserRole, UserUpdateByAdmin
 from pydantic import SecretStr
 from db import crud_user, crud_organisation
-from middleware import get_password_hash, verify_admin
+from middleware import get_password_hash, verify_admin, verify_super_admin
 from typing import List, Optional
 
 security = HTTPBearer()
@@ -169,3 +169,21 @@ def change_password(req: Request,
         raise HTTPException(status_code=404, detail="Not found")
     access_token = create_access_token(data={"email": user["email"]})
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+@user_route.put("/user/update_by_admin/{id:path}",
+                response_model=UserDict,
+                summary="update user by admin",
+                name="user:update_by_admin",
+                tags=["User"])
+def update_user(req: Request,
+                id: int,
+                payload: UserUpdateByAdmin,
+                session: Session = Depends(get_session),
+                credentials: credentials = Depends(security)):
+    verify_super_admin(session=session,
+                       authenticated=req.state.authenticated)
+    user = crud_user.update_user_by_admin(session=session,
+                                          id=id,
+                                          payload=payload)
+    return user.serialize

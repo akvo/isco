@@ -99,6 +99,7 @@ const Survey = () => {
   };
 
   const handleOnChangeSavedSubmissionDropdown = (dataId) => {
+    setDisableAddCollaboratorButton(true);
     setShowCollaboratorForm(false);
     setCollaborators(null);
     setSelectedCollaborators([]);
