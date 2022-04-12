@@ -251,9 +251,59 @@ const definitionContent = {
       ),
     },
     {
+      i: "Deforestation",
+      t: "Deforestation",
+      d: (
+        <Fragment>
+          <div>
+            Deforestation is loss of natural forest coverage in cocoa producing
+            areas – to be disaggregated per type of forest: National parks and
+            reserves; Forest reserves/classified forests; High Conservation
+            Value (HCV) and High Carbon Stock (HCS) forests - when identified;
+            other forests - as per national definition.
+            <br />
+            <i>
+              This definition is aligned to the Accountability Framework’s
+              definition of deforestation, counting “gross deforestation” of
+              natural forest, where “gross” is used in the sense of “total;
+              aggregate; without deduction for reforestation or other offset.”
+              (Accountability Framework)
+            </i>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Degraded lands",
+      t: "Degraded lands",
+      d: (
+        <Fragment>
+          <div>
+            “Land degradation: the deterioration or loss of the productive
+            capacity of the soils for present and future.”
+            <br />
+            <i>(from the Global Environmental Facility)</i>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Farmer or farmer-based organisations",
+      t: "Farmer or farmer-based organisations",
+      d: "Farmer-based organizations (FBOs) are: “cooperatives”; “other professional groups of farmers”; other groups that are recognized formal or informal institutions with a cocoa aggregating and sale role and ideally provide support / technical services to members and influence cocoa farming or broader life in the community. A member can be an individual who, for example, pays a membership fee, is formally recognized by the organization as a member, or holds a formal position within the organization.",
+    },
+    {
       i: "Farming household",
       t: "Farming household",
-      d: "The farming household corresponds to a smallholder cocoa producing family. The number of farming households, thus corresponds to the number of (smallholder) cocoa farms.",
+      d: (
+        <Fragment>
+          The farming household corresponds to a smallholder cocoa producing
+          family.
+          <br />A farming household may correspond to a single farm or to more
+          than one farm, each with their farm management characteristics and led
+          by other members of the farming household (farmers).
+        </Fragment>
+      ),
     },
     {
       i: "Reached (farming households reached)",
@@ -268,7 +318,20 @@ const definitionContent = {
     {
       i: "Farming land under cocoa cultivation",
       t: "Farming land under cocoa cultivation",
-      d: "&quot;Farming land under cocoa cultivation&quot; corresponds to (parts of the household's) farming land where cocoa is produced as the main crop, whatever the type of cocoa cultivation applied.",
+      d: (
+        <Fragment>
+          <div>
+            &quot;Farming land under cocoa cultivation&quot; corresponds to
+            (parts of the household&apos;s) farming land (plots) where cocoa is
+            produced as the main crop*, whatever the type of cocoa cultivation
+            applied.
+            <br /> (*if in special cases a significant amount of cocoa is
+            produced on agricultural land (plots) where cocoa is only the
+            secondary crop then this land can also be accounted for as farming
+            land under cocoa cultivation)
+          </div>
+        </Fragment>
+      ),
     },
     {
       i: "Sustainability project",
@@ -360,7 +423,7 @@ const definitionContent = {
     {
       i: "Direct supply",
       t: "Direct supply",
-      d: "For cocoa to be categorized as “cocoa soured through a direct supply chain”, there shall be a relative stable partnership and collaboration, conceived to span at least 3 years, between the cocoa sourcing company and the cocoa producer. Such partnership and collaboration may cover issues such as price, quality, good agricultural practices, social, human rights and environmental issues, certification requirements, etc. This partnership and collaboration between the cocoa sourcing company and the producers (cocoa farming households) may be conducted through cooperatives, farmer organizations and/or other intermediaries embedded within the direct supply chain.",
+      d: "For cocoa to be categorized as “cocoa sourced through a direct supply chain”, there shall be a relatively stable partnership and collaboration, in which the individual cocoa farmers / farming families are known (registered).  Such partnership and collaboration may cover issues such as price, quality, good agricultural practices, social, human rights and environmental issues, certification requirements, etc. This partnership and collaboration between the ISCO cocoa sourcing company and the producers (cocoa farming households) may be conducted through cooperatives, farmer organisations and / or other intermediaries embedded within the direct supply chain.",
     },
     {
       i: "Conventional (traceability level 0)",
@@ -827,9 +890,60 @@ const definitionContent = {
       ),
     },
     {
+      i: "Deforestation",
+      t: "Entwaldung",
+      d: (
+        <Fragment>
+          <div>
+            Entwaldung ist der Verlust natürlicher Waldflächen in
+            Kakaoanbaugebieten – aufgeschlüsselt nach Waldtypen: Nationalparks
+            und Reservate; Waldreservate / Klassifizierte Wälder; Wälder mit
+            hohem Naturschutzwert und Kohlenstoffbestand; Andere Wälder – gemäß
+            nationaler Definition. <br />
+            <i>
+              Diese Definition entspricht der Definition von Entwaldung des
+              Accountability Frameworks und bezieht sich auf die
+              „Bruttoentwaldung“ natürlicher Wälder, im Sinne der gesamten /
+              aggregierten Entwaldung, ohne die Anrechnung von Wiederaufforstung
+              oder anderen Ausgleichsmaßnahmen.
+            </i>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Degraded lands",
+      t: "Degradierte Böden",
+      d: (
+        <Fragment>
+          <div>
+            Bodendegradierung bezeichnet die Verschlechterung oder den Verlust
+            der produktiven Kapazität des Bodens für die heutige und zukünftige
+            landwirtschaftliche Nutzung.
+            <br />
+            <i>(aus The Global Environmental Facility)</i>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Farmer or farmer-based organisations",
+      t: "Erzeugerorganisation",
+      d: "Erzeugerorganisationen (farmer-based organisations, FBO) sind: Kooperativen; andere professionelle Zusammenschlüsse von Bäuerinnen und Bauern; oder sonstige Organisationsformen, die als formelle oder informelle Institutionen mit der Rolle fungieren, Kakao aufzukaufen und zu verkaufen, Unterstützung / technische Dienstleistungen für Mitglieder bereitzustellen und Einfluss auf den Kakaoanbau oder das Zusammenleben in der Gemeinde zu nehmen. Ein Mitglied kann ein Individuum sein, das einen Mitgliedsbeitrag bezahlt, das formell von der Erzeugerorganisation als Mitglied anerkannt ist und / oder das eine formelle Position innerhalb der Organisation innehat. ",
+    },
+    {
       i: "Farming household",
       t: "Bäuerlicher Haushalt",
-      d: "Der bäuerliche Haushalt entspricht einer kleinbäuerlichen kakaoproduzierenden Familie. Die Anzahl der bäuerlichen Haushalte entspricht somit der Anzahl der (kleinbäuerlichen) Kakaobetriebe.",
+      d: (
+        <Fragment>
+          Der Begriff „bäuerlicher Haushalt“ bezeichnet eine kleinbäuerliche
+          kakaoanbauende Familie.
+          <br />
+          Ein Bäuerlicher Haushalt kann einen oder mehrere landwirtschaftliche
+          Betriebe umfassen, die von verschiedenen Mitgliedern des bäuerlichen
+          Haushalts (Bäuerinnen und Bauern) geführt werden.
+        </Fragment>
+      ),
     },
     {
       i: "Reached (farming households reached)",
@@ -839,12 +953,24 @@ const definitionContent = {
     {
       i: "Farming land",
       t: "Anbaufläche",
-      d: "Als Anbauflächen gelten alle Flächen, die für die Nutzung durch den/die kakaoanbauenden Haushalt(e) zur Verfügung stehen, unabhängig von den Eigentums-, Anbau-, Pacht- oder Nutzungsrechtsverhältnissen. Die Größe des Anbaulandes ist in Hektar (Ha) anzugeben.",
+      d: "Die Anbaufläche bezeichnet alle Flächen, die einem bäuerlichen Haushalt zur landwirtschaftlichen Nutzung zur Verfügung stehen, unabhängig von den Eigentums-, Anbau-, Pacht- oder Nutzungsrechtsverhältnissen. Die Größe der Anbaufläche sollte in Hektar (Ha) angegeben werden.",
     },
     {
       i: "Farming land under cocoa cultivation",
-      t: "Anbaufläche für Kakaoanbau",
-      d: "&quot;Anbaufläche für Kakaoanbau&quot; entspricht dem Teil der Anbaufläche (des Haushalts), auf der Kakao als Hauptkulturpflanze angebaut wird, unabhängig von der Art des Kakaoanbaus.",
+      t: "Kakaoanbaufläche",
+      d: (
+        <Fragment>
+          <div>
+            Die Kakaoanbaufläche entspricht dem Teil der Anbaufläche auf dem
+            Kakao als Hauptkultur* angebaut wird, unabhängig von der Art des
+            Kakaoanbaus.
+            <br /> (*wenn in besonderen Fällen eine erhebliche Menge Kakao auf
+            einer landwirtschaftlichen Fläche erzeugt wird, dieser aber nur eine
+            „Nebenkultur“ darstellt, können diese Flächen ebenfalls als
+            Kakaoanbaufläche gewertet werden.)
+          </div>
+        </Fragment>
+      ),
     },
     {
       i: "Sustainability project",
@@ -895,9 +1021,9 @@ const definitionContent = {
       ),
     },
     {
-      i: "Direkte Lieferkette",
+      i: "Direct supply",
       t: "Direkte Lieferkette",
-      d: "Damit Kakao als &quot;über eine direkte Lieferkette bezogener Kakao&quot; kategorisiert werden kann, muss eine relativ stabile Partnerschaft bzw. Zusammenarbeit zwischen dem Unternehmen und den Kakaoproduzenten bestehen, die sich über mindestens 3 Jahre erstrecken soll. Diese Partnerschaft bzw. Zusammenarbeit kann sich auf Themen wie Preis, Qualität, gute landwirtschaftliche Praktiken, soziale, menschenrechtliche und ökologische Fragen, Zertifizierungsanforderungen usw. beziehen. Diese Partnerschaft bzw. Zusammenarbeit zwischen dem Unternehmen und den Erzeugern (kakaoanbauenden Haushalten) kann über Kooperativen, Bauernorganisationen und/oder andere in die direkte Lieferkette eingebettete Vermittler erfolgen.",
+      d: "Damit Kakao als “durch eine direkte Lieferkette bezogener Kakao“ kategorisiert werden kann, muss eine stabile Partnerschaft bzw. Zusammenarbeit zwischen dem Unternehmen und den Kakaoproduzentinnen und -produzenten bestehen, in welcher die individuellen kakaoanabauenden Haushalte bekannt und registriert sind. Die Partnerschaft kann Themen wie Preise, Kakaoqualität, gute landwirtschaftliche Praktiken, soziale, menschenrechtliche und ökologische Fragen, Zertifizierungsanforderungen, etc. adressieren. Eine solche Partnerschaft bzw. Zusammenarbeit zwischen dem kakaobeschaffenden ISCO-Unternehmen und den Erzeugerinnen und Erzeugern kann auch über deren Kooperative / Erzeugerorganisation und / oder andere in die direkte Lieferkette eingebettete Akteure organisiert sein.",
     },
     {
       i: "Conventional (traceability level 0)",
