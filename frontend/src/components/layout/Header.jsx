@@ -15,7 +15,8 @@ const Header = ({ className = "header", ...props }) => {
   const [cookies, removeCookie] = useCookies(["AUTH_TOKEN"]);
   const { user, isLoggedIn, language } = store.useState((state) => state);
   const { active: activeLang, langs: langList } = language;
-  const isAdmin = user?.role?.includes("admin");
+  const admins = ["secretariat_admin"];
+  const isAdmin = admins.includes(user?.role);
   const navigate = useNavigate();
 
   const text = useMemo(() => {

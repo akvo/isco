@@ -25,7 +25,8 @@ const Secure = ({ element: Element, adminPage = false }) => {
   const user = store.useState((s) => s?.user);
   const [cookies] = useCookies(["AUTH_TOKEN"]);
   const isAuth = cookies?.AUTH_TOKEN && cookies?.AUTH_TOKEN !== "undefined";
-  const isAuthAdmin = isAuth && user?.role?.includes("admin");
+  const admins = ["secretariat_admin"];
+  const isAuthAdmin = isAuth && admins.includes(user?.role);
   if (isAuthAdmin && adminPage) {
     return <Element />;
   }
