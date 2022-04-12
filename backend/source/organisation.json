@@ -1,51 +1,37 @@
 [
   {
     "code": null,
-    "member": ["All"],
+    "member": ["Other"],
     "isco": ["All"],
     "name": "staff Akvo",
     "active": true
   },
   {
     "code": null,
-    "member": ["All"],
-    "isco": ["All"],
+    "member": ["Other"],
+    "isco": ["GISCO"],
     "name": "staff GISCO secretariat",
     "active": true
   },
   {
     "code": null,
-    "member": ["All"],
-    "isco": ["All"],
+    "member": ["Other"],
+    "isco": ["Beyond Chocolate"],
     "name": "staff Beyond Chocolate Secretariat",
     "active": true
   },
   {
     "code": null,
-    "member": ["All"],
+    "member": ["Other"],
     "isco": ["All"],
     "name": "staff C-Lever",
     "active": true
   },
   {
     "code": null,
-    "member": ["All"],
-    "isco": ["All"],
-    "name": "BMZ/ GIZ",
-    "active": true
-  },
-  {
-    "code": null,
-    "member": ["All"],
-    "isco": ["All"],
-    "name": "BMZ",
-    "active": true
-  },
-  {
-    "code": null,
-    "member": ["All"],
-    "isco": ["All"],
-    "name": "Bundesministerium für Ernährung und Landwirtschaft (BMEL)",
+    "member": ["Other"],
+    "isco": ["DISCO"],
+    "name": "staff DISCO",
     "active": true
   }
 ]
