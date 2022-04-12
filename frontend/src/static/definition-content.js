@@ -3,9 +3,35 @@ import React, { Fragment } from "react";
 const definitionContent = {
   en: [
     {
-      i: "MT-BE",
-      t: "MT-BE",
-      d: "MT-BE stands for &quot;metric tons bean equivalents&quot; Conversion to MT-BE, of cocoa sourced in different forms, is to be done using the ICCO conversion factors; being: 1,33 for cocoa butter (1804), 1,25 for cocoa paste/liquor (18031), and 1,18 for cocoa powder and cake (1805, 18032).",
+      i: "Bean Equivalent (MT-BE)",
+      t: "Bean Equivalent (MT-BE)",
+      d: (
+        <Fragment>
+          <div>
+            <b>
+              <u>Bean Equivalent:</u>
+            </b>{" "}
+            Amount of cocoa beans necessary to produce a certain amount of
+            semi-finished cocoa products such as cocoa liquor, nibs, butter,
+            powder, or to cover the cocoa content within cocoa-containing
+            products.
+          </div>
+          <br />
+          <div>
+            <b>
+              <u>MT-BE:</u>
+            </b>{" "}
+            MT-BE stands for &quot;metric tons bean equivalents&quot; of a
+            certain quantity of semi-finished cocoa products or cocoa-containing
+            products. In other words, the MT-BE represents the corresponding
+            volume of cocoa beans sourced, expressed in metric tons. Conversion
+            to MT-BE, of cocoa sourced in different forms, is to be done using
+            the ICCO conversion factors; being: 1,33 for cocoa butter (1804),
+            1,25 for cocoa paste/liquor (18031), and 1,18 for cocoa powder and
+            cake (1805, 18032).
+          </div>
+        </Fragment>
+      ),
     },
     {
       i: "Farming household",
@@ -144,18 +170,20 @@ const definitionContent = {
       t: "Certified or independently verified cocoa",
       d: (
         <Fragment>
-          Cocoa produced in compliance with the requirements of accepted
-          certification standards or independently verified company schemes on
-          sustainable cocoa.
-          <br />
-          The list of accepted certification standards and independently
-          verified company schemes currently comprises the following:
-          <ul style={{ marginLeft: "25px" }}>
-            <li>UTZ / Rainforest Alliance</li>
-            <li>Fairtrade</li>
-            <li>Organic</li>
-            <li>Company schemes (to be specified)</li>
-          </ul>
+          <div>
+            Cocoa produced in compliance with the requirements of accepted
+            certification standards or independently verified company schemes on
+            sustainable cocoa. <br />
+            The list of accepted certification standards and independently
+            verified company schemes currently comprises the following:
+            <ul style={{ marginLeft: "25px" }}>
+              <li>Rainforest Alliance</li>
+              <li>Fairtrade</li>
+              <li>Organic</li>
+              <li>Naturland</li>
+              <li>Company schemes (to be specified)</li>
+            </ul>
+          </div>
         </Fragment>
       ),
     },
@@ -324,9 +352,35 @@ const definitionContent = {
 
   de: [
     {
-      i: "MT-BE",
-      t: "MT-BE",
-      d: "MT-BE steht für &quot;metrische Tonnen an Bohnenäquivalenten&quot;. Die Umrechnung in MT-BE von Kakao, der in verschiedenen Formen bezogen wird, soll mit Hilfe der ICCO-Umrechnungsfaktoren erfolgen; 1,33 für Kakaobutter (1804), 1,25 für Kakaomasse/Likör (18031) und 1,18 für Kakaopulver und Kuchen (1805, 18032).",
+      i: "Bean Equivalent (MT-BE)",
+      t: "Bohnenäquivalent (MT-BE)",
+      d: (
+        <Fragment>
+          <div>
+            <b>
+              <u>Bohnenäquivalent:</u>
+            </b>{" "}
+            Menge an Kakaobohnen, die für die Herstellung einer bestimmten Menge
+            an halbfertigen Kakaoerzeugnissen wie Kakaomasse, -nibs, -butter und
+            -pulver notwendig sind oder die den Kakaogehalt in kakaohaltigen
+            Produkten abdeckt.
+          </div>
+          <br />
+          <div>
+            <b>
+              <u>MT-BE:</u>
+            </b>{" "}
+            MT-BE steht für „metrische Tonnen an Bohnenäquivalenten“ einer
+            bestimmten Menge halbfertiger Kakaoerzeugnisse oder kakaohaltiger
+            Produkte. Damit gibt MT-BE Auskunft über das entsprechende Volumen
+            an beschafften Kakaobohnen in Tonnen. Die Umrechnung in MT-BE von in
+            verschiedenen Formen bezogenem Kakao erfolgt über die
+            ICCO-Umrechnungsfaktoren; 1,33 für Kakaobutter (1804), 1,25 für
+            Kakaomasse (18031) und 1,18 für Kakaopulver und Presskuchen (1805,
+            18032).
+          </div>
+        </Fragment>
+      ),
     },
     {
       i: "Farming household",
@@ -423,20 +477,20 @@ const definitionContent = {
     },
     {
       i: "Certified or independently verified cocoa",
-      t: "Zertifizierter oder unabhängig verifizierter Kakao",
+      t: "Zertifiziert oder unabhängig überprüfter Kakao",
       d: (
         <Fragment>
-          Kakao, der in Übereinstimmung mit den Anforderungen anerkannter
-          Zertifizierungsstandards oder unabhängig verifizierter
-          Unternehmensprogramme für nachhaltigen Kakao, produziert wird.
-          <br />
-          Die Liste der anerkannten Zertifizierungsstandards und unabhängig
-          verifizierten Unternehmensprogramme umfasst derzeit die folgenden:
+          Kakao, der unter Erfüllung der Anforderungen von anerkannten
+          Zertifizierungsstandards oder unabhängig überprüften
+          Unternehmensprogrammen für nachhaltigen Kakao produziert wurde. Die
+          Liste der anerkannten Nachhaltigkeitsstandards und unabhängig
+          überprüfter Unternehmensprogramme umfasst derzeit die folgenden:
           <ul style={{ marginLeft: "25px" }}>
-            <li>UTZ/Rainforest Alliance</li>
+            <li>Rainforest Alliance</li>
             <li>Fairtrade</li>
             <li>Bio</li>
-            <li>Firmenprogramme (zu spezifizieren)</li>
+            <li>Naturland</li>
+            <li>Unternehmensprogramme (zu spezifizieren)</li>
           </ul>
         </Fragment>
       ),
