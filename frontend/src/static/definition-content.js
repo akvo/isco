@@ -339,101 +339,9 @@ const definitionContent = {
       ),
     },
     {
-      i: "Sustainability project",
-      t: "Sustainability project",
-      d: "A cocoa sustainability project is defined as a program, project or initiative targeting (aspects of) sustainability in cocoa production, processing and/or supply chains.",
-    },
-    {
-      i: "Lesson learned",
-      t: "Lesson learned",
-      d: "With &quot;lesson learned&quot;, we refer her to any (set of) lesson(s) learned from activities/strategies/studies with respect to sustainability in the cocoa sector that were documented reporting actor and that are pertinent for other actors in the cocoa sector.",
-    },
-    {
-      i: "Supply origin transparency level",
-      t: "Supply origin transparency level",
-      d: (
-        <Fragment>
-          The &quot;supply origin transparency level&quot; is about the extent
-          that detailed information on the origin of cocoa is being documented
-          at the initial stages of the sourcing process, with such information
-          remaining available at later stages of the supply chain.
-          <br />
-          Distinction is made between the following supply origin transparency
-          levels:
-          <br />
-          <br />
-          <table>
-            <tbody>
-              <tr>
-                <td width="20%">
-                  <b>Score 1</b>
-                </td>
-                <td>origin unknown or only country of origin known </td>
-              </tr>
-              <tr>
-                <td width="20%">
-                  <b>Score 2</b>
-                </td>
-                <td>country and region of origin known </td>
-              </tr>
-              <tr>
-                <td width="20%">
-                  <b>Score 3</b>
-                </td>
-                <td>
-                  country, region and municipality/cooperative of origin known
-                </td>
-              </tr>
-              <tr>
-                <td width="20%">
-                  <b>Score 4</b>
-                </td>
-                <td>
-                  farm known, in addition to the country, region and
-                  municipality/cooperative of origin
-                </td>
-              </tr>
-              <tr>
-                <td width="20%">
-                  <b>Score 5</b>
-                </td>
-                <td>
-                  farm known and having point coordinates of the farm household
-                  (farm mapping)
-                </td>
-              </tr>
-              <tr>
-                <td width="20%">
-                  <b>Score 5+</b>
-                </td>
-                <td>farm known and having polygon boundaries of the farm. </td>
-              </tr>
-              <tr>
-                <td width="20%">
-                  <b>Score 6</b>
-                </td>
-                <td>
-                  farm known, having polygon boundaries of the farm and farm
-                  fields verified as not in a protected forest and as not
-                  comprising land that was deforested since 2018. Having a high
-                  origin transparency score still allows for massing and mixing
-                  of beans at later stages (during transport and/or processing)!
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </Fragment>
-      ),
-    },
-    {
       i: "Direct supply",
       t: "Direct supply",
       d: "For cocoa to be categorized as “cocoa sourced through a direct supply chain”, there shall be a relatively stable partnership and collaboration, in which the individual cocoa farmers / farming families are known (registered).  Such partnership and collaboration may cover issues such as price, quality, good agricultural practices, social, human rights and environmental issues, certification requirements, etc. This partnership and collaboration between the ISCO cocoa sourcing company and the producers (cocoa farming households) may be conducted through cooperatives, farmer organisations and / or other intermediaries embedded within the direct supply chain.",
-    },
-    {
-      i: "Conventional (traceability level 0)",
-      t: "Conventional (traceability level 0)",
-      d: "Cocoa sourced without conforming to the traceability requirements of ‘mass balance’, ‘segregated’, or ‘identity preserved’ - please refer to the corresponding definitions.",
     },
     {
       i: "Mass balance",
@@ -574,11 +482,6 @@ const definitionContent = {
       i: "Premiums granted to the farmer",
       t: "Premiums granted to the farmer",
       d: "A premium granted to a farmer is an additional amount of money paid in addition to the regular market price paid to the producers or producer organizations. The amount of 'premiums granted' does not necessarily correspond to the amount of 'premiums paid in cash'. Part of the premiums granted could be deducted for payment as 'withholding' for reimbursement of (a) loan(s) to the farmer or as 'payment for services' requested by and provided to the farmer.",
-    },
-    {
-      i: "Strategy to promote diversified and sustainable farming systems, as a contribution to environmental sustainability",
-      t: "Strategy to promote diversified and sustainable farming systems, as a contribution to environmental sustainability",
-      d: "Having a &quot;strategy to promote diversified and sustainable farming systems, as a contribution to environmental sustainability&quot; implies that the cocoa sustainability project (program/ project/ initiative) targets changes in farming practices or systems used by cocoa farming households. Such strategy may target (a) reducing or mitigating the adverse environmental effects of existing farming practices or systems or (b) the adoption by the farming households reached of other farming practices and systems that have positive effects for the environment. This may include targets with respect the usage of natural resources, soil quality, pesticides, biodiversity, climate resilience, forest coverage, etc. Such strategy  should be somehow documented and explicit, but it does not have to be a separate specific strategic document on these topics. The strategy may be part of a project document, a project&apos;s theory of change, etc.",
     },
     {
       i: "Agroforestry System for Cocoa Production (Description)",
@@ -1422,62 +1325,9 @@ const definitionContent = {
       ),
     },
     {
-      i: "Sustainability project",
-      t: "Nachhaltigkeitsprojekt",
-      d: "Ein Kakao-Nachhaltigkeitsprojekt ist definiert als ein Programm, Projekt oder eine Initiative, die auf (Aspekte der) Nachhaltigkeit in der Kakaoproduktion, -verarbeitung und/oder der/den Lieferketten abzielt.",
-    },
-    {
-      i: "Lesson learned",
-      t: "Lesson learned",
-      d: "Mit &quot;gelernte Lektion(en)&quot; beziehen wir uns auf jede (Reihe von) Lektion(en), die aus Aktivitäten/Strategien/Studien in Bezug auf Nachhaltigkeit im Kakaosektor gelernt wurde(n), die von einem berichtenden Mitglied dokumentiert wurde(n) und die für andere Akteure im Kakaosektor relevant ist/sind.",
-    },
-    {
-      i: "Supply origin transparency level",
-      t: "Supply origin transparency level",
-      d: (
-        <Fragment>
-          Beim supply origin transparency level (Level der Herkunftstransparenz)
-          geht es darum, inwieweit detaillierte Informationen über die Herkunft
-          des Kakaos in den ersten Phasen des Beschaffungsprozesses dokumentiert
-          werden, wobei diese Informationen in späteren Stufen der Lieferkette
-          verfügbar bleiben.
-          <ul className="list-unstyled">
-            <li>Stufe 1: Ursprung unbekannt oder nur Anbauland bekannt</li>
-            <li>Stufe 2: Anbauland und Anbauregion bekannt</li>
-            <li>
-              Stufe 3: Land, Region und Gemeinde/Ursprungskooperative bekannt
-            </li>
-            <li>
-              Stufe 4: Betrieb bekannt, zusätzlich zu Land, Region und
-              Gemeinde/Ursprungskooperative
-            </li>
-            <li>
-              Stufe 5: Betrieb bekannt mit Punktkoordinaten des
-              landwirtschaftlichen Betriebs (Betriebskartierung)
-            </li>
-            <li>
-              Stufe 5+: Betrieb bekannt mit Polygongrenzen des
-              landwirtschaftlichen Betriebs
-            </li>
-            <li>
-              Stufe 6: Betrieb bekannt, die Polygongrenzen des Betriebs und der
-              Felder des Betriebs wurden verifiziert und liegen nachweislich
-              nicht in einem geschützten Wald und nicht auf Land, das seit 2018
-              abgeholzt wurde.
-            </li>
-          </ul>
-        </Fragment>
-      ),
-    },
-    {
       i: "Direct supply",
       t: "Direkte Lieferkette",
       d: "Damit Kakao als “durch eine direkte Lieferkette bezogener Kakao“ kategorisiert werden kann, muss eine stabile Partnerschaft bzw. Zusammenarbeit zwischen dem Unternehmen und den Kakaoproduzentinnen und -produzenten bestehen, in welcher die individuellen kakaoanabauenden Haushalte bekannt und registriert sind. Die Partnerschaft kann Themen wie Preise, Kakaoqualität, gute landwirtschaftliche Praktiken, soziale, menschenrechtliche und ökologische Fragen, Zertifizierungsanforderungen, etc. adressieren. Eine solche Partnerschaft bzw. Zusammenarbeit zwischen dem kakaobeschaffenden ISCO-Unternehmen und den Erzeugerinnen und Erzeugern kann auch über deren Kooperative / Erzeugerorganisation und / oder andere in die direkte Lieferkette eingebettete Akteure organisiert sein.",
-    },
-    {
-      i: "Conventional (traceability level 0)",
-      t: "Konventionell (Rückverfolgbarkeitslevel 0)",
-      d: "Kakao, der beschafft wurde, ohne den Rückverfolgbarkeitsanforderungen &quot;Mengenausgleich&quot;, &quot;segregated&quot; oder &quot;identity preserved&quot; zu entsprechen - bitte beziehen Sie sich auf die entsprechenden Definitionen.",
     },
     {
       i: "Mass balance",
@@ -1620,11 +1470,6 @@ const definitionContent = {
       i: "Premiums granted to the farmer",
       t: "Gewährte Prämien an die Bäuerinnen und Bauern",
       d: "Eine Prämie für Bäuerinnen und Bauern ist ein Geldbetrag, der zusätzlich zum regulären Marktpreis an Erzeugerinnen / Erzeuger oder Erzeugerorganisationen gezahlt wird. Die Höhe der gewährten Prämie entspricht nicht notwendigerweise dem Betrag der in bar bezahlten Prämie. Ein Teil der Prämien könnte z.B. als Rückzahlung für ein Darlehen oder zur Begleichung einer von der Bäuerin oder dem Bauern nachgefragte und erhaltene Dienstleistungen einbehalten werden.",
-    },
-    {
-      i: "Strategy to promote diversified and sustainable farming systems, as a contribution to environmental sustainability",
-      t: "Strategie zur Förderung diversifizierter und nachhaltiger Anbausysteme als Beitrag zur ökologischen Nachhaltigkeit",
-      d: "Eine &quot;Strategie zur Förderung diversifizierter und nachhaltiger Anbausysteme als Beitrag zur ökologischen Nachhaltigkeit&quot; bedeutet, dass das Kakao-Nachhaltigkeitsprojekt (Programm/Projekt/Initiative) auf Veränderungen der Anbaupraktiken oder -systeme abzielt, die von kakaoanbauenden Haushalten verwendet werden. Eine solche Strategie kann darauf abzielen, (a) die negativen Umweltauswirkungen bestehender Anbaupraktiken oder -systeme zu verringern oder abzuschwächen oder (b) die Verwendung anderer Anbaupraktiken und -systeme, die positive Auswirkungen auf die Umwelt haben durch die bäuerlichen Haushalte zu erreichen.  Dies kann Ziele in Bezug auf die Nutzung natürlicher Ressourcen, Bodenqualität, Pestizide, biologische Vielfalt, Klimaresistenz, Waldbedeckung usw. beinhalten. Eine solche Strategie sollte in irgendeiner Weise dokumentiert und explizit ausformuliert sein, aber es muss sich dabei nicht um ein separates, spezifisches strategisches Dokument zu diesen Themen handeln. Die Strategie kann Teil eines Projektdokuments, der Veränderungstheorie eines Projekts usw. sein.",
     },
     {
       i: "Agroforestry System for Cocoa Production (Description)",

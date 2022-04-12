@@ -11,6 +11,7 @@ const Definition = () => {
 
   const renderDefinition = useCallback(() => {
     let data = definitionContent[activeLang];
+    data = data.map((d) => ({ ...d, i: d.i.toLowerCase() }));
     data = sortBy(data, ["i"]);
     return data.map((x, idx) => {
       return (
