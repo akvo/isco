@@ -37,3 +37,4 @@ pandas==1.4.0
 # code coverage
 coverage==6.2
 coveralls==3.3.1
+inquirer==2.9.2
