@@ -8,6 +8,8 @@ from sqlalchemy.orm import Session
 from db.connection import get_session
 from models.user import UserDict, UserBase, UserOrgDict, UserInvitation
 from models.user import UserResponse, UserRole, UserUpdateByAdmin
+from models.user import User
+from models.organisation_member import OrganisationMember
 from pydantic import SecretStr
 from db import crud_user, crud_organisation
 from middleware import get_password_hash, verify_admin, verify_super_admin
@@ -133,8 +135,11 @@ def filter_user_by_member(req: Request,
                           member_type: int,
                           session: Session = Depends(get_session),
                           credentials: credentials = Depends(security)):
-    user = crud_user.get_user_by_member_type(session=session,
-                                             member_type=member_type)
+    members = session.query(OrganisationMember).filter(
+        OrganisationMember.member_type == member_type).all()
+    org_ids = [m['organisation'] for m in [om.serialize for om in members]]
+    # filter user by org_ids
+    user = session.query(User).filter(User.organisation.in_(org_ids)).all()
     return [u.serialize for u in user]
 
 
