@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useMemo } from "react";
 import PropTypes from "prop-types";
-import { Row, Col, Space, Menu, Dropdown } from "antd";
+import { Row, Col, Space, Menu, Dropdown, Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
 import { BsGearFill } from "react-icons/bs";
@@ -9,12 +9,19 @@ import { RiAdminFill } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { store, api } from "../../lib";
+import { uiText } from "../../static";
 
 const Header = ({ className = "header", ...props }) => {
   const [cookies, removeCookie] = useCookies(["AUTH_TOKEN"]);
-  const { user, isLoggedIn } = store.useState((state) => state);
-  const isAdmin = user?.role?.includes("admin");
+  const { user, isLoggedIn, language } = store.useState((state) => state);
+  const { active: activeLang, langs: langList } = language;
+  const admins = ["secretariat_admin"];
+  const isAdmin = admins.includes(user?.role);
   const navigate = useNavigate();
+
+  const text = useMemo(() => {
+    return uiText[activeLang];
+  }, [activeLang]);
 
   const handleLogout = () => {
     if (cookies?.AUTH_TOKEN) {
@@ -28,6 +35,32 @@ const Header = ({ className = "header", ...props }) => {
     }
   };
 
+  const handleOnClickLanguage = (lang) => {
+    store.update((s) => {
+      s.language = {
+        ...language,
+        active: lang,
+      };
+    });
+  };
+
+  const renderLangList = () => {
+    return (
+      langList &&
+      Object.keys(langList).map((key) => (
+        <Button
+          key={key}
+          type="link"
+          size="large"
+          className={`${activeLang === key ? "active" : ""}`}
+          onClick={() => handleOnClickLanguage(key)}
+        >
+          {key.toUpperCase()}
+        </Button>
+      ))
+    );
+  };
+
   const accountMenu = (
     <Menu className="account-dropdown-menu">
       {isAdmin && (
@@ -36,7 +69,7 @@ const Header = ({ className = "header", ...props }) => {
             <Link to="/admin">
               <Space align="center" size={8}>
                 <RiAdminFill />
-                ADMIN
+                {text.navAdmin}
               </Space>
             </Link>
           </Menu.Item>
@@ -44,7 +77,7 @@ const Header = ({ className = "header", ...props }) => {
             <Link to="#">
               <Space align="center" size={8}>
                 <BsGearFill />
-                SETTING
+                {text.navSetting}
               </Space>
             </Link>
           </Menu.Item>
@@ -54,7 +87,7 @@ const Header = ({ className = "header", ...props }) => {
         <Link to="#" onClick={() => handleLogout()}>
           <Space align="center" size={8}>
             <MdLogout />
-            LOGOUT
+            {text.navLogout}
           </Space>
         </Link>
       </Menu.Item>
@@ -72,23 +105,23 @@ const Header = ({ className = "header", ...props }) => {
         <Space size="large" align="center">
           <div className="brand">
             <Link to="/">
-              <span className="title">HOME</span>
+              <span className="title">{text.navHome}</span>
             </Link>
           </div>
           <div className="navigation">
             <Space size="large" align="center">
               {isLoggedIn && (
                 <>
-                  <Link to="/survey">Survey</Link>
-                  <Link to="#">Download</Link>
+                  <Link to="/survey">{text.navSurvey}</Link>
+                  <Link to="#">{text.navDownload}</Link>
                 </>
               )}
-              <Link to="/definition">Definitions</Link>
+              <Link to="/definition">{text.navDefinitions}</Link>
               {isLoggedIn && (
                 <>
-                  <Link to="/feedback">Feedback</Link>
-                  <Link to="/impressum">Impressum</Link>
-                  <Link to="#">FAQ</Link>
+                  <Link to="/feedback">{text.navFeedback}</Link>
+                  <Link to="/impressum">{text.navImpressum}</Link>
+                  <Link to="#">{text.navFaq}</Link>
                 </>
               )}
             </Space>
@@ -97,12 +130,7 @@ const Header = ({ className = "header", ...props }) => {
       </Col>
       <Col className="right">
         <Space size="large" align="center">
-          <div className="translation-selection">
-            <Space align="middle">
-              <div>EN</div>
-              <div>DE</div>
-            </Space>
-          </div>
+          <div className="translation-selection">{renderLangList()}</div>
           {isLoggedIn && (
             <Dropdown
               overlay={accountMenu}

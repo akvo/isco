@@ -27,6 +27,7 @@
           display: inline-block;
           line-height: inherit;
           white-space: nowrap;
+          text-transform: uppercase;
         }
       }
 
@@ -41,6 +42,15 @@
       font-size: 0.9rem;
       font-weight: 400;
       text-transform: uppercase;
+
+      .translation-selection {
+        button {
+          color: #777777;
+          &.active {
+            color: #1890ff;
+          }
+        }
+      }
     }
   }
 
@@ -55,5 +65,11 @@
     border-top: 0.1rem solid $border-grey;
     background-color: $white;
     display: none;
+  }
+}
+
+.account-dropdown-menu {
+  .ant-space-item {
+    text-transform: uppercase;
   }
 }

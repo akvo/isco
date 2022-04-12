@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import "./style.scss";
 import { useNavigate } from "react-router-dom";
 import { Row, Col, Space, Form, Input, Button } from "antd";
@@ -6,6 +6,7 @@ import Auth from "./Auth";
 import { api, store } from "../../lib";
 import { useCookies } from "react-cookie";
 import { useNotification } from "../../util";
+import { uiText } from "../../static";
 
 const Login = () => {
   const [form] = Form.useForm();
@@ -13,6 +14,13 @@ const Login = () => {
   const [cookies, setCookie] = useCookies(["AUTH_TOKEN"]);
   const { notify } = useNotification();
   const navigate = useNavigate();
+
+  const language = store.useState((s) => s.language);
+  const { active: activeLang } = language;
+
+  const text = useMemo(() => {
+    return uiText[activeLang];
+  }, [activeLang]);
 
   const handleLoginOnFinish = (values) => {
     setBtnLoading(true);
@@ -47,7 +55,7 @@ const Login = () => {
       <Space direction="vertical">
         <Row align="middle" justify="space-between" gutter={[12, 12]}>
           <Col span={12} align="start">
-            <h2>Login User</h2>
+            <h2>{text.formLogin}</h2>
           </Col>
           {/* <Col span={12} align="end">
             <p className="float-right">
@@ -62,23 +70,21 @@ const Login = () => {
         >
           <Form.Item
             name="email"
-            rules={[
-              { required: true, message: "Please input your email address." },
-            ]}
+            rules={[{ required: true, message: text.valEmail }]}
           >
             <Input
               className="bg-grey"
-              placeholder="Email address"
+              placeholder={text.formEmail}
               size="large"
             />
           </Form.Item>
           <Form.Item
             name="password"
-            rules={[{ required: true, message: "Please input your password." }]}
+            rules={[{ required: true, message: text.valPwd }]}
           >
             <Input.Password
               className="bg-grey"
-              placeholder="Password"
+              placeholder={text.formPwd}
               size="large"
             />
           </Form.Item>
@@ -90,10 +96,10 @@ const Login = () => {
             onClick={() => form.submit()}
             loading={btnLoading}
           >
-            Login
+            {text.btnLogin}
           </Button>
         </Form>
-        <a href="#">Forgot password?</a>
+        <a href="#">{text.formForgotPwd}</a>
       </Space>
     </Auth>
   );

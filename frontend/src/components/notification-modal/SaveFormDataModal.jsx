@@ -1,27 +1,24 @@
 import React from "react";
 import { Modal } from "antd";
+import { uiText } from "../../static";
 
-const SaveFormDataModal = ({ visible, onOk, onCancel }) => {
+const SaveFormDataModal = ({ visible, onOk, onCancel, activeLang }) => {
+  const text = uiText[activeLang];
+
   return (
     <Modal
-      title="Save Form Data"
+      title={text.modalSaveForm}
       visible={visible}
       onOk={onOk}
+      okText={text.btnYes}
       onCancel={onCancel}
+      cancelText={text.btnNo}
       centered
       destroyOnClose
     >
-      <p>
-        Please make sure that the data has been saved before you navigate away
-        from the page.
-        <br />
-        To save the data please click on the &quot;Save&quot; button in the
-        questionnaire.
-        <br />
-        Do you want to navigate away from the page?
-      </p>
-      <p>Click &quot;Yes&quot; if you have already saved the data</p>
-      <p>Click &quot;No&quot; if you have not saved the data</p>
+      <p>{text.valClickSave}</p>
+      <p>{text.valClickYes}</p>
+      <p>{text.valClickNo}</p>
     </Modal>
   );
 };

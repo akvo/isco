@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import "./style.scss";
 import { Row, Col, Card, Form, Input, Select, Space, Button } from "antd";
-import { api } from "../../lib";
+import { api, store } from "../../lib";
 import { useNotification } from "../../util";
+import { uiText } from "../../static";
 
 const categories = ["Questionnaire", "Tool", "Other"];
 
@@ -12,6 +13,13 @@ const Feedback = () => {
   const [reloadCaptcha, setReloadCaptcha] = useState(true);
   const [captchaValue, setCaptchaValue] = useState(0);
   const [submitting, setSubmitting] = useState(false);
+
+  const language = store.useState((s) => s.language);
+  const { active: activeLang } = language;
+
+  const text = useMemo(() => {
+    return uiText[activeLang];
+  }, [activeLang]);
 
   useEffect(() => {
     if (reloadCaptcha) {
@@ -49,7 +57,7 @@ const Feedback = () => {
         form.resetFields();
         notify({
           type: "success",
-          message: "Your feedback has been sent successfully.",
+          message: text.valFeedbackSuccess,
         });
       })
       .catch(() => {
@@ -68,7 +76,7 @@ const Feedback = () => {
     <div id="feedback" className="container">
       <Row align="middle" justify="center">
         <Col span={16}>
-          <Card title="Please provide your feedback. It is highly valuable to improve the system.">
+          <Card title={text.formFeedbackTitle}>
             <Form
               form={form}
               name="feedback-form"
@@ -79,19 +87,17 @@ const Feedback = () => {
               <Space direction="vertical" style={{ width: "100%" }}>
                 {/* Title */}
                 <Form.Item
-                  label="Title"
+                  label={text.formTitle}
                   name="title"
-                  rules={[{ required: true, message: "Please input title" }]}
+                  rules={[{ required: true, message: text.valTitle }]}
                 >
                   <Input className="bg-grey" />
                 </Form.Item>
                 {/* Category */}
                 <Form.Item
-                  label="Category"
+                  label={text.formCategory}
                   name="category"
-                  rules={[
-                    { required: true, message: "Please select category" },
-                  ]}
+                  rules={[{ required: true, message: text.valCategory }]}
                 >
                   <Select
                     className="bg-grey"
@@ -103,22 +109,20 @@ const Feedback = () => {
                 </Form.Item>
                 {/* TextArea */}
                 <Form.Item
-                  label="Feedback"
+                  label={text.formFeedback}
                   name="content"
-                  rules={[
-                    { required: true, message: "Please input your feedback" },
-                  ]}
+                  rules={[{ required: true, message: text.Feedback }]}
                 >
                   <Input.TextArea className="bg-grey" rows={5} />
                 </Form.Item>
                 {/* Captcha */}
                 <Space size="large">
-                  <div id="captcha-number">Captcha</div>
+                  <div id="captcha-number" />
                   <Form.Item
-                    label="Captcha"
+                    label={text.formCaptcha}
                     name="captcha"
                     rules={[
-                      { required: true, message: "Captcha required" },
+                      { required: true, message: text.valCaptcha },
                       () => ({
                         validator(_, value) {
                           if (
@@ -128,7 +132,7 @@ const Feedback = () => {
                             return Promise.resolve();
                           }
                           return Promise.reject(
-                            new Error("Wrong Captcha value!")
+                            new Error(text.valWrongCaptcha)
                           );
                         },
                       }),
@@ -144,7 +148,7 @@ const Feedback = () => {
                   loading={submitting}
                   onClick={() => form.submit()}
                 >
-                  Submit
+                  {text.btnSubmit}
                 </Button>
               </Space>
             </Form>
