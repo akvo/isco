@@ -4,13 +4,15 @@ import { Row, Col, Select, Button, Space } from "antd";
 import WebformPage from "./WebformPage";
 import { api, store } from "../../lib";
 import { useNotification } from "../../util";
-import { Link } from "react-router-dom";
+import { uiText, webformContent } from "../../static";
+import { FiRefreshCw } from "react-icons/fi";
 
 const Survey = () => {
   const { notify } = useNotification();
 
-  const { user, optionValues } = store.useState((s) => s);
+  const { user, optionValues, language } = store.useState((s) => s);
   const { organisation } = optionValues;
+  const { active: activeLang } = language;
 
   const [selectedForm, setSelectedForm] = useState(null);
   const [formLoaded, setFormLoaded] = useState(null);
@@ -25,6 +27,26 @@ const Survey = () => {
     useState(true);
   const [showCollaboratorForm, setShowCollaboratorForm] = useState(false);
   const [selectedCollaborators, setSelectedCollaborators] = useState([]);
+
+  const handleOnClickDataSecurity = () => {
+    store.update((s) => {
+      s.notificationModal = {
+        ...s.notificationModal,
+        dataSecurity: {
+          ...s.notificationModal.dataSecurity,
+          visible: true,
+        },
+      };
+    });
+  };
+
+  const text = useMemo(() => {
+    return uiText[activeLang];
+  }, [activeLang]);
+
+  const content = useMemo(() => {
+    return webformContent(handleOnClickDataSecurity)[activeLang];
+  }, [activeLang]);
 
   const organisationOptions = useMemo(() => {
     const transform = organisation
@@ -195,27 +217,10 @@ const Survey = () => {
     }
   };
 
-  const handleOnClickDataSecurity = () => {
-    store.update((s) => {
-      s.notificationModal = {
-        ...s.notificationModal,
-        dataSecurity: {
-          ...s.notificationModal.dataSecurity,
-          visible: true,
-        },
-      };
-    });
-  };
-
   return (
     <div id="survey" className="container">
       <Row>
-        <p>
-          <Link to="#" onClick={handleOnClickDataSecurity}>
-            Data security provisions
-          </Link>{" "}
-          for the data that will be submitted as part of this survey.
-        </p>
+        <p>{content.dataSecurityText}</p>
       </Row>
       <Row
         className="form-selector-container"
@@ -227,13 +232,12 @@ const Survey = () => {
           <Space direction="vertical" size="large" style={{ width: "100%" }}>
             {/* Saved Submissions */}
             <div>
-              <p>Pick a previously saved form</p>
+              <p>{text.formPickPreviousSavedForms}</p>
               <Row align="middle" justify="space-between" gutter={[12, 12]}>
-                <Col span={14}>
+                <Col span={10}>
                   <Select
                     showSearch
                     className="bg-grey"
-                    placeholder="Select saved submissions"
                     options={savedSubmissions.map((x) => ({
                       label: `${x.name}${
                         x.locked_by && x.locked_by !== user.id
@@ -251,15 +255,24 @@ const Survey = () => {
                     onChange={handleOnChangeSavedSubmissionDropdown}
                   />
                 </Col>
-                <Col span={10}>
+                <Col span={14}>
                   <Space>
-                    <Button>Refresh</Button>
-                    <Button onClick={handleOnClickOpenSavedForm}>Open</Button>
+                    <Button
+                      type="primary"
+                      ghost
+                      loading={reloadCollaborator}
+                      onClick={() => setReloadDropdownValue(true)}
+                      icon={<FiRefreshCw />}
+                      style={{ lineHeight: "30px" }}
+                    />
+                    <Button onClick={handleOnClickOpenSavedForm}>
+                      {text.btnOpen}
+                    </Button>
                     <Button
                       disabled={disableAddCollaboratorButton}
                       onClick={handleShowCollaboratorForm}
                     >
-                      Add Collaborators
+                      {text.btnCollaborators}
                     </Button>
                   </Space>
                 </Col>
@@ -268,13 +281,12 @@ const Survey = () => {
             {/* Collaborators */}
             {showCollaboratorForm && (
               <Row align="middle" justify="space-between" gutter={[12, 12]}>
-                <Col span={14}>
+                <Col span={10}>
                   <Select
                     mode="multiple"
                     showSearch
                     showArrow
                     className="bg-grey"
-                    placeholder="Select collaborator"
                     options={organisationOptions}
                     filterOption={(input, option) =>
                       option.label.toLowerCase().indexOf(input.toLowerCase()) >=
@@ -284,16 +296,16 @@ const Survey = () => {
                     onChange={handleOnChangeCollaborators}
                   />
                 </Col>
-                <Col span={10}>
+                <Col span={14}>
                   <Space>
                     <Button
                       onClick={handleOnClickAddCollaborator}
                       disabled={!selectedCollaborators.length}
                     >
-                      Add
+                      {text.btnAdd}
                     </Button>
                     <Button onClick={() => setShowCollaboratorForm(false)}>
-                      Close
+                      {text.btnClose}
                     </Button>
                   </Space>
                 </Col>
@@ -302,13 +314,12 @@ const Survey = () => {
           </Space>
         </Col>
         <Col span={8} className="new-form-wrapper">
-          <p>Start filling a new form</p>
+          <p>{text.formStartFillingNewForm}</p>
           <Row align="middle" justify="space-between" gutter={[12, 12]}>
-            <Col span={18}>
+            <Col span={16}>
               <Select
                 showSearch
                 className="bg-grey"
-                placeholder="Select..."
                 options={formOptions}
                 onChange={handleOnChangeNewForm}
                 value={selectedForm}
@@ -317,9 +328,9 @@ const Survey = () => {
                 }
               />
             </Col>
-            <Col span={6}>
+            <Col span={8}>
               <Button block onClick={handleOnClickOpenNewForm}>
-                Open
+                {text.btnOpen}
               </Button>
             </Col>
           </Row>
