@@ -5,11 +5,11 @@ from typing import Optional, List
 from pydantic import BaseModel
 from typing_extensions import TypedDict
 from sqlalchemy import Column, Integer, String
-from sqlalchemy import ForeignKey, Boolean, DateTime
+from sqlalchemy import Boolean, DateTime
 from sqlalchemy.orm import relationship
 from db.connection import Base
-from models.organisation_isco import OrganisationIsco, OrganisationIscoPayload
-from models.member_type import MemberType
+from models.organisation_isco import OrganisationIsco
+from models.organisation_member import OrganisationMember
 from datetime import datetime
 
 
@@ -17,8 +17,8 @@ class OrganisationPayload(TypedDict):
     code: Optional[str] = None
     name: str
     active: Optional[bool] = True
-    member_type: int
-    isco_type: Optional[List[OrganisationIscoPayload]] = []
+    member_type: Optional[List[int]] = []
+    isco_type: Optional[List[int]] = []
 
 
 class OrganisationDict(TypedDict):
@@ -26,8 +26,8 @@ class OrganisationDict(TypedDict):
     code: Optional[str] = None
     name: str
     active: bool
-    member_type: int
-    member: str
+    member_type: Optional[List[int]] = []
+    member: Optional[List[str]] = []
     isco_type: Optional[List[int]] = []
     isco: Optional[List[str]] = []
 
@@ -39,19 +39,20 @@ class Organisation(Base):
     name = Column(String)
     active = Column(Boolean)
     created = Column(DateTime, default=datetime.utcnow)
-    member_type = Column(Integer, ForeignKey('member_type.id'))
+    member_type = relationship(
+        OrganisationMember,
+        primaryjoin="OrganisationMember.organisation==Organisation.id",
+        backref="organisation_member_detail")
     isco_type = relationship(
         OrganisationIsco,
         primaryjoin="OrganisationIsco.organisation==Organisation.id",
         backref="organisation_isco_detail")
-    member = relationship(MemberType, backref="organisation")
 
     def __init__(self, name: str, code: Optional[str],
-                 active: Optional[bool], member_type: int):
+                 active: Optional[bool]):
         self.name = name
         self.code = code
         self.active = active
-        self.member_type = member_type
 
     def __repr__(self) -> int:
         return f"<Organisation {self.id}>"
@@ -64,6 +65,12 @@ class Organisation(Base):
             serialize = [i.serialize for i in self.isco_type]
             isco = [s["isco"] for s in serialize]
             isco_type = [s["isco_type"] for s in serialize]
+        member = []
+        member_type = []
+        if self.member_type:
+            serialize = [i.serialize for i in self.member_type]
+            member = [s["member"] for s in serialize]
+            member_type = [s["member_type"] for s in serialize]
         return {
             "id": self.id,
             "code": self.code,
@@ -71,8 +78,8 @@ class Organisation(Base):
             "active": self.active,
             "isco_type": isco_type,
             "isco": isco,
-            "member_type": self.member_type,
-            "member": self.member.name,
+            "member_type": member_type,
+            "member": member,
         }
 
 
@@ -81,7 +88,7 @@ class OrganisationBase(BaseModel):
     code: Optional[str] = None
     name: str
     active: bool
-    member_type: int
+    member_type: Optional[List[int]] = []
     isco_type: Optional[List[int]] = []
 
     class Config:

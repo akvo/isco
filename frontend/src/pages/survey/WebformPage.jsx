@@ -143,7 +143,7 @@ const WebformPage = ({
               if (userMember) {
                 updatedQuestions = updatedQuestions.filter(
                   (q) =>
-                    q.member_access.includes(userMember) ||
+                    intersection(q.member_access, userMember).length ||
                     q.member_access.includes(allAccess)
                 );
               }

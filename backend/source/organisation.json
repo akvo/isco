@@ -1,0 +1,37 @@
+[
+  {
+    "code": null,
+    "member": ["Other"],
+    "isco": ["All"],
+    "name": "staff Akvo",
+    "active": true
+  },
+  {
+    "code": null,
+    "member": ["Other"],
+    "isco": ["GISCO"],
+    "name": "staff GISCO secretariat",
+    "active": true
+  },
+  {
+    "code": null,
+    "member": ["Other"],
+    "isco": ["Beyond Chocolate"],
+    "name": "staff Beyond Chocolate Secretariat",
+    "active": true
+  },
+  {
+    "code": null,
+    "member": ["Other"],
+    "isco": ["All"],
+    "name": "staff C-Lever",
+    "active": true
+  },
+  {
+    "code": null,
+    "member": ["Other"],
+    "isco": ["DISCO"],
+    "name": "staff DISCO",
+    "active": true
+  }
+]

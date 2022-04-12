@@ -19,10 +19,11 @@ class TestUserDisco():
         user_payload = {
             "name": "Galih",
             "email": "galih@test.org",
-            "phone_number": None,
+            "phone_number": "081999101010",
             "password": "test",
             "role": UserRole.secretariat_admin.value,
-            "organisation": 3
+            "organisation": 3,
+            "questionnaires": [1],
         }
         res = await client.post(
             app.url_path_for("user:register"), json=user_payload)
@@ -37,7 +38,9 @@ class TestUserDisco():
             "invitation": invitation_link,
             "name": "Galih",
             "organisation": 3,
-            "role": "secretariat_admin"
+            "role": "secretariat_admin",
+            "questionnaires": [1],
+            "phone_number": "081999101010",
         }
 
     @pytest.mark.asyncio
@@ -72,3 +75,26 @@ class TestUserDisco():
         assert res.status_code == 200
         res = res.json()
         assert res['email'] == "galih@test.org"
+
+    @pytest.mark.asyncio
+    async def test_update_user_by_admin(self, app: FastAPI, session: Session,
+                                        client: AsyncClient) -> None:
+        user_id = 2
+        user_payload = {
+            "role": UserRole.secretariat_admin.value,
+            "organisation": 3,
+            "questionnaires": [1, 2],
+        }
+        res = await client.put(
+            app.url_path_for("user:update_by_admin", id=user_id),
+            headers={"Authorization": f"Bearer {account.token}"},
+            json=user_payload)
+        assert res.status_code == 200
+        get_user = session.query(User).filter(
+            User.id == user_id).first()
+        get_user = get_user.serialize
+        res = res.json()
+        assert res["email"] == "galih@test.org"
+        assert res["organisation"] == 3
+        assert res["role"] == "secretariat_admin"
+        assert res["questionnaires"] == [1, 2]

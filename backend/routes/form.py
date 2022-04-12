@@ -6,7 +6,7 @@ from fastapi import Depends, Request, APIRouter, Response, HTTPException
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
 from typing import List, Optional
-from sqlalchemy import or_, null
+from sqlalchemy import null
 from sqlalchemy.orm import Session
 import db.crud_form as crud
 from db.crud_data import check_member_submission_exists, get_data_by_id
@@ -14,7 +14,7 @@ from db.connection import get_session
 from models.form import FormBase, FormDict, FormDictWithGroupStatus
 from models.form import FormPayload, FormJson, FormOptions, Form
 from middleware import verify_super_admin, verify_editor
-from util.survey_config import MEMBER_SURVEY, PROJECT_SURVEY
+from util.survey_config import MEMBER_SURVEY
 
 security = HTTPBearer()
 form_route = APIRouter()
@@ -40,6 +40,17 @@ def add(req: Request, payload: FormPayload,
 def get(req: Request, session: Session = Depends(get_session)):
     form = crud.get_form(session=session)
     return [f.serializeWithGroupStatus for f in form]
+
+
+@form_route.get("/form/published",
+                response_model=List[FormOptions],
+                summary="get all published form",
+                name="form:get_published",
+                tags=["Form"])
+def get_published_form(req: Request,
+                       session: Session = Depends(get_session)):
+    forms = session.query(Form).filter(Form.published != null()).all()
+    return [f.to_options for f in forms]
 
 
 @form_route.put("/form/{id:path}",
@@ -137,10 +148,16 @@ def get_form_options(req: Request, session: Session = Depends(get_session),
     # check if user organisation already have a member survey saved/submitted
     exists = check_member_submission_exists(session=session,
                                             organisation=user.organisation)
+    questionnaires = []
+    if user.questionnaires:
+        questionnaires = user.questionnaires
+    # filter by user questionnaires
     forms = session.query(Form).filter(
-        Form.published != null()).filter(or_(
-            Form.id.in_(MEMBER_SURVEY),
-            Form.id.in_(PROJECT_SURVEY),)).all()
+        Form.published != null()).filter(
+                Form.id.in_(questionnaires)).all()
+    # .filter(or_(
+    #         Form.id.in_(MEMBER_SURVEY),
+    #         Form.id.in_(PROJECT_SURVEY),))
     forms = [f.to_options for f in forms]
     if exists:
         for f in forms:

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./style.scss";
 import {
   Row,
@@ -24,56 +24,119 @@ const roles = [
 ];
 
 const AddUser = ({
+  publishedForm,
   isAddUserVisible,
   setIsAddUserVisible,
   setReload,
   reload,
+  selectedUser,
+  setSelectedUser,
 }) => {
   const [sending, setSending] = useState(false);
   const [form] = Form.useForm();
   const { optionValues } = store.useState((s) => s);
   const { organisation } = optionValues;
+  const isAdd = !selectedUser;
+  const disableFields = selectedUser !== null;
+  const requiredFields = isAdd ? true : false;
+
+  const modalTitle = isAdd ? "New User" : "Update User";
+  const buttonOkText = isAdd ? "Add User" : "Update User";
+
+  // set initial form values
+  useEffect(() => {
+    if (selectedUser?.id) {
+      const { name, email, phone_number, role, organisation, questionnaires } =
+        selectedUser;
+      const firstName = name.split(" ")?.[0];
+      const lastName = name.split(" ")?.[1];
+      form.setFieldsValue({ first_name: firstName });
+      form.setFieldsValue({ last_name: lastName });
+      form.setFieldsValue({ email: email });
+      form.setFieldsValue({ phone_number: phone_number });
+      form.setFieldsValue({ role: role });
+      form.setFieldsValue({ organisation: organisation });
+      if (questionnaires) {
+        form.setFieldsValue({ questionnaires: questionnaires });
+      }
+    }
+  }, [selectedUser, form]);
+
+  const handleOnClickModalCancel = () => {
+    form.resetFields();
+    setIsAddUserVisible(false);
+    setSelectedUser(null);
+  };
 
   const onFinish = (values) => {
     setSending(true);
-    const { first_name, last_name } = values;
-    values = { ...values, name: `${first_name} ${last_name}` };
-    api
-      .post("/user/register", values)
-      .then(() => {
-        notification.success({
-          message: "User has been successfully added",
-          description:
-            "The User will receive an email with an activation link they must click as a final step in the process.",
+    if (!selectedUser) {
+      // REGISTER
+      const { first_name, last_name } = values;
+      values = { ...values, name: `${first_name} ${last_name}` };
+      api
+        .post("/user/register", values)
+        .then(() => {
+          notification.success({
+            message: "User has been successfully added",
+            description:
+              "The User will receive an email with an activation link they must click as a final step in the process.",
+          });
+          setSending(false);
+          setIsAddUserVisible(false);
+          setReload(reload + 1);
+        })
+        .catch(() => {
+          setSending(false);
+          notification.error({
+            message: "An error occurred",
+            description: "Internal Server Error",
+          });
         });
-        setSending(false);
-        setIsAddUserVisible(false);
-        setReload(reload + 1);
-      })
-      .catch(() => {
-        setSending(false);
-        notification.error({
-          message: "An error occurred",
-          description: "Internal Server Error",
+    }
+    if (selectedUser?.id) {
+      // UPDATE
+      const { organisation, role, questionnaires } = values;
+      const payload = {
+        organisation: organisation,
+        role: role,
+        questionnaires: questionnaires,
+      };
+      api
+        .put(`/user/update_by_admin/${selectedUser.id}`, payload)
+        .then(() => {
+          notification.success({
+            message: "User has been successfully updated",
+          });
+          setSending(false);
+          setIsAddUserVisible(false);
+          setReload(reload + 1);
+        })
+        .catch(() => {
+          setSending(false);
+          notification.error({
+            message: "An error occurred",
+            description: "Internal Server Error",
+          });
         });
-      });
+    }
   };
 
   return (
     <Modal
-      forceRender={true}
-      title={<Title level={4}>New User</Title>}
+      destroyOnClose={true}
+      title={<Title level={4}>{modalTitle}</Title>}
       visible={isAddUserVisible}
       footer={
         <Space>
-          <Button onClick={() => setIsAddUserVisible(false)}>Cancel</Button>
+          <Button onClick={handleOnClickModalCancel}>Cancel</Button>
           <Button
             type="primary"
             ghost
             onClick={() => form.submit()}
             loading={sending}
           >
-            Add User
+            {buttonOkText}
           </Button>
         </Space>
       }
@@ -95,18 +158,33 @@ const AddUser = ({
             <Form.Item
               name="first_name"
               label="First Name"
-              rules={[{ required: true, message: "Please input first name" }]}
+              rules={[
+                {
+                  required: requiredFields,
+                  message: "Please input first name",
+                },
+              ]}
             >
-              <Input className="bg-grey" placeholder="First Name" />
+              <Input
+                className="bg-grey"
+                placeholder="First Name"
+                disabled={disableFields}
+              />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item
               name="last_name"
               label="Last Name"
-              rules={[{ required: true, message: "Please input last name" }]}
+              rules={[
+                { required: requiredFields, message: "Please input last name" },
+              ]}
             >
-              <Input className="bg-grey" placeholder="Last Name" />
+              <Input
+                className="bg-grey"
+                placeholder="Last Name"
+                disabled={disableFields}
+              />
             </Form.Item>
           </Col>
         </Row>
@@ -116,18 +194,20 @@ const AddUser = ({
             <Form.Item
               name="email"
               label="Email"
-              rules={[{ required: true, message: "Please input email" }]}
+              rules={[
+                { required: requiredFields, message: "Please input email" },
+              ]}
             >
-              <Input className="bg-grey" placeholder="Email address" />
+              <Input
+                className="bg-grey"
+                placeholder="Email address"
+                disabled={disableFields}
+              />
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item
-              name="phone_number"
-              label="Phone Number"
-              rules={[{ required: true, message: "Please input email" }]}
-            >
-              <InputNumber className="bg-grey" />
+            <Form.Item name="phone_number" label="Phone Number">
+              <InputNumber className="bg-grey" disabled={disableFields} />
             </Form.Item>
           </Col>
         </Row>
@@ -155,12 +235,35 @@ const AddUser = ({
               ]}
             >
               <Select
+                showSearch
                 className="custom-dropdown-wrapper bg-grey"
                 placeholder="Organization"
+                filterOption={(input, option) =>
+                  option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
                 options={organisation?.map((o) => ({
                   label: o.name.toUpperCase(),
                   value: o.id,
                 }))}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row gutter={[12, 12]}>
+          <Col span={24}>
+            <Form.Item name="questionnaires" label="Questionnaire Access">
+              <Select
+                showArrow
+                showSearch
+                allowClear
+                mode="multiple"
+                className="custom-dropdown-wrapper bg-grey"
+                placeholder="Questionnaire Access"
+                filterOption={(input, option) =>
+                  option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+                options={publishedForm}
               />
             </Form.Item>
           </Col>

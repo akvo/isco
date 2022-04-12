@@ -14,6 +14,7 @@ import {
   Tag,
 } from "antd";
 import { ClockCircleOutlined, CheckCircleOutlined } from "@ant-design/icons";
+import { RiPencilFill } from "react-icons/ri";
 import { FaSearch } from "react-icons/fa";
 import AddUser from "./AddUser";
 import { store, api } from "../../lib";
@@ -58,46 +59,6 @@ const InvitationCopy = ({ invitation }) => {
   );
 };
 
-const columns = [
-  {
-    title: "Name",
-    dataIndex: "name",
-    key: "name",
-  },
-  {
-    title: "Email",
-    dataIndex: "email",
-    key: "email",
-  },
-  {
-    title: "Organization",
-    dataIndex: "organisation_name",
-    key: "organisation_name",
-  },
-  {
-    title: "Verified on",
-    dataIndex: "email_verified",
-    key: "email_verified",
-    render: (value, data) => {
-      return value ? (
-        moment(value).format("MMMM Do YYYY, h:mm a")
-      ) : (
-        <InvitationCopy {...data} />
-      );
-    },
-  },
-  {
-    title: "Role",
-    dataIndex: "role",
-    key: "role",
-    render: (value) =>
-      value
-        .split("_")
-        .map((x) => capitalize(x))
-        .join(" "),
-  },
-];
-
 const ManageUser = () => {
   const { isLoggedIn, user, optionValues } = store.useState((s) => s);
   const { organisation, member_type, isco_type } = optionValues;
@@ -117,13 +78,82 @@ const ManageUser = () => {
   const [organisationValue, setOrganisationValue] = useState([]);
   const [memberValue, setMemberValue] = useState([]);
   const [iscoValue, setIscoValue] = useState([]);
+  const [publishedForm, setPublishedForm] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
   const showPendingUserOption = false;
   const showAddNewUser = true;
   const showOrganisationFilter = user?.role === "secretariat_admin";
 
+  const columns = [
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+    },
+    {
+      title: "Organization",
+      dataIndex: "organisation_name",
+      key: "organisation_name",
+    },
+    {
+      title: "Verified on",
+      dataIndex: "email_verified",
+      key: "email_verified",
+      render: (value, data) => {
+        return value ? (
+          moment(value).format("MMMM Do YYYY, h:mm a")
+        ) : (
+          <InvitationCopy {...data} />
+        );
+      },
+    },
+    {
+      title: "Role",
+      dataIndex: "role",
+      key: "role",
+      render: (value) =>
+        value
+          .split("_")
+          .map((x) => capitalize(x))
+          .join(" "),
+    },
+    {
+      title: "Action",
+      render: (record) => (
+        <Button
+          className="action-btn"
+          icon={<RiPencilFill />}
+          shape="circle"
+          type="text"
+          onClick={() => {
+            setIsAddUserVisible(true);
+            setSelectedUser(record);
+          }}
+        />
+      ),
+    },
+  ];
+
+  useEffect(() => {
+    api
+      .get("/form/published")
+      .then((res) => {
+        setPublishedForm(res.data);
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  }, []);
+
   useEffect(() => {
     if (isLoggedIn && organisation.length) {
       setIsLoading(true);
+      setSelectedUser(null);
       let url = `/user?page=${page}&limit=${pageSize}`;
       if (search) {
         url = `${url}&search=${search}`;
@@ -354,10 +384,13 @@ const ManageUser = () => {
 
       {/* New User Modal */}
       <AddUser
+        publishedForm={publishedForm}
         isAddUserVisible={isAddUserVisible}
         setIsAddUserVisible={setIsAddUserVisible}
         setReload={setReload}
         reload={reload}
+        selectedUser={selectedUser}
+        setSelectedUser={setSelectedUser}
       />
     </div>
   );
