@@ -34,6 +34,11 @@ const definitionContent = {
       ),
     },
     {
+      i: "MT-BE",
+      t: "MT-BE",
+      d: "Metric Ton-Bean Equivalent: Please refer to the definition for “Bean equivalent”.",
+    },
+    {
       i: "Child Labour",
       t: "Child Labour",
       d: (
@@ -308,7 +313,7 @@ const definitionContent = {
     {
       i: "Reached (farming households reached)",
       t: "Reached (farming households reached)",
-      d: "The term &quot;reached&quot; (in &quot;farming households reached&quot;) is contextual, it could mean d&quot;engaged ind&quot;, d&quot;benefitingd&quot;, etc. Each data collection, for d&quot;# of farming households reachedd&quot;, shall to the extent possible be linked to an activity, output or outcome of the cocoa sustainability project or initiative; such linking thus contextualizes the implication of and/or benefits for the concerned farming household.",
+      d: 'The term “reached” (as in "farming households reached") is contextual, it could mean "engaged in", "benefiting", etc. Each data collection, for "# of farming households reached", shall to the extent possible be linked to an activity, output or outcome of the cocoa sustainability project or initiative; such linking thus contextualizes the implication of and / or benefits for the concerned farming household.',
     },
     {
       i: "Farming land",
@@ -431,19 +436,117 @@ const definitionContent = {
       d: "Cocoa sourced without conforming to the traceability requirements of ‘mass balance’, ‘segregated’, or ‘identity preserved’ - please refer to the corresponding definitions.",
     },
     {
-      i: "Mass balance (traceability level 1)",
-      t: "Mass balance (traceability level 1)",
-      d: "The mass balance system administratively monitors the trade (transaction) of conforming cocoa throughout the entire supply chain. The mass balance system requires a transparent documentation and justification of the origin and quantity of conforming cocoa (= certified or independently verified cocoa) purchased by the first buyer. The mass balance system allows mixing conforming and nonconforming cocoa in next stages of the cocoa supply and value chain (e.g. transport, processing, manufacturing). Cocoa supply chain actors can sell a certain mass of conforming cocoa, or an equivalent volume of conforming cocoa-containing products, to the extent that the actual volumes of sales of conforming products are tracked and audited through the supply chain and that these volumes do not exceed the cocoa bean equivalents of conforming cocoa bought at origin.  (Definition drafted using elements borrowed from ISO-CEN and Fairtrade)",
+      i: "Mass balance",
+      t: "Mass balance",
+      d: (
+        <Fragment>
+          <div>
+            The mass balance system administratively monitors the trade of
+            conforming cocoa throughout the entire supply chain. The system
+            requires transparent documentation and justification of the origin
+            and quantity of conforming cocoa purchased by the first buyer. The
+            mass balance system allows mixing conforming and non-conforming
+            cocoa in later stages of the cocoa value chain (e.g. transport,
+            processing, manufacturing). Cocoa value chain actors can sell a
+            certain mass of conforming cocoa, or an equivalent volume of
+            conforming cocoa-containing products, to the extent that the actual
+            volumes of sales of conforming products are tracked and audited
+            through the supply chain and providing that the bean equivalents of
+            these volumes do not exceed the amount of conforming cocoa beans
+            bought at origin.{" "}
+            <i>
+              (Definition drafted using elements borrowed from ISO-CEN and
+              Fairtrade)
+            </i>
+          </div>
+        </Fragment>
+      ),
     },
     {
-      i: "Segregated (traceability level 2)",
-      t: "Segregated (traceability level 2)",
-      d: "Segregated cocoa - Certified or independently verified cocoa meeting the segregation requirements. As per the mass-balance system, segregation requires a transparent documentation and justification of the origin and quantity of conforming cocoa (this is certified or independently verified cocoa) purchased by the first buyer. Conforming cocoa is kept segregated from nonconforming cocoa, including during transport, storage, processing cocoa, and manufacturing of cocoa-containing products. Segregation does allow mixing cocoa from different origins, to the extent that all cocoa being mixed qualifies as conforming cocoa (as per the certification standard or verified company scheme being applied). The cocoa supply chain actors shall demonstrate that they have taken the required measures to avoid mixing conforming cocoa with nonconforming cocoa. (Definition drafted using elements borrowed from ISO-CEN and Rainforest Alliance)",
+      i: "Segregated",
+      t: "Segregated",
+      d: (
+        <Fragment>
+          <div>
+            Certified or independently verified cocoa meeting the segregation
+            requirements. As per the mass-balance system, segregation requires a
+            transparent documentation and justification of the origin and
+            quantity of conforming cocoa (this is certified or independently
+            verified cocoa) purchased by the first buyer. Conforming cocoa is
+            kept segregated from nonconforming cocoa, including during
+            transport, storage, processing cocoa, and manufacturing of
+            cocoa-containing products. Segregation does allow mixing cocoa from
+            different origins to the extent that all cocoa being mixed qualifies
+            as conforming cocoa (as per the certification standard or verified
+            company scheme being applied). The cocoa supply chain actors shall
+            demonstrate that they have taken the required measures to avoid
+            mixing conforming cocoa with nonconforming cocoa.{" "}
+            <i>
+              (Definition drafted using elements borrowed from ISO-CEN and
+              Rainforest Alliance)
+            </i>
+          </div>
+        </Fragment>
+      ),
     },
     {
-      i: "Identity preserved (traceability level 3)",
-      t: "Identity preserved (traceability level 3)",
-      d: "Identity preserved is the highest traceability type. There is no mixing of cocoa, neither with non-conforming cocoa, nor with cocoa from other origins. If the ‘single origin’ is set at cooperative level or at cocoa-producing area (combining different cooperatives), then conforming cocoa from this broader origin may be combined. In other words, the “identity preserved” system meets all requirements of “segregated cocoa” but it does not allow mixing cocoa from different origins. ",
+      i: "Identity preserved",
+      t: "Identity preserved",
+      d: "Identity preserved is the highest traceability category. There is no mixing of cocoa, neither with non-conforming cocoa, nor with cocoa from other origins. If the ‘single origin’ is set at cooperative level or at cocoa-producing area (combining different cooperatives), then conforming cocoa from this broader origin may be combined. In other words, the “identity preserved” system meets all requirements of “segregated cocoa”, but it does not allow mixing cocoa from different origins.",
+    },
+    {
+      i: "Indirect supply",
+      t: "Indirect supply",
+      d: "For cocoa to be categorized as “cocoa sourced through an indirect supply chain”, there is no or minimal contact, no partnership and no collaboration between the cocoa sourcing company and the cocoa producer. The cocoa is typically sourced through (several) intermediaries which do not disclose the individual farmers / farming families that produced the cocoa.",
+    },
+    {
+      i: "Integrated Pest Management",
+      t: "Integrated Pest Management",
+      d: (
+        <Fragment>
+          <div>
+            Integrated Pest Management (IPM) means the careful consideration of
+            all available pest control techniques and subsequent integration of
+            appropriate measures that discourage the development of pest
+            populations and keep pesticides and other interventions to levels
+            that are economically justified and reduce or minimize risks to
+            human health and the environment. IPM emphasizes the growth of a
+            healthy crop with the least possible disruption to agro-ecosystems
+            and encourages natural pest control mechanisms. FAO:
+            <br />
+            <a
+              href="http://www.fao.org/agriculture/crops/thematic-sitemap/theme/pests/ipm/en/ "
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ fontSize: "14px" }}
+            >
+              http://www.fao.org/agriculture/crops/thematic-sitemap/theme/pests/ipm/en/{" "}
+            </a>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Living income",
+      t: "Living income",
+      d: (
+        <Fragment>
+          <div>
+            Living income refers to the net annual income required for a
+            household in a particular place to afford a decent standard of
+            living for all members of that household. Elements of a decent
+            standard of living include: food, water, housing, education,
+            healthcare, transport, clothing, and other essential needs including
+            provision for unexpected events.{" "}
+            <i>(Living Income Community of Practice)</i>
+            <br />
+            <i>
+              Any Living Income Benchmarks should be based on publications by or
+              for the Living Income Community of Practice.{" "}
+            </i>
+          </div>
+        </Fragment>
+      ),
     },
     {
       i: "Certified or independently verified cocoa",
@@ -470,7 +573,7 @@ const definitionContent = {
     {
       i: "Premiums granted to the farmer",
       t: "Premiums granted to the farmer",
-      d: "The amount of 'premiums granted' does not necessary correspond to the amount of 'premiums paid in cash'. Part of the premiums granted could be deducted for payment as 'withholding' for reimbursement of (a) loan(s) to the farmer or as 'payment for services' provided to the farmer. ",
+      d: "A premium granted to a farmer is an additional amount of money paid in addition to the regular market price paid to the producers or producer organizations. The amount of 'premiums granted' does not necessarily correspond to the amount of 'premiums paid in cash'. Part of the premiums granted could be deducted for payment as 'withholding' for reimbursement of (a) loan(s) to the farmer or as 'payment for services' requested by and provided to the farmer.",
     },
     {
       i: "Strategy to promote diversified and sustainable farming systems, as a contribution to environmental sustainability",
@@ -600,31 +703,372 @@ const definitionContent = {
       t: "Hazardous Pesticides",
       d: (
         <Fragment>
-          Hazardous pesticides include as minimum requirement all substances
-          which: <br />
-          <br />
-          <ol type="1" style={{ marginLeft: "1.5rem" }}>
-            <li>
-              are listed as <b>persistent organic pollutants (POPs)</b> in the
-              Stockholm Convention within the Annex III of the Rotterdam
-              Convention and/or the Montreal Protocol
-            </li>
-            <li>
-              are classified by WHO as A1 or 1B, (3) are listed in the{" "}
-              <b>Dirty Dozen</b> of PAN, or
-            </li>
-            <li>
-              are identified by UN-GHS as substances with{" "}
-              <b>chronic toxicity</b>.
-            </li>
-          </ol>
-          <br />
-          In addition, specifically for cocoa cultivation, they include
-          pesticides that are not permitted for use in export goods to EU
-          countries.
-          <br />
-          <br />
-          (The definition is currently under revision, <i>Nov. 2020</i>)
+          <div>
+            Hazardous pesticides include as minimum requirement all substances
+            which:
+            <ol type="1" style={{ marginLeft: "1.5rem" }}>
+              <li>
+                are listed as <b>persistent organic pollutants (POPs)</b> in the
+                Stockholm Convention within the Annex III of the Rotterdam
+                Convention and / or the Montreal Protocol
+              </li>
+              <li>are classified by WHO as 1A or 1B,</li>
+              <li>
+                are listed in the <b>Dirty Dozen</b> of PAN, or
+              </li>
+              <li>
+                are identified by UN-GHS as substances with{" "}
+                <b>chronic toxicity</b>.
+              </li>
+            </ol>
+            In addition, specifically for cocoa cultivation, they include
+            pesticides that are not permitted for use in goods for export to EU
+            countries.
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Household",
+      t: "Household",
+      d: "Please refer to the definition of “Farming Household”",
+    },
+    {
+      i: "Multi-purpose trees",
+      t: "Multi-purpose trees",
+      d: "Tree species that are included on cocoa farms primarily to provide economical and / or ecological benefits to the farm. This may include tree crops such as fruit, oil palm, medicinal, fodder and / or timber / shade trees for later harvest.",
+    },
+    {
+      i: "Native tree species",
+      t: "Native tree species",
+      d: (
+        <Fragment>
+          <div>
+            A tree species occurring within its natural range (past or present)
+            and dispersal potential (i.e. within the range it occupies naturally
+            or could occupy without direct or indirect introduction or care by
+            humans). <br />
+            FAO (2020).
+            <a
+              href="http://www.fao.org/3/I8661EN/i8661en.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ fontSize: "14px" }}
+            >
+              http://www.fao.org/3/I8661EN/i8661en.pdf
+            </a>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Net household income",
+      t: "Net household income",
+      d: (
+        <Fragment>
+          <div>
+            The amount of money that a household earns, or gains, each year
+            after costs, taxes, and transfers. It represents the money available
+            to a household for spending on goods or services and savings. This
+            is currently calculated via: Production * producer price (including
+            farmer sustainability premiums where relevant) – costs + non-cocoa
+            income (such as non-agricultural income, income from rent, and
+            remittances) minus associated costs. <br /> <br />
+            <i>
+              <u>Points of attention:</u>
+            </i>{" "}
+            <br />
+            <i>Costs to include:</i>
+            <ul style={{ marginLeft: "25px" }}>
+              <li>
+                <i>
+                  amortization of infrastructure and interests paid on loans
+                </i>
+              </li>
+              <li>
+                <i>
+                  share of revenues paid to (or part of the produce shared with)
+                  landowners.
+                </i>
+              </li>
+            </ul>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Off-farm",
+      t: "Off-farm",
+      d: "Areas that are not currently under cultivation (e.g., defined buffer areas between different cocoa (or other) farms, defined sloped areas, uncultivated watershed areas, fallow land). This does not include newly established cocoa agroforestry.",
+    },
+    {
+      i: "Payments for Ecosystem / Environmental Services (PES)",
+      t: "Payments for Ecosystem / Environmental Services (PES)",
+      d: "Compensating individuals or communities for the adoption of targeted behaviours that increase the capacity of present ecosystems to provide beneficial services to local population (such as water filtration, erosion reduction, social value etc.). The activities must align with at least one of three core intervention areas: conservation, restoration, and agroforestry.  Interventions should also eliminate threats to or enhance the provision of ecosystem services including climate change mitigation, soil restoration, biodiversity, and watershed services. Compensation should offset and ideally exceed the opportunity and transactional costs of all participating individuals for adopting the targeted behaviour.",
+    },
+    {
+      i: "Plot",
+      t: "Plot",
+      d: "Plot is the basic geospatial unit of land use. In cocoa, a farmer may possess (or otherwise operate) one or more plots. A farmer’s combined total number of plots is a “farm”, whether the plots are geographically contiguous or not. In Ghana, a plot may also be called a farm, thus a farm may be made up of smaller “farms”. In this situation extra attention must be paid by members to ensure enumerators measure and count farms mapped according to the correct definition of farm.",
+    },
+    {
+      i: "Pre-financing",
+      t: "Pre-financing",
+      d: "An arrangement to have production activities paid in advance by a third party and to be repaid at a later date by a farmer based on agreement between the parties involved.",
+    },
+    {
+      i: "Program",
+      t: "Program",
+      d: "Please refer to the definition of “Project”.",
+    },
+    {
+      i: "Restoration of forests",
+      t: "Restoration of forests",
+      d: (
+        <Fragment>
+          <div>
+            Replanting and / or regenerating trees across a defined landscape
+            that incorporates native (preferably) and non-native tree species to
+            restore the multiple ecological benefits of forests (with focus on
+            achieving natural forest). (Source: Accountability Framework) <br />
+            <br />
+            Best practice is to develop a forest restoration plan based on an
+            initial assessment (baseline) and action plan shared with the (local
+            or national) government.
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Risk assessment",
+      t: "Risk assessment",
+      d: "A systematic process of evaluating potential risk in a company’s current or future operations, supply chains, and investments. In the context of the Accountability Framework, this term refers to the assessment of risk of non-compliance with the company commitments or applicable law related to the Accountability Framework scope, as well as adverse impacts to internationally recognized human rights. This is different from the use of the term in a general business context, where it refers to assessment of financial risks and the drivers of such risk (e.g., legal risk, credit risk, reputation risk, and others). Risk of adverse social and environmental impacts, including non-compliance with company commitments, can be an important element of broader business risk.",
+    },
+    {
+      i: "Sustainability commitments of companies",
+      t: "Sustainability commitments of companies",
+      d: (
+        <Fragment>
+          <div>
+            A public statement by a company that specifies the actions that it
+            intends to take or the goals, criteria, or targets that it intends
+            to meet with regard to its management of or performance on
+            environmental, social, and / or governance topics.
+            <ul style={{ marginLeft: "25px" }}>
+              <li>
+                Commitments may also be titled or referred to as policies,
+                pledges, or other terms.
+              </li>
+              <li>
+                Commitments may be company-wide (e.g., a company-wide forest
+                policy) or specific to certain commodities, regions, or business
+                units. They may be topic-specific, or they may address multiple
+                environmental, social, and/or governance topics.
+              </li>
+              <li>
+                Commitments, as defined here, are distinct from the operational
+                policies or procedures (e.g., sourcing codes, supplier
+                requirements, manuals, and standard operation procedures) by
+                which companies may operationalize their commitments or
+                sustainability initiatives. Commitments are generally broader,
+                more normative or aspirational, and take a multi-year view of
+                company performance, whereas operational policies or procedures
+                tend to focus on specific implementation details, parameters, or
+                requirements.
+              </li>
+            </ul>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Project",
+      t: "Project",
+      d: (
+        <Fragment>
+          <div>
+            A cocoa sustainability project is defined as a program, project or
+            initiative targeting (aspects of) sustainability in cocoa
+            production, processing and / or supply chains.
+            <br />
+            <br />
+            <i>
+              Under the label “sustainability project”, the reporting system
+              allows a member to report on any sustainability “program, project
+              or initiative”. Members with larger sustainability programs can
+              choose between: (a) reporting aggregated data on a large program,
+              with several intervention areas; or (b) reporting separately for
+              underlying (for example country-specific) projects.
+            </i>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Traceability",
+      t: "Traceability",
+      d: (
+        <Fragment>
+          <div>
+            Cocoa traceability may be defined as the ability to:
+            <ol type="a" style={{ marginLeft: "1.5rem" }}>
+              <li>ensure transparency on the origin of cocoa;</li>
+              <li>
+                link sustainability (and other) characteristics (measured at
+                farm/community/area/… level) to the (produced and processed
+                batches of) cocoa (including batches of cocoa-containing end
+                products), and
+              </li>
+              <li>
+                document and trace steps in (dis)aggregating, transporting and
+                processing (batches of) cocoa and cocoa-containing products,
+                while transferring information on cocoa origin and
+                sustainability characteristics, all along the value chain,
+                including feedback loops.
+              </li>
+            </ol>
+            <i>
+              Traceability can be an effective tool to foster sustainability in
+              the cocoa sector and to allow companies to meet sustainability
+              requirements.
+            </i>
+            <br />
+            <br />
+            <i>
+              IDH, GISCO, C-lever.org, (2021) . <br />
+              <a
+                href="https://www.idhsustainabletrade.com/uploaded/2021/04/Cocoa-Traceability-Study_Highres.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ fontSize: "14px" }}
+              >
+                https://www.idhsustainabletrade.com/uploaded/2021/04/Cocoa-Traceability-Study_Highres.pdf
+              </a>
+            </i>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Verification",
+      t: "Verification",
+      d: (
+        <Fragment>
+          <div>
+            Assessment and validation of compliance, performance, and / or
+            actions relative to a stated commitment, standard, or target.
+            Verification processes typically utilize monitoring data but may
+            also include other sources of information and analysis. Related
+            definitions include the following:
+            <ul style={{ marginLeft: "25px" }}>
+              <li>
+                <i>
+                  <u>First-party verification</u>
+                </i>
+                : Verification conducted by the company itself but carried out
+                by personnel not involved in the design or implementation of the
+                operations being verified.
+              </li>
+              <li>
+                <i>
+                  <u>Second-party verification</u>
+                </i>
+                : Verification conducted by a related entity with an interest in
+                the company or operation being assessed, such as the business
+                customer of a production / processing operation or a contractor
+                that also provides services other than verification.
+              </li>
+              <li>
+                <i>
+                  <u>Third-party verification</u>
+                </i>
+                : Verification conducted by an independent entity that does not
+                provide other services to the company.
+              </li>
+            </ul>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Village Savings and Loans Association (VSLA)",
+      t: "Village Savings and Loans Association (VSLA)",
+      d: "Village Savings and Loans Association (VSLA) is a type of Accumulating Savings and Credit Association formed as a group of people who choose to work together and pool their savings. The money can then be borrowed with modest interest by members, over an agreed period. At the end of a predetermined term, the overall fund (which is made up of the savings and the interest payments) is paid out to the group members based on their percent of contribution to the savings pool. At that point members can decide whether to start a new cycle or whether to disband. Crucial activities that benefit VSLA members include (i) creating and maintaining a group dynamic to grow self-esteem and self-confidence, (ii) providing access to basic financial services (savings and credit), (iii) unlocking entrepreneurial potential by learning to identify, create, and manage an income generating activity.",
+    },
+    {
+      i: "Women’s empowerment",
+      t: "Women’s empowerment",
+      d: (
+        <Fragment>
+          <div>
+            The combined effect of changes in a women’s own consciousness,
+            knowledge, skills and abilities (agency) and in the power relations
+            and structures (norms, customs, institutions, policies, laws, etc.)
+            that shape her access to rights and resources, choices and
+            opportunities, and ultimately wellbeing.{" "}
+            <i>
+              (WCF Gender Integration guidance note, Annex on Gender Principles
+              and definitions)
+            </i>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Yield (cocoa yield):",
+      t: "Yield (cocoa yield):",
+      d: "Total cocoa weight (typically expressed in kilograms) produced per unit area (typically expressed in hectare), in a given year.",
+    },
+    {
+      i: "Youth",
+      t: "Youth",
+      d: (
+        <Fragment>
+          <div>
+            Youth is best understood as a period of transition from the
+            dependence of childhood to adulthood’s independence. That’s why, as
+            a category, youth is more fluid than other fixed age-groups. Yet,
+            age is the easiest way to define this group, particularly in
+            relation to education and employment, because ‘youth’ is often
+            referred to a person between the ages of leaving compulsory
+            education, and finding their first job. <br />
+            <br />
+            <i>
+              For Ghana & Côte d’Ivoire: Youth are persons between the ages of
+              15 and 35 years. For other countries: Youth are persons between
+              the ages of 15 and 24 years.
+            </i>
+            <br />
+            <br />
+            <i>
+              United Nations Department of Economic and Social Affairs (2013).
+              <br />
+              <a
+                href="https://www.un.org/esa/socdev/documents/youth/fact-sheets/youth-definition.pdf "
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ fontSize: "14px" }}
+              >
+                https://www.un.org/esa/socdev/documents/youth/fact-sheets/youth-definition.pdf
+              </a>
+            </i>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Youth empowerment",
+      t: "Youth empowerment",
+      d: (
+        <Fragment>
+          <div>
+            Youth empowerment is defined as a process where youth are enabled to
+            enjoy secure and sustainable livelihoods, fulfil their potential and
+            decide on their future. With an emphasis on decent youth employment,
+            skills development, business opportunities and participation in
+            decision making. <br />
+            (Fairtrade (n.d.))
+          </div>
         </Fragment>
       ),
     },
@@ -661,6 +1105,11 @@ const definitionContent = {
           </div>
         </Fragment>
       ),
+    },
+    {
+      i: "MT-BE",
+      t: "MT-BE",
+      d: "Metrische Tonnen an Bohnenäquivalenten: Siehe Definition „Bohnenäquivalent“",
     },
     {
       i: "Child Labour",
@@ -947,8 +1396,8 @@ const definitionContent = {
     },
     {
       i: "Reached (farming households reached)",
-      t: "erreicht&quot; (&quot;erreichte bäuerliche Haushalte&quot;)",
-      d: "Der Begriff &quot;erreicht&quot; (&quot;erreichte bäuerliche Haushalte&quot;) ist kontextabhängig, er könnte &quot;involviert in&quot;, &quot;profitieren&quot; usw. bedeuten. Jede Datensammlung für &quot;Anzahl der erreichten landwirtschaftlichen Haushalte&quot; wird so weit wie möglich mit einer Aktivität, einem Output oder einem Ergebnis des Kakao-Nachhaltigkeitsprojekts oder der Kakao-Nachhaltigkeitsinitiative verknüpft; eine solche Verknüpfung kontextualisiert somit die Auswirkungen und/oder Vorteile für den betreffenden landwirtschaftlichen Haushalt.",
+      t: "erreicht („erreichte bäuerliche Haushalte“)",
+      d: 'Der Begriff "erreicht" (im Sinne von "erreichte bäuerliche Haushalte") ist kontextabhängig, er könnte beispielsweise "involviert in" oder "profitierend von" bedeuten. Entsprechende Datenerhebungen sollten die Variable "Anzahl der erreichten bäuerlichen Haushalten" in Beziehung setzen zu einer Aktivität oder einer Wirkung / einem Ergebnis des Nachhaltigkeitsprojekts; Diese Verknüpfung kontextualisiert die Implikationen / Vorteile für die „erreichten“ bäuerlichen Haushalte.',
     },
     {
       i: "Farming land",
@@ -1031,19 +1480,121 @@ const definitionContent = {
       d: "Kakao, der beschafft wurde, ohne den Rückverfolgbarkeitsanforderungen &quot;Mengenausgleich&quot;, &quot;segregated&quot; oder &quot;identity preserved&quot; zu entsprechen - bitte beziehen Sie sich auf die entsprechenden Definitionen.",
     },
     {
-      i: "Mass balance (traceability level 1)",
-      t: "Mass balance (Rückverfolgbarkeitslevel 1)",
-      d: "Der Mengenausgleich (mass balance) überwacht administrativ den Handel (Transaktion) von konformem Kakao über die gesamte Lieferkette. Das Mengenausgleichssystem erfordert eine transparente Dokumentation und Nachweise über Herkunft und Menge des vom Erstkäufer gekauften konformen Kakaos (= zertifizierter oder unabhängig verifizierter Kakao). Das Mengenausgleichssystem ermöglicht das Mischen von konformem und nicht konformem Kakao in den nachfolgenden Stufen der Liefer- und Wertschöpfungskette (z.B. Transport, Verarbeitung, Herstellung). Die Akteure der Kakaolieferkette können eine bestimmte Masse an konformem Kakao oder ein äquivalentes Volumen konformer kakaohaltiger Produkte verkaufen, sofern die tatsächlichen Verkaufsmengen konformer Produkte über die gesamte Lieferkette verfolgt und geprüft werden und diese Mengen die Kakaobohnenäquivalente des im Ursprung gekauften konformen Kakaos nicht übersteigen. (Definition wurde unter Verwendung von Elementen erstellt, die von ISO-CEN und Fairtrade übernommen wurden)",
+      i: "Mass balance",
+      t: "Mengenausgleich",
+      d: (
+        <Fragment>
+          <div>
+            Der Mengenausgleich (mass balance) überwacht administrativ den
+            Handel von konformem Kakao (= zertifizierter oder unabhängig
+            überprüfter Kakao) entlang der gesamten Lieferkette. Das
+            Mengenausgleichssystem erfordert eine transparente Dokumentation und
+            Nachweise über Herkunft und Mengen des vom Erstkäufer aufgekauften
+            konformen Kakaos. Das Mengenausgleichssystem ermöglicht das
+            Vermischen von konformem mit nicht-konformem Kakao in den
+            nachgelagerten Stufen der Wertschöpfungskette (z.B. bei Transport
+            oder Verarbeitung). Die Akteure der Kakaolieferkette können eine
+            bestimmte Menge an konformem Kakao oder ein äquivalentes Volumen
+            konformer kakaohaltiger Produkte verkaufen, sofern die tatsächlichen
+            Mengen verkaufter konformer Produkte über die gesamte Lieferkette
+            nachvollziehbar sind und auditiert werden und deren
+            Kakaobohnenäquivalente die Mengen des im Ursprung eingekauften
+            konformen Kakaos nicht übersteigen.{" "}
+            <i>(Basierend auf Definitionen von ISO-CEN und Fairtrade)</i>
+          </div>
+        </Fragment>
+      ),
     },
     {
-      i: "Segregated (traceability level 2)",
-      t: "Segregiert (Rückverfolgbarkeitslevel 2)",
-      d: "Segregierter Kakao ('segregated') - Zertifizierter oder unabhängig überprüfter Kakao, der die Segregationsanforderungen erfüllt. Gemäss dem Mengenausgleichssystem erfordert die Segregation eine transparente Dokumentation und Nachweis der Herkunft und Menge des vom Erstkäufer gekauften konformen Kakaos (dies ist zertifizierter oder unabhängig überprüfter Kakao). Konformer Kakao wird von nicht konformem Kakao getrennt gehalten, auch während des Transports, der Lagerung, der Verarbeitung von Kakao und der Herstellung kakaohaltiger Produkte. Die Trennung ermöglicht das Mischen von Kakao unterschiedlicher Herkunft, soweit der gesamte Kakao, der gemischt wird, als konformer Kakao gilt (gemäß dem angewandten Zertifizierungsstandard oder verifizierten Unternehmensprogramm). Die Akteure der Lieferkette für Kakao müssen nachweisen, dass sie die erforderlichen Maßnahmen ergriffen haben, um zu vermeiden, dass konformer Kakao mit nicht konformem Kakao gemischt wird (Definition unter Verwendung von Elementen, die von ISO-CEN und Rainforest Alliance übernommen wurden).",
+      i: "Segregated",
+      t: "Segregiert",
+      d: (
+        <Fragment>
+          <div>
+            Segregierter („segregated“) Kakao bezeichnet zertifizierten oder
+            unabhängig überprüften Kakao, der die Segregationsanforderungen
+            erfüllt. Wie das Mengenausgleichssystem erfordert die Segregation
+            eine transparente Dokumentation und Nachweise über Herkunft und
+            Menge des vom Erstkäufer gekauften konformen Kakaos. Konformer Kakao
+            wird von nicht-konformem Kakao (= nicht zertifizierter oder
+            unabhängig überprüfter Kakao) getrennt gehalten – auch während des
+            Transports, der Lagerung, der Verarbeitung von Kakao und der
+            Herstellung kakaohaltiger Produkte. Jedoch ist das Vermischen von
+            Kakao unterschiedlicher Herkünfte möglich, sofern der gesamte zu
+            vermischende Kakao als konformer Kakao gilt. Die Akteure in der
+            Kakaolieferkette müssen nachweisen, dass sie die erforderlichen
+            Maßnahmen ergriffen haben, um zu vermeiden, dass konformer Kakao mit
+            nicht-konformem Kakao vermischt wird.{" "}
+            <i>
+              (Basierend auf Definitionen von ISO-CEN und Rainforest Alliance)
+            </i>
+          </div>
+        </Fragment>
+      ),
     },
     {
-      i: "Identity preserved (traceability level 3)",
-      t: "&quot;Identity preserved&quot; (Rückverfolgbarkeitslevel 3)",
-      d: "&quot;Identity preserved&quot; ist die höchste Art der Rückverfolgbarkeit. Es gibt keine Vermischung von Kakao, weder mit nicht-konformem Kakaonoch mit Kakao anderer Herkunft. Wenn der &quot;einzige Ursprung&quot; auf Kooperativenebene oder in einem Kakaoanbaugebiet (das verschiedene Kooperativen zusammenfasst) festgelegt wird, dann kann konformer Kakao aus diesem breiteren Ursprung kombiniert werden. Mit anderen Worten, das &quot;identity preserved&quot; System erfüllt alle Anforderungen an &quot;segregierten Kakao&quot;, erlaubt aber nicht das Mischen von Kakao aus verschiedenen Ursprüngen. ",
+      i: "Identity preserved",
+      t: "Identity preserved",
+      d: '"Identity preserved" ist die höchste Rückverfolgbarkeitskategorie. Es erfolgt keine Vermischung des Kakaos, weder mit nicht-konformem Kakao (= nicht zertifiziert oder unabhängig überprüft) noch mit Kakao anderer Herkünfte. Wenn sich der Begriff "single Origin" auf ein Kakaoanbaugebiet (das verschiedene Kooperativen zusammenfasst) und nicht auf eine einzige Kooperative bezieht, dann kann konformer Kakao aus diesem breiteren Ursprung vermischt werden. Das "identity preserved" System erfüllt also alle Anforderungen für "segregierten Kakao", erlaubt aber darüber hinaus nicht das Vermischen von Kakao aus verschiedenen Ursprüngen.',
+    },
+    {
+      i: "Indirect supply",
+      t: "Indirekte Lieferkette",
+      d: 'Bei Kakao, der als "über eine indirekte Lieferkette bezogener Kakao" kategorisiert wird, besteht minimaler bis kein Kontakt, keine Partnerschaft und keine Zusammenarbeit zwischen dem kakaobeziehenden Unternehmen und den Produzentinnen und Produzenten. Der Kakao wird typischerweise über (mehrere) Zwischenhändler bezogen, welche keinerlei Informationen über die Bäuerinnen und Bauern, die den Kakao produziert haben, besitzen oder bereitstellen.',
+    },
+    {
+      i: "Integrated Pest Management",
+      t: "Integrierte Schädlingsbekämpfung",
+      d: (
+        <Fragment>
+          <div>
+            Integrierte Schädlingsbekämpfung (Integrated Pest Management, IPM)
+            umfasst die sorgfältige Prüfung aller verfügbaren
+            Schädlingsbekämpfungsmethoden und die anschließende Auswahl und
+            Anwendung von Ansätzen, welche der Entwicklung von
+            Schädlingspopulationen entgegenwirken und zugleich den Einsatz von
+            Pestiziden und andere Interventionen auf ein wirtschaftlich
+            vertretbares Maß beschränken und die Risiken für die menschliche
+            Gesundheit und die Umwelt minimieren. IPM strebt gesunde
+            Anbaukulturen bei möglichst geringer Beeinträchtigung der
+            landwirtschaftlichen Ökosysteme an und fördert natürliche Ansätze
+            der Schädlingsbekämpfung. FAO:
+            <br />
+            <a
+              href="http://www.fao.org/agriculture/crops/thematic-sitemap/theme/pests/ipm/en/ "
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ fontSize: "14px" }}
+            >
+              http://www.fao.org/agriculture/crops/thematic-sitemap/theme/pests/ipm/en/{" "}
+            </a>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Living income",
+      t: "Existenzsicherndes Einkommen",
+      d: (
+        <Fragment>
+          <div>
+            Ein existenzsicherndes Einkommen (Living Income) entspricht dem
+            jährlichen Nettoeinkommen, das ein Haushalt in einer bestimmten
+            Region benötigt, um allen Haushaltsmitgliedern einen angemessenen
+            Lebensstandard zu ermöglichen. Ein angemessener Lebensstandard
+            umfasst: Nahrung, Wasser, Unterkunft, Bildung,
+            Gesundheitsversorgung, Verkehr, Kleidung und weitere
+            Grundbedürfnisse einschließlich einer Rücklage für unerwartete
+            Ereignisse. <i>(Living Income Community of Practice)</i>
+            <br />
+            <i>
+              Alle genutzten Benchmarks für existenzsichernde Einkommen sollten
+              auf Publikationen von oder für die Living Income Community of
+              Practice beruhen.
+            </i>
+          </div>
+        </Fragment>
+      ),
     },
     {
       i: "Certified or independently verified cocoa",
@@ -1068,7 +1619,7 @@ const definitionContent = {
     {
       i: "Premiums granted to the farmer",
       t: "Gewährte Prämien an die Bäuerinnen und Bauern",
-      d: "Der Betrag der &quot;gewährten Prämien&quot; entspricht nicht notwendigerweise dem Betrag der &quot;bar bezahlten Prämien&quot;. Ein Teil der gewährten Prämien könnte zur Zahlung als &quot;Einbehaltung&quot; für die Rückzahlung eines oder mehrerer Darlehen an den Bauern/die Bäuerin oder als &quot;Zahlung für an den Bauern/die Bäuerin erbrachte Dienstleistungen&quot; abgezogen werden.",
+      d: "Eine Prämie für Bäuerinnen und Bauern ist ein Geldbetrag, der zusätzlich zum regulären Marktpreis an Erzeugerinnen / Erzeuger oder Erzeugerorganisationen gezahlt wird. Die Höhe der gewährten Prämie entspricht nicht notwendigerweise dem Betrag der in bar bezahlten Prämie. Ein Teil der Prämien könnte z.B. als Rückzahlung für ein Darlehen oder zur Begleichung einer von der Bäuerin oder dem Bauern nachgefragte und erhaltene Dienstleistungen einbehalten werden.",
     },
     {
       i: "Strategy to promote diversified and sustainable farming systems, as a contribution to environmental sustainability",
@@ -1199,39 +1750,391 @@ const definitionContent = {
       t: "Gefährliche Pestizide",
       d: (
         <Fragment>
-          Gefährliche Pestizide umfassen als Mindestanforderung alle Substanzen,
-          die
-          <br />
-          <br />
-          <ol type="1" style={{ marginLeft: "1.5rem" }}>
-            <li>
-              als{" "}
-              <b>
-                <i>Persistent Organic Pollutants</i> (POPs)
-              </b>{" "}
-              in der Stockholm Konvention geführt sind, im Annex III der
-              Rotterdam Konvention bzw. im Mont-real Protokoll geführt sind,
-            </li>
-            <li>von der WHO als 1A oder 1B klassifiziert sind,</li>
-            <li>
-              auf der Liste der{" "}
-              <b>
-                <i>Dirty Dozen</i>
-              </b>{" "}
-              der PAN geführt sind, oder die
-            </li>
-            <li>
-              im UN-GHS als Substanzen mit{" "}
-              <b>
-                <i>Chronic Toxicity</i>
-              </b>{" "}
-              ausgewiesen werden.
-            </li>
-          </ol>
-          Zudem spezifisch für den Kakaoanbau solche Pestizide, deren Verwendung
-          für Exportgut in EU-Staaten nicht zugelassen sind.
-          <br />
-          <br /> (Die Definition ist derzeit in Überarbeitung, <i>Nov.2020</i>.)
+          <div>
+            Gefährliche Pestizide umfassen mindestens alle Substanzen, die{" "}
+            <ol type="1" style={{ marginLeft: "1.5rem" }}>
+              <li>
+                als <b>Persistent Organic Pollutants (POPs)</b> in der Stockholm
+                Konvention, im Annex III der Rotterdam Konvention und / oder im
+                Montreal Protokoll geführt sind,
+              </li>
+              <li>von der WHO als 1A oder 1B klassifiziert sind,</li>
+              <li>
+                auf der Liste der <b>Dirty Dozen</b> des PAN geführt sind, oder
+                die
+              </li>
+              <li>
+                im UN-GHS als Substanzen mit <b>chronischer Toxizität</b>{" "}
+                ausgewiesen sind.
+              </li>
+            </ol>
+            Zudem – spezifisch für den Kakaoanbau – jene Pestizide, deren
+            Verwendung für Güter, die für den Export in EU-Staaten bestimmt
+            sind, nicht zugelassen sind.
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Household",
+      t: "Haushalt",
+      d: "Siehe Definition „Bäuerlicher Haushalt“",
+    },
+    {
+      i: "Multi-purpose trees",
+      t: "Mehrzweckbäume",
+      d: "Baumarten, die zusätzlich auf Kakaoanbauflächen gepflanzt werden, vor allem um ökonomischen oder ökologischen Mehrwert zu generieren. Dabei kann es sich um Obstbäume, Ölpalmen, Heilpflanzen, Futtermittelpflanzen und / oder Schattenbäume für die spätere Holzernte handeln.",
+    },
+    {
+      i: "Native tree species",
+      t: "Einheimische Baumarten",
+      d: (
+        <Fragment>
+          <div>
+            Eine Baumart, die innerhalb ihres natürlichen Verbreitungsgebiets
+            (früher oder heute) oder Verbreitungspotentials vorkommt (d.h.
+            innerhalb des Gebiets, in dem sie natürlicherweise vorkommt oder
+            ohne direkte oder indirekte Einwirkung oder Pflege durch den
+            Menschen vorkommen könnte). <br />
+            FAO (2020).
+            <a
+              href="http://www.fao.org/3/I8661EN/i8661en.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ fontSize: "14px" }}
+            >
+              http://www.fao.org/3/I8661EN/i8661en.pdf
+            </a>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Net household income",
+      t: "Netto-Haushaltseinkommen",
+      d: (
+        <Fragment>
+          <div>
+            Der Geldbetrag, den ein Haushalt jedes Jahr nach Abzügen wie Kosten
+            und Steuern verdient. Es stellt den Betrag dar, der einem Haushalt
+            zur Verfügung steht, um Waren oder Dienstleistungen zu erwerben oder
+            um zu sparen. Die Berechnung erfolgt über: Produktion * Ab-Hof-Preis
+            (einschließlich Nachhaltigkeitsprämien) – Produktionskosten +
+            Einkommen aus alternativen Quellen (z. B. nicht-landwirtschaftliches
+            Einkommen, Mieteinnahmen etc.) abzüglich der damit verbundenen
+            Kosten. <br /> <br />
+            <i>Zu den Kosten können gehören:</i>
+            <ul style={{ marginLeft: "25px" }}>
+              <li>
+                <i>
+                  Amortisierung von Infrastruktur und Zinszahlungen für Darlehen
+                </i>
+              </li>
+              <li>
+                <i>
+                  Anteil der Einnahmen (oder Anteil der Erträge), der an die
+                  Landbesitzer entrichtet werden muss.
+                </i>
+              </li>
+            </ul>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Off-farm",
+      t: "Off-farm",
+      d: "Flächen, die derzeit nicht bewirtschaftet werden (z.B. festgelegte Pufferzonen zwischen verschiedenen Kakao- (oder anderen landwirtschaftlichen) Betrieben, nicht bewirtschaftete Wassereinzugsgebiete, Brachland, etc.). Beinhaltet nicht: Neu errichtete Kakao-Agroforstsysteme.",
+    },
+    {
+      i: "Payments for Ecosystem / Environmental Services (PES)",
+      t: "Zahlungen für Ökosystem- / Umweltleistungen",
+      d: "Bezeichnet die Kompensation von Individuen oder Gemeinschaften für die Übernahme wünschenswerter Verhaltensweisen, welche die Fähigkeit von lokalen Ökosysteme erhöhen, der Bevölkerung wertvolle Dienste zu leisten (wie der Filterung von Wasser, der Verringerung von Erosion, Schaffung von sozialem Mehrwert, etc.). Die Aktivitäten müssen mindestens einem der drei Hauptinterventionsbereiche zuordenbar sein: Dem Erhalt oder der Wiederherstellung von Ökosystemen oder der Agroforstwirtschaft. Die Maßnahmen sollen Gefährdungen für Ökosystemleistungen beseitigen oder deren Wirksamkeit steigern und könnten Interventionen zum Klimaschutz, zur Sanierung degradierter Böden oder zur Förderung der Artenvielfalt umfassen. Die finanzielle Kompensation sollte die Opportunitäts- und Transaktionskosten aller Beteiligten für die Verhaltensanpassung abdecken und idealerweise übersteigen.",
+    },
+    {
+      i: "Plot",
+      t: "Parzelle",
+      d: 'Eine Parzelle ist die übliche räumliche Einheit der Landnutzung. Im Kakaoanbau kann eine Bäuerin oder ein Bauer eine oder mehrere Parzellen besitzen und bewirtschaften. Die Gesamtzahl der Parzellen einer Bäuerin / eines Bauern ist ein landwirtschaftlicher Betrieb, unabhängig davon, ob die Parzellen aneinandergrenzen oder nicht. In Ghana kann eine Parzelle bereits als "Betrieb" angesehen werden, so dass ein Betrieb aus mehreren kleineren "Betrieben" bestehen kann. In solchen Fällen muss darauf geachtet werden, dass dies bei Erhebungen beispielsweise zur „Anzahl an kartierten Betrieben“ berücksichtigt wird.',
+    },
+    {
+      i: "Pre-financing",
+      t: "Vorfinanzierung",
+      d: "Eine Vereinbarung, bei der die landwirtschaftliche Produktion von einem Dritten im Voraus bezahlt wird und der Betrag zu einem späteren Zeitpunkt von der Bäuerin oder dem Bauern zu den vereinbarten Konditionen zurückgezahlt wird.",
+    },
+    {
+      i: "Program",
+      t: "Programm",
+      d: "Siehe Definition “Projekt”",
+    },
+    {
+      i: "Restoration of forests",
+      t: "Wiederaufforstung",
+      d: (
+        <Fragment>
+          <div>
+            Bezeichnet das Neupflanzen und / oder die Regenerierung von
+            bestehenden Bäumen in einem bestimmten Gebiet unter Einbezug
+            (vorzugsweise) einheimischer aber auch nicht-einheimischer
+            Baumarten, um die vielfältigen ökologischen Vorteile von Wäldern
+            wiederherzustellen (mit dem Ziel, die Entstehung natürlicher Walder
+            zu fördern). (Quelle: Accountability Framework) <br />
+            <br />
+            „Best practice“ ist die Entwicklung eines Plans zur
+            Wiederherstellung des Waldes auf der Grundlage einer ersten
+            Bewertung (Ausgangssituation) und eines mit der (lokalen oder
+            nationalen) Regierung abgestimmten Aktionsplans.
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Risk assessment",
+      t: "Risikoanalyse",
+      d: "Ein systematischer Prozess zur Bewertung potenzieller Risiken in Verbindung mit gegenwärtigen oder zukünftigen Aktivitäten, Lieferketten und Investitionen eines Unternehmens. Im Kontext des Accountability Framework bezieht sich dieser Begriff auf eine Bewertung des Risikos der Nichteinhaltung von Unternehmensselbstverpflichtungen oder geltendem Recht sowie auf potenzielle Verletzungen international anerkannter Menschenrechte. Dies unterscheidet sich von der Verwendung des Begriffs in einem allgemeinen geschäftlichen Kontext, wo er sich vorrangig auf die Bewertung finanzieller Risiken und deren Treiber (z.B. Rechtsrisiken, Kreditrisiken, Reputationsrisiken, etc.) bezieht. Das Risiko negativer sozialer und ökologischer Auswirkungen, einschließlich der Nichteinhaltung von Unternehmensselbstverpflichtungen, kann jedoch ein wichtiges Element des allgemeinen Geschäftsrisikos darstellen.",
+    },
+    {
+      i: "Sustainability commitments of companies",
+      t: "Nachhaltigkeitsselbstverpflichtungen von Unternehmen",
+      d: (
+        <Fragment>
+          <div>
+            Das öffentliche Statement eines Unternehmens, das die beabsichtigten
+            Maßnahmen, Ziele, Kriterien oder Vorgaben spezifiziert, die es mit
+            Blick auf das Management oder seine Performance in Bezug auf
+            Umwelt-, Sozial- und / oder Governance-Themen zu implementieren
+            beabsichtigt.
+            <ul style={{ marginLeft: "25px" }}>
+              <li>
+                Unternehmensselbstverpflichtungen können unternehmensweit
+                (beispielsweise eine unternehmensweite Forstpolitik) oder
+                spezifisch für bestimmte Rohstoffe, Regionen oder
+                Geschäftsbereiche sein. Sie können themenspezifisch sein oder
+                sich auf mehrere Umwelt-, Sozial- und / oder Governance-Themen
+                beziehen.
+              </li>
+              <li>
+                Selbstverpflichtungen, wie sie hier definiert sind,
+                unterscheiden sich von operativen Richtlinien oder Verfahren
+                (z.B. Beschaffungsrichtlinien, Lieferantenanforderungen,
+                Handbücher und Standardarbeitsverfahren), mit denen Unternehmen
+                ihre Selbstverpflichtungen operationalisieren können.
+                Selbstverpflichtungen sind in der Regel breiter angelegt, häufig
+                normativer und ambitionierter Natur, und nehmen einen
+                mehrjährigen Blick auf die Unternehmensperformance ein, während
+                sich betriebliche Richtlinien oder Verfahren tendenziell auf
+                spezifische Implementierungsdetails, -parameter oder
+                -anforderungen beziehen.
+              </li>
+            </ul>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Project",
+      t: "Projekt",
+      d: (
+        <Fragment>
+          <div>
+            Ein Kakao-Nachhaltigkeitsprojekt ist definiert als ein Programm, ein
+            Projekt oder eine Initiative, welches / welche die Nachhaltigkeit
+            (oder einzelne Aspekte der Nachhaltigkeit) in der Kakaoproduktion,
+            -verarbeitung und / oder entlang der Lieferketten zu fördern
+            versucht.
+            <br />
+            <br />
+            <i>
+              Unter der Bezeichnung &quot;Nachhaltigkeitsprojekt&quot; kann ein
+              Mitglied über jedes &quot;Programm, Projekt oder Initiative&quot;
+              im Bereich der Nachhaltigkeit berichten. Mitglieder mit größeren
+              Nachhaltigkeitsprogrammen können wählen zwischen: (a) aggregierter
+              Berichterstattung zu einem großen Programm mit mehreren
+              Interventionsbereichen; oder (b) separater Berichterstattung für
+              zugrunde liegende (z.B. länderspezifische) Projekte.
+            </i>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Traceability",
+      t: "Rückverfolgbarkeit",
+      d: (
+        <Fragment>
+          <div>
+            Rückverfolgbarkeit von Kakao kann definiert werden als die
+            Fähigkeit:
+            <ol type="a" style={{ marginLeft: "1.5rem" }}>
+              <li>
+                Transparenz über die Herkunft des Kakaos gewährleisten zu
+                können;
+              </li>
+              <li>
+                Nachhaltigkeitsbezogene (und andere) Merkmale (auf Ebene des
+                Betriebs / der Gemeinde / der Region) mit dem produzierten und
+                verarbeiteten Kakao in Verbindung bringen zu können;
+              </li>
+              <li>
+                Alle Schritte vom Aufkauf und der Aggregation der Bohnen über
+                den Transport und die Verarbeitung des Kakaos bis hin zur
+                Herstellung kakaohaltiger Produkte dokumentieren und
+                rückverfolgen zu können, wobei Informationen über Herkunft und
+                Nachhaltigkeitsmerkmale des Kakaos entlang der gesamten
+                Wertschöpfungskette enthalten bleiben.
+              </li>
+            </ol>
+            <i>
+              Rückverfolgbarkeit ist eine wichtige Voraussetzung, um die
+              Nachhaltigkeit im Kakaosektor zu fördern und Unternehmen zu
+              ermöglichen, ihre Nachhaltigkeitspflichten zu erfüllen.
+            </i>
+            <br />
+            <br />
+            <i>
+              IDH, GISCO, C-lever.org, (2021) . <br />
+              <a
+                href="https://www.idhsustainabletrade.com/uploaded/2021/04/Cocoa-Traceability-Study_Highres.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ fontSize: "14px" }}
+              >
+                https://www.idhsustainabletrade.com/uploaded/2021/04/Cocoa-Traceability-Study_Highres.pdf
+              </a>
+            </i>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Verification",
+      t: "Verifizierung",
+      d: (
+        <Fragment>
+          <div>
+            Bewertung und Nachweis der Einhaltung, der Performance und / oder
+            der Umsetzung von Maßnahmen in Verbindung mit einer veröffentlichten
+            Selbstverpflichtung, einem Standard oder einem erklärten Ziel.
+            Verifizierungsprozesse nutzen in der Regel Monitoring-Daten, können
+            aber auch andere Informationsquellen nutzen. Verwandte Begriffe und
+            Definitionen:
+            <ul style={{ marginLeft: "25px" }}>
+              <li>
+                <i>
+                  <u>First-Party-Verifizierung</u>
+                </i>
+                : Verifizierung, die vom Unternehmen selbst durchgeführt wird,
+                allerdings von Mitarbeitenden, die selbst nicht in die Planung
+                und Umsetzung der zu verifizierenden Tätigkeiten involviert
+                sind.
+              </li>
+              <li>
+                <i>
+                  <u>Second-Party-Verifizierung</u>
+                </i>
+                : Verifizierung durch ein Unternehmen, das ein Interesse an dem
+                zu prüfenden Unternehmen oder Tätigkeitsfeld hat –
+                beispielsweise der Geschäftskunde eines Produktions- /
+                Verarbeitungsbetriebs oder ein Auftragnehmer, der neben der
+                Verifizierung auch andere Dienstleistungen für das zu
+                überprüfende Unternehmen erbringt.
+              </li>
+              <li>
+                <i>
+                  <u>Third-Party-Verifizierung</u>
+                </i>
+                : Verifizierung, die von einer unabhängigen Organisation
+                durchgeführt wird, welche keinerlei Verbindung mit dem zu
+                verifizierenden Unternehmen hat und keine weiteren
+                Dienstleistungen für das Unternehmen erbringt.
+              </li>
+            </ul>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Village Savings and Loans Association (VSLA)",
+      t: "Village Savings and Loans Association (VSLA)",
+      d: "Eine Village Savings and Loans Association (VSLA) ist eine Art Spar- und Kreditvereinigung, die von einer Gruppe von Menschen gegründet wird, die zusammenarbeiten und ihre Ersparnisse zusammenlegen wollen. Das Geld kann dann von Mitgliedern mit moderaten Zinsen über einen vereinbarten Zeitraum geliehen werden. Am Ende einer vorher festgelegten Laufzeit wird der gesamte Fonds (zusammengesetzt aus den Ersparnissen und den angefallenen Zinszahlungen) an die Gruppenmitglieder auf der Grundlage ihres prozentualen Beitrags zum ursprünglichen Fonds ausgezahlt. Zu diesem Zeitpunkt können die Mitglieder entscheiden, ob sie einen neuen Zyklus beginnen oder die Aktivität einstellen wollen. Zu den wichtigsten Aktivitäten, die den VSLA-Mitgliedern zugutekommen, gehören (i) die Schaffung einer Gruppendynamik, die Selbstwirksamkeit und Selbstvertrauen stärkt, (ii) der Zugang zu grundlegenden Finanzdienstleistungen (Sparmöglichkeiten und Kredite), (iii) die Freisetzung unternehmerischen Potenzials, indem eine einkommensschaffende Aktivität identifiziert, gestaltet und umgesetzt wird.",
+    },
+    {
+      i: "Women’s empowerment",
+      t: "Empowerment von Frauen",
+      d: (
+        <Fragment>
+          <div>
+            Der kombinierte Effekt von Veränderungen im Bewusstsein, des Wissens
+            und der Fähigkeiten von Frauen sowie von Veränderungen der
+            Machtverhältnisse und Strukturen (Normen, Bräuche, Institutionen,
+            Gesetzgebung usw.), welche den Zugang von Frauen zu Rechten und
+            Ressourcen, ihre Entscheidungen und Chancen und letztlich ihr
+            Wohlergehen prägen.{" "}
+            <i>
+              (WCF-Gender Integration Guidance Note, Anhang zu Gender-Prinzipien
+              und Definitionen)
+            </i>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Yield (cocoa yield):",
+      t: "Ertrag (Kakaoertrag)",
+      d: "Gesamtgewicht des Kakaos (typischerweise angegeben in Kilogramm), der je Flächeneinheit (typischerweise in Hektar) in einem bestimmten Jahr erzeugt wird.",
+    },
+    {
+      i: "Youth",
+      t: "Jugend",
+      d: (
+        <Fragment>
+          <div>
+            Jugend lässt sich am besten beschreiben als eine Phase des Übergangs
+            von der Abhängigkeit der Kindheit hin zur Unabhängigkeit des
+            Erwachsenseins. Die Kategorie Jugend ist daher fluider als andere,
+            festere Altersgruppen. Dennoch ist das Alter der einfachste Weg, um
+            „Jugend“ zu definieren, insbesondere in Bezug auf Bildung und
+            Beschäftigung; denn in der Regel werden Personen zwischen dem Ende
+            der Schulpflicht und der Aufnahme der ersten Beschäftigung als
+            „Jugendliche“ bezeichnet. <br />
+            <br />
+            <i>
+              Für Ghana und Côte d&apos;Ivoire gilt: Jugendliche sind Personen
+              im Alter zwischen 15 und 35 Jahren. Für andere Länder gilt:
+              Jugendliche sind Personen im Alter zwischen 15 und 24 Jahren.
+            </i>
+            <br />
+            <br />
+            <i>
+              United Nations Department of Economic and Social Affairs (2013).
+              <br />
+              <a
+                href="https://www.un.org/esa/socdev/documents/youth/fact-sheets/youth-definition.pdf "
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ fontSize: "14px" }}
+              >
+                https://www.un.org/esa/socdev/documents/youth/fact-sheets/youth-definition.pdf
+              </a>
+            </i>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Youth empowerment",
+      t: "Empowerment der Jugend",
+      d: (
+        <Fragment>
+          <div>
+            Empowerment der Jugend bezeichnet einen Prozess, in welchem
+            Jugendliche in die Lage versetzt werden, ein sicheres Lebensumfeld
+            genießen zu können, ihr Potenzial auszuschöpfen und selbst über ihre
+            Zukunft entscheiden zu können. Schwerpunkte liegen dabei auf der
+            Bereitstellung von angemessenen Beschäftigungsmöglichkeiten für
+            Jugendliche, der Förderung ihrer Fähigkeiten und Kenntnisse, und der
+            Beteiligung von Jugendlichen an Entscheidungsprozessen. <br />
+            (Fairtrade (o.D.))
+          </div>
         </Fragment>
       ),
     },
