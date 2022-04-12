@@ -463,7 +463,7 @@ const Translation = ({ question, activeLang }) => {
       )}
       {option?.length > 0 && (
         <div className="question-setting-wrapper">
-          {option?.map(({ id, name }) => (
+          {orderBy(option, ["order"]).map(({ id, name }) => (
             <Form.Item
               key={`option-translation-${id}`}
               label={<div className="translation-label">{name}</div>}
