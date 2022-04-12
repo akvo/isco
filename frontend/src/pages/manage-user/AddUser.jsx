@@ -24,6 +24,7 @@ const roles = [
 ];
 
 const AddUser = ({
+  publishedForm,
   isAddUserVisible,
   setIsAddUserVisible,
   setReload,
@@ -155,12 +156,35 @@ const AddUser = ({
               ]}
             >
               <Select
+                showSearch
                 className="custom-dropdown-wrapper bg-grey"
                 placeholder="Organization"
+                filterOption={(input, option) =>
+                  option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
                 options={organisation?.map((o) => ({
                   label: o.name.toUpperCase(),
                   value: o.id,
                 }))}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row gutter={[12, 12]}>
+          <Col span={24}>
+            <Form.Item name="questionnaires" label="Questionnaire Access">
+              <Select
+                showArrow
+                showSearch
+                allowClear
+                mode="multiple"
+                className="custom-dropdown-wrapper bg-grey"
+                placeholder="Questionnaire Access"
+                filterOption={(input, option) =>
+                  option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+                options={publishedForm}
               />
             </Form.Item>
           </Col>

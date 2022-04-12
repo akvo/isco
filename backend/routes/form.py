@@ -48,8 +48,7 @@ def get(req: Request, session: Session = Depends(get_session)):
                 name="form:get_published",
                 tags=["Form"])
 def get_published_form(req: Request,
-                       session: Session = Depends(get_session),
-                       credentials: credentials = Depends(security)):
+                       session: Session = Depends(get_session)):
     forms = session.query(Form).filter(Form.published != null()).all()
     return [f.to_options for f in forms]
 

@@ -117,9 +117,21 @@ const ManageUser = () => {
   const [organisationValue, setOrganisationValue] = useState([]);
   const [memberValue, setMemberValue] = useState([]);
   const [iscoValue, setIscoValue] = useState([]);
+  const [publishedForm, setPublishedForm] = useState([]);
   const showPendingUserOption = false;
   const showAddNewUser = true;
   const showOrganisationFilter = user?.role === "secretariat_admin";
+
+  useEffect(() => {
+    api
+      .get("/form/published")
+      .then((res) => {
+        setPublishedForm(res.data);
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  }, []);
 
   useEffect(() => {
     if (isLoggedIn && organisation.length) {
@@ -354,6 +366,7 @@ const ManageUser = () => {
 
       {/* New User Modal */}
       <AddUser
+        publishedForm={publishedForm}
         isAddUserVisible={isAddUserVisible}
         setIsAddUserVisible={setIsAddUserVisible}
         setReload={setReload}

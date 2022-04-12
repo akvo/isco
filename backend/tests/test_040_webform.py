@@ -98,8 +98,7 @@ class TestWebformRoutes():
     ) -> None:
         # get form
         res = await client.get(
-            app.url_path_for("form:get_published"),
-            headers={"Authorization": f"Bearer {account.token}"})
+            app.url_path_for("form:get_published"))
         assert res.status_code == 200
         res = res.json()
         assert res == [{
