@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Row, Col, Space, Menu, Dropdown } from "antd";
+import { Row, Col, Space, Menu, Dropdown, Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
 import { BsGearFill } from "react-icons/bs";
@@ -12,7 +12,8 @@ import { store, api } from "../../lib";
 
 const Header = ({ className = "header", ...props }) => {
   const [cookies, removeCookie] = useCookies(["AUTH_TOKEN"]);
-  const { user, isLoggedIn } = store.useState((state) => state);
+  const { user, isLoggedIn, language } = store.useState((state) => state);
+  const { active: activeLang, langs: langList } = language;
   const isAdmin = user?.role?.includes("admin");
   const navigate = useNavigate();
 
@@ -26,6 +27,32 @@ const Header = ({ className = "header", ...props }) => {
       });
       navigate("/login");
     }
+  };
+
+  const handleOnClickLanguage = (lang) => {
+    store.update((s) => {
+      s.language = {
+        ...language,
+        active: lang,
+      };
+    });
+  };
+
+  const renderLangList = () => {
+    return (
+      langList &&
+      Object.keys(langList).map((key) => (
+        <Button
+          key={key}
+          type="link"
+          size="large"
+          className={`${activeLang === key ? "active" : ""}`}
+          onClick={() => handleOnClickLanguage(key)}
+        >
+          {key.toUpperCase()}
+        </Button>
+      ))
+    );
   };
 
   const accountMenu = (
@@ -97,12 +124,7 @@ const Header = ({ className = "header", ...props }) => {
       </Col>
       <Col className="right">
         <Space size="large" align="center">
-          <div className="translation-selection">
-            <Space align="middle">
-              <div>EN</div>
-              <div>DE</div>
-            </Space>
-          </div>
+          <div className="translation-selection">{renderLangList()}</div>
           {isLoggedIn && (
             <Dropdown
               overlay={accountMenu}
