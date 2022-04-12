@@ -152,6 +152,105 @@ const definitionContent = {
       d: "Please refer to the definition of “Child Labour Monitoring and Remediation Systems (CLMRS)”",
     },
     {
+      i: "Cocoa origin transparency level",
+      t: "Cocoa origin transparency level",
+      d: (
+        <Fragment>
+          <div>
+            The &quot;cocoa origin transparency level&quot; concerns the level
+            of information on the origin of cocoa being documented at the
+            initial stage of the cocoa sourcing process, with such information
+            remaining available at later stages of the value chain. <br />
+            Distinction is made between the following origin transparency
+            levels:
+            <ul style={{ marginLeft: "25px" }}>
+              <li>Score 1: origin unknown or only country of origin known</li>
+              <li>Score 2: country and region of origin known</li>
+              <li>
+                Score 3: country, region and municipality / cooperative of
+                origin known
+              </li>
+              <li>
+                Score 4: farm known, in addition to the country, region and
+                municipality / cooperative of origin
+              </li>
+              <li>
+                Score 5: farm known and having point coordinates of the farm
+                household (farm mapping)
+              </li>
+              <li>
+                Score 5+: farm known and having polygon boundaries of the farm.
+              </li>
+              <li>
+                Score 6: farm known, having polygon boundaries of the farm and
+                farm fields verified as not in a protected forest and as not
+                comprising land that was deforested since 2018.
+              </li>
+            </ul>
+            Having a high origin transparency score still allows for massing and
+            mixing of beans at later stages (during transport and / or
+            processing). <br />
+            It is generally accepted that the cocoa industry should at least
+            evolve to level 4 as a minimum requirement, implying that the first
+            mile of the cocoa value chain should be traceable. Cocoa batches
+            sourced should be linked to the farm where that cocoa was produced,
+            implying that the farms are at least identified. This principle
+            should apply to both “direct” and “indirect” cocoa sourcing.
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Community Action Plan (CAP)",
+      t: "Community Action Plan (CAP)",
+      d: "A developed plan, based on a community needs assessment (CNA), prepared by or in participation with the community. The plan should include interventions that address important community development needs. The plan implementation should be led by the community with equitable and diverse community representation and with short-term external technical and financial support with, if applicable, a long-term plan to sustainably hand over all responsibility to the community including management and finance. The short-term plan should include the use of participatory tools to build the capacity of community members to act in accordance with the problems, needs, and potential of the community, to implement those plans.",
+    },
+    {
+      i: "Community Needs Assessment (CNA)",
+      t: "Community Needs Assessment (CNA)",
+      d: "An assessment conducted with the participation of a community to identify and determine the priority short and long-term development needs of that community that includes research to understand community dynamics that are important to develop a relevant and sustainable community action plan.",
+    },
+    {
+      i: "Conventional traceability of cocoa",
+      t: "Conventional traceability of cocoa",
+      d: "Conventional cocoa (traceability category 0) is cocoa sourced without conforming to the traceability requirements of ‘mass balance’, ‘segregated’, or ‘identity preserved’ - please refer to the corresponding definitions.",
+    },
+    {
+      i: "Coverage (for CLMRS and similar systems)",
+      t: "Coverage (for CLMRS and similar systems)",
+      d: (
+        <Fragment>
+          <div>
+            <i>Coverage</i> (with a CLMRS or similar system) implies that an
+            assessment of child labour risk has been conducted at household{" "}
+            <b>or community</b>
+            level. A household can be considered covered by a CLMRS for one of
+            two reasons:
+            <ol type="i" style={{ marginLeft: "25px" }}>
+              <li>
+                they have received an in-person{" "}
+                <i>
+                  <u>monitoring visit</u>
+                </i>
+                , including an interview with the child; or
+              </li>
+              <li>
+                the household’s risk has been assessed through a systematic{" "}
+                <i>
+                  <u>analysis of reliable data about the household</u>
+                </i>
+                , using a transparent, documented method of risk assessment, and
+                an evidence-based decision has been made either to include or
+                exclude that household from in-person monitoring visits.
+              </li>
+            </ol>
+            A child can be considered covered if they live in a household
+            meeting the definition above.
+          </div>
+        </Fragment>
+      ),
+    },
+    {
       i: "Farming household",
       t: "Farming household",
       d: "The farming household corresponds to a smallholder cocoa producing family. The number of farming households, thus corresponds to the number of (smallholder) cocoa farms.",
@@ -628,6 +727,104 @@ const definitionContent = {
       i: "CLMRS",
       t: "CLMRS",
       d: "Siehe Definition „Child Labour Monitoring and Remediation Systems (CLMRS)”",
+    },
+    {
+      i: "Cocoa origin transparency level",
+      t: "Cocoa origin transparency level",
+      d: (
+        <Fragment>
+          <div>
+            Beim „cocoa origin transparency level“ (Level der
+            Herkunftstransparenz) geht es darum, inwieweit detaillierte
+            Informationen über die Herkunft des Kakaos in den ersten Stufen des
+            Beschaffungsprozesses dokumentiert werden und ob diese Informationen
+            entlang der Lieferkette erhalten bleiben.
+            <ul style={{ marginLeft: "25px" }}>
+              <li>Stufe 1: Ursprung unbekannt oder nur Anbauland bekannt</li>
+              <li>Stufe 2: Anbauland und Anbauregion bekannt</li>
+              <li>
+                Stufe 3: Land, Region und Gemeinde / Ursprungskooperative
+                bekannt
+              </li>
+              <li>
+                Stufe 4: Betrieb bekannt, zusätzlich zu Land, Region und
+                Gemeinde / Ursprungskooperative
+              </li>
+              <li>
+                Stufe 5: Betrieb bekannt und Punktkoordinaten des
+                landwirtschaftlichen Betriebs verfügbar (Betriebskartierung)
+              </li>
+              <li>
+                Stufe 5+: Betrieb bekannt mit Polygongrenzen des
+                landwirtschaftlichen Betriebs
+              </li>
+              <li>
+                Stufe 6: Betrieb bekannt, die Polygongrenzen des Betriebs wurden
+                geprüft und dessen Anbauflächen liegen nachweislich nicht in
+                einem geschützten Wald und nicht auf Land, das seit 2018
+                abgeholzt wurde.
+              </li>
+            </ul>
+            Auch die hohen Rückverfolgbarkeits-Stufen erlauben das Vermischen
+            der Bohnen in späteren Stadien der Wertschöpfungskette (Transport
+            und / oder Verarbeitung). <br />
+            Es ist allgemein anerkannt, dass die sich Kakaoindustrie mindestens
+            in Richtung Stufe 4 als Mindestanforderung bewegen sollte, d.h.
+            Kakao sollte – einschließlich der „ersten Meile“ – rückverfolgbar
+            sein. Es sollte nachvollziehbar sein, von welchem Betrieb
+            beschaffter Kakao stammt, sowohl für „direkte“ als auch für
+            „indirekte“ Lieferketten.
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Community Action Plan (CAP)",
+      t: "Gemeindeaktionsplan",
+      d: "Ein Plan, der auf der Grundlage einer Bedarfsanalyse einer Gemeinde (Community Needs Assessment, CNA) von oder in Zusammenarbeit mit der Gemeinde entwickelt wird. Der Plan sollte Maßnahmen enthalten, die wichtige Entwicklungsbedürfnisse der Gemeinde adressieren. Er sollte von der Gemeinde unter Repräsentanz aller gesellschaftlicher Gruppen umgesetzt werden – gegebenenfalls mit kurzfristiger externer technischer und finanzieller Unterstützung. Der Plan sollte den Einsatz partizipatorischer Maßnahmen umfassen, um die Fähigkeit der Gemeindemitglieder zu stärken und sie zu ermächtigen, Verhaltensanpassungen entsprechend der identifizierten Probleme, Bedürfnisse und Potentiale der Gemeinde vorzunehmen.",
+    },
+    {
+      i: "Community Needs Assessment (CNA)",
+      t: "Bedarfsanalyse eine Gemeinde",
+      d: "Eine unter Beteiligung einer Gemeinde durchgeführte Bewertung, um die vorrangigen kurz- und langfristigen Entwicklungsbedürfnisse dieser Gemeinde zu ermitteln. Diese sollte Untersuchungen zum besseren Verständnis der Gemeindedynamiken umfassen, welche für die Entwicklung eines wirksamen und nachhaltigen Gemeindeaktionsplans essentiell sind.",
+    },
+    {
+      i: "Conventional traceability of cocoa",
+      t: "Rückverfolgbarkeit von konventionellem Kakao",
+      d: "Konventioneller Kakao (Rückverfolgbarkeits-Kategorie 0) ist beschaffter Kakao, der nicht den Rückverfolgbarkeitsanforderungen von „Mass Balance“, „Segregiert“ oder „Identity preserved“ entspricht – siehe die entsprechenden Definitionen.",
+    },
+    {
+      i: "Coverage (for CLMRS and similar systems)",
+      t: "Abdeckung (für CLMRS und vergleichbare Systeme)",
+      d: (
+        <Fragment>
+          <div>
+            Abdeckung (mit Blick auf CLMRS und vergleichbare Systeme) bedeutet,
+            dass eine Beurteilung des Risikos für Kinderarbeit auf Haushalts-
+            oder Gemeindeebene erfolgt ist. Ein Haushalt kann als von einem
+            CLMRS „abgedeckt“ betrachtet werden, wenn einer der folgenden
+            Bedingungen zutrifft:
+            <ol type="i" style={{ marginLeft: "25px" }}>
+              <li>
+                der Haushalt hat einen persönlichen <u>Überprüfungs-Besuch</u>{" "}
+                erhalten, inklusive eines Interviews mit dem Kind / den Kindern;
+                oder:
+              </li>
+              <li>
+                das Risiko des Haushalts wurde durch systematische{" "}
+                <u>Analyse verlässlicher Haushaltsdaten</u> mittels einer
+                transparenten und dokumentierten Methode zur Risikoeinschätzung
+                geprüft und die evidenzbasierte Entscheidung getroffen, den
+                Haushalt bei Überprüfungs-Besuchen aufgrund eines geringen
+                Risikos nicht zu berücksichtigen.
+              </li>
+            </ol>
+            Ein Kind kann als von einem CLMRS „abgedeckt“ betrachtet werden,
+            wenn es aus einem Haushalt stammt, welcher die obigen Definitionen
+            erfüllt.
+          </div>
+        </Fragment>
+      ),
     },
     {
       i: "Farming household",
