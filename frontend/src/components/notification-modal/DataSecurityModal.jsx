@@ -1,8 +1,10 @@
 import React from "react";
 import { Modal, Button } from "antd";
 import { dataSecurityContent } from "../../static";
+import { uiText } from "../../static";
 
 const DataSecurityModal = ({ visible, onCancel, activeLang }) => {
+  const text = uiText[activeLang];
   return (
     <Modal
       title={<h3>Data Security Provisions</h3>}
@@ -10,11 +12,9 @@ const DataSecurityModal = ({ visible, onCancel, activeLang }) => {
       onCancel={onCancel}
       centered
       destroyOnClose
-      okText=""
-      cancelText="Cancel"
       width="1000px"
       className="data-security-modal-wrapper"
-      footer={<Button onClick={onCancel}>Cancel</Button>}
+      footer={<Button onClick={onCancel}>{text.btnClose}</Button>}
     >
       {dataSecurityContent[activeLang]}
     </Modal>

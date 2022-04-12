@@ -169,6 +169,7 @@ const App = () => {
         {/* Modal */}
         <SaveFormDataModal
           visible={saveFormData.visible}
+          activeLang={activeLang}
           onOk={saveFormData.onOk}
           onCancel={() => {
             store.update((s) => {
