@@ -85,29 +85,20 @@ class TestUserAuthentication():
             "code": None,
             "name": "staff Akvo",
             "active": True,
-            "member_type": 1,
-            "isco_type": [{
-                "organisation": None,
-                "isco_type": 1
-            }],
+            "member_type": [1],
+            "isco_type": [1],
         }, {
             "code": None,
             "name": "staff GISCO Secretariat",
             "active": True,
-            "member_type": 1,
-            "isco_type": [{
-                "organisation": None,
-                "isco_type": 1
-            }],
+            "member_type": [1],
+            "isco_type": [1],
         }, {
             "code": None,
             "name": "Organisation DISCO - Traders Member and DISCO isco",
             "active": True,
-            "member_type": 4,
-            "isco_type": [{
-                "organisation": None,
-                "isco_type": 3
-            }],
+            "member_type": [4],
+            "isco_type": [3],
         }]
         for p in payload:
             crud_organisation.add_organisation(session=session, payload=p)
@@ -120,8 +111,8 @@ class TestUserAuthentication():
             'id': 1,
             'isco': ['All'],
             'isco_type': [1],
-            'member': 'All',
-            'member_type': 1,
+            'member': ['All'],
+            'member_type': [1],
             'name': 'staff Akvo'
         }, {
             'active': True,
@@ -129,24 +120,18 @@ class TestUserAuthentication():
             'id': 2,
             'isco': ['All'],
             'isco_type': [1],
-            'member': 'All',
-            'member_type': 1,
+            'member': ['All'],
+            'member_type': [1],
             'name': 'staff GISCO Secretariat'
         }, {
-            'active':
-            True,
-            'code':
-            None,
-            'id':
-            3,
+            'active': True,
+            'code': None,
+            'id': 3,
             'isco': ['DISCO'],
             'isco_type': [3],
-            'member':
-            'DISCO - Traders',
-            'member_type':
-            4,
-            'name':
-            'Organisation DISCO - Traders Member and DISCO isco'
+            'member': ['DISCO - Traders'],
+            'member_type': [4],
+            'name': 'Organisation DISCO - Traders Member and DISCO isco'
         }]
 
     @pytest.mark.asyncio

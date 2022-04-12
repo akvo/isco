@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from models.organisation import Organisation, OrganisationDict
 from models.organisation import OrganisationPayload, OrganisationBase
 from models.organisation_isco import OrganisationIsco
+from models.organisation_member import OrganisationMember
 
 
 def add_organisation(session: Session,
@@ -11,13 +12,18 @@ def add_organisation(session: Session,
     active = True if payload['active'] is None else payload['active']
     organisation = Organisation(code=payload['code'],
                                 name=payload['name'],
-                                member_type=payload['member_type'],
                                 active=active)
+    if payload['member_type']:
+        for it in payload['member_type']:
+            member = OrganisationMember(id=None,
+                                        organisation=None,
+                                        member_type=it)
+            organisation.member_type.append(member)
     if payload['isco_type']:
         for it in payload['isco_type']:
             isco = OrganisationIsco(id=None,
-                                    organisation=it['organisation'],
-                                    isco_type=it['isco_type'])
+                                    organisation=None,
+                                    isco_type=it)
             organisation.isco_type.append(isco)
     session.add(organisation)
     session.commit()
@@ -55,12 +61,25 @@ def get_organisation_by_name(session: Session, name: str) -> OrganisationBase:
 
 
 def update_organisation(session: Session, id: int,
-                        payload: OrganisationPayload) -> OrganisationBase:
+                        payload: OrganisationPayload) -> OrganisationDict:
     organisation = get_organisation_by_id(session=session, id=id)
     organisation.code = payload['code']
     organisation.name = payload['name']
-    organisation.member_type = payload['member_type']
     organisation.active = payload['active']
+    if payload['member_type']:
+        delete_member_type_by_group_id(session=session, orgs=[id])
+        for ma in payload['member_type']:
+            member = OrganisationMember(id=None,
+                                        organisation=None,
+                                        member_type=ma)
+            organisation.member_type.append(member)
+    if payload['isco_type']:
+        delete_isco_type_by_group_id(session=session, orgs=[id])
+        for ia in payload['isco_type']:
+            isco = OrganisationIsco(id=None,
+                                    organisation=None,
+                                    isco_type=ia)
+            organisation.isco_type.append(isco)
     session.commit()
     session.flush()
     session.refresh(organisation)
@@ -72,3 +91,17 @@ def delete_organisation(session: Session, id: int):
     session.delete(organisation)
     session.commit()
     session.flush()
+
+
+def delete_member_type_by_group_id(session: Session, orgs: List[int]):
+    session.query(OrganisationMember).filter(
+        OrganisationMember.organisation.in_(orgs)
+    ).delete(synchronize_session='fetch')
+    session.commit()
+
+
+def delete_isco_type_by_group_id(session: Session, orgs: List[int]):
+    session.query(OrganisationIsco).filter(
+        OrganisationIsco.organisation.in_(orgs)
+    ).delete(synchronize_session='fetch')
+    session.commit()
