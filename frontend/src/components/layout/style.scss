@@ -27,6 +27,7 @@
           display: inline-block;
           line-height: inherit;
           white-space: nowrap;
+          text-transform: uppercase;
         }
       }
 
@@ -64,5 +65,11 @@
     border-top: 0.1rem solid $border-grey;
     background-color: $white;
     display: none;
+  }
+}
+
+.account-dropdown-menu {
+  .ant-space-item {
+    text-transform: uppercase;
   }
 }

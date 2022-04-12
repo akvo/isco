@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import PropTypes from "prop-types";
 import { Row, Col, Space, Menu, Dropdown, Button } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +9,7 @@ import { RiAdminFill } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { store, api } from "../../lib";
+import { uiText } from "../../static";
 
 const Header = ({ className = "header", ...props }) => {
   const [cookies, removeCookie] = useCookies(["AUTH_TOKEN"]);
@@ -16,6 +17,10 @@ const Header = ({ className = "header", ...props }) => {
   const { active: activeLang, langs: langList } = language;
   const isAdmin = user?.role?.includes("admin");
   const navigate = useNavigate();
+
+  const text = useMemo(() => {
+    return uiText[activeLang];
+  }, [activeLang]);
 
   const handleLogout = () => {
     if (cookies?.AUTH_TOKEN) {
@@ -63,7 +68,7 @@ const Header = ({ className = "header", ...props }) => {
             <Link to="/admin">
               <Space align="center" size={8}>
                 <RiAdminFill />
-                ADMIN
+                {text.navAdmin}
               </Space>
             </Link>
           </Menu.Item>
@@ -71,7 +76,7 @@ const Header = ({ className = "header", ...props }) => {
             <Link to="#">
               <Space align="center" size={8}>
                 <BsGearFill />
-                SETTING
+                {text.navSetting}
               </Space>
             </Link>
           </Menu.Item>
@@ -81,7 +86,7 @@ const Header = ({ className = "header", ...props }) => {
         <Link to="#" onClick={() => handleLogout()}>
           <Space align="center" size={8}>
             <MdLogout />
-            LOGOUT
+            {text.navLogout}
           </Space>
         </Link>
       </Menu.Item>
@@ -99,23 +104,23 @@ const Header = ({ className = "header", ...props }) => {
         <Space size="large" align="center">
           <div className="brand">
             <Link to="/">
-              <span className="title">HOME</span>
+              <span className="title">{text.navHome}</span>
             </Link>
           </div>
           <div className="navigation">
             <Space size="large" align="center">
               {isLoggedIn && (
                 <>
-                  <Link to="/survey">Survey</Link>
-                  <Link to="#">Download</Link>
+                  <Link to="/survey">{text.navSurvey}</Link>
+                  <Link to="#">{text.navDownload}</Link>
                 </>
               )}
-              <Link to="/definition">Definitions</Link>
+              <Link to="/definition">{text.navDefinitions}</Link>
               {isLoggedIn && (
                 <>
-                  <Link to="/feedback">Feedback</Link>
-                  <Link to="/impressum">Impressum</Link>
-                  <Link to="#">FAQ</Link>
+                  <Link to="/feedback">{text.navFeedback}</Link>
+                  <Link to="/impressum">{text.navImpressum}</Link>
+                  <Link to="#">{text.navFaq}</Link>
                 </>
               )}
             </Space>
