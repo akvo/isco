@@ -8,16 +8,16 @@ const uiText = {
         <br />
         to the GISCO Monitoring Pilot
         <br />
-        for 2020 data
+        for 2021 data
       </Fragment>
     ),
-    welcome2: "Monitoring for 2020 data",
+    welcome2: "Monitoring for 2021 data",
     welcome3: (
       <Fragment>
         Welcome
         <br />
         to the Cocoa Monitoring
-        <br /> for 2020 data
+        <br /> for 2021 data
       </Fragment>
     ),
     // Navigation
@@ -54,7 +54,7 @@ const uiText = {
     formCaptcha: "Insert captcha value",
     formPickPreviousSavedForms: "Pick a previously saved form",
     formStartFillingNewForm: "Start filling a new form",
-    formLogin: "Login",
+    formLogin: "Login User",
     formRememberLogin: "Remember Login",
     formForgotPwd: "Forgot Password",
     formHaveAccount: "Already have account?",
@@ -64,6 +64,7 @@ const uiText = {
     formResetPwd: "Reset Password",
     formCollaborators: "Contributing organization(s)",
     // Button
+    btnLogin: "Login",
     btnUpdate: "Update",
     btnClose: "Close",
     btnSaveChanges: "Save Changes",
@@ -188,17 +189,17 @@ const uiText = {
         <br />
         zum Pilotmonitoring des Forum nachhaltiger Kakao
         <br />
-        für das Berichtsjahr 2020!
+        für das Berichtsjahr 2021!
       </Fragment>
     ),
-    welcome2: "Monitoring for 2020 data",
+    welcome2: "Monitoring for 2021 data",
     welcome3: (
       <Fragment>
         Willkommen
         <br />
         zum Monitoring für das Berichtsjahr
         <br />
-        2020 data
+        2021 data
       </Fragment>
     ),
     // Navigation
@@ -235,7 +236,7 @@ const uiText = {
     formCaptcha: "Bitte tragen die den Wert/die Werte ein",
     formPickPreviousSavedForms: "Auswahl eines zuvor gespeicherten Fragebogens",
     formStartFillingNewForm: "Beginn eines neuen Fragebogens",
-    formLogin: "Einloggen",
+    formLogin: "User Einloggen",
     formRememberLogin: "Login-Daten erinnern",
     formForgotPwd: "Passwort vergessen",
     formHaveAccount: "Sind Sie schon registriert?",
@@ -245,6 +246,7 @@ const uiText = {
     formResetPwd: "Passwort zurücksetzen",
     formCollaborators: "Beitragende Organisation(en)",
     // Button
+    btnLogin: "Einloggen",
     btnUpdate: "Update",
     btnClose: "Schließen",
     btnSaveChanges: "Änderungen speichern",

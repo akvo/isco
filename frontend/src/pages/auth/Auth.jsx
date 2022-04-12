@@ -1,10 +1,19 @@
-import React from "react";
+import React, { useMemo } from "react";
 import "./style.scss";
 import { Row, Col, Space, Typography, Image } from "antd";
+import { uiText } from "../../static";
+import { store } from "../../lib";
 
 const { Title } = Typography;
 
 const Auth = ({ children }) => {
+  const language = store.useState((s) => s.language);
+  const { active: activeLang } = language;
+
+  const text = useMemo(() => {
+    return uiText[activeLang];
+  }, [activeLang]);
+
   return (
     <div id="auth">
       <Row className="auth-landing"></Row>
@@ -16,7 +25,7 @@ const Auth = ({ children }) => {
         <Col span={12}>
           <Space direction="vertical" size={20}>
             <Title className="title" level={2}>
-              Monitoring for 2021 data
+              {text.welcome2}
             </Title>
             <Row align="middle">
               <Col>
