@@ -40,6 +40,7 @@ class UserDict(TypedDict):
     name: str
     email: str
     email_verified: Optional[datetime] = None
+    phone_number: Optional[str] = None
     role: UserRole
     invitation: Optional[str] = None
     questionnaires: Optional[List[int]] = None
@@ -51,6 +52,7 @@ class UserOrgDict(TypedDict):
     name: str
     email: str
     email_verified: Optional[datetime] = None
+    phone_number: Optional[str] = None
     role: UserRole
     invitation: Optional[str] = None
     questionnaires: Optional[List[int]] = None
@@ -104,6 +106,7 @@ class User(Base):
             "id": self.id,
             "name": self.name,
             "email": self.email,
+            "phone_number": self.phone_number,
             "role": self.role,
             "email_verified": self.email_verified,
             "organisation": self.organisation,

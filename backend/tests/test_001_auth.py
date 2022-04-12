@@ -177,6 +177,7 @@ class TestUserAuthentication():
             "organisation": 1,
             "role": "secretariat_admin",
             "questionnaires": [1],
+            "phone_number": None,
         }
 
     @pytest.mark.asyncio

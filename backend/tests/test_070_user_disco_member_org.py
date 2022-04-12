@@ -19,7 +19,7 @@ class TestUserDisco():
         user_payload = {
             "name": "Galih",
             "email": "galih@test.org",
-            "phone_number": None,
+            "phone_number": "081999101010",
             "password": "test",
             "role": UserRole.secretariat_admin.value,
             "organisation": 3,
@@ -40,6 +40,7 @@ class TestUserDisco():
             "organisation": 3,
             "role": "secretariat_admin",
             "questionnaires": [1],
+            "phone_number": "081999101010",
         }
 
     @pytest.mark.asyncio
