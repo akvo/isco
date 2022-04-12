@@ -12,13 +12,13 @@ services:
     command: "postgres -c 'shared_buffers=128MB' -c 'fsync=off' -c 'synchronous_commit=off' -c 'full_page_writes=off' -c 'max_connections=100' -c 'bgwriter_lru_maxpages=0' -c 'client_min_messages=warning'"
     restart: always
   frontend:
-    image: eu.gcr.io/akvo-lumen/isco/frontend:latest
+    image: ${IMAGE_PREFIX}/frontend:latest
     command: ["nginx", "-g", "daemon off;"]
     depends_on:
       - backend
       - db
   backend:
-    image: eu.gcr.io/akvo-lumen/isco/backend:latest
+    image: ${IMAGE_PREFIX}/backend:latest
     network_mode: service:mainnetwork
     command: ["sh", "run.sh"]
     environment:

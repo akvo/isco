@@ -12,7 +12,7 @@ services:
       - ./db/script:/script:ro
     restart: always
   backend:
-    image: eu.gcr.io/akvo-lumen/isco/backend:latest
+    image: ${IMAGE_PREFIX}/backend:latest
     volumes:
       - ./:/app:delegated
     working_dir: /app/backend

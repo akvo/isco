@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Required env vars:
+#   CI_COMMIT - commit hash
 #shellcheck disable=SC2039
 
 set -exuo pipefail
@@ -8,32 +10,35 @@ set -exuo pipefail
 BACKEND_CHANGES=0
 FRONTEND_CHANGES=0
 
-COMMIT_CONTENT=$(git diff --name-only "${CI_COMMIT_RANGE}")
+if [[ -n "${FORCE:-}" ]] ; then
+  BACKEND_CHANGES=1
+  FRONTEND_CHANGES=1
+else
+  COMMIT_CONTENT=$(git diff --name-only "${CI_COMMIT_RANGE}")
 
-if grep -q "backend" <<< "${COMMIT_CONTENT}"
-then
-    BACKEND_CHANGES=1
+  if grep -q "backend" <<< "${COMMIT_CONTENT}"
+  then
+      BACKEND_CHANGES=1
+  fi
+
+  if grep -q "frontend" <<< "${COMMIT_CONTENT}"
+  then
+      FRONTEND_CHANGES=1
+  fi
+
+  if grep -q "ci" <<< "${COMMIT_CONTENT}"
+  then
+      BACKEND_CHANGES=1
+      FRONTEND_CHANGES=1
+  fi
+
+  if [[ "${CI_BRANCH}" ==  "main" && "${CI_PULL_REQUEST}" !=  "true" ]];
+  then
+      BACKEND_CHANGES=1
+      FRONTEND_CHANGES=1
+  fi
 fi
 
-if grep -q "frontend" <<< "${COMMIT_CONTENT}"
-then
-    FRONTEND_CHANGES=1
-fi
-
-if grep -q "ci" <<< "${COMMIT_CONTENT}"
-then
-    BACKEND_CHANGES=1
-    FRONTEND_CHANGES=1
-fi
-
-if [[ "${CI_BRANCH}" ==  "main" && "${CI_PULL_REQUEST}" !=  "true" ]];
-then
-    BACKEND_CHANGES=1
-    FRONTEND_CHANGES=1
-fi
-
-
-image_prefix="eu.gcr.io/akvo-lumen/isco"
 
 # Normal Docker Compose
 dc () {
@@ -53,6 +58,7 @@ frontend_build () {
     echo "PUBLIC_URL=/" > frontend/.env
     sed 's/"warn"/"error"/g' < frontend/.eslintrc.json > frontend/.eslintrc.prod.json
 
+    dc down
     dc run \
        --rm \
        --no-deps \
@@ -60,17 +66,18 @@ frontend_build () {
        bash release.sh
 
     docker build \
-        --tag "${image_prefix}/frontend:latest" \
-        --tag "${image_prefix}/frontend:${CI_COMMIT}" frontend
+        --tag "${IMAGE_PREFIX}/frontend:latest" \
+        --tag "${IMAGE_PREFIX}/frontend:${CI_COMMIT}" frontend
 }
 
 backend_build () {
 
     docker build \
-        --tag "${image_prefix}/backend:latest" \
-        --tag "${image_prefix}/backend:${CI_COMMIT}" backend
+        --tag "${IMAGE_PREFIX}/backend:latest" \
+        --tag "${IMAGE_PREFIX}/backend:${CI_COMMIT}" backend
 
     # Test and Code Quality
+    dc down
     dc -f docker-compose.test.yml \
         -p backend-test \
         run --rm -T backend ./test.sh
