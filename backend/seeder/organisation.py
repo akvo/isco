@@ -37,7 +37,7 @@ for d in data:
     }
     if not organisation:
         org = crud_organisation.add_organisation(session=session,
-                                                    payload=payload)
+                                                 payload=payload)
     if organisation:
         org = crud_organisation.update_organisation(session=session,
                                                     id=organisation.id,
