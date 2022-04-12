@@ -125,7 +125,11 @@ const Preview = () => {
               };
             }
             // rule
-            if (q.rule && !q.rule?.allow_other) {
+            if (
+              q.rule &&
+              !q.rule?.allow_other &&
+              q.rule.allow_other !== false
+            ) {
               qVal = {
                 ...qVal,
                 rule: q.rule,
