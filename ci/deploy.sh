@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 # Required env vars:
-#   IMAGE_PREFIX - The host (and path if necessary) to push the docker images to
 #   CLOUDSDK_CORE_PROJECT - ID of the GCP project
 #   CLOUDSDK_CONTAINER_CLUSTER - ID of the GKE cluster
 #   CLOUDSDK_CONTAINER_USE_CLIENT_CERTIFICATE -
 #   CLOUDSDK_COMPUTE_ZONE - the zone of the gke cluster
 #   GCP_DOCKER_HOST - Where to push the docker images to
 # Optional env vars:
+#   IMAGE_PREFIX - The host (and path if necessary) to push the docker images to
 #   GCP_SERVICE_ACCOUNT_FILE - path to file containing GCP service account credentials
 set -exuo pipefail
 
-[[ "${CI_BRANCH}" !=  "main" && ! "${CI_TAG:=}" =~ promote.* ]] && { echo "Branch different than main and not a tag. Skip deploy"; exit 0; }
-[[ "${CI_PULL_REQUEST:-}" ==  "true" ]] && { echo "Pull request. Skip deploy"; exit 0; }
+#[[ "${CI_BRANCH}" !=  "main" && ! "${CI_TAG:=}" =~ promote.* ]] && { echo "Branch different than main and not a tag. Skip deploy"; exit 0; }
+#[[ "${CI_PULL_REQUEST:-}" ==  "true" ]] && { echo "Pull request. Skip deploy"; exit 0; }
 
 test -n "${CLOUDSDK_CORE_PROJECT}"
 test -n "${CLOUDSDK_CONTAINER_CLUSTER}"
@@ -30,7 +30,7 @@ push_image () {
 }
 
 prepare_deployment () {
-    cluster="test"
+    cluster="production"
 
     if [[ "${CI_TAG:=}" =~ promote.* ]]; then
         cluster="production"
