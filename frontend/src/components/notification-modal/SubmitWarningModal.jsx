@@ -16,6 +16,7 @@ const DataSecurityModal = ({ visible, onOk, onCancel }) => {
       title=""
       visible={visible}
       centered
+      onCancel={onCancel}
       destroyOnClose
       footer={
         <Row align="middle" justify="center">
@@ -28,10 +29,10 @@ const DataSecurityModal = ({ visible, onOk, onCancel }) => {
     >
       <Row align="middle" justify="center">
         <WarningOutlined
-          style={{ fontSize: "100px", color: "#F9CFA8", marginBottom: "12px" }}
+          style={{ fontSize: "100px", color: "#F9CFA8", marginBottom: "24px" }}
         />
-        <Space direction="vertical">
-          <Row align="top" justify="space-between" gutter={[15, 15]}>
+        <Space direction="vertical" size="large">
+          <Row align="top" justify="space-between" gutter={[12, 12]}>
             <Col span={1}>
               <Checkbox
                 checked={checkboxOne}
@@ -51,7 +52,7 @@ const DataSecurityModal = ({ visible, onOk, onCancel }) => {
               />
             </Col>
             <Col span={23} style={{ fontSize: "1rem" }}>
-              I have used comments boxes in the corresponding question group to
+              I have used comments boxes in the corresponding question to
               explain why I cannot complete the still uncompleted mandatory
               fields.
             </Col>
