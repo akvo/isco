@@ -25,15 +25,17 @@ const Invitation = () => {
   });
   const [checkedList, setCheckedList] = useState([]);
   const [btnLoading, setBtnLoading] = useState(false);
-  const [cookies, setCookie] = useCookies(["AUTH_TOKEN"]);
+  const [cookies, setCookie, removeCookie] = useCookies(["AUTH_TOKEN"]);
   const { notify } = useNotification();
   const navigate = useNavigate();
 
   useEffect(() => {
     api.get(`/user/invitation/${invitationId}`).then((res) => {
+      removeCookie("AUTH_TOKEN");
+      api.setToken(null);
       setGuess(res.data);
     });
-  }, [invitationId]);
+  }, [invitationId, removeCookie]);
 
   const onChange = ({ target }) => {
     const criteria = checkBoxOptions
@@ -50,7 +52,6 @@ const Invitation = () => {
     api
       .post(`/user/invitation/${invitationId}?password=${password}`)
       .then((res) => {
-        setBtnLoading(false);
         const { data } = res;
         setCookie("AUTH_TOKEN", data?.access_token, { path: "/" });
         api.setToken(cookies?.AUTH_TOKEN);
