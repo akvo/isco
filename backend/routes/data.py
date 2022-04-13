@@ -77,7 +77,8 @@ def add(req: Request,
     names = []
     for a in answers:
         q = crud_question.get_question_by_id(session=session, id=a["question"])
-        answer = Answer(question=q.id,
+        answer = Answer(id=None,
+                        question=q.id,
                         created=datetime.now(),
                         repeat_index=a["repeat_index"],
                         comment=a["comment"])

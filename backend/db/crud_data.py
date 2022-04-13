@@ -32,7 +32,8 @@ def add_data(session: Session,
         submitted_by = created_by
         submitted_date = datetime.now()
         updated = datetime.now()
-    data = Data(name=name,
+    data = Data(id=None,
+                name=name,
                 form=form,
                 geo=geo,
                 locked_by=locked_by,
