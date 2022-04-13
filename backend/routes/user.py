@@ -18,12 +18,14 @@ from pydantic import SecretStr
 from db import crud_user, crud_organisation
 from middleware import get_password_hash, verify_admin, verify_super_admin
 from typing import List, Optional
+from util.mailer import Email, MailTypeEnum
 
 security = HTTPBearer()
 user_route = APIRouter()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/user/login")
 oauth2_scopes = ["openid", "email"]
+webdomain = os.environ["WEBDOMAIN"]
 
 
 @user_route.post("/user/login",
@@ -122,10 +124,18 @@ def me(req: Request,
                  tags=["User"])
 def register(req: Request,
              payload: UserBase,
+             invitation: Optional[bool] = False,
              session: Session = Depends(get_session)):
     if (payload.password):
         payload.password = get_password_hash(payload.password)
     user = crud_user.add_user(session=session, payload=payload)
+    if invitation:
+        # Send invitation email
+        url = f"{webdomain}/invitation/{user.serialize['invitation']}"
+        email = Email(recipients=[user.recipient],
+                      type=MailTypeEnum.invitation,
+                      body=url)
+        email.send
     return user.serialize
 
 

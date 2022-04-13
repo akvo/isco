@@ -98,7 +98,7 @@ class Email:
                                     context=self.context)
         payload = {
             "FromEmail": "noreply@akvo.org",
-            "Subject": type["subject"],
+            "Subject": f"ISCO {type['subject']}",
             "Html-part": html,
             "Text-part": html_to_text(html),
             "Recipients": self.recipients,

@@ -9,7 +9,7 @@ class EmailText(enum.Enum):
     invitation = {
         "title": "Invitation",
         "subject": "Invitation",
-        "body": "Link",
+        "body": None,
         "message": None,
         "image": None
     }
