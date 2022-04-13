@@ -10,7 +10,7 @@ set -exuo pipefail
 BACKEND_CHANGES=0
 FRONTEND_CHANGES=0
 
-if [[ -n "${FORCE:-}" ]] ; then
+if [[ -n "${FORCE_BUILD:-}" ]] ; then
   BACKEND_CHANGES=1
   FRONTEND_CHANGES=1
 else
