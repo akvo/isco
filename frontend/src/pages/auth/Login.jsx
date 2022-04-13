@@ -99,7 +99,9 @@ const Login = () => {
             {text.btnLogin}
           </Button>
         </Form>
-        <a href="#">{text.formForgotPwd}</a>
+        <a href="#" className="dev">
+          {text.formForgotPwd}
+        </a>
       </Space>
     </Auth>
   );

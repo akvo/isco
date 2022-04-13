@@ -5,3 +5,4 @@ export { default as Preview } from "./survey-editor/Preview";
 export { default as CommentField } from "./survey-editor/CommentField";
 export { default as SaveFormDataModal } from "./notification-modal/SaveFormDataModal";
 export { default as DataSecurityModal } from "./notification-modal/DataSecurityModal";
+export { default as SubmitWarningModal } from "./notification-modal/SubmitWarningModal";

@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import { Link } from "react-router-dom";
 
 const homeContent = (handleShow, youtubeLink, slideLink) => {
   return {
@@ -12,9 +13,9 @@ const homeContent = (handleShow, youtubeLink, slideLink) => {
           us – you can give them in the feedback section (menu above) or in the
           comment fields in the questionnaires. <br />
           Before you start, please use this{" "}
-          <a onClick={handleShow} href="#">
+          <Link onClick={handleShow} to="#">
             link
-          </a>{" "}
+          </Link>{" "}
           to check on the data security and confidentiality measures taken.{" "}
           <br />
           <br />
@@ -33,7 +34,7 @@ const homeContent = (handleShow, youtubeLink, slideLink) => {
             (or watch it directly below).
           </Fragment>,
           <Fragment key="p1-2">
-            You should also visit our <a href="/faq">FAQ section</a> which
+            You should also visit our <Link to="/faq">FAQ section</Link> which
             contain answers to most questions.
           </Fragment>,
         ],
@@ -47,7 +48,7 @@ const homeContent = (handleShow, youtubeLink, slideLink) => {
           </Fragment>,
           <Fragment key="p2-2">
             If you need any more info, don&apos;t hesitate to get in touch
-            directly: <a href="/feedback">feedback form</a>
+            directly: <Link to="/feedback">feedback form</Link>
           </Fragment>,
         ],
       },
@@ -63,9 +64,9 @@ const homeContent = (handleShow, youtubeLink, slideLink) => {
           sehr wertvoll – Sie können diese im Feedbackformular (im Menu oben)
           oder in den Kommentarfeldern der Fragebögen machen. <br />
           Bevor Sie beginnen, verwenden Sie bitte diesen{" "}
-          <a onClick={handleShow} href="#">
+          <Link onClick={handleShow} to="#">
             link
-          </a>
+          </Link>
           , um die ergriffenen Datensicherheits- und
           Datenvertraulichkeitsmaßnahmen zu überprüfen. <br />
           <br />
@@ -84,7 +85,7 @@ const homeContent = (handleShow, youtubeLink, slideLink) => {
             (or watch it directly below).
           </Fragment>,
           <Fragment key="p1-2">
-            You should also visit our <a href="/faq">FAQ section</a> which
+            You should also visit our <Link to="/faq">FAQ section</Link> which
             contain answers to most questions.
           </Fragment>,
         ],
@@ -98,7 +99,7 @@ const homeContent = (handleShow, youtubeLink, slideLink) => {
           </Fragment>,
           <Fragment key="p2-2">
             If you need any more info, don&apos;t hesitate to get in touch
-            directly: <a href="/feedback">feedback form</a>
+            directly: <Link to="/feedback">feedback form</Link>
           </Fragment>,
         ],
       },

@@ -7,7 +7,7 @@ const DataSecurityModal = ({ visible, onCancel, activeLang }) => {
   const text = uiText[activeLang];
   return (
     <Modal
-      title={<h3>Data Security Provisions</h3>}
+      title={<h3>{text.modalDataSecurity}</h3>}
       visible={visible}
       onCancel={onCancel}
       centered

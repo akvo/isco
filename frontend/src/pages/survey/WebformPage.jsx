@@ -6,7 +6,7 @@ import { api, store } from "../../lib";
 import { useNotification } from "../../util";
 import { intersection, isEmpty, orderBy } from "lodash";
 import ErrorPage from "../error/ErrorPage";
-import { CommentField } from "../../components";
+import { CommentField, SubmitWarningModal } from "../../components";
 
 const SaveButton = ({ onClick, isSaving }) => (
   <Button loading={isSaving} onClick={onClick}>
@@ -73,6 +73,9 @@ const WebformPage = ({
   // save savedData here, for loaded form this must be saved when loading form value
   const [savedData, setSavedData] = useState(null);
   const [initialAnswers, setInitialAnswers] = useState([]);
+
+  // warning modal
+  const [modalWarningVisible, setModalWarningVisible] = useState(false);
 
   // transform & filter form definition
   useEffect(() => {
@@ -350,41 +353,96 @@ const WebformPage = ({
     }
   };
 
+  const onCompleteFailed = () => {
+    setModalWarningVisible(true);
+  };
+
+  const handleOnForceSubmit = () => {
+    const payload = reorderAnswersRepeatIndex(formValue, answer);
+    setIsSubmitting(true);
+    let url = !savedData?.id
+      ? `/data/form/${formId}/1`
+      : `/data/${savedData.id}/1`;
+    if (isLocked) {
+      url = `${url}?locked_by=${user.id}`;
+    }
+    const endpoint = !savedData?.id
+      ? api.post(url, payload, {
+          "content-type": "application/json",
+        })
+      : api.put(url, payload, {
+          "content-type": "application/json",
+        });
+    endpoint
+      .then((res) => {
+        if (res.status === 208) {
+          setErrorPage(true);
+          return;
+        }
+        notify({
+          type: "success",
+          message: "Subission submitted successfully.",
+        });
+        setFormLoaded(null);
+        setFormValue({});
+      })
+      .catch((e) => {
+        console.error(e);
+        notify({
+          type: "error",
+          message: "Oops, something when wrong.",
+        });
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+        setReloadDropdownValue(true);
+      });
+  };
+
   if (errorPage) {
     return <ErrorPage status="submission-exist" showButton={false} />;
   }
 
   return (
-    <div id="webform">
-      {!isEmpty(formValue) ? (
-        <Webform
-          forms={formValue}
-          onChange={onChange}
-          onFinish={onFinish}
-          extraButton={
-            <>
-              <SaveButton
-                onClick={handleOnClickSaveButton}
-                isSaving={isSaving}
-              />
-              <LockedCheckbox
-                onChange={(val) => setIsLocked(val.target.checked)}
-                isLocked={isLocked}
-              />
-            </>
-          }
-          submitButtonSetting={{
-            loading: isSubmitting,
-            disabled: disableSubmit,
-          }}
-          initialValue={initialAnswers}
-        />
-      ) : (
-        <div className="loading-wrapper">
-          <Spin />
-        </div>
-      )}
-    </div>
+    <>
+      <div id="webform">
+        {!isEmpty(formValue) ? (
+          <Webform
+            forms={formValue}
+            onChange={onChange}
+            onFinish={onFinish}
+            onCompleteFailed={onCompleteFailed}
+            extraButton={
+              <>
+                <SaveButton
+                  onClick={handleOnClickSaveButton}
+                  isSaving={isSaving}
+                />
+                <LockedCheckbox
+                  onChange={(val) => setIsLocked(val.target.checked)}
+                  isLocked={isLocked}
+                />
+              </>
+            }
+            submitButtonSetting={{
+              loading: isSubmitting,
+              disabled: disableSubmit,
+            }}
+            initialValue={initialAnswers}
+          />
+        ) : (
+          <div className="loading-wrapper">
+            <Spin />
+          </div>
+        )}
+      </div>
+      {/* Modal */}
+      <SubmitWarningModal
+        visible={modalWarningVisible}
+        onOk={handleOnForceSubmit}
+        onCancel={() => setModalWarningVisible(false)}
+      />
+    </>
   );
 };
 
