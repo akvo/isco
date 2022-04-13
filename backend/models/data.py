@@ -82,9 +82,11 @@ class Data(Base):
     locked_by_user = relationship(User, foreign_keys=[locked_by])
     form_detail = relationship(Form, foreign_keys=[form])
 
-    def __init__(self, name: str, form: int, geo: List[float], locked_by: int,
-                 created_by: int, organisation: int, submitted_by: int,
+    def __init__(self, id: Optional[int], name: str, form: int,
+                 geo: List[float], locked_by: int, created_by: int,
+                 organisation: int, submitted_by: int,
                  updated: datetime, created: datetime, submitted: datetime):
+        self.id = id
         self.name = name
         self.form = form
         self.geo = geo

@@ -54,6 +54,7 @@ class Answer(Base):
     def __init__(self,
                  question: int,
                  created: datetime,
+                 id: Optional[int] = None,
                  data: Optional[int] = None,
                  text: Optional[str] = None,
                  value: Optional[float] = None,
@@ -61,6 +62,7 @@ class Answer(Base):
                  comment: Optional[str] = None,
                  repeat_index: Optional[int] = None,
                  updated: Optional[datetime] = None):
+        self.id = id
         self.question = question
         self.data = data
         self.text = text
