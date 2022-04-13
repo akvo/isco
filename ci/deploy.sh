@@ -1,20 +1,31 @@
 #!/usr/bin/env bash
+# Required env vars:
+#   IMAGE_PREFIX - The host (and path if necessary) to push the docker images to
+#   CLOUDSDK_CORE_PROJECT - ID of the GCP project
+#   CLOUDSDK_CONTAINER_CLUSTER - ID of the GKE cluster
+#   CLOUDSDK_CONTAINER_USE_CLIENT_CERTIFICATE -
+#   CLOUDSDK_COMPUTE_ZONE - the zone of the gke cluster
+#   GCP_DOCKER_HOST - Where to push the docker images to
+# Optional env vars:
+#   GCP_SERVICE_ACCOUNT_FILE - path to file containing GCP service account credentials
 set -exuo pipefail
 
 [[ "${CI_BRANCH}" !=  "main" && ! "${CI_TAG:=}" =~ promote.* ]] && { echo "Branch different than main and not a tag. Skip deploy"; exit 0; }
-[[ "${CI_PULL_REQUEST}" ==  "true" ]] && { echo "Pull request. Skip deploy"; exit 0; }
+[[ "${CI_PULL_REQUEST:-}" ==  "true" ]] && { echo "Pull request. Skip deploy"; exit 0; }
+
+test -n "${CLOUDSDK_CORE_PROJECT}"
+test -n "${CLOUDSDK_CONTAINER_CLUSTER}"
+test -n "${CLOUDSDK_CONTAINER_USE_CLIENT_CERTIFICATE}"
+test -n "${CLOUDSDK_COMPUTE_ZONE}"
+test -n "${GCP_DOCKER_HOST}"
 
 auth () {
-    gcloud auth activate-service-account --key-file=/home/semaphore/.secrets/gcp.json
-    gcloud config set project akvo-lumen
-    gcloud config set container/cluster europe-west1-d
-    gcloud config set compute/zone europe-west1-d
-    gcloud config set container/use_client_certificate False
-    gcloud auth configure-docker "eu.gcr.io"
+    gcloud auth activate-service-account --key-file="${GCP_SERVICE_ACCOUNT_FILE:-/home/semaphore/.secrets/gcp.json}"
+    gcloud auth configure-docker "${GCP_DOCKER_HOST}"
 }
 
 push_image () {
-    prefix="eu.gcr.io/akvo-lumen/isco"
+    prefix="${IMAGE_PREFIX}"
     docker push "${prefix}/${1}:${CI_COMMIT}"
 }
 
@@ -29,7 +40,9 @@ prepare_deployment () {
 
     sed "s/\${CI_COMMIT}/${CI_COMMIT}/g;" \
         ci/k8s/deployment.template.yml \
-        | sed "s/\${BUCKET_FOLDER}/${cluster}/g;" > ci/k8s/deployment.yml
+        | sed "s/\${BUCKET_FOLDER}/${cluster}/g;" \
+        | sed "s|\${IMAGE_PREFIX}|${IMAGE_PREFIX}|g;" \
+        > ci/k8s/deployment.yml
 }
 
 apply_deployment () {
