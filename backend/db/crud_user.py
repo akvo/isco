@@ -1,3 +1,4 @@
+from uuid import uuid4
 from fastapi import HTTPException, status
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
@@ -27,7 +28,7 @@ def add_user(session: Session, payload: UserBase) -> UserDict:
                 password=payload.password,
                 role=payload.role,
                 organisation=payload.organisation,
-                invitation=payload.invitation,
+                invitation=str(uuid4()),
                 questionnaires=payload.questionnaires)
     session.add(user)
     session.commit()
