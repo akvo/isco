@@ -7,7 +7,7 @@ agent:
     os_image: ubuntu1804
 global_job_config:
   secrets:
-    - name: GCP
+    - name: isco
     - name: docker-hub-credentials
     - name: coveralls
   prologue:
