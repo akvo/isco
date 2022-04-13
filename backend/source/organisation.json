@@ -33,5 +33,47 @@
     "isco": ["DISCO"],
     "name": "staff DISCO",
     "active": true
+  },
+  {
+    "code": null,
+    "member": ["Big Industry", "DISCO - Large Manufacturers"],
+    "isco": ["GISCO", "DISCO", "Beyond Chocolate"],
+    "name": "Mars",
+    "active": true
+  },
+  {
+    "code": null,
+    "member": ["Big Industry", "DISCO - Large Manufacturers"],
+    "isco": ["GISCO", "DISCO", "Beyond Chocolate"],
+    "name": "Mondelez",
+    "active": true
+  },
+  {
+    "code": null,
+    "member": ["Standard Setting Organisation"],
+    "isco": ["GISCO", "Beyond Chocolate"],
+    "name": "TransFair e.V. (Fairtrade Deutschland)",
+    "active": true
+  },
+  {
+    "code": null,
+    "member": ["Big Industry"],
+    "isco": ["GISCO"],
+    "name": "Ludwig Weinrich GmbH & Co. KG",
+    "active": true
+  },
+  {
+    "code": null,
+    "member": ["Civil Society"],
+    "isco": ["GISCO"],
+    "name": "INKOTA-Netzwerk e.V.",
+    "active": true
+  },
+  {
+    "code": null,
+    "member": ["Retail"],
+    "isco": ["Beyond Chocolate"],
+    "name": "Colruyt Group",
+    "active": true
   }
 ]
