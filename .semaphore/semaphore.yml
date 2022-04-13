@@ -12,6 +12,7 @@ global_job_config:
     - name: coveralls
   prologue:
     commands:
+      - checkout
       # Export all default variables
       - set -a && source .env && set +a
       - echo "${DOCKER_PASSWORD}" | docker login --username
@@ -31,7 +32,6 @@ blocks:
     task:
       prologue:
         commands:
-          - checkout
           - cache restore "npm-$(checksum frontend/package.json)"
           - cache restore "node-modules-$(checksum frontend/package.json)"
           - cache restore "pip-$(checksum backend/requirements.txt)"
@@ -57,5 +57,4 @@ blocks:
       jobs:
         - name: Promote to production
           commands:
-            - checkout
             - ./ci/deploy.sh
