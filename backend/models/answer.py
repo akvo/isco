@@ -32,7 +32,8 @@ class AnswerDict(TypedDict):
 
 class Answer(Base):
     __tablename__ = "answer"
-    id = Column(Integer, primary_key=True, index=True, nullable=True)
+    id = Column(Integer, primary_key=True, index=True,
+                nullable=True, autoincrement=True)
     question = Column(Integer,
                       ForeignKey('question.id',
                                  onupdate="CASCADE",
@@ -54,7 +55,6 @@ class Answer(Base):
     def __init__(self,
                  question: int,
                  created: datetime,
-                 id: Optional[int] = None,
                  data: Optional[int] = None,
                  text: Optional[str] = None,
                  value: Optional[float] = None,
@@ -62,7 +62,6 @@ class Answer(Base):
                  comment: Optional[str] = None,
                  repeat_index: Optional[int] = None,
                  updated: Optional[datetime] = None):
-        self.id = id
         self.question = question
         self.data = data
         self.text = text
