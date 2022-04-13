@@ -85,6 +85,7 @@ const AddUser = ({
           setSending(false);
           setIsAddUserVisible(false);
           setReload(reload + 1);
+          form.resetFields();
         })
         .catch(() => {
           setSending(false);
@@ -111,6 +112,7 @@ const AddUser = ({
           setSending(false);
           setIsAddUserVisible(false);
           setReload(reload + 1);
+          form.resetFields();
         })
         .catch(() => {
           setSending(false);
