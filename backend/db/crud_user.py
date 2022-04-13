@@ -108,6 +108,7 @@ def accept_invitation(session: Session,
     if not user:
         return None
     user.password = password
+    user.email_verified = datetime.now()
     session.commit()
     session.flush()
     session.refresh(user)
