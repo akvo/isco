@@ -113,7 +113,9 @@ const Header = ({ className = "header", ...props }) => {
               {isLoggedIn && (
                 <>
                   <Link to="/survey">{text.navSurvey}</Link>
-                  <Link to="#">{text.navDownload}</Link>
+                  <Link to="#" className="dev">
+                    {text.navDownload}
+                  </Link>
                 </>
               )}
               <Link to="/definition">{text.navDefinitions}</Link>
@@ -121,7 +123,9 @@ const Header = ({ className = "header", ...props }) => {
                 <>
                   <Link to="/feedback">{text.navFeedback}</Link>
                   <Link to="/impressum">{text.navImpressum}</Link>
-                  <Link to="#">{text.navFaq}</Link>
+                  <Link to="#" className="dev">
+                    {text.navFaq}
+                  </Link>
                 </>
               )}
             </Space>
