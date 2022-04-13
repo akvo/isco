@@ -3,8 +3,7 @@ import "./style.scss";
 import { useNavigate } from "react-router-dom";
 import { Row, Col, Space, Form, Input, Button, Checkbox } from "antd";
 import Auth from "./Auth";
-import { api, store } from "../../lib";
-import { useCookies } from "react-cookie";
+import { api } from "../../lib";
 import { useParams } from "react-router-dom";
 import { useNotification } from "../../util";
 
@@ -25,17 +24,15 @@ const Invitation = () => {
   });
   const [checkedList, setCheckedList] = useState([]);
   const [btnLoading, setBtnLoading] = useState(false);
-  const [cookies, setCookie, removeCookie] = useCookies(["AUTH_TOKEN"]);
   const { notify } = useNotification();
   const navigate = useNavigate();
 
   useEffect(() => {
     api.get(`/user/invitation/${invitationId}`).then((res) => {
-      removeCookie("AUTH_TOKEN");
       api.setToken(null);
       setGuess(res.data);
     });
-  }, [invitationId, removeCookie]);
+  }, [invitationId]);
 
   const onChange = ({ target }) => {
     const criteria = checkBoxOptions
@@ -51,20 +48,16 @@ const Invitation = () => {
     setBtnLoading(true);
     api
       .post(`/user/invitation/${invitationId}?password=${password}`)
-      .then((res) => {
-        const { data } = res;
-        setCookie("AUTH_TOKEN", data?.access_token, { path: "/" });
-        api.setToken(cookies?.AUTH_TOKEN);
-        store.update((s) => {
-          s.isLoggedIn = true;
+      .then(() => {
+        notify({
+          type: "success",
+          message: "Your password is successfully updated.",
         });
-        setTimeout(() => {
-          navigate("/home");
-        }, 1000);
+        navigate("/login");
       })
       .catch(() => {
         notify({
-          type: "An error occured",
+          type: "error",
           message: "Internal Server Error",
         });
       })
@@ -160,7 +153,7 @@ const Invitation = () => {
             onClick={() => form.submit()}
             loading={btnLoading}
           >
-            Set Password and Login
+            Set Password
           </Button>
         </Form>
       </Space>
