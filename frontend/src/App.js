@@ -11,6 +11,7 @@ import {
   Login,
   Register,
   ResetPassword,
+  EmailNotVerified,
   ErrorPage,
   Survey,
   Feedback,
@@ -51,9 +52,10 @@ const App = () => {
 
   useEffect(() => {
     if (
-      !location.pathname.includes("/register") ||
-      !location.pathname.includes("/forgot-password") ||
-      !location.pathname.includes("/invitation")
+      (!location.pathname.includes("/register") ||
+        !location.pathname.includes("/forgot-password") ||
+        !location.pathname.includes("/invitation")) &&
+      !location.pathname.includes("/login")
     ) {
       if (cookies?.AUTH_TOKEN && cookies?.AUTH_TOKEN !== "undefined") {
         api.setToken(cookies.AUTH_TOKEN);
@@ -80,8 +82,11 @@ const App = () => {
                 type: "error",
                 message: "Your session has expired",
               });
+              navigate("/login");
             }
-            navigate("/login");
+            if (status === 403) {
+              navigate("/verify_email");
+            }
           });
       }
     }
@@ -139,6 +144,7 @@ const App = () => {
             path="/reset-password/:tokenId"
             element={<ResetPassword />}
           />
+          <Route exact path="/verify_email" element={<EmailNotVerified />} />
           <Route exact path="/verify_email/:email" element={<Login />} />
           <Route exact path="/definition" element={<Definition />} />
           <Route exact path="/" element={<Secure element={Home} />} />

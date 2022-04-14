@@ -8,6 +8,40 @@ import { useCookies } from "react-cookie";
 import { useNotification } from "../../util";
 import { uiText } from "../../static";
 
+const VerifyEmailMessage = ({ email, verifyStatus }) => {
+  return (
+    <>
+      {email && verifyStatus === 200 && (
+        <Row>
+          <Alert
+            showIcon
+            type="success"
+            message="Your email has been verified, please login to continue."
+          />
+        </Row>
+      )}
+      {email && verifyStatus === 401 && (
+        <Row>
+          <Alert
+            showIcon
+            type="error"
+            message="Your link was expired. Please login to resend verification email."
+          />
+        </Row>
+      )}
+      {email && ![200, 401].includes(verifyStatus) && (
+        <Row>
+          <Alert
+            showIcon
+            type="error"
+            message="Something went wrong. Please contact admin for more information."
+          />
+        </Row>
+      )}
+    </>
+  );
+};
+
 const Login = () => {
   const { client_id, client_secret } = window.__ENV__;
   const { email } = useParams();
@@ -62,10 +96,9 @@ const Login = () => {
         api.setToken(cookies?.AUTH_TOKEN);
         store.update((s) => {
           s.isLoggedIn = true;
+          s.user = data.user;
         });
-        setTimeout(() => {
-          navigate("/home");
-        }, 1000);
+        navigate("/home");
       })
       .catch(() => {
         notify({
@@ -130,33 +163,7 @@ const Login = () => {
   return (
     <Auth>
       <Space direction="vertical">
-        {verifyStatus === 200 && (
-          <Row>
-            <Alert
-              showIcon
-              type="success"
-              message="Your email has been verified, please login to continue."
-            />
-          </Row>
-        )}
-        {verifyStatus === 401 && (
-          <Row>
-            <Alert
-              showIcon
-              type="error"
-              message="Your link was expired. Please login to resend verification email."
-            />
-          </Row>
-        )}
-        {![200, 401].includes(verifyStatus) && (
-          <Row>
-            <Alert
-              showIcon
-              type="error"
-              message="Something went wrong. Please contact admin for more information."
-            />
-          </Row>
-        )}
+        <VerifyEmailMessage email={email} verifyStatus={verifyStatus} />
         <Row align="middle" justify="space-between" gutter={[12, 12]}>
           <Col span={12} align="start">
             <h2>{resetPassword ? text.formForgotPwd : text.formLogin}</h2>

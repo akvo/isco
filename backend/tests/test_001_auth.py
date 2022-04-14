@@ -199,6 +199,7 @@ class TestUserAuthentication():
         session.flush()
         session.refresh(user)
         assert user.invitation is None
+        assert res['user']["email"] == "support@akvo.org"
 
     @pytest.mark.asyncio
     async def test_verify_user_email(self, app: FastAPI, session: Session,
