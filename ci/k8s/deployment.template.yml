@@ -1,0 +1,133 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: isco
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      run: isco
+  template:
+    metadata:
+      labels:
+        run: isco
+        isco-version: "${CI_COMMIT}"
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '3000'
+    spec:
+      containers:
+        - name: frontend
+          image: ${IMAGE_PREFIX}/frontend:${CI_COMMIT}
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "32Mi"
+            limits:
+              cpu: "200m"
+              memory: "64Mi"
+        - name: backend
+          image: ${IMAGE_PREFIX}/backend:${CI_COMMIT}
+          ports:
+            - containerPort: 5000
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: isco
+                  key: database-url
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: isco
+                  key: secret-key
+            - name: WEBDOMAIN
+              valueFrom:
+                secretKeyRef:
+                  name: isco
+                  key: webdomain
+            - name: BUCKET_FOLDER
+              value: ${BUCKET_FOLDER}
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /secrets/credentials.json
+          volumeMounts:
+            - name: isco-secrets
+              mountPath: /secrets/credentials.json
+              subPath: backend-service-account.json
+              readOnly: true
+          readinessProbe:
+            httpGet:
+              path: /health-check
+              port: 5000
+            initialDelaySeconds: 30
+          livenessProbe:
+            httpGet:
+              path: /health-check
+              port: 5000
+            initialDelaySeconds: 30
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "1024Mi"
+
+        - name: cloud-sql-proxy
+          spec:
+          # https://cloud.google.com/sql/docs/mysql/connect-kubernetes-engine#run_the_as_a_sidecar
+          # It is recommended to use the latest version of the Cloud SQL proxy
+          # Make sure to update on a regular schedule!
+          image: eu.gcr.io/cloudsql-docker/gce-proxy:1.30.0
+          command:
+            - "/cloud_sql_proxy"
+
+            # By default, the proxy will write all logs to stderr. In some
+            # environments, anything printed to stderr is consider an error. To
+            # disable this behavior and write all logs to stdout (except errors
+            # which will still go to stderr), use:
+            - "-log_debug_stdout"
+
+            # Replace DB_PORT with the port the proxy should listen on
+            # Defaults: MySQL: 3306, Postgres: 5432, SQLServer: 1433
+            - "-instances=$(GOOGLE_PROJECT):$(GOOGLE_SQL_COMPUTE_ZONE):$(GOOGLE_SQL_DB_INSTANCE)=tcp:5432"
+            - "-credential_file=/secrets/cloudsql/credentials.json"
+          securityContext:
+            # The default Cloud SQL proxy image runs as the
+            # "nonroot" user and group (uid: 65532) by default.
+            runAsNonRoot: true
+          # https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+          env:
+            - name: GOOGLE_SQL_COMPUTE_ZONE
+              valueFrom:
+                configMapKeyRef:
+                  name: isco
+                  key: google-sql-compute-zone
+            - name: GOOGLE_SQL_DB_INSTANCE
+              valueFrom:
+                configMapKeyRef:
+                  name: isco
+                  key: google-sql-db-instance
+            - name: GOOGLE_PROJECT
+              valueFrom:
+                configMapKeyRef:
+                  name: isco
+                  key: google-project
+          volumeMounts:
+            - name: "isco-secrets"
+              mountPath: "/secrets/cloudsql/credentials.json"
+              subPath: "cloudsql-service-account.json"
+              readOnly: true
+
+      volumes:
+        - name: isco-secrets
+          secret:
+            secretName: isco

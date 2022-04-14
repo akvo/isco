@@ -64,7 +64,7 @@ export CI_COMMIT='local'
 ./ci/build.sh
 ```
 
-Above command will generate two docker images with prefix `eu.gcr.io/akvo-lumen/isco` for backend and frontend
+Above command will generate two docker images for the backend and frontend
 
 ```bash
 docker-compose -f docker-compose.yml -f docker-compose.ci.yml up -d

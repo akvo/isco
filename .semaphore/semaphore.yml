@@ -7,11 +7,12 @@ agent:
     os_image: ubuntu1804
 global_job_config:
   secrets:
-    - name: GCP
+    - name: isco
     - name: docker-hub-credentials
     - name: coveralls
   prologue:
     commands:
+      - checkout
       - echo "${DOCKER_PASSWORD}" | docker login --username
         "${DOCKER_USERNAME}" --password-stdin
       - export CI_COMMIT="${SEMAPHORE_GIT_SHA:0:7}"
@@ -24,12 +25,9 @@ global_job_config:
       - export COVERALLS_REPO_TOKEN="${COVERALLS_ISCO_TOKEN}"
 blocks:
   - name: 'Build, Test & Deploy'
-    skip:
-      when: "tag =~ '.*'"
     task:
       prologue:
         commands:
-          - checkout
           - cache restore "npm-$(checksum frontend/package.json)"
           - cache restore "node-modules-$(checksum frontend/package.json)"
           - cache restore "pip-$(checksum backend/requirements.txt)"
@@ -48,12 +46,7 @@ blocks:
           commands:
             - ./ci/build.sh
             - ./ci/deploy.sh
+
+promotions:
   - name: "Promote to production"
-    run:
-      when: "tag =~ '.*'"
-    task:
-      jobs:
-        - name: Promote to production
-          commands:
-            - checkout
-            - ./ci/deploy.sh
+    pipeline_file: prod.yml
