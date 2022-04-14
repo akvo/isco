@@ -11,6 +11,7 @@ const checkBoxOptions = [
   { name: "Lowercase Character", re: /[a-z]/ },
   { name: "Numbers", re: /\d/ },
   { name: "Special Character", re: /[-._!"`'#%&,:;<>=@{}~$()*+/?[\]^|]/ },
+  { name: "Min 8 Character", re: /[^ ]{8}/ },
 ];
 
 const Invitation = () => {
@@ -101,7 +102,7 @@ const Invitation = () => {
               },
               () => ({
                 validator() {
-                  if (checkedList.length === 3) {
+                  if (checkedList.length === 4) {
                     return Promise.resolve();
                   }
                   return Promise.reject(new Error("False Password Criteria"));
