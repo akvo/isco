@@ -1,7 +1,7 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import "./style.scss";
-import { useNavigate } from "react-router-dom";
-import { Row, Col, Space, Form, Input, Button } from "antd";
+import { useNavigate, useParams } from "react-router-dom";
+import { Row, Col, Space, Form, Input, Button, Alert } from "antd";
 import Auth from "./Auth";
 import { api, store } from "../../lib";
 import { useCookies } from "react-cookie";
@@ -10,6 +10,9 @@ import { uiText } from "../../static";
 
 const Login = () => {
   const { client_id, client_secret } = window.__ENV__;
+  const { email } = useParams();
+  const [verifyStatus, setVerifyStatus] = useState(null);
+
   const [form] = Form.useForm();
   const [btnLoading, setBtnLoading] = useState(false);
   const [resetPassword, setResetPassword] = useState(false);
@@ -24,6 +27,20 @@ const Login = () => {
   const text = useMemo(() => {
     return uiText[activeLang];
   }, [activeLang]);
+
+  useEffect(() => {
+    if (email) {
+      api
+        .put(`/user/verify_email?email=${email}`)
+        .then((res) => {
+          setVerifyStatus(res.status);
+        })
+        .catch((e) => {
+          const { status } = e.response;
+          setVerifyStatus(status);
+        });
+    }
+  }, [email]);
 
   const handleLoginOnFinish = (values) => {
     setBtnLoading(true);
@@ -113,6 +130,33 @@ const Login = () => {
   return (
     <Auth>
       <Space direction="vertical">
+        {verifyStatus === 200 && (
+          <Row>
+            <Alert
+              showIcon
+              type="success"
+              message="Your email has been verified, please login to continue."
+            />
+          </Row>
+        )}
+        {verifyStatus === 401 && (
+          <Row>
+            <Alert
+              showIcon
+              type="error"
+              message="Your link was expired. Please login to resend verification email."
+            />
+          </Row>
+        )}
+        {![200, 401].includes(verifyStatus) && (
+          <Row>
+            <Alert
+              showIcon
+              type="error"
+              message="Something went wrong. Please contact admin for more information."
+            />
+          </Row>
+        )}
         <Row align="middle" justify="space-between" gutter={[12, 12]}>
           <Col span={12} align="start">
             <h2>{resetPassword ? text.formForgotPwd : text.formLogin}</h2>

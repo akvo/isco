@@ -139,6 +139,7 @@ const App = () => {
             path="/reset-password/:tokenId"
             element={<ResetPassword />}
           />
+          <Route exact path="/verify_email/:email" element={<Login />} />
           <Route exact path="/definition" element={<Definition />} />
           <Route exact path="/" element={<Secure element={Home} />} />
           <Route exact path="/home" element={<Secure element={Home} />} />
