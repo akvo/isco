@@ -12,7 +12,7 @@ services:
       - ./db/script:/script:ro
     restart: always
   backend:
-    image: ${IMAGE_PREFIX}/backend:latest
+    image: isco/backend:latest
     volumes:
       - ./:/app:delegated
     working_dir: /app/backend

@@ -66,15 +66,15 @@ frontend_build () {
        bash release.sh
 
     docker build \
-        --tag "${IMAGE_PREFIX}/frontend:latest" \
-        --tag "${IMAGE_PREFIX}/frontend:${CI_COMMIT}" frontend
+        --tag "isco/frontend:latest" \
+        --tag "isco/frontend:${CI_COMMIT}" frontend
 }
 
 backend_build () {
 
     docker build \
-        --tag "${IMAGE_PREFIX}/backend:latest" \
-        --tag "${IMAGE_PREFIX}/backend:${CI_COMMIT}" backend
+        --tag "isco/backend:latest" \
+        --tag "isco/backend:${CI_COMMIT}" backend
 
     # Test and Code Quality
     dc down

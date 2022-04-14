@@ -13,8 +13,6 @@ global_job_config:
   prologue:
     commands:
       - checkout
-      # Export all default variables
-      - set -a && source .env && set +a
       - echo "${DOCKER_PASSWORD}" | docker login --username
         "${DOCKER_USERNAME}" --password-stdin
       - export CI_COMMIT="${SEMAPHORE_GIT_SHA:0:7}"

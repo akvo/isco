@@ -60,10 +60,7 @@ docker volume rm isco-docker-sync
 ## Production
 
 ```bash
-set -a
-source .env
-CI_COMMIT='local'
-set +a
+export CI_COMMIT='local'
 ./ci/build.sh
 ```
 
