@@ -6,6 +6,13 @@ image_url = f"{webdomain}/email-icons"
 
 
 class EmailText(enum.Enum):
+    register = {
+        "title": "Registration",
+        "subject": "Registration",
+        "body": None,
+        "message": None,
+        "image": None
+    }
     invitation = {
         "title": "Invitation",
         "subject": "Invitation",

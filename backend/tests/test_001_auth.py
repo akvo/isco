@@ -203,7 +203,9 @@ class TestUserAuthentication():
     @pytest.mark.asyncio
     async def test_verify_user_email(self, app: FastAPI, session: Session,
                                      client: AsyncClient) -> None:
-        res = await client.put(app.url_path_for("user:verify_email", id=1))
+        res = await client.put(
+            app.url_path_for("user:verify_email"),
+            params={"email": "support@akvo.org"})
         assert res.status_code == 200
         res = res.json()
         assert res['email_verified'] is not None

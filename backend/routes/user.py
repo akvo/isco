@@ -2,6 +2,8 @@ import os
 from math import ceil
 from middleware import Token, authenticate_user
 from middleware import create_access_token, verify_user
+from middleware import get_password_hash, verify_admin, verify_super_admin
+from middleware import decode_token, verify_token
 from fastapi import Depends, HTTPException, status, APIRouter, Request, Query
 from fastapi import Form
 from fastapi.security import HTTPBearer
@@ -16,7 +18,6 @@ from models.user import User
 from models.organisation_member import OrganisationMember
 from pydantic import SecretStr
 from db import crud_user, crud_organisation
-from middleware import get_password_hash, verify_admin, verify_super_admin
 from typing import List, Optional
 from util.mailer import Email, MailTypeEnum
 
@@ -128,26 +129,44 @@ def register(req: Request,
              session: Session = Depends(get_session)):
     if (payload.password):
         payload.password = get_password_hash(payload.password)
-    user = crud_user.add_user(session=session, payload=payload)
+    user = crud_user.add_user(session=session,
+                              payload=payload,
+                              invitation=invitation)
+    recipients = [user.recipient]
+    user = user.serialize
     if invitation:
         # Send invitation email
-        url = f"{webdomain}/invitation/{user.serialize['invitation']}"
-        email = Email(recipients=[user.recipient],
+        url = f"{webdomain}/invitation/{user['invitation']}"
+        email = Email(recipients=recipients,
                       type=MailTypeEnum.invitation,
                       body=url)
         email.send
-    return user.serialize
+    if not invitation:
+        # send email register success with email verification link
+        email_token = create_access_token(data={"email": user['email']})
+        url = f"{webdomain}/verify_email/{email_token}"
+        email = Email(recipients=recipients,
+                      type=MailTypeEnum.register,
+                      body=url)
+        email.send
+        # also send email to admin?
+    return user
 
 
-@user_route.put("/user/verify_email/{id:path}",
+@user_route.put("/user/verify_email",
                 response_model=UserDict,
                 summary="verify user email",
                 name="user:verify_email",
                 tags=["User"])
 def verify_email(req: Request,
-                 id: int,
+                 email: str,
                  session: Session = Depends(get_session)):
-    user = crud_user.verify_user_email(session=session, id=id)
+    TESTING = os.environ.get("TESTING")
+    if TESTING:
+        user = crud_user.verify_user_email(session=session, email=email)
+        return user.serialize
+    decode = verify_token(decode_token(email))
+    user = crud_user.verify_user_email(session=session, email=decode["email"])
     return user.serialize
 
 

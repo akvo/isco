@@ -48,7 +48,8 @@ class TestUserDisco():
     async def test_verify_user_email(self, app: FastAPI, session: Session,
                                      client: AsyncClient) -> None:
         res = await client.put(
-            app.url_path_for("user:verify_email", id=2))
+            app.url_path_for("user:verify_email"),
+            params={"email": "galih@test.org"})
         assert res.status_code == 200
         res = res.json()
         assert res['email_verified'] is not None

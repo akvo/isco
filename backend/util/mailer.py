@@ -61,9 +61,9 @@ def format_attachment(file):
 
 
 class MailTypeEnum(enum.Enum):
+    register = "register"
     invitation = "invitation"
     inform_user = "inform_user"
-    verify_email = "verify_email"
 
 
 class Email:
