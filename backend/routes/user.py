@@ -11,6 +11,7 @@ from fastapi.security import HTTPBasicCredentials as credentials
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
+from sqlalchemy import or_
 from db.connection import get_session
 from models.user import UserDict, UserBase, UserOrgDict, UserInvitation
 from models.user import UserResponse, UserRole, UserUpdateByAdmin
@@ -29,11 +30,11 @@ oauth2_scopes = ["openid", "email"]
 webdomain = os.environ["WEBDOMAIN"]
 
 
-def send_verification_email(user, recipients):
+def send_verification_email(user, recipients, type=MailTypeEnum.register):
     email_token = create_access_token(data={"email": user['email']})
     url = f"{webdomain}/verify_email/{email_token}"
     email = Email(recipients=recipients,
-                  type=MailTypeEnum.register,
+                  type=type,
                   body=url)
     email.send
 
@@ -156,6 +157,18 @@ def register(req: Request,
         # send email register success with email verification link
         send_verification_email(user, recipients)
         # also send email to admin?
+        admins = session.query(User).filter(
+                User.organisation == user['organisation'],
+            ).filter(
+                or_(
+                    User.role == UserRole.secretariat_admin,
+                    User.role == UserRole.member_admin,
+                )).all()
+        body = f"{user['name']} ({user['email']}) has been registered."
+        email = Email(recipients=[a.recipient for a in admins],
+                      type=MailTypeEnum.register,
+                      body=body)
+        email.send
     return user
 
 
@@ -341,5 +354,7 @@ def resend_verification_email(req: Request, email: str,
                               session: Session = Depends(get_session)):
     # resend email register success with email verification link
     user = crud_user.get_user_by_email(session=session, email=email)
-    send_verification_email(user.serialize, [user.recipient])
+    send_verification_email(user.serialize,
+                            [user.recipient],
+                            MailTypeEnum.verify_email)
     return user.serialize

@@ -20,3 +20,10 @@ class EmailText(enum.Enum):
         "message": None,
         "image": None
     }
+    verify_email = {
+        "title": "Email Verification",
+        "subject": "Email Verification",
+        "body": None,
+        "message": None,
+        "image": None
+    }
