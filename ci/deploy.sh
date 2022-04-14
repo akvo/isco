@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 # The required env vars require a registry_prefix depending on the deploy environment:
 #   prod: PROD_
 #   test: TEST_
@@ -13,14 +12,13 @@
 #   GCP_DOCKER_HOST - Where to push the docker images to
 #   GCP_SERVICE_ACCOUNT_FILE - path to file containing GCP service account credentials
 #   IMAGE_PREFIX - The host (and path if necessary) to push the docker images to
+#
+# Optional env vars:
+#   PROD_DEPLOY - Make this a deployment to production
 set -exuo pipefail
 
-#[[ "${CI_BRANCH}" !=  "main" && ! "${CI_TAG:=}" =~ promote.* ]] && { echo "Branch different than main and not a tag. Skip deploy"; exit 0; }
-#[[ "${CI_PULL_REQUEST:-}" ==  "true" ]] && { echo "Pull request. Skip deploy"; exit 0; }
-
-if [[ "${CI_TAG:=}" =~ promote.* ]]; then
-  PROD_DEPLOY=1
-fi
+[[ "${CI_BRANCH}" !=  "main" ]] && { echo "Branch must be 'main' to deploy"; exit 0; }
+[[ "${CI_PULL_REQUEST:-}" ==  "true" ]] && { echo "Pull request. Skip deploy"; exit 0; }
 
 export CLOUDSDK_CONTAINER_USE_CLIENT_CERTIFICATE=False
 
@@ -74,7 +72,7 @@ apply_deployment () {
 }
 
 set +x  # Disable printing the variable values; values might be secret
-if [[ -n "${PROD_DEPLOY:=}" ]] ; then
+if [[ -n "${PROD_DEPLOY:-}" ]] ; then
   generate_vars "PROD"
 else
   generate_vars "TEST"
@@ -83,7 +81,7 @@ set -x  # Renable it
 
 auth
 
-if [[ -z "${CI_TAG:=}" ]]; then
+if [[ -z "${PROD_DEPLOY:-}" ]] ; then
     push_image backend
     push_image frontend
 fi

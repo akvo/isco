@@ -25,8 +25,6 @@ global_job_config:
       - export COVERALLS_REPO_TOKEN="${COVERALLS_ISCO_TOKEN}"
 blocks:
   - name: 'Build, Test & Deploy'
-    skip:
-      when: "tag =~ '.*'"
     task:
       prologue:
         commands:
@@ -48,11 +46,7 @@ blocks:
           commands:
             - ./ci/build.sh
             - ./ci/deploy.sh
+
+promotions:
   - name: "Promote to production"
-    run:
-      when: "tag =~ '.*'"
-    task:
-      jobs:
-        - name: Promote to production
-          commands:
-            - ./ci/deploy.sh
+    pipeline_file: prod.yml

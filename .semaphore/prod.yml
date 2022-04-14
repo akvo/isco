@@ -1,0 +1,29 @@
+---
+version: v1.0
+name: ISCO promotion
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+global_job_config:
+  secrets:
+    - name: isco
+  prologue:
+    commands:
+      - checkout
+      - export CI_COMMIT="${SEMAPHORE_GIT_SHA:0:7}"
+      - export CI_BRANCH="${SEMAPHORE_GIT_BRANCH}"
+      - export CI_TAG="${SEMAPHORE_GIT_TAG_NAME}"
+      - export CI_PULL_REQUEST="${SEMAPHORE_GIT_REF_TYPE/pull-request/true}"
+      - export CI_COMMIT_RANGE="${SEMAPHORE_GIT_COMMIT_RANGE}"
+      - export CLOUDSDK_CORE_DISABLE_PROMPTS=1
+      - export PROD_DEPLOY=1
+blocks:
+  - name: 'Promotion'
+    task:
+      jobs:
+        - name: Promote to production
+          run:
+            when: "branch = 'main'"
+          commands:
+            - ./ci/deploy.sh
