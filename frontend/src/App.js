@@ -49,7 +49,10 @@ const App = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!location.pathname.includes("/register")) {
+    if (
+      !location.pathname.includes("/register") ||
+      !location.pathname.includes("/invitation")
+    ) {
       if (cookies?.AUTH_TOKEN && cookies?.AUTH_TOKEN !== "undefined") {
         api.setToken(cookies.AUTH_TOKEN);
         api

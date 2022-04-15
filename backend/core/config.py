@@ -1,4 +1,6 @@
-from fastapi import FastAPI, Request
+import os
+from fastapi import FastAPI, Request, Response
+from fastapi.responses import FileResponse
 from middleware import decode_token
 from routes.organisation import organisation_route
 from routes.user import user_route
@@ -29,6 +31,8 @@ app = FastAPI(
     },
 )
 
+JS_FILE = "./config.js"
+
 app.include_router(organisation_route)
 app.include_router(user_route)
 app.include_router(member_type_route)
@@ -52,6 +56,22 @@ def read_main():
 @app.get("/health-check", tags=["Dev"])
 def health_check():
     return "OK"
+
+
+@app.get("/config.js",
+         response_class=FileResponse,
+         tags=["Config"],
+         name="config.js",
+         description="static javascript config")
+async def main(res: Response):
+    if not os.path.exists(JS_FILE):
+        js = "var __ENV__={"
+        js += "client_id:\"{}\"".format(os.environ["CLIENT_ID"])
+        js += ", client_secret:\"{}\"".format(os.environ["CLIENT_SECRET"])
+        js += "}"
+        open(JS_FILE, 'w').write(js)
+    res.headers["Content-Type"] = "application/x-javascript; charset=utf-8"
+    return JS_FILE
 
 
 @app.middleware("http")

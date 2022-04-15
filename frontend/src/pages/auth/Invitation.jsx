@@ -47,8 +47,10 @@ const Invitation = () => {
 
   const onFinish = ({ password }) => {
     setBtnLoading(true);
+    const payload = new FormData();
+    payload.append("password", password);
     api
-      .post(`/user/invitation/${invitationId}?password=${password}`)
+      .post(`/user/invitation/${invitationId}`, payload)
       .then(() => {
         notify({
           type: "success",

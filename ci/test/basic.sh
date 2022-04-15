@@ -22,5 +22,6 @@ http_get() {
 }
 
 http_get "http://localhost" 200
+http_get "http://localhost/config.js" 200
 http_get "http://localhost/api/" 200
 http_get "http://localhost/api/docs" 200
