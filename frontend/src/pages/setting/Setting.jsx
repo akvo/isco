@@ -1,14 +1,20 @@
 import React, { useMemo, useEffect, useState } from "react";
 import "./style.scss";
 import { Row, Col, Card, Form, Input, Button, Checkbox, Divider } from "antd";
-import { store } from "../../lib";
+import { api, store } from "../../lib";
 import { uiText } from "../../static";
 import { passwordCheckBoxOptions } from "../../lib/util";
+import { useNotification } from "../../util";
+import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
 
 const Setting = () => {
   const [form] = Form.useForm();
   const { user, language } = store.useState((s) => s);
   const { active: activeLang } = language;
+  const { notify } = useNotification();
+  const navigate = useNavigate();
+  const [cookies, removeCookie] = useCookies(["AUTH_TOKEN"]);
 
   const [btnLoading, setBtnLoading] = useState(false);
   const [checkedList, setCheckedList] = useState([]);
@@ -35,12 +41,45 @@ const Setting = () => {
     }
   };
 
-  const onFinish = (values) => {
-    console.info(values);
+  const onFinish = ({ old_password, new_password }) => {
     setBtnLoading(true);
-    setTimeout(() => {
-      setBtnLoading(false);
-    }, 1000);
+    const payload = new FormData();
+    payload.append("old_password", old_password);
+    payload.append("new_password", new_password);
+    api
+      .put("/user/update_password", payload)
+      .then(() => {
+        notify({
+          type: "success",
+          message: "Your password successfully updated. Please login again.",
+        });
+        if (cookies?.AUTH_TOKEN) {
+          removeCookie("AUTH_TOKEN");
+          api.setToken(null);
+          store.update((s) => {
+            s.isLoggedIn = false;
+            s.user = null;
+          });
+          navigate("/login");
+        }
+      })
+      .catch((e) => {
+        const { status } = e.response;
+        if (status === 404) {
+          notify({
+            type: "error",
+            message: "Your old password doesn't match. Please try again.",
+          });
+        } else {
+          notify({
+            type: "error",
+            message: "Something went wrong.",
+          });
+        }
+      })
+      .finally(() => {
+        setBtnLoading(false);
+      });
   };
 
   return (
@@ -70,16 +109,11 @@ const Setting = () => {
                 name="email"
                 rules={[{ required: true, message: text.valEmail }]}
               >
-                <Input
-                  className="bg-grey"
-                  type="email"
-                  disabled={true}
-                  size="large"
-                />
+                <Input type="email" disabled={true} size="large" />
               </Form.Item>
               <Form.Item
                 label={text.formOldPwd}
-                name="password"
+                name="old_password"
                 rules={[
                   {
                     required: true,
@@ -102,9 +136,22 @@ const Setting = () => {
                     required: true,
                     message: text.valPwd,
                   },
-                  () => ({
-                    validator() {
-                      if (checkedList.length === 4) {
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (
+                        checkedList.length === 4 &&
+                        getFieldValue("old_password") === value
+                      ) {
+                        return Promise.reject(
+                          new Error(
+                            "New password can't be same as your old password"
+                          )
+                        );
+                      }
+                      if (
+                        checkedList.length === 4 &&
+                        getFieldValue("old_password") !== value
+                      ) {
                         return Promise.resolve();
                       }
                       return Promise.reject(
