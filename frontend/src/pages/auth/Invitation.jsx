@@ -31,7 +31,7 @@ const Invitation = () => {
         api.setToken(null);
         setGuess(res.data);
       })
-      .catch((_) => {
+      .catch(() => {
         api.setToken(null);
         setErrorInvitation(true);
         notify({
@@ -39,7 +39,7 @@ const Invitation = () => {
           message: "Invitation ID not found",
         });
       });
-  }, [invitationId]);
+  }, [invitationId, notify]);
 
   const onChange = ({ target }) => {
     const criteria = passwordCheckBoxOptions
