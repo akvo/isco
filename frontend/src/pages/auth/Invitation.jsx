@@ -25,14 +25,26 @@ const Invitation = () => {
   });
   const [checkedList, setCheckedList] = useState([]);
   const [btnLoading, setBtnLoading] = useState(false);
+  const [errorInvitation, setErrorInvitation] = useState(false);
   const { notify } = useNotification();
   const navigate = useNavigate();
 
   useEffect(() => {
-    api.get(`/user/invitation/${invitationId}`).then((res) => {
-      api.setToken(null);
-      setGuess(res.data);
-    });
+    api
+      .get(`/user/invitation/${invitationId}`)
+      .then((res) => {
+        setErrorInvitation(false);
+        api.setToken(null);
+        setGuess(res.data);
+      })
+      .catch((_) => {
+        api.setToken(null);
+        setErrorInvitation(true);
+        notify({
+          type: "error",
+          message: "Invitation ID not found",
+        });
+      });
   }, [invitationId]);
 
   const onChange = ({ target }) => {
@@ -75,7 +87,7 @@ const Invitation = () => {
         <Row align="middle" justify="space-between" gutter={[12, 12]}>
           <Col span={24} align="start">
             <h2>
-              Welcome{" "}
+              {errorInvitation ? "Wrong Invitation ID" : "Welcome "}
               <b>{guess.name.length ? `${guess.name} (${guess.email})` : ""}</b>
             </h2>
           </Col>
@@ -117,6 +129,7 @@ const Invitation = () => {
               className="bg-grey"
               placeholder="Password"
               size="large"
+              disabled={errorInvitation}
             />
           </Form.Item>
           <Form.Item
@@ -146,6 +159,7 @@ const Invitation = () => {
               className="bg-grey"
               size="large"
               placeholder="Confirm Password"
+              disabled={errorInvitation}
             />
           </Form.Item>
           <Button
@@ -155,6 +169,7 @@ const Invitation = () => {
             size="large"
             onClick={() => form.submit()}
             loading={btnLoading}
+            disabled={errorInvitation}
           >
             Set Password
           </Button>
