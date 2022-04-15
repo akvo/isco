@@ -9,6 +9,7 @@ import { useNotification } from "../../util";
 import { uiText } from "../../static";
 
 const Login = () => {
+  const { client_id, client_secret } = window.__ENV__;
   const [form] = Form.useForm();
   const [btnLoading, setBtnLoading] = useState(false);
   const [cookies, setCookie] = useCookies(["AUTH_TOKEN"]);
@@ -25,9 +26,17 @@ const Login = () => {
   const handleLoginOnFinish = (values) => {
     setBtnLoading(true);
     const { email, password } = values;
-    const params = `email=${email}&password=${password}`;
+
+    const payload = new FormData();
+    payload.append("grant_type", "password");
+    payload.append("username", email);
+    payload.append("password", password);
+    payload.append("scope", "openid email");
+    payload.append("client_id", client_id);
+    payload.append("client_secret", client_secret);
+
     api
-      .post(`/user/login?${params}`)
+      .post(`/user/login`, payload)
       .then((res) => {
         const { data } = res;
         setCookie("AUTH_TOKEN", data?.access_token, { path: "/" });
