@@ -268,3 +268,28 @@ def get_forgot_password(req: Request,
                             content={"message": "url is expired"})
     user = crud_user.get_user_by_id(session=session, id=reset_password["user"])
     return user.serialize
+
+
+@user_route.post("/user/reset-password/{url:path}",
+                 response_model=Token,
+                 summary="Reset password",
+                 name="user:reset-password",
+                 tags=["User"])
+def post_forgot_password(req: Request,
+                         url: str,
+                         password: SecretStr = Form(...),
+                         session: Session = Depends(get_session)):
+    reset_password = crud_user.get_reset_password(session=session, url=url)
+    if not reset_password:
+        raise HTTPException(status_code=404, detail="URL is not valid")
+    reset_password = reset_password.serialize
+    if reset_password["expired"]:
+        return JSONResponse(status_code=status.HTTP_410_GONE,
+                            content={"message": "url is expired"})
+    password = get_password_hash(password.get_secret_value())
+    user = crud_user.update_password(session=session,
+                                     id=reset_password["user"],
+                                     password=password)
+    crud_user.delete_reset_password(session=session, url=url)
+    access_token = create_access_token(data={"email": user.email})
+    return {"access_token": access_token, "token_type": "bearer"}

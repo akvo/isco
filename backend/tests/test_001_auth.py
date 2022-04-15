@@ -259,6 +259,33 @@ class TestUserAuthentication():
         assert res.status_code == 410
 
     @pytest.mark.asyncio
+    async def test_forgot_password_then_change(self, app: FastAPI,
+                                               session: Session,
+                                               client: AsyncClient) -> None:
+        user_payload = {"email": "support@akvo.org"}
+        user = session.query(User).filter(
+            User.email == user_payload["email"]).first()
+        assert user.invitation is None
+        res = await client.post(
+            app.url_path_for("user:forgot-password"),
+            headers={"content-type": "application/x-www-form-urlencoded"},
+            data={
+                "email": "support@akvo.org",
+                "client_id": os.environ["CLIENT_ID"],
+                "client_secret": os.environ["CLIENT_SECRET"]
+            })
+        assert res.status_code == 201
+        reset_password = session.query(ResetPassword).filter(
+            ResetPassword.user == user.id).first()
+        res = await client.post(app.url_path_for("user:reset-password",
+                                                 url=reset_password.url),
+                                data={"password": "test"})
+        assert res.status_code == 200
+        res = await client.get(
+            app.url_path_for("user:reset-password", url=reset_password.url))
+        assert res.status_code == 404
+
+    @pytest.mark.asyncio
     async def test_get_user_me(self, app: FastAPI, session: Session,
                                client: AsyncClient) -> None:
         account = Acc(email="support@akvo.org", token=None)
