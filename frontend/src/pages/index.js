@@ -11,3 +11,4 @@ export { default as Survey } from "./survey/Survey";
 export { default as Feedback } from "./feedback/Feedback";
 export { default as Definition } from "./definition/Definition";
 export { default as Impressum } from "./impressum/Impressum";
+export { default as Setting } from "./setting/Setting";

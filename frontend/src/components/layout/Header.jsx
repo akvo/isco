@@ -64,25 +64,23 @@ const Header = ({ className = "header", ...props }) => {
   const accountMenu = (
     <Menu className="account-dropdown-menu">
       {isAdmin && (
-        <>
-          <Menu.Item key="admin" className="account-item">
-            <Link to="/admin">
-              <Space align="center" size={8}>
-                <RiAdminFill />
-                {text.navAdmin}
-              </Space>
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="setting" className="account-item">
-            <Link to="#">
-              <Space align="center" size={8}>
-                <BsGearFill />
-                {text.navSetting}
-              </Space>
-            </Link>
-          </Menu.Item>
-        </>
+        <Menu.Item key="admin" className="account-item">
+          <Link to="/admin">
+            <Space align="center" size={8}>
+              <RiAdminFill />
+              {text.navAdmin}
+            </Space>
+          </Link>
+        </Menu.Item>
       )}
+      <Menu.Item key="setting" className="account-item">
+        <Link to="/setting">
+          <Space align="center" size={8}>
+            <BsGearFill />
+            {text.navSetting}
+          </Space>
+        </Link>
+      </Menu.Item>
       <Menu.Item key="logout" className="account-item">
         <Link to="#" onClick={() => handleLogout()}>
           <Space align="center" size={8}>

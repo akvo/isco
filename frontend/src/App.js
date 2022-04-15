@@ -16,6 +16,7 @@ import {
   Feedback,
   Definition,
   Impressum,
+  Setting,
 } from "./pages";
 import { useCookies } from "react-cookie";
 import { store, api } from "./lib";
@@ -135,6 +136,7 @@ const App = () => {
           <Route exact path="/definition" element={<Definition />} />
           <Route exact path="/" element={<Secure element={Home} />} />
           <Route exact path="/home" element={<Secure element={Home} />} />
+          <Route exact path="/setting" element={<Secure element={Setting} />} />
           <Route
             exact
             path="/admin"
