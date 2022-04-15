@@ -10,7 +10,7 @@ import {
   SurveyEditor,
   Login,
   Register,
-  Invitation,
+  ResetPassword,
   ErrorPage,
   Survey,
   Feedback,
@@ -52,6 +52,7 @@ const App = () => {
   useEffect(() => {
     if (
       !location.pathname.includes("/register") ||
+      !location.pathname.includes("/forgot-password") ||
       !location.pathname.includes("/invitation")
     ) {
       if (cookies?.AUTH_TOKEN && cookies?.AUTH_TOKEN !== "undefined") {
@@ -130,8 +131,13 @@ const App = () => {
           <Route exact path="/register" element={<Register />} />
           <Route
             exact
-            path="/invitation/:invitationId"
-            element={<Invitation />}
+            path="/invitation/:tokenId"
+            element={<ResetPassword />}
+          />
+          <Route
+            exact
+            path="/reset-password/:tokenId"
+            element={<ResetPassword />}
           />
           <Route exact path="/definition" element={<Definition />} />
           <Route exact path="/" element={<Secure element={Home} />} />
