@@ -12,6 +12,8 @@ const Login = () => {
   const { client_id, client_secret } = window.__ENV__;
   const [form] = Form.useForm();
   const [btnLoading, setBtnLoading] = useState(false);
+  const [resetPassword, setResetPassword] = useState(false);
+  const [resetPasswordSuccess, setResetPasswordSuccess] = useState(false);
   const [cookies, setCookie] = useCookies(["AUTH_TOKEN"]);
   const { notify } = useNotification();
   const navigate = useNavigate();
@@ -59,12 +61,61 @@ const Login = () => {
       });
   };
 
+  const handleForgotPassword = (values) => {
+    setBtnLoading(true);
+    const { email } = values;
+    const payload = new FormData();
+    payload.append("email", email);
+    api
+      .post(`/user/forgot-password`, payload)
+      .then(() => {
+        notify({
+          type: "success",
+          message: "Reset Password link has been sent to your email",
+        });
+        setResetPasswordSuccess(true);
+      })
+      .catch(() => {
+        notify({
+          type: "error",
+          message: "Email not found",
+        });
+      })
+      .finally(() => {
+        setBtnLoading(false);
+      });
+  };
+
+  if (resetPasswordSuccess) {
+    return (
+      <Auth>
+        <Space direction="vertical">
+          <Row align="middle" justify="space-between" gutter={[12, 12]}>
+            <Col span={12} align="start">
+              <h2>{text.formForgotPwd}</h2>
+            </Col>
+          </Row>
+          <Button
+            type="text"
+            onClick={(e) => {
+              e.preventDefault();
+              setResetPasswordSuccess(false);
+              setResetPassword(false);
+            }}
+          >
+            {text.btnBackToLogin}
+          </Button>
+        </Space>
+      </Auth>
+    );
+  }
+
   return (
     <Auth>
       <Space direction="vertical">
         <Row align="middle" justify="space-between" gutter={[12, 12]}>
           <Col span={12} align="start">
-            <h2>{text.formLogin}</h2>
+            <h2>{resetPassword ? text.formForgotPwd : text.formLogin}</h2>
           </Col>
           {/* <Col span={12} align="end">
             <p className="float-right">
@@ -75,7 +126,7 @@ const Login = () => {
         <Form
           form={form}
           className="form-wrapper"
-          onFinish={handleLoginOnFinish}
+          onFinish={!resetPassword ? handleLoginOnFinish : handleForgotPassword}
         >
           <Form.Item
             name="email"
@@ -87,16 +138,18 @@ const Login = () => {
               size="large"
             />
           </Form.Item>
-          <Form.Item
-            name="password"
-            rules={[{ required: true, message: text.valPwd }]}
-          >
-            <Input.Password
-              className="bg-grey"
-              placeholder={text.formPwd}
-              size="large"
-            />
-          </Form.Item>
+          {!resetPassword && (
+            <Form.Item
+              name="password"
+              rules={[{ required: true, message: text.valPwd }]}
+            >
+              <Input.Password
+                className="bg-grey"
+                placeholder={text.formPwd}
+                size="large"
+              />
+            </Form.Item>
+          )}
           <Button
             type="primary"
             ghost
@@ -105,12 +158,18 @@ const Login = () => {
             onClick={() => form.submit()}
             loading={btnLoading}
           >
-            {text.btnLogin}
+            {!resetPassword ? text.btnLogin : text.formResetPwd}
           </Button>
         </Form>
-        <a href="#" className="dev">
-          {text.formForgotPwd}
-        </a>
+        <Button
+          type="text"
+          onClick={(e) => {
+            e.preventDefault();
+            setResetPassword(!resetPassword);
+          }}
+        >
+          {resetPassword ? text.btnBackToLogin : text.formForgotPwd}
+        </Button>
       </Space>
     </Auth>
   );

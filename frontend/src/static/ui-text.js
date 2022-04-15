@@ -65,6 +65,7 @@ const uiText = {
     formCollaborators: "Contributing organization(s)",
     // Button
     btnLogin: "Login",
+    btnBackToLogin: "Back to Login Page",
     btnUpdate: "Update",
     btnClose: "Close",
     btnSaveChanges: "Save Changes",
@@ -203,6 +204,7 @@ const uiText = {
       </Fragment>
     ),
     // Navigation
+    back: "Back",
     navSurvey: "Umfrage",
     navDefinitions: "Definitionen",
     navFeedback: "Feedback",
@@ -247,6 +249,7 @@ const uiText = {
     formCollaborators: "Beitragende Organisation(en)",
     // Button
     btnLogin: "Einloggen",
+    btnBackToLogin: "Terug naar Inlogpagina",
     btnUpdate: "Update",
     btnClose: "Schließen",
     btnSaveChanges: "Änderungen speichern",
