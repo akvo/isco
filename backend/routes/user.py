@@ -228,8 +228,7 @@ def update_password(req: Request,
             detail="Incorrect old password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    if (new_password):
-        new_password = get_password_hash(new_password.get_secret_value())
+    new_password = get_password_hash(new_password.get_secret_value())
     user = crud_user.update_password(session=session,
                                      id=user.id,
                                      password=new_password)
