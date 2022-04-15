@@ -1,4 +1,5 @@
 import sys
+import os
 import pytest
 from fastapi import FastAPI
 from httpx import AsyncClient
@@ -180,9 +181,10 @@ class TestUserAuthentication():
             "email": "support@akvo.org",
             "name": "John Doe",
         }
-        res = await client.post(app.url_path_for("user:invitation",
-                                                 invitation=user.invitation),
-                                params={"password": "test"})
+        res = await client.post(
+            app.url_path_for("user:invitation", invitation=user.invitation),
+            headers={"content-type": "application/x-www-form-urlencoded"},
+            data={"password": "test"})
         res = res.json()
         assert res['access_token'] is not None
         assert res['token_type'] == 'bearer'
@@ -198,11 +200,17 @@ class TestUserAuthentication():
     @pytest.mark.asyncio
     async def test_user_login(self, app: FastAPI, session: Session,
                               client: AsyncClient) -> None:
-        res = await client.post(app.url_path_for("user:login"),
-                                params={
-                                    "email": "support@akvo.org",
-                                    "password": "test"
-                                })
+        res = await client.post(
+            app.url_path_for("user:login"),
+            headers={"content-type": "application/x-www-form-urlencoded"},
+            data={
+                "username": "support@akvo.org",
+                "password": "test",
+                "grant_type": "password",
+                "scopes": ["openid", "email"],
+                "client_id": os.environ["CLIENT_ID"],
+                "client_secret": os.environ["CLIENT_SECRET"]
+            })
         assert res.status_code == 200
         res = res.json()
         assert res['access_token'] is not None
