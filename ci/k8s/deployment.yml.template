@@ -49,6 +49,16 @@ spec:
                 secretKeyRef:
                   name: isco
                   key: secret-key
+            - name: CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: isco
+                  key: client-id
+            - name: CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: isco
+                  key: client-secret
             - name: WEBDOMAIN
               valueFrom:
                 secretKeyRef:

@@ -1,6 +1,7 @@
 /.ipynb_checkpoints
 /.pip
 /.mypy_cache
+/config.js
 __pycache__
 .coverage
 .coverage.*

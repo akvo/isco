@@ -1,3 +1,4 @@
+import os
 import sys
 import pytest
 from fastapi import FastAPI
@@ -57,7 +58,15 @@ class TestUserDisco():
                               client: AsyncClient) -> None:
         res = await client.post(
             app.url_path_for("user:login"),
-            params={"email": "galih@test.org", "password": "test"})
+            headers={"content-type": "application/x-www-form-urlencoded"},
+            data={
+                "username": "support@akvo.org",
+                "password": "test",
+                "grant_type": "password",
+                "scopes": ["openid", "email"],
+                "client_id": os.environ["CLIENT_ID"],
+                "client_secret": os.environ["CLIENT_SECRET"]
+            })
         assert res.status_code == 200
         res = res.json()
         assert res['access_token'] is not None

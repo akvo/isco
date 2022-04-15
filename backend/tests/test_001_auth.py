@@ -1,4 +1,5 @@
 import sys
+import os
 import pytest
 from fastapi import FastAPI
 from httpx import AsyncClient
@@ -124,14 +125,18 @@ class TestUserAuthentication():
             'member_type': [1],
             'name': 'staff GISCO Secretariat'
         }, {
-            'active': True,
-            'code': None,
-            'id': 3,
+            'active':
+            True,
+            'code':
+            None,
+            'id':
+            3,
             'isco': ['DISCO'],
             'isco_type': [3],
             'member': ['DISCO - Traders'],
             'member_type': [4],
-            'name': 'Organisation DISCO - Traders Member and DISCO isco'
+            'name':
+            'Organisation DISCO - Traders Member and DISCO isco'
         }]
 
     @pytest.mark.asyncio
@@ -198,11 +203,17 @@ class TestUserAuthentication():
     @pytest.mark.asyncio
     async def test_user_login(self, app: FastAPI, session: Session,
                               client: AsyncClient) -> None:
-        res = await client.post(app.url_path_for("user:login"),
-                                params={
-                                    "email": "support@akvo.org",
-                                    "password": "test"
-                                })
+        res = await client.post(
+            app.url_path_for("user:login"),
+            headers={"content-type": "application/x-www-form-urlencoded"},
+            data={
+                "username": "support@akvo.org",
+                "password": "test",
+                "grant_type": "password",
+                "scopes": ["openid", "email"],
+                "client_id": os.environ["CLIENT_ID"],
+                "client_secret": os.environ["CLIENT_SECRET"]
+            })
         assert res.status_code == 200
         res = res.json()
         assert res['access_token'] is not None

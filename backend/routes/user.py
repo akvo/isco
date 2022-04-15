@@ -1,9 +1,11 @@
+import os
 from math import ceil
 from middleware import Token, authenticate_user
 from middleware import create_access_token, verify_user
 from fastapi import Depends, HTTPException, status, APIRouter, Request, Query
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from db.connection import get_session
 from models.user import UserDict, UserBase, UserOrgDict, UserInvitation
@@ -18,6 +20,9 @@ from typing import List, Optional
 security = HTTPBearer()
 user_route = APIRouter()
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/user/login")
+oauth2_scopes = ["openid", "email"]
+
 
 @user_route.post("/user/login",
                  response_model=Token,
@@ -25,12 +30,20 @@ user_route = APIRouter()
                  name="user:login",
                  tags=["User"])
 def login(req: Request,
-          email: str,
-          password: SecretStr,
+          payload: OAuth2PasswordRequestForm = Depends(),
           session: Session = Depends(get_session)):
+    if not payload.grant_type == "password":
+        raise HTTPException(status_code=404, detail="Invalid Grant Type")
+    if payload.client_id != os.environ["CLIENT_ID"]:
+        raise HTTPException(status_code=404, detail="Invalid Client ID")
+    if payload.client_secret != os.environ["CLIENT_SECRET"]:
+        raise HTTPException(status_code=404, detail="Invalid Client Secret")
+    for scope in payload.scopes:
+        if scope not in oauth2_scopes:
+            raise HTTPException(status_code=404, detail="Scope Not Found")
     user = authenticate_user(session=session,
-                             email=email,
-                             password=password.get_secret_value())
+                             email=payload.username,
+                             password=payload.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -186,8 +199,7 @@ def update_user(req: Request,
                 payload: UserUpdateByAdmin,
                 session: Session = Depends(get_session),
                 credentials: credentials = Depends(security)):
-    verify_super_admin(session=session,
-                       authenticated=req.state.authenticated)
+    verify_super_admin(session=session, authenticated=req.state.authenticated)
     user = crud_user.update_user_by_admin(session=session,
                                           id=id,
                                           payload=payload)
