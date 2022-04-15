@@ -3,6 +3,7 @@ from math import ceil
 from middleware import Token, authenticate_user
 from middleware import create_access_token, verify_user
 from fastapi import Depends, HTTPException, status, APIRouter, Request, Query
+from fastapi import Form
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -177,7 +178,7 @@ def invitation(req: Request,
                  tags=["User"])
 def change_password(req: Request,
                     invitation: str,
-                    password: SecretStr,
+                    password: SecretStr = Form(...),
                     session: Session = Depends(get_session)):
     password = get_password_hash(password.get_secret_value())
     user = crud_user.accept_invitation(session=session,

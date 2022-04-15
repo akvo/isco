@@ -125,18 +125,14 @@ class TestUserAuthentication():
             'member_type': [1],
             'name': 'staff GISCO Secretariat'
         }, {
-            'active':
-            True,
-            'code':
-            None,
-            'id':
-            3,
+            'active': True,
+            'code': None,
+            'id': 3,
             'isco': ['DISCO'],
             'isco_type': [3],
             'member': ['DISCO - Traders'],
             'member_type': [4],
-            'name':
-            'Organisation DISCO - Traders Member and DISCO isco'
+            'name': 'Organisation DISCO - Traders Member and DISCO isco'
         }]
 
     @pytest.mark.asyncio
@@ -185,9 +181,10 @@ class TestUserAuthentication():
             "email": "support@akvo.org",
             "name": "John Doe",
         }
-        res = await client.post(app.url_path_for("user:invitation",
-                                                 invitation=user.invitation),
-                                params={"password": "test"})
+        res = await client.post(
+            app.url_path_for("user:invitation", invitation=user.invitation),
+            headers={"content-type": "application/x-www-form-urlencoded"},
+            data={"password": "test"})
         res = res.json()
         assert res['access_token'] is not None
         assert res['token_type'] == 'bearer'
