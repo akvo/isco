@@ -7,6 +7,7 @@ from fastapi import Form
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from db.connection import get_session
 from models.user import UserDict, UserBase, UserOrgDict, UserInvitation
@@ -232,4 +233,38 @@ def update_password(req: Request,
     user = crud_user.update_password(session=session,
                                      id=user.id,
                                      password=new_password)
+    return user.serialize
+
+
+@user_route.post("/user/forgot-password",
+                 status_code=201,
+                 summary="Generate Forgot Password Link",
+                 name="user:forgot-password",
+                 tags=["User"])
+def new_forgot_password(req: Request,
+                        email: str = Form(...),
+                        session: Session = Depends(get_session)):
+    reset_password = crud_user.new_reset_password(session=session, email=email)
+    if not reset_password:
+        raise HTTPException(status_code=404, detail="User Not found")
+    return JSONResponse(status_code=status.HTTP_201_CREATED,
+                        content={"message": "url is generated"})
+
+
+@user_route.get("/user/reset-password/{url:path}",
+                response_model=UserInvitation,
+                summary="Verify reset password",
+                name="user:reset-password",
+                tags=["User"])
+def get_forgot_password(req: Request,
+                        url: str,
+                        session: Session = Depends(get_session)):
+    reset_password = crud_user.get_reset_password(session=session, url=url)
+    if not reset_password:
+        raise HTTPException(status_code=404, detail="URL is not valid")
+    reset_password = reset_password.serialize
+    if reset_password["expired"]:
+        return JSONResponse(status_code=status.HTTP_410_GONE,
+                            content={"message": "url is expired"})
+    user = crud_user.get_user_by_id(session=session, id=reset_password["user"])
     return user.serialize

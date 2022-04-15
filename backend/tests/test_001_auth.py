@@ -8,9 +8,11 @@ from seeder.static.static_cascade import cascade_values
 from seeder.static.static_nested import nested_values
 from seeder.static.static_member_isco import member_values, isco_values
 from models.user import User, UserRole
+from models.reset_password import ResetPassword
 from db import crud_member_type, crud_isco_type
 from db import crud_organisation, crud_cascade
 from middleware import verify_token
+from datetime import timedelta
 from tests.test_000_main import Acc
 
 sys.path.append("..")
@@ -125,14 +127,18 @@ class TestUserAuthentication():
             'member_type': [1],
             'name': 'staff GISCO Secretariat'
         }, {
-            'active': True,
-            'code': None,
-            'id': 3,
+            'active':
+            True,
+            'code':
+            None,
+            'id':
+            3,
             'isco': ['DISCO'],
             'isco_type': [3],
             'member': ['DISCO - Traders'],
             'member_type': [4],
-            'name': 'Organisation DISCO - Traders Member and DISCO isco'
+            'name':
+            'Organisation DISCO - Traders Member and DISCO isco'
         }]
 
     @pytest.mark.asyncio
@@ -188,6 +194,11 @@ class TestUserAuthentication():
         res = res.json()
         assert res['access_token'] is not None
         assert res['token_type'] == 'bearer'
+        user = session.query(User).filter(
+            User.email == "support@akvo.org").first()
+        session.flush()
+        session.refresh(user)
+        assert user.invitation is None
 
     @pytest.mark.asyncio
     async def test_verify_user_email(self, app: FastAPI, session: Session,
@@ -217,6 +228,35 @@ class TestUserAuthentication():
         assert res['token_type'] == 'bearer'
         account = Acc(email="support@akvo.org", token=res['access_token'])
         assert account.token == res['access_token']
+
+    @pytest.mark.asyncio
+    async def test_user_forgot_password(self, app: FastAPI, session: Session,
+                                        client: AsyncClient) -> None:
+        user_payload = {"email": "support@akvo.org"}
+        user = session.query(User).filter(
+            User.email == user_payload["email"]).first()
+        assert user.invitation is None
+        res = await client.post(
+            app.url_path_for("user:forgot-password"),
+            headers={"content-type": "application/x-www-form-urlencoded"},
+            data={
+                "email": "support@akvo.org",
+                "client_id": os.environ["CLIENT_ID"],
+                "client_secret": os.environ["CLIENT_SECRET"]
+            })
+        assert res.status_code == 201
+        reset_password = session.query(ResetPassword).filter(
+            ResetPassword.user == user.id).first()
+        res = await client.get(
+            app.url_path_for("user:reset-password", url=reset_password.url))
+        assert res.status_code == 200
+        reset_password.valid -= timedelta(minutes=20)
+        session.commit()
+        session.flush()
+        session.refresh(reset_password)
+        res = await client.get(
+            app.url_path_for("user:reset-password", url=reset_password.url))
+        assert res.status_code == 410
 
     @pytest.mark.asyncio
     async def test_get_user_me(self, app: FastAPI, session: Session,

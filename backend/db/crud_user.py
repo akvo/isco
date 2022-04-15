@@ -4,7 +4,8 @@ from sqlalchemy import or_
 from sqlalchemy.orm import Session
 from models.user import User, UserBase, UserDict
 from models.user import UserInvitation, UserUpdateByAdmin
-from datetime import datetime
+from models.reset_password import ResetPassword, ResetPasswordBase
+from datetime import datetime, timedelta
 from typing import List, Optional
 
 
@@ -46,8 +47,8 @@ def verify_user_email(session: Session, id: int) -> UserDict:
     return user
 
 
-def update_user_by_admin(session: Session,
-                         id: int, payload: UserBase) -> UserUpdateByAdmin:
+def update_user_by_admin(session: Session, id: int,
+                         payload: UserBase) -> UserUpdateByAdmin:
     user = get_user_by_id(session=session, id=id)
     user.organisation = payload['organisation']
     user.role = payload['role']
@@ -58,8 +59,7 @@ def update_user_by_admin(session: Session,
     return user
 
 
-def update_password(session: Session,
-                    id: int, password: str) -> UserDict:
+def update_password(session: Session, id: int, password: str) -> UserDict:
     user = get_user_by_id(session=session, id=id)
     user.password = password
     session.commit()
@@ -125,3 +125,27 @@ def accept_invitation(session: Session,
     session.flush()
     session.refresh(user)
     return user.serialize
+
+
+def new_reset_password(session: Session, email: str) -> ResetPasswordBase:
+    user = session.query(User).filter(User.email == email).first()
+    if not user:
+        return None
+    reset_password = session.query(ResetPassword).filter(
+        ResetPassword.user == user.id).first()
+    if not reset_password:
+        reset_password = ResetPassword(user=user.id)
+        session.add(reset_password)
+    else:
+        reset_password.url = str(uuid4())
+        reset_password.valid = datetime.utcnow() + timedelta(minutes=20)
+    session.commit()
+    session.flush()
+    session.refresh(reset_password)
+    return reset_password.serialize
+
+
+def get_reset_password(session: Session, url: str) -> ResetPasswordBase:
+    reset_password = session.query(ResetPassword).filter(
+        ResetPassword.url == url).first()
+    return reset_password
