@@ -35,7 +35,7 @@ const ResetPassword = () => {
           message: "Token ID not found",
         });
       });
-  }, [notify]);
+  }, [location, notify]);
 
   const isInvitation =
     location.pathname.replace(tokenId, "") === "/invitation/";
