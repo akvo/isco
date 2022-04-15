@@ -205,3 +205,31 @@ def update_user(req: Request,
                                           id=id,
                                           payload=payload)
     return user.serialize
+
+
+@user_route.put("/user/update_password",
+                response_model=UserDict,
+                summary="update password",
+                name="user:update_password",
+                tags=["User"])
+def update_password(req: Request,
+                    old_password: SecretStr = Form(...),
+                    new_password: SecretStr = Form(...),
+                    session: Session = Depends(get_session),
+                    credentials: credentials = Depends(security)):
+    user = verify_user(session=session, authenticated=req.state.authenticated)
+    old_password = old_password.get_secret_value()
+    user = authenticate_user(session=session,
+                             email=user.email,
+                             password=old_password)
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="Incorrect old password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    new_password = get_password_hash(new_password.get_secret_value())
+    user = crud_user.update_password(session=session,
+                                     id=user.id,
+                                     password=new_password)
+    return user.serialize

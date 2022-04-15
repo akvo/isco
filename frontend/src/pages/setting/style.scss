@@ -1,0 +1,21 @@
+@import "../../variables.scss";
+
+#root {
+  #setting {
+    margin-top: 48px;
+
+    .ant-card {
+      border-radius: 5px;
+      border: 2px solid #eeeeee;
+
+      .ant-card-head {
+        background: #eeeeee;
+        font-style: italic;
+      }
+
+      .ant-form-item {
+        margin-bottom: 24px;
+      }
+    }
+  }
+}

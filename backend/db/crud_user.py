@@ -58,6 +58,16 @@ def update_user_by_admin(session: Session,
     return user
 
 
+def update_password(session: Session,
+                    id: int, password: str) -> UserDict:
+    user = get_user_by_id(session=session, id=id)
+    user.password = password
+    session.commit()
+    session.flush()
+    session.refresh(user)
+    return user
+
+
 def filter_user(session: Session,
                 search: Optional[str] = None,
                 organisation: Optional[List[int]] = None):

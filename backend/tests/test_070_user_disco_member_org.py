@@ -60,7 +60,7 @@ class TestUserDisco():
             app.url_path_for("user:login"),
             headers={"content-type": "application/x-www-form-urlencoded"},
             data={
-                "username": "support@akvo.org",
+                "username": "galih@test.org",
                 "password": "test",
                 "grant_type": "password",
                 "scopes": ["openid", "email"],
@@ -99,11 +99,42 @@ class TestUserDisco():
             headers={"Authorization": f"Bearer {account.token}"},
             json=user_payload)
         assert res.status_code == 200
-        get_user = session.query(User).filter(
-            User.id == user_id).first()
-        get_user = get_user.serialize
         res = res.json()
         assert res["email"] == "galih@test.org"
         assert res["organisation"] == 3
         assert res["role"] == "secretariat_admin"
         assert res["questionnaires"] == [1, 2]
+
+    @pytest.mark.asyncio
+    async def test_user_update_password(self, app: FastAPI, session: Session,
+                                        client: AsyncClient) -> None:
+        account = Acc(email="galih@test.org", token=None)
+        res = await client.put(
+            app.url_path_for("user:update_password"),
+            headers={"Authorization": f"Bearer {account.token}",
+                     "content-type": "application/x-www-form-urlencoded"},
+            data={
+                "old_password": "test",
+                "new_password": "test123",
+            })
+        assert res.status_code == 200
+        res = res.json()
+        assert res["email"] == "galih@test.org"
+        # test login with new password
+        res = await client.post(
+            app.url_path_for("user:login"),
+            headers={"content-type": "application/x-www-form-urlencoded"},
+            data={
+                "username": "galih@test.org",
+                "password": "test123",
+                "grant_type": "password",
+                "scopes": ["openid", "email"],
+                "client_id": os.environ["CLIENT_ID"],
+                "client_secret": os.environ["CLIENT_SECRET"]
+            })
+        assert res.status_code == 200
+        res = res.json()
+        assert res['access_token'] is not None
+        assert res['token_type'] == 'bearer'
+        account = Acc(email="galih@test.org", token=res['access_token'])
+        assert account.token == res['access_token']

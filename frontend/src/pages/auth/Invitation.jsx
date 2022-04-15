@@ -6,13 +6,7 @@ import Auth from "./Auth";
 import { api } from "../../lib";
 import { useParams } from "react-router-dom";
 import { useNotification } from "../../util";
-
-const checkBoxOptions = [
-  { name: "Lowercase Character", re: /[a-z]/ },
-  { name: "Numbers", re: /\d/ },
-  { name: "Special Character", re: /[-._!"`'#%&,:;<>=@{}~$()*+/?[\]^|]/ },
-  { name: "Min 8 Character", re: /[^ ]{8}/ },
-];
+import { passwordCheckBoxOptions } from "../../lib/util";
 
 const Invitation = () => {
   const [form] = Form.useForm();
@@ -37,7 +31,7 @@ const Invitation = () => {
         api.setToken(null);
         setGuess(res.data);
       })
-      .catch((_) => {
+      .catch(() => {
         api.setToken(null);
         setErrorInvitation(true);
         notify({
@@ -45,10 +39,10 @@ const Invitation = () => {
           message: "Invitation ID not found",
         });
       });
-  }, [invitationId]);
+  }, [invitationId, notify]);
 
   const onChange = ({ target }) => {
-    const criteria = checkBoxOptions
+    const criteria = passwordCheckBoxOptions
       .map((x) => {
         const available = x.re.test(target.value);
         return available ? x.name : false;
@@ -96,7 +90,7 @@ const Invitation = () => {
           <Col span={24} align="start">
             <Checkbox.Group
               className="checkbox-criteria"
-              options={checkBoxOptions.map((x) => x.name)}
+              options={passwordCheckBoxOptions.map((x) => x.name)}
               value={checkedList}
             />
           </Col>

@@ -27,7 +27,7 @@ const Auth = ({ children }) => {
             <Title className="title" level={2}>
               {text.welcome2}
             </Title>
-            <Row align="middle">
+            <Row align="middle" justify="space-between">
               <Col>
                 <Image
                   width={193}
