@@ -38,6 +38,8 @@ services:
       - ./ci/test:/test:ro
     working_dir: /test
     entrypoint: ./entrypoint.sh
+    environment:
+      - MAILJET_VERIFICATION_FILE
     depends_on:
       - db
       - backend
