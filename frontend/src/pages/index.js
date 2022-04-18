@@ -6,6 +6,7 @@ export { default as SurveyEditor } from "./survey-editor/SurveyEditor";
 export { default as Login } from "./auth/Login";
 export { default as Register } from "./auth/Register";
 export { default as ResetPassword } from "./auth/ResetPassword";
+export { default as EmailNotVerified } from "./auth/EmailNotVerified";
 export { default as ErrorPage } from "./error/ErrorPage";
 export { default as Survey } from "./survey/Survey";
 export { default as Feedback } from "./feedback/Feedback";

@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from typing import Optional
 from jose import JWTError, jwt, exceptions
 from passlib.context import CryptContext
-from models.user import UserRole
+from models.user import UserRole, UserDict
 from db import crud_user
 
 
@@ -27,6 +27,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 class Token(BaseModel):
     access_token: str
     token_type: str
+    user: UserDict
 
 
 class TokenData(BaseModel):
@@ -90,7 +91,7 @@ def verify_user(session: Session, authenticated):
         raise credentials_exception
     if not user.email_verified:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+            status_code=403,
             detail="Please check your email inbox to verify email account")
     return user
 

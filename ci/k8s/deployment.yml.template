@@ -64,6 +64,16 @@ spec:
                 secretKeyRef:
                   name: isco
                   key: webdomain
+            - name: MAILJET_APIKEY
+              valueFrom:
+                secretKeyRef:
+                  name: isco
+                  key: mailjet-apikey
+            - name: MAILJET_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: isco
+                  key: mailjet-secret
             - name: BUCKET_FOLDER
               value: ${BUCKET_FOLDER}
             - name: GOOGLE_APPLICATION_CREDENTIALS

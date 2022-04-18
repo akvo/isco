@@ -75,7 +75,7 @@ const AddUser = ({
       const { first_name, last_name } = values;
       values = { ...values, name: `${first_name} ${last_name}` };
       api
-        .post("/user/register", values)
+        .post("/user/register?invitation=1", values)
         .then(() => {
           notification.success({
             message: "User has been successfully added",

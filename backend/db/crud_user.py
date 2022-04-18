@@ -22,14 +22,16 @@ def get_user_by_id(session: Session, id: int) -> UserDict:
     return user
 
 
-def add_user(session: Session, payload: UserBase) -> UserDict:
+def add_user(session: Session,
+             payload: UserBase,
+             invitation: Optional[bool] = False) -> UserDict:
     user = User(name=payload.name,
                 email=payload.email,
                 phone_number=payload.phone_number,
                 password=payload.password,
                 role=payload.role,
                 organisation=payload.organisation,
-                invitation=str(uuid4()),
+                invitation=str(uuid4() if invitation else None),
                 questionnaires=payload.questionnaires)
     session.add(user)
     session.commit()
@@ -38,8 +40,8 @@ def add_user(session: Session, payload: UserBase) -> UserDict:
     return user
 
 
-def verify_user_email(session: Session, id: int) -> UserDict:
-    user = get_user_by_id(session=session, id=id)
+def verify_user_email(session: Session, email: str) -> UserDict:
+    user = get_user_by_email(session=session, email=email)
     user.email_verified = datetime.utcnow()
     session.commit()
     session.flush()
