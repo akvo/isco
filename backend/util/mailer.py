@@ -104,7 +104,7 @@ class Email:
                                     context=self.context,
                                     button=button)
         payload = {
-            "FromEmail": "noreply@akvo.org",
+            "FromEmail": "noreply@cocoamonitoring.net",
             "Subject": f"ISCO {type['subject']}",
             "Html-part": html,
             "Text-part": html_to_text(html),
