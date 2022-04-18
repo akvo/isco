@@ -52,6 +52,7 @@ frontend_build () {
 
     echo "PUBLIC_URL=/" > frontend/.env
     sed 's/"warn"/"error"/g' < frontend/.eslintrc.json > frontend/.eslintrc.prod.json
+    touch "frontend/public/${MAILJET_VERIFICATION_FILE}.txt"
 
     dc run \
        --rm \
