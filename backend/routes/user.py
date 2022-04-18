@@ -342,7 +342,9 @@ def post_forgot_password(req: Request,
                                      password=password)
     crud_user.delete_reset_password(session=session, url=url)
     access_token = create_access_token(data={"email": user.email})
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {"access_token": access_token,
+            "token_type": "bearer",
+            "user": user.serialize}
 
 
 @user_route.get("/user/resend_verification_email",
