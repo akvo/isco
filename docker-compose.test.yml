@@ -30,6 +30,8 @@ services:
       - BUCKET_FOLDER=local
       - CLIENT_ID=test
       - CLIENT_SECRET=test
+      - MAILJET_SECRET=notset
+      - MAILJET_APIKEY=notset
     depends_on:
       - db
 volumes:

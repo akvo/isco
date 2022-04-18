@@ -25,5 +25,7 @@ services:
     environment:
       - GOOGLE_APPLICATION_CREDENTIALS=/credentials/isco-service-account.json
       - WEBDOMAIN=http://localhost:3000
+      - MAILJET_SECRET=$MAILJET_SECRET
+      - MAILJET_APIKEY=$MAILJET_APIKEY
 volumes:
   pg-admin-data:

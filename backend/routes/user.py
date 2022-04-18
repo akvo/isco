@@ -2,6 +2,8 @@ import os
 from math import ceil
 from middleware import Token, authenticate_user
 from middleware import create_access_token, verify_user
+from middleware import get_password_hash, verify_admin, verify_super_admin
+from middleware import decode_token, verify_token
 from fastapi import Depends, HTTPException, status, APIRouter, Request, Query
 from fastapi import Form
 from fastapi.security import HTTPBearer
@@ -9,6 +11,7 @@ from fastapi.security import HTTPBasicCredentials as credentials
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
+from sqlalchemy import or_
 from db.connection import get_session
 from models.user import UserDict, UserBase, UserOrgDict, UserInvitation
 from models.user import UserResponse, UserRole, UserUpdateByAdmin
@@ -16,14 +19,24 @@ from models.user import User
 from models.organisation_member import OrganisationMember
 from pydantic import SecretStr
 from db import crud_user, crud_organisation
-from middleware import get_password_hash, verify_admin, verify_super_admin
 from typing import List, Optional
+from util.mailer import Email, MailTypeEnum
 
 security = HTTPBearer()
 user_route = APIRouter()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/user/login")
 oauth2_scopes = ["openid", "email"]
+webdomain = os.environ["WEBDOMAIN"]
+
+
+def send_verification_email(user, recipients, type=MailTypeEnum.register):
+    email_token = create_access_token(data={"email": user['email']})
+    url = f"{webdomain}/verify_email/{email_token}"
+    email = Email(recipients=recipients,
+                  type=type,
+                  body=url)
+    email.send
 
 
 @user_route.post("/user/login",
@@ -53,7 +66,9 @@ def login(req: Request,
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token = create_access_token(data={"email": user.email})
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {"access_token": access_token,
+            "token_type": "bearer",
+            "user": user.serialize}
 
 
 @user_route.get("/user",
@@ -122,22 +137,57 @@ def me(req: Request,
                  tags=["User"])
 def register(req: Request,
              payload: UserBase,
+             invitation: Optional[bool] = False,
              session: Session = Depends(get_session)):
     if (payload.password):
         payload.password = get_password_hash(payload.password)
-    user = crud_user.add_user(session=session, payload=payload)
-    return user.serialize
+    user = crud_user.add_user(session=session,
+                              payload=payload,
+                              invitation=invitation)
+    recipients = [user.recipient]
+    user = user.serialize
+    # don't send invitation email
+    send_invitation_email = False
+    if invitation and send_invitation_email:
+        # Send invitation email
+        url = f"{webdomain}/invitation/{user['invitation']}"
+        email = Email(recipients=recipients,
+                      type=MailTypeEnum.invitation,
+                      body=url)
+        # email.send
+    if not invitation:
+        # send email register success with email verification link
+        send_verification_email(user, recipients)
+        # also send email to admin?
+        admins = session.query(User).filter(
+                User.organisation == user['organisation'],
+            ).filter(
+                or_(
+                    User.role == UserRole.secretariat_admin,
+                    User.role == UserRole.member_admin,
+                )).all()
+        body = f"{user['name']} ({user['email']}) has been registered."
+        email = Email(recipients=[a.recipient for a in admins],
+                      type=MailTypeEnum.register,
+                      body=body)
+        email.send
+    return user
 
 
-@user_route.put("/user/verify_email/{id:path}",
+@user_route.put("/user/verify_email",
                 response_model=UserDict,
                 summary="verify user email",
                 name="user:verify_email",
                 tags=["User"])
 def verify_email(req: Request,
-                 id: int,
+                 email: str,
                  session: Session = Depends(get_session)):
-    user = crud_user.verify_user_email(session=session, id=id)
+    TESTING = os.environ.get("TESTING")
+    if TESTING:
+        user = crud_user.verify_user_email(session=session, email=email)
+        return user.serialize
+    decode = verify_token(decode_token(email))
+    user = crud_user.verify_user_email(session=session, email=decode["email"])
     return user.serialize
 
 
@@ -188,7 +238,9 @@ def change_password(req: Request,
     if not user:
         raise HTTPException(status_code=404, detail="Not found")
     access_token = create_access_token(data={"email": user["email"]})
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {"access_token": access_token,
+            "token_type": "bearer",
+            "user": user}
 
 
 @user_route.put("/user/update_by_admin/{id:path}",
@@ -247,6 +299,13 @@ def new_forgot_password(req: Request,
     reset_password = crud_user.new_reset_password(session=session, email=email)
     if not reset_password:
         raise HTTPException(status_code=404, detail="User Not found")
+    # Send reset password email
+    user = crud_user.get_user_by_email(session=session, email=email)
+    url = f"{webdomain}/reset-password/{reset_password['url']}"
+    email = Email(recipients=[user.recipient],
+                  type=MailTypeEnum.reset_password,
+                  button_url=url)
+    email.send
     return JSONResponse(status_code=status.HTTP_201_CREATED,
                         content={"message": "url is generated"})
 
@@ -292,4 +351,21 @@ def post_forgot_password(req: Request,
                                      password=password)
     crud_user.delete_reset_password(session=session, url=url)
     access_token = create_access_token(data={"email": user.email})
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {"access_token": access_token,
+            "token_type": "bearer",
+            "user": user.serialize}
+
+
+@user_route.get("/user/resend_verification_email",
+                response_model=UserDict,
+                summary="resend verification email",
+                name="user:resend_verification_email",
+                tags=["User"])
+def resend_verification_email(req: Request, email: str,
+                              session: Session = Depends(get_session)):
+    # resend email register success with email verification link
+    user = crud_user.get_user_by_email(session=session, email=email)
+    send_verification_email(user.serialize,
+                            [user.recipient],
+                            MailTypeEnum.verify_email)
+    return user.serialize
