@@ -146,13 +146,15 @@ def register(req: Request,
                               invitation=invitation)
     recipients = [user.recipient]
     user = user.serialize
-    if invitation:
+    # don't send invitation email
+    send_invitation_email = False
+    if invitation and send_invitation_email:
         # Send invitation email
         url = f"{webdomain}/invitation/{user['invitation']}"
         email = Email(recipients=recipients,
                       type=MailTypeEnum.invitation,
                       body=url)
-        email.send
+        # email.send
     if not invitation:
         # send email register success with email verification link
         send_verification_email(user, recipients)
@@ -297,6 +299,13 @@ def new_forgot_password(req: Request,
     reset_password = crud_user.new_reset_password(session=session, email=email)
     if not reset_password:
         raise HTTPException(status_code=404, detail="User Not found")
+    # Send reset password email
+    user = crud_user.get_user_by_email(session=session, email=email)
+    url = f"{webdomain}/reset-password/{reset_password['url']}"
+    email = Email(recipients=[user.recipient],
+                  type=MailTypeEnum.reset_password,
+                  button_url=url)
+    email.send
     return JSONResponse(status_code=status.HTTP_201_CREATED,
                         content={"message": "url is generated"})
 

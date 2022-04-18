@@ -65,6 +65,7 @@ class MailTypeEnum(enum.Enum):
     invitation = "invitation"
     inform_user = "inform_user"
     verify_email = "verify_email"
+    reset_password = "reset_password"
 
 
 class Email:
@@ -74,13 +75,15 @@ class Email:
                  bcc: Optional[List[UserRecipient]] = None,
                  attachment: Optional[str] = None,
                  context: Optional[str] = None,
-                 body: Optional[str] = None):
+                 body: Optional[str] = None,
+                 button_url: Optional[str] = None):
         self.type = EmailText[type.value]
         self.recipients = recipients
         self.bcc = bcc
         self.attachment = attachment
         self.context = context
         self.body = body
+        self.button_url = button_url
 
     @property
     def data(self):
@@ -88,7 +91,9 @@ class Email:
         body = type["body"]
         if self.body:
             body = self.body
-        # instance name based on env
+        button = type["button"]
+        if self.button_url:
+            button = button.replace("#button_url#", self.button_url)
         html = html_template.render(logo=f"{webdomain}/apple-touch-icon.png",
                                     instance_name="ISCO",
                                     webdomain=webdomain,
@@ -96,7 +101,8 @@ class Email:
                                     body=body,
                                     image=type["image"],
                                     message=type["message"],
-                                    context=self.context)
+                                    context=self.context,
+                                    button=button)
         payload = {
             "FromEmail": "noreply@akvo.org",
             "Subject": f"ISCO {type['subject']}",

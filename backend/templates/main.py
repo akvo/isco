@@ -1,11 +1,14 @@
 from typing import Optional
 from fastapi import Depends, Request, APIRouter
 from fastapi.responses import HTMLResponse
+from fastapi.security import HTTPBearer
+from fastapi.security import HTTPBasicCredentials as credentials
 from sqlalchemy.orm import Session
 from db.connection import get_session
 from db.crud_user import get_user_by_id
 from util.mailer import Email, MailTypeEnum
 
+security = HTTPBearer()
 template_route = APIRouter()
 
 
@@ -18,7 +21,8 @@ def get_by_id(req: Request,
               type: MailTypeEnum,
               user: int,
               send: Optional[bool] = False,
-              session: Session = Depends(get_session)):
+              session: Session = Depends(get_session),
+              credentials: credentials = Depends(security)):
     user = get_user_by_id(session=session, id=user)
     email = Email(recipients=[user.recipient], type=type)
     if send:
