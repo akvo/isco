@@ -3,6 +3,9 @@ import React, { Fragment } from "react";
 const dataSecurityContent = {
   en: (
     <Fragment>
+      <h2>Information on data security and data confidentiality</h2>
+      <hr />
+      <br />
       <h3>Data ownership and procedures</h3>
       <p className="text-justify">
         The tool developer Akvo does not claim any data ownership. All data that
@@ -10,14 +13,14 @@ const dataSecurityContent = {
         organisations that enter the data. All rights remain with the
         organisations to whom the data belong. Akvo systems allow the
         administration of specified roles and permissions; with corresponding
-        access to data and/or functionalities in the system.
+        access to data and / or functionalities in the system.
       </p>
       <p className="text-justify">
         Considering the potential broadening of the system over time, we
         envisage separate meetings to clarify roles and responsibilities across
         various stakeholders and clear guidelines and data procedures to
         administer and implement these roles and corresponding access to data
-        and/or functionalities in the system.
+        and / or functionalities in the system.
       </p>
       <br />
 
@@ -51,22 +54,15 @@ const dataSecurityContent = {
         continuously monitored for uptime.
       </p>
       <p className="text-justify">
-        For data <b>at rest</b>, Akvo relies on the capabilities of Google Cloud
-        SQL, which provides one of the highest security standards in the
-        industry. Data is backed-up regularly and stored securely.
-      </p>
-      <p className="text-justify">
-        For data <b>in transit</b>, all communications between different parts
-        of Akvo’s systems (Browser apps, mobile app, backend services,
-        databases) are encrypted using TLS. Any communication to Akvo’s backend
-        service is properly authenticated and authorised.
-      </p>
-      <p className="text-justify">
         All Akvo’s servers are <b>hosted in Belgium</b> and managed by Google
         Cloud Platform which meets ISO 27018, ISO 27017, ISO 27001, comply with
         US and EU regulations and provide round-the-clock security maintenance
         and essential upgrades for the best level of security. See{" "}
-        <a href="https://cloud.google.com/security/compliance">
+        <a
+          href="https://cloud.google.com/security/compliance"
+          target="_blank"
+          rel="noreferrer"
+        >
           https://cloud.google.com/security/compliance
         </a>
         .
@@ -147,6 +143,15 @@ const dataSecurityContent = {
         <li>Patrick Stoop, C-Lever.org</li>
         <li>Hilde Geens, C-Lever.org</li>
       </ul>
+
+      <p className="text-justify">
+        <u>For DISCO:</u>
+      </p>
+      <ul className="pl-5">
+        <li>Mark de Waard</li>
+        <li>Patrick Stoop, C-Lever.org</li>
+        <li>Hilde Geens, C-Lever.org</li>
+      </ul>
       <p className="text-justify">
         Each of the named persons above is required to sign a confidentiality
         agreement before getting access to the data of the corresponding
@@ -165,10 +170,10 @@ const dataSecurityContent = {
         During the data cleaning phase (executed by C-lever.org in consultation
         with the Beyond Chocolate and GISCO secretariats), the data is accessed
         directly in the data-storage tool made available by Akvo. Access to the
-        tool is password protected, only the designated persons listed above
+        tool is password protected, only the authorised persons (see Annex 5)
         have access to the data. In the storage tool each submitted data set is
-        linked to an instance ID. The designated persons above have access to
-        the data cleaning information linked to each instance ID.
+        linked to an instance ID. The authorised persons have access to the data
+        cleaning information linked to each instance ID.
       </p>
       <p className="text-justify">
         Storage of data during evaluation by C-Lever.org: After the data has
@@ -196,11 +201,11 @@ const dataSecurityContent = {
       </p>
       <ol className="pl-5">
         <li>
-          No only ensure that data are anonymised, but also aggregated and/or
+          Not only ensure that data are anonymised, but also aggregated and / or
           averaged before any publication of data.
         </li>
         <li>
-          Still be careful in sharing anonymised, but also aggregated and/or
+          Still be careful in sharing anonymised, but also aggregated and / or
           averaged data and check where any risk of sharing sensitive
           information exists. In this case, the Members involved will be
           contacted first.
