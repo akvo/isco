@@ -181,6 +181,23 @@ const uiText = {
     // Alert text
     textAlertFailed: "Failed!",
     textAlertSomethingWentWrong: "Something went wrong.",
+    // info
+    infoDataSecurityDoc: (
+      <>
+        For GISCO members: &quot;If you have not yet signed the bilateral data
+        confidentiality and data security agreement for the monitoring, please
+        download{" "}
+        <a
+          href="https://storage.googleapis.com/isco-storage/document/Standardvereinbarung_Monitoring_2022-03-24.docx"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          THIS FILE
+        </a>{" "}
+        and send two printed versions to us in written with your signature. You
+        will receive a copy signed by us in return.&quot;
+      </>
+    ),
   },
 
   de: {
@@ -371,6 +388,24 @@ const uiText = {
     // Alert text
     textAlertFailed: "Failed!",
     textAlertSomethingWentWrong: "Something went wrong.",
+    // info
+    infoDataSecurityDoc: (
+      <>
+        Für Mitglieder des Forum Nachhaltiger Kakao: „Falls Sie die bilaterale
+        Vereinbarung zum Monitoring bezüglich Datensicherheit und
+        -Vertraulichkeit noch nicht unterzeichnet haben, laden Sie bitte{" "}
+        <a
+          href="https://storage.googleapis.com/isco-storage/document/Standardvereinbarung_Monitoring_2022-03-24.docx"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          DIESE DATEI
+        </a>{" "}
+        herunter und senden Sie uns zwei gedruckte Versionen schriftlich mit
+        Ihrer Unterschrift zu. Sie erhalten ein von uns unterschriebenes
+        Exemplar zurück.“,
+      </>
+    ),
   },
 };
 

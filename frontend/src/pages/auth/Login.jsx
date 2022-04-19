@@ -174,6 +174,9 @@ const Login = () => {
             </p>
           </Col> */}
         </Row>
+        <p className="data-security-provisions-doc-info">
+          {text.infoDataSecurityDoc}
+        </p>
         <Form
           form={form}
           className="form-wrapper"

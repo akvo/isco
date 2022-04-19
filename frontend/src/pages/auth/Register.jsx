@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useMemo } from "react";
 import "./style.scss";
 import { Link } from "react-router-dom";
 import { Row, Col, Space, Form, Input, Button, Select } from "antd";
 import Auth from "./Auth";
 import { store } from "../../lib";
+import { uiText } from "../../static";
 
 const Register = () => {
   const [form] = Form.useForm();
@@ -16,6 +17,13 @@ const Register = () => {
     label: o?.name,
     value: o?.id,
   }));
+
+  const language = store.useState((s) => s.language);
+  const { active: activeLang } = language;
+
+  const text = useMemo(() => {
+    return uiText[activeLang];
+  }, [activeLang]);
 
   const handleRegisterOnFinish = (values) => {
     console.info(values);
@@ -34,6 +42,9 @@ const Register = () => {
             </p>
           </Col>
         </Row>
+        <p className="data-security-provisions-doc-info">
+          {text.infoDataSecurityDoc}
+        </p>
         <Form
           form={form}
           className="form-wrapper"
