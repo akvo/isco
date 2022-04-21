@@ -62,7 +62,8 @@ def decode_token(token: str = Depends(oauth2_scheme)):
     try:
         return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
     except exceptions.ExpiredSignatureError:
-        return {"email": None, "exp": 0}
+        return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                             detail="Unauthorized")
 
 
 def verify_token(authenticated):

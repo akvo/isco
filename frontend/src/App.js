@@ -70,7 +70,7 @@ const App = () => {
           .catch((e) => {
             const { status, statusText } = e.response;
             console.error(status, statusText);
-            if (status === 401) {
+            if (status === 401 || status === 500) {
               removeCookie("AUTH_TOKEN");
               api.setToken(null);
               store.update((s) => {
