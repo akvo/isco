@@ -51,7 +51,7 @@ const Login = () => {
   const [btnLoading, setBtnLoading] = useState(false);
   const [resetPassword, setResetPassword] = useState(false);
   const [resetPasswordSuccess, setResetPasswordSuccess] = useState(false);
-  const [cookies, setCookie] = useCookies(["AUTH_TOKEN"]);
+  const [cookies, setCookie, removeCookie] = useCookies(["AUTH_TOKEN"]);
   const { notify } = useNotification();
   const navigate = useNavigate();
 
@@ -92,7 +92,8 @@ const Login = () => {
       .post(`/user/login`, payload)
       .then((res) => {
         const { data } = res;
-        setCookie("AUTH_TOKEN", data?.access_token, { path: "/" });
+        removeCookie("AUTH_TOKEN");
+        setCookie("AUTH_TOKEN", data?.access_token);
         api.setToken(cookies?.AUTH_TOKEN);
         store.update((s) => {
           s.isLoggedIn = true;
