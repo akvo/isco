@@ -56,5 +56,16 @@ class EmailText(enum.Enum):
                         <button class="btn btn-reset-password block">
                             Click to change password
                         </button>
-                    </a>'''
+                    </a>''',
+        "info": None
+    }
+    user_approved = {
+        "title": "Approved",
+        "subject": "Approved",
+        "body": '''You signup has been approved.
+                Now you can start entering data in the tool.''',
+        "message": None,
+        "image": None,
+        "button": None,
+        "info": "Some guidance  around  basic usage of the tool"
     }
