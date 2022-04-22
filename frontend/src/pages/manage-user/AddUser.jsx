@@ -32,7 +32,6 @@ const AddUser = ({
   selectedUser,
   setSelectedUser,
 }) => {
-  console.log(selectedUser);
   const [sending, setSending] = useState(false);
   const [isApprovedByAdmin, setIsApprovedByAdmin] = useState(false);
 
