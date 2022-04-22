@@ -30,7 +30,7 @@ oauth2_scopes = ["openid", "email"]
 webdomain = os.environ["WEBDOMAIN"]
 
 
-def send_verification_email(user, recipients, type=MailTypeEnum.register):
+def send_verification_email(user, recipients, type=MailTypeEnum.verify_email):
     email_token = create_access_token(data={"email": user['email']})
     url = f"{webdomain}/verify_email/{email_token}"
     email = Email(recipients=recipients,
@@ -364,7 +364,5 @@ def resend_verification_email(req: Request, email: str,
                               session: Session = Depends(get_session)):
     # resend email verification link
     user = crud_user.get_user_by_email(session=session, email=email)
-    send_verification_email(user.serialize,
-                            [user.recipient],
-                            MailTypeEnum.verify_email)
+    send_verification_email(user.serialize, [user.recipient])
     return user.serialize

@@ -1,12 +1,24 @@
 import React, { useMemo, useState } from "react";
 import "./style.scss";
 import { Link } from "react-router-dom";
-import { Row, Col, Space, Form, Input, Button, Select, Checkbox } from "antd";
+import {
+  Row,
+  Col,
+  Space,
+  Form,
+  Input,
+  Button,
+  Select,
+  Checkbox,
+  InputNumber,
+  Alert,
+} from "antd";
 import Auth from "./Auth";
-import { store } from "../../lib";
-import { uiText } from "../../static";
+import { store, api } from "../../lib";
+import { uiText, webformContent } from "../../static";
 import { passwordCheckBoxOptions } from "../../lib/util";
 import intersection from "lodash/intersection";
+import { useNotification } from "../../util";
 
 const Register = () => {
   const [form] = Form.useForm();
@@ -15,6 +27,10 @@ const Register = () => {
   const { isco_type, organisation } = optionValues;
   const [checkedList, setCheckedList] = useState([]);
   const [iscoFilter, setIscoFilter] = useState(null);
+  const [sending, setSending] = useState(false);
+  const [agreement, setAgreement] = useState(false);
+  const [registerComplete, setRegisterComplete] = useState(false);
+  const { notify } = useNotification();
 
   const iscoOption = useMemo(() => {
     return isco_type?.map((i) => ({
@@ -38,8 +54,24 @@ const Register = () => {
       }));
   }, [organisation, iscoFilter]);
 
+  const handleOnClickDataSecurity = () => {
+    store.update((s) => {
+      s.notificationModal = {
+        ...s.notificationModal,
+        dataSecurity: {
+          ...s.notificationModal.dataSecurity,
+          visible: true,
+        },
+      };
+    });
+  };
+
   const text = useMemo(() => {
     return uiText[activeLang];
+  }, [activeLang]);
+
+  const content = useMemo(() => {
+    return webformContent(handleOnClickDataSecurity)[activeLang];
   }, [activeLang]);
 
   const onChange = ({ target }) => {
@@ -55,8 +87,43 @@ const Register = () => {
   };
 
   const handleRegisterOnFinish = (values) => {
-    console.info(values);
+    setSending(true);
+    const { fullname, email, phone_number, password, organisation } = values;
+    const payload = new FormData();
+    payload.append("name", fullname);
+    payload.append("email", email);
+    payload.append("phone_number", phone_number || null);
+    payload.append("password", password);
+    payload.append("organisation", organisation);
+
+    api
+      .post("/user/register", payload)
+      .then(() => {
+        setSending(false);
+        form.resetFields();
+        setRegisterComplete(true);
+      })
+      .catch(() => {
+        setSending(false);
+        notify({
+          type: "error",
+          message: text.textAlertSomethingWentWrong,
+        });
+      });
   };
+
+  if (registerComplete) {
+    return (
+      <Auth>
+        <Alert
+          message={text.valRegisterSuccess}
+          description={text.valVerificationInfo}
+          type="success"
+          showIcon
+        />
+      </Auth>
+    );
+  }
 
   return (
     <Auth>
@@ -107,6 +174,13 @@ const Register = () => {
             <Input
               className="bg-grey"
               placeholder={text.formEmail}
+              size="large"
+            />
+          </Form.Item>
+          <Form.Item name="phone_number">
+            <InputNumber
+              className="bg-grey"
+              placeholder="Phone Number"
               size="large"
             />
           </Form.Item>
@@ -186,12 +260,20 @@ const Register = () => {
               options={organisationOption}
             />
           </Form.Item>
+          <Form.Item name="agreement">
+            <Space align="start">
+              <Checkbox onChange={() => setAgreement(!agreement)} />{" "}
+              <div>{content.registerCheckBoxText}</div>
+            </Space>
+          </Form.Item>
           <Button
             type="primary"
             ghost
             block
             onClick={() => form.submit()}
             size="large"
+            loading={sending}
+            disabled={!agreement}
           >
             {text.formRegister}
           </Button>
