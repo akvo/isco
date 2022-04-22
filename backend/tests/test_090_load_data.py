@@ -40,6 +40,12 @@ class TestLoadData():
         assert "name" in res["data"][0]
         assert "organisation" in res["data"][0]
         assert "role" in res["data"][0]
+        # get pending user
+        res = await client.get(
+            app.url_path_for("user:get_all"),
+            params={"approved": 0},
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 404
 
     @pytest.mark.asyncio
     async def test_get_all_member(

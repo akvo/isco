@@ -74,9 +74,11 @@ def update_password(session: Session, id: int, password: str) -> UserDict:
 
 
 def filter_user(session: Session,
+                approved: bool,
                 search: Optional[str] = None,
                 organisation: Optional[List[int]] = None):
     user = session.query(User)
+    user = user.filter(User.approved == approved)
     if search:
         user = user.filter(
             or_(
@@ -89,9 +91,11 @@ def filter_user(session: Session,
 
 
 def count(session: Session,
+          approved: bool,
           search: Optional[str] = None,
           organisation: Optional[List[int]] = None) -> int:
     user = filter_user(session=session,
+                       approved=approved,
                        search=search,
                        organisation=organisation)
     user = user.count()
@@ -99,11 +103,13 @@ def count(session: Session,
 
 
 def get_all_user(session: Session,
+                 approved: bool,
                  search: Optional[str] = None,
                  organisation: Optional[List[int]] = None,
                  skip: int = 0,
                  limit: int = 10) -> List[UserDict]:
     user = filter_user(session=session,
+                       approved=approved,
                        search=search,
                        organisation=organisation)
     user = user.order_by(User.id.desc()).offset(skip).limit(limit).all()

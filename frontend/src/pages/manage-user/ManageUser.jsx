@@ -63,7 +63,7 @@ const ManageUser = () => {
   const { isLoggedIn, user, optionValues } = store.useState((s) => s);
   const { organisation, member_type, isco_type } = optionValues;
 
-  const [isPendingUserShown, setIsPendingUserShown] = useState(false);
+  const [showPendingUser, setShowPendingUser] = useState(false);
   const [isAddUserVisible, setIsAddUserVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [reload, setReload] = useState(0);
@@ -80,7 +80,6 @@ const ManageUser = () => {
   const [iscoValue, setIscoValue] = useState([]);
   const [publishedForm, setPublishedForm] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
-  const showPendingUserOption = false;
   const showAddNewUser = true;
   const showOrganisationFilter = user?.role === "secretariat_admin";
 
@@ -167,6 +166,9 @@ const ManageUser = () => {
       if (iscoFilter && !orgFilter) {
         url = `${url}${iscoFilter.map((x) => `&organisation=${x}`).join("")}`;
       }
+      if (showPendingUser) {
+        url = `${url}&approved=0`;
+      }
       api
         .get(url)
         .then((res) => {
@@ -201,7 +203,12 @@ const ManageUser = () => {
     memberFilter,
     iscoFilter,
     reload,
+    showPendingUser,
   ]);
+
+  const handleShowPendingUsers = () => {
+    setShowPendingUser(!showPendingUser);
+  };
 
   const handleOrganisationFilter = (org) => {
     setOrganisationValue(org);
@@ -346,19 +353,18 @@ const ManageUser = () => {
                 )}
               </Space>
             </Col>
-            {showPendingUserOption && (
-              <Col span={4} align="end">
-                <Space size={0.05} align="center">
-                  <Button
-                    type="text"
-                    onClick={() => setIsPendingUserShown(!isPendingUserShown)}
-                  >
-                    Show Pending Users
-                  </Button>{" "}
-                  <Checkbox checked={isPendingUserShown} />
-                </Space>
-              </Col>
-            )}
+            {/* Show Pending User */}
+            <Col span={4} align="end">
+              <Space size={0.05} align="center">
+                <Button type="text" onClick={handleShowPendingUsers}>
+                  Pending Users
+                </Button>{" "}
+                <Checkbox
+                  value={showPendingUser}
+                  onChange={handleShowPendingUsers}
+                />
+              </Space>
+            </Col>
           </Row>
           <Row>
             <Col span={24}>

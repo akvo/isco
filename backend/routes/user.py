@@ -81,6 +81,7 @@ def get_all(req: Request,
             page: int = 1,
             limit: int = 10,
             search: Optional[str] = None,
+            approved: Optional[bool] = True,
             organisation: Optional[List[int]] = Query(None),
             session: Session = Depends(get_session),
             credentials: credentials = Depends(security)):
@@ -96,11 +97,13 @@ def get_all(req: Request,
                                   search=search,
                                   organisation=org_ids,
                                   skip=(limit * (page - 1)),
-                                  limit=limit)
+                                  limit=limit,
+                                  approved=approved)
     if not user:
         raise HTTPException(status_code=404, detail="Not found")
     # count total user
     total = crud_user.count(session=session,
+                            approved=approved,
                             search=search,
                             organisation=org_ids)
     user = [u.serialize for u in user]
