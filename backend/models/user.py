@@ -3,7 +3,7 @@
 
 import enum
 from uuid import uuid4
-from pydantic import BaseModel
+from pydantic import BaseModel, SecretStr
 from datetime import datetime
 from typing import List, Optional
 from typing_extensions import TypedDict
@@ -13,6 +13,7 @@ from sqlalchemy import ForeignKey
 import sqlalchemy.dialects.postgresql as pg
 from db.connection import Base
 from models.organisation import OrganisationDict
+from fastapi import Form
 
 
 class UserRole(enum.Enum):
@@ -124,7 +125,7 @@ class UserBase(BaseModel):
     name: str
     email: str
     phone_number: Optional[str] = None
-    password: Optional[str] = str(uuid4())
+    password: Optional[SecretStr] = str(uuid4())
     role: Optional[UserRole] = UserRole.member_user
     organisation: int
     invitation: Optional[str] = str(uuid4())
@@ -132,6 +133,24 @@ class UserBase(BaseModel):
 
     class Config:
         orm_mode = True
+
+    @classmethod
+    def as_form(
+        cls,
+        name: str = Form(...),
+        email: str = Form(...),
+        password: SecretStr = Form(...),
+        phone_number: str = Form(None),
+        role: UserRole = Form(UserRole.member_user),
+        organisation: int = Form(...),
+        invitation: str = Form(None),
+        questionnaires: List[int] = Form(None)
+    ):
+        return cls(
+            name=name, email=email, password=password,
+            phone_number=phone_number, role=role,
+            organisation=organisation, invitation=invitation,
+            questionnaires=questionnaires)
 
 
 class UserResponse(BaseModel):

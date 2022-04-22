@@ -132,14 +132,15 @@ def me(req: Request,
 
 @user_route.post("/user/register",
                  response_model=UserDict,
-                 summary="use register",
+                 summary="user register",
                  name="user:register",
                  tags=["User"])
 def register(req: Request,
-             payload: UserBase,
+             payload: UserBase = Depends(UserBase.as_form),
              invitation: Optional[bool] = False,
              session: Session = Depends(get_session)):
     if (payload.password):
+        payload.password = payload.password.get_secret_value()
         payload.password = get_password_hash(payload.password)
     user = crud_user.add_user(session=session,
                               payload=payload,

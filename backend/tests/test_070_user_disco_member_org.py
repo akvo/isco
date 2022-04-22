@@ -27,7 +27,7 @@ class TestUserDisco():
             "questionnaires": [1],
         }
         res = await client.post(
-            app.url_path_for("user:register"), json=user_payload)
+            app.url_path_for("user:register"), data=user_payload)
         assert res.status_code == 200
         invitation_link = session.query(User).filter(
             User.email == user_payload["email"]).first().invitation
