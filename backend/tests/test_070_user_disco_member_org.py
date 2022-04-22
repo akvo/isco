@@ -95,7 +95,6 @@ class TestUserDisco():
             "role": UserRole.secretariat_admin.value,
             "organisation": 3,
             "questionnaires": [1, 2],
-            "approved": None
         }
         res = await client.put(
             app.url_path_for("user:update_by_admin", id=user_id),
@@ -109,10 +108,10 @@ class TestUserDisco():
         assert res["questionnaires"] == [1, 2]
         assert res["approved"] is False
         # Test approve user
-        user_payload["approved"] = True
         res = await client.put(
             app.url_path_for("user:update_by_admin", id=user_id),
             headers={"Authorization": f"Bearer {account.token}"},
+            params={"approved": 1},
             json=user_payload)
         assert res.status_code == 200
         res = res.json()

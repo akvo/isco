@@ -33,7 +33,6 @@ class UserUpdateByAdmin(TypedDict):
     organisation: int
     role: UserRole
     questionnaires: Optional[List[int]] = None
-    approved: Optional[bool] = None
 
 
 class UserDict(TypedDict):

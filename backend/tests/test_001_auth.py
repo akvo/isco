@@ -191,11 +191,11 @@ class TestUserAuthentication():
             "role": UserRole.secretariat_admin.value,
             "organisation": 1,
             "questionnaires": [1],
-            "approved": True
         }
         res = await client.put(
             app.url_path_for("user:update_by_admin", id=user_id),
             headers={"Authorization": f"Bearer {account.token}"},
+            params={"approved": 1},
             json=user_payload)
         assert res.status_code == 200
         res = res.json()

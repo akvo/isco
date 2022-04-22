@@ -50,14 +50,14 @@ def verify_user_email(session: Session, email: str) -> UserDict:
     return user
 
 
-def update_user_by_admin(session: Session, id: int,
+def update_user_by_admin(session: Session, id: int, approved: bool,
                          payload: UserUpdateByAdmin) -> UserDict:
     user = get_user_by_id(session=session, id=id)
     user.organisation = payload['organisation']
     user.role = payload['role']
     user.questionnaires = payload['questionnaires']
-    if "approved" in payload and payload['approved']:
-        user.approved = payload['approved']
+    if approved:
+        user.approved = approved
     session.commit()
     session.flush()
     session.refresh(user)

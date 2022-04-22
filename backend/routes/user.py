@@ -17,6 +17,7 @@ from models.user import UserDict, UserBase, UserOrgDict, UserInvitation
 from models.user import UserResponse, UserRole, UserUpdateByAdmin
 from models.user import User
 from models.organisation_member import OrganisationMember
+from models.form import Form as FormModel
 from pydantic import SecretStr
 from db import crud_user, crud_organisation
 from typing import List, Optional
@@ -250,13 +251,28 @@ def change_password(req: Request,
 def update_user(req: Request,
                 id: int,
                 payload: UserUpdateByAdmin,
+                approved: Optional[bool] = False,
                 session: Session = Depends(get_session),
                 credentials: credentials = Depends(security)):
     verify_super_admin(session=session, authenticated=req.state.authenticated)
     user = crud_user.update_user_by_admin(session=session,
                                           id=id,
+                                          approved=approved,
                                           payload=payload)
-    return user.serialize
+    res = user.serialize
+    if approved and res['approved']:
+        # send approved notification to user
+        forms = session.query(FormModel).filter(
+            FormModel.id.in_(res['questionnaires'])).all()
+        forms = [f.only_form_detail for f in forms]
+        texts = [f"<li>{f['name']}</li>" for f in forms]
+        context = f'''<div>You can now enter data on:
+                    <ul>{texts}</ul></div>'''
+        email = Email(recipients=[user.recipient],
+                      type=MailTypeEnum.user_approved,
+                      context=context)
+        email.send
+    return res
 
 
 @user_route.put("/user/update_password",
