@@ -355,10 +355,8 @@ const ManageUser = () => {
             </Col>
             {/* Show Pending User */}
             <Col span={4} align="end">
-              <Space size={0.05} align="center">
-                <Button type="text" onClick={handleShowPendingUsers}>
-                  Pending Users
-                </Button>{" "}
+              <Space align="center">
+                <span>Pending Users</span>
                 <Checkbox
                   value={showPendingUser}
                   onChange={handleShowPendingUsers}
