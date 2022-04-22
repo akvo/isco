@@ -139,7 +139,7 @@ class UserBase(BaseModel):
         cls,
         name: str = Form(...),
         email: str = Form(...),
-        password: SecretStr = Form(...),
+        password: SecretStr = Form(str(uuid4())),
         phone_number: str = Form(None),
         role: UserRole = Form(UserRole.member_user),
         organisation: int = Form(...),

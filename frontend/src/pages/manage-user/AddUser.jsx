@@ -71,11 +71,26 @@ const AddUser = ({
   const onFinish = (values) => {
     setSending(true);
     if (!selectedUser) {
-      // REGISTER
-      const { first_name, last_name } = values;
-      values = { ...values, name: `${first_name} ${last_name}` };
+      // INVITATION REGISTER
+      const {
+        first_name,
+        last_name,
+        email,
+        phone_number,
+        role,
+        organisation,
+        questionnaires,
+      } = values;
+      const payload = new FormData();
+      payload.append("name", `${first_name} ${last_name}`);
+      payload.append("email", email);
+      payload.append("phone_number", phone_number || null);
+      payload.append("role", role);
+      payload.append("organisation", organisation);
+      payload.append("questionnaires", questionnaires);
+
       api
-        .post("/user/register?invitation=1", values)
+        .post("/user/register?invitation=1", payload)
         .then(() => {
           notification.success({
             message: "User has been successfully added",
