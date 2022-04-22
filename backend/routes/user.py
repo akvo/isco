@@ -35,7 +35,7 @@ def send_verification_email(user, recipients, type=MailTypeEnum.register):
     url = f"{webdomain}/verify_email/{email_token}"
     email = Email(recipients=recipients,
                   type=type,
-                  body=url)
+                  button_url=url)
     email.send
 
 
@@ -156,7 +156,7 @@ def register(req: Request,
     if not invitation:
         # send email register success with email verification link
         send_verification_email(user, recipients)
-        # also send email to admin?
+        # notify admin
         admins = session.query(User).filter(
                 User.organisation == user['organisation'],
             ).filter(
@@ -361,7 +361,7 @@ def post_forgot_password(req: Request,
                 tags=["User"])
 def resend_verification_email(req: Request, email: str,
                               session: Session = Depends(get_session)):
-    # resend email register success with email verification link
+    # resend email verification link
     user = crud_user.get_user_by_email(session=session, email=email)
     send_verification_email(user.serialize,
                             [user.recipient],

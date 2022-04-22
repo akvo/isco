@@ -12,7 +12,8 @@ class EmailText(enum.Enum):
         "body": None,
         "message": None,
         "image": None,
-        "button": None
+        "button": None,
+        "info": None
     }
     invitation = {
         "title": "Invitation",
@@ -31,10 +32,16 @@ class EmailText(enum.Enum):
     verify_email = {
         "title": "Email Verification",
         "subject": "Email Verification",
-        "body": None,
+        "body": '''Thank you for signing up.
+                Please click the following button to verify email:''',
         "message": None,
         "image": None,
-        "button": None
+        "button": '''<a href="#button_url#" target="_blank" rel="noreferrer">
+                        <button class="btn btn-link block">
+                            Verify Email
+                        </button>
+                    </a>''',
+        "info": "You will be notified once your account has been approved."
     }
     reset_password = {
         "title": "Reset Password",
