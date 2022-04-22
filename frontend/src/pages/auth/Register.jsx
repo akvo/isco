@@ -1,29 +1,58 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import "./style.scss";
 import { Link } from "react-router-dom";
-import { Row, Col, Space, Form, Input, Button, Select } from "antd";
+import { Row, Col, Space, Form, Input, Button, Select, Checkbox } from "antd";
 import Auth from "./Auth";
 import { store } from "../../lib";
 import { uiText } from "../../static";
+import { passwordCheckBoxOptions } from "../../lib/util";
+import intersection from "lodash/intersection";
 
 const Register = () => {
   const [form] = Form.useForm();
-  const optionValues = store.useState((s) => s?.optionValues);
-  const iscoOption = optionValues?.isco_type?.map((i) => ({
-    label: i?.name,
-    value: i?.id,
-  }));
-  const organisationOption = optionValues?.organisation?.map((o) => ({
-    label: o?.name,
-    value: o?.id,
-  }));
-
-  const language = store.useState((s) => s.language);
+  const { optionValues, language } = store.useState((s) => s);
   const { active: activeLang } = language;
+  const { isco_type, organisation } = optionValues;
+  const [checkedList, setCheckedList] = useState([]);
+  const [iscoFilter, setIscoFilter] = useState(null);
+
+  const iscoOption = useMemo(() => {
+    return isco_type?.map((i) => ({
+      label: i?.name,
+      value: i?.id,
+    }));
+  }, [isco_type]);
+
+  const organisationOption = useMemo(() => {
+    return organisation
+      ?.filter((o) => {
+        // show All
+        if (!iscoFilter || iscoFilter === 1) {
+          return true;
+        }
+        return intersection(o.isco_type, [iscoFilter]).length;
+      })
+      ?.map((o) => ({
+        label: o?.name,
+        value: o?.id,
+      }));
+  }, [organisation, iscoFilter]);
 
   const text = useMemo(() => {
     return uiText[activeLang];
   }, [activeLang]);
+
+  const onChange = ({ target }) => {
+    if (target.id === "password") {
+      const criteria = passwordCheckBoxOptions
+        .map((x) => {
+          const available = x.re.test(target.value);
+          return available ? x.name : false;
+        })
+        .filter((x) => x);
+      setCheckedList(criteria);
+    }
+  };
 
   const handleRegisterOnFinish = (values) => {
     console.info(values);
@@ -45,9 +74,19 @@ const Register = () => {
         <p className="data-security-provisions-doc-info">
           {text.infoDataSecurityDoc}
         </p>
+        <Row align="middle" justify="space-between" gutter={[12, 12]}>
+          <Col span={24} align="start">
+            <Checkbox.Group
+              className="checkbox-criteria"
+              options={passwordCheckBoxOptions.map((x) => x.name)}
+              value={checkedList}
+            />
+          </Col>
+        </Row>
         <Form
           form={form}
           className="form-wrapper"
+          onChange={onChange}
           onFinish={handleRegisterOnFinish}
           scrollToFirstError
         >
@@ -73,7 +112,23 @@ const Register = () => {
           </Form.Item>
           <Form.Item
             name="password"
-            rules={[{ required: true, message: text.valPwd }]}
+            rules={[
+              {
+                required: true,
+                message: text.valPwd,
+              },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (
+                    checkedList.length === 4 &&
+                    getFieldValue("old_password") !== value
+                  ) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(new Error("False Password Criteria"));
+                },
+              }),
+            ]}
           >
             <Input.Password
               className="bg-grey"
@@ -82,26 +137,37 @@ const Register = () => {
             />
           </Form.Item>
           <Form.Item
-            name="confirm-password"
+            name="confirm_password"
+            dependencies={["password"]}
             rules={[
               {
                 required: true,
-                message: "Please input confirm your password.",
+                message: "Please Confirm Password!",
               },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue("password") === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(new Error(text.valPwdNotMatch));
+                },
+              }),
             ]}
           >
             <Input.Password
               className="bg-grey"
-              placeholder={text.formConfirmPwd}
               size="large"
+              placeholder={text.formConfirmPwd}
             />
           </Form.Item>
           <Form.Item>
             <Select
+              allowClear
               size="large"
               className="bg-grey"
               placeholder={text.registerFilterOrganizationsBy}
               options={iscoOption}
+              onChange={(val) => setIscoFilter(val)}
             />
           </Form.Item>
           <Form.Item
