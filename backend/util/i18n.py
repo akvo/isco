@@ -17,10 +17,16 @@ class EmailText(enum.Enum):
     invitation = {
         "title": "Invitation",
         "subject": "Invitation",
-        "body": None,
+        "body": '''You have been added to the tool  for reporting on 2021 data.
+                Please click the following button to set password:''',
         "message": None,
         "image": None,
-        "button": None
+        "button": '''<a href="#button_url#" target="_blank" rel="noreferrer">
+                        <button class="btn btn-reset-password block">
+                            Set password
+                        </button>
+                    </a>''',
+        "info": "Some guidance  around  basic usage of the tool"
     }
     verify_email = {
         "title": "Email Verification",

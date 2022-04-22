@@ -525,15 +525,28 @@
                           </tr>
                           {% endif %} {% if message %}
                           <tr>
-                            <td style="text-align: center">{{ message }}</td>
+                            <td style="text-align: left">{{ message }}</td>
                           </tr>
                           {% endif %} {% if context %}
                           <tr>
-                            <td style="text-align: center">{{ context }}</td>
+                            <td style="text-align: left">{{ context }}</td>
                           </tr>
                           {% endif %} {% if button %}
                           <tr>
                             <td style="text-align: center">{{ button }}</td>
+                          </tr>
+                          {% endif %}
+                        </tbody>
+                      </table>
+                      {% endif %}
+
+                      {% if info %}
+                      <br/>
+                      <table style="width: 90%; margin: auto; padding: 20px;">
+                        <tbody>
+                          {% if info %}
+                          <tr>
+                            <td style="text-align: left">{{ info }}</td>
                           </tr>
                           {% endif %}
                         </tbody>

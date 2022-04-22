@@ -146,15 +146,13 @@ def register(req: Request,
                               invitation=invitation)
     recipients = [user.recipient]
     user = user.serialize
-    # don't send invitation email
-    send_invitation_email = False
-    if invitation and send_invitation_email:
+    if invitation:
         # Send invitation email
         url = f"{webdomain}/invitation/{user['invitation']}"
         email = Email(recipients=recipients,
                       type=MailTypeEnum.invitation,
-                      body=url)
-        # email.send
+                      button_url=url)
+        email.send
     if not invitation:
         # send email register success with email verification link
         send_verification_email(user, recipients)
