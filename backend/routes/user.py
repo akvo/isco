@@ -265,7 +265,9 @@ def update_user(req: Request,
         forms = session.query(FormModel).filter(
             FormModel.id.in_(res['questionnaires'])).all()
         forms = [f.only_form_detail for f in forms]
-        texts = [f"<li>{f['name']}</li>" for f in forms]
+        texts = ""
+        for f in forms:
+            texts += f"<li>{f['name']}</li>"
         context = f'''<div>You can now enter data on:
                     <ul>{texts}</ul></div>'''
         email = Email(recipients=[user.recipient],
