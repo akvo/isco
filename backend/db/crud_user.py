@@ -31,8 +31,9 @@ def add_user(session: Session,
                 password=payload.password,
                 role=payload.role,
                 organisation=payload.organisation,
-                invitation=str(uuid4() if invitation else None),
-                questionnaires=payload.questionnaires)
+                invitation=str(uuid4()) if invitation else None,
+                questionnaires=payload.questionnaires,
+                approved=True if invitation else False)
     session.add(user)
     session.commit()
     session.flush()
@@ -50,11 +51,13 @@ def verify_user_email(session: Session, email: str) -> UserDict:
 
 
 def update_user_by_admin(session: Session, id: int,
-                         payload: UserBase) -> UserUpdateByAdmin:
+                         payload: UserUpdateByAdmin) -> UserDict:
     user = get_user_by_id(session=session, id=id)
     user.organisation = payload['organisation']
     user.role = payload['role']
     user.questionnaires = payload['questionnaires']
+    if "approved" in payload and payload['approved']:
+        user.approved = payload['approved']
     session.commit()
     session.flush()
     session.refresh(user)
@@ -123,6 +126,7 @@ def accept_invitation(session: Session,
     user.password = password
     user.email_verified = datetime.now()
     user.invitation = None
+    user.approved = True
     session.commit()
     session.flush()
     session.refresh(user)

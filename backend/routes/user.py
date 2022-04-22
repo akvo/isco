@@ -244,7 +244,7 @@ def change_password(req: Request,
 
 @user_route.put("/user/update_by_admin/{id:path}",
                 response_model=UserDict,
-                summary="update user by admin",
+                summary="update / approved user by admin",
                 name="user:update_by_admin",
                 tags=["User"])
 def update_user(req: Request,
