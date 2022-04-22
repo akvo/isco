@@ -31,14 +31,14 @@ const Register = () => {
 
   return (
     <Auth>
-      <Space direction="vertical">
-        <Row align="middle" justify="space-between" gutter={[12, 12]}>
-          <Col span={12} align="start">
-            <p>Register</p>
+      <Space direction="vertical" style={{ marginBottom: "12vh" }}>
+        <Row align="bottom" justify="space-between" gutter={[12, 12]}>
+          <Col span={8} align="start">
+            <h2>{text.formRegister}</h2>
           </Col>
-          <Col span={12} align="end">
+          <Col span={16} align="end">
             <p className="float-right">
-              Already have an account? <Link to="/login">Login</Link>
+              {text.formHaveAccount} <Link to="/login">{text.btnLogin}</Link>
             </p>
           </Col>
         </Row>
@@ -53,31 +53,31 @@ const Register = () => {
         >
           <Form.Item
             name="fullname"
-            rules={[
-              { required: true, message: "Please input your full name." },
-            ]}
-          >
-            <Input className="bg-grey" placeholder="Full Name" size="large" />
-          </Form.Item>
-          <Form.Item
-            name="email"
-            rules={[
-              { required: true, message: "Please input your email address." },
-            ]}
+            rules={[{ required: true, message: text.valFullName }]}
           >
             <Input
               className="bg-grey"
-              placeholder="Email Address"
+              placeholder={text.formFullName}
+              size="large"
+            />
+          </Form.Item>
+          <Form.Item
+            name="email"
+            rules={[{ required: true, message: text.valEmail }]}
+          >
+            <Input
+              className="bg-grey"
+              placeholder={text.formEmail}
               size="large"
             />
           </Form.Item>
           <Form.Item
             name="password"
-            rules={[{ required: true, message: "Please input your password." }]}
+            rules={[{ required: true, message: text.valPwd }]}
           >
             <Input.Password
               className="bg-grey"
-              placeholder="Password"
+              placeholder={text.formPwd}
               size="large"
             />
           </Form.Item>
@@ -92,7 +92,7 @@ const Register = () => {
           >
             <Input.Password
               className="bg-grey"
-              placeholder="Confirm Password"
+              placeholder={text.formConfirmPwd}
               size="large"
             />
           </Form.Item>
@@ -100,7 +100,7 @@ const Register = () => {
             <Select
               size="large"
               className="bg-grey"
-              placeholder="Filter organizations by"
+              placeholder={text.registerFilterOrganizationsBy}
               options={iscoOption}
             />
           </Form.Item>
@@ -109,14 +109,14 @@ const Register = () => {
             rules={[
               {
                 required: true,
-                message: "Please select your Organization.",
+                message: text.valOrganization,
               },
             ]}
           >
             <Select
               className="bg-grey"
               size="large"
-              placeholder="Organization"
+              placeholder={text.tbColOrganization}
               options={organisationOption}
             />
           </Form.Item>
@@ -127,7 +127,7 @@ const Register = () => {
             onClick={() => form.submit()}
             size="large"
           >
-            Register
+            {text.formRegister}
           </Button>
         </Form>
       </Space>

@@ -8,6 +8,7 @@ import {
   ManageSurvey,
   ManageUser,
   SurveyEditor,
+  Register,
   Login,
   ResetPassword,
   EmailNotVerified,
@@ -132,7 +133,7 @@ const App = () => {
       <Layout.Body>
         <Routes>
           <Route exact path="/login" element={<Login />} />
-          {/* <Route exact path="/register" element={<Register />} /> */}
+          <Route exact path="/register" element={<Register />} />
           <Route
             exact
             path="/invitation/:tokenId"

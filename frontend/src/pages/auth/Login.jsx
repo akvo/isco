@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import "./style.scss";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import { Row, Col, Space, Form, Input, Button, Alert } from "antd";
 import Auth from "./Auth";
 import { api, store } from "../../lib";
@@ -164,15 +164,16 @@ const Login = () => {
     <Auth>
       <Space direction="vertical">
         <VerifyEmailMessage email={email} verifyStatus={verifyStatus} />
-        <Row align="middle" justify="space-between" gutter={[12, 12]}>
-          <Col span={12} align="start">
+        <Row align="bottom" justify="space-between" gutter={[12, 12]}>
+          <Col span={8} align="start">
             <h2>{resetPassword ? text.formForgotPwd : text.formLogin}</h2>
           </Col>
-          {/* <Col span={12} align="end">
+          <Col span={16} align="end">
             <p className="float-right">
-              Don&apos;t have any account? <Link to="/register">Register</Link>
+              {text.formDontHaveAccount}{" "}
+              <Link to="/register">{text.formRegister}</Link>
             </p>
-          </Col> */}
+          </Col>
         </Row>
         <p className="data-security-provisions-doc-info">
           {text.infoDataSecurityDoc}
