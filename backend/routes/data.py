@@ -8,6 +8,7 @@ from fastapi import Depends, Request, Response, APIRouter, HTTPException, Query
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
 from typing import List, Optional
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 import db.crud_data as crud
 from db import crud_answer
@@ -18,7 +19,11 @@ from models.question import QuestionType
 from db.connection import get_session
 from models.data import DataResponse, DataSubmittedResponse
 from models.data import DataDict, DataOptionDict
+from models.data import Data, SubmissionProgressDict
+from models.organisation_isco import OrganisationIsco
+from models.organisation import Organisation
 from middleware import verify_editor, verify_super_admin
+from util.survey_config import MEMBER_SURVEY, PROJECT_SURVEY
 import util.report as report
 
 security = HTTPBearer()
@@ -265,7 +270,7 @@ def bulk_delete(req: Request,
                 id: Optional[List[int]] = Query(None),
                 session: Session = Depends(get_session),
                 credentials: credentials = Depends(security)):
-    verify_super_admin(req.state.authenticated, session)
+    verify_super_admin(session=session, authenticated=req.state.authenticated)
     crud.delete_bulk(session=session, ids=id)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)
 
@@ -377,3 +382,58 @@ def update_by_id(req: Request,
         if c_key not in checked_payload:
             crud_answer.delete_answer_by_id(session=session, id=c['id'])
     return data.serialize
+
+
+@data_route.get("/submission/progress",
+                response_model=List[SubmissionProgressDict],
+                name="submission:progress",
+                summary="view submission progress",
+                tags=["Data"])
+def get_submission_progress(
+    req: Request,
+    session: Session = Depends(get_session),
+    credentials: credentials = Depends(security)
+):
+    user = verify_super_admin(
+        session=session, authenticated=req.state.authenticated)
+    user = user.serialize
+    find_org_iscos = session.query(OrganisationIsco).filter(
+        OrganisationIsco.organisation == user['organisation']).all()
+    find_org_iscos = [f.serialize for f in find_org_iscos]
+    isco_ids = [i['isco_type'] for i in find_org_iscos]
+    org_by_isco = session.query(OrganisationIsco).filter(
+        OrganisationIsco.isco_type.in_(isco_ids)).all()
+    org_by_isco = [o.serialize for o in org_by_isco]
+    org_ids = [o['organisation'] for o in org_by_isco]
+    organisations = session.query(Organisation).filter(
+        Organisation.id.in_(org_ids)).all()
+    orgs_dict = {}
+    organisations = [o.serialize for o in organisations]
+    for o in organisations:
+        orgs_dict.update({o['id']: o['name']})
+    data = session.query(
+        Data.organisation,
+        Data.form,
+        Data.submitted,
+        func.count(Data.id).label('count')).filter(
+            Data.organisation.in_(org_ids)).group_by(
+                Data.organisation, Data.form, Data.submitted)
+    if not data:
+        raise HTTPException(status_code=404,
+                            detail="submission progress not found")
+    data = data.all()
+    res = []
+    for d in data:
+        form_type = ""
+        if d.form in MEMBER_SURVEY:
+            form_type = "member"
+        if d.form in PROJECT_SURVEY:
+            form_type = "project"
+        res.append({
+            "organisation": orgs_dict[d.organisation],
+            "form": d.form,
+            "form_type": form_type,
+            "submitted": True if d.submitted else False,
+            "count": d.count
+        })
+    return res
