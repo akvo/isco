@@ -271,11 +271,10 @@ def update_user(req: Request,
         texts = ""
         for f in forms:
             texts += f"<li>{f['name']}</li>"
-        context = f'''<div>You can now enter data on:
-                    <ul>{texts}</ul></div>'''
+        # context = f'''<div>You can now enter data on:
+        #             <ul>{texts}</ul></div>'''
         email = Email(recipients=[user.recipient],
-                      type=MailTypeEnum.user_approved,
-                      context=context)
+                      type=MailTypeEnum.user_approved)
         email.send
     return res
 

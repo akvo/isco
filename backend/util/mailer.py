@@ -78,7 +78,8 @@ class Email:
                  context: Optional[str] = None,
                  body: Optional[str] = None,
                  button_url: Optional[str] = None,
-                 info: Optional[str] = None):
+                 info: Optional[str] = None,
+                 signature: Optional[bool] = None):
         self.type = EmailText[type.value]
         self.recipients = recipients
         self.bcc = bcc
@@ -87,6 +88,7 @@ class Email:
         self.body = body
         self.button_url = button_url
         self.info = info
+        self.signature = signature
 
     @property
     def data(self):
@@ -106,7 +108,8 @@ class Email:
                                     message=type["message"],
                                     context=self.context,
                                     button=button,
-                                    info=type["info"])
+                                    info=type["info"],
+                                    signature=type["signature"])
         payload = {
             "FromEmail": "noreply@cocoamonitoring.net",
             "Subject": f"ISCO {type['subject']}",
