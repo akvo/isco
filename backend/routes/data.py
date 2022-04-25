@@ -1,3 +1,6 @@
+import os
+import json
+import requests as r
 from http import HTTPStatus
 from datetime import datetime
 from math import ceil
@@ -9,7 +12,6 @@ from sqlalchemy import and_
 from sqlalchemy.orm import Session
 from sqlalchemy.sql.expression import true
 import db.crud_data as crud
-from db import crud_question
 from db import crud_answer
 from db import crud_form
 from db import crud_collaborator
@@ -22,6 +24,21 @@ from middleware import verify_editor, verify_super_admin
 
 security = HTTPBearer()
 data_route = APIRouter()
+
+
+def get_questions_from_published_form(session: Session, form_id: int):
+    form = crud_form.get_form_by_id(session=session, id=form_id)
+    TESTING = os.environ.get("TESTING")
+    if TESTING:
+        webform = json.load(open(form.url))
+    else:
+        webform = r.get(form.url)
+        webform = webform.json()
+    questions = {}
+    for qg in webform['question_group']:
+        for q in qg['question']:
+            questions.update({q['id']: q})
+    return questions
 
 
 @data_route.get("/data/form/{form_id:path}",
@@ -72,31 +89,36 @@ def add(req: Request,
     if exist:
         raise HTTPException(status_code=208,
                             detail="Submission already reported")
+    # get questions from published form
+    questions = get_questions_from_published_form(
+        session=session, form_id=form_id)
+    # end get questions published form
     geo = None
     answerlist = []
     names = []
     for a in answers:
-        q = crud_question.get_question_by_id(session=session, id=a["question"])
-        answer = Answer(question=q.id,
+        q = questions[a['question']]
+        answer = Answer(question=q['id'],
                         created=datetime.now(),
                         repeat_index=a["repeat_index"],
                         comment=a["comment"])
-        if q.type in [QuestionType.input, QuestionType.text,
-                      QuestionType.date]:
+        if q['type'] in [QuestionType.input.value,
+                         QuestionType.text.value,
+                         QuestionType.date.value]:
             answer.text = a["value"]
-            if q.datapoint_name:
+            if q['datapoint_name']:
                 names.append(a["value"])
-        if q.type == QuestionType.number:
+        if q['type'] == QuestionType.number.value:
             answer.value = a["value"]
-            if q.datapoint_name:
+            if q['datapoint_name']:
                 names.append(str(a["value"]))
-        if q.type == QuestionType.option:
+        if q['type'] == QuestionType.option.value:
             answer.options = [a["value"]]
-        if q.type == QuestionType.multiple_option:
+        if q['type'] == QuestionType.multiple_option.value:
             answer.options = a["value"]
-        if q.type == QuestionType.cascade:
+        if q['type'] == QuestionType.cascade.value:
             answer.options = a["value"]
-        if q.type == QuestionType.nested_list:
+        if q['type'] == QuestionType.nested_list.value:
             answer.options = a["value"]
         answerlist.append(answer)
     name = " - ".join(names)
