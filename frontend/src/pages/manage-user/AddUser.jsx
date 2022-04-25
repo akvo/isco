@@ -87,10 +87,14 @@ const AddUser = ({
       const payload = new FormData();
       payload.append("name", `${first_name} ${last_name}`);
       payload.append("email", email);
-      payload.append("phone_number", phone_number || null);
+      if (phone_number) {
+        payload.append("phone_number", phone_number);
+      }
       payload.append("role", role);
       payload.append("organisation", organisation);
-      payload.append("questionnaires", questionnaires);
+      if (questionnaires) {
+        payload.append("questionnaires", questionnaires);
+      }
 
       api
         .post("/user/register?invitation=1", payload)
@@ -119,7 +123,7 @@ const AddUser = ({
       const payload = {
         organisation: organisation,
         role: role,
-        questionnaires: questionnaires,
+        questionnaires: questionnaires || [],
       };
       let url = `/user/update_by_admin/${selectedUser.id}`;
       if (isApprovedByAdmin) {
@@ -293,7 +297,7 @@ const AddUser = ({
               name="questionnaires"
               label="Questionnaire Access"
               rules={[
-                { required: true, message: "Please select questionnaire" },
+                { required: false, message: "Please select questionnaire" },
               ]}
             >
               <Select

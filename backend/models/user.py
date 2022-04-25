@@ -91,7 +91,7 @@ class User(Base):
 
     def __init__(self, email: str, password: str, name: str, phone_number: str,
                  role: UserRole, organisation: int, invitation: Optional[str],
-                 questionnaires: Optional[List[int]],
+                 questionnaires: Optional[List[int]] = None,
                  approved: Optional[bool] = None):
         self.email = email
         self.password = password
@@ -150,13 +150,14 @@ class UserBase(BaseModel):
         phone_number: str = Form(None),
         role: UserRole = Form(UserRole.member_user),
         organisation: int = Form(...),
-        invitation: str = Form(None),
-        questionnaires: List[int] = Form(None)
+        # invitation: str = Form(None),
+        questionnaires: List[int] = Form([])
     ):
         return cls(
             name=name, email=email, password=password,
             phone_number=phone_number, role=role,
-            organisation=organisation, invitation=invitation,
+            organisation=organisation,
+            # invitation=invitation,
             questionnaires=questionnaires)
 
 
