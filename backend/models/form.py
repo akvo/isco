@@ -135,6 +135,13 @@ class Form(Base):
             "disabled": False,
         }
 
+    @property
+    def only_form_detail(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+        }
+
 
 class FormBase(BaseModel):
     id: int

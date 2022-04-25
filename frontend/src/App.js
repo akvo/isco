@@ -8,6 +8,7 @@ import {
   ManageSurvey,
   ManageUser,
   SurveyEditor,
+  Register,
   Login,
   ResetPassword,
   EmailNotVerified,
@@ -28,6 +29,10 @@ const Secure = ({ element: Element, adminPage = false }) => {
   const isAuth = cookies?.AUTH_TOKEN && cookies?.AUTH_TOKEN !== "undefined";
   const admins = ["secretariat_admin"];
   const isAuthAdmin = isAuth && admins.includes(user?.role);
+  const isNotApproved = isAuth && !user?.approved;
+  if (isNotApproved) {
+    return <ErrorPage status="not-approved" />;
+  }
   if (isAuthAdmin && adminPage) {
     return <Element />;
   }
@@ -132,7 +137,7 @@ const App = () => {
       <Layout.Body>
         <Routes>
           <Route exact path="/login" element={<Login />} />
-          {/* <Route exact path="/register" element={<Register />} /> */}
+          <Route exact path="/register" element={<Register />} />
           <Route
             exact
             path="/invitation/:tokenId"

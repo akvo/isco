@@ -197,6 +197,13 @@
         border: 2px solid #673016;
       }
 
+      .btn.btn-link {
+        border-radius: 5px;
+        background: transparent;
+        color: #000000;
+        border: 2px solid #673016;
+      }
+
       .btn.block {
         width: 100%;
       }
@@ -510,7 +517,7 @@
                           {{ body }}
                         </p>
                       </div>
-                      {% if image or message or button %}
+                      {% if image or message or context or button %}
                       <table style="width: 90%; margin: auto; padding: 20px">
                         <tbody>
                           {% if image %}
@@ -525,17 +532,44 @@
                           </tr>
                           {% endif %} {% if message %}
                           <tr>
-                            <td style="text-align: center">{{ message }}</td>
+                            <td style="text-align: left">{{ message }}</td>
                           </tr>
                           {% endif %} {% if context %}
                           <tr>
-                            <td style="text-align: center">{{ context }}</td>
+                            <td style="text-align: left">{{ context }}</td>
                           </tr>
                           {% endif %} {% if button %}
                           <tr>
                             <td style="text-align: center">{{ button }}</td>
                           </tr>
                           {% endif %}
+                        </tbody>
+                      </table>
+                      {% endif %}
+
+                      {% if info %}
+                      <br/>
+                      <table style="width: 90%; margin: auto; padding: 20px;">
+                        <tbody>
+                          {% if info %}
+                          <tr>
+                            <td style="text-align: left">{{ info }}</td>
+                          </tr>
+                          {% endif %}
+                        </tbody>
+                      </table>
+                      {% endif %}
+
+                      {% if signature %}
+                      <br/><br/>
+                      <table style="width: 90%; margin: auto; padding: 20px;">
+                        <tbody>
+                          <tr>
+                            <td style="text-align: left">
+                              Best regards, <br/>
+                              The Beyond Chocolate, DISCO and GISCO secretariats.
+                            </td>
+                          </tr>
                         </tbody>
                       </table>
                       {% endif %}

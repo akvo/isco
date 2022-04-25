@@ -17,6 +17,7 @@ from models.user import UserDict, UserBase, UserOrgDict, UserInvitation
 from models.user import UserResponse, UserRole, UserUpdateByAdmin
 from models.user import User
 from models.organisation_member import OrganisationMember
+from models.form import Form as FormModel
 from pydantic import SecretStr
 from db import crud_user, crud_organisation
 from typing import List, Optional
@@ -30,12 +31,12 @@ oauth2_scopes = ["openid", "email"]
 webdomain = os.environ["WEBDOMAIN"]
 
 
-def send_verification_email(user, recipients, type=MailTypeEnum.register):
+def send_verification_email(user, recipients, type=MailTypeEnum.verify_email):
     email_token = create_access_token(data={"email": user['email']})
     url = f"{webdomain}/verify_email/{email_token}"
     email = Email(recipients=recipients,
                   type=type,
-                  body=url)
+                  button_url=url)
     email.send
 
 
@@ -80,6 +81,7 @@ def get_all(req: Request,
             page: int = 1,
             limit: int = 10,
             search: Optional[str] = None,
+            approved: Optional[bool] = True,
             organisation: Optional[List[int]] = Query(None),
             session: Session = Depends(get_session),
             credentials: credentials = Depends(security)):
@@ -95,11 +97,13 @@ def get_all(req: Request,
                                   search=search,
                                   organisation=org_ids,
                                   skip=(limit * (page - 1)),
-                                  limit=limit)
+                                  limit=limit,
+                                  approved=approved)
     if not user:
         raise HTTPException(status_code=404, detail="Not found")
     # count total user
     total = crud_user.count(session=session,
+                            approved=approved,
                             search=search,
                             organisation=org_ids)
     user = [u.serialize for u in user]
@@ -132,33 +136,32 @@ def me(req: Request,
 
 @user_route.post("/user/register",
                  response_model=UserDict,
-                 summary="use register",
+                 summary="user register",
                  name="user:register",
                  tags=["User"])
 def register(req: Request,
-             payload: UserBase,
+             payload: UserBase = Depends(UserBase.as_form),
              invitation: Optional[bool] = False,
              session: Session = Depends(get_session)):
     if (payload.password):
+        payload.password = payload.password.get_secret_value()
         payload.password = get_password_hash(payload.password)
     user = crud_user.add_user(session=session,
                               payload=payload,
                               invitation=invitation)
     recipients = [user.recipient]
     user = user.serialize
-    # don't send invitation email
-    send_invitation_email = False
-    if invitation and send_invitation_email:
+    if invitation:
         # Send invitation email
         url = f"{webdomain}/invitation/{user['invitation']}"
         email = Email(recipients=recipients,
                       type=MailTypeEnum.invitation,
-                      body=url)
-        # email.send
+                      button_url=url)
+        email.send
     if not invitation:
         # send email register success with email verification link
         send_verification_email(user, recipients)
-        # also send email to admin?
+        # notify admin
         admins = session.query(User).filter(
                 User.organisation == user['organisation'],
             ).filter(
@@ -245,19 +248,35 @@ def change_password(req: Request,
 
 @user_route.put("/user/update_by_admin/{id:path}",
                 response_model=UserDict,
-                summary="update user by admin",
+                summary="update / approved user by admin",
                 name="user:update_by_admin",
                 tags=["User"])
 def update_user(req: Request,
                 id: int,
                 payload: UserUpdateByAdmin,
+                approved: Optional[bool] = False,
                 session: Session = Depends(get_session),
                 credentials: credentials = Depends(security)):
     verify_super_admin(session=session, authenticated=req.state.authenticated)
     user = crud_user.update_user_by_admin(session=session,
                                           id=id,
+                                          approved=approved,
                                           payload=payload)
-    return user.serialize
+    res = user.serialize
+    if approved and res['approved']:
+        # send approved notification to user
+        forms = session.query(FormModel).filter(
+            FormModel.id.in_(res['questionnaires'])).all()
+        forms = [f.only_form_detail for f in forms]
+        texts = ""
+        for f in forms:
+            texts += f"<li>{f['name']}</li>"
+        # context = f'''<div>You can now enter data on:
+        #             <ul>{texts}</ul></div>'''
+        email = Email(recipients=[user.recipient],
+                      type=MailTypeEnum.user_approved)
+        email.send
+    return res
 
 
 @user_route.put("/user/update_password",
@@ -363,9 +382,7 @@ def post_forgot_password(req: Request,
                 tags=["User"])
 def resend_verification_email(req: Request, email: str,
                               session: Session = Depends(get_session)):
-    # resend email register success with email verification link
+    # resend email verification link
     user = crud_user.get_user_by_email(session=session, email=email)
-    send_verification_email(user.serialize,
-                            [user.recipient],
-                            MailTypeEnum.verify_email)
+    send_verification_email(user.serialize, [user.recipient])
     return user.serialize

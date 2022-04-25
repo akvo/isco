@@ -37,6 +37,11 @@ const ErrorPage = ({ status = 500, showButton = true }) => {
           subTitle: "Member questionnaire can only be submitted once.",
           extra: <BackHome />,
         };
+      case "not-approved":
+        return {
+          title: "You're not approved by admin yet.",
+          subTitle: "Please contact your organisation admin.",
+        };
       default:
         return {
           status: status,

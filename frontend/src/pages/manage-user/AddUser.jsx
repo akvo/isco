@@ -33,10 +33,13 @@ const AddUser = ({
   setSelectedUser,
 }) => {
   const [sending, setSending] = useState(false);
+  const [isApprovedByAdmin, setIsApprovedByAdmin] = useState(false);
+
   const [form] = Form.useForm();
   const { optionValues } = store.useState((s) => s);
   const { organisation } = optionValues;
   const isAdd = !selectedUser;
+  const isApprove = !isAdd && !selectedUser?.approved;
   const disableFields = selectedUser !== null;
   const requiredFields = isAdd ? true : false;
 
@@ -71,11 +74,30 @@ const AddUser = ({
   const onFinish = (values) => {
     setSending(true);
     if (!selectedUser) {
-      // REGISTER
-      const { first_name, last_name } = values;
-      values = { ...values, name: `${first_name} ${last_name}` };
+      // INVITATION REGISTER
+      const {
+        first_name,
+        last_name,
+        email,
+        phone_number,
+        role,
+        organisation,
+        questionnaires,
+      } = values;
+      const payload = new FormData();
+      payload.append("name", `${first_name} ${last_name}`);
+      payload.append("email", email);
+      if (phone_number) {
+        payload.append("phone_number", phone_number);
+      }
+      payload.append("role", role);
+      payload.append("organisation", organisation);
+      if (questionnaires) {
+        payload.append("questionnaires", questionnaires);
+      }
+
       api
-        .post("/user/register?invitation=1", values)
+        .post("/user/register?invitation=1", payload)
         .then(() => {
           notification.success({
             message: "User has been successfully added",
@@ -101,10 +123,14 @@ const AddUser = ({
       const payload = {
         organisation: organisation,
         role: role,
-        questionnaires: questionnaires,
+        questionnaires: questionnaires || [],
       };
+      let url = `/user/update_by_admin/${selectedUser.id}`;
+      if (isApprovedByAdmin) {
+        url = `${url}?approved=1`;
+      }
       api
-        .put(`/user/update_by_admin/${selectedUser.id}`, payload)
+        .put(url, payload)
         .then(() => {
           notification.success({
             message: "User has been successfully updated",
@@ -132,14 +158,27 @@ const AddUser = ({
       footer={
         <Space>
           <Button onClick={handleOnClickModalCancel}>Cancel</Button>
-          <Button
-            type="primary"
-            ghost
-            onClick={() => form.submit()}
-            loading={sending}
-          >
-            {buttonOkText}
-          </Button>
+          {isApprove ? (
+            <Button
+              type="primary"
+              onClick={() => {
+                setIsApprovedByAdmin(true);
+                form.submit();
+              }}
+              loading={sending}
+            >
+              Approve
+            </Button>
+          ) : (
+            <Button
+              type="primary"
+              ghost
+              onClick={() => form.submit()}
+              loading={sending}
+            >
+              {buttonOkText}
+            </Button>
+          )}
         </Space>
       }
       width={840}
@@ -254,7 +293,13 @@ const AddUser = ({
 
         <Row gutter={[12, 12]}>
           <Col span={24}>
-            <Form.Item name="questionnaires" label="Questionnaire Access">
+            <Form.Item
+              name="questionnaires"
+              label="Questionnaire Access"
+              rules={[
+                { required: false, message: "Please select questionnaire" },
+              ]}
+            >
               <Select
                 showArrow
                 showSearch
