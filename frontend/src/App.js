@@ -19,6 +19,7 @@ import {
   Definition,
   Impressum,
   Setting,
+  SubmissionProgress,
 } from "./pages";
 import { useCookies } from "react-cookie";
 import { store, api } from "./lib";
@@ -179,6 +180,11 @@ const App = () => {
             exact
             path="/survey-editor/:formId"
             element={<Secure element={SurveyEditor} adminPage={true} />}
+          />
+          <Route
+            exact
+            path="/submission-progress"
+            element={<Secure element={SubmissionProgress} adminPage={true} />}
           />
           <Route exact path="/survey" element={<Secure element={Survey} />} />
           <Route

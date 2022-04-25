@@ -1,0 +1,13 @@
+@import "../../variables.scss";
+
+#root {
+  #submission-progress {
+    .page-title-wrapper {
+      border-bottom: 1px solid #777777;
+    }
+
+    .page-title {
+      margin: 40px 0 20px 0;
+    }
+  }
+}

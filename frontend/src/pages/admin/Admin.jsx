@@ -63,7 +63,7 @@ const Admin = () => {
                   <Button
                     type="primary"
                     ghost
-                    // onClick={() => navigate("/")}
+                    onClick={() => navigate("/submission-progress")}
                   >
                     View Submission Progress
                   </Button>
