@@ -50,6 +50,28 @@ class DataOptionDict(TypedDict):
     form_type: Optional[str] = None
 
 
+class DataSubmittedDict(TypedDict):
+    id: int
+    form: str
+    form_type: str
+    name: str
+    organisation: str
+    created_by: str
+    created: Optional[str] = None
+    submitted_by: str
+    submitted: Optional[str] = None
+
+    class Config:
+        orm_mode = True
+
+
+class DataSubmittedResponse(BaseModel):
+    current: int
+    data: List[DataSubmittedDict]
+    total: int
+    total_page: int
+
+
 class DataResponse(BaseModel):
     current: int
     data: List[DataDict]
@@ -172,6 +194,27 @@ class Data(Base):
             "organisation": organisation,
             "created_by": created_by,
             "created": created,
+        }
+
+    @property
+    def simplified(self) -> DataSubmittedDict:
+        created = self.created.strftime("%B %d, %Y")
+        submitted = self.submitted.strftime("%B %d, %Y")
+        form_type = None
+        if self.form in MEMBER_SURVEY:
+            form_type = "member"
+        if self.form in PROJECT_SURVEY:
+            form_type = "project"
+        return {
+            "id": self.id,
+            "name": self.name,
+            "form": self.form_detail.name,
+            "form_type": form_type,
+            "organisation": self.organisation_detail.name,
+            "created_by": self.created_by_user.name,
+            "created": created,
+            "submitted_by": self.submitted_by_user.name,
+            "submitted": submitted,
         }
 
 

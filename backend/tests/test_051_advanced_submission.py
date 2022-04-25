@@ -37,39 +37,69 @@ class TestAdvancedSubmissionRoute():
             'submitted': today,
             'submitted_by': 'John Doe',
             'updated': today,
-            'answer': [{'comment': None,
-                        'question': 1,
-                        'repeat_index': 0,
-                        'value': 'Option 1'},
-                       {'comment': 'This is comment',
-                        'question': 2,
-                        'repeat_index': 0,
-                        'value': 'Depend to Q1 Option 1'},
-                       {'comment': 'Q3 comment',
-                        'question': 3,
-                        'repeat_index': 0,
-                        'value': 'Male'},
-                       {'comment': 'Q4 comment',
-                        'question': 4,
-                        'repeat_index': 0,
-                        'value': 25},
-                       {'comment': None,
-                        'question': 1,
-                        'repeat_index': 1,
-                        'value': 'Option 1'},
-                       {'comment': None,
-                        'question': 2,
-                        'repeat_index': 1,
-                        'value': 'Test repeat'},
-                       {'comment': 'Q3 comment 1',
-                        'question': 3,
-                        'repeat_index': 1,
-                        'value': 'Female'},
-                       {'comment': 'Q5 comment',
-                        'question': 5,
-                        'repeat_index': 0,
-                        'value': 75}],
-            }
+            'answer': [{
+                'comment': None,
+                'question': 1,
+                'repeat_index': 0,
+                'value': 'Option 1'
+            }, {
+                'comment': 'This is comment',
+                'question': 2,
+                'repeat_index': 0,
+                'value': 'Depend to Q1 Option 1'
+            }, {
+                'comment': 'Q3 comment',
+                'question': 3,
+                'repeat_index': 0,
+                'value': 'Male'
+            }, {
+                'comment': 'Q4 comment',
+                'question': 4,
+                'repeat_index': 0,
+                'value': 25
+            }, {
+                'comment': None,
+                'question': 1,
+                'repeat_index': 1,
+                'value': 'Option 1'
+            }, {
+                'comment': None,
+                'question': 2,
+                'repeat_index': 1,
+                'value': 'Test repeat'
+            }, {
+                'comment': 'Q3 comment 1',
+                'question': 3,
+                'repeat_index': 1,
+                'value': 'Female'
+            }, {
+                'comment': 'Q5 comment',
+                'question': 5,
+                'repeat_index': 0,
+                'value': 75
+            }],
+        }
+        res = await client.get(
+            app.url_path_for("data:get_submitted_data_by_organisation"),
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 200
+        assert res.status_code == 200
+        res = res.json()
+        assert res["current"] == 1
+        assert res["total"] is not None
+        assert res["total_page"] is not None
+        assert len(res["data"]) > 0
+        assert res["data"][0] == {
+            'id': 1,
+            'form': "Form Test",
+            'form_type': "member",
+            'name': 'Depend to Q1 Option 1',
+            'organisation': 'Akvo',
+            'submitted': today,
+            'submitted_by': 'John Doe',
+            'created': today,
+            'created_by': 'John Doe',
+        }
 
     @pytest.mark.asyncio
     async def test_get_disabled_form_options(self, app: FastAPI,
@@ -88,8 +118,7 @@ class TestAdvancedSubmissionRoute():
         }]
 
     @pytest.mark.asyncio
-    async def test_update_submitted_data(self, app: FastAPI,
-                                         session: Session,
+    async def test_update_submitted_data(self, app: FastAPI, session: Session,
                                          client: AsyncClient) -> None:
         # get data by id
         res = await client.get(
@@ -113,17 +142,10 @@ class TestAdvancedSubmissionRoute():
 
     @pytest.mark.asyncio
     async def test_get_webform_from_bucket_with_submitted_values(
-        self,
-        app: FastAPI,
-        session: Session,
-        client: AsyncClient
-    ) -> None:
+            self, app: FastAPI, session: Session, client: AsyncClient) -> None:
         # get form
         res = await client.get(
-            app.url_path_for(
-                "form:get_webform_from_bucket",
-                form_id=1
-            ),
+            app.url_path_for("form:get_webform_from_bucket", form_id=1),
             params={"data_id": 1},
             headers={"Authorization": f"Bearer {account.token}"})
         assert res.status_code == 208

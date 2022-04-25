@@ -16,7 +16,8 @@ from db import crud_collaborator
 from models.answer import Answer, AnswerDict
 from models.question import QuestionType
 from db.connection import get_session
-from models.data import DataResponse, DataDict, DataOptionDict
+from models.data import DataResponse, DataSubmittedResponse
+from models.data import DataDict, DataOptionDict
 from middleware import verify_editor, verify_super_admin
 
 security = HTTPBearer()
@@ -86,14 +87,15 @@ def add(req: Request,
     user = verify_editor(session=session,
                          authenticated=req.state.authenticated)
     # check if submission exist
-    exist = crud.check_member_submission_exists(
-        session=session, form=form_id, organisation=user.organisation)
+    exist = crud.check_member_submission_exists(session=session,
+                                                form=form_id,
+                                                organisation=user.organisation)
     if exist:
         raise HTTPException(status_code=208,
                             detail="Submission already reported")
     # get questions from published form
-    published = get_questions_from_published_form(
-        session=session, form_id=form_id)
+    published = get_questions_from_published_form(session=session,
+                                                  form_id=form_id)
     questions = published['questions']
     # end get questions published form
     geo = None
@@ -105,9 +107,10 @@ def add(req: Request,
                         created=datetime.now(),
                         repeat_index=a["repeat_index"],
                         comment=a["comment"])
-        if q['type'] in [QuestionType.input.value,
-                         QuestionType.text.value,
-                         QuestionType.date.value]:
+        if q['type'] in [
+                QuestionType.input.value, QuestionType.text.value,
+                QuestionType.date.value
+        ]:
             answer.text = a["value"]
             if q['datapoint_name']:
                 names.append(a["value"])
@@ -142,15 +145,15 @@ def add(req: Request,
                 summary="get saved data by login user organisation",
                 name="data:get_saved_data_by_organisation",
                 tags=["Data"])
-def get_saved_data_by_organisation(req: Request,
-                                   session: Session = Depends(get_session),
-                                   credentials: credentials = Depends(security)
-                                   ):
+def get_saved_data_by_organisation(
+        req: Request,
+        session: Session = Depends(get_session),
+        credentials: credentials = Depends(security)):
     user = verify_editor(session=session,
                          authenticated=req.state.authenticated)
     # get saved data from logged user organisation
-    data = crud.get_data_by_organisation(
-        session=session, organisation=user.organisation)
+    data = crud.get_data_by_organisation(session=session,
+                                         organisation=user.organisation)
     # check for collaborator
     collabs = crud_collaborator.get_collaborator_by_organisation(
         session=session, organisation=user.organisation)
@@ -161,6 +164,43 @@ def get_saved_data_by_organisation(req: Request,
     if not data:
         return []
     return [d.to_options for d in data]
+
+
+@data_route.get("/data/submitted",
+                response_model=DataSubmittedResponse,
+                summary="get submitted data by login user organisation",
+                name="data:get_submitted_data_by_organisation",
+                tags=["Data"])
+def get_submitted_data_by_organisation(
+        req: Request,
+        page: int = 1,
+        page_size: int = 10,
+        session: Session = Depends(get_session),
+        credentials: credentials = Depends(security)):
+    user = verify_editor(session=session,
+                         authenticated=req.state.authenticated)
+    # get saved data from logged user organisation
+    data = crud.get_data_by_organisation(session=session,
+                                         organisation=user.organisation,
+                                         submitted=True,
+                                         page=page,
+                                         page_size=page_size)
+    if not data:
+        return []
+    total_data = crud.count_data_by_organisation(
+        session=session,
+        organisation=user.organisation,
+        submitted=True,
+    )
+    total_page = ceil(total_data / page_size) if total_data > 0 else 0
+    if total_page < page:
+        raise HTTPException(status_code=404, detail="Not found")
+    return {
+        'current': page,
+        'data': [d.simplified for d in data],
+        'total': total_data,
+        'total_page': total_page,
+    }
 
 
 @data_route.get("/data/{id:path}",
@@ -235,8 +275,7 @@ def update_by_id(req: Request,
                             detail="Submission already reported")
     # if locked, allow update only by locked_by === user id
     if data.locked_by and data.locked_by != user.id:
-        raise HTTPException(status_code=401,
-                            detail="Submission is locked")
+        raise HTTPException(status_code=401, detail="Submission is locked")
     submitted_by = None
     submitted_date = None
     if submitted:
@@ -244,8 +283,8 @@ def update_by_id(req: Request,
         submitted_date = datetime.now()
 
     # get questions from published form
-    published = get_questions_from_published_form(
-        session=session, form_id=data.form)
+    published = get_questions_from_published_form(session=session,
+                                                  form_id=data.form)
     question_groups = published['question_groups']
     questions = published['questions']
     # end get questions published form
@@ -287,9 +326,8 @@ def update_by_id(req: Request,
             last_answer = checked[key]
         else:
             execute = "new"
-        if execute == "update" and (
-            a["value"] != last_answer["value"] or a[
-                "comment"] != last_answer["comment"]):
+        if execute == "update" and (a["value"] != last_answer["value"]
+                                    or a["comment"] != last_answer["comment"]):
             answer = last_answer["data"]
             a = crud_answer.update_answer(session=session,
                                           answer=answer,
