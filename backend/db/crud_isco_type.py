@@ -1,5 +1,6 @@
 from fastapi import HTTPException, status
 from typing import List
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from models.isco_type import IscoType, IscoTypeBase
 from models.isco_type import IscoTypeDict, IscoTypePayload
@@ -21,15 +22,14 @@ def get_isco_type(session: Session) -> List[IscoTypeDict]:
 def get_isco_type_by_id(session: Session, id: int) -> IscoTypeBase:
     isco_type = session.query(IscoType).filter(IscoType.id == id).first()
     if isco_type is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"isco_type {id} not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"isco_type {id} not found")
     return isco_type
 
 
 def get_isco_type_by_name(session: Session, name: str):
-    member_type = session.query(
-        IscoType).filter(IscoType.name == name).first()
+    member_type = session.query(IscoType).filter(
+        func.lower(IscoType.name) == func.lower(name)).first()
     return member_type
 
 
