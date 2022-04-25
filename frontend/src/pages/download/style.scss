@@ -1,0 +1,85 @@
+@import "../../variables";
+
+#root {
+  #download-data {
+    .page-title-wrapper {
+      border-bottom: 1px solid #777777;
+    }
+
+    .page-title {
+      margin: 40px 0 20px 0;
+    }
+
+    button.button-add {
+      float: right;
+    }
+
+    // TABLE
+    .table-wrapper {
+      border: none !important;
+
+      .ant-table {
+        border: 2px solid #c5c4c5;
+        border-radius: 5px;
+      }
+
+      th.ant-table-cell {
+        border-bottom: 2px solid #c5c4c5;
+        font-weight: 600;
+      }
+
+      .title {
+        font-weight: 600;
+      }
+
+      .action-btn {
+        color: #777777;
+      }
+
+      button.ant-table-row-expand-icon.ant-table-row-expand-icon-expanded,
+      .ant-table-cell.ant-table-row-expand-icon-cell {
+        display: none;
+      }
+
+      .expanded-description {
+        margin: 0;
+        width: 43%;
+      }
+
+      tr.ant-table-expanded-row:hover > td,
+      tr.ant-table-expanded-row > td {
+        background: $white;
+        padding: 30px 20px 30px 66px;
+      }
+    }
+
+    // END OF TABLE
+
+    .ant-pagination {
+      .ant-pagination-item-link {
+        background-color: transparent;
+        border: none;
+        color: #777777;
+      }
+
+      .ant-pagination-item {
+        background-color: transparent;
+        border-radius: 5px;
+        border: 2px solid #777777;
+
+        a {
+          color: #777777;
+        }
+      }
+
+      .ant-pagination-item-active {
+        a {
+          color: $white;
+        }
+
+        background: transparent;
+        background-color: #777777;
+      }
+    }
+  }
+}

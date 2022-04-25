@@ -13,6 +13,7 @@ import {
   ResetPassword,
   EmailNotVerified,
   ErrorPage,
+  Download,
   Survey,
   Feedback,
   Definition,
@@ -154,6 +155,11 @@ const App = () => {
           <Route exact path="/" element={<Secure element={Home} />} />
           <Route exact path="/home" element={<Secure element={Home} />} />
           <Route exact path="/setting" element={<Secure element={Setting} />} />
+          <Route
+            exact
+            path="/download"
+            element={<Secure element={Download} />}
+          />
           <Route
             exact
             path="/admin"
