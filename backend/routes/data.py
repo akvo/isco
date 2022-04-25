@@ -34,11 +34,16 @@ def get_questions_from_published_form(session: Session, form_id: int):
     else:
         webform = r.get(form.url)
         webform = webform.json()
+    question_groups = []
     questions = {}
     for qg in webform['question_group']:
+        qids = []
         for q in qg['question']:
             questions.update({q['id']: q})
-    return questions
+            qids.append(q['id'])
+        qg['question'] = qids
+        question_groups.append(qg)
+    return {"question_groups": question_groups, "questions": questions}
 
 
 @data_route.get("/data/form/{form_id:path}",
@@ -90,8 +95,9 @@ def add(req: Request,
         raise HTTPException(status_code=208,
                             detail="Submission already reported")
     # get questions from published form
-    questions = get_questions_from_published_form(
+    published = get_questions_from_published_form(
         session=session, form_id=form_id)
+    questions = published['questions']
     # end get questions published form
     geo = None
     answerlist = []
@@ -239,23 +245,36 @@ def update_by_id(req: Request,
     if submitted:
         submitted_by = user.id
         submitted_date = datetime.now()
-    form = crud_form.get_form_by_id(session=session, id=data.form)
+
+    # get questions from published form
+    published = get_questions_from_published_form(
+        session=session, form_id=data.form)
+    question_groups = published['question_groups']
+    questions = published['questions']
+    # end get questions published form
+
+    # form = crud_form.get_form_by_id(session=session, id=data.form)
 
     # get repeatable question ids
     repeat_qids = []
-    repeat_group = session.query(
-        QuestionGroup).filter(and_(
-            QuestionGroup.form == form.id,
-            QuestionGroup.repeat == true())).all()
-    repeat_group = [g.get_question_ids for g in repeat_group]
-    for group in repeat_group:
-        for x in group:
-            repeat_qids.append(x)
+    for qg in question_groups:
+        if qg['repeatable'] is True:
+            for qid in qg['question']:
+                repeat_qids.append(qid)
+    # repeat_group = session.query(
+    #     QuestionGroup).filter(and_(
+    #         QuestionGroup.form == form.id,
+    #         QuestionGroup.repeat == true())).all()
+    # repeat_group = [g.get_question_ids for g in repeat_group]
+    # for group in repeat_group:
+    #     for x in group:
+    #         repeat_qids.append(x)
+
     # get current repeat group answer
     current_repeat = crud_answer.get_answer_by_data_and_question(
         session=session, data=data.id, questions=repeat_qids)
 
-    questions = form.list_of_questions
+    # questions = form.list_of_questions
     current_answers = crud_answer.get_answer_by_data_and_question(
         session=session, data=id, questions=[a["question"] for a in answers])
     checked = {}
@@ -271,9 +290,10 @@ def update_by_id(req: Request,
                 status_code=401,
                 detail="question {} is not part of this form".format(
                     a["question"]))
-        a.update({"type": questions[a["question"]]})
+        qtype = questions[a["question"]]['type']
+        a.update({"type": qtype})
         last_answer = []
-        if a["type"] == QuestionType.option:
+        if a["type"] == QuestionType.option.value:
             a.update({"value": [a["value"]]})
         if key in list(checked):
             execute = "update"
@@ -288,7 +308,7 @@ def update_by_id(req: Request,
                                           answer=answer,
                                           repeat_index=a["repeat_index"],
                                           comment=a["comment"],
-                                          type=questions[a["question"]],
+                                          type=qtype,
                                           value=a["value"])
         if execute == "new":
             answer = Answer(question=a["question"],
@@ -298,7 +318,7 @@ def update_by_id(req: Request,
                             comment=a["comment"])
             a = crud_answer.add_answer(session=session,
                                        answer=answer,
-                                       type=questions[a["question"]],
+                                       type=qtype,
                                        value=a["value"])
         if execute:
             data.locked_by = locked_by

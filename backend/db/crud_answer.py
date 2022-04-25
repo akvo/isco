@@ -9,21 +9,21 @@ from models.question import QuestionType
 def append_value(answer: Answer, value: Union[int, float, str, bool, List[str],
                                               List[int], List[float]],
                  type: QuestionType) -> Answer:
-    if type == QuestionType.input:
+    if type == QuestionType.input.value:
         answer.text = value
-    if type == QuestionType.number:
+    if type == QuestionType.number.value:
         answer.value = value
-    if type == QuestionType.text:
+    if type == QuestionType.text.value:
         answer.text = value
-    if type == QuestionType.date:
+    if type == QuestionType.date.value:
         answer.text = value
-    if type == QuestionType.option:
+    if type == QuestionType.option.value:
         answer.options = value
-    if type == QuestionType.multiple_option:
+    if type == QuestionType.multiple_option.value:
         answer.options = value
-    if type == QuestionType.nested_list:
+    if type == QuestionType.nested_list.value:
         answer.options = value
-    if type == QuestionType.cascade:
+    if type == QuestionType.cascade.value:
         answer.options = value
     return answer
 
