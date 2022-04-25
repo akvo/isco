@@ -8,15 +8,12 @@ from fastapi import Depends, Request, Response, APIRouter, HTTPException, Query
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
 from typing import List, Optional
-from sqlalchemy import and_
 from sqlalchemy.orm import Session
-from sqlalchemy.sql.expression import true
 import db.crud_data as crud
 from db import crud_answer
 from db import crud_form
 from db import crud_collaborator
 from models.answer import Answer, AnswerDict
-from models.question_group import QuestionGroup
 from models.question import QuestionType
 from db.connection import get_session
 from models.data import DataResponse, DataDict, DataOptionDict
@@ -253,22 +250,12 @@ def update_by_id(req: Request,
     questions = published['questions']
     # end get questions published form
 
-    # form = crud_form.get_form_by_id(session=session, id=data.form)
-
     # get repeatable question ids
     repeat_qids = []
     for qg in question_groups:
         if qg['repeatable'] is True:
             for qid in qg['question']:
                 repeat_qids.append(qid)
-    # repeat_group = session.query(
-    #     QuestionGroup).filter(and_(
-    #         QuestionGroup.form == form.id,
-    #         QuestionGroup.repeat == true())).all()
-    # repeat_group = [g.get_question_ids for g in repeat_group]
-    # for group in repeat_group:
-    #     for x in group:
-    #         repeat_qids.append(x)
 
     # get current repeat group answer
     current_repeat = crud_answer.get_answer_by_data_and_question(
