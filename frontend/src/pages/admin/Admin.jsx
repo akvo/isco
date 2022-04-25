@@ -53,6 +53,23 @@ const Admin = () => {
                 </div>
               </Card>
             </Col>
+            <Col md={24} lg={12}>
+              <Card
+                title={<Title level={5}>View Submission Progress</Title>}
+                className="card-wrapper"
+              >
+                <p>{loremText}</p>
+                <div className="card-footer">
+                  <Button
+                    type="primary"
+                    ghost
+                    // onClick={() => navigate("/")}
+                  >
+                    View Submission Progress
+                  </Button>
+                </div>
+              </Card>
+            </Col>
           </Row>
         </Col>
       </Row>
