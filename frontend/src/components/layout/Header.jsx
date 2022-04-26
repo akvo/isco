@@ -111,7 +111,7 @@ const Header = ({ className = "header", ...props }) => {
               {isLoggedIn && (
                 <>
                   <Link to="/survey">{text.navSurvey}</Link>
-                  <Link to="#" className="dev">
+                  <Link to="/download" className="dev">
                     {text.navDownload}
                   </Link>
                 </>
