@@ -19,6 +19,7 @@ from db.connection import get_session
 from models.data import DataResponse, DataSubmittedResponse
 from models.data import DataDict, DataOptionDict
 from middleware import verify_editor, verify_super_admin
+import util.report as report
 
 security = HTTPBearer()
 data_route = APIRouter()
@@ -201,6 +202,22 @@ def get_submitted_data_by_organisation(
         'total': total_data,
         'total_page': total_page,
     }
+
+
+@data_route.get("/data/request/{id:path}",
+                summary="request download data by id",
+                name="data:request_download_data",
+                tags=["Data"])
+def request_download_data(req: Request,
+                          id: int,
+                          session: Session = Depends(get_session)):
+    data = crud.get_data_by_id(session=session, id=id)
+    data = data.to_report
+    answers = report.transform_data(answers=data["answer"], session=session)
+    report.render(form=crud_form.get_form_by_id(session=session,
+                                                id=data["form"]),
+                  data=answers)
+    return data
 
 
 @data_route.get("/data/{id:path}",

@@ -70,9 +70,9 @@ class QuestionGroup(Base):
         backref="question_group_detail")
 
     def __init__(self, id: Optional[int], form: int, name: str,
-                 translations: Optional[List[dict]],
-                 repeat: Optional[bool], order: Optional[int],
-                 description: Optional[str], repeat_text: Optional[str]):
+                 translations: Optional[List[dict]], repeat: Optional[bool],
+                 order: Optional[int], description: Optional[str],
+                 repeat_text: Optional[str]):
         self.id = id
         self.form = form
         self.name = name

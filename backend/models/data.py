@@ -81,8 +81,11 @@ class DataResponse(BaseModel):
 
 class Data(Base):
     __tablename__ = "data"
-    id = Column(Integer, primary_key=True, index=True,
-                nullable=True, autoincrement=True)
+    id = Column(Integer,
+                primary_key=True,
+                index=True,
+                nullable=True,
+                autoincrement=True)
     form = Column(Integer, ForeignKey(Form.id))
     name = Column(String)
     geo = Column(pg.ARRAY(Float), nullable=True)
@@ -125,19 +128,26 @@ class Data(Base):
     @property
     def serialize(self) -> DataDict:
         return {
-            "id": self.id,
-            "name": self.name,
-            "form": self.form,
+            "id":
+            self.id,
+            "name":
+            self.name,
+            "form":
+            self.form,
             "geo": {
                 "lat": self.geo[0],
                 "long": self.geo[1]
             } if self.geo else None,
-            "locked_by": self.locked_by,
-            "created_by": self.created_by_user.name,
-            "organisation": self.organisation_detail.name,
+            "locked_by":
+            self.locked_by,
+            "created_by":
+            self.created_by_user.name,
+            "organisation":
+            self.organisation_detail.name,
             "submitted_by":
             self.submitted_by_user.name if self.submitted_by else None,
-            "created": self.created.strftime("%B %d, %Y"),
+            "created":
+            self.created.strftime("%B %d, %Y"),
             "updated":
             self.updated.strftime("%B %d, %Y") if self.updated else None,
             "submitted":
@@ -150,10 +160,12 @@ class Data(Base):
         data = {
             "id":
             self.id,
-            "datapoint_name": self.name,
+            "datapoint_name":
+            self.name,
             "geolocation":
             f"{self.geo[0], self.geo[1]}" if self.geo else None,
-            "locked_by": self.locked_by,
+            "locked_by":
+            self.locked_by,
             "created_by":
             self.created_by_user.name,
             "organisation":
@@ -215,6 +227,32 @@ class Data(Base):
             "created": created,
             "submitted_by": self.submitted_by_user.name,
             "submitted": submitted,
+        }
+
+    @property
+    def to_report(self) -> DataDict:
+        return {
+            "id":
+            self.id,
+            "name":
+            self.name,
+            "form":
+            self.form,
+            "geo": {
+                "lat": self.geo[0],
+                "long": self.geo[1]
+            } if self.geo else None,
+            "created_by":
+            self.created_by_user.name,
+            "organisation":
+            self.organisation_detail.name,
+            "submitted_by":
+            self.submitted_by_user.name if self.submitted_by else None,
+            "created":
+            self.created.strftime("%B %d, %Y"),
+            "submitted":
+            self.submitted.strftime("%B %d, %Y") if self.submitted else None,
+            "answer": [a.to_report for a in self.answer],
         }
 
 

@@ -32,8 +32,11 @@ class AnswerDict(TypedDict):
 
 class Answer(Base):
     __tablename__ = "answer"
-    id = Column(Integer, primary_key=True, index=True,
-                nullable=True, autoincrement=True)
+    id = Column(Integer,
+                primary_key=True,
+                index=True,
+                nullable=True,
+                autoincrement=True)
     question = Column(Integer,
                       ForeignKey('question.id',
                                  onupdate="CASCADE",
@@ -104,8 +107,7 @@ class Answer(Base):
             answer.update({"value": self.value})
         if type == QuestionType.option:
             answer.update({"value": self.options[0]})
-        if type in [QuestionType.multiple_option,
-                    QuestionType.nested_list]:
+        if type in [QuestionType.multiple_option, QuestionType.nested_list]:
             answer.update({"value": self.options})
         if type == QuestionType.cascade:
             answer.update({"value": [int(o) for o in self.options]})
@@ -126,8 +128,7 @@ class Answer(Base):
             answer.update({"value": self.value})
         if type == QuestionType.option:
             answer.update({"value": self.options[0]})
-        if type in [QuestionType.multiple_option,
-                    QuestionType.nested_list]:
+        if type in [QuestionType.multiple_option, QuestionType.nested_list]:
             answer.update({"value": self.options})
         if type == QuestionType.cascade:
             answer.update({"value": [int(o) for o in self.options]})
@@ -155,9 +156,10 @@ class Answer(Base):
             return self.value
         if type == QuestionType.option:
             return self.options[0] if self.options else None
-        if type in [QuestionType.multiple_option,
-                    QuestionType.cascade,
-                    QuestionType.nested_list]:
+        if type in [
+                QuestionType.multiple_option, QuestionType.cascade,
+                QuestionType.nested_list
+        ]:
             return self.options
         if type == QuestionType.cascade:
             return [int(o) for o in self.options]
@@ -174,9 +176,10 @@ class Answer(Base):
             answer = self.value
         if type == QuestionType.option:
             answer = self.options[0] if self.options else None
-        if type in [QuestionType.multiple_option,
-                    QuestionType.cascade,
-                    QuestionType.nested_list]:
+        if type in [
+                QuestionType.multiple_option, QuestionType.cascade,
+                QuestionType.nested_list
+        ]:
             return self.options
         if type == QuestionType.cascade:
             return [int(o) for o in self.options]
@@ -192,19 +195,63 @@ class Answer(Base):
         answer = None
         q = self.question_detail
         qname = f"{self.question_detail.id}|{self.question_detail.name}"
-        if q.type in [QuestionType.input,
-                      QuestionType.text,
-                      QuestionType.date]:
+        if q.type in [
+                QuestionType.input, QuestionType.text, QuestionType.date
+        ]:
             answer = self.text
         if q.type == QuestionType.number:
             answer = self.value
         if q.type == QuestionType.option:
             answer = self.options[0] if self.options else None
-        if q.type in [QuestionType.multiple_option,
-                      QuestionType.cascade,
-                      QuestionType.nested_list]:
+        if q.type in [
+                QuestionType.multiple_option, QuestionType.cascade,
+                QuestionType.nested_list
+        ]:
             answer = "|".join(self.options) if self.options else None
         return {qname: answer}
+
+    @property
+    def to_report(self) -> dict:
+        answer = None
+        q = self.question_detail
+        value_type = "string"
+        if q.type in [
+                QuestionType.input, QuestionType.text, QuestionType.date
+        ]:
+            answer = self.text
+        if q.type == QuestionType.number:
+            answer = self.value
+            if q.rule:
+                if q.rule.get("allow_decimal"):
+                    answer = float(answer) if answer else None
+            else:
+                answer = int(answer) if answer else None
+            if q.repeating_objects:
+                unit = list(
+                    filter(lambda x: x["field"] == "unit",
+                           q.repeating_objects))[0]["value"]
+                answer = f"{answer} {unit}" if answer else None
+        if q.type == QuestionType.option:
+            answer = self.options[0] if self.options else None
+        if q.type in [
+                QuestionType.option, QuestionType.multiple_option,
+                QuestionType.cascade, QuestionType.nested_list
+        ]:
+            answer = self.options
+            value_type = "list"
+        if q.type == QuestionType.cascade:
+            answer = " - ".join(answer) if answer else None
+            value_type = "string"
+        return {
+            "group": q.question_group,
+            "order": q.order,
+            "name": q.name,
+            "value": answer,
+            "value_type": value_type,
+            "repeat": self.repeat_index,
+            "comment": self.comment,
+            "tooltip": q.tooltip,
+        }
 
 
 class AnswerBase(BaseModel):
