@@ -396,21 +396,17 @@ def get_submission_progress(
 ):
     user = verify_super_admin(
         session=session, authenticated=req.state.authenticated)
-    user = user.serialize
     find_org_iscos = session.query(OrganisationIsco).filter(
-        OrganisationIsco.organisation == user['organisation']).all()
-    find_org_iscos = [f.serialize for f in find_org_iscos]
-    isco_ids = [i['isco_type'] for i in find_org_iscos]
+        OrganisationIsco.organisation == user.organisation).all()
+    isco_ids = [i.isco_type for i in find_org_iscos]
     org_by_isco = session.query(OrganisationIsco).filter(
         OrganisationIsco.isco_type.in_(isco_ids)).all()
-    org_by_isco = [o.serialize for o in org_by_isco]
-    org_ids = [o['organisation'] for o in org_by_isco]
+    org_ids = [o.organisation for o in org_by_isco]
     organisations = session.query(Organisation).filter(
         Organisation.id.in_(org_ids)).all()
     orgs_dict = {}
-    organisations = [o.serialize for o in organisations]
     for o in organisations:
-        orgs_dict.update({o['id']: o['name']})
+        orgs_dict.update({o.id: o.name})
     data = session.query(
         Data.organisation,
         Data.form,
