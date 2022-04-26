@@ -54,9 +54,10 @@ const WebformPage = ({
 }) => {
   const { notify } = useNotification();
 
-  const user = store.useState((s) => s.user);
+  const { user, language } = store.useState((s) => s);
   const { member: userMember, isco: userIsco } = user.organisation;
   const allAccess = "All";
+  const { active: activeLang } = language;
 
   const [formValue, setFormValue] = useState({});
   const [errorPage, setErrorPage] = useState(false);
@@ -183,6 +184,13 @@ const WebformPage = ({
     selectedSavedSubmission,
     savedData,
   ]);
+
+  // set default language
+  useEffect(() => {
+    if (!isEmpty(formValue) && formValue?.defaultLanguage !== activeLang) {
+      setFormValue({ ...formValue, defaultLanguage: activeLang || "en" });
+    }
+  }, [formValue, activeLang]);
 
   // set comment to answer value
   useEffect(() => {

@@ -130,7 +130,7 @@ def add(req: Request,
             answer.options = a["value"]
         if q['type'] == QuestionType.cascade.value:
             answer.options = a["value"]
-        if q['type'] == QuestionType.nested_list.value:
+        if q['type'] == QuestionType.nested_list.value or q['type'] == "tree":
             answer.options = a["value"]
         answerlist.append(answer)
     name = " - ".join(names)
@@ -341,8 +341,6 @@ def update_by_id(req: Request,
         qtype = questions[a["question"]]['type']
         a.update({"type": qtype})
         last_answer = []
-        if a["type"] == QuestionType.option.value:
-            a.update({"value": [a["value"]]})
         if key in list(checked):
             execute = "update"
             last_answer = checked[key]

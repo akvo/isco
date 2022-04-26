@@ -18,10 +18,10 @@ def append_value(answer: Answer, value: Union[int, float, str, bool, List[str],
     if type == QuestionType.date.value:
         answer.text = value
     if type == QuestionType.option.value:
-        answer.options = value
+        answer.options = [value]
     if type == QuestionType.multiple_option.value:
         answer.options = value
-    if type == QuestionType.nested_list.value:
+    if type == QuestionType.nested_list.value or type == "tree":
         answer.options = value
     if type == QuestionType.cascade.value:
         answer.options = value
