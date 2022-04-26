@@ -109,9 +109,7 @@ const SubmissionProgress = () => {
           setData([]);
         })
         .finally(() => {
-          setTimeout(() => {
-            setIsLoading(false);
-          }, 1000);
+          setIsLoading(false);
         });
     }
   }, [isLoggedIn]);
