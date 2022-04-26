@@ -17,6 +17,8 @@ from tests.test_000_main import Acc
 
 sys.path.append("..")
 
+account = Acc(email="support@akvo.org", token=None)
+
 
 class TestUserAuthentication():
     def test_token_verification(self):
@@ -155,51 +157,21 @@ class TestUserAuthentication():
             "questionnaires": [1],
         }
         res = await client.post(app.url_path_for("user:register"),
-                                json=user_payload)
+                                data=user_payload)
         assert res.status_code == 200
-        invitation_link = session.query(User).filter(
-            User.email == user_payload["email"]).first().invitation
         res = res.json()
         assert res == {
+            "approved": False,
             "email": "support@akvo.org",
             "email_verified": None,
             "id": 1,
-            "invitation": invitation_link,
+            "invitation": None,
             "name": "John Doe",
             "organisation": 1,
             "role": "secretariat_admin",
             "questionnaires": [1],
             "phone_number": None,
         }
-
-    @pytest.mark.asyncio
-    async def test_user_invitation(self, app: FastAPI, session: Session,
-                                   client: AsyncClient) -> None:
-        user = session.query(User).filter(
-            User.email == "support@akvo.org").first()
-        res = await client.get(
-            app.url_path_for("user:invitation", invitation=user.invitation))
-        assert res.status_code == 200
-        res = res.json()
-        assert res == {
-            "id": 1,
-            "invitation": user.invitation,
-            "email": "support@akvo.org",
-            "name": "John Doe",
-        }
-        res = await client.post(
-            app.url_path_for("user:invitation", invitation=user.invitation),
-            headers={"content-type": "application/x-www-form-urlencoded"},
-            data={"password": "test"})
-        res = res.json()
-        assert res['access_token'] is not None
-        assert res['token_type'] == 'bearer'
-        user = session.query(User).filter(
-            User.email == "support@akvo.org").first()
-        session.flush()
-        session.refresh(user)
-        assert user.invitation is None
-        assert res['user']["email"] == "support@akvo.org"
 
     @pytest.mark.asyncio
     async def test_verify_user_email(self, app: FastAPI, session: Session,
@@ -210,6 +182,24 @@ class TestUserAuthentication():
         assert res.status_code == 200
         res = res.json()
         assert res['email_verified'] is not None
+
+    @pytest.mark.asyncio
+    async def test_user_approve_by_admin(self, app: FastAPI, session: Session,
+                                         client: AsyncClient) -> None:
+        user_id = 1
+        user_payload = {
+            "role": UserRole.secretariat_admin.value,
+            "organisation": 1,
+            "questionnaires": [1],
+        }
+        res = await client.put(
+            app.url_path_for("user:update_by_admin", id=user_id),
+            headers={"Authorization": f"Bearer {account.token}"},
+            params={"approved": 1},
+            json=user_payload)
+        assert res.status_code == 200
+        res = res.json()
+        assert res["approved"] is True
 
     @pytest.mark.asyncio
     async def test_user_login(self, app: FastAPI, session: Session,

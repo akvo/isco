@@ -66,6 +66,7 @@ class MailTypeEnum(enum.Enum):
     inform_user = "inform_user"
     verify_email = "verify_email"
     reset_password = "reset_password"
+    user_approved = "user_approved"
 
 
 class Email:
@@ -76,7 +77,9 @@ class Email:
                  attachment: Optional[str] = None,
                  context: Optional[str] = None,
                  body: Optional[str] = None,
-                 button_url: Optional[str] = None):
+                 button_url: Optional[str] = None,
+                 info: Optional[str] = None,
+                 signature: Optional[bool] = None):
         self.type = EmailText[type.value]
         self.recipients = recipients
         self.bcc = bcc
@@ -84,6 +87,8 @@ class Email:
         self.context = context
         self.body = body
         self.button_url = button_url
+        self.info = info
+        self.signature = signature
 
     @property
     def data(self):
@@ -102,7 +107,9 @@ class Email:
                                     image=type["image"],
                                     message=type["message"],
                                     context=self.context,
-                                    button=button)
+                                    button=button,
+                                    info=type["info"],
+                                    signature=type["signature"])
         payload = {
             "FromEmail": "noreply@cocoamonitoring.net",
             "Subject": f"ISCO {type['subject']}",

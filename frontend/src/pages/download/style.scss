@@ -1,7 +1,7 @@
 @import "../../variables";
 
 #root {
-  #manage-user {
+  #download-data {
     .page-title-wrapper {
       border-bottom: 1px solid #777777;
     }
@@ -12,31 +12,6 @@
 
     button.button-add {
       float: right;
-    }
-
-    .filter-wrapper {
-      padding: 24px 0;
-      font-size: 14px;
-
-      .input-search {
-        width: 20rem;
-
-        .ant-input {
-          border: none;
-        }
-
-        .ant-input-prefix {
-          margin-right: 14px;
-        }
-      }
-
-      .organisation-dropdown-wrapper {
-        width: 18rem;
-      }
-
-      .member-dropdown-wrapper {
-        width: 14rem;
-      }
     }
 
     // TABLE
@@ -77,6 +52,7 @@
         padding: 30px 20px 30px 66px;
       }
     }
+
     // END OF TABLE
 
     .ant-pagination {
@@ -85,18 +61,22 @@
         border: none;
         color: #777777;
       }
+
       .ant-pagination-item {
         background-color: transparent;
         border-radius: 5px;
         border: 2px solid #777777;
+
         a {
           color: #777777;
         }
       }
+
       .ant-pagination-item-active {
         a {
           color: $white;
         }
+
         background: transparent;
         background-color: #777777;
       }

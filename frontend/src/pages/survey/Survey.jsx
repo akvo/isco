@@ -227,15 +227,15 @@ const Survey = () => {
         className="form-selector-container"
         align="top"
         justify="space-between"
-        gutter={[12, 12]}
+        gutter={[48, 24]}
       >
-        <Col span={16} className="saved-form-wrapper">
+        <Col lg={24} xl={16} className="saved-form-wrapper">
           <Space direction="vertical" size="large" style={{ width: "100%" }}>
             {/* Saved Submissions */}
             <div>
               <p>{text.formPickPreviousSavedForms}</p>
               <Row align="middle" justify="space-between" gutter={[12, 12]}>
-                <Col span={10}>
+                <Col flex={1}>
                   <Select
                     showSearch
                     className="bg-grey"
@@ -256,7 +256,7 @@ const Survey = () => {
                     onChange={handleOnChangeSavedSubmissionDropdown}
                   />
                 </Col>
-                <Col span={14}>
+                <Col>
                   <Space>
                     <Button
                       type="primary"
@@ -282,7 +282,7 @@ const Survey = () => {
             {/* Collaborators */}
             {showCollaboratorForm && (
               <Row align="middle" justify="space-between" gutter={[12, 12]}>
-                <Col span={10}>
+                <Col flex={1}>
                   <Select
                     mode="multiple"
                     showSearch
@@ -297,7 +297,7 @@ const Survey = () => {
                     onChange={handleOnChangeCollaborators}
                   />
                 </Col>
-                <Col span={14}>
+                <Col>
                   <Space>
                     <Button
                       onClick={handleOnClickAddCollaborator}
@@ -314,10 +314,10 @@ const Survey = () => {
             )}
           </Space>
         </Col>
-        <Col span={8} className="new-form-wrapper">
+        <Col lg={24} xl={8} className="new-form-wrapper">
           <p>{text.formStartFillingNewForm}</p>
           <Row align="middle" justify="space-between" gutter={[12, 12]}>
-            <Col span={16}>
+            <Col flex={1}>
               <Select
                 showSearch
                 className="bg-grey"
@@ -329,7 +329,7 @@ const Survey = () => {
                 }
               />
             </Col>
-            <Col span={8}>
+            <Col>
               <Button block onClick={handleOnClickOpenNewForm}>
                 {text.btnOpen}
               </Button>

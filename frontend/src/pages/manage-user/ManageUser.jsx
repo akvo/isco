@@ -12,14 +12,16 @@ import {
   Typography,
   Tooltip,
   Tag,
+  Popconfirm,
 } from "antd";
 import { ClockCircleOutlined, CheckCircleOutlined } from "@ant-design/icons";
-import { RiPencilFill } from "react-icons/ri";
+import { RiPencilFill, RiDeleteBinFill } from "react-icons/ri";
 import { FaSearch } from "react-icons/fa";
 import AddUser from "./AddUser";
 import { store, api } from "../../lib";
 import capitalize from "lodash/capitalize";
 import moment from "moment";
+import { useNotification } from "../../util";
 
 const { Title } = Typography;
 
@@ -62,8 +64,9 @@ const InvitationCopy = ({ invitation }) => {
 const ManageUser = () => {
   const { isLoggedIn, user, optionValues } = store.useState((s) => s);
   const { organisation, member_type, isco_type } = optionValues;
+  const { notify } = useNotification();
 
-  const [isPendingUserShown, setIsPendingUserShown] = useState(false);
+  const [showPendingUser, setShowPendingUser] = useState(false);
   const [isAddUserVisible, setIsAddUserVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [reload, setReload] = useState(0);
@@ -80,7 +83,6 @@ const ManageUser = () => {
   const [iscoValue, setIscoValue] = useState([]);
   const [publishedForm, setPublishedForm] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
-  const showPendingUserOption = false;
   const showAddNewUser = true;
   const showOrganisationFilter = user?.role === "secretariat_admin";
 
@@ -125,16 +127,31 @@ const ManageUser = () => {
     {
       title: "Action",
       render: (record) => (
-        <Button
-          className="action-btn"
-          icon={<RiPencilFill />}
-          shape="circle"
-          type="text"
-          onClick={() => {
-            setIsAddUserVisible(true);
-            setSelectedUser(record);
-          }}
-        />
+        <Space key={`${record?.id}-${record?.key}`}>
+          <Button
+            className="action-btn"
+            icon={<RiPencilFill />}
+            shape="circle"
+            type="text"
+            onClick={() => {
+              setIsAddUserVisible(true);
+              setSelectedUser(record);
+            }}
+          />
+          <Popconfirm
+            title="Delete user can't be undone."
+            okText="Delete"
+            cancelText="Cancel"
+            onConfirm={() => handleDeleteButton(record)}
+          >
+            <Button
+              className="action-btn"
+              icon={<RiDeleteBinFill />}
+              shape="circle"
+              type="text"
+            />
+          </Popconfirm>
+        </Space>
       ),
     },
   ];
@@ -166,6 +183,9 @@ const ManageUser = () => {
       }
       if (iscoFilter && !orgFilter) {
         url = `${url}${iscoFilter.map((x) => `&organisation=${x}`).join("")}`;
+      }
+      if (showPendingUser) {
+        url = `${url}&approved=0`;
       }
       api
         .get(url)
@@ -201,7 +221,12 @@ const ManageUser = () => {
     memberFilter,
     iscoFilter,
     reload,
+    showPendingUser,
   ]);
+
+  const handleShowPendingUsers = () => {
+    setShowPendingUser(!showPendingUser);
+  };
 
   const handleOrganisationFilter = (org) => {
     setOrganisationValue(org);
@@ -250,6 +275,34 @@ const ManageUser = () => {
     setIscoFilter(orgIds);
   };
 
+  const handleDeleteButton = (record) => {
+    const { id, email } = record;
+    api
+      .delete(`/user/${id}`)
+      .then(() => {
+        setReload(reload + 1);
+        notify({
+          type: "success",
+          message: `User ${email} deleted successfully.`,
+        });
+      })
+      .catch((e) => {
+        console.error(e);
+        const { status } = e.response;
+        if (status === 404) {
+          notify({
+            type: "error",
+            message: `Can't delete user ${email}, because user have submission.`,
+          });
+        } else {
+          notify({
+            type: "error",
+            message: "Oops, something went wrong.",
+          });
+        }
+      });
+  };
+
   return (
     <div id="manage-user">
       <Row className="container bg-grey">
@@ -258,14 +311,15 @@ const ManageUser = () => {
             className="page-title-wrapper"
             align="middle"
             justify="space-between"
+            gutter={[20, 20]}
           >
-            <Col span={12} align="start">
+            <Col flex={1} align="start">
               <Title className="page-title" level={3}>
                 Manage Users
               </Title>
             </Col>
             {showAddNewUser && (
-              <Col span={12} align="end">
+              <Col align="end">
                 <Button
                   className="button-add"
                   type="primary"
@@ -283,9 +337,10 @@ const ManageUser = () => {
             className="filter-wrapper"
             align="middle"
             justify="space-between"
+            gutter={[20, 20]}
           >
-            <Col span={20} align="start">
-              <Space>
+            <Col flex={1} align="start">
+              <Space wrap>
                 <Input
                   className="input-search"
                   placeholder="Search user by name or email"
@@ -346,19 +401,16 @@ const ManageUser = () => {
                 )}
               </Space>
             </Col>
-            {showPendingUserOption && (
-              <Col span={4} align="end">
-                <Space size={0.05} align="center">
-                  <Button
-                    type="text"
-                    onClick={() => setIsPendingUserShown(!isPendingUserShown)}
-                  >
-                    Show Pending Users
-                  </Button>{" "}
-                  <Checkbox checked={isPendingUserShown} />
-                </Space>
-              </Col>
-            )}
+            {/* Show Pending User */}
+            <Col align="end">
+              <Space align="center">
+                <span>Pending Users</span>
+                <Checkbox
+                  value={showPendingUser}
+                  onChange={handleShowPendingUsers}
+                />
+              </Space>
+            </Col>
           </Row>
           <Row>
             <Col span={24}>

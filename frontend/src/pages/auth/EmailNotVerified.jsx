@@ -4,10 +4,12 @@ import Auth from "./Auth";
 import { Row, Alert, Button } from "antd";
 import { api, store } from "../../lib";
 import { useNotification } from "../../util";
+import { useCookies } from "react-cookie";
 
 const EmailNotVerified = () => {
   const { email } = store.useState((s) => s.user);
   const { notify } = useNotification();
+  const [cookies, removeCookie] = useCookies(["AUTH_TOKEN"]);
 
   const handleResendVerificationEmail = () => {
     api
@@ -17,11 +19,14 @@ const EmailNotVerified = () => {
           type: "success",
           message: "Email has ben sent, please check your email.",
         });
+        if (cookies?.AUTH_TOKEN) {
+          removeCookie("AUTH_TOKEN");
+        }
       })
       .catch(() => {
         notify({
           type: "error",
-          message: "Somehthing went wrong.",
+          message: "Something went wrong.",
         });
       });
   };

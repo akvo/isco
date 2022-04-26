@@ -8,15 +8,18 @@ import {
   ManageSurvey,
   ManageUser,
   SurveyEditor,
+  Register,
   Login,
   ResetPassword,
   EmailNotVerified,
   ErrorPage,
+  Download,
   Survey,
   Feedback,
   Definition,
   Impressum,
   Setting,
+  SubmissionProgress,
 } from "./pages";
 import { useCookies } from "react-cookie";
 import { store, api } from "./lib";
@@ -28,6 +31,10 @@ const Secure = ({ element: Element, adminPage = false }) => {
   const isAuth = cookies?.AUTH_TOKEN && cookies?.AUTH_TOKEN !== "undefined";
   const admins = ["secretariat_admin"];
   const isAuthAdmin = isAuth && admins.includes(user?.role);
+  const isNotApproved = isAuth && !user?.approved;
+  if (isNotApproved) {
+    return <ErrorPage status="not-approved" />;
+  }
   if (isAuthAdmin && adminPage) {
     return <Element />;
   }
@@ -132,7 +139,7 @@ const App = () => {
       <Layout.Body>
         <Routes>
           <Route exact path="/login" element={<Login />} />
-          {/* <Route exact path="/register" element={<Register />} /> */}
+          <Route exact path="/register" element={<Register />} />
           <Route
             exact
             path="/invitation/:tokenId"
@@ -149,6 +156,11 @@ const App = () => {
           <Route exact path="/" element={<Secure element={Home} />} />
           <Route exact path="/home" element={<Secure element={Home} />} />
           <Route exact path="/setting" element={<Secure element={Setting} />} />
+          <Route
+            exact
+            path="/download"
+            element={<Secure element={Download} />}
+          />
           <Route
             exact
             path="/admin"
@@ -168,6 +180,11 @@ const App = () => {
             exact
             path="/survey-editor/:formId"
             element={<Secure element={SurveyEditor} adminPage={true} />}
+          />
+          <Route
+            exact
+            path="/submission-progress"
+            element={<Secure element={SubmissionProgress} adminPage={true} />}
           />
           <Route exact path="/survey" element={<Secure element={Survey} />} />
           <Route

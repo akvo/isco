@@ -107,6 +107,10 @@ const uiText = {
     tbColStatus: "Status",
     tbColRequestBy: "Request By",
     tbRowNoRecords: "There are no records to display.",
+    tbColMemberQuestionnaire: "Member Questionnaire",
+    tbColProjectQuestionnaire: "Project Questionnaire",
+    tbColSaved: "Saved",
+    tbColSubmitted: "Submitted",
     // Modal
     modalDataSecurity: "Data Security Provisions",
     modalSaveForm: "Save Form Data",
@@ -198,6 +202,8 @@ const uiText = {
         will receive a copy signed by us in return.&quot;
       </>
     ),
+    // page title
+    pageSubmissionProgress: "Submission Progress",
   },
 
   de: {
@@ -308,6 +314,10 @@ const uiText = {
     tbColStatus: "Status",
     tbColRequestBy: "Request By",
     tbRowNoRecords: "Keine Daten vorhanden.",
+    tbColMemberQuestionnaire: "Member Questionnaire",
+    tbColProjectQuestionnaire: "Project Questionnaire",
+    tbColSaved: "Saved",
+    tbColSubmitted: "Submitted",
     // Modal
     modalDataSecurity: "Datensicherheitsmaßnahmen",
     modalSaveForm: "Daten speichern",
@@ -406,6 +416,8 @@ const uiText = {
         Exemplar zurück.“,
       </>
     ),
+    // page title
+    pageSubmissionProgress: "Submission Progress",
   },
 };
 

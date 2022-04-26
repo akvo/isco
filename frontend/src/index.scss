@@ -83,6 +83,12 @@ body {
       }
     }
 
+    .ant-input-number-input {
+      &::placeholder {
+        color: $black;
+      }
+    }
+
     .ant-input-password {
       input.ant-input {
         border: none !important;

@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Optional, Union
 from typing_extensions import TypedDict
 from sqlalchemy.orm import Session
 from sqlalchemy import desc, and_, null
@@ -80,7 +80,8 @@ def get_data(session: Session, form: int, skip: int,
     return PaginatedData(data=data, count=count)
 
 
-def get_data_by_id(session: Session, id: int,
+def get_data_by_id(session: Session,
+                   id: int,
                    submitted: Optional[bool] = None) -> DataDict:
     data = session.query(Data).filter(Data.id == id)
     if submitted is None:
@@ -93,16 +94,24 @@ def get_data_by_id(session: Session, id: int,
 
 
 def get_data_by_ids(session: Session, ids: List[int]) -> List[DataOptionDict]:
-    data = session.query(Data).filter(and_(
-        Data.id.in_(ids), Data.submitted == null())).all()
+    data = session.query(Data).filter(
+        and_(Data.id.in_(ids), Data.submitted == null())).all()
     return data
 
 
-def get_data_by_organisation(session: Session,
-                             organisation: int) -> List[DataOptionDict]:
-    data = session.query(Data).filter(and_(
-        Data.organisation == organisation, Data.submitted == null())).all()
-    return data
+def get_data_by_organisation(
+        session: Session,
+        organisation: int,
+        submitted: bool = False,
+        page: Union[int, bool] = False,
+        page_size: Union[int, bool] = False) -> List[DataOptionDict]:
+    data = session.query(Data).filter(
+        and_(
+            Data.organisation == organisation, Data.submitted == null()
+            if not submitted else Data.submitted.isnot(None)))
+    if page is False or page_size is False:
+        return data.all()
+    return data.limit(page_size).offset((page - 1) * page_size)
 
 
 def count(session: Session, form: int) -> int:
@@ -110,9 +119,20 @@ def count(session: Session, form: int) -> int:
     return data
 
 
-def download(session: Session, form: int):
+def count_data_by_organisation(
+        session: Session,
+        organisation: int,
+        submitted: bool = False) -> int:
     data = session.query(Data).filter(
-        Data.form == form).order_by(desc(Data.id)).all()
+        and_(
+            Data.organisation == organisation, Data.submitted == null()
+            if not submitted else Data.submitted.isnot(None)))
+    return data.count()
+
+
+def download(session: Session, form: int):
+    data = session.query(Data).filter(Data.form == form).order_by(desc(
+        Data.id)).all()
     return [d.to_data_frame for d in data]
 
 
@@ -126,15 +146,14 @@ def check_member_submission_exists(session: Session,
     # handle unlimited member questionnaire
     # for organisation ISCO contains DISCO
     check_org = session.query(OrganisationIsco).filter(
-        and_(
-            OrganisationIsco.organisation == organisation,
-            OrganisationIsco.isco_type.in_(
-                MEMBER_SURVEY_UNLIMITED_ISCO))).first()
+        and_(OrganisationIsco.organisation == organisation,
+             OrganisationIsco.isco_type.in_(
+                 MEMBER_SURVEY_UNLIMITED_ISCO))).first()
     if check_org:
         return False
     # handle limited member questionnaire
-    data = session.query(Data).filter(and_(
-        Data.form.in_(MEMBER_SURVEY), Data.organisation == organisation))
+    data = session.query(Data).filter(
+        and_(Data.form.in_(MEMBER_SURVEY), Data.organisation == organisation))
     # filter by not submitted
     if saved:
         data = data.filter(Data.submitted == null())

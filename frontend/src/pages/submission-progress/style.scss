@@ -1,7 +1,7 @@
-@import "../../variables";
+@import "../../variables.scss";
 
 #root {
-  #manage-user {
+  #submission-progress {
     .page-title-wrapper {
       border-bottom: 1px solid #777777;
     }
@@ -10,37 +10,9 @@
       margin: 40px 0 20px 0;
     }
 
-    button.button-add {
-      float: right;
-    }
-
-    .filter-wrapper {
-      padding: 24px 0;
-      font-size: 14px;
-
-      .input-search {
-        width: 20rem;
-
-        .ant-input {
-          border: none;
-        }
-
-        .ant-input-prefix {
-          margin-right: 14px;
-        }
-      }
-
-      .organisation-dropdown-wrapper {
-        width: 18rem;
-      }
-
-      .member-dropdown-wrapper {
-        width: 14rem;
-      }
-    }
-
     // TABLE
     .table-wrapper {
+      margin-top: 24px;
       border: none !important;
 
       .ant-table {

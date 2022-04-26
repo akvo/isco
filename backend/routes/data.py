@@ -1,3 +1,6 @@
+import os
+import json
+import requests as r
 from http import HTTPStatus
 from datetime import datetime
 from math import ceil
@@ -5,23 +8,46 @@ from fastapi import Depends, Request, Response, APIRouter, HTTPException, Query
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
 from typing import List, Optional
-from sqlalchemy import and_
+from sqlalchemy import func
 from sqlalchemy.orm import Session
-from sqlalchemy.sql.expression import true
 import db.crud_data as crud
-from db import crud_question
 from db import crud_answer
 from db import crud_form
 from db import crud_collaborator
 from models.answer import Answer, AnswerDict
-from models.question_group import QuestionGroup
 from models.question import QuestionType
 from db.connection import get_session
-from models.data import DataResponse, DataDict, DataOptionDict
+from models.data import DataResponse, DataSubmittedResponse
+from models.data import DataDict, DataOptionDict
+from models.data import Data, SubmissionProgressDict
+from models.organisation_isco import OrganisationIsco
+from models.organisation import Organisation
 from middleware import verify_editor, verify_super_admin
+from util.survey_config import MEMBER_SURVEY, PROJECT_SURVEY
+import util.report as report
 
 security = HTTPBearer()
 data_route = APIRouter()
+
+
+def get_questions_from_published_form(session: Session, form_id: int):
+    form = crud_form.get_form_by_id(session=session, id=form_id)
+    TESTING = os.environ.get("TESTING")
+    if TESTING:
+        webform = json.load(open(form.url))
+    else:
+        webform = r.get(form.url)
+        webform = webform.json()
+    question_groups = []
+    questions = {}
+    for qg in webform['question_group']:
+        qids = []
+        for q in qg['question']:
+            questions.update({q['id']: q})
+            qids.append(q['id'])
+        qg['question'] = qids
+        question_groups.append(qg)
+    return {"question_groups": question_groups, "questions": questions}
 
 
 @data_route.get("/data/form/{form_id:path}",
@@ -67,36 +93,44 @@ def add(req: Request,
     user = verify_editor(session=session,
                          authenticated=req.state.authenticated)
     # check if submission exist
-    exist = crud.check_member_submission_exists(
-        session=session, form=form_id, organisation=user.organisation)
+    exist = crud.check_member_submission_exists(session=session,
+                                                form=form_id,
+                                                organisation=user.organisation)
     if exist:
         raise HTTPException(status_code=208,
                             detail="Submission already reported")
+    # get questions from published form
+    published = get_questions_from_published_form(session=session,
+                                                  form_id=form_id)
+    questions = published['questions']
+    # end get questions published form
     geo = None
     answerlist = []
     names = []
     for a in answers:
-        q = crud_question.get_question_by_id(session=session, id=a["question"])
-        answer = Answer(question=q.id,
+        q = questions[a['question']]
+        answer = Answer(question=q['id'],
                         created=datetime.now(),
                         repeat_index=a["repeat_index"],
                         comment=a["comment"])
-        if q.type in [QuestionType.input, QuestionType.text,
-                      QuestionType.date]:
+        if q['type'] in [
+                QuestionType.input.value, QuestionType.text.value,
+                QuestionType.date.value
+        ]:
             answer.text = a["value"]
-            if q.datapoint_name:
+            if q['datapoint_name']:
                 names.append(a["value"])
-        if q.type == QuestionType.number:
+        if q['type'] == QuestionType.number.value:
             answer.value = a["value"]
-            if q.datapoint_name:
+            if q['datapoint_name']:
                 names.append(str(a["value"]))
-        if q.type == QuestionType.option:
+        if q['type'] == QuestionType.option.value:
             answer.options = [a["value"]]
-        if q.type == QuestionType.multiple_option:
+        if q['type'] == QuestionType.multiple_option.value:
             answer.options = a["value"]
-        if q.type == QuestionType.cascade:
+        if q['type'] == QuestionType.cascade.value:
             answer.options = a["value"]
-        if q.type == QuestionType.nested_list:
+        if q['type'] == QuestionType.nested_list.value or q['type'] == "tree":
             answer.options = a["value"]
         answerlist.append(answer)
     name = " - ".join(names)
@@ -117,15 +151,15 @@ def add(req: Request,
                 summary="get saved data by login user organisation",
                 name="data:get_saved_data_by_organisation",
                 tags=["Data"])
-def get_saved_data_by_organisation(req: Request,
-                                   session: Session = Depends(get_session),
-                                   credentials: credentials = Depends(security)
-                                   ):
+def get_saved_data_by_organisation(
+        req: Request,
+        session: Session = Depends(get_session),
+        credentials: credentials = Depends(security)):
     user = verify_editor(session=session,
                          authenticated=req.state.authenticated)
     # get saved data from logged user organisation
-    data = crud.get_data_by_organisation(
-        session=session, organisation=user.organisation)
+    data = crud.get_data_by_organisation(session=session,
+                                         organisation=user.organisation)
     # check for collaborator
     collabs = crud_collaborator.get_collaborator_by_organisation(
         session=session, organisation=user.organisation)
@@ -136,6 +170,59 @@ def get_saved_data_by_organisation(req: Request,
     if not data:
         return []
     return [d.to_options for d in data]
+
+
+@data_route.get("/data/submitted",
+                response_model=DataSubmittedResponse,
+                summary="get submitted data by login user organisation",
+                name="data:get_submitted_data_by_organisation",
+                tags=["Data"])
+def get_submitted_data_by_organisation(
+        req: Request,
+        page: int = 1,
+        page_size: int = 10,
+        session: Session = Depends(get_session),
+        credentials: credentials = Depends(security)):
+    user = verify_editor(session=session,
+                         authenticated=req.state.authenticated)
+    # get saved data from logged user organisation
+    data = crud.get_data_by_organisation(session=session,
+                                         organisation=user.organisation,
+                                         submitted=True,
+                                         page=page,
+                                         page_size=page_size)
+    if not data:
+        return []
+    total_data = crud.count_data_by_organisation(
+        session=session,
+        organisation=user.organisation,
+        submitted=True,
+    )
+    total_page = ceil(total_data / page_size) if total_data > 0 else 0
+    if total_page < page:
+        raise HTTPException(status_code=404, detail="Not found")
+    return {
+        'current': page,
+        'data': [d.simplified for d in data],
+        'total': total_data,
+        'total_page': total_page,
+    }
+
+
+@data_route.get("/data/request/{id:path}",
+                summary="request download data by id",
+                name="data:request_download_data",
+                tags=["Data"])
+def request_download_data(req: Request,
+                          id: int,
+                          session: Session = Depends(get_session)):
+    data = crud.get_data_by_id(session=session, id=id)
+    data = data.to_report
+    answers = report.transform_data(answers=data["answer"], session=session)
+    report.render(form=crud_form.get_form_by_id(session=session,
+                                                id=data["form"]),
+                  data=answers)
+    return data
 
 
 @data_route.get("/data/{id:path}",
@@ -183,7 +270,7 @@ def bulk_delete(req: Request,
                 id: Optional[List[int]] = Query(None),
                 session: Session = Depends(get_session),
                 credentials: credentials = Depends(security)):
-    verify_super_admin(req.state.authenticated, session)
+    verify_super_admin(session=session, authenticated=req.state.authenticated)
     crud.delete_bulk(session=session, ids=id)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)
 
@@ -210,30 +297,32 @@ def update_by_id(req: Request,
                             detail="Submission already reported")
     # if locked, allow update only by locked_by === user id
     if data.locked_by and data.locked_by != user.id:
-        raise HTTPException(status_code=401,
-                            detail="Submission is locked")
+        raise HTTPException(status_code=401, detail="Submission is locked")
     submitted_by = None
     submitted_date = None
     if submitted:
         submitted_by = user.id
         submitted_date = datetime.now()
-    form = crud_form.get_form_by_id(session=session, id=data.form)
+
+    # get questions from published form
+    published = get_questions_from_published_form(session=session,
+                                                  form_id=data.form)
+    question_groups = published['question_groups']
+    questions = published['questions']
+    # end get questions published form
 
     # get repeatable question ids
     repeat_qids = []
-    repeat_group = session.query(
-        QuestionGroup).filter(and_(
-            QuestionGroup.form == form.id,
-            QuestionGroup.repeat == true())).all()
-    repeat_group = [g.get_question_ids for g in repeat_group]
-    for group in repeat_group:
-        for x in group:
-            repeat_qids.append(x)
+    for qg in question_groups:
+        if qg['repeatable'] is True:
+            for qid in qg['question']:
+                repeat_qids.append(qid)
+
     # get current repeat group answer
     current_repeat = crud_answer.get_answer_by_data_and_question(
         session=session, data=data.id, questions=repeat_qids)
 
-    questions = form.list_of_questions
+    # questions = form.list_of_questions
     current_answers = crud_answer.get_answer_by_data_and_question(
         session=session, data=id, questions=[a["question"] for a in answers])
     checked = {}
@@ -249,24 +338,22 @@ def update_by_id(req: Request,
                 status_code=401,
                 detail="question {} is not part of this form".format(
                     a["question"]))
-        a.update({"type": questions[a["question"]]})
+        qtype = questions[a["question"]]['type']
+        a.update({"type": qtype})
         last_answer = []
-        if a["type"] == QuestionType.option:
-            a.update({"value": [a["value"]]})
         if key in list(checked):
             execute = "update"
             last_answer = checked[key]
         else:
             execute = "new"
-        if execute == "update" and (
-            a["value"] != last_answer["value"] or a[
-                "comment"] != last_answer["comment"]):
+        if execute == "update" and (a["value"] != last_answer["value"]
+                                    or a["comment"] != last_answer["comment"]):
             answer = last_answer["data"]
             a = crud_answer.update_answer(session=session,
                                           answer=answer,
                                           repeat_index=a["repeat_index"],
                                           comment=a["comment"],
-                                          type=questions[a["question"]],
+                                          type=qtype,
                                           value=a["value"])
         if execute == "new":
             answer = Answer(question=a["question"],
@@ -276,7 +363,7 @@ def update_by_id(req: Request,
                             comment=a["comment"])
             a = crud_answer.add_answer(session=session,
                                        answer=answer,
-                                       type=questions[a["question"]],
+                                       type=qtype,
                                        value=a["value"])
         if execute:
             data.locked_by = locked_by
@@ -293,3 +380,59 @@ def update_by_id(req: Request,
         if c_key not in checked_payload:
             crud_answer.delete_answer_by_id(session=session, id=c['id'])
     return data.serialize
+
+
+@data_route.get("/submission/progress",
+                response_model=List[SubmissionProgressDict],
+                name="submission:progress",
+                summary="view submission progress",
+                tags=["Data"])
+def get_submission_progress(
+    req: Request,
+    session: Session = Depends(get_session),
+    credentials: credentials = Depends(security)
+):
+    user = verify_super_admin(
+        session=session, authenticated=req.state.authenticated)
+    find_org_iscos = session.query(OrganisationIsco).filter(
+        OrganisationIsco.organisation == user.organisation).all()
+    isco_ids = [i.isco_type for i in find_org_iscos]
+    org_by_isco = session.query(OrganisationIsco)
+    # if isco = 1 (All) show from all organisation
+    # if 1 in isco_ids:
+    #     org_by_isco = org_by_isco.all()
+    # if 1 not in isco_ids:
+    org_by_isco = org_by_isco.filter(
+        OrganisationIsco.isco_type.in_(isco_ids)).all()
+    org_ids = [o.organisation for o in org_by_isco]
+    data = session.query(
+        Data.organisation,
+        Data.form,
+        Data.submitted,
+        func.count(Data.id).label('count')).filter(
+            Data.organisation.in_(org_ids)).group_by(
+                Data.organisation, Data.form, Data.submitted)
+    if not data:
+        raise HTTPException(status_code=404,
+                            detail="submission progress not found")
+    organisations = session.query(Organisation).filter(
+        Organisation.id.in_(org_ids)).all()
+    orgs_dict = {}
+    for o in organisations:
+        orgs_dict.update({o.id: o.name})
+    data = data.all()
+    res = []
+    for d in data:
+        form_type = ""
+        if d.form in MEMBER_SURVEY:
+            form_type = "member"
+        if d.form in PROJECT_SURVEY:
+            form_type = "project"
+        res.append({
+            "organisation": orgs_dict[d.organisation],
+            "form": d.form,
+            "form_type": form_type,
+            "submitted": True if d.submitted else False,
+            "count": d.count
+        })
+    return res

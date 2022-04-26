@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status
 from typing import List, Optional
-from sqlalchemy import and_
+from sqlalchemy import and_, func
 from sqlalchemy.orm import Session
 from models.cascade import Cascade, CascadeBase
 from models.cascade import CascadeDict, CascadePayload
@@ -144,7 +144,7 @@ def get_cascade_list_by_name(session: Session,
                              cascade: int,
                              parent: Optional[int] = None):
     clist = session.query(CascadeList).filter(and_(
-        CascadeList.name == name,
+        func.lower(CascadeList.name) == func.lower(name),
         CascadeList.cascade == cascade))
     if parent:
         clist = clist.filter(CascadeList.parent == parent)

@@ -74,6 +74,7 @@ def verify_token(authenticated):
 
 
 def verify_user(session: Session, authenticated):
+    TESTING = os.environ.get("TESTING")
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -94,6 +95,12 @@ def verify_user(session: Session, authenticated):
         raise HTTPException(
             status_code=403,
             detail="Please check your email inbox to verify email account")
+    if not user.approved:
+        if TESTING:
+            return user
+        # raise HTTPException(
+        #     status_code=403,
+        #     detail="Not approved")
     return user
 
 

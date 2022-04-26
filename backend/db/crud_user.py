@@ -31,8 +31,9 @@ def add_user(session: Session,
                 password=payload.password,
                 role=payload.role,
                 organisation=payload.organisation,
-                invitation=str(uuid4() if invitation else None),
-                questionnaires=payload.questionnaires)
+                invitation=str(uuid4()) if invitation else None,
+                questionnaires=payload.questionnaires,
+                approved=True if invitation else False)
     session.add(user)
     session.commit()
     session.flush()
@@ -49,12 +50,14 @@ def verify_user_email(session: Session, email: str) -> UserDict:
     return user
 
 
-def update_user_by_admin(session: Session, id: int,
-                         payload: UserBase) -> UserUpdateByAdmin:
+def update_user_by_admin(session: Session, id: int, approved: bool,
+                         payload: UserUpdateByAdmin) -> UserDict:
     user = get_user_by_id(session=session, id=id)
     user.organisation = payload['organisation']
     user.role = payload['role']
     user.questionnaires = payload['questionnaires']
+    if approved:
+        user.approved = approved
     session.commit()
     session.flush()
     session.refresh(user)
@@ -71,9 +74,11 @@ def update_password(session: Session, id: int, password: str) -> UserDict:
 
 
 def filter_user(session: Session,
+                approved: bool,
                 search: Optional[str] = None,
                 organisation: Optional[List[int]] = None):
     user = session.query(User)
+    user = user.filter(User.approved == approved)
     if search:
         user = user.filter(
             or_(
@@ -86,9 +91,11 @@ def filter_user(session: Session,
 
 
 def count(session: Session,
+          approved: bool,
           search: Optional[str] = None,
           organisation: Optional[List[int]] = None) -> int:
     user = filter_user(session=session,
+                       approved=approved,
                        search=search,
                        organisation=organisation)
     user = user.count()
@@ -96,11 +103,13 @@ def count(session: Session,
 
 
 def get_all_user(session: Session,
+                 approved: bool,
                  search: Optional[str] = None,
                  organisation: Optional[List[int]] = None,
                  skip: int = 0,
                  limit: int = 10) -> List[UserDict]:
     user = filter_user(session=session,
+                       approved=approved,
                        search=search,
                        organisation=organisation)
     user = user.order_by(User.id.desc()).offset(skip).limit(limit).all()
@@ -123,6 +132,7 @@ def accept_invitation(session: Session,
     user.password = password
     user.email_verified = datetime.now()
     user.invitation = None
+    user.approved = True
     session.commit()
     session.flush()
     session.refresh(user)
@@ -156,3 +166,10 @@ def get_reset_password(session: Session, url: str) -> ResetPasswordBase:
 def delete_reset_password(session: Session, url: str) -> None:
     session.query(ResetPassword).filter(ResetPassword.url == url).delete()
     session.commit()
+
+
+def delete_user(session: Session, id: int):
+    user = get_user_by_id(session=session, id=id)
+    session.delete(user)
+    session.commit()
+    session.flush()

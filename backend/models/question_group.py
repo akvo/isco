@@ -70,9 +70,9 @@ class QuestionGroup(Base):
         backref="question_group_detail")
 
     def __init__(self, id: Optional[int], form: int, name: str,
-                 translations: Optional[List[dict]],
-                 repeat: Optional[bool], order: Optional[int],
-                 description: Optional[str], repeat_text: Optional[str]):
+                 translations: Optional[List[dict]], repeat: Optional[bool],
+                 order: Optional[int], description: Optional[str],
+                 repeat_text: Optional[str]):
         self.id = id
         self.form = form
         self.name = name
@@ -127,11 +127,11 @@ class QuestionGroup(Base):
         if self.translations:
             translations = []
             for lang in self.translations:
-                tmp = {
-                    "language": lang['language'],
-                    "name": lang['name'],
-                    "description": lang['description']
-                }
+                tmp = {"language": lang['language']}
+                if "name" in lang:
+                    tmp.update({"name": lang['name']})
+                if "description" in lang:
+                    tmp.update({"description": lang['description']})
                 if self.repeat and self.repeat_text:
                     tmp.update({"repeatText": lang['repeat_text']})
                 translations.append(tmp)
