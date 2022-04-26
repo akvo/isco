@@ -26,9 +26,16 @@ def cascade_seeder(session, data):
         clist = crud.get_cascade_list_by_name(session=session,
                                               name=d['name'],
                                               cascade=cascade.id)
-        if not clist:
+        cond1 = not clist and "action" not in d
+        cond2 = not clist and "action" in d and d["action"] == "new"
+        if cond1 or cond2:
             clist = crud.add_cascade_list(session=session,
                                           payload=clist_payload)
+        # delete cascade list
+        if clist and "action" in d and d["action"] == "delete":
+            crud.delete_cascade_list(session=session, id=clist.id)
+
+        # seed cascade childs
         for c in d["childrens"]:
             child_payload = {
                 "cascade": cascade.id,
@@ -42,6 +49,11 @@ def cascade_seeder(session, data):
                                                   name=c['name'],
                                                   cascade=cascade.id,
                                                   parent=clist.id)
-            if not child:
+            cond3 = not child and "action" not in c
+            cond4 = not child and "action" in c and c["action"] == "new"
+            if cond3 or cond4:
                 child = crud.add_cascade_list(session=session,
                                               payload=child_payload)
+            # delete cascade list childs
+            if child and "action" in c and c["action"] == "delete":
+                crud.delete_cascade_list(session=session, id=child.id)
