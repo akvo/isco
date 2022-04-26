@@ -289,6 +289,17 @@
     "active": true
   },
   {
+    "name": "Bundesministerium für Ernährung und Landwirtschaft (BMEL)",
+    "member": [
+      "Government"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
     "name": "Bundesverband der Deutschen Süßwarenindustrie e.V. (BDSI)",
     "member": [
       "Other"
