@@ -166,3 +166,10 @@ def get_reset_password(session: Session, url: str) -> ResetPasswordBase:
 def delete_reset_password(session: Session, url: str) -> None:
     session.query(ResetPassword).filter(ResetPassword.url == url).delete()
     session.commit()
+
+
+def delete_user(session: Session, id: int):
+    user = get_user_by_id(session=session, id=id)
+    session.delete(user)
+    session.commit()
+    session.flush()

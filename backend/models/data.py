@@ -72,6 +72,14 @@ class DataSubmittedResponse(BaseModel):
     total_page: int
 
 
+class SubmissionProgressDict(TypedDict):
+    organisation: str
+    form: int
+    form_type: str
+    submitted: bool
+    count: int
+
+
 class DataResponse(BaseModel):
     current: int
     data: List[DataDict]

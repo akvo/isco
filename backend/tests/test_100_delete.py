@@ -31,3 +31,23 @@ class TestDeleteRoutes():
         assert res["url"] is None
         assert res["published"] is None
         assert storage.check(form["url"]) is False
+
+    @pytest.mark.asyncio
+    async def test_delete_user(self, app: FastAPI, session: Session,
+                               client: AsyncClient) -> None:
+        not_super_admin = Acc(email="wayan_invited@test.org", token=None)
+        # delete user not super admin
+        res = await client.delete(
+            app.url_path_for("user:delete", id=3),
+            headers={"Authorization": f"Bearer {not_super_admin.token}"})
+        assert res.status_code == 403
+        # delete user with submission
+        res = await client.delete(
+            app.url_path_for("user:delete", id=2),
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 404
+        # delete user
+        res = await client.delete(
+            app.url_path_for("user:delete", id=3),
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 204
