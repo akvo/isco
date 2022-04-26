@@ -1,34 +1,40 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import "./style.scss";
 import { Row, Col, Typography, Table } from "antd";
 import { api, store } from "../../lib";
+import { uiText } from "../../static";
 import _ from "lodash";
 
 const { Title } = Typography;
 
 const SubmissionProgress = () => {
-  const isLoggedIn = store.useState((s) => s.isLoggedIn);
+  const { isLoggedIn, language } = store.useState((s) => s);
+  const { active: activeLang } = language;
 
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const text = useMemo(() => {
+    return uiText[activeLang];
+  }, [activeLang]);
+
   const columns = [
     {
-      title: "Organisation",
+      title: text.tbColOrganization,
       dataIndex: "organisation",
       key: "organisation",
     },
     {
-      title: "Member Questionnaire",
+      title: text.tbColMemberQuestionnaire,
       children: [
         {
-          title: "Saved",
+          title: text.tbColSaved,
           dataIndex: "memberSaved",
           key: "member-saved-count",
           align: "center",
         },
         {
-          title: "Submitted",
+          title: text.tbColSubmitted,
           dataIndex: "memberSubmitted",
           key: "member-submitted-count",
           align: "center",
@@ -36,16 +42,16 @@ const SubmissionProgress = () => {
       ],
     },
     {
-      title: "Project Questionnaire",
+      title: text.tbColProjectQuestionnaire,
       children: [
         {
-          title: "Saved",
+          title: text.tbColSaved,
           dataIndex: "projectSaved",
           key: "project-saved-count",
           align: "center",
         },
         {
-          title: "Submitted",
+          title: text.tbColSubmitted,
           dataIndex: "projectSubmitted",
           key: "project-submitted-count",
           align: "center",
@@ -125,7 +131,7 @@ const SubmissionProgress = () => {
           >
             <Col span={24} align="start">
               <Title className="page-title" level={3}>
-                Submission Progress
+                {text.pageSubmissionProgress}
               </Title>
             </Col>
           </Row>
