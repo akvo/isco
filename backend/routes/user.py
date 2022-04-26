@@ -5,7 +5,7 @@ from middleware import create_access_token, verify_user
 from middleware import get_password_hash, verify_admin, verify_super_admin
 from middleware import decode_token, verify_token
 from fastapi import Depends, HTTPException, status, APIRouter, Request, Query
-from fastapi import Form
+from fastapi import Form, Response
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -18,10 +18,12 @@ from models.user import UserResponse, UserRole, UserUpdateByAdmin
 from models.user import User
 from models.organisation_member import OrganisationMember
 from models.form import Form as FormModel
+from models.data import Data
 from pydantic import SecretStr
 from db import crud_user, crud_organisation
 from typing import List, Optional
 from util.mailer import Email, MailTypeEnum
+from http import HTTPStatus
 
 security = HTTPBearer()
 user_route = APIRouter()
@@ -163,8 +165,7 @@ def register(req: Request,
         send_verification_email(user, recipients)
         # notify admin
         admins = session.query(User).filter(
-                User.organisation == user['organisation'],
-            ).filter(
+            User.organisation == user['organisation']).filter(
                 or_(
                     User.role == UserRole.secretariat_admin,
                     User.role == UserRole.member_admin,
@@ -386,3 +387,27 @@ def resend_verification_email(req: Request, email: str,
     user = crud_user.get_user_by_email(session=session, email=email)
     send_verification_email(user.serialize, [user.recipient])
     return user.serialize
+
+
+@user_route.delete(
+    "/user/{id:path}",
+    responses={204: {
+        "model": None
+    }},
+    status_code=HTTPStatus.NO_CONTENT,
+    summary="delete user by id",
+    name="user:delete",
+    tags=["User"])
+def delete(req: Request, id: int, session: Session = Depends(get_session),
+           credentials: credentials = Depends(security)):
+    verify_super_admin(session=session, authenticated=req.state.authenticated)
+    # check if user has data, created_by, submitted_by or locked_by
+    data = session.query(Data).filter(or_(
+        Data.created_by == id,
+        Data.submitted_by == id,
+        Data.locked_by == id
+    )).all()
+    if data:
+        raise HTTPException(status_code=404, detail="User has submission")
+    crud_user.delete_user(session=session, id=id)
+    return Response(status_code=HTTPStatus.NO_CONTENT.value)
