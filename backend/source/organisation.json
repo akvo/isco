@@ -137,5 +137,1326 @@
     ],
     "name": "Colruyt Group",
     "active": true
+  },
+  {
+    "name": "Aldi Belgium",
+    "member": [
+      "Retail"
+    ],
+    "isco": [
+      "Beyond Chocolate"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "ALDI Einkauf GmbH & Co. oHG, Unternehmensgruppe ALDI Nord",
+    "member": [
+      "Retail"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "ALDI S\u00dcD Group, HOFER KG",
+    "member": [
+      "Retail"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Alfred Ritter GmbH & Co. KG",
+    "member": [
+      "Big Industry"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "August Storck KG",
+    "member": [
+      "Big Industry"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Baronie",
+    "member": [
+      "Big Industry"
+    ],
+    "isco": [
+      "Beyond Chocolate",
+      "GISCO",
+      "GISCO",
+      "Beyond Chocolate",
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Barry Callebaut",
+    "member": [
+      "DISCO - Traders",
+      "Big Industry"
+    ],
+    "isco": [
+      "Beyond Chocolate",
+      "GISCO",
+      "DISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Baumgartner Schokoladen GMBH",
+    "member": [
+      "GISCO - Small Industry"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Bayer Crop Science ",
+    "member": [
+      "Other"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Belvas",
+    "member": [
+      "Small Industry"
+    ],
+    "isco": [
+      "Beyond Chocolate"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "BMZ",
+    "member": [
+      "Government"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "BMZ/ GIZ",
+    "member": [
+      "Government"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Brandt Zwieback - Schokoladen GmbH + Co. KG",
+    "member": [
+      "Big Industry"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Bundesverband der Deutschen S\u00fc\u00dfwarenindustrie e.V. (BDSI)",
+    "member": [
+      "Other"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Bundesverband des Deutschen Lebensmittelhandels e.V. (BVLH)",
+    "member": [
+      "Other"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Cargill",
+    "member": [
+      "DISCO - Traders",
+      "Big Industry"
+    ],
+    "isco": [
+      "DISCO",
+      "Beyond Chocolate",
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Carrefour",
+    "member": [
+      "Retail"
+    ],
+    "isco": [
+      "Beyond Chocolate"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Chocoladefabriken Lindt & Spr\u00fcngli GmbH",
+    "member": [
+      "Big Industry"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Chr. Storz GmbH & Co. KG",
+    "member": [
+      "GISCO - Small Industry"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Continental Bakeries B.V.",
+    "member": [
+      "Big Industry"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "COOKO GmbH",
+    "member": [
+      "Other"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Delhaize Belgium",
+    "member": [
+      "Retail"
+    ],
+    "isco": [
+      "Beyond Chocolate"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Dr. Bronner's Europe",
+    "member": [
+      "Other"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Dr. Harnish Verlag GmbH",
+    "member": [
+      "Other"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "ECOM",
+    "member": [
+      "Big Industry"
+    ],
+    "isco": [
+      "Beyond Chocolate"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "EDEKA ZENTRALE AG & Co. KG",
+    "member": [
+      "Retail"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Eisb\u00e4r Eis GmbH",
+    "member": [
+      "GISCO - Small Industry"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Exposure- und Dialogprogramme e.V",
+    "member": [
+      "Civil Society"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Fairtrade Belgium",
+    "member": [
+      "Standard Setting Organisation"
+    ],
+    "isco": [
+      "Beyond Chocolate"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "FERRERO DEUTSCHLAND GmbH",
+    "member": [
+      "Big Industry"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "F\u00f6rderverein der Maria Montessori Gesamtschule, D\u00fcsseldorf",
+    "member": [
+      "Civil Society"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "FORUM FAIRER HANDEL e.V.",
+    "member": [
+      "Standard Setting Organisation"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Frankonia Schokoladenwerke GmbH",
+    "member": [
+      "GISCO - Small Industry"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Fuchs & Hoffmann Kakaoprodukte GmbH",
+    "member": [
+      "GISCO - Small Industry"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Galler",
+    "member": [
+      "Small Industry"
+    ],
+    "isco": [
+      "Beyond Chocolate"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "German Institute for Global and Area Studies (GIGA)",
+    "member": [
+      "Civil Society"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Gewerkschaft Nahrung-Genuss-Gastst\u00e4tten (NGG)",
+    "member": [
+      "Civil Society"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Griesson-de Beukelaer GmbH & Co. KG",
+    "member": [
+      "Big Industry"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Gut Springenheide GmbH",
+    "member": [
+      "GISCO - Small Industry"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Guylian",
+    "member": [
+      "Small Industry"
+    ],
+    "isco": [
+      "Beyond Chocolate"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "H.C.C.O Hamburg Cocoa & Commodity Office GmbH",
+    "member": [
+      "GISCO - Small Industry"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "H.D.Cotterell GmbH & Co. KG",
+    "member": [
+      "GISCO - Small Industry"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Hachez Chocoversum GmbH",
+    "member": [
+      "Other"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Hamburger Stiftung f\u00fcr Wirtschaftsethik",
+    "member": [
+      "Civil Society"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Hans Riegelein & Sohn GmbH & Co. KG",
+    "member": [
+      "Big Industry"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Hanseatisches Chocoladen Kontor GmbH & Co. KG",
+    "member": [
+      "GISCO - Small Industry"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Henry Lambertz GmbH & Co. KG (Aachener Printen und Schokoladenfabrik)",
+    "member": [
+      "Big Industry"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "ICI (International Cocoa Initiative)",
+    "member": [
+      "Standard Setting Organisation"
+    ],
+    "isco": [
+      "DISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Infozentrum Schokolade",
+    "member": [
+      "Other"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "ISCC System GmbH",
+    "member": [
+      "Civil Society"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "J.G. Niederegger GmbH & Co. KG",
+    "member": [
+      "Big Industry"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Kim's Chocolates",
+    "member": [
+      "Small Industry"
+    ],
+    "isco": [
+      "Beyond Chocolate"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Libeert",
+    "member": [
+      "Small Industry"
+    ],
+    "isco": [
+      "Beyond Chocolate"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Lidl Belgium",
+    "member": [
+      "Retail"
+    ],
+    "isco": [
+      "Beyond Chocolate"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "LIDL Stiftung & Co. KG",
+    "member": [
+      "Retail"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "L\u00fcbecker Marzipan-Fabrik v. Minden & Bruhns GmbH & Co. KG (Lubeca)",
+    "member": [
+      "Small Industry"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Ludwig Schokolade GmbH & Co. KG",
+    "member": [
+      "Big Industry"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Ministeriumm f\u00fcr Energiewende, landwirtschaft, Umwelt und l\u00e4ndliche Entwicklung des Landes Schleswig-Holstein",
+    "member": [
+      "Other"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Myclimate",
+    "member": [
+      "Civil Society"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Nestl\u00e9",
+    "member": [
+      "DISCO - Large Manufacturers",
+      "Big Industry"
+    ],
+    "isco": [
+      "DISCO",
+      "Beyond Chocolate",
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Neuhaus",
+    "member": [
+      "Small Industry"
+    ],
+    "isco": [
+      "Beyond Chocolate"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Nexus Management",
+    "member": [
+      "Other"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Olam",
+    "member": [
+      "DISCO - Traders",
+      "Big Industry"
+    ],
+    "isco": [
+      "DISCO",
+      "Beyond Chocolate",
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Oxfam",
+    "member": [
+      "Small Industry"
+    ],
+    "isco": [
+      "Beyond Chocolate"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Piasten GmbH / Treets GmbH",
+    "member": [
+      "Big Industry"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Plant-for-the-Planet",
+    "member": [
+      "Civil Society"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Puratos",
+    "member": [
+      "Big Industry"
+    ],
+    "isco": [
+      "Beyond Chocolate"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Rainforest Alliance",
+    "member": [
+      "Standard Setting Organisation"
+    ],
+    "isco": [
+      "DISCO",
+      "Beyond Chocolate",
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "REWE Group",
+    "member": [
+      "Retail"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "R\u00fcbezahl Schokoladen GmbH",
+    "member": [
+      "Big Industry"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Sch\u00f6ki GmbH",
+    "member": [
+      "GISCO - Small Industry"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "SCHOKINAG-Schokolade-Industrie GmbH",
+    "member": [
+      "Big Industry"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Schokoladenmuseum K\u00f6ln GmbH",
+    "member": [
+      "Civil Society"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Solidaridad",
+    "member": [
+      "Civil Society"
+    ],
+    "isco": [
+      "DISCO",
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Stiftung der Deutschen Kakao- und Schokoladenwirtschaft",
+    "member": [
+      "Other"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Stollwerck Schokoladen Vertriebs GmbH",
+    "member": [
+      "Big Industry"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "S\u00dcDWIND e.V. - Institut f\u00fcr \u00d6konomie und \u00d6kumene",
+    "member": [
+      "Civil Society"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "tegut\u2026 gute Lebensmittel GmbH & Co. KG",
+    "member": [
+      "Retail"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Tony's Chocolonely",
+    "member": [
+      "DISCO - Large Manufacturers",
+      "Small Industry"
+    ],
+    "isco": [
+      "DISCO",
+      "Beyond Chocolate"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Fairtrade Deutschland e.V.",
+    "member": [
+      "Civil Society"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Ulmer Schokoladen GmbH & Co. KG",
+    "member": [
+      "GISCO - Small Industry"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "United-Agro-Alliance GmbH",
+    "member": [
+      "GISCO - Small Industry"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Verdener Keks- und Waffelfabrik Hans Freitag GmbH & Co.KG",
+    "member": [
+      "Big Industry"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Verein der am Rohkakaohandel beteiligten Firmen e. V.",
+    "member": [
+      "Other"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Vollers Hamburg GmbH",
+    "member": [
+      "GISCO - Small Industry"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "WETZEL Karlsbader Oblaten- und Waffelfabrik GmbH",
+    "member": [
+      "GISCO - Small Industry"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "World Wide Fund for Nature (WWF)",
+    "member": [
+      "Civil Society"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "ZDS Solingen",
+    "member": [
+      "Other"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "ZNU \u2013 Zentrum f\u00fcr Nachhaltige Unternehmensf\u00fchrung der Universit\u00e4t Witten/Herdecke",
+    "member": [
+      "Civil Society"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Envirium Life Sciences",
+    "member": [
+      "DISCO - Traders",
+      "Small Industry"
+    ],
+    "isco": [
+      "DISCO",
+      "Beyond Chocolate"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Export Trading Group",
+    "member": [
+      "DISCO - Traders"
+    ],
+    "isco": [
+      "DISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "JS Cocoa",
+    "member": [
+      "DISCO - Traders"
+    ],
+    "isco": [
+      "DISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Friesland Campina",
+    "member": [
+      "DISCO - Small Manufacturers"
+    ],
+    "isco": [
+      "DISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Albert Heijn",
+    "member": [
+      "DISCO - Retail"
+    ],
+    "isco": [
+      "DISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Jumbo",
+    "member": [
+      "DISCO - Retail"
+    ],
+    "isco": [
+      "DISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Superunie",
+    "member": [
+      "DISCO - Retail"
+    ],
+    "isco": [
+      "DISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Dutch government",
+    "member": [
+      "Government"
+    ],
+    "isco": [
+      "DISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Fairtrade Netherlands",
+    "member": [
+      "Civil Society"
+    ],
+    "isco": [
+      "DISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Care Netherlands",
+    "member": [
+      "Civil Society"
+    ],
+    "isco": [
+      "DISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Fairfood",
+    "member": [
+      "Civil Society"
+    ],
+    "isco": [
+      "DISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Farmgate Cocoa Alliance",
+    "member": [
+      "Civil Society"
+    ],
+    "isco": [
+      "DISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Oxfam Novib",
+    "member": [
+      "Civil Society"
+    ],
+    "isco": [
+      "DISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Save the Children",
+    "member": [
+      "Civil Society"
+    ],
+    "isco": [
+      "DISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Tropenbos International",
+    "member": [
+      "Civil Society"
+    ],
+    "isco": [
+      "DISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "UNICEF Netherlands",
+    "member": [
+      "Civil Society"
+    ],
+    "isco": [
+      "DISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Agriterra",
+    "member": [
+      "Civil Society"
+    ],
+    "isco": [
+      "DISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Agro Eco",
+    "member": [
+      "Civil Society"
+    ],
+    "isco": [
+      "DISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Equipoise",
+    "member": [
+      "Civil Society"
+    ],
+    "isco": [
+      "DISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Meridia",
+    "member": [
+      "Civil Society"
+    ],
+    "isco": [
+      "DISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Port of Amsterdam",
+    "member": [
+      "Civil Society"
+    ],
+    "isco": [
+      "DISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Koninklijk Instituut voor de Tropen",
+    "member": [
+      "Civil Society"
+    ],
+    "isco": [
+      "DISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Klingele",
+    "member": [
+      "Small Industry"
+    ],
+    "isco": [
+      "Beyond Chocolate"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Leonidas",
+    "member": [
+      "Small Industry"
+    ],
+    "isco": [
+      "Beyond Chocolate"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Libeert",
+    "member": [
+      "Small Industry"
+    ],
+    "isco": [
+      "Beyond Chocolate"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "SIAT",
+    "member": [
+      "Small Industry"
+    ],
+    "isco": [
+      "Beyond Chocolate"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Cocoa Source",
+    "member": [
+      "Big industry"
+    ],
+    "isco": [
+      "Beyond Chocolate"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Vandenbulcke",
+    "member": [
+      "Small Industry"
+    ],
+    "isco": [
+      "Beyond Chocolate"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Natra",
+    "member": [
+      "Big Industry"
+    ],
+    "isco": [
+      "Beyond Chocolate"
+    ],
+    "code": null,
+    "active": true
   }
 ]
