@@ -399,14 +399,14 @@ def get_submission_progress(
     find_org_iscos = session.query(OrganisationIsco).filter(
         OrganisationIsco.organisation == user.organisation).all()
     isco_ids = [i.isco_type for i in find_org_iscos]
-    org_by_isco = session.query(OrganisationIsco).filter(
+    org_by_isco = session.query(OrganisationIsco)
+    # if isco = 1 (All) show from all organisation
+    # if 1 in isco_ids:
+    #     org_by_isco = org_by_isco.all()
+    # if 1 not in isco_ids:
+    org_by_isco = org_by_isco.filter(
         OrganisationIsco.isco_type.in_(isco_ids)).all()
     org_ids = [o.organisation for o in org_by_isco]
-    organisations = session.query(Organisation).filter(
-        Organisation.id.in_(org_ids)).all()
-    orgs_dict = {}
-    for o in organisations:
-        orgs_dict.update({o.id: o.name})
     data = session.query(
         Data.organisation,
         Data.form,
@@ -417,6 +417,11 @@ def get_submission_progress(
     if not data:
         raise HTTPException(status_code=404,
                             detail="submission progress not found")
+    organisations = session.query(Organisation).filter(
+        Organisation.id.in_(org_ids)).all()
+    orgs_dict = {}
+    for o in organisations:
+        orgs_dict.update({o.id: o.name})
     data = data.all()
     res = []
     for d in data:
