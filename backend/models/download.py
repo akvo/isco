@@ -71,7 +71,7 @@ class Download(Base):
     file = Column(String, nullable=False)
     request_by = Column(Integer, ForeignKey(User.id))
     approved_by = Column(Integer, ForeignKey(User.id), nullable=True)
-    created = Column(DateTime, nullable=True, server_default=func.utcnow())
+    created = Column(DateTime, nullable=True, server_default=func.now())
     expired = Column(DateTime, nullable=True)
     request_by_user = relationship(User, foreign_keys=[request_by])
     approved_by_user = relationship(User, foreign_keys=[approved_by])
