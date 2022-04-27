@@ -27,8 +27,7 @@ def generate(data, detail):
     html_file.close()
     file = storage.upload(file=html_path,
                           folder=folder,
-                          filename=filename,
-                          remove=False)
+                          filename=filename)
     return file
 
 
