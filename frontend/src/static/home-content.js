@@ -13,10 +13,11 @@ const homeContent = (handleShow) => {
           very valuable for us – you can give them in the feedback section (menu
           above) or in the comment fields in the questionnaires.
           <br />
+          Under this{" "}
           <Link onClick={handleShow} to="#">
-            Under this link you find the
+            link
           </Link>{" "}
-          data security and confidentiality measures taken.
+          you find the data security and confidentiality measures taken.
           <br />
           <br />
           Thank you very much for your contribution to making the cocoa sector
