@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
 
-const homeContent = (handleShow, youtubeLink, slideLink) => {
+const homeContent = (handleShow) => {
   return {
     en: {
       h: "WELCOME TO THE COCOA MONITORING OF DISCO, BEYOND CHOCOLATE AND GISCO!",
