@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
 import "./style.scss";
-import { Row, Col, Typography, Table, Button, Space } from "antd";
-import { api } from "../../lib";
+import { Row, Col, Typography, Table, Button, Space, notification } from "antd";
+import { api, store } from "../../lib";
+import { uiText } from "../../static";
 
 const { Title } = Typography;
 
 const Download = () => {
+  const language = store.useState((s) => s.language);
+  const { active: activeLang } = language;
+
   const [data, setData] = useState({
     current: 1,
     data: [],
@@ -13,22 +17,44 @@ const Download = () => {
     total_page: 0,
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [requestLoading, setRequestLoading] = useState(null);
   const pageSize = 10;
 
-  const handleRequestButton = (record) => {
-    console.info(record);
+  const handleRequestButton = (id) => {
+    setRequestLoading(id);
+    api
+      .post(`/download/new/${id}`)
+      .then(() => {
+        const newData = data.data.map((x) => ({
+          ...x,
+          status: id === x.id ? "pending" : x.status,
+        }));
+        setData({ ...data, data: newData });
+        notification.info({
+          message: uiText[activeLang].popupDownloadRequestMessage,
+          description: uiText[activeLang].popupDownloadRequestDescription,
+          duration: 8,
+        });
+      })
+      .catch((e) => {
+        const { status, statusText } = e.response;
+        console.error(status, statusText);
+      })
+      .finally(() => {
+        setRequestLoading(null);
+      });
   };
 
   const columns = [
     {
-      title: "Form",
+      title: "Form Name",
       dataIndex: "form",
       key: "form",
       className: "bg-grey",
       width: "10%",
     },
     {
-      title: "Type",
+      title: "Form Type",
       dataIndex: "form_type",
       key: "form_type",
       className: "bg-grey",
@@ -43,21 +69,7 @@ const Download = () => {
       width: "10%",
     },
     {
-      title: "Initiated by",
-      dataIndex: "created_by",
-      key: "created_by",
-      className: "bg-grey",
-      width: "10%",
-    },
-    {
-      title: "Date Created",
-      dataIndex: "created",
-      key: "created",
-      className: "bg-grey",
-      width: "12%",
-    },
-    {
-      title: "Date Submitted",
+      title: "Submitted Date",
       dataIndex: "submitted",
       key: "submitted",
       className: "bg-grey",
@@ -71,15 +83,17 @@ const Download = () => {
       className: "bg-grey",
       width: "8%",
       render: (record) => {
+        const pending = record.status === "pending";
         return (
           <Space key={`${record?.id}-${record?.key}`}>
             <Button
               className="action-btn"
-              shape="circle"
-              type="text"
-              onClick={() => handleRequestButton(record)}
+              type={pending ? "text" : "secondary"}
+              onClick={() => handleRequestButton(record.id)}
+              loading={record.id === requestLoading}
+              disabled={pending}
             >
-              Request
+              {pending ? "Pending" : "Request"}
             </Button>
           </Space>
         );
@@ -90,7 +104,7 @@ const Download = () => {
   useEffect(() => {
     setIsLoading(true);
     api
-      .get(`/data/submitted?page=1`)
+      .get(`/download/list?page=1`)
       .then((res) => {
         setData(res.data);
       })
@@ -106,7 +120,7 @@ const Download = () => {
   const changePage = (page) => {
     setIsLoading(true);
     api
-      .get(`/data/submitted?page=${page}&page_size=${pageSize}`)
+      .get(`/download/list?page=${page}&page_size=${pageSize}`)
       .then((res) => {
         setData(res.data);
       })

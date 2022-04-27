@@ -79,27 +79,6 @@ class TestAdvancedSubmissionRoute():
                 'value': 75
             }],
         }
-        res = await client.get(
-            app.url_path_for("data:get_submitted_data_by_organisation"),
-            headers={"Authorization": f"Bearer {account.token}"})
-        assert res.status_code == 200
-        assert res.status_code == 200
-        res = res.json()
-        assert res["current"] == 1
-        assert res["total"] is not None
-        assert res["total_page"] is not None
-        assert len(res["data"]) > 0
-        assert res["data"][0] == {
-            'id': 1,
-            'form': "Form Test",
-            'form_type': "member",
-            'name': 'Depend to Q1 Option 1',
-            'organisation': 'Akvo',
-            'submitted': today,
-            'submitted_by': 'John Doe',
-            'created': today,
-            'created_by': 'John Doe',
-        }
 
     @pytest.mark.asyncio
     async def test_get_disabled_form_options(self, app: FastAPI,
