@@ -18,7 +18,7 @@ depends_on = None
 
 def upgrade():
     op.create_table(
-        'download', sa.Column('id', sa.Integer(), nullable=False),
+        'download', sa.Column('id', sa.Integer(), primary_key=True),
         sa.Column(
             'uuid',
             pg.UUID(as_uuid=True),
