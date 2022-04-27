@@ -151,8 +151,15 @@ class UserBase(BaseModel):
         role: UserRole = Form(UserRole.member_user),
         organisation: int = Form(...),
         # invitation: str = Form(None),
-        questionnaires: List[int] = Form([])
+        questionnaires: List[str] = Form(None)
     ):
+        # transform questionnaires value
+        if questionnaires and questionnaires[0]:
+            questionnaires = [x.split(",") for x in questionnaires]
+            questionnaires = [x for sublist in questionnaires for x in sublist]
+            questionnaires = [int(x) for x in questionnaires]
+        else:
+            questionnaires = []
         return cls(
             name=name, email=email, password=password,
             phone_number=phone_number, role=role,

@@ -145,9 +145,11 @@ def register(req: Request,
              payload: UserBase = Depends(UserBase.as_form),
              invitation: Optional[bool] = False,
              session: Session = Depends(get_session)):
-    if (payload.password):
+    if payload.password:
         payload.password = payload.password.get_secret_value()
         payload.password = get_password_hash(payload.password)
+    if payload.questionnaires:
+        payload.questionnaires = [x for x in payload.questionnaires]
     user = crud_user.add_user(session=session,
                               payload=payload,
                               invitation=invitation)

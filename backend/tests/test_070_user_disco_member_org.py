@@ -162,7 +162,7 @@ class TestUserDisco():
             "password": "test",
             "role": UserRole.member_user.value,
             "organisation": 1,
-            "questionnaires": [1],
+            "questionnaires": [],
         }
         res = await client.post(
             app.url_path_for("user:register"),
@@ -174,6 +174,7 @@ class TestUserDisco():
         res = res.json()
         assert res["email"] == user_payload["email"]
         assert res["invitation"] == invitation_link
+        assert res["questionnaires"] == []
         assert res["approved"] is True
         user = session.query(User).filter(
             User.email == user_payload["email"]).first()
