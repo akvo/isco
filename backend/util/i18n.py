@@ -39,10 +39,11 @@ class EmailText(enum.Enum):
         "signature": True,
     }
     verify_email = {
-        "title": "Email Verification",
-        "subject": "Email Verification",
+        "title": "Email Verification | E-Mail-Verifizierung",
+        "subject": "Email Verification | E-Mail-Verifizierung",
         "body": '''<div>
-                Dear reporting member,
+                Dear reporting member, <br/>
+                <i>Sehr geehrtes meldendes Mitglied</i>,
                 <p>
                 Thank you for signing up to the online monitoring tool of
                 Beyond Chocolate, DISCO and GISCO. Please click following
@@ -51,12 +52,21 @@ class EmailText(enum.Enum):
                 registration. You will be notified when as soon as your
                 account has been approved.
                 </p>
+                <p>
+                <i>vielen Dank, dass Sie sich für das Online-Überwachungstool
+                von Beyond Chocolate, DISCO und GISCO angemeldet haben. Bitte
+                klicken Sie auf den untenstehenden Link, um Ihre
+                E-Mail-Adresse zu verifizieren. Im nächsten Schritt muss der
+                Administrator Ihrer Organisation/Ihres Unternehmens Ihre
+                Registrierung bestätigen. Sie werden benachrichtigt, sobald
+                Ihr Konto genehmigt wurde.</i>
+                </p>
                 </div>''',
         "message": None,
         "image": None,
         "button": '''<a href="#button_url#" target="_blank" rel="noreferrer">
                         <button class="btn btn-link block">
-                            Verify Email
+                            Verify Email | <i>E-Mail-Verifizierung</i>
                         </button>
                     </a>''',
         "info": None,
