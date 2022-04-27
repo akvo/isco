@@ -85,7 +85,7 @@ const Download = () => {
               className="action-btn"
               type={pending ? "text" : "secondary"}
               onClick={() => handleRequestButton(record.id)}
-              loading={record.id == requestLoading}
+              loading={record.id === requestLoading}
               disabled={pending}
             >
               {pending ? "Pending" : "Request"}
