@@ -20,6 +20,13 @@ const Download = () => {
     setRequestLoading(id);
     api
       .post(`/download/new/${id}`)
+      .then(() => {
+        const newData = data.data.map((x) => ({
+          ...x,
+          status: id === x.id ? "pending" : x.status,
+        }));
+        setData({ ...data, data: newData });
+      })
       .catch((e) => {
         const { status, statusText } = e.response;
         console.error(status, statusText);
@@ -81,16 +88,17 @@ const Download = () => {
       className: "bg-grey",
       width: "8%",
       render: (record) => {
+        const pending = record.status === "pending";
         return (
           <Space key={`${record?.id}-${record?.key}`}>
             <Button
               className="action-btn"
-              shape="circle"
-              type="text"
+              type={pending ? "text" : "secondary"}
               onClick={() => handleRequestButton(record.id)}
               loading={record.id == requestLoading}
+              disabled={pending}
             >
-              Request
+              {pending ? "Pending" : "Request"}
             </Button>
           </Space>
         );

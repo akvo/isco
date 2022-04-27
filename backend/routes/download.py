@@ -7,7 +7,7 @@ from db.connection import get_session
 import db.crud_download as crud
 import db.crud_data as crud_data
 import util.report as report
-from models.data import DataSubmittedResponse
+from models.download import DataDownloadResponse
 from middleware import verify_user
 
 security = HTTPBearer()
@@ -15,7 +15,7 @@ download_route = APIRouter()
 
 
 @download_route.get("/download/list",
-                    response_model=DataSubmittedResponse,
+                    response_model=DataDownloadResponse,
                     summary="get data list by user organisation",
                     name="download:list",
                     tags=["Download"])
@@ -42,9 +42,15 @@ def get_submitted_data_by_organisation(
     total_page = ceil(total_data / page_size) if total_data > 0 else 0
     if total_page < page:
         raise HTTPException(status_code=404, detail="Not found")
+    data = [d.simplified for d in data]
+    for d in data:
+        status = crud.get_status(session=session,
+                                 user=user.id,
+                                 data=d["id"])
+        d.update({"status": status})
     return {
         'current': page,
-        'data': [d.simplified for d in data],
+        'data': data,
         'total': total_data,
         'total_page': total_page,
     }

@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
-from models.download import Download
+from sqlalchemy import and_
+from models.download import Download, DownloadStatusType
 
 
 def new_download(session: Session, user: int, form: int, data: int,
@@ -10,3 +11,13 @@ def new_download(session: Session, user: int, form: int, data: int,
     session.flush()
     session.refresh(download)
     return
+
+
+def get_status(session: Session, user: int, data: int) -> DownloadStatusType:
+    download = session.query(Download).filter(
+        and_(Download.data == data, Download.request_by == user)).first()
+    if download:
+        if download.approved_by:
+            return DownloadStatusType.approved
+        return DownloadStatusType.pending
+    return None
