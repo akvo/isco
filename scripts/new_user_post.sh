@@ -2,6 +2,7 @@
 
 # Copy example_users.csv to users.csv
 # Make necessary changes
+# NOTE: Questionnaire List separated by pipe "|"
 # Change the domain
 
 domain="http://localhost:3000"
@@ -11,7 +12,7 @@ for i in $(tail -n +2 users.csv); do
     phone=$(echo "$i" | cut -d "," -f 3)
     role=$(echo "$i" | cut -d "," -f 4)
     org=$(echo "$i" | cut -d "," -f 5)
-    qs=$(echo "$i" | cut -d "," -f 6)
+    qs=$(echo "$i" | cut -d "," -f 6 | sed 's/\|/\,/g')
     payload="name=${uname}&email=${mail}&password=&phone_number=${phone}&role=${role}&organisation=${org}&questionnaires=${qs}"
     curl -X 'POST' "${domain}/api/user/register?invitation=true" \
       -H 'accept: application/json' \
