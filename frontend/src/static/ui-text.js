@@ -193,7 +193,7 @@ const uiText = {
         confidentiality and data security agreement for the monitoring, please
         download{" "}
         <a
-          href="https://storage.googleapis.com/isco-storage/document/Standardvereinbarung_Monitoring_2022-03-24.docx"
+          href="https://storage.googleapis.com/isco-storage/document/GISCO%20Confidentiality%20Agreement%20Monitoring%202022.docx"
           target="_blank"
           rel="noopener noreferrer"
         >
