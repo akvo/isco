@@ -493,6 +493,7 @@
                           -webkit-text-size-adjust: 100%;
                         "
                       >
+                        {% if title %}
                         <h2
                           style="
                             -ms-text-size-adjust: 100%;
@@ -508,6 +509,8 @@
                         >
                           {{ title }}
                         </h2>
+                        {% endif %}
+                        {% if body %}
                         <p
                           style="
                             -ms-text-size-adjust: 100%;
@@ -516,8 +519,10 @@
                         >
                           {{ body }}
                         </p>
+                        {% endif %}
                       </div>
-                      {% if image or message or context or button %}
+
+                      {% if image or message or context %}
                       <table style="width: 90%; margin: auto; padding: 20px">
                         <tbody>
                           {% if image %}
@@ -538,10 +543,6 @@
                           <tr>
                             <td style="text-align: left">{{ context }}</td>
                           </tr>
-                          {% endif %} {% if button %}
-                          <tr>
-                            <td style="text-align: center">{{ button }}</td>
-                          </tr>
                           {% endif %}
                         </tbody>
                       </table>
@@ -561,18 +562,86 @@
                       {% endif %}
 
                       {% if signature %}
-                      <br/><br/>
+                      <br/>
                       <table style="width: 90%; margin: auto; padding: 20px;">
                         <tbody>
                           <tr>
                             <td style="text-align: left">
                               Best regards, <br/>
-                              <i>Mit freundlichen Grüßen,</i>
                               <p>
-                                The Beyond Chocolate, DISCO and GISCO secretariats.<br/>
-                                <i>Die Sekretariate von Beyond Chocolate, DISCO dan GISCO</i>
+                                The Beyond Chocolate, DISCO and GISCO secretariats.
                               </p>
                             </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      {% endif %}
+
+                      <!-- Translation -->
+                      {% if title_translation or body_translation %}
+                      <div
+                        class="heading-section"
+                        style="
+                          margin-top: 35px;
+                          text-align: left;
+                          padding: 0 30px;
+                          -ms-text-size-adjust: 100%;
+                          -webkit-text-size-adjust: 100%;
+                        "
+                      >
+                        {% if title_translation %}
+                        <h2
+                          style="
+                            -ms-text-size-adjust: 100%;
+                            -webkit-text-size-adjust: 100%;
+                            font-family: 'Poppins', sans-serif;
+                            color: #000000;
+                            margin-top: 0;
+                            font-size: 16px;
+                            line-height: 1.4;
+                            font-weight: 700;
+                            text-transform: uppercase;
+                          "
+                        >
+                          {{ title_translation }}
+                        </h2>
+                        {% endif %}
+                        {% if body_translation %}
+                        <p
+                          style="
+                            -ms-text-size-adjust: 100%;
+                            -webkit-text-size-adjust: 100%;
+                          "
+                        >
+                          {{ body_translation }}
+                        </p>
+                        {% endif %}
+                      </div>
+                      {% if signature %}
+                      <br/>
+                      <table style="width: 90%; margin: auto; padding: 20px;">
+                        <tbody>
+                          <tr>
+                            <td style="text-align: left">
+                              Mit freundlichen Grüßen,
+                              <p>
+                                Die Sekretariate von Beyond Chocolate, DISCO dan GISCO
+                              </p>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      {% endif %}
+                      {% endif %}
+                      <!-- EOL Translation -->
+
+                      <!-- Button URL -->
+                      {% if button %}
+                      <br/>
+                      <table style="width: 90%; margin: auto; padding: 20px">
+                        <tbody>
+                          <tr>
+                            <td style="text-align: center">{{ button }}</td>
                           </tr>
                         </tbody>
                       </table>

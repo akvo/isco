@@ -171,6 +171,7 @@ def register(req: Request,
                     User.role == UserRole.member_admin,
                 )).all()
         body = f"{user['name']} ({user['email']}) has been registered."
+        # two differents email for secretariat_admin & member_admin
         email = Email(recipients=[a.recipient for a in admins],
                       type=MailTypeEnum.register,
                       body=body)
