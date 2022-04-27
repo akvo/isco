@@ -225,7 +225,7 @@
   {
     "name": "Baumgartner Schokoladen GMBH",
     "member": [
-      "GISCO - Small Industry"
+      "Big Industry"
     ],
     "isco": [
       "GISCO"
@@ -256,9 +256,9 @@
     "active": true
   },
   {
-    "name": "BMZ",
+    "name": "Bundesministerium für wirtschaftliche Zusammenarbeit und Entwicklung (BMZ)",
     "member": [
-      "Government"
+      "Other"
     ],
     "isco": [
       "GISCO"
@@ -269,7 +269,7 @@
   {
     "name": "BMZ/ GIZ",
     "member": [
-      "Government"
+      "Other"
     ],
     "isco": [
       "GISCO"
@@ -281,6 +281,17 @@
     "name": "Brandt Zwieback - Schokoladen GmbH + Co. KG",
     "member": [
       "Big Industry"
+    ],
+    "isco": [
+      "GISCO"
+    ],
+    "code": null,
+    "active": true
+  },
+  {
+    "name": "Bundesministerium für Ernährung und Landwirtschaft (BMEL)",
+    "member": [
+      "Other"
     ],
     "isco": [
       "GISCO"
@@ -349,7 +360,7 @@
   {
     "name": "Chr. Storz GmbH & Co. KG",
     "member": [
-      "GISCO - Small Industry"
+      "Big Industry"
     ],
     "isco": [
       "GISCO"
@@ -437,7 +448,7 @@
   {
     "name": "Eisbär Eis GmbH",
     "member": [
-      "GISCO - Small Industry"
+      "Big Industry"
     ],
     "isco": [
       "GISCO"
@@ -503,7 +514,7 @@
   {
     "name": "Frankonia Schokoladenwerke GmbH",
     "member": [
-      "GISCO - Small Industry"
+      "Big Industry"
     ],
     "isco": [
       "GISCO"
@@ -514,7 +525,7 @@
   {
     "name": "Fuchs & Hoffmann Kakaoprodukte GmbH",
     "member": [
-      "GISCO - Small Industry"
+      "Big Industry"
     ],
     "isco": [
       "GISCO"
@@ -569,7 +580,7 @@
   {
     "name": "Gut Springenheide GmbH",
     "member": [
-      "GISCO - Small Industry"
+      "Big Industry"
     ],
     "isco": [
       "GISCO"
@@ -591,7 +602,7 @@
   {
     "name": "H.C.C.O Hamburg Cocoa & Commodity Office GmbH",
     "member": [
-      "GISCO - Small Industry"
+      "Big Industry"
     ],
     "isco": [
       "GISCO"
@@ -602,7 +613,7 @@
   {
     "name": "H.D.Cotterell GmbH & Co. KG",
     "member": [
-      "GISCO - Small Industry"
+      "Big Industry"
     ],
     "isco": [
       "GISCO"
@@ -646,7 +657,7 @@
   {
     "name": "Hanseatisches Chocoladen Kontor GmbH & Co. KG",
     "member": [
-      "GISCO - Small Industry"
+      "Big Industry"
     ],
     "isco": [
       "GISCO"
@@ -929,7 +940,7 @@
   {
     "name": "Schöki GmbH",
     "member": [
-      "GISCO - Small Industry"
+      "Big Industry"
     ],
     "isco": [
       "GISCO"
@@ -1042,7 +1053,7 @@
   {
     "name": "Ulmer Schokoladen GmbH & Co. KG",
     "member": [
-      "GISCO - Small Industry"
+      "Big Industry"
     ],
     "isco": [
       "GISCO"
@@ -1097,7 +1108,7 @@
   {
     "name": "WETZEL Karlsbader Oblaten- und Waffelfabrik GmbH",
     "member": [
-      "GISCO - Small Industry"
+      "Big Industry"
     ],
     "isco": [
       "GISCO"

@@ -11,7 +11,7 @@ const uiText = {
         for 2021 data
       </Fragment>
     ),
-    welcome2: "Monitoring for 2021 data",
+    welcome2: "2022 Monitoring Round",
     welcome3: (
       <Fragment>
         Welcome
@@ -63,6 +63,7 @@ const uiText = {
     formFullName: "Full Name",
     formResetPwd: "Reset Password",
     formCollaborators: "Contributing organization(s)",
+    formPhoneNumber: "Phone Number (Optional)",
     // Button
     btnLogin: "Login",
     btnBackToLogin: "Back to Login Page",
@@ -188,22 +189,26 @@ const uiText = {
     // info
     infoDataSecurityDoc: (
       <>
-        For GISCO members: &quot;If you have not yet signed the bilateral data
+        For GISCO members: If you have not yet signed the bilateral data
         confidentiality and data security agreement for the monitoring, please
         download{" "}
         <a
-          href="https://storage.googleapis.com/isco-storage/document/Standardvereinbarung_Monitoring_2022-03-24.docx"
+          href="https://storage.googleapis.com/isco-storage/document/GISCO%20Confidentiality%20Agreement%20Monitoring%202022.docx"
           target="_blank"
           rel="noopener noreferrer"
         >
           THIS FILE
         </a>{" "}
         and send two printed versions to us in written with your signature. You
-        will receive a copy signed by us in return.&quot;
+        will receive a copy signed by us in return.
       </>
     ),
     // page title
     pageSubmissionProgress: "Submission Progress",
+    // popup download request
+    popupDownloadRequestMessage: "Download Request",
+    popupDownloadRequestDescription:
+      "Thank you for the data download request. The secretariat admins will be notified about your request. You will receive an email from us once your data is ready for download",
   },
 
   de: {
@@ -216,7 +221,7 @@ const uiText = {
         für das Berichtsjahr 2021!
       </Fragment>
     ),
-    welcome2: "Monitoring for 2021 data",
+    welcome2: "Monitoringrunde 2022",
     welcome3: (
       <Fragment>
         Willkommen
@@ -261,7 +266,7 @@ const uiText = {
     formCaptcha: "Bitte tragen die den Wert/die Werte ein",
     formPickPreviousSavedForms: "Auswahl eines zuvor gespeicherten Fragebogens",
     formStartFillingNewForm: "Beginn eines neuen Fragebogens",
-    formLogin: "User Einloggen",
+    formLogin: "Einloggen",
     formRememberLogin: "Login-Daten erinnern",
     formForgotPwd: "Passwort vergessen",
     formHaveAccount: "Sind Sie schon registriert?",
@@ -270,6 +275,7 @@ const uiText = {
     formFullName: "Name",
     formResetPwd: "Passwort zurücksetzen",
     formCollaborators: "Beitragende Organisation(en)",
+    formPhoneNumber: "Phone Number (Optional)",
     // Button
     btnLogin: "Einloggen",
     btnBackToLogin: "Terug naar Inlogpagina",
@@ -401,7 +407,7 @@ const uiText = {
     // info
     infoDataSecurityDoc: (
       <>
-        Für Mitglieder des Forum Nachhaltiger Kakao: „Falls Sie die bilaterale
+        Für Mitglieder des Forum Nachhaltiger Kakao: Falls Sie die bilaterale
         Vereinbarung zum Monitoring bezüglich Datensicherheit und
         -Vertraulichkeit noch nicht unterzeichnet haben, laden Sie bitte{" "}
         <a
@@ -413,11 +419,15 @@ const uiText = {
         </a>{" "}
         herunter und senden Sie uns zwei gedruckte Versionen schriftlich mit
         Ihrer Unterschrift zu. Sie erhalten ein von uns unterschriebenes
-        Exemplar zurück.“,
+        Exemplar zurück.,
       </>
     ),
     // page title
     pageSubmissionProgress: "Submission Progress",
+    // popup download request
+    popupDownloadRequestMessage: "Anfrage herunterladen",
+    popupDownloadRequestDescription:
+      "Vielen Dank für die Anfrage zum Download der Daten. Die Sekretariatsverwaltung wird über Ihre Anfrage benachrichtigt. Sie erhalten von uns eine E-Mail, sobald Ihre Daten zum Download bereitstehen",
   },
 };
 

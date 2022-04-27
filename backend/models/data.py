@@ -12,16 +12,29 @@ import sqlalchemy.dialects.postgresql as pg
 from sqlalchemy.orm import relationship
 from db.connection import Base
 from models.answer import AnswerDict, AnswerBase
-from .form import Form
+from .form import Form, FormInfo
 from .answer import Answer
-from .user import User
-from .organisation import Organisation
+from .user import User, UserDict
+from .organisation import Organisation, OrganisationDict
 from util.survey_config import MEMBER_SURVEY, PROJECT_SURVEY
 
 
 class GeoData(BaseModel):
     long: confloat(ge=-180.0, le=180.0)
     lat: confloat(ge=-90, le=90)
+
+
+class ReportDict(TypedDict):
+    id: int
+    form: FormInfo
+    name: str
+    organisation: OrganisationDict
+    submitted_by: UserDict
+    submitted: Optional[str] = None
+    answer: List[AnswerDict]
+
+    class Config:
+        orm_mode = True
 
 
 class DataDict(TypedDict):
@@ -45,6 +58,7 @@ class DataOptionDict(TypedDict):
     name: str
     organisation: str
     locked_by: Optional[int] = None
+    locked_by_user: Optional[str] = None
     created_by: str
     created: Optional[str] = None
     form_type: Optional[str] = None
@@ -211,6 +225,8 @@ class Data(Base):
             "form": self.form,
             "form_type": form_type,
             "locked_by": self.locked_by,
+            "locked_by_user": self.locked_by_user.name
+            if self.locked_by_user else None,
             "organisation": organisation,
             "created_by": created_by,
             "created": created,
@@ -238,26 +254,13 @@ class Data(Base):
         }
 
     @property
-    def to_report(self) -> DataDict:
+    def to_report(self) -> ReportDict:
         return {
-            "id":
-            self.id,
-            "name":
-            self.name,
-            "form":
-            self.form,
-            "geo": {
-                "lat": self.geo[0],
-                "long": self.geo[1]
-            } if self.geo else None,
-            "created_by":
-            self.created_by_user.name,
-            "organisation":
-            self.organisation_detail.name,
-            "submitted_by":
-            self.submitted_by_user.name if self.submitted_by else None,
-            "created":
-            self.created.strftime("%B %d, %Y"),
+            "id": self.id,
+            "name": self.name,
+            "form": self.form_detail.info,
+            "organisation": self.organisation_detail.serialize,
+            "submitted_by": self.submitted_by_user.serialize,
             "submitted":
             self.submitted.strftime("%B %d, %Y") if self.submitted else None,
             "answer": [a.to_report for a in self.answer],

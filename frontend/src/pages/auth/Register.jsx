@@ -17,7 +17,7 @@ import Auth from "./Auth";
 import { store, api } from "../../lib";
 import { uiText, webformContent } from "../../static";
 import { passwordCheckBoxOptions } from "../../lib/util";
-import intersection from "lodash/intersection";
+import { intersection, sortBy } from "lodash";
 import { useNotification } from "../../util";
 
 const Register = () => {
@@ -40,7 +40,7 @@ const Register = () => {
   }, [isco_type]);
 
   const organisationOption = useMemo(() => {
-    return organisation
+    const orgs = organisation
       ?.filter((o) => {
         // show All
         if (!iscoFilter || iscoFilter === 1) {
@@ -48,10 +48,13 @@ const Register = () => {
         }
         return intersection(o.isco_type, [iscoFilter]).length;
       })
-      ?.map((o) => ({
-        label: o?.name,
-        value: o?.id,
-      }));
+      ?.map((o) => {
+        return {
+          label: o?.name,
+          value: o?.id,
+        };
+      });
+    return sortBy(orgs, ["label"]);
   }, [organisation, iscoFilter]);
 
   const handleOnClickDataSecurity = () => {
@@ -179,8 +182,9 @@ const Register = () => {
           </Form.Item>
           <Form.Item name="phone_number">
             <InputNumber
+              controls={false}
               className="bg-grey"
-              placeholder="Phone Number"
+              placeholder={text.formPhoneNumber}
               size="large"
             />
           </Form.Item>
@@ -242,6 +246,7 @@ const Register = () => {
               placeholder={text.registerFilterOrganizationsBy}
               options={iscoOption}
               onChange={(val) => setIscoFilter(val)}
+              getPopupContainer={(trigger) => trigger.parentNode}
             />
           </Form.Item>
           <Form.Item
@@ -254,10 +259,15 @@ const Register = () => {
             ]}
           >
             <Select
+              showSearch
               className="bg-grey"
               size="large"
               placeholder={text.tbColOrganization}
               options={organisationOption}
+              filterOption={(input, option) =>
+                option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+              getPopupContainer={(trigger) => trigger.parentNode}
             />
           </Form.Item>
           <Form.Item name="agreement">

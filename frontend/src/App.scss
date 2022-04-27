@@ -11,6 +11,11 @@
     min-height: calc(100vh - 10rem);
   }
 
+  .assignment-notification-panel {
+    padding: $padding-container-y $padding-container-x;
+    border-bottom: 0.1rem solid #eaecec;
+  }
+
   .bg-grey {
     background-color: $bg-grey;
   }

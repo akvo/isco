@@ -17,14 +17,13 @@ from db import crud_collaborator
 from models.answer import Answer, AnswerDict
 from models.question import QuestionType
 from db.connection import get_session
-from models.data import DataResponse, DataSubmittedResponse
+from models.data import DataResponse
 from models.data import DataDict, DataOptionDict
 from models.data import Data, SubmissionProgressDict
 from models.organisation_isco import OrganisationIsco
 from models.organisation import Organisation
 from middleware import verify_editor, verify_super_admin
 from util.survey_config import MEMBER_SURVEY, PROJECT_SURVEY
-import util.report as report
 
 security = HTTPBearer()
 data_route = APIRouter()
@@ -170,59 +169,6 @@ def get_saved_data_by_organisation(
     if not data:
         return []
     return [d.to_options for d in data]
-
-
-@data_route.get("/data/submitted",
-                response_model=DataSubmittedResponse,
-                summary="get submitted data by login user organisation",
-                name="data:get_submitted_data_by_organisation",
-                tags=["Data"])
-def get_submitted_data_by_organisation(
-        req: Request,
-        page: int = 1,
-        page_size: int = 10,
-        session: Session = Depends(get_session),
-        credentials: credentials = Depends(security)):
-    user = verify_editor(session=session,
-                         authenticated=req.state.authenticated)
-    # get saved data from logged user organisation
-    data = crud.get_data_by_organisation(session=session,
-                                         organisation=user.organisation,
-                                         submitted=True,
-                                         page=page,
-                                         page_size=page_size)
-    if not data:
-        return []
-    total_data = crud.count_data_by_organisation(
-        session=session,
-        organisation=user.organisation,
-        submitted=True,
-    )
-    total_page = ceil(total_data / page_size) if total_data > 0 else 0
-    if total_page < page:
-        raise HTTPException(status_code=404, detail="Not found")
-    return {
-        'current': page,
-        'data': [d.simplified for d in data],
-        'total': total_data,
-        'total_page': total_page,
-    }
-
-
-@data_route.get("/data/request/{id:path}",
-                summary="request download data by id",
-                name="data:request_download_data",
-                tags=["Data"])
-def request_download_data(req: Request,
-                          id: int,
-                          session: Session = Depends(get_session)):
-    data = crud.get_data_by_id(session=session, id=id)
-    data = data.to_report
-    answers = report.transform_data(answers=data["answer"], session=session)
-    report.render(form=crud_form.get_form_by_id(session=session,
-                                                id=data["form"]),
-                  data=answers)
-    return data
 
 
 @data_route.get("/data/{id:path}",

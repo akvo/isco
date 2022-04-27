@@ -99,17 +99,20 @@ class Email:
         button = type["button"]
         if self.button_url:
             button = button.replace("#button_url#", self.button_url)
-        html = html_template.render(logo=f"{webdomain}/apple-touch-icon.png",
-                                    instance_name="ISCO",
-                                    webdomain=webdomain,
-                                    title=type["title"],
-                                    body=body,
-                                    image=type["image"],
-                                    message=type["message"],
-                                    context=self.context,
-                                    button=button,
-                                    info=type["info"],
-                                    signature=type["signature"])
+        html = html_template.render(
+            logo=f"{webdomain}/apple-touch-icon.png",
+            instance_name="ISCO",
+            webdomain=webdomain,
+            title=type["title"],
+            title_translation=type["title_translation"],
+            body=body,
+            body_translation=type["body_translation"],
+            image=type["image"],
+            message=type["message"],
+            context=self.context,
+            button=button,
+            info=type["info"],
+            signature=type["signature"])
         payload = {
             "FromEmail": "noreply@cocoamonitoring.net",
             "Subject": f"ISCO {type['subject']}",

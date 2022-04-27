@@ -17,12 +17,8 @@ const Auth = ({ children }) => {
   return (
     <div id="auth">
       <Row className="auth-landing"></Row>
-      <Row
-        className="auth-form-container"
-        align="middle"
-        justify="space-between"
-      >
-        <Col span={12}>
+      <Row className="auth-form-container" align="top" justify="space-between">
+        <Col span={12} className="brand-wrapper">
           <Space direction="vertical" size={20}>
             <Title className="title" level={2}>
               {text.welcome2}

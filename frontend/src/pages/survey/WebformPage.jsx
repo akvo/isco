@@ -97,7 +97,7 @@ const WebformPage = ({
           }
           if (status === 200) {
             let commentValues = {};
-
+            // load initial form value from saved data
             if (initial_values && !savedData) {
               setIsLocked(initial_values.locked_by);
               setSavedData(initial_values);
@@ -116,7 +116,18 @@ const WebformPage = ({
               setAnswer(answers);
               setComment(commentValues);
             }
-
+            // load initial value when user change translations
+            if (!isEmpty(answer)) {
+              setInitialAnswers(answer);
+              answer.forEach((a) => {
+                commentValues = {
+                  ...commentValues,
+                  [a.question]: a.comment,
+                };
+              });
+              setComment(commentValues);
+            }
+            // transform form definition
             let transformedQuestionGroup = form.question_group;
             // enable comment field
             transformedQuestionGroup = transformedQuestionGroup.map((qg) => {
@@ -168,7 +179,11 @@ const WebformPage = ({
             transformedQuestionGroup = transformedQuestionGroup.filter(
               (qg) => qg.question.length
             );
-            setFormValue({ ...form, question_group: transformedQuestionGroup });
+            setFormValue({
+              ...form,
+              defaultLanguage: activeLang || "en",
+              question_group: transformedQuestionGroup,
+            });
           }
         })
         .catch((e) => {
@@ -183,14 +198,16 @@ const WebformPage = ({
     userIsco,
     selectedSavedSubmission,
     savedData,
+    activeLang,
+    answer,
   ]);
 
   // set default language
   useEffect(() => {
-    if (!isEmpty(formValue) && formValue?.defaultLanguage !== activeLang) {
-      setFormValue({ ...formValue, defaultLanguage: activeLang || "en" });
+    if (activeLang) {
+      setFormValue({});
     }
-  }, [formValue, activeLang]);
+  }, [activeLang]);
 
   // set comment to answer value
   useEffect(() => {

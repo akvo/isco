@@ -4,11 +4,12 @@ import { PlusSquareFilled, DeleteFilled } from "@ant-design/icons";
 
 const CommentField = ({ onChange, onDelete, defaultValue }) => {
   const [showField, setShowField] = useState(false);
+  const isVisible = showField || defaultValue;
 
   return (
     <Row className="comment-field-wrapper">
       <Col span={24} align="end" className="button-placement">
-        {showField ? (
+        {isVisible ? (
           <Button
             size="small"
             type="link"
@@ -26,7 +27,7 @@ const CommentField = ({ onChange, onDelete, defaultValue }) => {
         )}
       </Col>
       <Col span="24">
-        {showField && (
+        {isVisible && (
           <Input.TextArea
             rows={3}
             onChange={onChange}

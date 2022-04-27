@@ -40,6 +40,7 @@ const AddUser = ({
   const { organisation } = optionValues;
   const isAdd = !selectedUser;
   const isApprove = !isAdd && !selectedUser?.approved;
+  const isEmailVerified = !isAdd && selectedUser?.email_verified;
   const disableFields = selectedUser !== null;
   const requiredFields = isAdd ? true : false;
 
@@ -166,6 +167,7 @@ const AddUser = ({
                 form.submit();
               }}
               loading={sending}
+              disabled={!isEmailVerified}
             >
               Approve
             </Button>
@@ -248,7 +250,11 @@ const AddUser = ({
           </Col>
           <Col span={12}>
             <Form.Item name="phone_number" label="Phone Number">
-              <InputNumber className="bg-grey" disabled={disableFields} />
+              <InputNumber
+                controls={false}
+                className="bg-grey"
+                disabled={disableFields}
+              />
             </Form.Item>
           </Col>
         </Row>

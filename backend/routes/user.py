@@ -145,9 +145,11 @@ def register(req: Request,
              payload: UserBase = Depends(UserBase.as_form),
              invitation: Optional[bool] = False,
              session: Session = Depends(get_session)):
-    if (payload.password):
+    if payload.password:
         payload.password = payload.password.get_secret_value()
         payload.password = get_password_hash(payload.password)
+    if payload.questionnaires:
+        payload.questionnaires = [x for x in payload.questionnaires]
     user = crud_user.add_user(session=session,
                               payload=payload,
                               invitation=invitation)
@@ -164,17 +166,30 @@ def register(req: Request,
         # send email register success with email verification link
         send_verification_email(user, recipients)
         # notify admin
+        # two differents email for secretariat_admin & member_admin
         admins = session.query(User).filter(
-            User.organisation == user['organisation']).filter(
-                or_(
-                    User.role == UserRole.secretariat_admin,
-                    User.role == UserRole.member_admin,
-                )).all()
-        body = f"{user['name']} ({user['email']}) has been registered."
-        email = Email(recipients=[a.recipient for a in admins],
-                      type=MailTypeEnum.register,
-                      body=body)
-        email.send
+            User.organisation == user['organisation'])
+        secretariat_admins = admins.filter(
+            User.role == UserRole.secretariat_admin).all()
+        member_admins = admins.filter(
+            User.role == UserRole.member_admin).all()
+        # send to secretariat admin
+        body_secretariat = f'''{user['name']} ({user['email']})
+                            has been registered. Now you can approve user
+                            in Manage User page.'''
+        email_secretariat = Email(
+            recipients=[a.recipient for a in secretariat_admins],
+            type=MailTypeEnum.register,
+            body=body_secretariat)
+        email_secretariat.send
+        # inform member admin
+        body_member = f'''{user['name']} ({user['email']})
+                            has been registered.'''
+        email_member = Email(
+            recipients=[a.recipient for a in member_admins],
+            type=MailTypeEnum.register,
+            body=body_member)
+        email_member.send
     return user
 
 

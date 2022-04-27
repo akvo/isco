@@ -5,116 +5,162 @@
     {
       "name": "Aggregated reporting",
       "level": 1,
+      "action": "update",
+      "update": "Aggregated reporting / Aggregierte Berichterstattung",
       "childrens": []
     },
     {
       "name": "Bolivia",
       "level": 1,
+      "action": "update",
+      "update": "Bolivia / Bolivien",
       "childrens": []
     },
     {
       "name": "Brazil",
       "level": 1,
+      "action": "update",
+      "update": "Brazil / Brasilien",
       "childrens": []
     },
     {
       "name": "Cameroon",
       "level": 1,
+      "action": "update",
+      "update": "Cameroon / Kamerun",
       "childrens": []
     },
     {
       "name": "Colombia",
       "level": 1,
+      "action": "update",
+      "update": "Colombia / Kolumbien",
       "childrens": []
     },
     {
       "name": "Dominican Republic",
       "level": 1,
+      "action": "update",
+      "update": "Dominican Republic / Dominikanische Republik",
       "childrens": []
     },
     {
       "name": "DRC (Democratic Republic of the Congo)",
       "level": 1,
+      "action": "update",
+      "update": "DRC (Democratic Republic of the Congo) / Demokratische Republik Kongo",
       "childrens": []
     },
     {
       "name": "Ecuador",
       "level": 1,
+      "action": "update",
+      "update": "Ecuador / Ecuador",
       "childrens": []
     },
     {
       "name": "El Salvador",
       "level": 1,
+      "action": "update",
+      "update": "El Salvador / El Salvador",
       "childrens": []
     },
     {
       "name": "Guatemala",
       "level": 1,
+      "action": "update",
+      "update": "Guatemala / Guatemala",
       "childrens": []
     },
     {
       "name": "Haiti",
       "level": 1,
+      "action": "update",
+      "update": "Haiti / Haiti",
       "childrens": []
     },
     {
       "name": "India",
       "level": 1,
+      "action": "update",
+      "update": "India / Indien",
       "childrens": []
     },
     {
       "name": "Indonesia",
       "level": 1,
+      "action": "update",
+      "update": "Indonesia / Indonesien",
       "childrens": []
     },
     {
       "name": "Mexico",
       "level": 1,
+      "action": "update",
+      "update": "Mexico / Mexiko",
       "childrens": []
     },
     {
       "name": "Nicaragua",
       "level": 1,
+      "action": "update",
+      "update": "Nicaragua / Nicaragua",
       "childrens": []
     },
     {
       "name": "Nigeria",
       "level": 1,
+      "action": "update",
+      "update": "Nigeria / Nigeria",
       "childrens": []
     },
     {
       "name": "Papua New Guinea",
       "level": 1,
+      "action": "update",
+      "update": "Papua New Guinea / Papua-Neuguinea",
       "childrens": []
     },
     {
       "name": "Peru",
       "level": 1,
+      "action": "update",
+      "update": "Peru / Peru",
       "childrens": []
     },
     {
       "name": "Philippines",
       "level": 1,
+      "action": "update",
+      "update": "Philippines / Philippinen",
       "childrens": []
     },
     {
       "name": "Togo",
       "level": 1,
+      "action": "update",
+      "update": "Togo / Togo",
       "childrens": []
     },
     {
       "name": "Uganda",
       "level": 1,
+      "action": "update",
+      "update": "Uganda / Uganda",
       "childrens": []
     },
     {
       "name": "Vietnam",
       "level": 1,
+      "action": "update",
+      "update": "Vietnam / Vietnam",
       "childrens": []
     },
     {
       "name": "Other, please specify in the comments field at the end of this repeated group",
       "level": 1,
+      "action": "update",
+      "update": "Other, please specify in the comments field at the end of this repeated group / Andere, bitte spezifizieren Sie:",
       "childrens": []
     }
   ]
