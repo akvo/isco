@@ -4,8 +4,12 @@ from models.download import Download, DownloadStatusType
 
 
 def new_download(session: Session, user: int, form: int, data: int,
-                 file: str) -> None:
-    download = Download(form=form, data=data, request_by=user, file=file)
+                 organisation: int, file: str) -> None:
+    download = Download(form=form,
+                        data=data,
+                        organisation=organisation,
+                        request_by=user,
+                        file=file)
     session.add(download)
     session.commit()
     session.flush()

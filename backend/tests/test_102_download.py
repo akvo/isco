@@ -47,7 +47,7 @@ class TestDownloadRoute():
             headers={"Authorization": f"Bearer {account.token}"})
         assert res.status_code == 201
         res = res.json()
-        assert res == {"id": 1, "data": 1, "form": 1}
+        assert res == {"id": 1, "data": 1, "form": 1, "organisation": 1}
 
         res = await client.get(
             app.url_path_for("download:list"),

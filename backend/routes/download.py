@@ -73,5 +73,6 @@ def request_new_download(req: Request,
                                  user=user.id,
                                  data=data["id"],
                                  form=data["form"]["id"],
+                                 organisation=data["organisation"]["id"],
                                  file=file)
     return download.response

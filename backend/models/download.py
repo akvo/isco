@@ -16,12 +16,14 @@ from pydantic import BaseModel
 from .form import Form
 from .data import Data
 from .user import User
+from .organisation import Organisation
 
 
 class DownloadRequestResponse(TypedDict):
     id: int
     form: int
     data: int
+    organisation: int
 
 
 class DownloadStatusType(enum.Enum):
@@ -33,6 +35,7 @@ class DownloadDict(TypedDict):
     id: int
     form: int
     name: str
+    organisation: int
     request_by: Optional[int] = None
     created: Optional[str] = None
     created_by: str
@@ -73,6 +76,7 @@ class Download(Base):
                   default=str(uuid.uuid4()))
     form = Column(Integer, ForeignKey(Form.id))
     data = Column(Integer, ForeignKey(Data.id))
+    organisation = Column(Integer, ForeignKey(Organisation.id))
     file = Column(String, nullable=False)
     request_by = Column(Integer, ForeignKey(User.id))
     approved_by = Column(Integer, ForeignKey(User.id), nullable=True)
@@ -84,12 +88,14 @@ class Download(Base):
     def __init__(self,
                  form: int,
                  data: int,
+                 organisation: int,
                  request_by: int,
                  file: str,
                  approved_by: Optional[int] = None,
                  expired: Optional[datetime] = None):
         self.form = form
         self.data = data
+        self.organisation = organisation
         self.file = file
         self.request_by = request_by
         self.approved_by = approved_by
@@ -105,6 +111,7 @@ class Download(Base):
             "uuid": self.uuid,
             "form": self.form,
             "data": self.data,
+            "organisation": self.organisation,
             "file": self.file,
             "request_by": self.created_by_user.name,
             "approved_by": self.approved_by_user.name,
@@ -119,4 +126,5 @@ class Download(Base):
             "id": self.id,
             "form": self.form,
             "data": self.data,
+            "organisation": self.organisation,
         }
