@@ -34,6 +34,12 @@ def cascade_seeder(session, data):
         # delete cascade list
         if clist and "action" in d and d["action"] == "delete":
             crud.delete_cascade_list(session=session, id=clist.id)
+        # update cascade list
+        if clist and "action" in d and d['action'] == "update":
+            if "update" in d:
+                clist_payload['name'] = d['update']
+            crud.update_cascade_list(
+                session=session, id=clist.id, payload=clist_payload)
 
         # seed cascade childs
         for c in d["childrens"]:
@@ -57,3 +63,9 @@ def cascade_seeder(session, data):
             # delete cascade list childs
             if child and "action" in c and c["action"] == "delete":
                 crud.delete_cascade_list(session=session, id=child.id)
+            # update cascade list
+            if child and "action" in c and c['action'] == "update":
+                if "update" in c:
+                    child_payload['name'] = c['update']
+                crud.update_cascade_list(
+                    session=session, id=child.id, payload=child_payload)

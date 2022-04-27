@@ -5,254 +5,162 @@
     {
       "name": "Aggregated reporting",
       "level": 1,
-      "translations": [
-        {
-          "language": "de",
-          "name": "Aggregierte Berichterstattung"
-        }
-      ],
+      "action": "update",
+      "update": "Aggregated reporting / Aggregierte Berichterstattung",
       "childrens": []
     },
     {
       "name": "Bolivia",
       "level": 1,
-      "translations": [
-        {
-          "language": "de",
-          "name": "Bolivien"
-        }
-      ],
+      "action": "update",
+      "update": "Bolivia / Bolivien",
       "childrens": []
     },
     {
       "name": "Brazil",
       "level": 1,
-      "translations": [
-        {
-          "language": "de",
-          "name": "Brasilien"
-        }
-      ],
+      "action": "update",
+      "update": "Brazil / Brasilien",
       "childrens": []
     },
     {
       "name": "Cameroon",
       "level": 1,
-      "translations": [
-        {
-          "language": "de",
-          "name": "Kamerun"
-        }
-      ],
+      "action": "update",
+      "update": "Cameroon / Kamerun",
       "childrens": []
     },
     {
       "name": "Colombia",
       "level": 1,
-      "translations": [
-        {
-          "language": "de",
-          "name": "Kolumbien"
-        }
-      ],
+      "action": "update",
+      "update": "Colombia / Kolumbien",
       "childrens": []
     },
     {
       "name": "Dominican Republic",
       "level": 1,
-      "translations": [
-        {
-          "language": "de",
-          "name": "Dominikanische Republik"
-        }
-      ],
+      "action": "update",
+      "update": "Dominican Republic / Dominikanische Republik",
       "childrens": []
     },
     {
       "name": "DRC (Democratic Republic of the Congo)",
       "level": 1,
-      "translations": [
-        {
-          "language": "de",
-          "name": "Demokratische Republik Kongo"
-        }
-      ],
+      "action": "update",
+      "update": "DRC (Democratic Republic of the Congo) / Demokratische Republik Kongo",
       "childrens": []
     },
     {
       "name": "Ecuador",
       "level": 1,
-      "translations": [
-        {
-          "language": "de",
-          "name": "Ecuador"
-        }
-      ],
+      "action": "update",
+      "update": "Ecuador / Ecuador",
       "childrens": []
     },
     {
       "name": "El Salvador",
       "level": 1,
-      "translations": [
-        {
-          "language": "de",
-          "name": "El Salvador"
-        }
-      ],
+      "action": "update",
+      "update": "El Salvador / El Salvador",
       "childrens": []
     },
     {
       "name": "Guatemala",
       "level": 1,
-      "translations": [
-        {
-          "language": "de",
-          "name": "Guatemala"
-        }
-      ],
+      "action": "update",
+      "update": "Guatemala / Guatemala",
       "childrens": []
     },
     {
       "name": "Haiti",
       "level": 1,
-      "translations": [
-        {
-          "language": "de",
-          "name": "Haiti"
-        }
-      ],
+      "action": "update",
+      "update": "Haiti / Haiti",
       "childrens": []
     },
     {
       "name": "India",
       "level": 1,
-      "translations": [
-        {
-          "language": "de",
-          "name": "Indien"
-        }
-      ],
+      "action": "update",
+      "update": "India / Indien",
       "childrens": []
     },
     {
       "name": "Indonesia",
       "level": 1,
-      "translations": [
-        {
-          "language": "de",
-          "name": "Indonesien"
-        }
-      ],
+      "action": "update",
+      "update": "Indonesia / Indonesien",
       "childrens": []
     },
     {
       "name": "Mexico",
       "level": 1,
-      "translations": [
-        {
-          "language": "de",
-          "name": "Mexiko"
-        }
-      ],
+      "action": "update",
+      "update": "Mexico / Mexiko",
       "childrens": []
     },
     {
       "name": "Nicaragua",
       "level": 1,
-      "translations": [
-        {
-          "language": "de",
-          "name": "Nicaragua"
-        }
-      ],
+      "action": "update",
+      "update": "Nicaragua / Nicaragua",
       "childrens": []
     },
     {
       "name": "Nigeria",
       "level": 1,
-      "translations": [
-        {
-          "language": "de",
-          "name": "Nigeria"
-        }
-      ],
+      "action": "update",
+      "update": "Nigeria / Nigeria",
       "childrens": []
     },
     {
       "name": "Papua New Guinea",
       "level": 1,
-      "translations": [
-        {
-          "language": "de",
-          "name": "Papua-Neuguinea"
-        }
-      ],
+      "action": "update",
+      "update": "Papua New Guinea / Papua-Neuguinea",
       "childrens": []
     },
     {
       "name": "Peru",
       "level": 1,
-      "translations": [
-        {
-          "language": "de",
-          "name": "Peru"
-        }
-      ],
+      "action": "update",
+      "update": "Peru / Peru",
       "childrens": []
     },
     {
       "name": "Philippines",
       "level": 1,
-      "translations": [
-        {
-          "language": "de",
-          "name": "Philippinen"
-        }
-      ],
+      "action": "update",
+      "update": "Philippines / Philippinen",
       "childrens": []
     },
     {
       "name": "Togo",
       "level": 1,
-      "translations": [
-        {
-          "language": "de",
-          "name": "Togo"
-        }
-      ],
+      "action": "update",
+      "update": "Togo / Togo",
       "childrens": []
     },
     {
       "name": "Uganda",
       "level": 1,
-      "translations": [
-        {
-          "language": "de",
-          "name": "Uganda"
-        }
-      ],
+      "action": "update",
+      "update": "Uganda / Uganda",
       "childrens": []
     },
     {
       "name": "Vietnam",
       "level": 1,
-      "translations": [
-        {
-          "language": "de",
-          "name": "Vietnam"
-        }
-      ],
+      "action": "update",
+      "update": "Vietnam / Vietnam",
       "childrens": []
     },
     {
       "name": "Other, please specify in the comments field at the end of this repeated group",
       "level": 1,
-      "translations": [
-        {
-          "language": "de",
-          "name": "Andere, bitte spezifizieren Sie:"
-        }
-      ],
+      "action": "update",
+      "update": "Other, please specify in the comments field at the end of this repeated group / Andere, bitte spezifizieren Sie:",
       "childrens": []
     }
   ]

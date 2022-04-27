@@ -5,176 +5,108 @@
     {
       "name": "Government",
       "level": 1,
-      "translations": [
-        {
-          "language": "de",
-          "name": "Regierung"
-        }
-      ],
+      "action": "update",
+      "update": "Government / Regierung",
       "childrens": [
         {
           "name": "Awareness raising",
           "level": 2,
-          "translations": [
-            {
-              "language": "de",
-              "name": "Bewusstseinsbildung"
-            }
-          ]
+          "action": "update",
+          "update": "Awareness raising / Bewusstseinsbildung"
         },
         {
           "name": "Capacity building",
           "level": 2,
-          "translations": [
-            {
-              "language": "de",
-              "name": "Kapazitätsaufbau"
-            }
-          ]
+          "action": "update",
+          "update": "Capacity building / Kapazitätsaufbau"
         },
         {
           "name": "Financial support",
           "level": 2,
-          "translations": [
-            {
-              "language": "de",
-              "name": "Finanzielle Unterstützung"
-            }
-          ]
+          "action": "update",
+          "update": "Financial support / Finanzielle Unterstützung"
         },
         {
           "name": "Technical support",
           "level": 2,
-          "translations": [
-            {
-              "language": "de",
-              "name": "Technische Unterstützung"
-            }
-          ]
+          "action": "update",
+          "update": "Technical support / Technische Unterstützung"
         }
       ]
     },
     {
       "name": "Farmer organization(s)",
       "level": 1,
-      "translations": [
-        {
-          "language": "de",
-          "name": "Farmer organization(s)"
-        }
-      ],
+      "action": "update",
+      "update": "Farmer organization(s) / Erzeugerorganisation(en)",
       "childrens": [
         {
           "name": "Awareness raising",
           "level": 2,
-          "translations": [
-            {
-              "language": "de",
-              "name": "Bewusstseinsbildung"
-            }
-          ]
+          "action": "update",
+          "update": "Awareness raising / Bewusstseinsbildung"
         },
         {
           "name": "Capacity building",
           "level": 2,
-          "translations": [
-            {
-              "language": "de",
-              "name": "Kapazitätsaufbau"
-            }
-          ]
+          "action": "update",
+          "update": "Capacity building / Kapazitätsaufbau"
         },
         {
           "name": "Financial support",
           "level": 2,
-          "translations": [
-            {
-              "language": "de",
-              "name": "Finanzielle Unterstützung"
-            }
-          ]
+          "action": "update",
+          "update": "Financial support / Finanzielle Unterstützung"
         },
         {
           "name": "Technical support",
           "level": 2,
-          "translations": [
-            {
-              "language": "de",
-              "name": "Technische Unterstützung"
-            }
-          ]
+          "action": "update",
+          "update": "Technical support / Technische Unterstützung"
         },
         {
           "name": "Professionalization support",
           "level": 2,
-          "translations": [
-            {
-              "language": "de",
-              "name": "Unterstützung in der Professionalisierung"
-            }
-          ]
+          "action": "update",
+          "update": "Professionalization support / Unterstützung in der Professionalisierung"
         }
       ]
     },
     {
       "name": "Civil society",
       "level": 1,
-      "translations": [
-        {
-          "language": "de",
-          "name": "Civil society"
-        }
-      ],
+      "action": "update",
+      "update": "Civil society / Zivilgesellschaft",
       "childrens": [
         {
           "name": "Awareness raising",
           "level": 2,
-          "translations": [
-            {
-              "language": "de",
-              "name": "Bewusstseinsbildung"
-            }
-          ]
+          "action": "update",
+          "update": "Awareness raising / Bewusstseinsbildung"
         },
         {
           "name": "Capacity building",
           "level": 2,
-          "translations": [
-            {
-              "language": "de",
-              "name": "Kapazitätsaufbau"
-            }
-          ]
+          "action": "update",
+          "update": "Capacity building / Kapazitätsaufbau"
         },
         {
           "name": "Financial support",
           "level": 2,
-          "translations": [
-            {
-              "language": "de",
-              "name": "Finanzielle Unterstützung"
-            }
-          ]
+          "action": "update",
+          "update": "Financial support / Finanzielle Unterstützung"
         },
         {
           "name": "Technical support",
           "level": 2,
-          "translations": [
-            {
-              "language": "de",
-              "name": "Technische Unterstützung"
-            }
-          ]
+          "action": "update",
+          "update": "Technical support / Technische Unterstützung"
         },
         {
           "name": "Professionalization support",
           "level": 2,
-          "translations": [
-            {
-              "language": "de",
-              "name": "Unterstützung in der Professionalisierung"
-            }
-          ]
+          "action": "update",
+          "update": "Professionalization support / Unterstützung in der Professionalisierung"
         }
       ]
     }
