@@ -179,8 +179,9 @@ const Register = () => {
           </Form.Item>
           <Form.Item name="phone_number">
             <InputNumber
+              controls={false}
               className="bg-grey"
-              placeholder="Phone Number"
+              placeholder={text.formPhoneNumber}
               size="large"
             />
           </Form.Item>

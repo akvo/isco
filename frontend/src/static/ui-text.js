@@ -63,6 +63,7 @@ const uiText = {
     formFullName: "Full Name",
     formResetPwd: "Reset Password",
     formCollaborators: "Contributing organization(s)",
+    formPhoneNumber: "Phone Number (Optional)",
     // Button
     btnLogin: "Login",
     btnBackToLogin: "Back to Login Page",
@@ -274,6 +275,7 @@ const uiText = {
     formFullName: "Name",
     formResetPwd: "Passwort zurücksetzen",
     formCollaborators: "Beitragende Organisation(en)",
+    formPhoneNumber: "Phone Number (Optional)",
     // Button
     btnLogin: "Einloggen",
     btnBackToLogin: "Terug naar Inlogpagina",
