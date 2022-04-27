@@ -10,7 +10,7 @@ def new_download(session: Session, user: int, form: int, data: int,
     session.commit()
     session.flush()
     session.refresh(download)
-    return
+    return download
 
 
 def get_status(session: Session, user: int, data: int) -> DownloadStatusType:

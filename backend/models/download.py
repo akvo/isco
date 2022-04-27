@@ -2,6 +2,7 @@
 # Keep the code clean and CLEAR
 
 import enum
+import uuid
 from datetime import datetime
 from typing import Optional, List
 from typing_extensions import TypedDict
@@ -15,6 +16,12 @@ from pydantic import BaseModel
 from .form import Form
 from .data import Data
 from .user import User
+
+
+class DownloadRequestResponse(TypedDict):
+    id: int
+    form: int
+    data: int
 
 
 class DownloadStatusType(enum.Enum):
@@ -61,11 +68,9 @@ class Download(Base):
                 index=True,
                 nullable=True,
                 autoincrement=True)
-    uuid = Column(
-        pg.UUID,
-        nullable=True,
-        server_default="(md5(random()::text || clock_timestamp()::text)::uuid)"
-    ),
+    uuid = Column(pg.UUID(as_uuid=True),
+                  nullable=True,
+                  default=str(uuid.uuid4()))
     form = Column(Integer, ForeignKey(Form.id))
     data = Column(Integer, ForeignKey(Data.id))
     file = Column(String, nullable=False)
@@ -106,4 +111,12 @@ class Download(Base):
             "created": self.created.strftime("%B %d, %Y"),
             "expired": self.expired.strftime("%B %d, %Y"),
             "answer": [a.formatted for a in self.answer],
+        }
+
+    @property
+    def response(self) -> DownloadRequestResponse:
+        return {
+            "id": self.id,
+            "form": self.form,
+            "data": self.data,
         }

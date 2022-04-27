@@ -7,7 +7,7 @@ from db.connection import get_session
 import db.crud_download as crud
 import db.crud_data as crud_data
 import util.report as report
-from models.download import DataDownloadResponse
+from models.download import DataDownloadResponse, DownloadRequestResponse
 from middleware import verify_user
 
 security = HTTPBearer()
@@ -19,7 +19,7 @@ download_route = APIRouter()
                     summary="get data list by user organisation",
                     name="download:list",
                     tags=["Download"])
-def get_submitted_data_by_organisation(
+def get_available_downloads(
         req: Request,
         page: int = 1,
         page_size: int = 10,
@@ -44,9 +44,7 @@ def get_submitted_data_by_organisation(
         raise HTTPException(status_code=404, detail="Not found")
     data = [d.simplified for d in data]
     for d in data:
-        status = crud.get_status(session=session,
-                                 user=user.id,
-                                 data=d["id"])
+        status = crud.get_status(session=session, user=user.id, data=d["id"])
         d.update({"status": status})
     return {
         'current': page,
@@ -58,7 +56,9 @@ def get_submitted_data_by_organisation(
 
 @download_route.post("/download/new/{data_id:path}",
                      summary="new request download by data id",
-                     name="download:request_download_data",
+                     response_model=DownloadRequestResponse,
+                     status_code=201,
+                     name="download:request",
                      tags=["Download"])
 def request_new_download(req: Request,
                          data_id: int,
@@ -69,9 +69,9 @@ def request_new_download(req: Request,
     data = data.to_report
     detail = report.transform_data(answers=data["answer"], session=session)
     file = report.generate(data=data, detail=detail)
-    crud.new_download(session=session,
-                      user=user.id,
-                      data=data["id"],
-                      form=data["form"]["id"],
-                      file=file)
-    return file
+    download = crud.new_download(session=session,
+                                 user=user.id,
+                                 data=data["id"],
+                                 form=data["form"]["id"],
+                                 file=file)
+    return download.response
