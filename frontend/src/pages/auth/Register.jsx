@@ -246,6 +246,7 @@ const Register = () => {
               placeholder={text.registerFilterOrganizationsBy}
               options={iscoOption}
               onChange={(val) => setIscoFilter(val)}
+              getPopupContainer={(trigger) => trigger.parentNode}
             />
           </Form.Item>
           <Form.Item
@@ -258,10 +259,15 @@ const Register = () => {
             ]}
           >
             <Select
+              showSearch
               className="bg-grey"
               size="large"
               placeholder={text.tbColOrganization}
               options={organisationOption}
+              filterOption={(input, option) =>
+                option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+              getPopupContainer={(trigger) => trigger.parentNode}
             />
           </Form.Item>
           <Form.Item name="agreement">
