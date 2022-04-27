@@ -189,7 +189,7 @@ const uiText = {
     // info
     infoDataSecurityDoc: (
       <>
-        For GISCO members: &quot;If you have not yet signed the bilateral data
+        For GISCO members: If you have not yet signed the bilateral data
         confidentiality and data security agreement for the monitoring, please
         download{" "}
         <a
@@ -200,7 +200,7 @@ const uiText = {
           THIS FILE
         </a>{" "}
         and send two printed versions to us in written with your signature. You
-        will receive a copy signed by us in return.&quot;
+        will receive a copy signed by us in return.
       </>
     ),
     // page title
@@ -221,7 +221,7 @@ const uiText = {
         für das Berichtsjahr 2021!
       </Fragment>
     ),
-    welcome2: "2022 Monitoring Round",
+    welcome2: "Monitoringrunde 2022",
     welcome3: (
       <Fragment>
         Willkommen
@@ -266,7 +266,7 @@ const uiText = {
     formCaptcha: "Bitte tragen die den Wert/die Werte ein",
     formPickPreviousSavedForms: "Auswahl eines zuvor gespeicherten Fragebogens",
     formStartFillingNewForm: "Beginn eines neuen Fragebogens",
-    formLogin: "User Einloggen",
+    formLogin: "Einloggen",
     formRememberLogin: "Login-Daten erinnern",
     formForgotPwd: "Passwort vergessen",
     formHaveAccount: "Sind Sie schon registriert?",
@@ -407,7 +407,7 @@ const uiText = {
     // info
     infoDataSecurityDoc: (
       <>
-        Für Mitglieder des Forum Nachhaltiger Kakao: „Falls Sie die bilaterale
+        Für Mitglieder des Forum Nachhaltiger Kakao: Falls Sie die bilaterale
         Vereinbarung zum Monitoring bezüglich Datensicherheit und
         -Vertraulichkeit noch nicht unterzeichnet haben, laden Sie bitte{" "}
         <a
@@ -419,7 +419,7 @@ const uiText = {
         </a>{" "}
         herunter und senden Sie uns zwei gedruckte Versionen schriftlich mit
         Ihrer Unterschrift zu. Sie erhalten ein von uns unterschriebenes
-        Exemplar zurück.“,
+        Exemplar zurück.,
       </>
     ),
     // page title
