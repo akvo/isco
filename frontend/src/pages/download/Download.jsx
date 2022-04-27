@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./style.scss";
-import { Row, Col, Typography, Table, Button, Space } from "antd";
+import { Row, Col, Typography, Table, Button, Space, notification } from "antd";
 import { api } from "../../lib";
 
 const { Title } = Typography;
@@ -26,6 +26,10 @@ const Download = () => {
           status: id === x.id ? "pending" : x.status,
         }));
         setData({ ...data, data: newData });
+        notification.success({
+          message: "Success Request",
+          description: "Request Download Success",
+        });
       })
       .catch((e) => {
         const { status, statusText } = e.response;
@@ -38,14 +42,14 @@ const Download = () => {
 
   const columns = [
     {
-      title: "Form",
+      title: "Form Name",
       dataIndex: "form",
       key: "form",
       className: "bg-grey",
       width: "10%",
     },
     {
-      title: "Type",
+      title: "Form Type",
       dataIndex: "form_type",
       key: "form_type",
       className: "bg-grey",
@@ -60,21 +64,7 @@ const Download = () => {
       width: "10%",
     },
     {
-      title: "Initiated by",
-      dataIndex: "created_by",
-      key: "created_by",
-      className: "bg-grey",
-      width: "10%",
-    },
-    {
-      title: "Date Created",
-      dataIndex: "created",
-      key: "created",
-      className: "bg-grey",
-      width: "12%",
-    },
-    {
-      title: "Date Submitted",
+      title: "Submitted Date",
       dataIndex: "submitted",
       key: "submitted",
       className: "bg-grey",
