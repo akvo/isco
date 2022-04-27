@@ -204,6 +204,10 @@ const uiText = {
     ),
     // page title
     pageSubmissionProgress: "Submission Progress",
+    // popup download request
+    popupDownloadRequestMessage: "Download Request",
+    popupDownloadRequestDescription:
+      "Thank you for the data download request. The secretariat admins will be notified about your request. You will receive an email from us once your data is ready for download",
   },
 
   de: {
@@ -418,6 +422,10 @@ const uiText = {
     ),
     // page title
     pageSubmissionProgress: "Submission Progress",
+    // popup download request
+    popupDownloadRequestMessage: "Anfrage herunterladen",
+    popupDownloadRequestDescription:
+      "Vielen Dank für die Anfrage zum Download der Daten. Die Sekretariatsverwaltung wird über Ihre Anfrage benachrichtigt. Sie erhalten von uns eine E-Mail, sobald Ihre Daten zum Download bereitstehen",
   },
 };
 

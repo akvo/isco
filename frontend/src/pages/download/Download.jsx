@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
 import "./style.scss";
 import { Row, Col, Typography, Table, Button, Space, notification } from "antd";
-import { api } from "../../lib";
+import { api, store } from "../../lib";
+import { uiText } from "../../static";
 
 const { Title } = Typography;
 
 const Download = () => {
+  const language = store.useState((s) => s.language);
+  const { active: activeLang } = language;
+
   const [data, setData] = useState({
     current: 1,
     data: [],
@@ -26,9 +30,10 @@ const Download = () => {
           status: id === x.id ? "pending" : x.status,
         }));
         setData({ ...data, data: newData });
-        notification.success({
-          message: "Success Request",
-          description: "Request Download Success",
+        notification.info({
+          message: uiText[activeLang].popupDownloadRequestMessage,
+          description: uiText[activeLang].popupDownloadRequestDescription,
+          duration: 8,
         });
       })
       .catch((e) => {
