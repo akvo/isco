@@ -58,6 +58,7 @@ class DataOptionDict(TypedDict):
     name: str
     organisation: str
     locked_by: Optional[int] = None
+    locked_by_user: Optional[str] = None
     created_by: str
     created: Optional[str] = None
     form_type: Optional[str] = None
@@ -224,6 +225,8 @@ class Data(Base):
             "form": self.form,
             "form_type": form_type,
             "locked_by": self.locked_by,
+            "locked_by_user": self.locked_by_user.name
+            if self.locked_by_user else None,
             "organisation": organisation,
             "created_by": created_by,
             "created": created,

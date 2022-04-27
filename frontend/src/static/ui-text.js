@@ -11,7 +11,7 @@ const uiText = {
         for 2021 data
       </Fragment>
     ),
-    welcome2: "Monitoring for 2021 data",
+    welcome2: "2022 Monitoring Round",
     welcome3: (
       <Fragment>
         Welcome
@@ -63,6 +63,7 @@ const uiText = {
     formFullName: "Full Name",
     formResetPwd: "Reset Password",
     formCollaborators: "Contributing organization(s)",
+    formPhoneNumber: "Phone Number (Optional)",
     // Button
     btnLogin: "Login",
     btnBackToLogin: "Back to Login Page",
@@ -220,7 +221,7 @@ const uiText = {
         für das Berichtsjahr 2021!
       </Fragment>
     ),
-    welcome2: "Monitoring for 2021 data",
+    welcome2: "2022 Monitoring Round",
     welcome3: (
       <Fragment>
         Willkommen
@@ -274,6 +275,7 @@ const uiText = {
     formFullName: "Name",
     formResetPwd: "Passwort zurücksetzen",
     formCollaborators: "Beitragende Organisation(en)",
+    formPhoneNumber: "Phone Number (Optional)",
     // Button
     btnLogin: "Einloggen",
     btnBackToLogin: "Terug naar Inlogpagina",

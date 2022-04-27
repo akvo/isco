@@ -5,74 +5,176 @@
     {
       "name": "Government",
       "level": 1,
+      "translations": [
+        {
+          "language": "de",
+          "name": "Regierung"
+        }
+      ],
       "childrens": [
         {
           "name": "Awareness raising",
-          "level": 2
+          "level": 2,
+          "translations": [
+            {
+              "language": "de",
+              "name": "Bewusstseinsbildung"
+            }
+          ]
         },
         {
           "name": "Capacity building",
-          "level": 2
+          "level": 2,
+          "translations": [
+            {
+              "language": "de",
+              "name": "Kapazitätsaufbau"
+            }
+          ]
         },
         {
           "name": "Financial support",
-          "level": 2
+          "level": 2,
+          "translations": [
+            {
+              "language": "de",
+              "name": "Finanzielle Unterstützung"
+            }
+          ]
         },
         {
           "name": "Technical support",
-          "level": 2
+          "level": 2,
+          "translations": [
+            {
+              "language": "de",
+              "name": "Technische Unterstützung"
+            }
+          ]
         }
       ]
     },
     {
       "name": "Farmer organization(s)",
       "level": 1,
+      "translations": [
+        {
+          "language": "de",
+          "name": "Farmer organization(s)"
+        }
+      ],
       "childrens": [
         {
           "name": "Awareness raising",
-          "level": 2
+          "level": 2,
+          "translations": [
+            {
+              "language": "de",
+              "name": "Bewusstseinsbildung"
+            }
+          ]
         },
         {
           "name": "Capacity building",
-          "level": 2
+          "level": 2,
+          "translations": [
+            {
+              "language": "de",
+              "name": "Kapazitätsaufbau"
+            }
+          ]
         },
         {
           "name": "Financial support",
-          "level": 2
+          "level": 2,
+          "translations": [
+            {
+              "language": "de",
+              "name": "Finanzielle Unterstützung"
+            }
+          ]
         },
         {
           "name": "Technical support",
-          "level": 2
+          "level": 2,
+          "translations": [
+            {
+              "language": "de",
+              "name": "Technische Unterstützung"
+            }
+          ]
         },
         {
           "name": "Professionalization support",
-          "level": 2
+          "level": 2,
+          "translations": [
+            {
+              "language": "de",
+              "name": "Unterstützung in der Professionalisierung"
+            }
+          ]
         }
       ]
     },
     {
       "name": "Civil society",
       "level": 1,
+      "translations": [
+        {
+          "language": "de",
+          "name": "Civil society"
+        }
+      ],
       "childrens": [
         {
           "name": "Awareness raising",
-          "level": 2
+          "level": 2,
+          "translations": [
+            {
+              "language": "de",
+              "name": "Bewusstseinsbildung"
+            }
+          ]
         },
         {
           "name": "Capacity building",
-          "level": 2
+          "level": 2,
+          "translations": [
+            {
+              "language": "de",
+              "name": "Kapazitätsaufbau"
+            }
+          ]
         },
         {
           "name": "Financial support",
-          "level": 2
+          "level": 2,
+          "translations": [
+            {
+              "language": "de",
+              "name": "Finanzielle Unterstützung"
+            }
+          ]
         },
         {
           "name": "Technical support",
-          "level": 2
+          "level": 2,
+          "translations": [
+            {
+              "language": "de",
+              "name": "Technische Unterstützung"
+            }
+          ]
         },
         {
           "name": "Professionalization support",
-          "level": 2
+          "level": 2,
+          "translations": [
+            {
+              "language": "de",
+              "name": "Unterstützung in der Professionalisierung"
+            }
+          ]
         }
       ]
     }

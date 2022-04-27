@@ -248,7 +248,11 @@ const AddUser = ({
           </Col>
           <Col span={12}>
             <Form.Item name="phone_number" label="Phone Number">
-              <InputNumber className="bg-grey" disabled={disableFields} />
+              <InputNumber
+                controls={false}
+                className="bg-grey"
+                disabled={disableFields}
+              />
             </Form.Item>
           </Col>
         </Row>

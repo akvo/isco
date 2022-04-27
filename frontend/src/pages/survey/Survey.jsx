@@ -242,7 +242,7 @@ const Survey = () => {
                     options={savedSubmissions.map((x) => ({
                       label: `${x.name}${
                         x.locked_by && x.locked_by !== user.id
-                          ? " (locked)"
+                          ? ` (locked by ${x.locked_by_user})`
                           : ""
                       }`,
                       value: x.id,
