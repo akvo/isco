@@ -5,116 +5,254 @@
     {
       "name": "Aggregated reporting",
       "level": 1,
+      "translations": [
+        {
+          "language": "de",
+          "name": "Aggregierte Berichterstattung"
+        }
+      ],
       "childrens": []
     },
     {
       "name": "Bolivia",
       "level": 1,
+      "translations": [
+        {
+          "language": "de",
+          "name": "Bolivien"
+        }
+      ],
       "childrens": []
     },
     {
       "name": "Brazil",
       "level": 1,
+      "translations": [
+        {
+          "language": "de",
+          "name": "Brasilien"
+        }
+      ],
       "childrens": []
     },
     {
       "name": "Cameroon",
       "level": 1,
+      "translations": [
+        {
+          "language": "de",
+          "name": "Kamerun"
+        }
+      ],
       "childrens": []
     },
     {
       "name": "Colombia",
       "level": 1,
+      "translations": [
+        {
+          "language": "de",
+          "name": "Kolumbien"
+        }
+      ],
       "childrens": []
     },
     {
       "name": "Dominican Republic",
       "level": 1,
+      "translations": [
+        {
+          "language": "de",
+          "name": "Dominikanische Republik"
+        }
+      ],
       "childrens": []
     },
     {
       "name": "DRC (Democratic Republic of the Congo)",
       "level": 1,
+      "translations": [
+        {
+          "language": "de",
+          "name": "Demokratische Republik Kongo"
+        }
+      ],
       "childrens": []
     },
     {
       "name": "Ecuador",
       "level": 1,
+      "translations": [
+        {
+          "language": "de",
+          "name": "Ecuador"
+        }
+      ],
       "childrens": []
     },
     {
       "name": "El Salvador",
       "level": 1,
+      "translations": [
+        {
+          "language": "de",
+          "name": "El Salvador"
+        }
+      ],
       "childrens": []
     },
     {
       "name": "Guatemala",
       "level": 1,
+      "translations": [
+        {
+          "language": "de",
+          "name": "Guatemala"
+        }
+      ],
       "childrens": []
     },
     {
       "name": "Haiti",
       "level": 1,
+      "translations": [
+        {
+          "language": "de",
+          "name": "Haiti"
+        }
+      ],
       "childrens": []
     },
     {
       "name": "India",
       "level": 1,
+      "translations": [
+        {
+          "language": "de",
+          "name": "Indien"
+        }
+      ],
       "childrens": []
     },
     {
       "name": "Indonesia",
       "level": 1,
+      "translations": [
+        {
+          "language": "de",
+          "name": "Indonesien"
+        }
+      ],
       "childrens": []
     },
     {
       "name": "Mexico",
       "level": 1,
+      "translations": [
+        {
+          "language": "de",
+          "name": "Mexiko"
+        }
+      ],
       "childrens": []
     },
     {
       "name": "Nicaragua",
       "level": 1,
+      "translations": [
+        {
+          "language": "de",
+          "name": "Nicaragua"
+        }
+      ],
       "childrens": []
     },
     {
       "name": "Nigeria",
       "level": 1,
+      "translations": [
+        {
+          "language": "de",
+          "name": "Nigeria"
+        }
+      ],
       "childrens": []
     },
     {
       "name": "Papua New Guinea",
       "level": 1,
+      "translations": [
+        {
+          "language": "de",
+          "name": "Papua-Neuguinea"
+        }
+      ],
       "childrens": []
     },
     {
       "name": "Peru",
       "level": 1,
+      "translations": [
+        {
+          "language": "de",
+          "name": "Peru"
+        }
+      ],
       "childrens": []
     },
     {
       "name": "Philippines",
       "level": 1,
+      "translations": [
+        {
+          "language": "de",
+          "name": "Philippinen"
+        }
+      ],
       "childrens": []
     },
     {
       "name": "Togo",
       "level": 1,
+      "translations": [
+        {
+          "language": "de",
+          "name": "Togo"
+        }
+      ],
       "childrens": []
     },
     {
       "name": "Uganda",
       "level": 1,
+      "translations": [
+        {
+          "language": "de",
+          "name": "Uganda"
+        }
+      ],
       "childrens": []
     },
     {
       "name": "Vietnam",
       "level": 1,
+      "translations": [
+        {
+          "language": "de",
+          "name": "Vietnam"
+        }
+      ],
       "childrens": []
     },
     {
       "name": "Other, please specify in the comments field at the end of this repeated group",
       "level": 1,
+      "translations": [
+        {
+          "language": "de",
+          "name": "Andere, bitte spezifizieren Sie:"
+        }
+      ],
       "childrens": []
     }
   ]
