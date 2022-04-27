@@ -1,5 +1,5 @@
 import "./App.scss";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { Layout, SaveFormDataModal, DataSecurityModal } from "./components";
 import {
@@ -21,9 +21,11 @@ import {
   Setting,
   SubmissionProgress,
 } from "./pages";
+import { Alert } from "antd";
 import { useCookies } from "react-cookie";
 import { store, api } from "./lib";
 import { useNotification } from "./util";
+import { uiText } from "./static";
 
 const Secure = ({ element: Element, adminPage = false }) => {
   const user = store.useState((s) => s?.user);
@@ -48,13 +50,18 @@ const Secure = ({ element: Element, adminPage = false }) => {
 };
 
 const App = () => {
-  const { notificationModal, language } = store.useState((s) => s);
+  const { notificationModal, language, user } = store.useState((s) => s);
   const { saveFormData, dataSecurity } = notificationModal;
   const { active: activeLang } = language;
 
   const [cookies, removeCookie] = useCookies(["AUTH_TOKEN"]);
   const { notify } = useNotification();
   const navigate = useNavigate();
+
+  const showAssignmentPanel = !user?.questionnaires.length;
+  const text = useMemo(() => {
+    return uiText[activeLang];
+  }, [activeLang]);
 
   useEffect(() => {
     if (
@@ -137,6 +144,15 @@ const App = () => {
     <Layout>
       <Layout.Header />
       <Layout.Body>
+        {showAssignmentPanel && (
+          <Alert
+            type="info"
+            className="assignment-notification-panel"
+            message={text.textAssignmentPanel}
+            banner
+            closable
+          />
+        )}
         <Routes>
           <Route exact path="/login" element={<Login />} />
           <Route exact path="/register" element={<Register />} />
