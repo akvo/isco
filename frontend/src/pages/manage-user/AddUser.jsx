@@ -40,6 +40,7 @@ const AddUser = ({
   const { organisation } = optionValues;
   const isAdd = !selectedUser;
   const isApprove = !isAdd && !selectedUser?.approved;
+  const isEmailVerified = !isAdd && selectedUser?.email_verified;
   const disableFields = selectedUser !== null;
   const requiredFields = isAdd ? true : false;
 
@@ -166,6 +167,7 @@ const AddUser = ({
                 form.submit();
               }}
               loading={sending}
+              disabled={!isEmailVerified}
             >
               Approve
             </Button>
