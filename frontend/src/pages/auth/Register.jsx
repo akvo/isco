@@ -17,7 +17,7 @@ import Auth from "./Auth";
 import { store, api } from "../../lib";
 import { uiText, webformContent } from "../../static";
 import { passwordCheckBoxOptions } from "../../lib/util";
-import intersection from "lodash/intersection";
+import { intersection, sortBy } from "lodash";
 import { useNotification } from "../../util";
 
 const Register = () => {
@@ -40,7 +40,7 @@ const Register = () => {
   }, [isco_type]);
 
   const organisationOption = useMemo(() => {
-    return organisation
+    const orgs = organisation
       ?.filter((o) => {
         // show All
         if (!iscoFilter || iscoFilter === 1) {
@@ -48,10 +48,13 @@ const Register = () => {
         }
         return intersection(o.isco_type, [iscoFilter]).length;
       })
-      ?.map((o) => ({
-        label: o?.name,
-        value: o?.id,
-      }));
+      ?.map((o) => {
+        return {
+          label: o?.name,
+          value: o?.id,
+        };
+      });
+    return sortBy(orgs, ["label"]);
   }, [organisation, iscoFilter]);
 
   const handleOnClickDataSecurity = () => {
