@@ -50,7 +50,9 @@ const Secure = ({ element: Element, adminPage = false }) => {
 };
 
 const App = () => {
-  const { notificationModal, language, user } = store.useState((s) => s);
+  const { notificationModal, language, user, isLoggedIn } = store.useState(
+    (s) => s
+  );
   const { saveFormData, dataSecurity } = notificationModal;
   const { active: activeLang } = language;
 
@@ -58,7 +60,7 @@ const App = () => {
   const { notify } = useNotification();
   const navigate = useNavigate();
 
-  const showAssignmentPanel = !user?.questionnaires.length;
+  const showAssignmentPanel = isLoggedIn && !user?.questionnaires.length;
   const text = useMemo(() => {
     return uiText[activeLang];
   }, [activeLang]);
