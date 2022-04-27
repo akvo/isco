@@ -15,8 +15,11 @@ def create_bucket_object(return_tuple: bool = False):
     return bucket
 
 
-def upload(file: str, folder: str,
-           filename: str = None, public: bool = False):
+def upload(file: str,
+           folder: str,
+           filename: str = None,
+           public: bool = False,
+           remove: bool = True):
     if not filename:
         filename = file.split("/")[-1]
     # testing environment
@@ -31,7 +34,8 @@ def upload(file: str, folder: str,
     destination_blob_name = f"{BUCKET_FOLDER}/{folder}/{filename}"
     blob = bucket.blob(destination_blob_name)
     blob.upload_from_filename(file)
-    os.remove(file)
+    if remove:
+        os.remove(file)
     if public:
         blob.make_public()
         return blob.public_url

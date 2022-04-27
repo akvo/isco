@@ -19,7 +19,7 @@ const Download = () => {
   const handleRequestButton = (id) => {
     setRequestLoading(id);
     api
-      .get(`/download/new/${id}`)
+      .post(`/download/new/${id}`)
       .catch((e) => {
         const { status, statusText } = e.response;
         console.error(status, statusText);

@@ -13,6 +13,13 @@ from datetime import datetime
 from models.question_group import QuestionGroupBase
 
 
+class FormInfo(TypedDict):
+    id: int
+    name: str
+    description: Optional[str] = None
+    version: Optional[float] = None
+
+
 class FormPayload(TypedDict):
     name: str
     description: Optional[str] = None
@@ -133,6 +140,14 @@ class Form(Base):
             "label": self.name,
             "value": self.id,
             "disabled": False,
+        }
+
+    @property
+    def info(self) -> FormInfo:
+        return {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
         }
 
     @property

@@ -3,7 +3,6 @@ from fastapi import Depends, Request, APIRouter, HTTPException
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
 from sqlalchemy.orm import Session
-from db import crud_form
 from db.connection import get_session
 import db.crud_download as crud
 import db.crud_data as crud_data
@@ -51,23 +50,22 @@ def get_submitted_data_by_organisation(
     }
 
 
-@download_route.get("/download/new/{data_id:path}",
-                    summary="new request download by data id",
-                    name="download:request_download_data",
-                    tags=["Download"])
-def request_download_data(req: Request,
-                          data_id: int,
-                          session: Session = Depends(get_session),
-                          credentials: credentials = Depends(security)):
+@download_route.post("/download/new/{data_id:path}",
+                     summary="new request download by data id",
+                     name="download:request_download_data",
+                     tags=["Download"])
+def request_new_download(req: Request,
+                         data_id: int,
+                         session: Session = Depends(get_session),
+                         credentials: credentials = Depends(security)):
     user = verify_user(session=session, authenticated=req.state.authenticated)
     data = crud_data.get_data_by_id(session=session, id=data_id)
     data = data.to_report
-    answers = report.transform_data(answers=data["answer"], session=session)
-    form = crud_form.get_form_by_id(session=session, id=data["form"])
-    file = report.generate(data=answers, form=form)
+    detail = report.transform_data(answers=data["answer"], session=session)
+    file = report.generate(data=data, detail=detail)
     crud.new_download(session=session,
                       user=user.id,
-                      form=data["form"],
-                      data=data_id,
+                      data=data["id"],
+                      form=data["form"]["id"],
                       file=file)
     return file
