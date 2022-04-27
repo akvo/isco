@@ -13,10 +13,20 @@ const Download = () => {
     total_page: 0,
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [requestLoading, setRequestLoading] = useState(null);
   const pageSize = 10;
 
-  const handleRequestButton = (record) => {
-    console.info(record);
+  const handleRequestButton = (id) => {
+    setRequestLoading(id);
+    api
+      .get(`/download/new/${id}`)
+      .catch((e) => {
+        const { status, statusText } = e.response;
+        console.error(status, statusText);
+      })
+      .finally(() => {
+        setRequestLoading(null);
+      });
   };
 
   const columns = [
@@ -77,7 +87,8 @@ const Download = () => {
               className="action-btn"
               shape="circle"
               type="text"
-              onClick={() => handleRequestButton(record)}
+              onClick={() => handleRequestButton(record.id)}
+              loading={record.id == requestLoading}
             >
               Request
             </Button>
@@ -90,7 +101,7 @@ const Download = () => {
   useEffect(() => {
     setIsLoading(true);
     api
-      .get(`/data/submitted?page=1`)
+      .get(`/download/list?page=1`)
       .then((res) => {
         setData(res.data);
       })
@@ -106,7 +117,7 @@ const Download = () => {
   const changePage = (page) => {
     setIsLoading(true);
     api
-      .get(`/data/submitted?page=${page}&page_size=${pageSize}`)
+      .get(`/download/list?page=${page}&page_size=${pageSize}`)
       .then((res) => {
         setData(res.data);
       })

@@ -5,7 +5,7 @@ from models.question_group import QuestionGroup
 import jinja2
 
 
-def render(form, data):
+def generate(form, data):
     template_loader = jinja2.FileSystemLoader(searchpath="./templates")
     template_env = jinja2.Environment(loader=template_loader)
     template_file = "report.html"
