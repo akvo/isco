@@ -19,7 +19,7 @@ class EmailText(enum.Enum):
         "signature": False,
     }
     register_to_member = {
-        "title": "Registration",
+        "title": None,
         "title_translation": None,
         "subject": "Registration",
         "body": None,
