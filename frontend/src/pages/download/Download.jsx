@@ -1,6 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import "./style.scss";
-import { Row, Col, Typography, Table, Button, Space, notification } from "antd";
+import {
+  Row,
+  Col,
+  Typography,
+  Table,
+  Button,
+  Space,
+  notification,
+  Alert,
+} from "antd";
 import { api, store } from "../../lib";
 import { uiText } from "../../static";
 
@@ -20,6 +29,10 @@ const Download = () => {
   const [requestLoading, setRequestLoading] = useState(null);
   const pageSize = 10;
 
+  const text = useMemo(() => {
+    return uiText[activeLang];
+  }, [activeLang]);
+
   const handleRequestButton = (id) => {
     setRequestLoading(id);
     api
@@ -31,8 +44,8 @@ const Download = () => {
         }));
         setData({ ...data, data: newData });
         notification.info({
-          message: uiText[activeLang].popupDownloadRequestMessage,
-          description: uiText[activeLang].popupDownloadRequestDescription,
+          message: text.popupDownloadRequestMessage,
+          description: text.popupDownloadRequestDescription,
           duration: 8,
         });
       })
@@ -140,23 +153,26 @@ const Download = () => {
           <Title className="page-title" level={3}>
             Download Data
           </Title>
-          <Row>
-            <Col span={24}>
-              <Table
-                loading={isLoading}
-                rowKey={(record) => `${record?.key}-${record?.id}`}
-                className="table-wrapper"
-                columns={columns}
-                dataSource={data.data}
-                pagination={{
-                  current: data?.current,
-                  pageSize: pageSize,
-                  total: data?.total,
-                  onChange: changePage,
-                }}
-              />
-            </Col>
-          </Row>
+          <Space direction="vertical" style={{ width: "100%" }}>
+            <Alert type="info" showIcon message={text.bannerDownloadPage} />
+            <Row>
+              <Col span={24}>
+                <Table
+                  loading={isLoading}
+                  rowKey={(record) => `${record?.key}-${record?.id}`}
+                  className="table-wrapper"
+                  columns={columns}
+                  dataSource={data.data}
+                  pagination={{
+                    current: data?.current,
+                    pageSize: pageSize,
+                    total: data?.total,
+                    onChange: changePage,
+                  }}
+                />
+              </Col>
+            </Row>
+          </Space>
         </Col>
       </Row>
     </div>

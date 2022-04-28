@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import "./style.scss";
-import { Row, Col, Select, Button, Space } from "antd";
+import { Row, Col, Select, Button, Space, Alert } from "antd";
 import WebformPage from "./WebformPage";
 import { api, store } from "../../lib";
 import { useNotification } from "../../util";
@@ -341,12 +341,15 @@ const Survey = () => {
       <hr />
       {/* Webform load here */}
       {formLoaded && (
-        <WebformPage
-          formId={formLoaded}
-          setFormLoaded={setFormLoaded}
-          selectedSavedSubmission={selectedSavedSubmission}
-          setReloadDropdownValue={setReloadDropdownValue}
-        />
+        <Space direction="vertical" style={{ width: "100%" }}>
+          <Alert type="warning" showIcon message={text.bannerSaveSurvey} />
+          <WebformPage
+            formId={formLoaded}
+            setFormLoaded={setFormLoaded}
+            selectedSavedSubmission={selectedSavedSubmission}
+            setReloadDropdownValue={setReloadDropdownValue}
+          />
+        </Space>
       )}
     </div>
   );
