@@ -273,7 +273,7 @@ const faqEn = [
     ),
   },
   {
-    h: "Which data / survey sections are related to destination markets (=national consumer markets?",
+    h: "Which data / survey sections are related to destination markets (=national consumer markets)?",
     c: (
       <Fragment>
         <p>
