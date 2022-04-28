@@ -16,7 +16,7 @@ class EmailText(enum.Enum):
         "image": None,
         "button": None,
         "info": None,
-        "signature": False,
+        "signature": True,
     }
     invitation = {
         "title": None,
