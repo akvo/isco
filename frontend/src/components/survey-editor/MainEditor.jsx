@@ -5,6 +5,7 @@ import { AiOutlineGroup } from "react-icons/ai";
 import FormEditor from "./FormEditor";
 import QuestionGroup from "./QuestionGroup";
 import orderBy from "lodash/orderBy";
+import { useNotification } from "../../util";
 
 const CustomWrapper = ({ isNotSpace, children }) => {
   if (isNotSpace) {
@@ -22,6 +23,7 @@ const MainEditor = () => {
   const { surveyEditor, isAddQuestionGroup, isMoveQuestionGroup } =
     store.useState((s) => s);
   const { id: formId, name, description, languages } = surveyEditor;
+  const { notify } = useNotification();
 
   const { questionGroup } = surveyEditor;
   const [saveButtonLoading, setSaveButtonLoading] = useState(false);
@@ -82,9 +84,17 @@ const MainEditor = () => {
             ...res.data,
           };
         });
+        notify({
+          type: "success",
+          message: "Survey published successfully.",
+        });
       })
       .catch((e) => {
         console.error(e);
+        notify({
+          type: "error",
+          message: "Error when publishing survey.",
+        });
       })
       .finally(() => {
         setPublishButtonLoading(false);
