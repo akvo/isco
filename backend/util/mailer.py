@@ -78,6 +78,7 @@ class Email:
                  attachment: Optional[str] = None,
                  context: Optional[str] = None,
                  body: Optional[str] = None,
+                 body_translation: Optional[str] = None,
                  button_url: Optional[str] = None,
                  info: Optional[str] = None,
                  signature: Optional[bool] = None):
@@ -87,6 +88,7 @@ class Email:
         self.attachment = attachment
         self.context = context
         self.body = body
+        self.body_translation = body_translation
         self.button_url = button_url
         self.info = info
         self.signature = signature
@@ -97,6 +99,9 @@ class Email:
         body = type["body"]
         if self.body:
             body = self.body
+        body_translation = type["body_translation"]
+        if self.body_translation:
+            body_translation = self.body_translation
         button = type["button"]
         if self.button_url:
             button = button.replace("#button_url#", self.button_url)
@@ -107,7 +112,7 @@ class Email:
             title=type["title"],
             title_translation=type["title_translation"],
             body=body,
-            body_translation=type["body_translation"],
+            body_translation=body_translation,
             image=type["image"],
             message=type["message"],
             context=self.context,

@@ -39,7 +39,7 @@ const ErrorPage = ({ status = 500, showButton = true }) => {
         };
       case "not-approved":
         return {
-          title: "You're not approved by admin yet.",
+          title: "Your registration is still pending approval.",
           subTitle: "Please contact your organisation admin.",
         };
       default:

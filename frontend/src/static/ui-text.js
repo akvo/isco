@@ -211,8 +211,9 @@ const uiText = {
       "Thank you for the data download request. The secretariat admins will be notified about your request. You will receive an email from us once your data is ready for download",
     // banner
     bannerSaveSurvey:
-      "Please remember to save your data at regular intervals to prevent data loss due to enforcing circumstances.",
-    bannerDownloadPage: "Data from the previous round will be available soon.",
+      "Please save your data at regular intervals to prevent data loss due to unforeseen circumstances.",
+    bannerDownloadPage:
+      "Data from previous monitoring rounds will be available soon.",
   },
 
   de: {
@@ -434,8 +435,9 @@ const uiText = {
       "Vielen Dank für die Anfrage zum Download der Daten. Die Sekretariatsverwaltung wird über Ihre Anfrage benachrichtigt. Sie erhalten von uns eine E-Mail, sobald Ihre Daten zum Download bereitstehen",
     // banner
     bannerSaveSurvey:
-      "Please remember to save your data at regular intervals to prevent data loss due to enforcing circumstances.",
-    bannerDownloadPage: "Data from the previous round will be available soon.",
+      "Please save your data at regular intervals to prevent data loss due to unforeseen circumstances.",
+    bannerDownloadPage:
+      "Data from previous monitoring rounds will be available soon.",
   },
 };
 

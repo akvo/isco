@@ -197,10 +197,11 @@ def register(req: Request,
             User.organisation == user['organisation']).filter(
             User.role == UserRole.member_admin).all()
         body_member = f'''
+            Dear reporting member / partner,
             <p>
             {user['name']} ({user['email']}) from your
-            organisation has signed up for the 2022 monitoring
-            round at cocoamonitoring.net
+            organisation has signed up for the 2022 Monitoring
+            Round at cocoamonitoring.net
             </p>
             <p>
             If this is an invalid signup please get in touch with
@@ -216,10 +217,32 @@ def register(req: Request,
                 Julia Jawtusch (julia.jawtusch@giz.de)</li>
             </ul>
             '''
+        body_member_translation = f'''
+            Sehr geehrte/r Teilnehmer/in,
+            <p>
+            Herr/ Frau {user['name']} ({user['email']}) aus Ihrer Organisation
+            hat sich für die Monitoring-Runde 2022 auf cocoamonitoring.net
+            registriert.
+            </p>
+            <p>
+            Wenn dies eine ungültige Anmeldung ist, wenden Sie sich bitte an
+            die Administratoren des Monitoringtools:
+            </p>
+            <ul>
+                <li>
+                Für Beyond Chocolate:
+                Marloes Humbeeck (humbeeck@idhtrade.org)</li>
+                <li>Für DISCO:
+                Mark de Waard (dewaard@idhtrade.org)</li>
+                <li>Für GISCO:
+                Julia Jawtusch (julia.jawtusch@giz.de)</li>
+            </ul>
+        '''
         email_member = Email(
             recipients=[a.recipient for a in member_admins],
             type=MailTypeEnum.register_to_member,
-            body=body_member)
+            body=body_member,
+            body_translation=body_member_translation)
         email_member.send
     return user
 
