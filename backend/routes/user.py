@@ -19,6 +19,7 @@ from models.user import User
 from models.organisation_member import OrganisationMember
 from models.form import Form as FormModel
 from models.data import Data
+from models.organisation_isco import OrganisationIsco
 from pydantic import SecretStr
 from db import crud_user, crud_organisation
 from typing import List, Optional
@@ -167,24 +168,54 @@ def register(req: Request,
         send_verification_email(user, recipients)
         # notify admin
         # two differents email for secretariat_admin & member_admin
-        admins = session.query(User).filter(
-            User.organisation == user['organisation'])
-        secretariat_admins = admins.filter(
-            User.role == UserRole.secretariat_admin).all()
-        member_admins = admins.filter(
-            User.role == UserRole.member_admin).all()
+        org_isco = session.query(OrganisationIsco).filter(
+            OrganisationIsco.organisation == user['organisation']).all()
+        isco_ids = [i.isco_type for i in org_isco]
+        org_in_same_isco = session.query(OrganisationIsco).filter(
+            OrganisationIsco.isco_type.in_(isco_ids)).all()
+        org_ids = [o.organisation for o in org_in_same_isco]
+
+        secretariat_admins = session.query(User).filter(
+            User.organisation.in_(org_ids)).filter(
+                User.role == UserRole.secretariat_admin).all()
+
+        organisation = crud_organisation.get_organisation_by_id(
+            session=session, id=user['organisation'])
+        organisation = organisation.serialize
+        org_name = organisation['name']
         # send to secretariat admin
-        body_secretariat = f'''{user['name']} ({user['email']})
-                            has been registered. Now you can approve user
-                            in Manage User page.'''
+        body_secretariat = f'''{user['name']} ({user['email']}) from {org_name}
+                            has registered in the reporting tool. Now you can
+                            approve user in Manage User page.'''
         email_secretariat = Email(
             recipients=[a.recipient for a in secretariat_admins],
             type=MailTypeEnum.register,
             body=body_secretariat)
         email_secretariat.send
         # inform member admin
-        body_member = f'''{user['name']} ({user['email']})
-                            has been registered.'''
+        member_admins = session.query(User).filter(
+            User.organisation == user['organisation']).filter(
+            User.role == UserRole.member_admin).all()
+        body_member = f'''
+            <p>
+            {user['name']} ({user['email']}) from your
+            organisation has signed up for the 2022 monitoring
+            round at cocoamonitoring.net
+            </p>
+            <p>
+            If this is an invalid signup please get in touch with
+            the reporting tool admins. Contact:
+            </p>
+            <ul>
+                <li>
+                For Beyond Chocolate:
+                Marloes Humbeeck (humbeeck@idhtrade.org)</li>
+                <li>For DISCO:
+                Mark de Waard (dewaard@idhtrade.org)</li>
+                <li>For GISCO:
+                Julia Jawtusch (julia.jawtusch@giz.de)</li>
+            </ul>
+            '''
         email_member = Email(
             recipients=[a.recipient for a in member_admins],
             type=MailTypeEnum.register,
