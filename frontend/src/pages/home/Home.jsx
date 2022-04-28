@@ -10,9 +10,7 @@ const Home = () => {
   const language = store.useState((s) => s.language);
   const { active: activeLang } = language;
 
-  const youtubeLink = "https://www.youtube.com/embed/rCL0IAbchd8";
-  const slideLink = "#";
-  const host = window.location.hostname.split(".").slice(-2)[0];
+  // const host = window.location.hostname.split(".").slice(-2)[0];
 
   const handleOnClickDataSecurity = () => {
     store.update((s) => {
@@ -33,11 +31,7 @@ const Home = () => {
   };
 
   const content = useMemo(() => {
-    const value = homeContent(
-      handleOnClickDataSecurity,
-      youtubeLink,
-      slideLink
-    );
+    const value = homeContent(handleOnClickDataSecurity);
     return value[activeLang];
   }, [activeLang]);
 
@@ -65,29 +59,13 @@ const Home = () => {
           </div>
         </Col>
       </Row>
-
-      {host === "cocoamonitoring" ? (
-        ""
-      ) : (
-        <Row className="getting-started" align="middle" justify="center">
-          <Col align="middle">
-            <h1>{content.gettingStarted.h}</h1>
-            {renderGsParagraph(content.gettingStarted.p1)}
-            {false && (
-              <iframe
-                className="mt-3 mb-3"
-                src={youtubeLink}
-                width="700px"
-                height="400px"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
-            )}
-            {renderGsParagraph(content.gettingStarted.p2)}
-          </Col>
-        </Row>
-      )}
+      <Row className="getting-started" align="middle" justify="center">
+        <Col align="middle">
+          <h1>{content.gettingStarted.h}</h1>
+          {renderGsParagraph(content.gettingStarted.p1)}
+          {renderGsParagraph(content.gettingStarted.p2)}
+        </Col>
+      </Row>
     </div>
   );
 };
