@@ -60,7 +60,7 @@ const App = () => {
   const { notify } = useNotification();
   const navigate = useNavigate();
 
-  const showAssignmentPanel = isLoggedIn && !user?.questionnaires.length;
+  const showAssignmentPanel = isLoggedIn && !user?.questionnaires?.length;
   const text = useMemo(() => {
     return uiText[activeLang];
   }, [activeLang]);
