@@ -132,7 +132,7 @@ class QuestionGroup(Base):
                     tmp.update({"name": lang['name']})
                 if "description" in lang:
                     tmp.update({"description": lang['description']})
-                if self.repeat and self.repeat_text:
+                if self.repeat and self.repeat_text and "repeat_text" in lang:
                     tmp.update({"repeatText": lang['repeat_text']})
                 translations.append(tmp)
             group.update({"translations": translations})
