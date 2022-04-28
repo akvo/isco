@@ -15,3 +15,4 @@ export { default as Definition } from "./definition/Definition";
 export { default as Impressum } from "./impressum/Impressum";
 export { default as Setting } from "./setting/Setting";
 export { default as SubmissionProgress } from "./submission-progress/SubmissionProgress";
+export { default as Faq } from "./faq/Faq";

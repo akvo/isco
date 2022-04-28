@@ -214,6 +214,7 @@ const uiText = {
       "Please save your data at regular intervals to prevent data loss due to unforeseen circumstances.",
     bannerDownloadPage:
       "Data from previous monitoring rounds will be available soon.",
+    faqTitle: "Frequently Asked Question",
   },
 
   de: {
@@ -438,6 +439,7 @@ const uiText = {
       "Please save your data at regular intervals to prevent data loss due to unforeseen circumstances.",
     bannerDownloadPage:
       "Data from previous monitoring rounds will be available soon.",
+    faqTitle: "Frequently Asked Question",
   },
 };
 
