@@ -119,9 +119,7 @@ const Header = ({ className = "header", ...props }) => {
                 <>
                   <Link to="/feedback">{text.navFeedback}</Link>
                   <Link to="/impressum">{text.navImpressum}</Link>
-                  <Link to="#" className="dev">
-                    {text.navFaq}
-                  </Link>
+                  <Link to="/faq">{text.navFaq}</Link>
                 </>
               )}
             </Space>

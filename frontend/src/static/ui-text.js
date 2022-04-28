@@ -214,6 +214,8 @@ const uiText = {
       "Please save your data at regular intervals to prevent data loss due to unforeseen circumstances.",
     bannerDownloadPage:
       "Data from previous monitoring rounds will be available soon.",
+    faqTitle: "Frequently Asked Question",
+    registrationInApprovalText: "Your registration is still pending approval.",
   },
 
   de: {
@@ -435,9 +437,12 @@ const uiText = {
       "Vielen Dank für die Anfrage zum Download der Daten. Die Sekretariatsverwaltung wird über Ihre Anfrage benachrichtigt. Sie erhalten von uns eine E-Mail, sobald Ihre Daten zum Download bereitstehen",
     // banner
     bannerSaveSurvey:
-      "Please save your data at regular intervals to prevent data loss due to unforeseen circumstances.",
+      "Bitte speichern Sie Ihre Fragebögen regelmäßig, um zu verhindern, dass Eingaben durch unerwartete Unterbrechungen verloren gehen.",
     bannerDownloadPage:
-      "Data from previous monitoring rounds will be available soon.",
+      "Ihre Informationen aus der vergangenen Monitoringrunde werden in Kürze zum Herunterladen zur Verfügung stehen.",
+    faqTitle: "Frequently Asked Question",
+    registrationInApprovalText:
+      "Ihre Registrierung muss noch verifiziert werden.",
   },
 };
 

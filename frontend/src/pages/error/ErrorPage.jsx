@@ -1,10 +1,19 @@
-import React from "react";
+import React, { useMemo } from "react";
 import "./style.scss";
 import { useNavigate } from "react-router-dom";
 import { Result, Button } from "antd";
+import { store } from "../../lib";
+import { uiText } from "../../static";
 
 const ErrorPage = ({ status = 500, showButton = true }) => {
   const navigate = useNavigate();
+
+  const language = store.useState((s) => s.language);
+  const { active: activeLang } = language;
+
+  const text = useMemo(() => {
+    return uiText[activeLang];
+  }, [activeLang]);
 
   const BackHome = () =>
     showButton ? (
@@ -39,8 +48,8 @@ const ErrorPage = ({ status = 500, showButton = true }) => {
         };
       case "not-approved":
         return {
-          title: "Your registration is still pending approval.",
-          subTitle: "Please contact your organisation admin.",
+          title: text.registrationInApprovalText,
+          // subTitle: "Please contact your organisation admin.",
         };
       default:
         return {

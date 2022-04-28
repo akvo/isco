@@ -20,6 +20,7 @@ import {
   Impressum,
   Setting,
   SubmissionProgress,
+  Faq,
 } from "./pages";
 import { Alert } from "antd";
 import { useCookies } from "react-cookie";
@@ -215,6 +216,7 @@ const App = () => {
             path="/impressum"
             element={<Secure element={Impressum} />}
           />
+          <Route exact path="/faq" element={<Secure element={Faq} />} />
           <Route exact path="*" element={<ErrorPage status={404} />} />
         </Routes>
 
