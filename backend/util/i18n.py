@@ -16,6 +16,18 @@ class EmailText(enum.Enum):
         "image": None,
         "button": None,
         "info": None,
+        "signature": False,
+    }
+    register_to_member = {
+        "title": "Registration",
+        "title_translation": None,
+        "subject": "Registration",
+        "body": None,
+        "message": None,
+        "body_translation": None,
+        "image": None,
+        "button": None,
+        "info": None,
         "signature": True,
     }
     invitation = {

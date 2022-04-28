@@ -218,7 +218,7 @@ def register(req: Request,
             '''
         email_member = Email(
             recipients=[a.recipient for a in member_admins],
-            type=MailTypeEnum.register,
+            type=MailTypeEnum.register_to_member,
             body=body_member)
         email_member.send
     return user
