@@ -9,6 +9,7 @@ from typing import Optional
 from jose import JWTError, jwt, exceptions
 from passlib.context import CryptContext
 from models.user import UserRole, UserDict
+from models.organisation_isco import OrganisationIsco
 from db import crud_user
 
 
@@ -146,3 +147,13 @@ def check_query(keywords):
         else:
             keys.append(q.replace("|", "||"))
     return keys
+
+
+def organisations_in_same_isco(session: Session, organisation: int):
+    org_isco = session.query(OrganisationIsco).filter(
+        OrganisationIsco.organisation == organisation).all()
+    isco_ids = [i.isco_type for i in org_isco]
+    org_in_same_isco = session.query(OrganisationIsco).filter(
+        OrganisationIsco.isco_type.in_(isco_ids)).all()
+    org_ids = [o.organisation for o in org_in_same_isco]
+    return org_ids

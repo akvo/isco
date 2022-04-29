@@ -70,3 +70,35 @@ class TestLoadData():
         assert res.status_code == 200
         res = res.json()
         assert res[0] == {"id": 1, "name": "All"}
+
+    @pytest.mark.asyncio
+    async def test_get_organisation_in_same_isco(
+        self,
+        app: FastAPI,
+        session: Session,
+        client: AsyncClient
+    ) -> None:
+        res = await client.get(
+            app.url_path_for("organisation:get_organisation_in_same_isco"),
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 200
+        res = res.json()
+        assert res == [{
+            'id': 1,
+            'code': 'Akvo',
+            'name': 'Akvo',
+            'active': True,
+            'member_type': [1],
+            'member': ['All'],
+            'isco_type': [1],
+            'isco': ['All']
+        }, {
+            'id': 2,
+            'code': None,
+            'name': 'staff GISCO Secretariat',
+            'active': True,
+            'member_type': [1],
+            'member': ['All'],
+            'isco_type': [1],
+            'isco': ['All']
+        }]

@@ -2,8 +2,8 @@ import os
 from math import ceil
 from middleware import Token, authenticate_user
 from middleware import create_access_token, verify_user
-from middleware import get_password_hash, verify_admin, verify_super_admin
-from middleware import decode_token, verify_token
+from middleware import get_password_hash, verify_super_admin
+from middleware import decode_token, verify_token, organisations_in_same_isco
 from fastapi import Depends, HTTPException, status, APIRouter, Request, Query
 from fastapi import Form, Response
 from fastapi.security import HTTPBearer
@@ -19,7 +19,6 @@ from models.user import User
 from models.organisation_member import OrganisationMember
 from models.form import Form as FormModel
 from models.data import Data
-from models.organisation_isco import OrganisationIsco
 from pydantic import SecretStr
 from db import crud_user, crud_organisation
 from typing import List, Optional
@@ -88,14 +87,18 @@ def get_all(req: Request,
             organisation: Optional[List[int]] = Query(None),
             session: Session = Depends(get_session),
             credentials: credentials = Depends(security)):
-    admin = verify_admin(session=session,
-                         authenticated=req.state.authenticated)
+    admin = verify_super_admin(session=session,
+                               authenticated=req.state.authenticated)
     org_ids = None
     if organisation:
         org_ids = organisation
     # if role member admin, filter user by member admin organisation id
     if admin.role == UserRole.member_admin:
         org_ids = [admin.organisation]
+    # filter user by organisation in same isco
+    if not organisation:
+        org_ids = organisations_in_same_isco(
+            session=session, organisation=admin.organisation)
     user = crud_user.get_all_user(session=session,
                                   search=search,
                                   organisation=org_ids,
@@ -174,13 +177,8 @@ def register(req: Request,
         send_verification_email(user, recipients)
         # notify admin
         # two differents email for secretariat_admin & member_admin
-        org_isco = session.query(OrganisationIsco).filter(
-            OrganisationIsco.organisation == user['organisation']).all()
-        isco_ids = [i.isco_type for i in org_isco]
-        org_in_same_isco = session.query(OrganisationIsco).filter(
-            OrganisationIsco.isco_type.in_(isco_ids)).all()
-        org_ids = [o.organisation for o in org_in_same_isco]
-
+        org_ids = organisations_in_same_isco(
+            session=session, organisation=user['organisation'])
         secretariat_admins = session.query(User).filter(
             User.organisation.in_(org_ids)).filter(
                 User.role == UserRole.secretariat_admin).all()
@@ -189,6 +187,7 @@ def register(req: Request,
             session=session, id=user['organisation'])
         organisation = organisation.serialize
         org_name = organisation['name']
+
         # send to secretariat admin
         body_secretariat = f'''{user['name']} ({user['email']}) from {org_name}
                             has registered in the reporting tool. Now you can
@@ -198,6 +197,7 @@ def register(req: Request,
             type=MailTypeEnum.register,
             body=body_secretariat)
         email_secretariat.send
+
         # inform member admin
         member_admins = session.query(User).filter(
             User.organisation == user['organisation']).filter(
