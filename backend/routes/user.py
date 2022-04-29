@@ -146,6 +146,12 @@ def register(req: Request,
              payload: UserBase = Depends(UserBase.as_form),
              invitation: Optional[bool] = False,
              session: Session = Depends(get_session)):
+    if invitation:
+        if hasattr(req.state, 'authenticated'):
+            verify_super_admin(session=session,
+                               authenticated=req.state.authenticated)
+        else:
+            raise HTTPException(status_code=403, detail="Forbidden access")
     if payload.password:
         payload.password = payload.password.get_secret_value()
         payload.password = get_password_hash(payload.password)
