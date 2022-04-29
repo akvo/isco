@@ -57,9 +57,9 @@
   },
   {
     "code": null,
-    "member": ["Standard Setting Organisation"],
-    "isco": ["GISCO", "Beyond Chocolate"],
-    "name": "TransFair e.V. (Fairtrade Deutschland)",
+    "member": ["Standard Setting Organisation", "Civil Society"],
+    "isco": ["GISCO", "Beyond Chocolate", "DISCO"],
+    "name": "Fairtrade",
     "active": true
   },
   {
@@ -283,13 +283,6 @@
     "name": "Exposure- und Dialogprogramme e.V",
     "member": ["Civil Society"],
     "isco": ["GISCO"],
-    "code": null,
-    "active": true
-  },
-  {
-    "name": "Fairtrade Belgium",
-    "member": ["Standard Setting Organisation"],
-    "isco": ["Beyond Chocolate"],
     "code": null,
     "active": true
   },
@@ -644,13 +637,6 @@
     "active": true
   },
   {
-    "name": "Fairtrade Deutschland e.V.",
-    "member": ["Civil Society"],
-    "isco": ["GISCO"],
-    "code": null,
-    "active": true
-  },
-  {
     "name": "Ulmer Schokoladen GmbH & Co. KG",
     "member": ["Big Industry"],
     "isco": ["GISCO"],
@@ -765,13 +751,6 @@
   {
     "name": "Dutch government",
     "member": ["Government"],
-    "isco": ["DISCO"],
-    "code": null,
-    "active": true
-  },
-  {
-    "name": "Fairtrade Netherlands",
-    "member": ["Civil Society"],
     "isco": ["DISCO"],
     "code": null,
     "active": true
