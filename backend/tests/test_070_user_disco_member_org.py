@@ -168,6 +168,13 @@ class TestUserDisco():
             app.url_path_for("user:register"),
             params={"invitation": 1},
             data=user_payload)
+        assert res.status_code == 403
+        res = await client.post(
+            app.url_path_for("user:register"),
+            headers={"Authorization": f"Bearer {account.token}",
+                     "content-type": "application/x-www-form-urlencoded"},
+            params={"invitation": 1},
+            data=user_payload)
         assert res.status_code == 200
         invitation_link = session.query(User).filter(
             User.email == user_payload["email"]).first().invitation

@@ -21,13 +21,15 @@ for d in data:
     if user is None:
         password = get_password_hash(d['password'])
         payload = UserBase(
-            name=d['name'], email=d['email'],
-            phone_numer=None, password=password,
+            name=d['name'],
+            email=d['email'],
+            phone_numer=None,
+            password=password,
             role=UserRole.secretariat_admin.value,
             organisation=d['organisation_id'],
-            inviitation=str(uuid4()))
+            invitation=str(uuid4()))
         user = crud_user.add_user(session=session, payload=payload)
         user = crud_user.verify_user_email(session=session, id=user.id)
         print(f"Seed {user.name} done")
 
-print("Seeding Organisations done")
+print("Seeding Users done")

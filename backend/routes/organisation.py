@@ -7,7 +7,8 @@ from sqlalchemy.orm import Session
 import db.crud_organisation as crud
 from db.connection import get_session
 from models.organisation import OrganisationBase, OrganisationDict
-from models.organisation import OrganisationPayload
+from models.organisation import OrganisationPayload, Organisation
+from middleware import verify_super_admin, organisations_in_same_isco
 
 security = HTTPBearer()
 organisation_route = APIRouter()
@@ -36,6 +37,25 @@ def get(req: Request, session: Session = Depends(get_session)):
     return [o.serialize for o in organisation]
 
 
+@organisation_route.get("/organisation/isco",
+                        response_model=List[OrganisationDict],
+                        summary="get organisations in same isco",
+                        name="organisation:get_organisation_in_same_isco",
+                        tags=["Organisation"])
+def get_organisation_in_same_isco(
+    req: Request,
+    session: Session = Depends(get_session),
+    credentials: credentials = Depends(security)
+):
+    admin = verify_super_admin(session=session,
+                               authenticated=req.state.authenticated)
+    org_ids = organisations_in_same_isco(
+        session=session, organisation=admin.organisation)
+    organisation = session.query(Organisation).filter(
+        Organisation.id.in_(org_ids)).all()
+    return [o.serialize for o in organisation]
+
+
 @organisation_route.get("/organisation/{id:path}",
                         response_model=OrganisationBase,
                         summary="get organisation by id",
@@ -60,9 +80,7 @@ def update(req: Request, id: int, payload: OrganisationPayload,
 
 
 @organisation_route.delete("/organisation/{id:path}",
-                           responses={204: {
-                               "model": None
-                            }},
+                           responses={204: {"model": None}},
                            status_code=HTTPStatus.NO_CONTENT,
                            summary="delete organisation by id",
                            name="organisation:delete",

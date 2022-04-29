@@ -55,7 +55,7 @@ const InvitationCopy = ({ invitation }) => {
           }, 1000);
         }}
       >
-        Pending Verification
+        Pending set password
       </Tag>
     </Tooltip>
   );
@@ -63,7 +63,11 @@ const InvitationCopy = ({ invitation }) => {
 
 const ManageUser = () => {
   const { isLoggedIn, user, optionValues } = store.useState((s) => s);
-  const { organisation, member_type, isco_type } = optionValues;
+  const {
+    organisationInSameIsco: organisation,
+    member_type,
+    isco_type,
+  } = optionValues;
   const { notify } = useNotification();
 
   const [showPendingUser, setShowPendingUser] = useState(false);
@@ -109,8 +113,10 @@ const ManageUser = () => {
       render: (value, data) => {
         return value ? (
           moment(value).format("MMMM Do YYYY, h:mm a")
-        ) : (
+        ) : !showPendingUser ? (
           <InvitationCopy {...data} />
+        ) : (
+          <Tag icon={<ClockCircleOutlined />}>Email not verified</Tag>
         );
       },
     },
@@ -157,6 +163,11 @@ const ManageUser = () => {
   ];
 
   useEffect(() => {
+    setPage(1);
+  }, [showPendingUser]);
+
+  useEffect(() => {
+    // get form
     api
       .get("/form/published")
       .then((res) => {
