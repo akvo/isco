@@ -63,7 +63,11 @@ const InvitationCopy = ({ invitation }) => {
 
 const ManageUser = () => {
   const { isLoggedIn, user, optionValues } = store.useState((s) => s);
-  const { organisation, member_type, isco_type } = optionValues;
+  const {
+    organisationInSameIsco: organisation,
+    member_type,
+    isco_type,
+  } = optionValues;
   const { notify } = useNotification();
 
   const [showPendingUser, setShowPendingUser] = useState(false);
@@ -163,6 +167,7 @@ const ManageUser = () => {
   }, [showPendingUser]);
 
   useEffect(() => {
+    // get form
     api
       .get("/form/published")
       .then((res) => {

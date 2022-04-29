@@ -88,6 +88,7 @@ const defaultUIState = {
     nested: [],
     repeating_object_option: [],
     organisation: [],
+    organisationInSameIsco: [],
   },
   surveyEditor: defaultSurveyEditor,
   tempStorage: {

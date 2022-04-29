@@ -143,6 +143,25 @@ const App = () => {
     });
   }, []);
 
+  useEffect(() => {
+    if (isLoggedIn) {
+      // get organisation filtered
+      api
+        .get("/organisation/isco")
+        .then((res) => {
+          store.update((s) => {
+            s.optionValues = {
+              ...s.optionValues,
+              organisationInSameIsco: res?.data?.filter((o) => o?.active),
+            };
+          });
+        })
+        .catch((e) => {
+          console.error(e);
+        });
+    }
+  }, [isLoggedIn]);
+
   return (
     <Layout>
       <Layout.Header />
