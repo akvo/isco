@@ -55,7 +55,7 @@ const InvitationCopy = ({ invitation }) => {
           }, 1000);
         }}
       >
-        Pending Verification
+        Pending set password
       </Tag>
     </Tooltip>
   );
@@ -109,8 +109,10 @@ const ManageUser = () => {
       render: (value, data) => {
         return value ? (
           moment(value).format("MMMM Do YYYY, h:mm a")
-        ) : (
+        ) : !showPendingUser ? (
           <InvitationCopy {...data} />
+        ) : (
+          <Tag icon={<ClockCircleOutlined />}>Email not verified</Tag>
         );
       },
     },
@@ -155,6 +157,10 @@ const ManageUser = () => {
       ),
     },
   ];
+
+  useEffect(() => {
+    setPage(1);
+  }, [showPendingUser]);
 
   useEffect(() => {
     api
