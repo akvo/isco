@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import "./style.scss";
-import { Row, Col, Typography, Table } from "antd";
+import { Row, Col, Typography, Table, Select, Space, Checkbox } from "antd";
 import { api, store } from "../../lib";
 import { uiText } from "../../static";
 import _ from "lodash";
@@ -8,11 +8,49 @@ import _ from "lodash";
 const { Title } = Typography;
 
 const SubmissionProgress = () => {
-  const { isLoggedIn, language } = store.useState((s) => s);
+  const { isLoggedIn, language, user } = store.useState((s) => s);
   const { active: activeLang } = language;
+
+  const organisation = [
+    {
+      id: 1,
+      code: null,
+      name: "staff Akvo",
+      active: true,
+      member_type: [7],
+      member: ["Other"],
+      isco_type: [1],
+      isco: ["All"],
+    },
+    {
+      id: 2,
+      code: null,
+      name: "staff GISCO secretariat",
+      active: true,
+      member_type: [7],
+      member: ["Other"],
+      isco_type: [2],
+      isco: ["GISCO"],
+    },
+    {
+      id: 3,
+      code: null,
+      name: "staff SWISSCO secretariat",
+      active: true,
+      member_type: [7],
+      member: ["Other"],
+      isco_type: [2],
+      isco: ["GISCO"],
+    },
+  ];
 
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const showOrganisationFilter = user?.role === "secretariat_admin";
+  const [organisationValue, setOrganisationValue] = useState([]);
+  const [showNonsubmittedMember, setShowNonsubmittedMember] = useState(false);
+  const [orgFilter, setOrgFilter] = useState(null);
 
   const text = useMemo(() => {
     return uiText[activeLang];
@@ -120,6 +158,14 @@ const SubmissionProgress = () => {
     }
   }, [isLoggedIn]);
 
+  const handleOrganisationFilter = (org) => {
+    setOrganisationValue(org);
+    setOrgFilter(org);
+  };
+  const handleShowNonsubmittedQuestionaire = () => {
+    setShowNonsubmittedMember(!showOrganisationFilter);
+  };
+
   return (
     <div id="submission-progress">
       <Row className="container bg-grey">
@@ -133,6 +179,45 @@ const SubmissionProgress = () => {
               <Title className="page-title" level={3}>
                 {text.pageSubmissionProgress}
               </Title>
+            </Col>
+          </Row>
+          <Row
+            className="filter-wrapper"
+            align="middle"
+            justify="space-between"
+            gutter={[20, 20]}
+          >
+            <Col flex={1} align="start">
+              <Space wrap>
+                {showOrganisationFilter && (
+                  <Select
+                    style={{ width: "20rem" }}
+                    showSearch
+                    placeholder="Organization"
+                    options={
+                      organisation.length
+                        ? organisation.map((o) => ({
+                            label: o.name,
+                            value: o.id,
+                          }))
+                        : []
+                    }
+                    onChange={handleOrganisationFilter}
+                    value={organisationValue}
+                  />
+                )}
+              </Space>
+            </Col>
+            <Col align="end">
+              <Space align="center">
+                <span>
+                  Show organisation which does not have submitted member
+                </span>
+                <Checkbox
+                  value={showNonsubmittedMember}
+                  onChange={handleShowNonsubmittedQuestionaire}
+                />
+              </Space>
             </Col>
           </Row>
           <Row>

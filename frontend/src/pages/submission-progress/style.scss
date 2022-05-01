@@ -10,9 +10,14 @@
       margin: 40px 0 20px 0;
     }
 
+    .filter-wrapper {
+      padding: 24px 10px;
+    }
+
     // TABLE
     .table-wrapper {
       margin-top: 24px;
+      padding: 0 10px;
       border: none !important;
 
       .ant-table {
