@@ -47,13 +47,13 @@ class TestLoadSubmission():
         res = await client.get(
             app.url_path_for("submission:progress"),
             headers={"Authorization": f"Bearer {account.token}"},
-            params={"organisation": 3})
+            params={"organisation": [3]})
         assert res.status_code == 403
         # super admin filter by organisation in same isco
         res = await client.get(
             app.url_path_for("submission:progress"),
             headers={"Authorization": f"Bearer {account.token}"},
-            params={"organisation": 1})
+            params={"organisation": [1]})
         assert res.status_code == 200
         res = res.json()
         assert res[0]["organisation"] == "Akvo"

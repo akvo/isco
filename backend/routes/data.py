@@ -335,7 +335,7 @@ def update_by_id(req: Request,
                 tags=["Data"])
 def get_submission_progress(
     req: Request,
-    organisation: Optional[int] = None,
+    organisation: Optional[List[int]] = Query(None),
     member_not_submitted: Optional[bool] = False,
     session: Session = Depends(get_session),
     credentials: credentials = Depends(security)
@@ -345,11 +345,11 @@ def get_submission_progress(
     org_ids = organisations_in_same_isco(
         session=session, organisation=admin.organisation)
     # validate if organisation param not in same isco
-    if organisation and organisation not in org_ids:
+    if organisation and not list(set(org_ids) & set(organisation)):
         raise HTTPException(status_code=403,
                             detail="Forbidden access")
     if organisation:
-        org_ids = [organisation]
+        org_ids = organisation
     data = session.query(
         Data.organisation, Data.form, Data.submitted,
         func.count(Data.id).label('count')
