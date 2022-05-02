@@ -336,6 +336,7 @@ def update_by_id(req: Request,
 def get_submission_progress(
     req: Request,
     organisation: Optional[int] = None,
+    member_not_submitted: Optional[bool] = False,
     session: Session = Depends(get_session),
     credentials: credentials = Depends(security)
 ):
@@ -350,12 +351,10 @@ def get_submission_progress(
     if organisation:
         org_ids = [organisation]
     data = session.query(
-        Data.organisation,
-        Data.form,
-        Data.submitted,
-        func.count(Data.id).label('count')).filter(
-            Data.organisation.in_(org_ids)).group_by(
-                Data.organisation, Data.form, Data.submitted)
+        Data.organisation, Data.form, Data.submitted,
+        func.count(Data.id).label('count')
+    ).filter(Data.organisation.in_(org_ids)).group_by(
+        Data.organisation, Data.form, Data.submitted).all()
     if not data:
         raise HTTPException(status_code=404,
                             detail="submission progress not found")
@@ -364,7 +363,6 @@ def get_submission_progress(
     orgs_dict = {}
     for o in organisations:
         orgs_dict.update({o.id: o.name})
-    data = data.all()
     res = []
     for d in data:
         form_type = ""
@@ -379,4 +377,19 @@ def get_submission_progress(
             "submitted": True if d.submitted else False,
             "count": d.count
         })
+    # filters organisations that has not "submitted" any member questionnaire
+    if member_not_submitted:
+        filter_orgs = {}
+        for x in res:
+            if x['form'] in MEMBER_SURVEY and not x['submitted']:
+                filter_orgs.update({x['organisation']: True})
+        filtered = []
+        for x in res:
+            org = x['organisation']
+            if org in filter_orgs and filter_orgs[org]:
+                filtered.append(x)
+        if not filtered:
+            raise HTTPException(status_code=404,
+                                detail="submission progress not found")
+        return filtered
     return res
