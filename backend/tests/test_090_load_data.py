@@ -25,6 +25,11 @@ class TestLoadData():
         session: Session,
         client: AsyncClient
     ) -> None:
+        not_super_admin = Acc(email="wayan_invited@test.org", token=None)
+        res = await client.get(
+            app.url_path_for("user:get_all"),
+            headers={"Authorization": f"Bearer {not_super_admin.token}"})
+        assert res.status_code == 403
         res = await client.get(
             app.url_path_for("user:get_all"),
             headers={"Authorization": f"Bearer {account.token}"})
@@ -46,6 +51,18 @@ class TestLoadData():
             params={"approved": 0},
             headers={"Authorization": f"Bearer {account.token}"})
         assert res.status_code == 404
+        # filter by organisation not in same isco
+        res = await client.get(
+            app.url_path_for("user:get_all"),
+            headers={"Authorization": f"Bearer {account.token}"},
+            params={"organisation": [3]})
+        assert res.status_code == 403
+        # filter by organisation in same isco
+        res = await client.get(
+            app.url_path_for("user:get_all"),
+            headers={"Authorization": f"Bearer {account.token}"},
+            params={"organisation": [1]})
+        assert res.status_code == 200
 
     @pytest.mark.asyncio
     async def test_get_all_member(
