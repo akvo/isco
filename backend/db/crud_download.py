@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
@@ -28,7 +28,7 @@ def update_download(session: Session,
     download = get_by_uuid(session=session, uuid=uuid)
     download.approved_by = approved_by
     if approved:
-        download.expired = datetime.now()
+        download.expired = datetime.utcnow() + timedelta(days=1)
     session.commit()
     session.flush()
     session.refresh(download)

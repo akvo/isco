@@ -154,4 +154,5 @@ def update_download_status(req: Request,
         raise HTTPException(status_code=403, detail="Forbidden access")
     update = crud.update_download(
         session=session, uuid=uuid, approved_by=admin.id, approved=approved)
+    # TODO:: Send approved/rejected email
     return update.list_of_download_request

@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 import "./style.scss";
-import { Row, Col, Table, Typography, Space, Button } from "antd";
+import { Row, Col, Table, Typography, Space, Button, Popconfirm } from "antd";
 import { api } from "../../lib";
+import { useNotification } from "../../util";
 
 const { Title } = Typography;
 
 const ManageDownload = () => {
+  const { notify } = useNotification();
   const [isLoading, setIsLoading] = useState(false);
+
   const pageSize = 10;
   const [page, setPage] = useState(1);
   const [data, setData] = useState({
@@ -15,6 +18,36 @@ const ManageDownload = () => {
     total: 0,
     total_page: 0,
   });
+
+  const handleApproveRejectRequest = (record, approve) => {
+    const approved = approve ? 1 : 0;
+    const { uuid } = record;
+    api
+      .put(`/download/${uuid}?approved=${approved}`)
+      .then((res) => {
+        const { data: updatedData } = res;
+        notify({
+          type: "success",
+          message: approve
+            ? "Download approved successfully."
+            : "Download rejected successfully.",
+        });
+        const transformData = data.data.map((d) => {
+          if (d.id === updatedData.id) {
+            return updatedData;
+          }
+          return d;
+        });
+        setData({ ...data, data: transformData });
+      })
+      .catch((e) => {
+        console.error(e);
+        notify({
+          type: "error",
+          message: "Something went wrong.",
+        });
+      });
+  };
 
   const columns = [
     {
@@ -39,21 +72,41 @@ const ManageDownload = () => {
       key: "request_date",
     },
     {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (value) => value.toUpperCase(),
+    },
+    {
       title: "Action",
       key: "action",
       render: (record) => {
-        console.info(record);
         return (
           <Space>
             <Button size="small" type="primary" ghost>
               View
             </Button>
-            <Button size="small" type="primary">
-              Approve
-            </Button>
-            <Button size="small" type="primary" danger>
-              Reject
-            </Button>
+            <Popconfirm
+              title="Are you sure want to approve this download request?"
+              okText="Approve"
+              cancelText="Cancel"
+              onConfirm={() => handleApproveRejectRequest(record, true)}
+            >
+              <Button size="small" type="primary">
+                Approve
+              </Button>
+            </Popconfirm>
+            <Popconfirm
+              title="Are you sure want to reject this download request?"
+              okText="Reject"
+              okButtonProps={{ type: "danger" }}
+              cancelText="Cancel"
+              onConfirm={() => handleApproveRejectRequest(record, false)}
+            >
+              <Button size="small" type="primary" danger>
+                Reject
+              </Button>
+            </Popconfirm>
           </Space>
         );
       },
