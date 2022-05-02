@@ -25,6 +25,11 @@ class TestLoadData():
         session: Session,
         client: AsyncClient
     ) -> None:
+        not_super_admin = Acc(email="wayan_invited@test.org", token=None)
+        res = await client.get(
+            app.url_path_for("user:get_all"),
+            headers={"Authorization": f"Bearer {not_super_admin.token}"})
+        assert res.status_code == 403
         res = await client.get(
             app.url_path_for("user:get_all"),
             headers={"Authorization": f"Bearer {account.token}"})
@@ -46,6 +51,18 @@ class TestLoadData():
             params={"approved": 0},
             headers={"Authorization": f"Bearer {account.token}"})
         assert res.status_code == 404
+        # filter by organisation not in same isco
+        res = await client.get(
+            app.url_path_for("user:get_all"),
+            headers={"Authorization": f"Bearer {account.token}"},
+            params={"organisation": [3]})
+        assert res.status_code == 403
+        # filter by organisation in same isco
+        res = await client.get(
+            app.url_path_for("user:get_all"),
+            headers={"Authorization": f"Bearer {account.token}"},
+            params={"organisation": [1]})
+        assert res.status_code == 200
 
     @pytest.mark.asyncio
     async def test_get_all_member(
@@ -70,3 +87,35 @@ class TestLoadData():
         assert res.status_code == 200
         res = res.json()
         assert res[0] == {"id": 1, "name": "All"}
+
+    @pytest.mark.asyncio
+    async def test_get_organisation_in_same_isco(
+        self,
+        app: FastAPI,
+        session: Session,
+        client: AsyncClient
+    ) -> None:
+        res = await client.get(
+            app.url_path_for("organisation:get_organisation_in_same_isco"),
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 200
+        res = res.json()
+        assert res == [{
+            'id': 1,
+            'code': 'Akvo',
+            'name': 'Akvo',
+            'active': True,
+            'member_type': [1],
+            'member': ['All'],
+            'isco_type': [1],
+            'isco': ['All']
+        }, {
+            'id': 2,
+            'code': None,
+            'name': 'staff GISCO Secretariat',
+            'active': True,
+            'member_type': [1],
+            'member': ['All'],
+            'isco_type': [1],
+            'isco': ['All']
+        }]
