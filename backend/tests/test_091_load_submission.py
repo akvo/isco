@@ -25,6 +25,12 @@ class TestLoadSubmission():
         session: Session,
         client: AsyncClient
     ) -> None:
+        not_super_admin = Acc(email="wayan_invited@test.org", token=None)
+        res = await client.get(
+            app.url_path_for("submission:progress"),
+            headers={"Authorization": f"Bearer {not_super_admin.token}"})
+        assert res.status_code == 403
+        # super admin
         res = await client.get(
             app.url_path_for("submission:progress"),
             headers={"Authorization": f"Bearer {account.token}"})
@@ -37,8 +43,17 @@ class TestLoadSubmission():
             'submitted': True,
             'count': 1
         }]
-        not_super_admin = Acc(email="wayan_invited@test.org", token=None)
+        # super admin filter by organisation but not in same isco
         res = await client.get(
             app.url_path_for("submission:progress"),
-            headers={"Authorization": f"Bearer {not_super_admin.token}"})
+            headers={"Authorization": f"Bearer {account.token}"},
+            params={"organisation": 3})
         assert res.status_code == 403
+        # super admin filter by organisation in same isco
+        res = await client.get(
+            app.url_path_for("submission:progress"),
+            headers={"Authorization": f"Bearer {account.token}"},
+            params={"organisation": 1})
+        assert res.status_code == 200
+        res = res.json()
+        assert res[0]["organisation"] == "Akvo"

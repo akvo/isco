@@ -20,9 +20,9 @@ from db.connection import get_session
 from models.data import DataResponse
 from models.data import DataDict, DataOptionDict
 from models.data import Data, SubmissionProgressDict
-from models.organisation_isco import OrganisationIsco
 from models.organisation import Organisation
 from middleware import verify_editor, verify_super_admin
+from middleware import organisations_in_same_isco
 from util.survey_config import MEMBER_SURVEY, PROJECT_SURVEY
 
 security = HTTPBearer()
@@ -335,22 +335,20 @@ def update_by_id(req: Request,
                 tags=["Data"])
 def get_submission_progress(
     req: Request,
+    organisation: Optional[int] = None,
     session: Session = Depends(get_session),
     credentials: credentials = Depends(security)
 ):
-    user = verify_super_admin(
+    admin = verify_super_admin(
         session=session, authenticated=req.state.authenticated)
-    find_org_iscos = session.query(OrganisationIsco).filter(
-        OrganisationIsco.organisation == user.organisation).all()
-    isco_ids = [i.isco_type for i in find_org_iscos]
-    org_by_isco = session.query(OrganisationIsco)
-    # if isco = 1 (All) show from all organisation
-    # if 1 in isco_ids:
-    #     org_by_isco = org_by_isco.all()
-    # if 1 not in isco_ids:
-    org_by_isco = org_by_isco.filter(
-        OrganisationIsco.isco_type.in_(isco_ids)).all()
-    org_ids = [o.organisation for o in org_by_isco]
+    org_ids = organisations_in_same_isco(
+        session=session, organisation=admin.organisation)
+    # validate if organisation param not in same isco
+    if organisation and organisation not in org_ids:
+        raise HTTPException(status_code=403,
+                            detail="Forbidden access")
+    if organisation:
+        org_ids = [organisation]
     data = session.query(
         Data.organisation,
         Data.form,
