@@ -203,8 +203,8 @@ class EmailText(enum.Enum):
     data_download_requested = {
         "title": None,
         "title_translation": None,
-        "subject": '''Data Download Request |
-                    Anfrage zum Herunterladen von Daten''',
+        "subject": '''Data Download Request
+                    | Anfrage zum Herunterladen von Daten''',
         "body": '''<div>
                 A user has requested for a data download. Please review the
                 download file in the tool and approve. The user will then
@@ -225,8 +225,8 @@ class EmailText(enum.Enum):
     data_download_approved = {
         "title": None,
         "title_translation": None,
-        "subject": '''Data Download Approved |
-                    Antrag auf Datendownload genehmigt''',
+        "subject": '''Data Download Approved
+                    | Antrag auf Datendownload genehmigt''',
         "body": '''<div>
                 Dear reporting member,
                 <p>

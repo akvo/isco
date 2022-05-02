@@ -7,8 +7,9 @@ from db.connection import get_session
 import db.crud_download as crud
 import db.crud_data as crud_data
 import util.report as report
-from models.download import DataDownloadResponse, DownloadRequestResponse
-from middleware import verify_user, find_secretariat_admins
+from models.download import DataDownloadResponse, DownloadResponse
+from models.download import DownloadRequestedResponse
+from middleware import verify_user, find_secretariat_admins, verify_super_admin
 from util.mailer import Email, MailTypeEnum
 
 security = HTTPBearer()
@@ -55,9 +56,42 @@ def get_available_downloads(
     }
 
 
+@download_route.get("/download/requested",
+                    summary="requested data download filter by same isco",
+                    response_model=DownloadRequestedResponse,
+                    name="download:requested_list",
+                    tags=["Download"])
+def requested_download_list(req: Request,
+                            page: int = 1,
+                            page_size: int = 10,
+                            session: Session = Depends(get_session),
+                            credentials: credentials = Depends(security)):
+    admin = verify_super_admin(
+        session=session, authenticated=req.state.authenticated)
+    data = crud.get_requested_download_list(
+        session=session,
+        organisation=admin.organisation,
+        page=page,
+        page_size=page_size)
+    total_data = data['count']
+    data = data['downloads']
+    if not data:
+        return []
+    total_page = ceil(total_data / page_size) if total_data > 0 else 0
+    if total_page < page:
+        raise HTTPException(status_code=404, detail="Not found")
+    data = [d.list_of_download_request for d in data]
+    return {
+        'current': page,
+        'data': data,
+        'total': total_data,
+        'total_page': total_page,
+    }
+
+
 @download_route.post("/download/new/{data_id:path}",
                      summary="new request download by data id",
-                     response_model=DownloadRequestResponse,
+                     response_model=DownloadResponse,
                      status_code=201,
                      name="download:request",
                      tags=["Download"])

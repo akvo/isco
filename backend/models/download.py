@@ -17,9 +17,10 @@ from .form import Form
 from .data import Data
 from .user import User
 from .organisation import Organisation
+from util.survey_config import MEMBER_SURVEY, PROJECT_SURVEY
 
 
-class DownloadRequestResponse(TypedDict):
+class DownloadResponse(TypedDict):
     id: int
     form: int
     data: int
@@ -64,6 +65,23 @@ class DataDownloadResponse(BaseModel):
     total_page: int
 
 
+class DownloadRequestedDict(TypedDict):
+    id: int
+    organisation: str
+    form_type: str
+    request_by: int
+    request_by_name: str
+    request_date: str
+    status: str
+
+
+class DownloadRequestedResponse(BaseModel):
+    current: int
+    data: List[DownloadRequestedDict]
+    total: int
+    total_page: int
+
+
 class Download(Base):
     __tablename__ = "download"
     id = Column(Integer,
@@ -84,6 +102,8 @@ class Download(Base):
     expired = Column(DateTime, nullable=True)
     request_by_user = relationship(User, foreign_keys=[request_by])
     approved_by_user = relationship(User, foreign_keys=[approved_by])
+    organisation_detail = relationship(Organisation,
+                                       foreign_keys=[organisation])
 
     def __init__(self,
                  form: int,
@@ -121,10 +141,30 @@ class Download(Base):
         }
 
     @property
-    def response(self) -> DownloadRequestResponse:
+    def response(self) -> DownloadResponse:
         return {
             "id": self.id,
             "form": self.form,
             "data": self.data,
             "organisation": self.organisation,
+        }
+
+    @property
+    def list_of_download_request(self) -> DownloadRequestedDict:
+        form_type = None
+        if self.form in MEMBER_SURVEY:
+            form_type = "member"
+        if self.form in PROJECT_SURVEY:
+            form_type = "project"
+        status = DownloadStatusType.pending.value
+        if self.approved_by:
+            status = DownloadStatusType.approved.value
+        return {
+            "id": self.id,
+            "organisation": self.organisation_detail.name,
+            "form_type": form_type,
+            "request_by": self.request_by,
+            "request_by_name": self.request_by_user.name,
+            "request_date": self.created.strftime("%B %d, %Y"),
+            "status": status
         }

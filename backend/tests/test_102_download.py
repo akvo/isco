@@ -56,3 +56,26 @@ class TestDownloadRoute():
         assert res.status_code == 200
         res = res.json()
         assert res["data"][0]["status"] == "pending"
+
+    @pytest.mark.asyncio
+    async def test_get_requested_download_list(self, app: FastAPI,
+                                               session: Session,
+                                               client: AsyncClient) -> None:
+        res = await client.get(
+            app.url_path_for("download:requested_list"),
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 200
+        res = res.json()
+        assert res["current"] == 1
+        assert res["total"] is not None
+        assert res["total_page"] is not None
+        assert len(res["data"]) > 0
+        assert res["data"][0] == {
+            "id": 1,
+            "organisation": "Akvo",
+            "form_type": "member",
+            "request_by": 1,
+            "request_by_name": "John Doe",
+            "request_date": today,
+            "status": "pending"
+        }
