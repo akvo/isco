@@ -8,7 +8,8 @@ import db.crud_download as crud
 import db.crud_data as crud_data
 import util.report as report
 from models.download import DataDownloadResponse, DownloadRequestResponse
-from middleware import verify_user
+from middleware import verify_user, find_secretariat_admins
+from util.mailer import Email, MailTypeEnum
 
 security = HTTPBearer()
 download_route = APIRouter()
@@ -75,4 +76,10 @@ def request_new_download(req: Request,
                                  form=data["form"]["id"],
                                  organisation=data["organisation"]["id"],
                                  file=file)
+    secretariat_admins = find_secretariat_admins(
+        session=session, organisation=user.organisation)
+    if download and secretariat_admins:
+        email = Email(recipients=[a.recipient for a in secretariat_admins],
+                      type=MailTypeEnum.data_download_requested)
+        email.send
     return download.response
