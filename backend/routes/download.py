@@ -8,8 +8,9 @@ import db.crud_download as crud
 import db.crud_data as crud_data
 import util.report as report
 from models.download import DataDownloadResponse, DownloadResponse
-from models.download import DownloadRequestedResponse
-from middleware import verify_user, find_secretariat_admins, verify_super_admin
+from models.download import DownloadRequestedResponse, DownloadRequestedDict
+from middleware import verify_user, find_secretariat_admins
+from middleware import verify_super_admin, organisations_in_same_isco
 from util.mailer import Email, MailTypeEnum
 
 security = HTTPBearer()
@@ -117,3 +118,40 @@ def request_new_download(req: Request,
                       type=MailTypeEnum.data_download_requested)
         email.send
     return download.response
+
+
+@download_route.get("/download/view/{uuid}",
+                    summary="view requested download file",
+                    response_model=str,
+                    name="download:view",
+                    tags=["Download"])
+def view_requested_download(req: Request,
+                            uuid: str,
+                            session: Session = Depends(get_session),
+                            credentials: credentials = Depends(security)):
+    download = crud.get_by_uuid(session=session, uuid=uuid)
+    # TODO:: How we can get the data? download it or can we just view it?
+    return download
+
+
+@download_route.put("/download/{uuid:path}",
+                    summary="approve or reject download request",
+                    response_model=DownloadRequestedDict,
+                    name="download:update",
+                    tags=["Download"])
+def update_download_status(req: Request,
+                           uuid: str,
+                           approved: bool,
+                           session: Session = Depends(get_session),
+                           credentials: credentials = Depends(security)):
+    admin = verify_super_admin(
+        session=session, authenticated=req.state.authenticated)
+    org_ids = organisations_in_same_isco(
+        session=session, organisation=admin.organisation)
+    data = crud.get_by_uuid(session=session, uuid=uuid)
+    # validate secretariat admin
+    if data and data.organisation not in org_ids:
+        raise HTTPException(status_code=403, detail="Forbidden access")
+    update = crud.update_download(
+        session=session, uuid=uuid, approved_by=admin.id, approved=approved)
+    return update.list_of_download_request

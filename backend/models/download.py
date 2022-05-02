@@ -30,6 +30,7 @@ class DownloadResponse(TypedDict):
 class DownloadStatusType(enum.Enum):
     approved = 'approved'
     pending = 'pending'
+    rejected = 'rejected'
 
 
 class DownloadDict(TypedDict):
@@ -67,6 +68,7 @@ class DataDownloadResponse(BaseModel):
 
 class DownloadRequestedDict(TypedDict):
     id: int
+    uuid: str
     organisation: str
     form_type: str
     request_by: int
@@ -157,10 +159,13 @@ class Download(Base):
         if self.form in PROJECT_SURVEY:
             form_type = "project"
         status = DownloadStatusType.pending.value
-        if self.approved_by:
+        if self.approved_by and self.expired:
             status = DownloadStatusType.approved.value
+        if self.approved_by and not self.expired:
+            status = DownloadStatusType.rejected.value
         return {
             "id": self.id,
+            "uuid": str(self.uuid),
             "organisation": self.organisation_detail.name,
             "form_type": form_type,
             "request_by": self.request_by,

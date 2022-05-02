@@ -1,3 +1,5 @@
+from datetime import datetime
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
 from models.download import Download, DownloadStatusType
@@ -19,6 +21,20 @@ def new_download(session: Session, user: int, form: int, data: int,
     return download
 
 
+def update_download(session: Session,
+                    uuid: str,
+                    approved_by: int,
+                    approved: bool) -> DownloadRequestedDict:
+    download = get_by_uuid(session=session, uuid=uuid)
+    download.approved_by = approved_by
+    if approved:
+        download.expired = datetime.now()
+    session.commit()
+    session.flush()
+    session.refresh(download)
+    return download
+
+
 def get_status(session: Session, user: int, data: int) -> DownloadStatusType:
     download = session.query(Download).filter(
         and_(Download.data == data, Download.request_by == user)).first()
@@ -27,6 +43,20 @@ def get_status(session: Session, user: int, data: int) -> DownloadStatusType:
             return DownloadStatusType.approved
         return DownloadStatusType.pending
     return None
+
+
+def get_by_id(session: Session, id: int):
+    download = session.query(Download).filter(Download.id == id).first()
+    if not download:
+        raise HTTPException(status_code=404, detail="Not found")
+    return download
+
+
+def get_by_uuid(session: Session, uuid: str):
+    download = session.query(Download).filter(Download.uuid == uuid).first()
+    if not download:
+        raise HTTPException(status_code=404, detail="Not found")
+    return download
 
 
 def get_requested_download_list(session: Session,
