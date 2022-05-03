@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from db.connection import get_session
 import db.crud_download as crud
 import db.crud_data as crud_data
+import db.crud_user as crud_user
 import util.report as report
 import util.storage as storage
 from models.download import DataDownloadResponse, DownloadResponse
@@ -190,5 +191,10 @@ def update_download_status(req: Request,
         raise HTTPException(status_code=403, detail="Forbidden access")
     update = crud.update_download(
         session=session, uuid=uuid, approved_by=admin.id, approved=approved)
-    # TODO:: Send approved/rejected email
+    # TODO:: Send rejected email
+    user = crud_user.get_user_by_id(session=session, id=data.request_by)
+    if user and approved:
+        email = Email(recipients=[user.recipient],
+                      type=MailTypeEnum.data_download_approved)
+        email.send
     return update.list_of_download_request

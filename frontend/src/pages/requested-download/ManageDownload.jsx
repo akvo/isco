@@ -20,31 +20,36 @@ const ButtonApproveReject = ({
   record,
   isApprove,
   isReject,
-}) => (
-  <Space>
-    <Popconfirm
-      title="Are you sure want to approve this download request?"
-      okText="Approve"
-      cancelText="Cancel"
-      onConfirm={() => handleApproveRejectRequest(record, true)}
-    >
-      <Button size="small" type="primary" loading={isApprove}>
-        Approve
-      </Button>
-    </Popconfirm>
-    <Popconfirm
-      title="Are you sure want to reject this download request?"
-      okText="Reject"
-      okButtonProps={{ type: "danger" }}
-      cancelText="Cancel"
-      onConfirm={() => handleApproveRejectRequest(record, false)}
-    >
-      <Button size="small" type="primary" danger loading={isReject}>
-        Reject
-      </Button>
-    </Popconfirm>
-  </Space>
-);
+}) => {
+  const enableReject = false;
+  return (
+    <Space>
+      <Popconfirm
+        title="Are you sure want to approve this download request?"
+        okText="Approve"
+        cancelText="Cancel"
+        onConfirm={() => handleApproveRejectRequest(record, true)}
+      >
+        <Button size="small" type="primary" loading={isApprove}>
+          Approve
+        </Button>
+      </Popconfirm>
+      {enableReject && (
+        <Popconfirm
+          title="Are you sure want to reject this download request?"
+          okText="Reject"
+          okButtonProps={{ type: "danger" }}
+          cancelText="Cancel"
+          onConfirm={() => handleApproveRejectRequest(record, false)}
+        >
+          <Button size="small" type="primary" danger loading={isReject}>
+            Reject
+          </Button>
+        </Popconfirm>
+      )}
+    </Space>
+  );
+};
 
 const ManageDownload = () => {
   const { notify } = useNotification();
