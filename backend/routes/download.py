@@ -153,6 +153,23 @@ def view_requested_download(req: Request,
     return FileResponse(location)
 
 
+@download_route.get("/download/file/{uuid}",
+                    summary="view requested download file",
+                    response_model=dict,
+                    name="download:file",
+                    tags=["Download"])
+def get_download_file(req: Request,
+                      uuid: str,
+                      session: Session = Depends(get_session),
+                      credentials: credentials = Depends(security)):
+    user = verify_user(session=session, authenticated=req.state.authenticated)
+    download = crud.get_by_uuid(session=session, uuid=uuid)
+    if download and download.request_by != user.id and download.expired:
+        raise HTTPException(status_code=403, detail="Forbidden access")
+    location = storage.download(url=download.file)
+    return FileResponse(location)
+
+
 @download_route.put("/download/{uuid:path}",
                     summary="approve or reject download request",
                     response_model=DownloadRequestedDict,
