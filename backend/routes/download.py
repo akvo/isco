@@ -8,6 +8,7 @@ from db.connection import get_session
 import db.crud_download as crud
 import db.crud_data as crud_data
 import db.crud_user as crud_user
+import db.crud_organisation as crud_organisation
 import util.report as report
 import util.storage as storage
 from models.download import DataDownloadResponse, DownloadResponse
@@ -128,7 +129,22 @@ def request_new_download(req: Request,
     secretariat_admins = find_secretariat_admins(
         session=session, organisation=user.organisation)
     if download and secretariat_admins:
+        organisation = crud_organisation.get_organisation_by_id(
+            session=session, id=user.organisation)
+        body = f'''<div>
+                {user.name} ({organisation.name}) has requested for a data
+                download. Please review the download file in the tool and
+                approve. The user will then receive a notification.
+                </div>'''
+        body_translation = f'''<div>
+                {user.name} ({organisation.name}) hat einen Datendownload
+                angefordert. Bitte überprüfen Sie die heruntergeladene Datei
+                im Tool und genehmigen Sie diese. Der Benutzer wird dann eine
+                Benachrichtigung erhalten.
+                </div>'''
         email = Email(recipients=[a.recipient for a in secretariat_admins],
+                      body=body,
+                      body_translation=body_translation,
                       type=MailTypeEnum.data_download_requested)
         email.send
     return download.response

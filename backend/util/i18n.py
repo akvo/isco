@@ -205,17 +205,8 @@ class EmailText(enum.Enum):
         "title_translation": None,
         "subject": '''Data Download Request
                     | Anfrage zum Herunterladen von Daten''',
-        "body": '''<div>
-                A user has requested for a data download. Please review the
-                download file in the tool and approve. The user will then
-                receive a notification.
-                </div>''',
-        "body_translation": '''<div>
-                ein Nutzer hat einen Datendownload angefordert. Bitte
-                überprüfen Sie die heruntergeladene Datei im Tool und
-                genehmigen Sie diese. Der Benutzer wird dann eine
-                Benachrichtigung erhalten.
-                </div>''',
+        "body": None,
+        "body_translation": None,
         "message": None,
         "image": None,
         "button": None,
