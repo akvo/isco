@@ -6,51 +6,19 @@ import { uiText } from "../../static";
 import _ from "lodash";
 
 const { Title } = Typography;
+const { Option } = Select;
 
 const SubmissionProgress = () => {
-  const { isLoggedIn, language, user } = store.useState((s) => s);
+  const { isLoggedIn, language, user, optionValues } = store.useState((s) => s);
   const { active: activeLang } = language;
-
-  const organisation = [
-    {
-      id: 1,
-      code: null,
-      name: "staff Akvo",
-      active: true,
-      member_type: [7],
-      member: ["Other"],
-      isco_type: [1],
-      isco: ["All"],
-    },
-    {
-      id: 2,
-      code: null,
-      name: "staff GISCO secretariat",
-      active: true,
-      member_type: [7],
-      member: ["Other"],
-      isco_type: [2],
-      isco: ["GISCO"],
-    },
-    {
-      id: 3,
-      code: null,
-      name: "staff SWISSCO secretariat",
-      active: true,
-      member_type: [7],
-      member: ["Other"],
-      isco_type: [2],
-      isco: ["GISCO"],
-    },
-  ];
+  const { organisationInSameIsco } = optionValues;
 
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const showOrganisationFilter = user?.role === "secretariat_admin";
-  const [organisationValue, setOrganisationValue] = useState([]);
-  const [showNonsubmittedMember, setShowNonsubmittedMember] = useState(false);
-  const [orgFilter, setOrgFilter] = useState(null);
+  const [orgValue, setOrgValue] = useState(null);
+  const [showNonSubmittedMember, setShowNonSubmittedMember] = useState(false);
 
   const text = useMemo(() => {
     return uiText[activeLang];
@@ -98,73 +66,86 @@ const SubmissionProgress = () => {
     },
   ];
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      setIsLoading(true);
-      api
-        .get("/submission/progress")
-        .then((res) => {
-          const { data } = res;
-          let transformData = data.map((d) => {
-            const { organisation, form_type, submitted, count } = d;
-            let res = {
-              organisation: organisation,
-              form_type: form_type,
-              memberSaved: 0,
-              memberSubmitted: 0,
-              projectSaved: 0,
-              projectSubmitted: 0,
+  const handleOrganisationFilter = (org) => {
+    setOrgValue(org);
+  };
+
+  const handleShowNonSubmittedQuestionnaireCheckbox = (e) => {
+    setShowNonSubmittedMember(e.target.checked);
+  };
+
+  const fetchData = (endpoint) => {
+    setIsLoading(true);
+    api
+      .get(endpoint)
+      .then((res) => {
+        const { data } = res;
+        let transformData = data.map((d) => {
+          const { organisation, form_type, submitted, count } = d;
+          let res = {
+            organisation: organisation,
+            form_type: form_type,
+            memberSaved: 0,
+            memberSubmitted: 0,
+            projectSaved: 0,
+            projectSubmitted: 0,
+          };
+          if (form_type === "member") {
+            res = {
+              ...res,
+              memberSaved: submitted ? 0 : count,
+              memberSubmitted: submitted ? count : 0,
             };
-            if (form_type === "member") {
-              res = {
-                ...res,
-                memberSaved: submitted ? 0 : count,
-                memberSubmitted: submitted ? count : 0,
-              };
-            }
-            if (form_type === "project") {
-              res = {
-                ...res,
-                projectSaved: submitted ? 0 : count,
-                projectSubmitted: submitted ? count : 0,
-              };
-            }
-            return res;
-          });
-          transformData = _.chain(transformData)
-            .groupBy("organisation")
-            .flatMap((value) => {
-              const reduce = _.reduce(value, (sum, n) => {
-                sum["projectSaved"] = sum.projectSaved + n.projectSaved;
-                sum["projectSubmitted"] =
-                  sum.projectSubmitted + n.projectSubmitted;
-                sum["memberSaved"] = sum.memberSaved + n.memberSaved;
-                sum["memberSubmitted"] =
-                  sum.memberSubmitted + n.memberSubmitted;
-                return sum;
-              });
-              return reduce;
-            })
-            .value();
-          setData(transformData);
-        })
-        .catch((e) => {
-          console.error(e);
-          setData([]);
-        })
-        .finally(() => {
-          setIsLoading(false);
+          }
+          if (form_type === "project") {
+            res = {
+              ...res,
+              projectSaved: submitted ? 0 : count,
+              projectSubmitted: submitted ? count : 0,
+            };
+          }
+          return res;
         });
+        transformData = _.chain(transformData)
+          .groupBy("organisation")
+          .flatMap((value) => {
+            const reduce = _.reduce(value, (sum, n) => {
+              sum["projectSaved"] = sum.projectSaved + n.projectSaved;
+              sum["projectSubmitted"] =
+                sum.projectSubmitted + n.projectSubmitted;
+              sum["memberSaved"] = sum.memberSaved + n.memberSaved;
+              sum["memberSubmitted"] = sum.memberSubmitted + n.memberSubmitted;
+              return sum;
+            });
+            return reduce;
+          })
+          .value();
+        setData(transformData);
+      })
+      .catch((e) => {
+        console.error(e);
+        setData([]);
+      })
+      .finally(() => setIsLoading(false));
+  };
+
+  useEffect(() => {
+    let endpoint = "/submission/progress";
+    if (orgValue) {
+      endpoint = `${endpoint}?organisation=${orgValue}`;
+    }
+    if (showNonSubmittedMember) {
+      endpoint = `${endpoint}&member_not_submitted=${showNonSubmittedMember}`;
+    }
+    fetchData(endpoint);
+  }, [orgValue, showNonSubmittedMember]);
+
+  useEffect(() => {
+    const endpoint = "/submission/progress";
+    if (isLoggedIn) {
+      fetchData(endpoint);
     }
   }, [isLoggedIn]);
-
-  const handleOrganisationFilter = (org) => {
-    setOrganisationValue(org);
-    setOrgFilter(org);
-  };
-  const handleShowNonsubmittedQuestionaire = () => {
-    setShowNonsubmittedMember(!showOrganisationFilter);
-  };
 
   return (
     <div id="submission-progress">
@@ -192,30 +173,38 @@ const SubmissionProgress = () => {
                 {showOrganisationFilter && (
                   <Select
                     style={{ width: "20rem" }}
+                    allowClear
                     showSearch
                     placeholder="Organization"
-                    options={
-                      organisation.length
-                        ? organisation.map((o) => ({
-                            label: o.name,
-                            value: o.id,
-                          }))
-                        : []
-                    }
+                    optionFilterProp="children"
+                    value={orgValue}
                     onChange={handleOrganisationFilter}
-                    value={organisationValue}
-                  />
+                    onSearch={(org) => console.log(org)}
+                    filterOption={(input, option) =>
+                      option.children
+                        .toLowerCase()
+                        .indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {organisationInSameIsco.length
+                      ? organisationInSameIsco.map((o) => (
+                          <Option value={o.id} key={o.id}>
+                            {o.name}
+                          </Option>
+                        ))
+                      : []}
+                  </Select>
                 )}
               </Space>
             </Col>
             <Col align="end">
               <Space align="center">
                 <span>
-                  Show organisation which does not have submitted member
+                  Show organisation which has no submitted member questionnaire
                 </span>
                 <Checkbox
-                  value={showNonsubmittedMember}
-                  onChange={handleShowNonsubmittedQuestionaire}
+                  checked={showNonSubmittedMember}
+                  onChange={handleShowNonSubmittedQuestionnaireCheckbox}
                 />
               </Space>
             </Col>
