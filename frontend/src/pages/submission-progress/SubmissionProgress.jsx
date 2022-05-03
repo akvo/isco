@@ -135,7 +135,7 @@ const SubmissionProgress = () => {
       endpoint = `${endpoint}?organisation=${orgValue}`;
     }
     if (showNonSubmittedMember) {
-      let separator = orgValue ? "&" : "?";
+      const separator = orgValue ? "&" : "?";
       endpoint = `${endpoint}${separator}member_not_submitted=${showNonSubmittedMember}`;
     }
     fetchData(endpoint);
