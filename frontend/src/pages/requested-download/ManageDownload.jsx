@@ -30,7 +30,7 @@ const ButtonApproveReject = ({
         cancelText="Cancel"
         onConfirm={() => handleApproveRejectRequest(record, true)}
       >
-        <Button size="small" type="primary" loading={isApprove}>
+        <Button size="small" type="primary" loading={isApprove === record?.id}>
           Approve
         </Button>
       </Popconfirm>
@@ -42,7 +42,12 @@ const ButtonApproveReject = ({
           cancelText="Cancel"
           onConfirm={() => handleApproveRejectRequest(record, false)}
         >
-          <Button size="small" type="primary" danger loading={isReject}>
+          <Button
+            size="small"
+            type="primary"
+            danger
+            loading={isReject === record?.id}
+          >
             Reject
           </Button>
         </Popconfirm>
@@ -54,9 +59,9 @@ const ButtonApproveReject = ({
 const ManageDownload = () => {
   const { notify } = useNotification();
   const [isLoading, setIsLoading] = useState(false);
-  const [isApprove, setIsApprove] = useState(false);
-  const [isReject, setIsReject] = useState(false);
-  const [isView, setIsView] = useState(false);
+  const [isApprove, setIsApprove] = useState(null);
+  const [isReject, setIsReject] = useState(null);
+  const [isView, setIsView] = useState(null);
   const [viewData, setViewData] = useState(null);
   const [modalViewVisible, setModalViewVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
@@ -71,9 +76,9 @@ const ManageDownload = () => {
   });
 
   const handleApproveRejectRequest = (record, approve) => {
-    approve ? setIsApprove(true) : setIsReject(true);
     const approved = approve ? 1 : 0;
-    const { uuid } = record;
+    const { uuid, id } = record;
+    approve ? setIsApprove(id) : setIsReject(id);
     api
       .put(`/download/${uuid}?approved=${approved}`)
       .then((res) => {
@@ -100,14 +105,14 @@ const ManageDownload = () => {
         });
       })
       .finally(() => {
-        approve ? setIsApprove(false) : setIsReject(false);
+        approve ? setIsApprove(null) : setIsReject(null);
         setModalViewVisible(false);
       });
   };
 
   const handleViewRequest = (record) => {
-    setIsView(true);
-    const { uuid } = record;
+    const { uuid, id } = record;
+    setIsView(id);
     api
       .get(`/download/view/${uuid}`)
       .then((res) => {
@@ -119,7 +124,7 @@ const ManageDownload = () => {
         console.error(e);
       })
       .finally(() => {
-        setIsView(false);
+        setIsView(null);
       });
   };
 
@@ -162,7 +167,7 @@ const ManageDownload = () => {
               type="primary"
               ghost
               onClick={() => handleViewRequest(record)}
-              loading={isView}
+              loading={isView === record?.id}
             >
               View
             </Button>
