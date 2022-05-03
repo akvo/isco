@@ -27,6 +27,7 @@ import { defaultOption, defaultRepeatingObject } from "../../lib/store";
 import { generateID, insert } from "../../lib/util";
 import { isoLangs } from "../../lib";
 import { generateDisabledOptions } from "./QuestionGroupEditor";
+import { useNotification } from "../../util";
 
 const { TabPane } = Tabs;
 
@@ -169,6 +170,7 @@ const Detail = ({
   setAllowOther,
   allowOther,
 }) => {
+  const { notify } = useNotification();
   const surveyEditor = store.useState((s) => s?.surveyEditor);
   const tempStorage = store.useState((s) => s?.tempStorage);
   const { cascade, nested } = store.useState((s) => s?.optionValues);
@@ -246,6 +248,22 @@ const Detail = ({
     }
 
     if (operation === "remove") {
+      // Check if option use in skip logic
+      const allSkipLogic = questionGroupState?.flatMap((qg) =>
+        qg?.question?.flatMap((q) => q?.skip_logic)
+      );
+      const lookup = allSkipLogic
+        ?.filter((x) => x?.dependent_to === opt?.question)
+        .flatMap((x) => x.value.split("|").map((v) => parseInt(v)));
+      const check = lookup.some((val) => val === opt.id);
+      if (check) {
+        notify({
+          type: "warning",
+          message: `Can't delete option ${opt.name}, because this option is used in dependency.`,
+        });
+        return;
+      }
+      // end check
       updatedOption = question?.option?.filter((op) => op?.id !== opt?.id);
       // reordering option
       updatedOption = orderBy(updatedOption, ["order"]).map((o, oi) => ({

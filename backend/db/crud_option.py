@@ -3,6 +3,8 @@ from typing import List
 from sqlalchemy.orm import Session
 from models.option import Option, OptionBase
 from models.option import OptionDict, OptionPayload
+import db.crud_skip_logic as crud_skip_logic
+from models.question import QuestionType
 
 
 def add_option(session: Session, payload: OptionPayload):
@@ -47,6 +49,23 @@ def update_option(session: Session,
 
 def delete_option(session: Session, id: int):
     option = get_option_by_id(session=session, id=id)
+    # check if option used in skip logic
+    skip = crud_skip_logic.get_skip_logic_by_dependent(
+        session=session, question=[option.question], check_option=True)
+    if skip:
+        skip_values = [sk.serialize for sk in skip]
+        values = []
+        for sv in skip_values:
+            option = sv['type'].value == QuestionType.option.value
+            multiple = sv['type'].value == QuestionType.multiple_option.value
+            if option or multiple:
+                temp = sv['value'].split("|")
+                for t in temp:
+                    values.append(int(t))
+        if id in values:
+            raise HTTPException(
+                status_code=422,
+                detail="This option used as a dependency for other question")
     session.delete(option)
     session.commit()
     session.flush()
