@@ -6,6 +6,7 @@ import { uiText } from "../../static";
 import _ from "lodash";
 
 const { Title } = Typography;
+const { Option } = Select;
 
 const SubmissionProgress = () => {
   const { isLoggedIn, language, user, optionValues } = store.useState((s) => s);
@@ -16,7 +17,7 @@ const SubmissionProgress = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const showOrganisationFilter = user?.role === "secretariat_admin";
-  const [orgValue, setOrgValue] = useState([]);
+  const [orgValue, setOrgValue] = useState(null);
   const [showNonSubmittedMember, setShowNonSubmittedMember] = useState(false);
 
   const text = useMemo(() => {
@@ -69,8 +70,8 @@ const SubmissionProgress = () => {
     setOrgValue(org);
   };
 
-  const handleShowNonSubmittedQuestionnaireCheckbox = () => {
-    setShowNonSubmittedMember(!showNonSubmittedMember);
+  const handleShowNonSubmittedQuestionnaireCheckbox = (e) => {
+    setShowNonSubmittedMember(e.target.checked);
   };
 
   const fetchData = (endpoint) => {
@@ -129,7 +130,14 @@ const SubmissionProgress = () => {
   };
 
   useEffect(() => {
-    const endpoint = `/submission/progress?organisation=${orgValue}&member_not_submitted=${showNonSubmittedMember}`;
+    let endpoint = "/submission/progress";
+    if (orgValue) {
+      endpoint = `${endpoint}?organisation=${orgValue}`;
+    }
+    if (showNonSubmittedMember) {
+      let separator = orgValue ? "&" : "?";
+      endpoint = `${endpoint}${separator}member_not_submitted=${showNonSubmittedMember}`;
+    }
     fetchData(endpoint);
   }, [orgValue, showNonSubmittedMember]);
 
@@ -166,19 +174,26 @@ const SubmissionProgress = () => {
                 {showOrganisationFilter && (
                   <Select
                     style={{ width: "20rem" }}
+                    allowClear
                     showSearch
                     placeholder="Organization"
-                    options={
-                      organisationInSameIsco.length
-                        ? organisationInSameIsco.map((o) => ({
-                            label: o.name,
-                            value: o.id,
-                          }))
-                        : []
-                    }
-                    onChange={handleOrganisationFilter}
+                    optionFilterProp="children"
                     value={orgValue}
-                  />
+                    onChange={handleOrganisationFilter}
+                    filterOption={(input, option) =>
+                      option.children
+                        .toLowerCase()
+                        .indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {organisationInSameIsco.length
+                      ? organisationInSameIsco.map((o) => (
+                          <Option value={o.id} key={o.id}>
+                            {o.name}
+                          </Option>
+                        ))
+                      : []}
+                  </Select>
                 )}
               </Space>
             </Col>
@@ -188,7 +203,7 @@ const SubmissionProgress = () => {
                   Show organisation which has no submitted member questionnaire
                 </span>
                 <Checkbox
-                  value={showNonSubmittedMember}
+                  checked={showNonSubmittedMember}
                   onChange={handleShowNonSubmittedQuestionnaireCheckbox}
                 />
               </Space>
