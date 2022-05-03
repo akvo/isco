@@ -2,16 +2,19 @@ from math import ceil
 from fastapi import Depends, Request, APIRouter, HTTPException
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from db.connection import get_session
 import db.crud_download as crud
 import db.crud_data as crud_data
 import util.report as report
+import util.storage as storage
 from models.download import DataDownloadResponse, DownloadResponse
 from models.download import DownloadRequestedResponse, DownloadRequestedDict
 from middleware import verify_user, find_secretariat_admins
 from middleware import verify_super_admin, organisations_in_same_isco
 from util.mailer import Email, MailTypeEnum
+
 
 security = HTTPBearer()
 download_route = APIRouter()
@@ -129,9 +132,15 @@ def view_requested_download(req: Request,
                             uuid: str,
                             session: Session = Depends(get_session),
                             credentials: credentials = Depends(security)):
+    admin = verify_super_admin(
+        session=session, authenticated=req.state.authenticated)
+    org_ids = organisations_in_same_isco(
+        session=session, organisation=admin.organisation)
     download = crud.get_by_uuid(session=session, uuid=uuid)
-    # TODO:: How we can get the data? download it or can we just view it?
-    return download
+    if download and download.organisation not in org_ids:
+        raise HTTPException(status_code=403, detail="Forbidden access")
+    location = storage.download(url=download.file)
+    return FileResponse(location)
 
 
 @download_route.put("/download/{uuid:path}",

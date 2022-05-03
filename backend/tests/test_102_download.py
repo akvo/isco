@@ -85,6 +85,24 @@ class TestDownloadRoute():
         }
 
     @pytest.mark.asyncio
+    async def test_view_download_request(self, app: FastAPI,
+                                         session: Session,
+                                         client: AsyncClient) -> None:
+        download = crud.get_by_id(session=session, id=1)
+        uuid = str(download.uuid)
+        # viewed by different isco secretariat admin
+        not_valid_account = Acc(email="galih@test.org", token=None)
+        res = await client.get(
+            app.url_path_for("download:view", uuid=uuid),
+            headers={"Authorization": f"Bearer {not_valid_account.token}"})
+        assert res.status_code == 403
+        # viewed by same isco secretariat admin
+        res = await client.get(
+            app.url_path_for("download:view", uuid=uuid),
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 200
+
+    @pytest.mark.asyncio
     async def test_approve_download_request(self, app: FastAPI,
                                             session: Session,
                                             client: AsyncClient) -> None:
