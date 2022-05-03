@@ -78,8 +78,9 @@ def generate_webform_json(session: Session, id: int):
     # add default lang into form languages
     default_lang = ["en"]
     if "languages" in form:
-        for lang in form["languages"]:
-            default_lang.append(lang)
+        if form["languages"]:
+            for lang in form["languages"]:
+                default_lang.append(lang)
         form['languages'] = default_lang
     # Sort question group by order
     form['question_group'].sort(key=get_order)
