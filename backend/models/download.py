@@ -48,6 +48,7 @@ class DownloadDict(TypedDict):
 
 class DataDownloadDict(TypedDict):
     id: int
+    uuid: Optional[str] = None
     form: str
     form_type: str
     name: str
@@ -57,6 +58,7 @@ class DataDownloadDict(TypedDict):
     submitted_by: str
     submitted: Optional[str] = None
     status: Optional[DownloadStatusType] = None
+    expired: Optional[str] = None
 
 
 class DataDownloadResponse(BaseModel):
@@ -171,5 +173,21 @@ class Download(Base):
             "request_by": self.request_by,
             "request_by_name": self.request_by_user.name,
             "request_date": self.created.strftime("%B %d, %Y"),
+            "status": status
+        }
+
+    @property
+    def simplified(self):
+        status = DownloadStatusType.pending.value
+        if self.approved_by and self.expired:
+            status = DownloadStatusType.approved.value
+        if self.approved_by and not self.expired:
+            status = DownloadStatusType.rejected.value
+        expired = None
+        if self.expired:
+            expired = self.expired.strftime("%B %d, %Y")
+        return {
+            "uuid": str(self.uuid) if self.uuid else None,
+            "expired": expired,
             "status": status
         }

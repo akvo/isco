@@ -50,8 +50,18 @@ def get_available_downloads(
         raise HTTPException(status_code=404, detail="Not found")
     data = [d.simplified for d in data]
     for d in data:
-        status = crud.get_status(session=session, user=user.id, data=d["id"])
+        download = crud.get_status(session=session, user=user.id, data=d["id"])
+        status = None
+        uuid = None
+        expired = None
+        if download:
+            download = download.simplified
+            status = download['status']
+            uuid = download['uuid']
+            expired = download['expired']
         d.update({"status": status})
+        d.update({"uuid": uuid})
+        d.update({"expired": expired})
     return {
         'current': page,
         'data': data,

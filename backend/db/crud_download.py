@@ -2,8 +2,7 @@ from datetime import datetime, timedelta
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
-from models.download import Download, DownloadStatusType
-from models.download import DownloadRequestedDict
+from models.download import Download, DownloadRequestedDict
 from middleware import organisations_in_same_isco
 
 
@@ -37,14 +36,10 @@ def update_download(session: Session,
     return download
 
 
-def get_status(session: Session, user: int, data: int) -> DownloadStatusType:
+def get_status(session: Session, user: int, data: int):
     download = session.query(Download).filter(
         and_(Download.data == data, Download.request_by == user)).first()
-    if download:
-        if download.approved_by:
-            return DownloadStatusType.approved
-        return DownloadStatusType.pending
-    return None
+    return download
 
 
 def get_by_id(session: Session, id: int):

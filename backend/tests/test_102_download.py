@@ -29,6 +29,7 @@ class TestDownloadRoute():
         assert len(res["data"]) > 0
         assert res["data"][0] == {
             'id': 1,
+            'uuid': None,
             'form': "Form Test",
             'form_type': "member",
             'name': 'Depend to Q1 Option 1',
@@ -38,6 +39,7 @@ class TestDownloadRoute():
             'created': today,
             'status': None,
             'created_by': 'John Doe',
+            'expired': None
         }
 
     @pytest.mark.asyncio
