@@ -60,10 +60,12 @@ def delete_skip_logic(session: Session, id: int):
     session.flush()
 
 
-def get_skip_logic_by_dependent(session: Session, question: List[int]):
+def get_skip_logic_by_dependent(session: Session,
+                                question: List[int],
+                                check_option: bool = False):
     skip_logic = session.query(SkipLogic).filter(
         SkipLogic.dependent_to.in_(question)).all()
-    if skip_logic:
+    if skip_logic and not check_option:
         raise HTTPException(
             status_code=422,
             detail="This question used as a dependency for other question")

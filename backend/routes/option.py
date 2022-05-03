@@ -57,9 +57,7 @@ def update(req: Request, id: int, payload: OptionPayload,
 
 
 @option_route.delete("/option/{id:path}",
-                     responses={204: {
-                       "model": None
-                       }},
+                     responses={204: {"model": None}},
                      status_code=HTTPStatus.NO_CONTENT,
                      summary="delete option by id",
                      name="option:delete",

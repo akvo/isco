@@ -108,7 +108,7 @@ const QuestionEditor = ({
   const [allowDecimal, setAllowDecimal] = useState(false);
   const [mandatory, setMandatory] = useState(false);
   const [personalData, setPersonalData] = useState(false);
-  const [activeLang, setActiveLang] = useState(surveyEditor?.languages[0]);
+  const [activeLang, setActiveLang] = useState(surveyEditor?.languages?.[0]);
 
   useEffect(() => {
     if (qId) {

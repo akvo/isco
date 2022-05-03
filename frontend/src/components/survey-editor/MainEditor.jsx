@@ -34,7 +34,7 @@ const MainEditor = () => {
       const formFields = {
         "form-name": name,
         "form-description": description,
-        "form-languages": languages,
+        "form-languages": languages || [],
       };
       // set form fields initial value
       Object.keys(formFields).forEach((key) => {
