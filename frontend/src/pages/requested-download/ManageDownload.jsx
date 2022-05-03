@@ -1,14 +1,60 @@
 import React, { useEffect, useState } from "react";
 import "./style.scss";
-import { Row, Col, Table, Typography, Space, Button, Popconfirm } from "antd";
+import {
+  Row,
+  Col,
+  Table,
+  Typography,
+  Space,
+  Button,
+  Popconfirm,
+  Modal,
+} from "antd";
 import { api } from "../../lib";
 import { useNotification } from "../../util";
 
 const { Title } = Typography;
 
+const ButtonApproveReject = ({
+  handleApproveRejectRequest,
+  record,
+  isApprove,
+  isReject,
+}) => (
+  <Space>
+    <Popconfirm
+      title="Are you sure want to approve this download request?"
+      okText="Approve"
+      cancelText="Cancel"
+      onConfirm={() => handleApproveRejectRequest(record, true)}
+    >
+      <Button size="small" type="primary" loading={isApprove}>
+        Approve
+      </Button>
+    </Popconfirm>
+    <Popconfirm
+      title="Are you sure want to reject this download request?"
+      okText="Reject"
+      okButtonProps={{ type: "danger" }}
+      cancelText="Cancel"
+      onConfirm={() => handleApproveRejectRequest(record, false)}
+    >
+      <Button size="small" type="primary" danger loading={isReject}>
+        Reject
+      </Button>
+    </Popconfirm>
+  </Space>
+);
+
 const ManageDownload = () => {
   const { notify } = useNotification();
   const [isLoading, setIsLoading] = useState(false);
+  const [isApprove, setIsApprove] = useState(false);
+  const [isReject, setIsReject] = useState(false);
+  const [isView, setIsView] = useState(false);
+  const [viewData, setViewData] = useState(null);
+  const [modalViewVisible, setModalViewVisible] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState(null);
 
   const pageSize = 10;
   const [page, setPage] = useState(1);
@@ -20,6 +66,7 @@ const ManageDownload = () => {
   });
 
   const handleApproveRejectRequest = (record, approve) => {
+    approve ? setIsApprove(true) : setIsReject(true);
     const approved = approve ? 1 : 0;
     const { uuid } = record;
     api
@@ -46,6 +93,28 @@ const ManageDownload = () => {
           type: "error",
           message: "Something went wrong.",
         });
+      })
+      .finally(() => {
+        approve ? setIsApprove(false) : setIsReject(false);
+        setModalViewVisible(false);
+      });
+  };
+
+  const handleViewRequest = (record) => {
+    setIsView(true);
+    const { uuid } = record;
+    api
+      .get(`/download/view/${uuid}`)
+      .then((res) => {
+        setSelectedRecord(record);
+        setViewData(res?.data);
+        setModalViewVisible(true);
+      })
+      .catch((e) => {
+        console.error(e);
+      })
+      .finally(() => {
+        setIsView(false);
       });
   };
 
@@ -83,30 +152,21 @@ const ManageDownload = () => {
       render: (record) => {
         return (
           <Space>
-            <Button size="small" type="primary" ghost>
+            <Button
+              size="small"
+              type="primary"
+              ghost
+              onClick={() => handleViewRequest(record)}
+              loading={isView}
+            >
               View
             </Button>
-            <Popconfirm
-              title="Are you sure want to approve this download request?"
-              okText="Approve"
-              cancelText="Cancel"
-              onConfirm={() => handleApproveRejectRequest(record, true)}
-            >
-              <Button size="small" type="primary">
-                Approve
-              </Button>
-            </Popconfirm>
-            <Popconfirm
-              title="Are you sure want to reject this download request?"
-              okText="Reject"
-              okButtonProps={{ type: "danger" }}
-              cancelText="Cancel"
-              onConfirm={() => handleApproveRejectRequest(record, false)}
-            >
-              <Button size="small" type="primary" danger>
-                Reject
-              </Button>
-            </Popconfirm>
+            <ButtonApproveReject
+              handleApproveRejectRequest={handleApproveRejectRequest}
+              record={record}
+              isApprove={isApprove}
+              isReject={isReject}
+            />
           </Space>
         );
       },
@@ -164,6 +224,30 @@ const ManageDownload = () => {
           </Row>
         </Col>
       </Row>
+
+      {/* Modal View */}
+      <Modal
+        title="View Data"
+        visible={modalViewVisible}
+        onCancel={() => setModalViewVisible(false)}
+        centered
+        destroyOnClose
+        width="95vw"
+        className="download-view-modal"
+        footer={
+          <Space>
+            <Button onClick={() => setModalViewVisible(false)}>Close</Button>
+            <ButtonApproveReject
+              handleApproveRejectRequest={handleApproveRejectRequest}
+              record={selectedRecord}
+              isApprove={isApprove}
+              isReject={isReject}
+            />
+          </Space>
+        }
+      >
+        <iframe srcDoc={viewData} frameBorder="0" height="700vh" width="100%" />
+      </Modal>
     </div>
   );
 };

@@ -29,6 +29,8 @@ def update_download(session: Session,
     download.approved_by = approved_by
     if approved:
         download.expired = datetime.utcnow() + timedelta(days=1)
+    else:
+        download.expired = None
     session.commit()
     session.flush()
     session.refresh(download)
