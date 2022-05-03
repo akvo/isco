@@ -57,7 +57,7 @@ def get_available_downloads(
         uuid = None
         expired = None
         if download:
-            download = download.simplified
+            download = download.check_download_list
             status = download['status']
             uuid = download['uuid']
             expired = download['expired']

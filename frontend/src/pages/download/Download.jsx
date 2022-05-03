@@ -134,7 +134,7 @@ const Download = () => {
             </Button>
           );
         }
-        if (status === "pending") {
+        if (!status) {
           return (
             <Button
               className="action-btn"
@@ -144,6 +144,9 @@ const Download = () => {
               Request
             </Button>
           );
+        }
+        if (status === "pending") {
+          return "PENDING";
         }
       },
     },

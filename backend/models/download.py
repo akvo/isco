@@ -177,8 +177,10 @@ class Download(Base):
         }
 
     @property
-    def simplified(self):
-        status = DownloadStatusType.pending.value
+    def check_download_list(self):
+        status = None
+        if self.uuid:
+            status = DownloadStatusType.pending.value
         if self.approved_by and self.expired:
             status = DownloadStatusType.approved.value
         if self.approved_by and not self.expired:
