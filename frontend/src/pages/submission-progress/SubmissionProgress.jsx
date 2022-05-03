@@ -135,7 +135,8 @@ const SubmissionProgress = () => {
       endpoint = `${endpoint}?organisation=${orgValue}`;
     }
     if (showNonSubmittedMember) {
-      endpoint = `${endpoint}&member_not_submitted=${showNonSubmittedMember}`;
+      let separator = orgValue ? "&" : "?";
+      endpoint = `${endpoint}${separator}member_not_submitted=${showNonSubmittedMember}`;
     }
     fetchData(endpoint);
   }, [orgValue, showNonSubmittedMember]);
@@ -179,7 +180,6 @@ const SubmissionProgress = () => {
                     optionFilterProp="children"
                     value={orgValue}
                     onChange={handleOrganisationFilter}
-                    onSearch={(org) => console.log(org)}
                     filterOption={(input, option) =>
                       option.children
                         .toLowerCase()
