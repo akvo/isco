@@ -216,7 +216,7 @@ const Preview = () => {
                     const findOpt = findQ.option.find(
                       (o) => o.id === parseInt(id)
                     );
-                    return findOpt.name;
+                    return findOpt?.name || null;
                   });
                   return {
                     id: sk.dependent_to,

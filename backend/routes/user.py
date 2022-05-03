@@ -89,16 +89,18 @@ def get_all(req: Request,
             credentials: credentials = Depends(security)):
     admin = verify_super_admin(session=session,
                                authenticated=req.state.authenticated)
-    org_ids = None
+    # filter user by organisation in same isco
+    org_ids = organisations_in_same_isco(
+        session=session, organisation=admin.organisation)
+    # validate if organisation param not in same isco
+    if organisation and not list(set(org_ids) & set(organisation)):
+        raise HTTPException(status_code=403,
+                            detail="Forbidden access")
     if organisation:
         org_ids = organisation
     # if role member admin, filter user by member admin organisation id
     if admin.role == UserRole.member_admin:
         org_ids = [admin.organisation]
-    # filter user by organisation in same isco
-    if not organisation:
-        org_ids = organisations_in_same_isco(
-            session=session, organisation=admin.organisation)
     user = crud_user.get_all_user(session=session,
                                   search=search,
                                   organisation=org_ids,
