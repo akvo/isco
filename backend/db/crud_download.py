@@ -1,3 +1,4 @@
+from uuid import uuid4
 from datetime import datetime, timedelta
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
@@ -9,6 +10,7 @@ from middleware import organisations_in_same_isco
 def new_download(session: Session, user: int, form: int, data: int,
                  organisation: int, file: str) -> None:
     download = Download(form=form,
+                        uuid=str(uuid4()),
                         data=data,
                         organisation=organisation,
                         request_by=user,

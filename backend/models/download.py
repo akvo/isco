@@ -111,6 +111,7 @@ class Download(Base):
 
     def __init__(self,
                  form: int,
+                 uuid: str,
                  data: int,
                  organisation: int,
                  request_by: int,
@@ -118,6 +119,7 @@ class Download(Base):
                  approved_by: Optional[int] = None,
                  expired: Optional[datetime] = None):
         self.form = form
+        self.uuid = uuid
         self.data = data
         self.organisation = organisation
         self.file = file
