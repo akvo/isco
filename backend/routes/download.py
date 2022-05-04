@@ -119,6 +119,7 @@ def request_new_download(req: Request,
     user = verify_user(session=session, authenticated=req.state.authenticated)
     data = crud_data.get_data_by_id(session=session, id=data_id)
     data = data.to_report
+    data = report.get_cascade_value(data=data, session=session)
     detail = report.transform_data(answers=data["answer"], session=session)
     file = report.generate(data=data, detail=detail)
     download = crud.new_download(session=session,
