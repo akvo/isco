@@ -375,6 +375,11 @@ const ManageUser = () => {
                       }
                       onChange={handleOrganisationFilter}
                       value={organisationValue}
+                      filterOption={(input, option) =>
+                        option?.label
+                          ?.toLowerCase()
+                          .indexOf(input?.toLowerCase()) >= 0
+                      }
                     />
                     <Select
                       allowClear
@@ -391,6 +396,11 @@ const ManageUser = () => {
                       }
                       onChange={handleMemberFilter}
                       value={memberValue}
+                      filterOption={(input, option) =>
+                        option?.label
+                          ?.toLowerCase()
+                          .indexOf(input?.toLowerCase()) >= 0
+                      }
                     />
                     <Select
                       allowClear
@@ -407,6 +417,11 @@ const ManageUser = () => {
                       }
                       onChange={handleIscoFilter}
                       value={iscoValue}
+                      filterOption={(input, option) =>
+                        option?.label
+                          ?.toLowerCase()
+                          .indexOf(input?.toLowerCase()) >= 0
+                      }
                     />
                   </>
                 )}
