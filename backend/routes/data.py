@@ -356,8 +356,7 @@ def get_submission_progress(
     ).filter(Data.organisation.in_(org_ids)).group_by(
         Data.organisation, Data.form, Data.submitted).all()
     if not data:
-        raise HTTPException(status_code=404,
-                            detail="submission progress not found")
+        return []
     organisations = session.query(Organisation).filter(
         Organisation.id.in_(org_ids)).all()
     orgs_dict = {}
