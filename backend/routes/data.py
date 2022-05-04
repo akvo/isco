@@ -389,7 +389,6 @@ def get_submission_progress(
             if org in filter_orgs and filter_orgs[org]:
                 filtered.append(x)
         if not filtered:
-            raise HTTPException(status_code=404,
-                                detail="submission progress not found")
+            return res
         return filtered
     return res
