@@ -56,9 +56,9 @@ def delete_option(session: Session, id: int):
         skip_values = [sk.serialize for sk in skip]
         values = []
         for sv in skip_values:
-            option = sv['type'].value == QuestionType.option.value
-            multiple = sv['type'].value == QuestionType.multiple_option.value
-            if option or multiple:
+            toption = sv['type'].value == QuestionType.option.value
+            tmultiple = sv['type'].value == QuestionType.multiple_option.value
+            if toption or tmultiple:
                 temp = sv['value'].split("|")
                 for t in temp:
                     values.append(int(t))
