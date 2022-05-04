@@ -243,9 +243,9 @@ const Download = () => {
         <iframe
           srcDoc={downloadData}
           frameBorder="0"
-          height="700vh"
-          width="100%"
-          style={{ display: "none" }}
+          height={0}
+          width={0}
+          style={{ display: "none", position: "absolute", top: 0, left: 0 }}
         />
       )}
     </div>
