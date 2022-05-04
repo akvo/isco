@@ -396,7 +396,7 @@ def get_submission_progress(
             org = x['organisation']
             if org in filter_orgs and filter_orgs[org]:
                 filtered.append(x)
-            if org not in temp["member"]:
+            if "member" in temp and org not in temp["member"]:
                 filtered.append(x)
         if not filtered:
             return res
