@@ -1,4 +1,5 @@
 from math import ceil
+from datetime import datetime
 from fastapi import Depends, Request, APIRouter, HTTPException
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
@@ -183,6 +184,9 @@ def get_download_file(req: Request,
     download = crud.get_by_uuid(session=session, uuid=uuid)
     if download and download.request_by != user.id and download.expired:
         raise HTTPException(status_code=403, detail="Forbidden access")
+    now = datetime.utcnow()
+    if download and now > download.expired:
+        raise HTTPException(status_code=410, detail="Expired")
     location = storage.download(url=download.file)
     return FileResponse(location)
 

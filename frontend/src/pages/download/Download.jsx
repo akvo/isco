@@ -12,10 +12,12 @@ import {
 } from "antd";
 import { api, store } from "../../lib";
 import { uiText } from "../../static";
+import { useNotification } from "../../util";
 
 const { Title } = Typography;
 
 const Download = () => {
+  const { notify } = useNotification();
   const language = store.useState((s) => s.language);
   const { active: activeLang } = language;
 
@@ -54,6 +56,10 @@ const Download = () => {
       .catch((e) => {
         const { status, statusText } = e.response;
         console.error(status, statusText);
+        notify({
+          type: "error",
+          message: "Something went wrong.",
+        });
       })
       .finally(() => {
         setRequestLoading(null);
@@ -71,7 +77,19 @@ const Download = () => {
         }, 500);
       })
       .catch((e) => {
-        console.error(e);
+        const { status, statusText } = e.response;
+        console.error(status, statusText);
+        if (status === 410) {
+          notification.warning({
+            message: "Expired",
+            description: "Download link has been expired.",
+          });
+        } else {
+          notify({
+            type: "error",
+            message: "Something went wrong.",
+          });
+        }
       })
       .finally(() => {
         setDownloadLoading(null);
@@ -89,14 +107,12 @@ const Download = () => {
       title: "Form Name",
       dataIndex: "form",
       key: "form",
-      className: "bg-grey",
       width: "10%",
     },
     {
       title: "Form Type",
       dataIndex: "form_type",
       key: "form_type",
-      className: "bg-grey",
       width: "10%",
       render: (value) => (value ? value.toUpperCase() : "-"),
     },
@@ -104,14 +120,12 @@ const Download = () => {
       title: "Submitter",
       dataIndex: "submitted_by",
       key: "submitted_by",
-      className: "bg-grey",
       width: "10%",
     },
     {
       title: "Submitted Date",
       dataIndex: "submitted",
       key: "submitted",
-      className: "bg-grey",
       width: "12%",
       render: (value) => (value ? value : "-"),
     },
@@ -119,16 +133,16 @@ const Download = () => {
       title: "Action",
       dataIndex: "",
       key: "action",
-      className: "bg-grey",
       width: "8%",
       render: (record) => {
         const { status, id, uuid } = record;
         if (status === "approved") {
           return (
             <Button
-              className="action-btn"
               onClick={() => handleDownloadButton(uuid)}
               loading={uuid === downloadLoading}
+              type="primary"
+              ghost
             >
               Download
             </Button>
@@ -145,8 +159,8 @@ const Download = () => {
             </Button>
           );
         }
-        if (status === "pending") {
-          return "PENDING";
+        if (status === "pending" || status === "expired") {
+          return status.toUpperCase();
         }
       },
     },

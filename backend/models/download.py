@@ -31,6 +31,7 @@ class DownloadStatusType(enum.Enum):
     approved = 'approved'
     pending = 'pending'
     rejected = 'rejected'
+    expired = 'expired'
 
 
 class DownloadDict(TypedDict):
@@ -43,7 +44,7 @@ class DownloadDict(TypedDict):
     created_by: str
     approved_by: str
     created: Optional[str] = None
-    expired: Optional[str] = None
+    expired: Optional[datetime] = None
 
 
 class DataDownloadDict(TypedDict):
@@ -58,7 +59,7 @@ class DataDownloadDict(TypedDict):
     submitted_by: str
     submitted: Optional[str] = None
     status: Optional[DownloadStatusType] = None
-    expired: Optional[str] = None
+    expired: Optional[datetime] = None
 
 
 class DataDownloadResponse(BaseModel):
@@ -142,7 +143,7 @@ class Download(Base):
             "request_by": self.created_by_user.name,
             "approved_by": self.approved_by_user.name,
             "created": self.created.strftime("%B %d, %Y"),
-            "expired": self.expired.strftime("%B %d, %Y"),
+            "expired": self.expired,
             "answer": [a.formatted for a in self.answer],
         }
 
@@ -187,11 +188,10 @@ class Download(Base):
             status = DownloadStatusType.approved.value
         if self.approved_by and not self.expired:
             status = DownloadStatusType.rejected.value
-        expired = None
-        if self.expired:
-            expired = self.expired.strftime("%B %d, %Y")
+        if self.expired and datetime.utcnow() > self.expired:
+            status = DownloadStatusType.expired.value
         return {
             "uuid": str(self.uuid) if self.uuid else None,
-            "expired": expired,
+            "expired": self.expired,
             "status": status
         }
