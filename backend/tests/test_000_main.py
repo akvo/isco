@@ -40,5 +40,10 @@ def test_read_credentials():
 def test_survey_config():
     assert config.MEMBER_SURVEY
     assert config.PROJECT_SURVEY
+    assert config.LIMITED_SURVEY
     assert config.MEMBER_SURVEY_UNLIMITED_MEMBER
     assert config.MEMBER_SURVEY_UNLIMITED_ISCO
+    assert 7 in config.MEMBER_SURVEY
+    assert 8 in config.PROJECT_SURVEY
+    assert 13 in config.LIMITED_SURVEY
+    assert 3 in config.MEMBER_SURVEY_UNLIMITED_ISCO
