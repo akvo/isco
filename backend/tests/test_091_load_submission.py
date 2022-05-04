@@ -62,4 +62,12 @@ class TestLoadSubmission():
             app.url_path_for("submission:progress"),
             headers={"Authorization": f"Bearer {account.token}"},
             params={"member_not_submitted": 1})
-        assert res.status_code == 404
+        assert res.status_code == 200
+        res = res.json()
+        assert res == [{
+            'organisation': 'Akvo',
+            'form': 1,
+            'form_type': 'member',
+            'submitted': True,
+            'count': 1
+        }]
