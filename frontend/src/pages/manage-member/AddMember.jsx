@@ -29,7 +29,6 @@ const AddMember = ({
   const [form] = Form.useForm();
   const { optionValues } = store.useState((s) => s);
   const { member_type, isco_type } = optionValues;
-  const iscoType = isco_type.filter((isco) => isco.name !== "All");
 
   const isAdd = !selectedMember;
   const disableFields = selectedMember !== null;
@@ -40,20 +39,13 @@ const AddMember = ({
   // set initial form values
   useEffect(() => {
     if (!selectedMember) {
-      form.setFieldsValue({ first_name: "" });
-      form.setFieldsValue({ last_name: "" });
+      form.setFieldsValue({ name: "" });
       form.setFieldsValue({ member_type: [] });
       form.setFieldsValue({ isco_type: [] });
     }
     if (selectedMember?.id) {
       const { name, member_type, isco_type } = selectedMember;
-      const first_name = name.split(" ")[0];
-      const last_name = name
-        .split(" ")
-        .filter((n, i) => i !== 0)
-        .join(" ");
-      form.setFieldsValue({ first_name: first_name });
-      form.setFieldsValue({ last_name: last_name });
+      form.setFieldsValue({ name: name });
       form.setFieldsValue({ member_type: member_type });
       form.setFieldsValue({ isco_type: isco_type });
     }
@@ -66,10 +58,10 @@ const AddMember = ({
   };
 
   const onFinish = (values) => {
-    const { first_name, last_name, member_type, isco_type } = values;
+    const { name, member_type, isco_type } = values;
     const payload = {
       code: "1",
-      name: `${first_name} ${last_name}`,
+      name: name,
       active: true,
       member_type: member_type,
       isco_type: isco_type,
@@ -166,10 +158,10 @@ const AddMember = ({
         }
       >
         <Row gutter={[12, 12]}>
-          <Col span={12}>
+          <Col span={24}>
             <Form.Item
-              name="first_name"
-              label="First Name"
+              name="name"
+              label="Member name"
               rules={[
                 {
                   required: requiredFields,
@@ -179,22 +171,7 @@ const AddMember = ({
             >
               <Input
                 className="bg-grey"
-                placeholder="First Name"
-                disabled={disableFields}
-              />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              name="last_name"
-              label="Last Name"
-              rules={[
-                { required: requiredFields, message: "Please input last name" },
-              ]}
-            >
-              <Input
-                className="bg-grey"
-                placeholder="Last Name"
+                placeholder="Name"
                 disabled={disableFields}
               />
             </Form.Item>
@@ -206,7 +183,10 @@ const AddMember = ({
               name="member_type"
               label="Member Type"
               rules={[
-                { required: false, message: "Please select a member type" },
+                {
+                  required: requiredFields,
+                  message: "Please select a member type",
+                },
               ]}
             >
               <Select
@@ -233,7 +213,10 @@ const AddMember = ({
               name="isco_type"
               label="ISCO"
               rules={[
-                { required: false, message: "Please select an ISCO type" },
+                {
+                  required: requiredFields,
+                  message: "Please select an ISCO type",
+                },
               ]}
             >
               <Select
@@ -249,7 +232,7 @@ const AddMember = ({
                   0
                 }
               >
-                {options(iscoType)}
+                {options(isco_type)}
               </Select>
             </Form.Item>
           </Col>
