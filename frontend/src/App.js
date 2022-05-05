@@ -21,6 +21,7 @@ import {
   Setting,
   SubmissionProgress,
   Faq,
+  ManageMember,
 } from "./pages";
 import { Alert } from "antd";
 import { useCookies } from "react-cookie";
@@ -223,6 +224,11 @@ const App = () => {
             exact
             path="/submission-progress"
             element={<Secure element={SubmissionProgress} adminPage={true} />}
+          />
+          <Route
+            exact
+            path="/manage-member"
+            element={<Secure element={ManageMember} adminPage={true} />}
           />
           <Route exact path="/survey" element={<Secure element={Survey} />} />
           <Route

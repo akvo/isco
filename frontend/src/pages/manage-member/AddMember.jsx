@@ -1,0 +1,262 @@
+import React, { useState, useEffect } from "react";
+import "./styles.scss";
+import {
+  Row,
+  Col,
+  Button,
+  Space,
+  Modal,
+  Form,
+  Input,
+  Select,
+  Typography,
+  notification,
+} from "antd";
+import { api, store } from "../../lib";
+
+const { Title } = Typography;
+const { Option } = Select;
+
+const AddMember = ({
+  isAddMemberVisible,
+  setIsAddMemberVisible,
+  setReload,
+  reload,
+  selectedMember,
+  setSelectedMember,
+}) => {
+  const [sending, setSending] = useState(false);
+  const [form] = Form.useForm();
+  const { optionValues } = store.useState((s) => s);
+  const { member_type, isco_type } = optionValues;
+  const iscoType = isco_type.filter((isco) => isco.name !== "All");
+
+  const isAdd = !selectedMember;
+  const disableFields = selectedMember !== null;
+  const requiredFields = isAdd ? true : false;
+  const modalTitle = isAdd ? "New Member" : "Update Member";
+  const buttonOkText = isAdd ? "Add Member" : "Update Member";
+
+  // set initial form values
+  useEffect(() => {
+    if (!selectedMember) {
+      form.setFieldsValue({ first_name: "" });
+      form.setFieldsValue({ last_name: "" });
+      form.setFieldsValue({ member_type: [] });
+      form.setFieldsValue({ isco_type: [] });
+    }
+    if (selectedMember?.id) {
+      const { name, member_type, isco_type } = selectedMember;
+      const first_name = name.split(" ")[0];
+      const last_name = name
+        .split(" ")
+        .filter((n, i) => i !== 0)
+        .join(" ");
+      form.setFieldsValue({ first_name: first_name });
+      form.setFieldsValue({ last_name: last_name });
+      form.setFieldsValue({ member_type: member_type });
+      form.setFieldsValue({ isco_type: isco_type });
+    }
+  }, [selectedMember]);
+
+  const handleOnClickModalCancel = () => {
+    form.resetFields();
+    setIsAddMemberVisible(false);
+    setSelectedMember(null);
+  };
+
+  const onFinish = (values) => {
+    const { first_name, last_name, member_type, isco_type } = values;
+    const payload = {
+      code: "1",
+      name: `${first_name} ${last_name}`,
+      active: true,
+      member_type: member_type,
+      isco_type: isco_type,
+    };
+    setSending(true);
+    if (!selectedMember) {
+      api
+        .post("/organisation", payload)
+        .then(() => {
+          notification.success({
+            message: "Member has been successfully added",
+            description:
+              "The Member will receive an email with an activation link they must click as a final step in the process.",
+          });
+          setSending(false);
+          setIsAddMemberVisible(false);
+          setReload(reload + 1);
+          form.resetFields();
+        })
+        .catch(() => {
+          setSending(false);
+          notification.error({
+            message: "An error occurred",
+            description: "Internal Server Error",
+          });
+        });
+    }
+    if (selectedMember?.id) {
+      // UPDATE
+      let url = `/organisation/${selectedMember.id}`;
+      api
+        .put(url, payload)
+        .then(() => {
+          notification.success({
+            message: "Member has been successfully updated",
+          });
+          setSending(false);
+          setIsAddMemberVisible(false);
+          setReload(reload + 1);
+          form.resetFields();
+        })
+        .catch(() => {
+          setSending(false);
+          notification.error({
+            message: "An error occurred",
+            description: "Internal Server Error",
+          });
+        });
+    }
+  };
+
+  const options = (data) => {
+    const rendering = data.map((v) => {
+      return (
+        <Option value={v.id} key={v.id}>
+          {v.name}
+        </Option>
+      );
+    });
+    return rendering;
+  };
+
+  return (
+    <Modal
+      destroyOnClose={true}
+      title={<Title level={4}>{modalTitle}</Title>}
+      visible={isAddMemberVisible}
+      footer={
+        <Space>
+          <Button onClick={handleOnClickModalCancel}>Cancel</Button>
+          <Button
+            type="primary"
+            ghost
+            onClick={() => {
+              form.submit();
+            }}
+            loading={sending}
+          >
+            {buttonOkText}
+          </Button>
+        </Space>
+      }
+      width={840}
+      onCancel={() => setIsAddMemberVisible(false)}
+      centered
+    >
+      <Form
+        form={form}
+        name="account-detail"
+        layout="vertical"
+        onFinish={onFinish}
+        onFinishFailed={(values, errorFields) =>
+          console.info(values, errorFields)
+        }
+      >
+        <Row gutter={[12, 12]}>
+          <Col span={12}>
+            <Form.Item
+              name="first_name"
+              label="First Name"
+              rules={[
+                {
+                  required: requiredFields,
+                  message: "Please input first name",
+                },
+              ]}
+            >
+              <Input
+                className="bg-grey"
+                placeholder="First Name"
+                disabled={disableFields}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              name="last_name"
+              label="Last Name"
+              rules={[
+                { required: requiredFields, message: "Please input last name" },
+              ]}
+            >
+              <Input
+                className="bg-grey"
+                placeholder="Last Name"
+                disabled={disableFields}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={[12, 12]}>
+          <Col span={24}>
+            <Form.Item
+              name="member_type"
+              label="Member Type"
+              rules={[
+                { required: false, message: "Please select a member type" },
+              ]}
+            >
+              <Select
+                showArrow
+                showSearch
+                allowClear
+                mode="multiple"
+                className="custom-dropdown-wrapper bg-grey"
+                placeholder="Member Type"
+                optionFilterProp="children"
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                  0
+                }
+              >
+                {options(member_type)}
+              </Select>
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={[12, 12]}>
+          <Col span={24}>
+            <Form.Item
+              name="isco_type"
+              label="ISCO"
+              rules={[
+                { required: false, message: "Please select an ISCO type" },
+              ]}
+            >
+              <Select
+                showArrow
+                showSearch
+                allowClear
+                mode="multiple"
+                className="custom-dropdown-wrapper bg-grey"
+                placeholder="ISCO"
+                optionFilterProp="children"
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                  0
+                }
+              >
+                {options(iscoType)}
+              </Select>
+            </Form.Item>
+          </Col>
+        </Row>
+      </Form>
+    </Modal>
+  );
+};
+
+export default AddMember;
