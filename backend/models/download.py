@@ -17,9 +17,10 @@ from .form import Form
 from .data import Data
 from .user import User
 from .organisation import Organisation
+from util.survey_config import MEMBER_SURVEY, PROJECT_SURVEY
 
 
-class DownloadRequestResponse(TypedDict):
+class DownloadResponse(TypedDict):
     id: int
     form: int
     data: int
@@ -29,6 +30,8 @@ class DownloadRequestResponse(TypedDict):
 class DownloadStatusType(enum.Enum):
     approved = 'approved'
     pending = 'pending'
+    rejected = 'rejected'
+    expired = 'expired'
 
 
 class DownloadDict(TypedDict):
@@ -41,11 +44,12 @@ class DownloadDict(TypedDict):
     created_by: str
     approved_by: str
     created: Optional[str] = None
-    expired: Optional[str] = None
+    expired: Optional[datetime] = None
 
 
 class DataDownloadDict(TypedDict):
     id: int
+    uuid: Optional[str] = None
     form: str
     form_type: str
     name: str
@@ -55,11 +59,30 @@ class DataDownloadDict(TypedDict):
     submitted_by: str
     submitted: Optional[str] = None
     status: Optional[DownloadStatusType] = None
+    expired: Optional[datetime] = None
 
 
 class DataDownloadResponse(BaseModel):
     current: int
     data: List[DataDownloadDict]
+    total: int
+    total_page: int
+
+
+class DownloadRequestedDict(TypedDict):
+    id: int
+    uuid: str
+    organisation: str
+    form_type: str
+    request_by: int
+    request_by_name: str
+    request_date: str
+    status: str
+
+
+class DownloadRequestedResponse(BaseModel):
+    current: int
+    data: List[DownloadRequestedDict]
     total: int
     total_page: int
 
@@ -84,9 +107,12 @@ class Download(Base):
     expired = Column(DateTime, nullable=True)
     request_by_user = relationship(User, foreign_keys=[request_by])
     approved_by_user = relationship(User, foreign_keys=[approved_by])
+    organisation_detail = relationship(Organisation,
+                                       foreign_keys=[organisation])
 
     def __init__(self,
                  form: int,
+                 uuid: str,
                  data: int,
                  organisation: int,
                  request_by: int,
@@ -94,6 +120,7 @@ class Download(Base):
                  approved_by: Optional[int] = None,
                  expired: Optional[datetime] = None):
         self.form = form
+        self.uuid = uuid
         self.data = data
         self.organisation = organisation
         self.file = file
@@ -116,15 +143,55 @@ class Download(Base):
             "request_by": self.created_by_user.name,
             "approved_by": self.approved_by_user.name,
             "created": self.created.strftime("%B %d, %Y"),
-            "expired": self.expired.strftime("%B %d, %Y"),
+            "expired": self.expired,
             "answer": [a.formatted for a in self.answer],
         }
 
     @property
-    def response(self) -> DownloadRequestResponse:
+    def response(self) -> DownloadResponse:
         return {
             "id": self.id,
             "form": self.form,
             "data": self.data,
             "organisation": self.organisation,
+        }
+
+    @property
+    def list_of_download_request(self) -> DownloadRequestedDict:
+        form_type = None
+        if self.form in MEMBER_SURVEY:
+            form_type = "member"
+        if self.form in PROJECT_SURVEY:
+            form_type = "project"
+        status = DownloadStatusType.pending.value
+        if self.approved_by and self.expired:
+            status = DownloadStatusType.approved.value
+        if self.approved_by and not self.expired:
+            status = DownloadStatusType.rejected.value
+        return {
+            "id": self.id,
+            "uuid": str(self.uuid),
+            "organisation": self.organisation_detail.name,
+            "form_type": form_type,
+            "request_by": self.request_by,
+            "request_by_name": self.request_by_user.name,
+            "request_date": self.created.strftime("%B %d, %Y"),
+            "status": status
+        }
+
+    @property
+    def check_download_list(self):
+        status = None
+        if self.uuid:
+            status = DownloadStatusType.pending.value
+        if self.approved_by and self.expired:
+            status = DownloadStatusType.approved.value
+        if self.approved_by and not self.expired:
+            status = DownloadStatusType.rejected.value
+        if self.expired and datetime.utcnow() > self.expired:
+            status = DownloadStatusType.expired.value
+        return {
+            "uuid": str(self.uuid) if self.uuid else None,
+            "expired": self.expired,
+            "status": status
         }

@@ -245,6 +245,7 @@ class Answer(Base):
         return {
             "group": q.question_group,
             "order": q.order,
+            "question_type": q.type,
             "name": q.name,
             "value": answer,
             "value_type": value_type,

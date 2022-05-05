@@ -23,7 +23,20 @@
       >
         {{data.form.name}}
       </h2>
-      {{data.form.description}} {% for dt in detail %}
+      <h4
+        style="
+          text-align: center;
+          padding: 5px;
+          margin: 0px;
+          font-size: 16px;
+          margin-bottom: 12px;
+        "
+      >
+        {{ data.organisation.name }} - {{ data.submitted_by.name }} - {{
+        data.submitted }}
+      </h4>
+      <!-- {{data.form.description}}  -->
+      {% for dt in detail %}
       <div class="row" style="margin-bottom: 10px; margin-top: 10px">
         <div class="col">
           <h3

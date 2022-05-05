@@ -4,6 +4,8 @@ import uuid
 from collections import defaultdict
 from sqlalchemy.orm import Session
 from models.question_group import QuestionGroup
+from models.question import QuestionType
+from models.cascade_list import CascadeList
 import jinja2
 import util.storage as storage
 
@@ -65,3 +67,20 @@ def transform_data(answers: list, session: Session):
             repeat.append({"repeat": r, "answers": answer})
         g.update({"data": repeat})
     return sorted(group, key=lambda d: d['order'])
+
+
+def get_cascade_value(data: dict, session: Session):
+    answers = data['answer']
+    for a in answers:
+        if a['value'] and a['question_type'] == QuestionType.cascade:
+            ids = []
+            for v in a['value'].split(" - "):
+                if v.isnumeric():
+                    ids.append(v)
+            cascades = session.query(CascadeList).filter(
+                CascadeList.id.in_(ids)).all()
+            if cascades:
+                cascade_value = [c.name for c in cascades]
+                a.update({"value": " - ".join(cascade_value)})
+    data.update({"answer": answers})
+    return data

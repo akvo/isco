@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from typing import Optional
 from jose import JWTError, jwt, exceptions
 from passlib.context import CryptContext
-from models.user import UserRole, UserDict
+from models.user import UserRole, UserDict, User
 from models.organisation_isco import OrganisationIsco
 from db import crud_user
 
@@ -157,3 +157,19 @@ def organisations_in_same_isco(session: Session, organisation: int):
         OrganisationIsco.isco_type.in_(isco_ids)).all()
     org_ids = [o.organisation for o in org_in_same_isco]
     return org_ids
+
+
+def find_secretariat_admins(session: Session, organisation: int):
+    org_ids = organisations_in_same_isco(
+        session=session, organisation=organisation)
+    admins = session.query(User).filter(
+        User.organisation.in_(org_ids)).filter(
+            User.role == UserRole.secretariat_admin).all()
+    return admins
+
+
+def find_member_admins(session: Session, organisation: int):
+    admins = session.query(User).filter(
+        User.organisation == organisation).filter(
+            User.role == UserRole.member_admin).all()
+    return admins
