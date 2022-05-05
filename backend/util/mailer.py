@@ -68,6 +68,8 @@ class MailTypeEnum(enum.Enum):
     verify_email = "verify_email"
     reset_password = "reset_password"
     user_approved = "user_approved"
+    data_download_requested = "data_download_requested"
+    data_download_approved = "data_download_approved"
 
 
 class Email:

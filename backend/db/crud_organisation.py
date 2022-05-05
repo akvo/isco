@@ -1,5 +1,5 @@
 from fastapi import HTTPException, status
-from typing import List
+from typing import List, Optional
 from sqlalchemy.orm import Session
 from models.organisation import Organisation, OrganisationDict
 from models.organisation import OrganisationPayload, OrganisationBase
@@ -34,6 +34,39 @@ def add_organisation(session: Session,
 
 def get_organisation(session: Session) -> List[Organisation]:
     return session.query(Organisation).all()
+
+
+def filter_organisation(
+    session: Session,
+    page: int,
+    page_size: int,
+    member: Optional[List[int]] = None,
+    isco: Optional[List[int]] = None
+) -> List[Organisation]:
+    orgs = session.query(Organisation)
+    org_ids = []
+    member_org_ids = []
+    isco_org_ids = []
+    if member:
+        members = session.query(OrganisationMember).filter(
+            OrganisationMember.member_type.in_(member)).all()
+        if members:
+            member_org_ids = [m.organisation for m in members]
+    if isco:
+        iscos = session.query(OrganisationIsco).filter(
+            OrganisationIsco.isco_type.in_(isco)).all()
+        if iscos:
+            isco_org_ids = [i.organisation for i in iscos]
+    if member or isco:
+        # concat
+        org_ids = list(set(member_org_ids + isco_org_ids))
+    if member and isco:
+        # intersection
+        org_ids = [value for value in member_org_ids if value in isco_org_ids]
+    if org_ids:
+        orgs = orgs.filter(Organisation.id.in_(org_ids))
+    res = orgs.limit(page_size).offset((page - 1) * page_size)
+    return {"downloads": res, "count": orgs.count()}
 
 
 def get_organisation_by_id(session: Session, id: int) -> OrganisationDict:

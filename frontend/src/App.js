@@ -22,12 +22,14 @@ import {
   SubmissionProgress,
   Faq,
   ManageMember,
+  ManageDownload,
 } from "./pages";
 import { Alert } from "antd";
 import { useCookies } from "react-cookie";
 import { store, api } from "./lib";
 import { useNotification } from "./util";
 import { uiText } from "./static";
+import orderBy from "lodash/orderBy";
 
 const Secure = ({ element: Element, adminPage = false }) => {
   const user = store.useState((s) => s?.user);
@@ -138,7 +140,10 @@ const App = () => {
           cascade: cascade?.data?.filter((c) => c?.type === "cascade"),
           nested: cascade?.data?.filter((c) => c?.type === "nested"),
           repeating_object_option: repeating_object?.data,
-          organisation: organisation?.data?.filter((o) => o?.active),
+          organisation: orderBy(
+            organisation?.data?.filter((o) => o?.active),
+            ["name"]
+          ),
         };
       });
     });
@@ -153,7 +158,10 @@ const App = () => {
           store.update((s) => {
             s.optionValues = {
               ...s.optionValues,
-              organisationInSameIsco: res?.data?.filter((o) => o?.active),
+              organisationInSameIsco: orderBy(
+                res?.data?.filter((o) => o?.active),
+                ["name"]
+              ),
             };
           });
         })
@@ -229,6 +237,11 @@ const App = () => {
             exact
             path="/manage-member"
             element={<Secure element={ManageMember} adminPage={true} />}
+          />
+          <Route
+            exact
+            path="/manage-download"
+            element={<Secure element={ManageDownload} adminPage={true} />}
           />
           <Route exact path="/survey" element={<Secure element={Survey} />} />
           <Route

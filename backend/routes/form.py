@@ -14,7 +14,7 @@ from db.connection import get_session
 from models.form import FormBase, FormDict, FormDictWithGroupStatus
 from models.form import FormPayload, FormJson, FormOptions, Form
 from middleware import verify_super_admin, verify_editor
-from util.survey_config import MEMBER_SURVEY
+# from util.survey_config import MEMBER_SURVEY
 
 security = HTTPBearer()
 form_route = APIRouter()
@@ -112,9 +112,7 @@ def delete_publish_form_by_id(req: Request, form_id: int,
 
 
 @form_route.delete("/form/{id:path}",
-                   responses={204: {
-                       "model": None
-                    }},
+                   responses={204: {"model": None}},
                    status_code=HTTPStatus.NO_CONTENT,
                    summary="delete form by id",
                    name="form:delete",
@@ -145,25 +143,21 @@ def get_form_options(req: Request, session: Session = Depends(get_session),
                      credentials: credentials = Depends(security)):
     user = verify_editor(session=session,
                          authenticated=req.state.authenticated)
-    # check if user organisation already have a member survey saved/submitted
-    exists = check_member_submission_exists(session=session,
-                                            organisation=user.organisation)
     questionnaires = []
     if user.questionnaires:
         questionnaires = user.questionnaires
     # filter by user questionnaires
     forms = session.query(Form).filter(
         Form.published != null()).filter(
-                Form.id.in_(questionnaires)).all()
-    # .filter(or_(
-    #         Form.id.in_(MEMBER_SURVEY),
-    #         Form.id.in_(PROJECT_SURVEY),))
+            Form.id.in_(questionnaires)).all()
     forms = [f.to_options for f in forms]
-    if exists:
-        for f in forms:
-            if f['value'] in MEMBER_SURVEY:
-                f['disabled'] = True
-                f['label'] = f"{f['label']} (submitted)"
+    # check if user organisation already have a member survey saved/submitted
+    for f in forms:
+        exists = check_member_submission_exists(
+            session=session, organisation=user.organisation, form=f['value'])
+        if exists:
+            f['disabled'] = True
+            f['label'] = f"{f['label']} (submitted)"
     return forms
 
 

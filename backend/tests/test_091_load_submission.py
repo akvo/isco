@@ -61,5 +61,13 @@ class TestLoadSubmission():
         res = await client.get(
             app.url_path_for("submission:progress"),
             headers={"Authorization": f"Bearer {account.token}"},
-            params={"member_not_submitted": 1})
-        assert res.status_code == 404
+            params={"member_not_submitted": True})
+        assert res.status_code == 200
+        # filters by organisation which doesn't have data
+        res = await client.get(
+            app.url_path_for("submission:progress"),
+            headers={"Authorization": f"Bearer {account.token}"},
+            params={"organisation": [2], "member_not_submitted": 1})
+        assert res.status_code == 200
+        res = res.json()
+        assert res == []

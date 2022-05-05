@@ -8,6 +8,7 @@ from models.answer import Answer
 from models.answer import AnswerBase
 from models.organisation_isco import OrganisationIsco
 from util.survey_config import MEMBER_SURVEY, PROJECT_SURVEY
+from util.survey_config import LIMITED_SURVEY
 from util.survey_config import MEMBER_SURVEY_UNLIMITED_ISCO
 
 
@@ -143,17 +144,22 @@ def check_member_submission_exists(session: Session,
     # handle unlimited project questionnaire
     if form and form in PROJECT_SURVEY:
         return False
-    # handle unlimited member questionnaire
-    # for organisation ISCO contains DISCO
-    check_org = session.query(OrganisationIsco).filter(
-        and_(OrganisationIsco.organisation == organisation,
-             OrganisationIsco.isco_type.in_(
-                 MEMBER_SURVEY_UNLIMITED_ISCO))).first()
-    if check_org:
-        return False
-    # handle limited member questionnaire
-    data = session.query(Data).filter(
-        and_(Data.form.in_(MEMBER_SURVEY), Data.organisation == organisation))
+    # handle limited member questionnaire or limited survey
+    if form and form in MEMBER_SURVEY:
+        # handle unlimited member questionnaire
+        # for organisation ISCO contains DISCO
+        check_org = session.query(OrganisationIsco).filter(and_(
+            OrganisationIsco.organisation == organisation,
+            OrganisationIsco.isco_type.in_(
+                MEMBER_SURVEY_UNLIMITED_ISCO))).first()
+        if check_org:
+            return False
+        form_config = MEMBER_SURVEY
+    if form and form in LIMITED_SURVEY:
+        form_config = LIMITED_SURVEY
+    data = session.query(Data).filter(and_(
+        Data.form.in_(form_config),
+        Data.organisation == organisation))
     # filter by not submitted
     if saved:
         data = data.filter(Data.submitted == null())

@@ -4,6 +4,7 @@ from middleware import Token, authenticate_user
 from middleware import create_access_token, verify_user
 from middleware import get_password_hash, verify_super_admin
 from middleware import decode_token, verify_token, organisations_in_same_isco
+from middleware import find_secretariat_admins, find_member_admins
 from fastapi import Depends, HTTPException, status, APIRouter, Request, Query
 from fastapi import Form, Response
 from fastapi.security import HTTPBearer
@@ -177,81 +178,80 @@ def register(req: Request,
     if not invitation:
         # send email register success with email verification link
         send_verification_email(user, recipients)
+
         # notify admin
         # two differents email for secretariat_admin & member_admin
-        org_ids = organisations_in_same_isco(
-            session=session, organisation=user['organisation'])
-        secretariat_admins = session.query(User).filter(
-            User.organisation.in_(org_ids)).filter(
-                User.role == UserRole.secretariat_admin).all()
-
         organisation = crud_organisation.get_organisation_by_id(
             session=session, id=user['organisation'])
         organisation = organisation.serialize
         org_name = organisation['name']
 
         # send to secretariat admin
-        body_secretariat = f'''{user['name']} ({user['email']}) from {org_name}
-                            has registered in the reporting tool. Now you can
-                            approve user in Manage User page.'''
-        email_secretariat = Email(
-            recipients=[a.recipient for a in secretariat_admins],
-            type=MailTypeEnum.register,
-            body=body_secretariat)
-        email_secretariat.send
+        secretariat_admins = find_secretariat_admins(
+            session=session, organisation=user['organisation'])
+        if secretariat_admins:
+            body_secretariat = f'''{user['name']} ({user['email']}) from {org_name}
+                                has registered in the reporting tool. Now you
+                                can approve user in Manage User page.'''
+            email_secretariat = Email(
+                recipients=[a.recipient for a in secretariat_admins],
+                type=MailTypeEnum.register,
+                body=body_secretariat)
+            email_secretariat.send
 
         # inform member admin
-        member_admins = session.query(User).filter(
-            User.organisation == user['organisation']).filter(
-            User.role == UserRole.member_admin).all()
-        body_member = f'''
-            Dear reporting member / partner,
-            <p>
-            {user['name']} ({user['email']}) from your
-            organisation has signed up for the 2022 Monitoring
-            Round at cocoamonitoring.net
-            </p>
-            <p>
-            If this is an invalid signup please get in touch with
-            the reporting tool admins. Contact:
-            </p>
-            <ul>
-                <li>
-                For Beyond Chocolate:
-                Marloes Humbeeck (humbeeck@idhtrade.org)</li>
-                <li>For DISCO:
-                Mark de Waard (dewaard@idhtrade.org)</li>
-                <li>For GISCO:
-                Julia Jawtusch (julia.jawtusch@giz.de)</li>
-            </ul>
+        member_admins = find_member_admins(
+            session=session, organisation=user['organisation'])
+        if member_admins:
+            body_member = f'''
+                Dear reporting member / partner,
+                <p>
+                {user['name']} ({user['email']}) from your
+                organisation has signed up for the 2022 Monitoring
+                Round at cocoamonitoring.net
+                </p>
+                <p>
+                If this is an invalid signup please get in touch with
+                the reporting tool admins. Contact:
+                </p>
+                <ul>
+                    <li>
+                    For Beyond Chocolate:
+                    Marloes Humbeeck (humbeeck@idhtrade.org)</li>
+                    <li>For DISCO:
+                    Mark de Waard (dewaard@idhtrade.org)</li>
+                    <li>For GISCO:
+                    Julia Jawtusch (julia.jawtusch@giz.de)</li>
+                </ul>
+                '''
+            body_member_translation = f'''
+                Sehr geehrte/r Teilnehmer/in,
+                <p>
+                Herr/ Frau {user['name']} ({user['email']}) aus Ihrer
+                Organisation hat sich für die Monitoring-Runde 2022 auf
+                cocoamonitoring.net
+                registriert.
+                </p>
+                <p>
+                Wenn dies eine ungültige Anmeldung ist, wenden Sie sich bitte
+                an die Administratoren des Monitoringtools:
+                </p>
+                <ul>
+                    <li>
+                    Für Beyond Chocolate:
+                    Marloes Humbeeck (humbeeck@idhtrade.org)</li>
+                    <li>Für DISCO:
+                    Mark de Waard (dewaard@idhtrade.org)</li>
+                    <li>Für GISCO:
+                    Julia Jawtusch (julia.jawtusch@giz.de)</li>
+                </ul>
             '''
-        body_member_translation = f'''
-            Sehr geehrte/r Teilnehmer/in,
-            <p>
-            Herr/ Frau {user['name']} ({user['email']}) aus Ihrer Organisation
-            hat sich für die Monitoring-Runde 2022 auf cocoamonitoring.net
-            registriert.
-            </p>
-            <p>
-            Wenn dies eine ungültige Anmeldung ist, wenden Sie sich bitte an
-            die Administratoren des Monitoringtools:
-            </p>
-            <ul>
-                <li>
-                Für Beyond Chocolate:
-                Marloes Humbeeck (humbeeck@idhtrade.org)</li>
-                <li>Für DISCO:
-                Mark de Waard (dewaard@idhtrade.org)</li>
-                <li>Für GISCO:
-                Julia Jawtusch (julia.jawtusch@giz.de)</li>
-            </ul>
-        '''
-        email_member = Email(
-            recipients=[a.recipient for a in member_admins],
-            type=MailTypeEnum.register_to_member,
-            body=body_member,
-            body_translation=body_member_translation)
-        email_member.send
+            email_member = Email(
+                recipients=[a.recipient for a in member_admins],
+                type=MailTypeEnum.register_to_member,
+                body=body_member,
+                body_translation=body_member_translation)
+            email_member.send
     return user
 
 
