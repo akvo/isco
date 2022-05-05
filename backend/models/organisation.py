@@ -32,6 +32,13 @@ class OrganisationDict(TypedDict):
     isco: Optional[List[str]] = []
 
 
+class OrganisationResponse(BaseModel):
+    current: int
+    data: List[OrganisationDict]
+    total: int
+    total_page: int
+
+
 class Organisation(Base):
     __tablename__ = "organisation"
     id = Column(Integer, primary_key=True, index=True, nullable=True)
