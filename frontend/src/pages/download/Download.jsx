@@ -12,10 +12,12 @@ import {
 } from "antd";
 import { api, store } from "../../lib";
 import { uiText } from "../../static";
+import { useNotification } from "../../util";
 
 const { Title } = Typography;
 
 const Download = () => {
+  const { notify } = useNotification();
   const language = store.useState((s) => s.language);
   const { active: activeLang } = language;
 
@@ -27,6 +29,8 @@ const Download = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [requestLoading, setRequestLoading] = useState(null);
+  const [downloadLoading, setDownloadLoading] = useState(null);
+  const [downloadData, setDownloadData] = useState(null);
   const pageSize = 10;
 
   const text = useMemo(() => {
@@ -52,25 +56,63 @@ const Download = () => {
       .catch((e) => {
         const { status, statusText } = e.response;
         console.error(status, statusText);
+        notify({
+          type: "error",
+          message: "Something went wrong.",
+        });
       })
       .finally(() => {
         setRequestLoading(null);
       });
   };
 
+  const handleDownloadButton = (uuid) => {
+    setDownloadLoading(uuid);
+    api
+      .get(`/download/file/${uuid}`)
+      .then((res) => {
+        setDownloadData(res?.data);
+        setTimeout(() => {
+          window.frames[0].print();
+        }, 500);
+      })
+      .catch((e) => {
+        const { status, statusText } = e.response;
+        console.error(status, statusText);
+        if (status === 410) {
+          notification.warning({
+            message: "Expired",
+            description: "Download link has been expired.",
+          });
+        } else {
+          notify({
+            type: "error",
+            message: "Something went wrong.",
+          });
+        }
+      })
+      .finally(() => {
+        setDownloadLoading(null);
+      });
+  };
+
+  if (window.frames[0]) {
+    window.frames[0].onafterprint = function () {
+      setDownloadData(null);
+    };
+  }
+
   const columns = [
     {
       title: "Form Name",
       dataIndex: "form",
       key: "form",
-      className: "bg-grey",
       width: "10%",
     },
     {
       title: "Form Type",
       dataIndex: "form_type",
       key: "form_type",
-      className: "bg-grey",
       width: "10%",
       render: (value) => (value ? value.toUpperCase() : "-"),
     },
@@ -78,14 +120,12 @@ const Download = () => {
       title: "Submitter",
       dataIndex: "submitted_by",
       key: "submitted_by",
-      className: "bg-grey",
       width: "10%",
     },
     {
       title: "Submitted Date",
       dataIndex: "submitted",
       key: "submitted",
-      className: "bg-grey",
       width: "12%",
       render: (value) => (value ? value : "-"),
     },
@@ -93,23 +133,35 @@ const Download = () => {
       title: "Action",
       dataIndex: "",
       key: "action",
-      className: "bg-grey",
       width: "8%",
       render: (record) => {
-        const pending = record.status === "pending";
-        return (
-          <Space key={`${record?.id}-${record?.key}`}>
+        const { status, id, uuid } = record;
+        if (status === "approved") {
+          return (
+            <Button
+              onClick={() => handleDownloadButton(uuid)}
+              loading={uuid === downloadLoading}
+              type="primary"
+              ghost
+            >
+              Download
+            </Button>
+          );
+        }
+        if (!status) {
+          return (
             <Button
               className="action-btn"
-              type={pending ? "text" : "secondary"}
-              onClick={() => handleRequestButton(record.id)}
-              loading={record.id === requestLoading}
-              disabled={pending}
+              onClick={() => handleRequestButton(id)}
+              loading={id === requestLoading}
             >
-              {pending ? "Pending" : "Request"}
+              Request
             </Button>
-          </Space>
-        );
+          );
+        }
+        if (status === "pending" || status === "expired") {
+          return status.toUpperCase();
+        }
       },
     },
   ];
@@ -150,13 +202,24 @@ const Download = () => {
     <div id="download-data">
       <Row className="container bg-grey">
         <Col span={24}>
-          <Title className="page-title" level={3}>
-            Download Data
-          </Title>
-          <Space direction="vertical" style={{ width: "100%" }}>
-            <Alert type="info" showIcon message={text.bannerDownloadPage} />
-            <Row>
-              <Col span={24}>
+          <Row
+            className="page-title-wrapper"
+            align="middle"
+            justify="space-between"
+          >
+            <Col span={24} align="start">
+              <Title className="page-title" level={3}>
+                Download Data
+              </Title>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={24}>
+              <Space
+                direction="vertical"
+                style={{ width: "100%", marginTop: "8px" }}
+              >
+                <Alert type="info" showIcon message={text.bannerDownloadPage} />
                 <Table
                   loading={isLoading}
                   rowKey={(record) => `${record?.key}-${record?.id}`}
@@ -170,11 +233,21 @@ const Download = () => {
                     onChange: changePage,
                   }}
                 />
-              </Col>
-            </Row>
-          </Space>
+              </Space>
+            </Col>
+          </Row>
         </Col>
       </Row>
+
+      {downloadData && (
+        <iframe
+          srcDoc={downloadData}
+          frameBorder="0"
+          height={0}
+          width={0}
+          style={{ display: "none", position: "absolute", top: 0, left: 0 }}
+        />
+      )}
     </div>
   );
 };

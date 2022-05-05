@@ -200,3 +200,41 @@ class EmailText(enum.Enum):
         "info": None,
         "signature": True,
     }
+    data_download_requested = {
+        "title": None,
+        "title_translation": None,
+        "subject": '''Data Download Request
+                    | Anfrage zum Herunterladen von Daten''',
+        "body": None,
+        "body_translation": None,
+        "message": None,
+        "image": None,
+        "button": None,
+        "info": None,
+        "signature": False,
+    }
+    data_download_approved = {
+        "title": None,
+        "title_translation": None,
+        "subject": '''Data Download Approved
+                    | Antrag auf Datendownload genehmigt''',
+        "body": '''<div>
+                Dear reporting member,
+                <p>
+                Your request to download your reported data has been approved.
+                You can now enter the tool and download the data.
+                </p>
+                </div>''',
+        "body_translation": '''<div>
+                Sehr geehrtes meldendes Mitglied,
+                <p>
+                Ihr Antrag zum Herunterladen der Daten wurde genehmigt.
+                Sie können nun das Tool aufrufen und die Daten herunterladen.
+                </p>
+                </div>''',
+        "message": None,
+        "image": None,
+        "button": None,
+        "info": None,
+        "signature": True,
+    }
