@@ -76,15 +76,17 @@ const ManageMember = () => {
 
   const handleSearchMemberByName = (value) => {
     setSearch(value.target.value);
+    setMemberTypeFilter(null);
+    setIscoFilter(null);
     const filteredByMemberName = data.filter((m, i) => {
       return m.name.toLowerCase().includes(value.target.value.toLowerCase());
     });
-    setData(filteredByMemberName);
+    setMemberNameFilter(filteredByMemberName);
   };
 
   const handleMemberFilter = (member) => {
     setMemberValue(member);
-    setOrgFilter(null);
+    setIscoFilter(null);
     const filteredByMemberType = data.filter((m, i) => {
       return m.member_type.includes(member);
     });
@@ -101,15 +103,35 @@ const ManageMember = () => {
   };
 
   useEffect(() => {
-    api
-      .get("/organisation/")
-      .then((res) => {
-        setData(res.data);
-      })
-      .catch((e) => {
-        setData([]);
-      });
+    if (isLoggedIn) {
+      let url = `/user?page=${page}&limit=${pageSize}`;
+      if (search) {
+        url = `${url}&search=${search}`;
+      }
+      if (memberTypeFilter && !orgFilter) {
+        url = `
+          ${url}${memberTypeFilter.map((x) => `&organisation=${x}`).join("")}
+        `;
+      }
+      if (iscoFilter && !orgFilter) {
+        url = `
+          ${url}${iscoFilter.map((x) => `&organisation=${x}`).join("")}
+        `;
+      }
+      api
+        .get("/organisation/")
+        .then((res) => {
+          setData(res.data);
+        })
+        .catch((e) => {
+          setData([]);
+        });
+    }
   }, [reload]);
+
+  console.log("iscoFilter", iscoFilter);
+  console.log("memberTypeFilter", memberTypeFilter);
+  console.log("memberNameFilter", memberNameFilter);
 
   return (
     <div id="manage-member">
