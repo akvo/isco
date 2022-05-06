@@ -18,6 +18,7 @@ const ManageMember = () => {
     return { id: org.id, name: org.name };
   });
 
+  const firstPage = 1;
   const pageSize = 10;
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -72,34 +73,8 @@ const ManageMember = () => {
   ];
 
   useEffect(() => {
-    setPage(1);
+    setPage(firstPage);
   }, []);
-
-  const handleMemberNameFilter = (val) => {
-    setMemberName(val);
-    let orgs = organisation;
-    orgs = orgs.filter((o) => {
-      return o.id === val;
-    });
-    orgs = orgs.length ? orgs : null;
-    setMemberNameFilter(orgs);
-  };
-
-  const handleMemberFilter = (member) => {
-    setMemberValue(member);
-    let orgs = organisation;
-    orgs = orgs.filter((o) => o.member_type.includes(member));
-    orgs = orgs.length ? orgs : null;
-    setMemberTypeFilter(orgs);
-  };
-
-  const handleIscoFilter = (isco) => {
-    setIscoValue(isco);
-    let orgs = organisation;
-    orgs = orgs.filter((o) => o.isco_type.includes(isco));
-    orgs = orgs.length ? orgs : null;
-    setIscoFilter(orgs);
-  };
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -121,10 +96,12 @@ const ManageMember = () => {
           const orgs = data?.data.map((o) => {
             const members = [o.member.join(", ")];
             const iscos = [o.isco.join(", ")];
+            const findOrganisation = organisation.find((el) => el.id === o.id);
             return {
               ...o,
               member: members,
               isco: iscos,
+              organisation_name: findOrganisation?.name,
             };
           });
           setIsLoading(false);
@@ -143,6 +120,7 @@ const ManageMember = () => {
     isLoggedIn,
     reload,
     page,
+    organisation,
     memberName,
     iscoValue,
     memberValue,
@@ -150,6 +128,35 @@ const ManageMember = () => {
     memberTypeFilter,
     iscoFilter,
   ]);
+
+  const handleMemberNameFilter = (val) => {
+    setPage(firstPage);
+    setMemberName(val);
+    let orgs = organisation;
+    orgs = orgs.filter((o) => {
+      return o.id === val;
+    });
+    orgs = orgs.length ? orgs : null;
+    setMemberNameFilter(orgs);
+  };
+
+  const handleMemberFilter = (member) => {
+    setPage(firstPage);
+    setMemberValue(member);
+    let orgs = organisation;
+    orgs = orgs.filter((o) => o.member_type.includes(member));
+    orgs = orgs.length ? orgs : null;
+    setMemberTypeFilter(orgs);
+  };
+
+  const handleIscoFilter = (isco) => {
+    setPage(firstPage);
+    setIscoValue(isco);
+    let orgs = organisation;
+    orgs = orgs.filter((o) => o.isco_type.includes(isco));
+    orgs = orgs.length ? orgs : null;
+    setIscoFilter(orgs);
+  };
 
   return (
     <div id="manage-member">
