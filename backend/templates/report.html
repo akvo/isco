@@ -8,8 +8,37 @@
       integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
       crossorigin="anonymous"
     />
+    <style>
+      .header {
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 12px;
+        border-bottom: 1px sollid #ddd;
+      }
+    </style>
   </head>
   <body>
+    <!-- Header -->
+    <div class="container header">
+      <img
+        style="height: 30px"
+        alt="{{ webdomain }}/images/beyond.jpg"
+        src="{{ webdomain }}/images/beyond.jpg"
+      />
+      <img
+        style="height: 30px"
+        alt="{{ webdomain }}/images/gisco.jpg"
+        src="{{ webdomain }}/images/gisco.jpg"
+      />
+      <img
+        style="height: 30px"
+        alt="{{ webdomain }}/images/disco.png"
+        src="{{ webdomain }}/images/disco.png"
+      />
+    </div>
+    <!-- End of Header -->
     <div class="container">
       <h2
         style="
@@ -29,7 +58,7 @@
           padding: 5px;
           margin: 0px;
           font-size: 16px;
-          margin-bottom: 12px;
+          margin-bottom: 20px;
         "
       >
         {{ data.organisation.name }} - {{ data.submitted_by.name }} - {{
