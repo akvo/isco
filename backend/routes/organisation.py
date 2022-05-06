@@ -47,6 +47,7 @@ def get(req: Request, session: Session = Depends(get_session)):
 def get_paginated(req: Request,
                   page: int = 1,
                   page_size: int = 10,
+                  organisation: Optional[List[int]] = Query(None),
                   member: Optional[List[int]] = Query(None),
                   isco: Optional[List[int]] = Query(None),
                   session: Session = Depends(get_session)):
@@ -54,6 +55,7 @@ def get_paginated(req: Request,
         session=session,
         page=page,
         page_size=page_size,
+        organisation=organisation,
         member=member,
         isco=isco)
     total_data = organisation['count']

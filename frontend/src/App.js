@@ -21,6 +21,7 @@ import {
   Setting,
   SubmissionProgress,
   Faq,
+  ManageMember,
   ManageDownload,
 } from "./pages";
 import { Alert } from "antd";
@@ -231,6 +232,11 @@ const App = () => {
             exact
             path="/submission-progress"
             element={<Secure element={SubmissionProgress} adminPage={true} />}
+          />
+          <Route
+            exact
+            path="/manage-member"
+            element={<Secure element={ManageMember} adminPage={true} />}
           />
           <Route
             exact
