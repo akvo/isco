@@ -8,7 +8,20 @@
   },
   {
     "code": null,
-    "member": ["Other"],
+    "member": [
+      "Small Industry",
+      "DISCO - Traders",
+      "Retail",
+      "Standard Setting Organisation",
+      "Other",
+      "Big Industry",
+      "Civil Society",
+      "Government",
+      "DISCO - Retail",
+      "GISCO - Small Industry",
+      "DISCO - Small Manufacturers",
+      "DISCO - Large Manufacturers"
+    ],
     "isco": ["GISCO"],
     "name": "staff GISCO secretariat",
     "active": true
