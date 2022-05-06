@@ -10,7 +10,7 @@ import { api, store } from "../../lib";
 const { Title } = Typography;
 
 const ManageMember = () => {
-  const { isLoggedIn, user, optionValues } = store.useState((s) => s);
+  const { isLoggedIn, optionValues } = store.useState((s) => s);
   const { organisation, member_type, isco_type } = optionValues;
   const memberType = member_type.filter((isco) => isco.name !== "All");
   const iscoType = isco_type.filter((isco) => isco.name !== "All");
