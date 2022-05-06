@@ -413,6 +413,35 @@ const Preview = () => {
               disabled: true,
             }}
             initialValue={[]}
+            printConfig={{
+              showButton: true,
+              hideInputType: [
+                "cascade",
+                "geo",
+                "date",
+                "input",
+                "number",
+                "text",
+                "option",
+                "multiple_option",
+                "tree",
+              ],
+              header: (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    paddingBottom: "12px",
+                    borderBottom: "1px solid #777777",
+                    marginBottom: "24px",
+                  }}
+                >
+                  <img height={30} src="/images/beyond.jpg" alt="logo" />
+                  <img height={30} src="/images/gisco.jpg" alt="logo" />
+                  <img height={30} src="/images/disco.png" alt="logo" />
+                </div>
+              ),
+            }}
           />
         )}
       </div>
