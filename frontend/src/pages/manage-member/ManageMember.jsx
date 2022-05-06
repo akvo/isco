@@ -1,16 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./styles.scss";
 
-import {
-  Button,
-  Col,
-  Row,
-  Typography,
-  Table,
-  Space,
-  Select,
-  Input,
-} from "antd";
+import { Button, Col, Row, Typography, Table, Space, Select } from "antd";
 import { RiPencilFill } from "react-icons/ri";
 
 import AddMember from "./AddMember";
@@ -25,7 +16,6 @@ const ManageMember = () => {
   const memberNameOptions = organisation.map((org) => {
     return { id: org.id, name: org.name };
   });
-
   const pageSize = 10;
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -82,14 +72,15 @@ const ManageMember = () => {
   const handleMemberNameFilter = (val) => {
     setMemberName(val);
     let orgs = organisation;
-    orgs = orgs.filter((o) => o.member.includes(val));
+    orgs = orgs.filter((o) => {
+      return o.id === val;
+    });
     orgs = orgs.length ? orgs : null;
     setMemberNameFilter(orgs);
   };
 
   const handleMemberFilter = (member) => {
     setMemberValue(member);
-    setIscoFilter(null);
     let orgs = organisation;
     orgs = orgs.filter((o) => o.member_type.includes(member));
     orgs = orgs.length ? orgs : null;
@@ -98,7 +89,6 @@ const ManageMember = () => {
 
   const handleIscoFilter = (isco) => {
     setIscoValue(isco);
-    setMemberTypeFilter(null);
     let orgs = organisation;
     orgs = orgs.filter((o) => o.isco_type.includes(isco));
     orgs = orgs.length ? orgs : null;
@@ -110,7 +100,7 @@ const ManageMember = () => {
       setIsLoading(true);
       let url = `/organisation/paginated?page=${page}&page_size=${pageSize}`;
       if (memberName) {
-        url = `${url}&name=${memberName}`;
+        url = `${url}&organisation=${memberName}`;
       }
       if (memberValue) {
         url = `${url}&member=${memberValue}`;
@@ -123,8 +113,8 @@ const ManageMember = () => {
         .then((res) => {
           const { data } = res;
           const orgs = data?.data.map((o) => {
-            let members = [o.member.join(", ")];
-            let iscos = [o.isco.join(", ")];
+            const members = [o.member.join(", ")];
+            const iscos = [o.isco.join(", ")];
             return {
               ...o,
               member: members,
@@ -138,11 +128,22 @@ const ManageMember = () => {
           });
         })
         .catch((e) => {
+          console.info(e);
           setIsLoading(false);
           setData([]);
         });
     }
-  }, [reload, page, memberNameFilter, memberTypeFilter, iscoFilter]);
+  }, [
+    isLoggedIn,
+    reload,
+    page,
+    memberName,
+    iscoValue,
+    memberValue,
+    memberNameFilter,
+    memberTypeFilter,
+    iscoFilter,
+  ]);
 
   return (
     <div id="manage-member">

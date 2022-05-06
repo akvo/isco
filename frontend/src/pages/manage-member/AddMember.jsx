@@ -49,7 +49,7 @@ const AddMember = ({
       form.setFieldsValue({ member_type: member_type });
       form.setFieldsValue({ isco_type: isco_type });
     }
-  }, [selectedMember]);
+  }, [selectedMember, form]);
 
   const handleOnClickModalCancel = () => {
     form.resetFields();
@@ -91,7 +91,7 @@ const AddMember = ({
     }
     if (selectedMember?.id) {
       // UPDATE
-      let url = `/organisation/${selectedMember.id}`;
+      const url = `/organisation/${selectedMember.id}`;
       api
         .put(url, payload)
         .then(() => {
