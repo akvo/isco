@@ -38,13 +38,13 @@ const ManageMember = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      width: "40%",
+      width: "35%",
     },
     {
       title: "Member Type",
       dataIndex: "member",
       key: "member_type",
-      width: "25%",
+      width: "30%",
     },
     {
       title: "ISCO",

@@ -74,9 +74,8 @@ const AddMember = ({
         .post("/organisation", payload)
         .then(() => {
           notification.success({
-            message: "Member has been successfully added.",
-            description:
-              "The Member will receive an email with an activation link they must click as a final step in the process.",
+            message: "Success",
+            description: "Member has been successfully added.",
           });
           setSending(false);
           setIsAddMemberVisible(false);
