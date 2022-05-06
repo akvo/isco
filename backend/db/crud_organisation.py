@@ -40,10 +40,13 @@ def filter_organisation(
     session: Session,
     page: int,
     page_size: int,
+    organisation: Optional[List[int]] = None,
     member: Optional[List[int]] = None,
     isco: Optional[List[int]] = None
 ) -> List[Organisation]:
     orgs = session.query(Organisation)
+    if organisation:
+        orgs = orgs.filter(Organisation.id.in_(organisation))
     org_ids = []
     member_org_ids = []
     isco_org_ids = []

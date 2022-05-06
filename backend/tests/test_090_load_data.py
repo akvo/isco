@@ -135,6 +135,17 @@ class TestLoadData():
         assert "data" in res
         assert "total" in res
         assert "total_page" in res
+        # get all organisation with filter by organisation
+        res = await client.get(
+            app.url_path_for("organisation:get_paginated"),
+            params={"organisation": [1, 2]})
+        assert res.status_code == 200
+        res = res.json()
+        assert "current" in res
+        assert "data" in res
+        assert "total" in res
+        assert "total_page" in res
+        assert [d['id'] for d in res["data"]] == [1, 2]
         # get all organisation with filter by member
         res = await client.get(
             app.url_path_for("organisation:get_paginated"),
@@ -167,5 +178,18 @@ class TestLoadData():
         assert "data" in res
         assert "total" in res
         assert "total_page" in res
+        assert 4 in res["data"][0]["member_type"]
+        assert 3 in res["data"][0]["isco_type"]
+        # get all organisation with all filter
+        res = await client.get(
+            app.url_path_for("organisation:get_paginated"),
+            params={"organisation": [1, 2, 3], "member": [4], "isco": [3]})
+        assert res.status_code == 200
+        res = res.json()
+        assert "current" in res
+        assert "data" in res
+        assert "total" in res
+        assert "total_page" in res
+        assert [d['id'] for d in res["data"]] == [3]
         assert 4 in res["data"][0]["member_type"]
         assert 3 in res["data"][0]["isco_type"]
