@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import re
 import uuid
@@ -9,13 +10,16 @@ from models.cascade_list import CascadeList
 import jinja2
 import util.storage as storage
 
+webdomain = os.environ["WEBDOMAIN"]
+
 
 def generate(data, detail):
     template_loader = jinja2.FileSystemLoader(searchpath="./templates")
     template_env = jinja2.Environment(loader=template_loader)
     template_file = "report.html"
     template = template_env.get_template(template_file)
-    output_text = template.render(data=data, detail=detail)
+    output_text = template.render(
+        webdomain=webdomain, data=data, detail=detail)
     filename = "{}-{}".format(data["form"]["id"], data["id"])
     html_path = f"./tmp/{filename}.html"
     organisation_folder = re.sub(
