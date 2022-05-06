@@ -10,12 +10,14 @@ import { api, store } from "../../lib";
 const { Title } = Typography;
 
 const ManageMember = () => {
-  const { isLoggedIn, optionValues } = store.useState((s) => s);
+  const { isLoggedIn, user, optionValues } = store.useState((s) => s);
   const { organisation, member_type, isco_type } = optionValues;
+  const memberType = member_type.filter((isco) => isco.name !== "All");
   const iscoType = isco_type.filter((isco) => isco.name !== "All");
   const memberNameOptions = organisation.map((org) => {
     return { id: org.id, name: org.name };
   });
+
   const pageSize = 10;
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -35,19 +37,23 @@ const ManageMember = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
+      width: "40%",
     },
     {
       title: "Member Type",
       dataIndex: "member",
       key: "member_type",
+      width: "25%",
     },
     {
-      title: "Isco Type",
+      title: "ISCO",
       dataIndex: "isco",
       key: "isco_type",
+      width: "25%",
     },
     {
-      title: "",
+      title: "Action",
+      width: "10%",
       render: (record) => (
         <Space key={`${record?.id}-${record?.key}`}>
           <Button
@@ -210,8 +216,8 @@ const ManageMember = () => {
                   className="member-dropdown-wrapper"
                   placeholder="Member Type"
                   options={
-                    member_type.length
-                      ? member_type.map((o) => ({
+                    memberType.length
+                      ? memberType.map((o) => ({
                           label: o.name,
                           value: o.id,
                         }))

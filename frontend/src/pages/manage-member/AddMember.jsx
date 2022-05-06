@@ -29,9 +29,11 @@ const AddMember = ({
   const [form] = Form.useForm();
   const { optionValues } = store.useState((s) => s);
   const { member_type, isco_type } = optionValues;
+  const memberType = member_type.filter((isco) => isco.name !== "All");
+
+  const iscoType = isco_type.filter((isco) => isco.name !== "All");
 
   const isAdd = !selectedMember;
-  const disableFields = selectedMember !== null;
   const requiredFields = isAdd ? true : false;
   const modalTitle = isAdd ? "New Member" : "Update Member";
   const buttonOkText = isAdd ? "Add Member" : "Update Member";
@@ -72,7 +74,7 @@ const AddMember = ({
         .post("/organisation", payload)
         .then(() => {
           notification.success({
-            message: "Member has been successfully added",
+            message: "Member has been successfully added.",
             description:
               "The Member will receive an email with an activation link they must click as a final step in the process.",
           });
@@ -96,7 +98,8 @@ const AddMember = ({
         .put(url, payload)
         .then(() => {
           notification.success({
-            message: "Member has been successfully updated",
+            message: "Success",
+            description: "Member has been successfully updated.",
           });
           setSending(false);
           setIsAddMemberVisible(false);
@@ -169,11 +172,7 @@ const AddMember = ({
                 },
               ]}
             >
-              <Input
-                className="bg-grey"
-                placeholder="Name"
-                disabled={disableFields}
-              />
+              <Input className="bg-grey" placeholder="Name" />
             </Form.Item>
           </Col>
         </Row>
@@ -202,7 +201,7 @@ const AddMember = ({
                   0
                 }
               >
-                {options(member_type)}
+                {options(memberType)}
               </Select>
             </Form.Item>
           </Col>
@@ -232,7 +231,7 @@ const AddMember = ({
                   0
                 }
               >
-                {options(isco_type)}
+                {options(iscoType)}
               </Select>
             </Form.Item>
           </Col>
