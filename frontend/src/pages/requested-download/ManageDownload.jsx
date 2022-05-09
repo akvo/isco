@@ -22,6 +22,7 @@ const ButtonApproveReject = ({
   isReject,
 }) => {
   const enableReject = false;
+  const isApproved = record?.status === "approved";
   return (
     <Space>
       <Popconfirm
@@ -30,8 +31,13 @@ const ButtonApproveReject = ({
         cancelText="Cancel"
         onConfirm={() => handleApproveRejectRequest(record, true)}
       >
-        <Button size="small" type="primary" loading={isApprove === record?.id}>
-          Approve
+        <Button
+          size="small"
+          type="primary"
+          loading={isApprove === record?.id}
+          disabled={isApproved}
+        >
+          {isApproved ? "Approved" : "Approve"}
         </Button>
       </Popconfirm>
       {enableReject && (
@@ -159,6 +165,7 @@ const ManageDownload = () => {
     {
       title: "Action",
       key: "action",
+      width: "15%",
       render: (record) => {
         return (
           <Space>
