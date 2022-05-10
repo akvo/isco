@@ -13,6 +13,7 @@ import {
 import { api, store } from "../../lib";
 import { uiText } from "../../static";
 import { useNotification } from "../../util";
+import moment from "moment";
 
 const { Title } = Typography;
 
@@ -66,7 +67,8 @@ const Download = () => {
       });
   };
 
-  const handleDownloadButton = (uuid) => {
+  const handleDownloadButton = (record) => {
+    const { form, uuid } = record;
     setDownloadLoading(uuid);
     api
       .get(`/download/file/${uuid}`)
@@ -75,6 +77,12 @@ const Download = () => {
         setTimeout(() => {
           const print = document.getElementById("print-iframe");
           if (print) {
+            const today = moment().format("MMMM Do YYYY");
+            const title = `${form}_${today}`;
+            // for firefox
+            print.contentDocument.title = title;
+            // hack for chrome
+            document.title = title;
             print.focus();
             print.contentWindow.print();
           }
@@ -102,10 +110,14 @@ const Download = () => {
       });
   };
 
-  if (window.frames[0]) {
-    window.frames[0].onafterprint = function () {
+  if (window.frames?.["print-iframe"]) {
+    window.frames["print-iframe"].contentWindow.onafterprint = function () {
+      document.title = "ISCO";
       setDownloadData(null);
     };
+    setTimeout(() => {
+      document.title = "ISCO";
+    }, 1000);
   }
 
   const handleLoad = (event) => {
@@ -168,7 +180,7 @@ const Download = () => {
         if (status === "approved") {
           return (
             <Button
-              onClick={() => handleDownloadButton(uuid)}
+              onClick={() => handleDownloadButton(record)}
               loading={uuid === downloadLoading}
               type="primary"
               ghost
