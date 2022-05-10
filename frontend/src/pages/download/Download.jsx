@@ -78,7 +78,11 @@ const Download = () => {
           const print = document.getElementById("print-iframe");
           if (print) {
             const today = moment().format("MMMM Do YYYY");
-            print.contentDocument.title = `${form}_${today}`;
+            const title = `${form}_${today}`;
+            // for firefox
+            print.contentDocument.title = title;
+            // hack for chrome
+            document.title = title;
             print.focus();
             print.contentWindow.print();
           }
@@ -106,10 +110,14 @@ const Download = () => {
       });
   };
 
-  if (window.frames[0]) {
-    window.frames[0].onafterprint = function () {
+  if (window.frames?.["print-iframe"]) {
+    window.frames["print-iframe"].contentWindow.onafterprint = function () {
+      document.title = "ISCO";
       setDownloadData(null);
     };
+    setTimeout(() => {
+      document.title = "ISCO";
+    }, 1000);
   }
 
   const handleLoad = (event) => {
