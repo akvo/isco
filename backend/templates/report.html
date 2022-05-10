@@ -15,7 +15,7 @@
         justify-content: space-between;
         align-items: center;
         padding-bottom: 12px;
-        border-bottom: 1px sollid #ddd;
+        border-bottom: 1.5px sollid #777777;
       }
     </style>
   </head>
@@ -45,7 +45,7 @@
           text-align: center;
           padding: 10px;
           background: #f2f2f2;
-          border: 1px solid #ddd;
+          border: 1.5px solid #777777;
           margin: 0px;
           font-size: 20px;
         "
@@ -69,45 +69,52 @@
       {% for dt in detail %}
       <div class="row" style="margin-bottom: 10px; margin-top: 10px">
         <div class="col">
-          <h3
-            style="
-              text-align: center;
-              padding: 10px;
-              background: #f2f2f2;
-              border: 1px solid #ddd;
-              margin: 0px;
-              font-size: 20px;
-            "
-          >
-            {{dt.name}}
-          </h3>
-          {% if dt.description %}
-          <div
-            style="
-              padding: 20px;
-              background: #fcfcfc;
-              border-left: 1px solid #ddd;
-              border-right: 1px solid #ddd;
-              margin: 0px;
-              font-style: italic;
-              font-size: 14px;
-            "
-          >
-            {{dt.description}}
+          <div style="page-break-inside: avoid">
+            <h3
+              style="
+                text-align: center;
+                padding: 10px;
+                background: #f2f2f2;
+                border: 1.5px solid #777777;
+                margin: 0px;
+                font-size: 20px;
+              "
+            >
+              {{dt.name}}
+            </h3>
+            {% if dt.description %}
+            <div
+              style="
+                padding: 20px;
+                background: #fcfcfc;
+                border-left: 1.5px solid #777777;
+                border-right: 1.5px solid #777777;
+                margin: 0px;
+                font-style: italic;
+                font-size: 14px;
+              "
+            >
+              {{dt.description}}
+            </div>
           </div>
           {% endif %} {% for r in dt.data %}
-          <table class="table table-bordered" style="margin-bottom: 0px">
+          <table
+            class="table"
+            style="margin-bottom: 0px; border: 1.5px solid #777777"
+          >
             {% if dt.repeatable %}
             <thead>
               <tr>
-                <th scope="col">{{dt.name}} - {{r.repeat + 1}}</th>
+                <th style="page-break-inside: avoid" scope="col">
+                  {{dt.name}} - {{r.repeat + 1}}
+                </th>
               </tr>
             </thead>
             {% endif %}
             <tbody>
               {% for a in r.answers %} {% if a.value %}
               <tr>
-                <td>
+                <td style="page-break-inside: avoid">
                   <div style="font-weight: 500">
                     {{a.question}} {% if a.tooltip %}
                     <div
@@ -149,7 +156,7 @@
                       font-style: italic;
                       font-size: 14px;
                       padding-top: 8px;
-                      border-top: 1px solid #ddd;
+                      border-top: 1.5px solid #777777;
                     "
                   >
                     <b>Comment:</b> {{a.comment}}
