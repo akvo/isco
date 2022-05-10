@@ -165,7 +165,7 @@ const ManageDownload = () => {
     {
       title: "Action",
       key: "action",
-      width: "15%",
+      width: "20%",
       render: (record) => {
         return (
           <Space>

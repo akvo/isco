@@ -73,8 +73,12 @@ const Download = () => {
       .then((res) => {
         setDownloadData(res?.data);
         setTimeout(() => {
-          window.frames[0].print();
-        }, 500);
+          const print = document.getElementById("print-iframe");
+          if (print) {
+            print.focus();
+            print.contentWindow.print();
+          }
+        }, 2500);
       })
       .catch((e) => {
         const { status, statusText } = e.response;
@@ -92,7 +96,9 @@ const Download = () => {
         }
       })
       .finally(() => {
-        setDownloadLoading(null);
+        setTimeout(() => {
+          setDownloadLoading(null);
+        }, 2500);
       });
   };
 
@@ -101,6 +107,29 @@ const Download = () => {
       setDownloadData(null);
     };
   }
+
+  const handleLoad = (event) => {
+    const iframe = event.target;
+    if (iframe?.contentDocument) {
+      let css = "@page {";
+      css += "size: 210mm 297mm; margin: 15mm;";
+      css += "}";
+      css +=
+        "* { -webkit-print-color-adjust: exact !important; color-adjust: exact !important; }";
+      const style = document.createElement("style");
+      style.type = "text/css";
+      style.media = "print";
+      if (style.styleSheet) {
+        style.styleSheet.cssText = css;
+      } else {
+        style.appendChild(document.createTextNode(css));
+      }
+      const head = iframe.contentDocument.head;
+      if (head) {
+        head.appendChild(style);
+      }
+    }
+  };
 
   const columns = [
     {
@@ -241,11 +270,19 @@ const Download = () => {
 
       {downloadData && (
         <iframe
+          id="print-iframe"
+          title={Math.random()}
           srcDoc={downloadData}
-          frameBorder="0"
+          frameBorder={0}
           height={0}
           width={0}
-          style={{ display: "none", position: "absolute", top: 0, left: 0 }}
+          style={{
+            visibility: "hidden",
+            position: "absolute",
+            top: 0,
+            left: 0,
+          }}
+          onLoad={handleLoad}
         />
       )}
     </div>
