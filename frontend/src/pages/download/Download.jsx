@@ -13,6 +13,7 @@ import {
 import { api, store } from "../../lib";
 import { uiText } from "../../static";
 import { useNotification } from "../../util";
+import moment from "moment";
 
 const { Title } = Typography;
 
@@ -66,7 +67,8 @@ const Download = () => {
       });
   };
 
-  const handleDownloadButton = (uuid) => {
+  const handleDownloadButton = (record) => {
+    const { form, uuid } = record;
     setDownloadLoading(uuid);
     api
       .get(`/download/file/${uuid}`)
@@ -75,6 +77,8 @@ const Download = () => {
         setTimeout(() => {
           const print = document.getElementById("print-iframe");
           if (print) {
+            const today = moment().format("MMMM Do YYYY");
+            print.contentDocument.title = `${form}_${today}`;
             print.focus();
             print.contentWindow.print();
           }
@@ -168,7 +172,7 @@ const Download = () => {
         if (status === "approved") {
           return (
             <Button
-              onClick={() => handleDownloadButton(uuid)}
+              onClick={() => handleDownloadButton(record)}
               loading={uuid === downloadLoading}
               type="primary"
               ghost
