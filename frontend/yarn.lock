@@ -2375,10 +2375,10 @@ ajv@^8.0.0, ajv@^8.6.0, ajv@^8.8.0:
     require-from-string "^2.0.2"
     uri-js "^4.2.2"
 
-akvo-react-form@^1.5.4:
-  version "1.5.4"
-  resolved "https://registry.yarnpkg.com/akvo-react-form/-/akvo-react-form-1.5.4.tgz#ee247529bcbe7f9405b456f20c81bcce88ea2fa4"
-  integrity sha512-AoHqwmcmnJ7WTp6d7m0BHo9lt1sdLUunq+2gLt55uYRV5tFqXe0QOzmrXai0/YquTVQ9yuNCMk3LGZMQGLGlKw==
+akvo-react-form@^1.5.5:
+  version "1.5.5"
+  resolved "https://registry.yarnpkg.com/akvo-react-form/-/akvo-react-form-1.5.5.tgz#04805a7e03b04c928a097b6f52bf61e1e42905f3"
+  integrity sha512-kGLXMxZJcrBjqTt2iN4dpQMJFQNnfUgMh2X/c6KLsWKje9LbrWgXozkiQAdvKCeBkdSmm8htNT7unxDReZQY0w==
   dependencies:
     "@react-leaflet/core" ">=1.0.0 <1.1.0 || ^1.1.1"
     antd "^4.18.3"
