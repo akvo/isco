@@ -29,7 +29,7 @@ def update_download(session: Session,
     download = get_by_uuid(session=session, uuid=uuid)
     download.approved_by = approved_by
     if approved:
-        download.expired = datetime.utcnow() + timedelta(days=1)
+        download.expired = datetime.utcnow() + timedelta(days=5)
     else:
         download.expired = None
     session.commit()

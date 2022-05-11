@@ -1,7 +1,7 @@
 import sys
 import pytest
 import db.crud_download as crud
-from datetime import datetime
+from datetime import datetime, timedelta
 from fastapi import FastAPI
 from httpx import AsyncClient
 from tests.test_001_auth import Acc
@@ -11,6 +11,8 @@ pytestmark = pytest.mark.asyncio
 sys.path.append("..")
 account = Acc(email=None, token=None)
 today = datetime.today().strftime("%B %d, %Y")
+expired_date = datetime.utcnow() + timedelta(days=5)
+expired_date = expired_date.strftime("%Y-%m-%d")
 
 
 class TestDownloadRoute():
@@ -20,7 +22,6 @@ class TestDownloadRoute():
         res = await client.get(
             app.url_path_for("download:list"),
             headers={"Authorization": f"Bearer {account.token}"})
-        assert res.status_code == 200
         assert res.status_code == 200
         res = res.json()
         assert res["current"] == 1
@@ -134,6 +135,14 @@ class TestDownloadRoute():
             "request_date": today,
             "status": "approved"
         }
+        # get download list after approved
+        res = await client.get(
+            app.url_path_for("download:list"),
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 200
+        res = res.json()
+        expired = res['data'][0]['expired'].split('T')[0]
+        assert expired == expired_date
 
     @pytest.mark.asyncio
     async def test_get_download_file(self, app: FastAPI,
