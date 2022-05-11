@@ -24,6 +24,7 @@ organisation_route = APIRouter()
 def add(req: Request, organisation: OrganisationPayload,
         session: Session = Depends(get_session),
         credentials: credentials = Depends(security)):
+    verify_super_admin(session=session, authenticated=req.state.authenticated)
     organisation = crud.add_organisation(session=session,
                                          payload=organisation)
     return organisation.serialize
@@ -111,6 +112,7 @@ def get_by_id(req: Request, id: int, session: Session = Depends(get_session)):
 def update(req: Request, id: int, payload: OrganisationPayload,
            session: Session = Depends(get_session),
            credentials: credentials = Depends(security)):
+    verify_super_admin(session=session, authenticated=req.state.authenticated)
     organisation = crud.update_organisation(session=session,
                                             id=id, payload=payload)
     return organisation.serialize
@@ -124,5 +126,6 @@ def update(req: Request, id: int, payload: OrganisationPayload,
                            tags=["Organisation"])
 def delete(req: Request, id: int, session: Session = Depends(get_session),
            credentials: credentials = Depends(security)):
+    verify_super_admin(session=session, authenticated=req.state.authenticated)
     crud.delete_organisation(session=session, id=id)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)
