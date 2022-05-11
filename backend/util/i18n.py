@@ -222,14 +222,20 @@ class EmailText(enum.Enum):
                 Dear reporting member,
                 <p>
                 Your request to download your reported data has been approved.
-                You can now enter the tool and download the data.
+                You can now enter the tool and download the data. <br/>
+                For security reasons, The approved data access will expire
+                after 5 days. Then you will have to make a new request.
                 </p>
                 </div>''',
         "body_translation": '''<div>
-                Sehr geehrtes meldendes Mitglied,
+                Sehr geehrtes Mitglied,
                 <p>
-                Ihr Antrag zum Herunterladen der Daten wurde genehmigt.
-                Sie können nun das Tool aufrufen und die Daten herunterladen.
+                Ihr Antrag zum Herunterladen Ihrer Daten wurde genehmigt.
+                Sie können nun in das Online-Tool einloggen und Ihre Daten
+                herunterladen. <br/>
+                Aus Sicherheitsgründen ändert der genehmigte Datenzugang endet
+                nach einer Frist von 5 Tagen. Danach müssten Sie erneut eine
+                Anfrage stellen.
                 </p>
                 </div>''',
         "message": None,
