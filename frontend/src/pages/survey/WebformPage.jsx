@@ -315,7 +315,7 @@ const WebformPage = ({
           }
           notify({
             type: "success",
-            message: "Subission submitted successfully.",
+            message: "Submission submitted successfully.",
           });
           setFormLoaded(null);
           setFormValue({});
@@ -361,7 +361,7 @@ const WebformPage = ({
           setSavedData(res.data);
           notify({
             type: "success",
-            message: "Subission saved successfully.",
+            message: "Submission saved successfully.",
           });
         })
         .catch((e) => {
@@ -406,7 +406,7 @@ const WebformPage = ({
         }
         notify({
           type: "success",
-          message: "Subission submitted successfully.",
+          message: "Submission submitted successfully.",
         });
         setFormLoaded(null);
         setFormValue({});
