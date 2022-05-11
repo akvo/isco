@@ -8,6 +8,7 @@ import db.crud_member_type as crud
 from db.connection import get_session
 from models.member_type import MemberTypeBase
 from models.member_type import MemberTypeDict, MemberTypePayload
+from middleware import verify_super_admin
 
 security = HTTPBearer()
 member_type_route = APIRouter()
@@ -21,6 +22,7 @@ member_type_route = APIRouter()
 def add(req: Request, payload: MemberTypePayload,
         session: Session = Depends(get_session),
         credentials: credentials = Depends(security)):
+    verify_super_admin(session=session, authenticated=req.state.authenticated)
     member_type = crud.add_member_type(session=session, payload=payload)
     return member_type.serialize
 
@@ -53,6 +55,7 @@ def get_by_id(req: Request, id: int, session: Session = Depends(get_session)):
 def update(req: Request, id: int, payload: MemberTypePayload,
            session: Session = Depends(get_session),
            credentials: credentials = Depends(security)):
+    verify_super_admin(session=session, authenticated=req.state.authenticated)
     member_type = crud.update_member_type(session=session,
                                           id=id,
                                           payload=payload)
@@ -60,14 +63,13 @@ def update(req: Request, id: int, payload: MemberTypePayload,
 
 
 @member_type_route.delete("/member_type/{id:path}",
-                          responses={204: {
-                              "model": None
-                            }},
+                          responses={204: {"model": None}},
                           status_code=HTTPStatus.NO_CONTENT,
                           summary="delete member type by id",
                           name="member_type:delete",
                           tags=["Member Type"])
 def delete(req: Request, id: int, session: Session = Depends(get_session),
            credentials: credentials = Depends(security)):
+    verify_super_admin(session=session, authenticated=req.state.authenticated)
     crud.delete_member_type(session=session, id=id)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)

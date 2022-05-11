@@ -39,8 +39,12 @@ def update_download(session: Session,
 
 
 def get_status(session: Session, user: int, data: int):
-    download = session.query(Download).filter(
-        and_(Download.data == data, Download.request_by == user)).first()
+    download = session.query(Download).filter(and_(
+        Download.data == data,
+        Download.request_by == user)
+    ).order_by(
+        Download.id.desc()).order_by(
+            Download.created.desc()).first()
     return download
 
 

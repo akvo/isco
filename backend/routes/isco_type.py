@@ -8,6 +8,7 @@ import db.crud_isco_type as crud
 from db.connection import get_session
 from models.isco_type import IscoTypeBase
 from models.isco_type import IscoTypeDict, IscoTypePayload
+from middleware import verify_super_admin
 
 security = HTTPBearer()
 isco_type_route = APIRouter()
@@ -21,6 +22,7 @@ isco_type_route = APIRouter()
 def add(req: Request, payload: IscoTypePayload,
         session: Session = Depends(get_session),
         credentials: credentials = Depends(security)):
+    verify_super_admin(session=session, authenticated=req.state.authenticated)
     isco_type = crud.add_isco_type(session=session, payload=payload)
     return isco_type.serialize
 
@@ -53,6 +55,7 @@ def get_by_id(req: Request, id: int, session: Session = Depends(get_session)):
 def update(req: Request, id: int, payload: IscoTypePayload,
            session: Session = Depends(get_session),
            credentials: credentials = Depends(security)):
+    verify_super_admin(session=session, authenticated=req.state.authenticated)
     isco_type = crud.update_isco_type(session=session,
                                       id=id,
                                       payload=payload)
@@ -69,5 +72,6 @@ def update(req: Request, id: int, payload: IscoTypePayload,
                         tags=["Isco Type"])
 def delete(req: Request, id: int, session: Session = Depends(get_session),
            credentials: credentials = Depends(security)):
+    verify_super_admin(session=session, authenticated=req.state.authenticated)
     crud.delete_isco_type(session=session, id=id)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)

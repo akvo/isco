@@ -189,7 +189,7 @@ const Download = () => {
             </Button>
           );
         }
-        if (!status) {
+        if (!status || status === "expired") {
           return (
             <Button
               className="action-btn"
@@ -200,8 +200,8 @@ const Download = () => {
             </Button>
           );
         }
-        if (status === "pending" || status === "expired") {
-          return status.toUpperCase();
+        if (status === "pending") {
+          return "PENDING";
         }
       },
     },
