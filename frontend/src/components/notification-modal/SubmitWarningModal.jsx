@@ -1,12 +1,20 @@
 import React, { useState, useMemo } from "react";
 import { Row, Col, Modal, Button, Checkbox, Space } from "antd";
 import { WarningOutlined } from "@ant-design/icons";
+import { uiText } from "../../static";
+import { store } from "../../lib";
 
 const DataSecurityModal = ({ visible, onOk, onCancel, force = true }) => {
   const [checkboxOne, setCheckboxOne] = useState(false);
   const [checkboxTwo, setCheckboxTwo] = useState(false);
   const [checkboxThree, setCheckboxThree] = useState(false);
   const [checkboxFour, setCheckboxFour] = useState(false);
+
+  const { active: activeLang } = store.useState((s) => s.language);
+
+  const text = useMemo(() => {
+    return uiText[activeLang];
+  }, [activeLang]);
 
   const disableOkBtn = useMemo(() => {
     return force
@@ -25,9 +33,11 @@ const DataSecurityModal = ({ visible, onOk, onCancel, force = true }) => {
       footer={
         <Row align="middle" justify="center">
           <Button type="primary" onClick={onOk} disabled={!disableOkBtn}>
-            {force ? "Agree and Continue" : "Yes"}
+            {force ? text.btnAcceptContinue : text.btnYes}
           </Button>
-          <Button onClick={onCancel}>{force ? "Cancel" : "No"}</Button>
+          <Button onClick={onCancel}>
+            {force ? text.btnCancel : text.btnNo}
+          </Button>
         </Row>
       }
     >
@@ -46,8 +56,7 @@ const DataSecurityModal = ({ visible, onOk, onCancel, force = true }) => {
                   />
                 </Col>
                 <Col span={23} style={{ fontSize: "1rem" }}>
-                  I have checked and tried to complete all mandatory fields that
-                  are marked as still to be completed.
+                  {text.submitModalC1}
                 </Col>
               </Row>
               <Row align="top" justify="space-between" gutter={[24, 24]}>
@@ -58,9 +67,7 @@ const DataSecurityModal = ({ visible, onOk, onCancel, force = true }) => {
                   />
                 </Col>
                 <Col span={23} style={{ fontSize: "1rem" }}>
-                  I have used comments boxes in the corresponding question to
-                  explain why I cannot complete the still uncompleted mandatory
-                  fields.
+                  {text.submitModalC2}
                 </Col>
               </Row>
               <Row align="top" justify="space-between" gutter={[24, 24]}>
@@ -71,8 +78,7 @@ const DataSecurityModal = ({ visible, onOk, onCancel, force = true }) => {
                   />
                 </Col>
                 <Col span={23} style={{ fontSize: "1rem" }}>
-                  I have used above comments box to provide any relevant
-                  additional information on the not completed mandatory field.
+                  {text.submitModalC3}
                 </Col>
               </Row>
             </>
@@ -85,10 +91,7 @@ const DataSecurityModal = ({ visible, onOk, onCancel, force = true }) => {
               />
             </Col>
             <Col span={23} style={{ fontSize: "1rem" }}>
-              After submitting your data, you will not be able to change it
-              anymore. If you are still working on your submission for this
-              round of data collection, please use “Save”. Are you sure you want
-              to “Submit”?
+              {text.submitModalC4}
             </Col>
           </Row>
         </Space>
