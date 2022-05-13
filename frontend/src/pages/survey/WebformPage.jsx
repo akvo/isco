@@ -69,6 +69,7 @@ const WebformPage = ({
   const [isSaving, setIsSaving] = useState(false);
   const [isLocked, setIsLocked] = useState(true);
 
+  const [isForce, setIsForce] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [disableSubmit, setDisableSubmit] = useState(true);
   // save savedData here, for loaded form this must be saved when loading form value
@@ -378,7 +379,13 @@ const WebformPage = ({
     }
   };
 
+  const onFinishShowWarning = () => {
+    setIsForce(false);
+    setModalWarningVisible(true);
+  };
+
   const onCompleteFailed = () => {
+    setIsForce(true);
     setModalWarningVisible(true);
   };
 
@@ -435,7 +442,7 @@ const WebformPage = ({
           <Webform
             forms={formValue}
             onChange={onChange}
-            onFinish={onFinish}
+            onFinish={onFinishShowWarning}
             onCompleteFailed={onCompleteFailed}
             extraButton={
               <>
@@ -464,8 +471,9 @@ const WebformPage = ({
       {/* Modal */}
       <SubmitWarningModal
         visible={modalWarningVisible}
-        onOk={handleOnForceSubmit}
+        onOk={isForce ? handleOnForceSubmit : onFinish}
         onCancel={() => setModalWarningVisible(false)}
+        force={isForce}
       />
     </>
   );

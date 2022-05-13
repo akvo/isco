@@ -43,7 +43,7 @@ const ErrorPage = ({ status = 500, showButton = true }) => {
       case "submission-exist":
         return {
           title: "Submission already submitted.",
-          subTitle: "Member questionnaire can only be submitted once.",
+          // subTitle: "Member questionnaire can only be submitted once.",
           extra: <BackHome />,
         };
       case "not-approved":

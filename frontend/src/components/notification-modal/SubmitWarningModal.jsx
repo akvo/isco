@@ -12,7 +12,7 @@ const DataSecurityModal = ({ visible, onOk, onCancel, force = true }) => {
     return force
       ? checkboxOne && checkboxTwo && checkboxThree && checkboxFour
       : checkboxFour;
-  }, [checkboxOne, checkboxTwo, checkboxThree, checkboxFour]);
+  }, [force, checkboxOne, checkboxTwo, checkboxThree, checkboxFour]);
 
   return (
     <Modal
