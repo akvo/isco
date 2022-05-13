@@ -93,7 +93,7 @@ const uiText = {
     btnReject: "Reject",
     btnRejected: "Rejected",
     btnView: "View",
-    btnAcceptContinue: "Accept & Continue",
+    btnAgreeContinue: "Agree & Continue",
     btnCancel: "Cancel",
     // Table
     tbColName: "Name",
@@ -323,7 +323,7 @@ const uiText = {
     btnReject: "Reject",
     btnRejected: "Rejected",
     btnView: "View",
-    btnAcceptContinue: "Accept & Continue",
+    btnAgreeContinue: "Agree & Continue",
     btnCancel: "Cancel",
     // Table
     tbColName: "Name",
@@ -469,3 +469,9 @@ const uiText = {
 };
 
 export default uiText;
+
+/**
+ * (Can we add translations of the buttons „Submit” (German: Einreichen),
+ * “Save” (German: Speichern) and “Locked” (Gesperrt für andere Nutzer) and
+ * “Next” (German: Weiter)
+ */

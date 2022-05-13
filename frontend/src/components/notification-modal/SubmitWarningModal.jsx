@@ -33,7 +33,7 @@ const DataSecurityModal = ({ visible, onOk, onCancel, force = true }) => {
       footer={
         <Row align="middle" justify="center">
           <Button type="primary" onClick={onOk} disabled={!disableOkBtn}>
-            {force ? text.btnAcceptContinue : text.btnYes}
+            {force ? text.btnAgreeContinue : text.btnYes}
           </Button>
           <Button onClick={onCancel}>
             {force ? text.btnCancel : text.btnNo}
