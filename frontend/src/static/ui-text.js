@@ -227,6 +227,7 @@ const uiText = {
       "I have used above comments box to provide any relevant additional information on the not completed mandatory field.",
     submitModalC4:
       "After submitting your data, you will not be able to change it anymore. If you are still working on your submission for this round of data collection, please use “Save”. Are you sure you want to “Submit”?",
+    infoSubmissionDropdown: "(saved/submitted)",
   },
 
   de: {
@@ -465,6 +466,7 @@ const uiText = {
       "I have used above comments box to provide any relevant additional information on the not completed mandatory field.",
     submitModalC4:
       "Nachdem Sie Ihren Fragebogen “eingereicht” haben (die „Submit“ – Schaltfläche gedrückt haben), können Sie keine Änderungen mehr vornehmen. Wenn Sie noch an dem Fragebogen arbeiten, drücken Sie stattdessen „Save“. Sind Sie sicher, dass Sie diesen Fragebogen final einreichen wollen?",
+    infoSubmissionDropdown: "(saved/submitted)",
   },
 };
 
