@@ -99,14 +99,7 @@
   {
     "name": "Aldi Belgium",
     "member": ["Retail"],
-    "isco": ["Beyond Chocolate"],
-    "code": null,
-    "active": true
-  },
-  {
-    "name": "ALDI Einkauf GmbH & Co. oHG, Unternehmensgruppe ALDI Nord",
-    "member": ["Retail"],
-    "isco": ["GISCO"],
+    "isco": ["Beyond Chocolate", "GISCO"],
     "code": null,
     "active": true
   },
