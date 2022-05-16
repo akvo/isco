@@ -157,7 +157,7 @@ def get_form_options(req: Request, session: Session = Depends(get_session),
             session=session, organisation=user.organisation, form=f['value'])
         if exists:
             f['disabled'] = True
-            f['label'] = f"{f['label']} (submitted)"
+            f['label'] = f"{f['label']}"
     return forms
 
 

@@ -95,7 +95,7 @@ class TestThirdSubmissionRoutes():
             'value': 1,
             'disabled': False
         }, {
-            'label': 'Third limited survey (submitted)',
+            'label': 'Third limited survey',
             'value': 3,
             'disabled': True
         }]

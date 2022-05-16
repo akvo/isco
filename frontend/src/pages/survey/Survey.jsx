@@ -59,11 +59,21 @@ const Survey = () => {
   }, [organisation, user]);
 
   useEffect(() => {
-    if (user && reloadDropdownValue) {
+    if ((user && reloadDropdownValue) || text?.infoSubmissionDropdown) {
       Promise.all([api.get("/webform/options"), api.get("/data/saved")])
         .then((res) => {
           const [webforms, savedData] = res;
-          setFormOptions(webforms.data);
+          const transformWebforms = webforms.data?.map((x) => {
+            let newLabel = x?.label;
+            if (x?.disabled) {
+              newLabel = `${newLabel} ${text.infoSubmissionDropdown}`;
+            }
+            return {
+              ...x,
+              label: newLabel,
+            };
+          });
+          setFormOptions(transformWebforms);
           setSavedSubmissions(savedData.data);
         })
         .catch((e) => {
@@ -73,7 +83,7 @@ const Survey = () => {
           setReloadDropdownValue(false);
         });
     }
-  }, [user, reloadDropdownValue]);
+  }, [user, reloadDropdownValue, text]);
 
   useEffect(() => {
     if (
