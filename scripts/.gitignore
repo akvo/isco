@@ -1,1 +1,4 @@
 *.dump
+*.csv
+*/**.xlsx
+old_data/*
