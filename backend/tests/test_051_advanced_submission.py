@@ -92,7 +92,7 @@ class TestAdvancedSubmissionRoute():
         res = res.json()
         assert res == [{
             "disabled": True,
-            "label": "Form Test (submitted)",
+            "label": "Form Test",
             "value": 1
         }]
 
