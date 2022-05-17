@@ -25,6 +25,8 @@ const Survey = () => {
   const [reloadCollaborator, setReloadCollaborator] = useState(false);
   const [disableAddCollaboratorButton, setDisableAddCollaboratorButton] =
     useState(true);
+  const [isAddCollaboratorLoading, setIsAddCollaboratorLoading] =
+    useState(false);
   const [showCollaboratorForm, setShowCollaboratorForm] = useState(false);
   const [selectedCollaborators, setSelectedCollaborators] = useState([]);
 
@@ -203,6 +205,7 @@ const Survey = () => {
 
   const handleOnClickAddCollaborator = () => {
     if (selectedCollaborators.length) {
+      setIsAddCollaboratorLoading(true);
       const apiCall = (url, payload, header) =>
         !collaborators
           ? api.post(url, payload, header)
@@ -224,6 +227,9 @@ const Survey = () => {
             type: "error",
             message: "Oops, something went wrong.",
           });
+        })
+        .finally(() => {
+          setIsAddCollaboratorLoading(false);
         });
     }
   };
@@ -312,6 +318,7 @@ const Survey = () => {
                     <Button
                       onClick={handleOnClickAddCollaborator}
                       disabled={!selectedCollaborators.length}
+                      loading={isAddCollaboratorLoading}
                     >
                       {text.btnAdd}
                     </Button>

@@ -223,8 +223,21 @@ const uiText = {
       "I have checked and tried to complete all mandatory fields that are marked as still to be completed.",
     submitModalC2:
       "I have used comments boxes in the corresponding question to explain why I cannot complete the still uncompleted mandatory fields.",
-    submitModalC3:
-      "After submitting your data, you will not be able to change it anymore. If you are still working on your submission for this round of data collection, please use “Save”. Are you sure you want to “Submit”?",
+    submitModalC3: (
+      <>
+        After submitting your data, you will not be able to change it anymore.
+        If you are still working on your submission for this round of data
+        collection, please use{" "}
+        <b>
+          <i>&quot;Save&quot;</i>
+        </b>
+        . Are you sure you want to{" "}
+        <b>
+          <i>&quot;Submit&quot;</i>
+        </b>
+        ?
+      </>
+    ),
     infoSubmissionDropdown: "(saved/submitted)",
   },
 
@@ -460,8 +473,21 @@ const uiText = {
       "Ich habe alle verpflichtenden Fragen, die als noch auszufüllen gekennzeichnet sind, geprüft und versucht auszufüllen.",
     submitModalC2:
       "Ich habe die Kommentarfelder zu den entsprechenden Fragen verwendet, um zu erklären, warum ich die noch nicht ausgefüllten Pflichtfelder nicht ausfüllen kann.",
-    submitModalC3:
-      "Nachdem Sie Ihren Fragebogen “eingereicht” haben (die „Submit“ – Schaltfläche gedrückt haben), können Sie keine Änderungen mehr vornehmen. Wenn Sie noch an dem Fragebogen arbeiten, drücken Sie stattdessen „Save“. Sind Sie sicher, dass Sie diesen Fragebogen final einreichen wollen?",
+    submitModalC3: (
+      <>
+        Nachdem Sie Ihren Fragebogen “eingereicht” haben (die{" "}
+        <b>
+          <i>„Submit“</i>
+        </b>{" "}
+        – Schaltfläche gedrückt haben), können Sie keine Änderungen mehr
+        vornehmen. Wenn Sie noch an dem Fragebogen arbeiten, drücken Sie
+        stattdessen{" "}
+        <b>
+          <i>„Save“</i>
+        </b>
+        . Sind Sie sicher, dass Sie diesen Fragebogen final einreichen wollen?
+      </>
+    ),
     infoSubmissionDropdown: "(gespeichert/eingereicht)",
   },
 };

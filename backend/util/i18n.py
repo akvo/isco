@@ -248,3 +248,45 @@ class EmailText(enum.Enum):
         "info": None,
         "signature": True,
     }
+    add_collaborator = {
+        "title": None,
+        "title_translation": None,
+        "subject": "Organisation added as collaborator",
+        "body": '''<div>
+                Dear reporting member / partner,
+                <p>
+                #assigning_name# from #assigning_org_name# has added your
+                organisation as a collaborator for a project.
+                </p>
+                <p>
+                You can now view and data to the saved project in your
+                \"previously saved forms\" section in the portal.
+                </p>
+                <p>
+                Please contact us via the feedback form in case you face any
+                issues.
+                </p>
+                </div>''',
+        "body_translation": '''<div>
+                Sehr geehrte/r Teilnehmer/in,
+                <p>
+                #assigning_name# von #assigning_org_name# hat Ihre
+                Organisation als Partner für ein Projekt registriert.
+                </p>
+                <p>
+                Der gespeicherte Projekt-Fragebogen erscheint nun im
+                Monitoringportal in Ihrem Menu \"Auswahl eines zuvor
+                gespeicherten Fragebogens\" (oben links). Sie können Ihn
+                ansehen und bearbeiten.
+                </p>
+                <p>
+                Bitte kontaktieren Sie uns über das Feedback-Formular, falls
+                Sie Schwierigkeiten haben.
+                </p>
+                </div>''',
+        "message": None,
+        "image": None,
+        "button": None,
+        "info": None,
+        "signature": True,
+    }
