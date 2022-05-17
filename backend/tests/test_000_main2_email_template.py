@@ -55,3 +55,8 @@ class TestEmailTemplate():
             app.url_path_for("template:email"),
             params={"type": MailTypeEnum.data_download_approved.value})
         assert res.status_code == 200
+        # add collaborator
+        res = await client.get(
+            app.url_path_for("template:email"),
+            params={"type": MailTypeEnum.add_collaborator.value})
+        assert res.status_code == 200
