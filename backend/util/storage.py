@@ -76,3 +76,9 @@ def check(url: str):
         return path.is_file()
     storage_client, bucket = create_bucket_object(return_tuple=True)
     return storage.Blob(bucket=bucket, name=url).exists(storage_client)
+
+
+def get_files(prefix):
+    storage_client = storage.Client()
+    blobs = storage_client.list_blobs(BUCKET_NAME, prefix=prefix)
+    return [blob.name for blob in blobs]
