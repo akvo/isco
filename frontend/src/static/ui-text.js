@@ -224,8 +224,6 @@ const uiText = {
     submitModalC2:
       "I have used comments boxes in the corresponding question to explain why I cannot complete the still uncompleted mandatory fields.",
     submitModalC3:
-      "I have used above comments box to provide any relevant additional information on the not completed mandatory field.",
-    submitModalC4:
       "After submitting your data, you will not be able to change it anymore. If you are still working on your submission for this round of data collection, please use “Save”. Are you sure you want to “Submit”?",
     infoSubmissionDropdown: "(saved/submitted)",
   },
@@ -324,7 +322,7 @@ const uiText = {
     btnReject: "Reject",
     btnRejected: "Rejected",
     btnView: "View",
-    btnAgreeContinue: "Agree & Continue",
+    btnAgreeContinue: "Zustimmung und weiter Löschen",
     btnCancel: "Cancel",
     // Table
     tbColName: "Name",
@@ -459,14 +457,12 @@ const uiText = {
       "Ihre Registrierung muss noch verifiziert werden.",
     // Submit Warning Modal Checkbox
     submitModalC1:
-      "I have checked and tried to complete all mandatory fields that are marked as still to be completed.",
+      "Ich habe alle verpflichtenden Fragen, die als noch auszufüllen gekennzeichnet sind, geprüft und versucht auszufüllen.",
     submitModalC2:
-      "I have used comments boxes in the corresponding question to explain why I cannot complete the still uncompleted mandatory fields.",
+      "Ich habe die Kommentarfelder zu den entsprechenden Fragen verwendet, um zu erklären, warum ich die noch nicht ausgefüllten Pflichtfelder nicht ausfüllen kann.",
     submitModalC3:
-      "I have used above comments box to provide any relevant additional information on the not completed mandatory field.",
-    submitModalC4:
       "Nachdem Sie Ihren Fragebogen “eingereicht” haben (die „Submit“ – Schaltfläche gedrückt haben), können Sie keine Änderungen mehr vornehmen. Wenn Sie noch an dem Fragebogen arbeiten, drücken Sie stattdessen „Save“. Sind Sie sicher, dass Sie diesen Fragebogen final einreichen wollen?",
-    infoSubmissionDropdown: "(saved/submitted)",
+    infoSubmissionDropdown: "(gespeichert/eingereicht)",
   },
 };
 
