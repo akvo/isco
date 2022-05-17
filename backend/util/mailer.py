@@ -70,6 +70,7 @@ class MailTypeEnum(enum.Enum):
     user_approved = "user_approved"
     data_download_requested = "data_download_requested"
     data_download_approved = "data_download_approved"
+    add_collaborator = "add_collaborator"
 
 
 class Email:
