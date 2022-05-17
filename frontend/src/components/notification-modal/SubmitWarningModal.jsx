@@ -8,7 +8,6 @@ const DataSecurityModal = ({ visible, onOk, onCancel, force = true }) => {
   const [checkboxOne, setCheckboxOne] = useState(false);
   const [checkboxTwo, setCheckboxTwo] = useState(false);
   const [checkboxThree, setCheckboxThree] = useState(false);
-  const [checkboxFour, setCheckboxFour] = useState(false);
 
   const { active: activeLang } = store.useState((s) => s.language);
 
@@ -17,10 +16,8 @@ const DataSecurityModal = ({ visible, onOk, onCancel, force = true }) => {
   }, [activeLang]);
 
   const disableOkBtn = useMemo(() => {
-    return force
-      ? checkboxOne && checkboxTwo && checkboxThree && checkboxFour
-      : checkboxFour;
-  }, [force, checkboxOne, checkboxTwo, checkboxThree, checkboxFour]);
+    return force ? checkboxOne && checkboxTwo && checkboxThree : checkboxThree;
+  }, [force, checkboxOne, checkboxTwo, checkboxThree]);
 
   return (
     <Modal
@@ -70,28 +67,17 @@ const DataSecurityModal = ({ visible, onOk, onCancel, force = true }) => {
                   {text.submitModalC2}
                 </Col>
               </Row>
-              <Row align="top" justify="space-between" gutter={[24, 24]}>
-                <Col span={1}>
-                  <Checkbox
-                    checked={checkboxThree}
-                    onChange={(val) => setCheckboxThree(val.target.checked)}
-                  />
-                </Col>
-                <Col span={23} style={{ fontSize: "1rem" }}>
-                  {text.submitModalC3}
-                </Col>
-              </Row>
             </>
           )}
           <Row align="top" justify="space-between" gutter={[24, 24]}>
             <Col span={1}>
               <Checkbox
-                checked={checkboxFour}
-                onChange={(val) => setCheckboxFour(val.target.checked)}
+                checked={checkboxThree}
+                onChange={(val) => setCheckboxThree(val.target.checked)}
               />
             </Col>
             <Col span={23} style={{ fontSize: "1rem" }}>
-              {text.submitModalC4}
+              {text.submitModalC3}
             </Col>
           </Row>
         </Space>
