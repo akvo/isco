@@ -251,7 +251,7 @@ class EmailText(enum.Enum):
     add_collaborator = {
         "title": None,
         "title_translation": None,
-        "subject": "Invitation | Einladungsschreiben",
+        "subject": "Organisation added as collaborator",
         "body": '''<div>
                 Dear reporting member / partner,
                 <p>
