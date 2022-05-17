@@ -325,7 +325,7 @@ const WebformPage = ({
           console.error(e);
           notify({
             type: "error",
-            message: "Oops, something when wrong.",
+            message: "Oops, something went wrong.",
           });
         })
         .finally(() => {
@@ -369,7 +369,7 @@ const WebformPage = ({
           console.error(e);
           notify({
             type: "error",
-            message: "Oops, something when wrong.",
+            message: "Oops, something went wrong.",
           });
         })
         .finally(() => {
@@ -422,7 +422,7 @@ const WebformPage = ({
         console.error(e);
         notify({
           type: "error",
-          message: "Oops, something when wrong.",
+          message: "Oops, something went wrong.",
         });
       })
       .finally(() => {
