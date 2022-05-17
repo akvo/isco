@@ -2,4 +2,5 @@
 *.dump
 *.csv
 */**.xlsx
+*/**.html
 old_data/*
