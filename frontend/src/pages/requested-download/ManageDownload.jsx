@@ -223,8 +223,8 @@ const ManageDownload = () => {
           <Row>
             <Col span={24}>
               <Table
-                rowKey={(record) =>
-                  `${record.organisation}-${record.form_type}`
+                rowKey={(record, ri) =>
+                  `${record.organisation}-${record.form_type}-${ri}`
                 }
                 className="table-wrapper"
                 columns={columns}
