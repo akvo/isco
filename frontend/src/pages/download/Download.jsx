@@ -1,15 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import "./style.scss";
-import {
-  Row,
-  Col,
-  Typography,
-  Table,
-  Button,
-  Space,
-  notification,
-  Alert,
-} from "antd";
+import { Row, Col, Typography, Table, Button, Space, notification } from "antd";
 import { api, store } from "../../lib";
 import { uiText } from "../../static";
 import { useNotification } from "../../util";
@@ -230,7 +221,6 @@ const Download = () => {
                 direction="vertical"
                 style={{ width: "100%", marginTop: "8px" }}
               >
-                <Alert type="info" showIcon message={text.bannerDownloadPage} />
                 <Table
                   loading={isLoading}
                   rowKey={(record) => `${record?.key}-${record?.id}`}
