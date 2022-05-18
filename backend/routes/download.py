@@ -11,11 +11,13 @@ from db.connection import get_session
 import db.crud_download as crud
 import db.crud_data as crud_data
 import db.crud_user as crud_user
+from util.survey_config import MEMBER_SURVEY, PROJECT_SURVEY
 import db.crud_organisation as crud_organisation
 import util.report as report
 import util.storage as storage
 from models.download import DataDownloadDict, DownloadResponse
 from models.download import DownloadRequestedResponse, DownloadRequestedDict
+from models.form import FormType
 from middleware import verify_user, find_secretariat_admins
 from middleware import verify_super_admin, organisations_in_same_isco
 from util.mailer import Email, MailTypeEnum
@@ -122,14 +124,32 @@ def request_new_download(req: Request,
                          credentials: credentials = Depends(security)):
     user = verify_user(session=session, authenticated=req.state.authenticated)
     data = crud_data.get_data_by_id(session=session, id=data_id)
+    if not data:
+        sf = storage.get_files(f"old_html/{user.organisation}_")
+        file = list(filter(lambda x: str(data_id) in x, sf))
+        if len(file) == 0:
+            raise HTTPException(status_code=404, detail="Not found")
+        data_object = file[0].replace(".html", "").split("/")[2].split("_")
+        download = crud.new_download(session=session,
+                                     user=user.id,
+                                     data=data_id,
+                                     form_type=data_object[1],
+                                     organisation=user.organisation,
+                                     file=file[0])
+        return download.response
     data = data.to_report
     data = report.get_cascade_value(data=data, session=session)
     detail = report.transform_data(answers=data["answer"], session=session)
     file = report.generate(data=data, detail=detail)
+    form_type = None
+    if data["form"]["id"] in MEMBER_SURVEY:
+        form_type = FormType.member
+    if data["form"]["id"] in PROJECT_SURVEY:
+        form_type = FormType.project
     download = crud.new_download(session=session,
                                  user=user.id,
                                  data=data["id"],
-                                 form=data["form"]["id"],
+                                 form_type=form_type,
                                  organisation=data["organisation"]["id"],
                                  file=file)
     secretariat_admins = find_secretariat_admins(
