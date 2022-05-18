@@ -24,11 +24,8 @@ class TestDownloadRoute():
             headers={"Authorization": f"Bearer {account.token}"})
         assert res.status_code == 200
         res = res.json()
-        assert res["current"] == 1
-        assert res["total"] is not None
-        assert res["total_page"] is not None
-        assert len(res["data"]) > 0
-        assert res["data"][0] == {
+        assert len(res) > 0
+        assert res[0] == {
             'id': 1,
             'uuid': None,
             'form': "Form Test",
@@ -59,7 +56,7 @@ class TestDownloadRoute():
         assert res.status_code == 200
         assert res.status_code == 200
         res = res.json()
-        assert res["data"][0]["status"] == "pending"
+        assert res[0]["status"] == "pending"
 
     @pytest.mark.asyncio
     async def test_get_requested_download_list(self, app: FastAPI,
@@ -141,7 +138,7 @@ class TestDownloadRoute():
             headers={"Authorization": f"Bearer {account.token}"})
         assert res.status_code == 200
         res = res.json()
-        expired = res['data'][0]['expired'].split('T')[0]
+        expired = res[0]['expired'].split('T')[0]
         assert expired == expired_date
 
     @pytest.mark.asyncio

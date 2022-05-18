@@ -62,13 +62,6 @@ class DataDownloadDict(TypedDict):
     expired: Optional[datetime] = None
 
 
-class DataDownloadResponse(BaseModel):
-    current: int
-    data: List[DataDownloadDict]
-    total: int
-    total_page: int
-
-
 class DownloadRequestedDict(TypedDict):
     id: int
     uuid: str

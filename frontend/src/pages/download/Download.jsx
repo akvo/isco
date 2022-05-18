@@ -22,17 +22,11 @@ const Download = () => {
   const language = store.useState((s) => s.language);
   const { active: activeLang } = language;
 
-  const [data, setData] = useState({
-    current: 1,
-    data: [],
-    total: 0,
-    total_page: 0,
-  });
+  const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [requestLoading, setRequestLoading] = useState(null);
   const [downloadLoading, setDownloadLoading] = useState(null);
   const [downloadData, setDownloadData] = useState(null);
-  const pageSize = 10;
 
   const text = useMemo(() => {
     return uiText[activeLang];
@@ -158,13 +152,7 @@ const Download = () => {
       render: (value) => (value ? value.toUpperCase() : "-"),
     },
     {
-      title: "Submitter",
-      dataIndex: "submitted_by",
-      key: "submitted_by",
-      width: "10%",
-    },
-    {
-      title: "Submitted Date",
+      title: "Submitted Date / Monitoring Round",
       dataIndex: "submitted",
       key: "submitted",
       width: "12%",
@@ -223,22 +211,6 @@ const Download = () => {
       });
   }, []);
 
-  const changePage = (page) => {
-    setIsLoading(true);
-    api
-      .get(`/download/list?page=${page}&page_size=${pageSize}`)
-      .then((res) => {
-        setData(res.data);
-      })
-      .catch((e) => {
-        const { status, statusText } = e.response;
-        console.error(status, statusText);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  };
-
   return (
     <div id="download-data">
       <Row className="container bg-grey">
@@ -266,13 +238,7 @@ const Download = () => {
                   rowKey={(record) => `${record?.key}-${record?.id}`}
                   className="table-wrapper"
                   columns={columns}
-                  dataSource={data.data}
-                  pagination={{
-                    current: data?.current,
-                    pageSize: pageSize,
-                    total: data?.total,
-                    onChange: changePage,
-                  }}
+                  dataSource={data}
                 />
               </Space>
             </Col>
