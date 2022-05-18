@@ -61,7 +61,7 @@ def delete(url: str):
     if TESTING:
         os.remove(url)
         return url
-    # delete from gcloud
+    # delete from cloud
     bucket = create_bucket_object()
     blob = bucket.blob(f"{BUCKET_FOLDER}/{folder}/{filename}")
     blob.delete()

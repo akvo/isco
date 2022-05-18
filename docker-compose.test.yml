@@ -15,6 +15,7 @@ services:
     image: eu.gcr.io/akvo-lumen/isco/backend:latest
     volumes:
       - ./:/app:delegated
+      - ${SERVICE_ACCOUNT}:/credentials/:ro
     working_dir: /app/backend
     command: tail -f /dev/null
     environment:
