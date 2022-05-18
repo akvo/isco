@@ -31,6 +31,9 @@ services:
     depends_on:
       - db
     restart: always
+    volumes:
+      - ./backend:/app:delegated
+      - ${SERVICE_ACCOUNT}:/credentials/:ro
   ci:
     image: alpine:3.14
     network_mode: service:mainnetwork

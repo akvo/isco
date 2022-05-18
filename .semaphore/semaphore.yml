@@ -24,6 +24,7 @@ global_job_config:
       - export COMPOSE_INTERACTIVE_NO_CLI=1
       - export COVERALLS_REPO_TOKEN="${COVERALLS_ISCO_TOKEN}"
       - export MAILJET_VERIFICATION_FILE="${MAILJET_VERIFICATION_FILE}"
+      - export SERVICE_ACCOUNT=/home/semaphore/credentials
 blocks:
   - name: 'Build, Test & Deploy'
     skip:

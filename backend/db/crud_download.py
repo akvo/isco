@@ -1,15 +1,21 @@
 from uuid import uuid4
 from datetime import datetime, timedelta
+from typing import Optional
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
 from models.download import Download, DownloadRequestedDict
+from models.form import FormType
 from middleware import organisations_in_same_isco
 
 
-def new_download(session: Session, user: int, form: int, data: int,
-                 organisation: int, file: str) -> None:
-    download = Download(form=form,
+def new_download(session: Session,
+                 user: int,
+                 data: int,
+                 organisation: int,
+                 file: str,
+                 form_type: Optional[FormType] = None) -> None:
+    download = Download(form_type=form_type,
                         uuid=str(uuid4()),
                         data=data,
                         organisation=organisation,
@@ -22,9 +28,7 @@ def new_download(session: Session, user: int, form: int, data: int,
     return download
 
 
-def update_download(session: Session,
-                    uuid: str,
-                    approved_by: int,
+def update_download(session: Session, uuid: str, approved_by: int,
                     approved: bool) -> DownloadRequestedDict:
     download = get_by_uuid(session=session, uuid=uuid)
     download.approved_by = approved_by
@@ -39,12 +43,9 @@ def update_download(session: Session,
 
 
 def get_status(session: Session, user: int, data: int):
-    download = session.query(Download).filter(and_(
-        Download.data == data,
-        Download.request_by == user)
-    ).order_by(
-        Download.id.desc()).order_by(
-            Download.created.desc()).first()
+    download = session.query(Download).filter(
+        and_(Download.data == data, Download.request_by == user)).order_by(
+            Download.id.desc()).order_by(Download.created.desc()).first()
     return download
 
 
@@ -62,12 +63,10 @@ def get_by_uuid(session: Session, uuid: str):
     return download
 
 
-def get_requested_download_list(session: Session,
-                                organisation: int,
-                                page: int,
+def get_requested_download_list(session: Session, organisation: int, page: int,
                                 page_size: int) -> DownloadRequestedDict:
-    org_ids = organisations_in_same_isco(
-        session=session, organisation=organisation)
+    org_ids = organisations_in_same_isco(session=session,
+                                         organisation=organisation)
     downloads = session.query(Download).filter(
         Download.organisation.in_(org_ids))
     res = downloads.limit(page_size).offset((page - 1) * page_size)

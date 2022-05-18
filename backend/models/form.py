@@ -1,6 +1,7 @@
 # Please don't use **kwargs
 # Keep the code clean and CLEAR
 
+import enum
 from typing_extensions import TypedDict
 from typing import List, Optional
 from pydantic import BaseModel
@@ -11,6 +12,11 @@ import sqlalchemy.dialects.postgresql as pg
 from db.connection import Base
 from datetime import datetime
 from models.question_group import QuestionGroupBase
+
+
+class FormType(enum.Enum):
+    project = 'project'
+    member = 'member'
 
 
 class FormInfo(TypedDict):
@@ -71,8 +77,7 @@ class Form(Base):
                                   backref="form_detail")
 
     def __init__(self, id: Optional[int], name: str,
-                 description: Optional[str],
-                 languages: Optional[List[str]]):
+                 description: Optional[str], languages: Optional[List[str]]):
         self.id = id
         self.name = name
         self.description = description
