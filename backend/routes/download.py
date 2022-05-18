@@ -45,19 +45,6 @@ def get_available_downloads(req: Request,
         data = []
     storage_files = storage.get_files(f"old_html/{user.organisation}_")
     storage_files = list(filter(lambda x: ".html" in x, storage_files))
-    for d in data:
-        download = crud.get_status(session=session, user=user.id, data=d["id"])
-        status = None
-        uuid = None
-        expired = None
-        if download:
-            download = download.check_download_list
-            status = download['status']
-            uuid = download['uuid']
-            expired = download['expired']
-        d.update({"status": status})
-        d.update({"uuid": uuid})
-        d.update({"expired": expired})
     old_data = []
     for sf in storage_files:
         data_object = sf.replace(".html", "").split("/")[2].split("_")
@@ -77,6 +64,19 @@ def get_available_downloads(req: Request,
         })
     old_data.sort(key=operator.itemgetter('created'), reverse=True)
     data += old_data
+    for d in data:
+        download = crud.get_status(session=session, user=user.id, data=d["id"])
+        status = None
+        uuid = None
+        expired = None
+        if download:
+            download = download.check_download_list
+            status = download['status']
+            uuid = download['uuid']
+            expired = download['expired']
+        d.update({"status": status})
+        d.update({"uuid": uuid})
+        d.update({"expired": expired})
     return data
 
 
