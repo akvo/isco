@@ -48,7 +48,12 @@ class TestDownloadRoute():
             headers={"Authorization": f"Bearer {account.token}"})
         assert res.status_code == 201
         res = res.json()
-        assert res == {"id": 1, "data": 1, "form": 1, "organisation": 1}
+        assert res == {
+            "id": 1,
+            "data": 1,
+            "form_type": "member",
+            "organisation": 1
+        }
 
         res = await client.get(
             app.url_path_for("download:list"),
@@ -85,8 +90,7 @@ class TestDownloadRoute():
         }
 
     @pytest.mark.asyncio
-    async def test_view_download_request(self, app: FastAPI,
-                                         session: Session,
+    async def test_view_download_request(self, app: FastAPI, session: Session,
                                          client: AsyncClient) -> None:
         download = crud.get_by_id(session=session, id=1)
         uuid = str(download.uuid)
@@ -142,8 +146,7 @@ class TestDownloadRoute():
         assert expired == expired_date
 
     @pytest.mark.asyncio
-    async def test_get_download_file(self, app: FastAPI,
-                                     session: Session,
+    async def test_get_download_file(self, app: FastAPI, session: Session,
                                      client: AsyncClient) -> None:
         download = crud.get_by_id(session=session, id=1)
         uuid = str(download.uuid)
