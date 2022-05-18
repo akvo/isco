@@ -147,7 +147,7 @@ const Download = () => {
       dataIndex: "form_type",
       key: "form_type",
       width: "10%",
-      render: (value) => (value ? value.toUpperCase() : "-"),
+      render: (value) => (value ? value?.toUpperCase() : "-"),
     },
     {
       title: "Submitted Date / Monitoring Round",

@@ -26,6 +26,28 @@ security = HTTPBearer()
 download_route = APIRouter()
 
 
+def send_email_download_notification(session: Session, user,
+                                     secretariat_admins):
+    organisation = crud_organisation.get_organisation_by_id(
+        session=session, id=user.organisation)
+    body = f'''<div>
+            {user.name} ({organisation.name}) has requested for a data
+            download. Please review the download file in the tool and
+            approve. The user will then receive a notification.
+            </div>'''
+    body_translation = f'''<div>
+            {user.name} ({organisation.name}) hat einen Datendownload
+            angefordert. Bitte überprüfen Sie die heruntergeladene Datei
+            im Tool und genehmigen Sie diese. Der Benutzer wird dann eine
+            Benachrichtigung erhalten.
+            </div>'''
+    email = Email(recipients=[a.recipient for a in secretariat_admins],
+                  body=body,
+                  body_translation=body_translation,
+                  type=MailTypeEnum.data_download_requested)
+    email.send
+
+
 @download_route.get("/download/list",
                     response_model=List[DataDownloadDict],
                     summary="get data list by user organisation",
@@ -124,6 +146,8 @@ def request_new_download(req: Request,
                          credentials: credentials = Depends(security)):
     user = verify_user(session=session, authenticated=req.state.authenticated)
     data = crud_data.get_data_by_id(session=session, id=data_id)
+    secretariat_admins = find_secretariat_admins(
+        session=session, organisation=user.organisation)
     if not data:
         sf = storage.get_files(f"old_html/{user.organisation}_")
         file = list(filter(lambda x: str(data_id) in x, sf))
@@ -136,6 +160,8 @@ def request_new_download(req: Request,
                                      form_type=data_object[1],
                                      organisation=user.organisation,
                                      file=file[0])
+        if download and secretariat_admins:
+            send_email_download_notification(session, user, secretariat_admins)
         return download.response
     data = data.to_report
     data = report.get_cascade_value(data=data, session=session)
@@ -152,27 +178,8 @@ def request_new_download(req: Request,
                                  form_type=form_type,
                                  organisation=data["organisation"]["id"],
                                  file=file)
-    secretariat_admins = find_secretariat_admins(
-        session=session, organisation=user.organisation)
     if download and secretariat_admins:
-        organisation = crud_organisation.get_organisation_by_id(
-            session=session, id=user.organisation)
-        body = f'''<div>
-                {user.name} ({organisation.name}) has requested for a data
-                download. Please review the download file in the tool and
-                approve. The user will then receive a notification.
-                </div>'''
-        body_translation = f'''<div>
-                {user.name} ({organisation.name}) hat einen Datendownload
-                angefordert. Bitte überprüfen Sie die heruntergeladene Datei
-                im Tool und genehmigen Sie diese. Der Benutzer wird dann eine
-                Benachrichtigung erhalten.
-                </div>'''
-        email = Email(recipients=[a.recipient for a in secretariat_admins],
-                      body=body,
-                      body_translation=body_translation,
-                      type=MailTypeEnum.data_download_requested)
-        email.send
+        send_email_download_notification(session, user, secretariat_admins)
     return download.response
 
 
