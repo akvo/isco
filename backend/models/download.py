@@ -7,22 +7,20 @@ from datetime import datetime
 from typing import Optional, List
 from typing_extensions import TypedDict
 from sqlalchemy import Column, ForeignKey
-from sqlalchemy import DateTime, Integer, String
+from sqlalchemy import DateTime, Integer, String, Enum
 import sqlalchemy.dialects.postgresql as pg
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from db.connection import Base
 from pydantic import BaseModel
-from .form import Form
-from .data import Data
 from .user import User
+from .form import FormType
 from .organisation import Organisation
-from util.survey_config import MEMBER_SURVEY, PROJECT_SURVEY
 
 
 class DownloadResponse(TypedDict):
     id: int
-    form: int
+    form_type: Optional[FormType] = None
     data: int
     organisation: int
 
@@ -36,7 +34,7 @@ class DownloadStatusType(enum.Enum):
 
 class DownloadDict(TypedDict):
     id: int
-    form: int
+    form_type: Optional[FormType] = None
     name: str
     organisation: int
     request_by: Optional[int] = None
@@ -51,7 +49,7 @@ class DataDownloadDict(TypedDict):
     id: int
     uuid: Optional[str] = None
     form: str
-    form_type: str
+    form_type: Optional[FormType] = None
     name: str
     organisation: str
     created_by: str
@@ -62,18 +60,11 @@ class DataDownloadDict(TypedDict):
     expired: Optional[datetime] = None
 
 
-class DataDownloadResponse(BaseModel):
-    current: int
-    data: List[DataDownloadDict]
-    total: int
-    total_page: int
-
-
 class DownloadRequestedDict(TypedDict):
     id: int
     uuid: str
     organisation: str
-    form_type: str
+    form_type: Optional[FormType] = None
     request_by: int
     request_by_name: str
     request_date: str
@@ -97,8 +88,8 @@ class Download(Base):
     uuid = Column(pg.UUID(as_uuid=True),
                   nullable=True,
                   default=str(uuid.uuid4()))
-    form = Column(Integer, ForeignKey(Form.id))
-    data = Column(Integer, ForeignKey(Data.id))
+    form_type = Column(Enum(FormType), nullable=True)
+    data = Column(Integer, nullable=False)
     organisation = Column(Integer, ForeignKey(Organisation.id))
     file = Column(String, nullable=False)
     request_by = Column(Integer, ForeignKey(User.id))
@@ -111,15 +102,15 @@ class Download(Base):
                                        foreign_keys=[organisation])
 
     def __init__(self,
-                 form: int,
                  uuid: str,
                  data: int,
                  organisation: int,
                  request_by: int,
                  file: str,
+                 form_type: Optional[FormType] = None,
                  approved_by: Optional[int] = None,
                  expired: Optional[datetime] = None):
-        self.form = form
+        self.form_type = form_type
         self.uuid = uuid
         self.data = data
         self.organisation = organisation
@@ -136,7 +127,7 @@ class Download(Base):
         return {
             "id": self.id,
             "uuid": self.uuid,
-            "form": self.form,
+            "form_type": self.form_type,
             "data": self.data,
             "organisation": self.organisation,
             "file": self.file,
@@ -151,18 +142,13 @@ class Download(Base):
     def response(self) -> DownloadResponse:
         return {
             "id": self.id,
-            "form": self.form,
+            "form_type": self.form_type,
             "data": self.data,
             "organisation": self.organisation,
         }
 
     @property
     def list_of_download_request(self) -> DownloadRequestedDict:
-        form_type = None
-        if self.form in MEMBER_SURVEY:
-            form_type = "member"
-        if self.form in PROJECT_SURVEY:
-            form_type = "project"
         status = DownloadStatusType.pending.value
         if self.approved_by and self.expired:
             status = DownloadStatusType.approved.value
@@ -172,7 +158,7 @@ class Download(Base):
             "id": self.id,
             "uuid": str(self.uuid),
             "organisation": self.organisation_detail.name,
-            "form_type": form_type,
+            "form_type": self.form_type,
             "request_by": self.request_by,
             "request_by_name": self.request_by_user.name,
             "request_date": self.created.strftime("%B %d, %Y"),

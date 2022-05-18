@@ -17,6 +17,14 @@ class TestStorage():
             assert True is True
 
     @pytest.mark.asyncio
+    async def test_list_file_in_bucket(self, session: Session) -> None:
+        if 'GOOGLE_APPLICATION_CREDENTIALS' in os.environ:
+            assert len(storage.get_files("test/")) > 1
+        else:
+            print("SKIPPING STORAGE UPLOAD TEST")
+            assert True is True
+
+    @pytest.mark.asyncio
     async def test_delete_file_from_bucket(self, session: Session) -> None:
         if 'GOOGLE_APPLICATION_CREDENTIALS' in os.environ:
             json_file = generate_webform_json_file(session=session, id=1)
