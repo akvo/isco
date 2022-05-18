@@ -20,6 +20,7 @@ services:
     environment:
       - DATABASE_URL=postgresql://isco_user:password@db:5432/isco
       - SECRET_KEY=36ca26dbc9f6a435aa7ad404491d1650cd9485eef9ca8ea60501495b0526d4df
+      - GOOGLE_APPLICATION_CREDENTIALS=/credentials/isco-service-account.json
       - WEBDOMAIN=notset
       - COVERALLS_REPO_TOKEN=${COVERALLS_REPO_TOKEN:-}
       - SEMAPHORE=${SEMAPHORE:-}
