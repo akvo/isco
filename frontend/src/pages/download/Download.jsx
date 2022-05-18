@@ -37,20 +37,18 @@ const Download = () => {
     api
       .post(`/download/new/${id}`)
       .then(() => {
-        const newData = data.data.map((x) => ({
+        const newData = data.map((x) => ({
           ...x,
           status: id === x.id ? "pending" : x.status,
         }));
-        setData({ ...data, data: newData });
+        setData(newData);
         notification.info({
           message: text.popupDownloadRequestMessage,
           description: text.popupDownloadRequestDescription,
           duration: 8,
         });
       })
-      .catch((e) => {
-        const { status, statusText } = e.response;
-        console.error(status, statusText);
+      .catch(() => {
         notify({
           type: "error",
           message: "Something went wrong.",
