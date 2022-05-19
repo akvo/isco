@@ -29,7 +29,7 @@ const VerifyEmailMessage = ({ email, verifyStatus }) => {
           />
         </Row>
       )}
-      {email && ![200, 401].includes(verifyStatus) && (
+      {email && verifyStatus && ![200, 401].includes(verifyStatus) && (
         <Row>
           <Alert
             showIcon

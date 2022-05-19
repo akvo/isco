@@ -10,7 +10,11 @@ class EmailText(enum.Enum):
         "title": "Registration",
         "title_translation": None,
         "subject": "Registration",
-        "body": None,
+        "body": '''
+            #user_name# (#user_email#) from #organisation_name#
+            has registered in the reporting tool. Now you can
+            approve user in Manage User page.
+            ''',
         "message": None,
         "body_translation": None,
         "image": None,
@@ -22,9 +26,50 @@ class EmailText(enum.Enum):
         "title": None,
         "title_translation": None,
         "subject": "Registration",
-        "body": None,
+        "body": '''
+            Dear reporting member / partner,
+            <p>
+            #user_name# (#user_email#) from your
+            organisation has signed up for the 2022 Monitoring
+            Round at cocoamonitoring.net
+            </p>
+            <p>
+            If this is an invalid signup please get in touch with
+            the reporting tool admins. Contact:
+            </p>
+            <ul>
+                <li>
+                For Beyond Chocolate:
+                Marloes Humbeeck (humbeeck@idhtrade.org)</li>
+                <li>For DISCO:
+                Mark de Waard (dewaard@idhtrade.org)</li>
+                <li>For GISCO:
+                Julia Jawtusch (julia.jawtusch@giz.de)</li>
+            </ul>
+            ''',
         "message": None,
-        "body_translation": None,
+        "body_translation": '''
+            Sehr geehrte/r Teilnehmer/in,
+            <p>
+            Herr/ Frau #user_name# (#user_email#) aus Ihrer
+            Organisation hat sich für die Monitoring-Runde 2022 auf
+            cocoamonitoring.net
+            registriert.
+            </p>
+            <p>
+            Wenn dies eine ungültige Anmeldung ist, wenden Sie sich bitte
+            an die Administratoren des Monitoringtools:
+            </p>
+            <ul>
+                <li>
+                Für Beyond Chocolate:
+                Marloes Humbeeck (humbeeck@idhtrade.org)</li>
+                <li>Für DISCO:
+                Mark de Waard (dewaard@idhtrade.org)</li>
+                <li>Für GISCO:
+                Julia Jawtusch (julia.jawtusch@giz.de)</li>
+            </ul>
+            ''',
         "image": None,
         "button": None,
         "info": None,
