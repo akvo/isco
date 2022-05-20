@@ -125,13 +125,6 @@
     "active": true
   },
   {
-    "name": "Baronie",
-    "member": ["Big Industry"],
-    "isco": ["Beyond Chocolate", "GISCO", "GISCO", "Beyond Chocolate", "GISCO"],
-    "code": null,
-    "active": true
-  },
-  {
     "name": "Barry Callebaut",
     "member": ["DISCO - Traders", "Big Industry"],
     "isco": ["Beyond Chocolate", "GISCO", "DISCO"],
@@ -615,9 +608,9 @@
     "active": true
   },
   {
-    "name": "Stollwerck Schokoladen Vertriebs GmbH",
+    "name": "Stollwerck / Baronie",
     "member": ["Big Industry"],
-    "isco": ["GISCO"],
+    "isco": ["GISCO", "Beyond Chocolate"],
     "code": null,
     "active": true
   },
