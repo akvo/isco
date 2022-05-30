@@ -154,6 +154,7 @@ const Survey = () => {
   };
 
   const handleOnClickOpenNewForm = () => {
+    setSelectedSavedSubmission(null);
     if (formLoaded) {
       // show modal
       store.update((s) => {
@@ -175,6 +176,7 @@ const Survey = () => {
   };
 
   const handleOnClickOpenSavedForm = () => {
+    setSelectedForm(null);
     if (formLoaded) {
       // show modal
       store.update((s) => {
