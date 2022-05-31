@@ -386,9 +386,14 @@ def get_submission_progress(
                 temp[x['form_type']].append(x['organisation'])
             else:
                 temp.update({x['form_type']: [x['organisation']]})
-        filter_orgs = {}
+        member_submitted = {}
         for x in res:
-            if x['form'] in MEMBER_SURVEY and not x['submitted']:
+            if x['form'] in MEMBER_SURVEY and x['submitted']:
+                member_submitted.update({x['organisation']: True})
+        filter_orgs = {}  # not submitted temp
+        for x in res:
+            if x['form'] in MEMBER_SURVEY and not x['submitted'] \
+               and x['organisation'] not in member_not_submitted:
                 filter_orgs.update({x['organisation']: True})
         filtered = []
         for x in res:
