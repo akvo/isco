@@ -23,7 +23,7 @@ from models.data import Data, SubmissionProgressDict
 from models.organisation import Organisation
 from middleware import verify_editor, verify_super_admin
 from middleware import organisations_in_same_isco
-from util.survey_config import MEMBER_SURVEY, PROJECT_SURVEY
+from util.survey_config import MEMBER_SURVEY, PROJECT_SURVEY, LIMITED_SURVEY
 
 security = HTTPBearer()
 data_route = APIRouter()
@@ -369,6 +369,8 @@ def get_submission_progress(
             form_type = "member"
         if d.form in PROJECT_SURVEY:
             form_type = "project"
+        if d.form in LIMITED_SURVEY:
+            form_type = "limited"
         res.append({
             "organisation": orgs_dict[d.organisation],
             "form": d.form,
@@ -386,9 +388,14 @@ def get_submission_progress(
                 temp[x['form_type']].append(x['organisation'])
             else:
                 temp.update({x['form_type']: [x['organisation']]})
-        filter_orgs = {}
+        member_submitted = {}
         for x in res:
-            if x['form'] in MEMBER_SURVEY and not x['submitted']:
+            if x['form'] in MEMBER_SURVEY and x['submitted']:
+                member_submitted.update({x['organisation']: True})
+        filter_orgs = {}  # not submitted temp
+        for x in res:
+            if x['form'] in MEMBER_SURVEY and not x['submitted'] \
+               and x['organisation'] not in member_submitted:
                 filter_orgs.update({x['organisation']: True})
         filtered = []
         for x in res:
@@ -397,7 +404,5 @@ def get_submission_progress(
                 filtered.append(x)
             if "member" in temp and org not in temp["member"]:
                 filtered.append(x)
-        if not filtered:
-            return res
         return filtered
     return res
