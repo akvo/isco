@@ -169,9 +169,7 @@ const faqEn = [
             There is also the possibility to download the data of a
             (fully/partially) completed questionnaire to allow for offline
             review and/or contribution by a colleague before submitting the
-            questionnaire. To activate such download, please first click the
-            Overview button at the left of your screen (above the question group
-            navigation menu in the left column of the screen).
+            questionnaire.
           </li>
         </ol>
       </Fragment>
@@ -289,6 +287,7 @@ const faqEn = [
 
 const faqDe = [
   {
+    en: "Access to data - Who can view or access the data that I enter via a questionnaire?",
     h: "Zugriff auf Daten - Wer kann die von mir über einen Fragebogen eingegebenen Daten einsehen oder darauf zugreifen?",
     c: (
       <Fragment>
@@ -343,6 +342,7 @@ const faqDe = [
     ),
   },
   {
+    en: "Decimals - Why cannot I enter numbers with decimals (,)?",
     h: "Dezimalstellen - Warum kann ich keine Zahlen mit Dezimalstellen eingeben?",
     c: (
       <Fragment>
@@ -354,6 +354,7 @@ const faqDe = [
     ),
   },
   {
+    en: "Double counting – How is double counting of project data and other data being avoided?",
     h: "Doppelzählung - Wie wird eine Doppelzählung von Projektdaten und anderen Daten vermieden?",
     c: (
       <Fragment>
@@ -390,6 +391,7 @@ const faqDe = [
     ),
   },
   {
+    en: "Issues - How do I report an issue/ request support?",
     h: "Probleme - Wie melde ich ein Problem / fordere ich Unterstützung an?",
     c: (
       <Fragment>
@@ -404,6 +406,7 @@ const faqDe = [
     ),
   },
   {
+    en: "Mandatory questions - Can I submit a questionnaire without completing all the mandatory questions?",
     h: "Obligatorische Fragen - Kann ich einen Fragebogen einreichen, ohne alle obligatorischen Fragen auszufüllen?",
     c: (
       <Fragment>
@@ -432,6 +435,7 @@ const faqDe = [
     ),
   },
   {
+    en: "Reporting by project managers - Can I delegate the reporting of our projects/ programs to project/program managers, inside or outside of my organisation?",
     h: "Berichterstattung durch Projektmanager und/oder Projektmanagerinnen - Kann ich die Berichterstattung über unsere Projekte/Programme an Projekt-/Programmmanager bzw. --managerinnen innerhalb oder außerhalb meiner Organisation delegieren?",
     c: (
       <Fragment>
@@ -470,17 +474,14 @@ const faqDe = [
             Es besteht auch die Möglichkeit, die Daten eines
             (vollständig/teilweise) ausgefüllten Fragebogens herunterzuladen, um
             eine Offline-Überprüfung durch einen Kollegen oder eine Kollegin zu
-            ermöglichen, bevor der Fragebogen eingereicht wird. Um einen solchen
-            Download zu aktivieren, klicken Sie zunächst links auf dem
-            Bildschirm auf die Schaltfläche „Übersicht“ (über dem
-            Navigationsmenü der Fragengruppe in der linken Spalte des
-            Bildschirms).
+            ermöglichen, bevor der Fragebogen eingereicht wird.
           </li>
         </ol>
       </Fragment>
     ),
   },
   {
+    en: "Time frame - For which time frame shall I report the data?",
     h: "Zeitrahmen - Für welchen Zeitraum soll ich die Daten melden?",
     c: (
       <Fragment>
@@ -514,6 +515,7 @@ const faqDe = [
     ),
   },
   {
+    en: "Who needs to report what?",
     h: "Wer muss über was berichten?",
     c: (
       <Fragment>
@@ -527,6 +529,7 @@ const faqDe = [
     ),
   },
   {
+    en: "Shall standard setters report on sourcing data?",
     h: "Sollen die Standardsetzer über die Beschaffungsdaten berichten?",
     c: (
       <Fragment>
@@ -542,6 +545,7 @@ const faqDe = [
     ),
   },
   {
+    en: "Who should report on Premiums?",
     h: "Wer sollte über Prämien berichten?",
     c: (
       <Fragment>
@@ -578,6 +582,7 @@ const faqDe = [
     ),
   },
   {
+    en: "Which data / survey sections are related to destination markets (=national consumer markets)?",
     h: "Welche Daten / Erhebungsabschnitte beziehen sich auf Zielmärkte (= nationale Verbrauchermärkte)",
     c: (
       <Fragment>
