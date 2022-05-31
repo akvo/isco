@@ -23,7 +23,7 @@ from models.data import Data, SubmissionProgressDict
 from models.organisation import Organisation
 from middleware import verify_editor, verify_super_admin
 from middleware import organisations_in_same_isco
-from util.survey_config import MEMBER_SURVEY, PROJECT_SURVEY
+from util.survey_config import MEMBER_SURVEY, PROJECT_SURVEY, LIMITED_SURVEY
 
 security = HTTPBearer()
 data_route = APIRouter()
@@ -369,6 +369,8 @@ def get_submission_progress(
             form_type = "member"
         if d.form in PROJECT_SURVEY:
             form_type = "project"
+        if d.form in LIMITED_SURVEY:
+            form_type = "limited"
         res.append({
             "organisation": orgs_dict[d.organisation],
             "form": d.form,

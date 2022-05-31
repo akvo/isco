@@ -64,6 +64,23 @@ const SubmissionProgress = () => {
         },
       ],
     },
+    {
+      title: text.tbColDISCOSharedMemberSurvey,
+      children: [
+        {
+          title: text.tbColSaved,
+          dataIndex: "limitedSaved",
+          key: "limited-saved-count",
+          align: "center",
+        },
+        {
+          title: text.tbColSubmitted,
+          dataIndex: "limitedSubmitted",
+          key: "limited-submitted-count",
+          align: "center",
+        },
+      ],
+    },
   ];
 
   const handleOrganisationFilter = (org) => {
@@ -89,6 +106,8 @@ const SubmissionProgress = () => {
             memberSubmitted: 0,
             projectSaved: 0,
             projectSubmitted: 0,
+            limitedSaved: 0,
+            limitedSubmitted: 0,
           };
           if (form_type === "member") {
             res = {
@@ -104,6 +123,13 @@ const SubmissionProgress = () => {
               projectSubmitted: submitted ? count : 0,
             };
           }
+          if (form_type === "limited") {
+            res = {
+              ...res,
+              limitedSaved: submitted ? 0 : count,
+              limitedSubmitted: submitted ? count : 0,
+            };
+          }
           return res;
         });
         transformData = _.chain(transformData)
@@ -115,6 +141,9 @@ const SubmissionProgress = () => {
                 sum.projectSubmitted + n.projectSubmitted;
               sum["memberSaved"] = sum.memberSaved + n.memberSaved;
               sum["memberSubmitted"] = sum.memberSubmitted + n.memberSubmitted;
+              sum["limitedSaved"] = sum.limitedSaved + n.limitedSaved;
+              sum["limitedSubmitted"] =
+                sum.limitedSubmitted + n.limitedSubmitted;
               return sum;
             });
             return reduce;
