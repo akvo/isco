@@ -393,7 +393,7 @@ def get_submission_progress(
         filter_orgs = {}  # not submitted temp
         for x in res:
             if x['form'] in MEMBER_SURVEY and not x['submitted'] \
-               and x['organisation'] not in member_not_submitted:
+               and x['organisation'] not in member_submitted:
                 filter_orgs.update({x['organisation']: True})
         filtered = []
         for x in res:
@@ -402,7 +402,5 @@ def get_submission_progress(
                 filtered.append(x)
             if "member" in temp and org not in temp["member"]:
                 filtered.append(x)
-        if not filtered:
-            return res
         return filtered
     return res
