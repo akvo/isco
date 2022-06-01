@@ -15,7 +15,6 @@ import util.sheets as sheets
 from util.cipher import Cipher
 from middleware import verify_super_admin
 from util.mailer import Email, MailTypeEnum
-from models.organisation_isco import OrganisationIsco
 
 security = HTTPBearer()
 download_summary_route = APIRouter()
@@ -68,17 +67,13 @@ async def new_summary_file(req: Request,
                            credentials: credentials = Depends(security)):
     user = verify_super_admin(
         session=session, authenticated=req.state.authenticated)
-    # find user organisation isco
-    org_isco = session.query(OrganisationIsco).filter(
-        OrganisationIsco.organisation == user.organisation).all()
-    isco_ids = [i.isco_type for i in org_isco]
     uuid = str(uuid4()).replace("-", "")
     code = np.random.randint(100000, 999999)
     file_id = Cipher(f"{uuid}-{code}").encode()
     sheets.generate_summary(session=session,
                             filename=file_id,
                             form_id=form_id,
-                            isco_type=isco_ids,
+                            user_org=user.organisation,
                             member_type=member_type)
     background_tasks.add_task(delete_temporary, file_id)
     send_email_code(user=user, code=code)

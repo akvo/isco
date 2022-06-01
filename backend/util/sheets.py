@@ -1,8 +1,11 @@
-from typing import Optional, List
+from typing import Optional
 from fastapi import HTTPException
-# from sqlalchemy import and_
+from sqlalchemy import and_, null
 from sqlalchemy.orm import Session
 from models.views.summary import Summary
+from models.organisation_isco import OrganisationIsco
+from models.data import Data
+from middleware import organisations_in_same_isco
 import pandas as pd
 
 main_sheet_name = "Index"
@@ -34,17 +37,35 @@ def write_sheet(df, writer, sheet_name):
 def generate_summary(session: Session,
                      filename: str,
                      form_id: int,
-                     isco_type: List[int],
+                     user_org: int,
                      member_type: Optional[int] = None):
     tmp_file = f"./tmp/{filename}.xlsx"
     summary = session.query(Summary).filter(Summary.fid == form_id)
-    # filter by user isco
-    if isco_type:
-        isco_type += [1]  # add all isco type
-        summary = summary.filter(Summary.isco_type.contained_by(isco_type))
-    # filter by member type dropdown
+    # find user organisation isco
+    org_isco = session.query(OrganisationIsco).filter(
+        OrganisationIsco.organisation == user_org).all()
+    isco_ids = [i.isco_type for i in org_isco]
+    # find organisation in same isco
+    org_in_same_isco = organisations_in_same_isco(
+        session=session, organisation=user_org)
+    # find data id by organisation in same isco
+    data = session.query(Data).filter(and_(
+        Data.form == form_id,
+        Data.organisation.in_(org_in_same_isco),
+        Data.submitted != null())).all()
+    data_ids = [d.id for d in data]
+    # filter summary by data ids
+    summary = summary.filter(Summary.data_id.in_(data_ids))
+    # question - filter by user isco
+    if isco_ids:
+        isco_ids += [1]  # add all isco type
+        summary = summary.filter(Summary.isco_type.contained_by(isco_ids))
+    # question - filter by member type dropdown
     if member_type:
-        summary = summary.filter(Summary.member_type.any(member_type)).all()
+        members = [1]  # add all member type
+        members += [member_type]
+        summary = summary.filter(
+            Summary.member_type.contained_by(members)).all()
     else:
         summary = summary.all()
     if not summary:
