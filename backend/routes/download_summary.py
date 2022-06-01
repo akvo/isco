@@ -43,7 +43,7 @@ def send_email_code(user, code):
     email = Email(recipients=recipients,
                   body=body,
                   body_translation=body_translation,
-                  type=MailTypeEnum.data_download_requested)
+                  type=MailTypeEnum.otp_code)
     email.send
 
 
