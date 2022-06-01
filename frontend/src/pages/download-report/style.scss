@@ -21,3 +21,21 @@
     }
   }
 }
+
+.otp-code-modal {
+  .otp-code-input {
+    width: 425px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    input {
+      border-radius: 5px;
+      border: 1px #a8adb7 solid;
+      margin: 0 3px;
+    }
+  }
+
+  .button-download {
+    width: 375px;
+  }
+}
