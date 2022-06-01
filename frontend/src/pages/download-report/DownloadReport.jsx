@@ -75,7 +75,7 @@ const DownloadReport = () => {
       .then((res) => {
         setTimeout(() => {
           setAllowDownload(res.data);
-        }, 1000);
+        }, 500);
       })
       .catch((e) => {
         const { status } = e.response;
@@ -90,7 +90,7 @@ const DownloadReport = () => {
       .finally(() => {
         setTimeout(() => {
           setVerifying(false);
-        }, 1000);
+        }, 500);
       });
   };
 
@@ -102,6 +102,9 @@ const DownloadReport = () => {
       document.body.appendChild(link);
       link.click();
       link.parentNode.removeChild(link);
+      setTimeout(() => {
+        setAllowDownload(false);
+      }, 500);
     }
   };
 
@@ -116,7 +119,7 @@ const DownloadReport = () => {
           >
             <Col span={24} align="start">
               <Title className="page-title" level={3}>
-                Download Report
+                Manage Data
               </Title>
             </Col>
           </Row>
