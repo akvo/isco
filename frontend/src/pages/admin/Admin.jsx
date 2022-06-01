@@ -101,6 +101,23 @@ const Admin = () => {
                 </div>
               </Card>
             </Col>
+            <Col md={24} lg={12}>
+              <Card
+                title={<Title level={5}>Download Report</Title>}
+                className="card-wrapper"
+              >
+                <div className="card-footer">
+                  <Button
+                    type="primary"
+                    ghost
+                    block
+                    onClick={() => navigate("/download-report")}
+                  >
+                    Download Report
+                  </Button>
+                </div>
+              </Card>
+            </Col>
           </Row>
         </Col>
       </Row>
