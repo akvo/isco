@@ -112,6 +112,7 @@ const uiText = {
     tbRowNoRecords: "There are no records to display.",
     tbColMemberQuestionnaire: "Member Questionnaire",
     tbColProjectQuestionnaire: "Project Questionnaire",
+    tbColDISCOSharedMemberSurvey: "DISCO 2020 shared Member Survey",
     tbColSaved: "Saved",
     tbColSubmitted: "Submitted",
     // Modal
@@ -354,6 +355,7 @@ const uiText = {
     tbRowNoRecords: "Keine Daten vorhanden.",
     tbColMemberQuestionnaire: "Member Questionnaire",
     tbColProjectQuestionnaire: "Project Questionnaire",
+    tbColDISCOSharedMemberSurvey: "DISCO 2020 shared Member Survey",
     tbColSaved: "Saved",
     tbColSubmitted: "Submitted",
     // Modal

@@ -10,6 +10,8 @@ sys.path.append("..")
 
 account = Acc(email="support@akvo.org", token=None)
 
+n_sa_sb = MailTypeEnum.notify_submission_completed_to_secretariat_admin
+
 
 class TestEmailTemplate():
     @pytest.mark.asyncio
@@ -59,4 +61,9 @@ class TestEmailTemplate():
         res = await client.get(
             app.url_path_for("template:email"),
             params={"type": MailTypeEnum.add_collaborator.value})
+        assert res.status_code == 200
+        # notify secretariat admin when submission is successfully made
+        res = await client.get(
+            app.url_path_for("template:email"),
+            params={"type": n_sa_sb.value})
         assert res.status_code == 200
