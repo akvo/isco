@@ -11,9 +11,7 @@ from typing import List, Optional
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 import db.crud_data as crud
-from db import crud_answer
-from db import crud_form
-from db import crud_collaborator
+from db import crud_answer, crud_form, crud_collaborator, crud_organisation
 from models.answer import Answer, AnswerDict
 from models.question import QuestionType
 from db.connection import get_session
@@ -22,8 +20,9 @@ from models.data import DataDict, DataOptionDict
 from models.data import Data, SubmissionProgressDict
 from models.organisation import Organisation
 from middleware import verify_editor, verify_super_admin
-from middleware import organisations_in_same_isco
+from middleware import organisations_in_same_isco, find_secretariat_admins
 from util.survey_config import MEMBER_SURVEY, PROJECT_SURVEY, LIMITED_SURVEY
+from util.mailer import Email, MailTypeEnum
 
 security = HTTPBearer()
 data_route = APIRouter()
@@ -46,7 +45,28 @@ def get_questions_from_published_form(session: Session, form_id: int):
             qids.append(q['id'])
         qg['question'] = qids
         question_groups.append(qg)
-    return {"question_groups": question_groups, "questions": questions}
+    return {
+        "form_name": webform['name'],
+        "question_groups": question_groups,
+        "questions": questions}
+
+
+def notify_secretariat_admin(session: Session, user, form_name: str):
+    organisation = crud_organisation.get_organisation_by_id(
+        session=session, id=user.organisation)
+    org_name = organisation.name
+    # send to secretariat admin
+    secretariat_admins = find_secretariat_admins(
+        session=session, organisation=user.organisation)
+    if secretariat_admins:
+        body_secretariat = f'''{user.name} ({user.email}) from {org_name}
+                            successfully submitted data for {form_name}.
+                            '''
+        email_secretariat = Email(
+            recipients=[a.recipient for a in secretariat_admins],
+            type=MailTypeEnum.notify_submission_completed_to_secretariat_admin,
+            body=body_secretariat)
+        email_secretariat.send
 
 
 @data_route.get("/data/form/{form_id:path}",
@@ -142,6 +162,10 @@ def add(req: Request,
                          organisation=user.organisation,
                          answers=answerlist,
                          submitted=submitted)
+    # if submitted send notification email to secretariat admin
+    if submitted:
+        notify_secretariat_admin(
+            session=session, user=user, form_name=published['form_name'])
     return data.serialize
 
 
@@ -325,6 +349,10 @@ def update_by_id(req: Request,
         c_key = f"{c['question']}_{c['repeat_index']}"
         if c_key not in checked_payload:
             crud_answer.delete_answer_by_id(session=session, id=c['id'])
+    # if submitted send notification email to secretariat admin
+    if submitted:
+        notify_secretariat_admin(
+            session=session, user=user, form_name=published['form_name'])
     return data.serialize
 
 
