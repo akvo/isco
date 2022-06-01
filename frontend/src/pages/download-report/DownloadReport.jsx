@@ -103,6 +103,8 @@ const DownloadReport = () => {
       link.click();
       link.parentNode.removeChild(link);
       setTimeout(() => {
+        setOtpValue([]);
+        setShowModal(false);
         setAllowDownload(false);
       }, 500);
     }
