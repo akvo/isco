@@ -13,8 +13,9 @@ from sqlalchemy.orm import Session
 from db.connection import get_session
 import util.sheets as sheets
 from util.cipher import Cipher
-from middleware import verify_user
+from middleware import verify_super_admin
 from util.mailer import Email, MailTypeEnum
+from models.organisation_isco import OrganisationIsco
 
 security = HTTPBearer()
 download_summary_route = APIRouter()
@@ -65,13 +66,19 @@ async def new_summary_file(req: Request,
                            member_type: Optional[int] = None,
                            session: Session = Depends(get_session),
                            credentials: credentials = Depends(security)):
-    user = verify_user(session=session, authenticated=req.state.authenticated)
+    user = verify_super_admin(
+        session=session, authenticated=req.state.authenticated)
+    # find user organisation isco
+    org_isco = session.query(OrganisationIsco).filter(
+        OrganisationIsco.organisation == user.organisation).all()
+    isco_ids = [i.isco_type for i in org_isco]
     uuid = str(uuid4()).replace("-", "")
     code = np.random.randint(100000, 999999)
     file_id = Cipher(f"{uuid}-{code}").encode()
     sheets.generate_summary(session=session,
                             filename=file_id,
                             form_id=form_id,
+                            isco_type=isco_ids,
                             member_type=member_type)
     background_tasks.add_task(delete_temporary, file_id)
     send_email_code(user=user, code=code)
@@ -88,7 +95,7 @@ def get_summary_file(req: Request,
                      code: str = Form(...),
                      session: Session = Depends(get_session),
                      credentials: credentials = Depends(security)):
-    verify_user(session=session, authenticated=req.state.authenticated)
+    verify_super_admin(session=session, authenticated=req.state.authenticated)
     file_id = Cipher(f"{uuid}-{code}").encode()
     filename = f"summary-{uuid}.xlsx"
     location = f"./tmp/{file_id}.xlsx"
