@@ -29,9 +29,15 @@
     justify-content: center;
     align-items: center;
     input {
-      border-radius: 5px;
-      border: 1px #a8adb7 solid;
-      margin: 0 3px;
+      border-radius: 0 !important;
+      border-right: none !important;
+      border-left: none !important;
+      border-top: none !important;
+      border-bottom: 2px #a8adb7 solid;
+      margin: 0 4px;
+      &:focus {
+        border-bottom: 2px #1890ff solid;
+      }
     }
   }
 

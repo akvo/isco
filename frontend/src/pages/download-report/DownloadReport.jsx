@@ -19,6 +19,7 @@ const DownloadReport = () => {
   const [showModal, setShowModal] = useState(false);
   const [allowDownload, setAllowDownload] = useState(false);
   const [verifying, setVerifying] = useState(false);
+  const [otpValue, setOtpValue] = useState([]);
 
   useEffect(() => {
     if (!forms.length) {
@@ -84,9 +85,12 @@ const DownloadReport = () => {
             status === 404 ? "Invalid OTP Code." : "Something went wrong.",
         });
         console.error(e);
+        setOtpValue([]);
       })
       .finally(() => {
-        setVerifying(false);
+        setTimeout(() => {
+          setVerifying(false);
+        }, 1000);
       });
   };
 
@@ -194,13 +198,16 @@ const DownloadReport = () => {
             autoFocus={true}
             fields={6}
             onComplete={handleOnCompleteOTPCode}
+            onChange={(val) => setOtpValue([...otpValue, val])}
             loading={verifying}
             className="otp-code-input"
+            values={otpValue}
           />
           <Button
             ghost
-            className="button-download"
+            size="large"
             type="primary"
+            className="button-download"
             disabled={!allowDownload}
             onClick={handleDownloadReport}
           >
