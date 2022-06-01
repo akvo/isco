@@ -157,10 +157,15 @@ const DownloadReport = () => {
                     }
                     options={
                       member_type.length
-                        ? member_type.map((x) => ({
-                            label: x.name,
-                            value: x.id,
-                          }))
+                        ? member_type
+                            .filter(
+                              (x) =>
+                                x.id !== 1 || x.name.toLowerCase() !== "all"
+                            ) // filter all member type
+                            .map((x) => ({
+                              label: x.name,
+                              value: x.id,
+                            }))
                         : []
                     }
                     value={memberSelected}
@@ -186,7 +191,8 @@ const DownloadReport = () => {
       <Modal
         title="Input OTP Code"
         visible={showModal}
-        onCancel={() => setShowModal(false)}
+        closable={false}
+        closeIcon=""
         centered
         destroyOnClose
         className="otp-code-modal"
