@@ -335,3 +335,18 @@ class EmailText(enum.Enum):
         "info": None,
         "signature": True,
     }
+    notify_submission_completed_to_secretariat_admin = {
+        "title": "Submission Completed",
+        "title_translation": None,
+        "subject": "Submission Completed",
+        "body": '''
+            #user_name# (#user_email#) from #organisation_name#
+            successfully submitted data for #questionnaire_name#.
+            ''',
+        "message": None,
+        "body_translation": None,
+        "image": None,
+        "button": None,
+        "info": None,
+        "signature": False,
+    }
