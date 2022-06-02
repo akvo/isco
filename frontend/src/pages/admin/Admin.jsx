@@ -103,6 +103,23 @@ const Admin = () => {
             </Col>
             <Col md={24} lg={12}>
               <Card
+                title={<Title level={5}>Manage Data</Title>}
+                className="card-wrapper"
+              >
+                <div className="card-footer">
+                  <Button
+                    type="primary"
+                    ghost
+                    block
+                    onClick={() => navigate("/download-report")}
+                  >
+                    Manage Data
+                  </Button>
+                </div>
+              </Card>
+            </Col>
+            <Col md={24} lg={12}>
+              <Card
                 title={<Title level={5}>Data Cleaning</Title>}
                 className="card-wrapper"
               >

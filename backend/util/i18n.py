@@ -350,3 +350,28 @@ class EmailText(enum.Enum):
         "info": None,
         "signature": False,
     }
+    otp_code = {
+        "title": None,
+        "title_translation": None,
+        "subject": "OTP Code",
+        "body": '''<div>
+            #user_name#, </br>
+            Please enter this OTP to continue download:
+            <h2>#OTP Code#</h2>
+            <span>
+            This code is valid for #expired time# minutes.
+            </span>
+            </div>''',
+        "body_translation": '''<div>
+            #user_name#,</br>
+            Bitte geben Sie dieses OTP ein,
+            um mit dem Herunterladen fortzufahren:
+            <h2>#OTP Code#</h2>
+            <span>Dieser Code ist #expired time# Minuten lang gültig.</span>
+            </div>''',
+        "message": None,
+        "image": None,
+        "button": None,
+        "info": None,
+        "signature": False,
+    }

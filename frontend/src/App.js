@@ -24,6 +24,7 @@ import {
   ManageMember,
   ManageDownload,
   DataCleaning,
+  DownloadReport,
 } from "./pages";
 import { Alert } from "antd";
 import { useCookies } from "react-cookie";
@@ -243,6 +244,11 @@ const App = () => {
             exact
             path="/manage-download"
             element={<Secure element={ManageDownload} adminPage={true} />}
+          />
+          <Route
+            exact
+            path="/download-report"
+            element={<Secure element={DownloadReport} adminPage={true} />}
           />
           <Route
             exact

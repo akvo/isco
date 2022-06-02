@@ -1,0 +1,47 @@
+@import "../../variables.scss";
+
+#root {
+  #download-report {
+    .page-title-wrapper {
+      border-bottom: 1px solid #777777;
+    }
+
+    .page-title {
+      margin: 40px 0 20px 0;
+    }
+
+    .form-wrapper {
+      margin-top: 24px;
+      border-radius: 5px;
+
+      .custom-dropdown-wrapper {
+        min-width: 300px;
+        width: 400px;
+      }
+    }
+  }
+}
+
+.otp-code-modal {
+  .otp-code-input {
+    width: 425px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    input {
+      border-radius: 0 !important;
+      border-right: none !important;
+      border-left: none !important;
+      border-top: none !important;
+      border-bottom: 2px #a8adb7 solid;
+      margin: 0 4px;
+      &:focus {
+        border-bottom: 2px #1890ff solid;
+      }
+    }
+  }
+
+  .button-download {
+    width: 375px;
+  }
+}
