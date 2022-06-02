@@ -16,7 +16,7 @@ from models.answer import Answer, AnswerDict
 from models.question import QuestionType, Question
 from models.cascade_list import CascadeList
 from db.connection import get_session
-from models.data import DataResponse, DataResponseQuestionName
+from models.data import DataResponseQuestionName
 from models.data import DataDict, DataOptionDict
 from models.data import Data, SubmissionProgressDict
 from models.organisation import Organisation
