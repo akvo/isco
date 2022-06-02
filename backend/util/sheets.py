@@ -16,17 +16,16 @@ main_sheet_name = "Index"
 
 def write_sheet(df, writer, sheet_name):
     cols = [
-        "data_id", "question_group", "question", "members",
+        "data_id", "question_group", "question", "member_type",
         "submitted"
     ]
     if sheet_name != main_sheet_name:
         cols = [
             "data_id", "repeat_index", "question_group", "question",
-            "members", "submitted"
+            "member_type", "submitted"
         ]
         df["repeat_index"] = df["repeat_index"] + 1
     df = df[cols + ["answer"]]
-    df.rename(columns={"members": "member_type"})
     df = df.groupby(cols).first()
     df = df.unstack(["question_group", "question"])
     df.columns = df.columns.rename("", level=1)
