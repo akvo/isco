@@ -87,7 +87,7 @@ const DataCleaning = () => {
       setIsLoading(true);
       api
         .get(
-          `/data/form/${formSelected}?submitted=1&page=${page}&page_size=${pageSize}`
+          `/data/form/${formSelected}?submitted=1&filter_same_isco=1&page=${page}&page_size=${pageSize}`
         )
         .then((res) => {
           setData(res.data);
