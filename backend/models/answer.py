@@ -30,6 +30,15 @@ class AnswerDict(TypedDict):
                  List[float], None]
 
 
+class AnswerDictWithQuestionName(TypedDict):
+    question: int
+    question_name: str
+    repeat_index: Optional[int] = None
+    comment: Optional[str] = None
+    value: Union[int, float, str, bool, dict, List[str], List[int],
+                 List[float], None]
+
+
 class Answer(Base):
     __tablename__ = "answer"
     id = Column(Integer,
@@ -97,6 +106,27 @@ class Answer(Base):
     def formatted(self) -> AnswerDict:
         answer = {
             "question": self.question,
+            "repeat_index": self.repeat_index,
+            "comment": self.comment
+        }
+        type = self.question_detail.type
+        if type in [QuestionType.input, QuestionType.text, QuestionType.date]:
+            answer.update({"value": self.text})
+        if type == QuestionType.number:
+            answer.update({"value": self.value})
+        if type == QuestionType.option:
+            answer.update({"value": self.options[0]})
+        if type in [QuestionType.multiple_option, QuestionType.nested_list]:
+            answer.update({"value": self.options})
+        if type == QuestionType.cascade:
+            answer.update({"value": [int(o) for o in self.options]})
+        return answer
+
+    @property
+    def formattedWithQuestionName(self) -> AnswerDictWithQuestionName:
+        answer = {
+            "question": self.question,
+            "question_name": self.question_detail.name,
             "repeat_index": self.repeat_index,
             "comment": self.comment
         }

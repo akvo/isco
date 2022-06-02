@@ -11,7 +11,7 @@ from sqlalchemy import DateTime, Integer, Float, String
 import sqlalchemy.dialects.postgresql as pg
 from sqlalchemy.orm import relationship
 from db.connection import Base
-from models.answer import AnswerDict, AnswerBase
+from models.answer import AnswerDict, AnswerBase, AnswerDictWithQuestionName
 from .form import Form, FormInfo
 from .answer import Answer
 from .user import User, UserDict
@@ -51,6 +51,22 @@ class DataDict(TypedDict):
     updated: Optional[str] = None
     submitted: Optional[str] = None
     answer: List[AnswerDict]
+
+
+class DataDictQuestionName(TypedDict):
+    id: int
+    form: int
+    form_name: str
+    name: str
+    geo: Optional[GeoData] = None
+    locked_by: Optional[int] = None
+    created: Optional[str] = None
+    created_by: str
+    organisation: str
+    submitted_by: Optional[str] = None
+    updated: Optional[str] = None
+    submitted: Optional[str] = None
+    answer: List[AnswerDictWithQuestionName]
 
 
 class DataOptionDict(TypedDict):
@@ -98,6 +114,13 @@ class SubmissionProgressDict(TypedDict):
 class DataResponse(BaseModel):
     current: int
     data: List[DataDict]
+    total: int
+    total_page: int
+
+
+class DataResponseQuestionName(BaseModel):
+    current: int
+    data: List[DataDictQuestionName]
     total: int
     total_page: int
 
@@ -171,6 +194,31 @@ class Data(Base):
             "submitted":
             self.submitted.strftime("%B %d, %Y") if self.submitted else None,
             "answer": [a.formatted for a in self.answer],
+        }
+
+    @property
+    def serializeWithQuestionName(self) -> DataDictQuestionName:
+        return {
+            "id": self.id,
+            "name": self.name,
+            "form": self.form,
+            "form_name": self.form_detail.name,
+            "geo": {
+                "lat": self.geo[0],
+                "long": self.geo[1]
+            } if self.geo else None,
+            "locked_by": self.locked_by,
+            "created_by": self.created_by_user.name,
+            "organisation": self.organisation_detail.name,
+            "submitted_by":
+            self.submitted_by_user.name if self.submitted_by else None,
+            "created":
+            self.created.strftime("%B %d, %Y"),
+            "updated":
+            self.updated.strftime("%B %d, %Y") if self.updated else None,
+            "submitted":
+            self.submitted.strftime("%B %d, %Y") if self.submitted else None,
+            "answer": [a.formattedWithQuestionName for a in self.answer],
         }
 
     @property

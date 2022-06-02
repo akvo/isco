@@ -16,7 +16,7 @@ from models.answer import Answer, AnswerDict
 from models.question import QuestionType, Question
 from models.cascade_list import CascadeList
 from db.connection import get_session
-from models.data import DataResponse
+from models.data import DataResponse, DataResponseQuestionName
 from models.data import DataDict, DataOptionDict
 from models.data import Data, SubmissionProgressDict
 from models.organisation import Organisation
@@ -71,7 +71,7 @@ def notify_secretariat_admin(session: Session, user, form_name: str):
 
 
 @data_route.get("/data/form/{form_id:path}",
-                response_model=DataResponse,
+                response_model=DataResponseQuestionName,
                 name="data:get",
                 summary="get all datas",
                 tags=["Data"])
@@ -105,7 +105,7 @@ def get(req: Request,
         for cl in cascade_list:
             temp.update(({cl.id: cl.name}))
         cascades.update({q.id: temp})
-    result = [d.serialize for d in data["data"]]
+    result = [d.serializeWithQuestionName for d in data["data"]]
     for res in result:
         for a in res['answer']:
             qid = a['question']
