@@ -58,6 +58,7 @@ class TestCreateUnlimitedMemberQuestionnaire():
         assert res == {
             "id": 2,
             "form": 1,
+            "form_name": "Form Test",
             "name": "",
             "geo": None,
             "locked_by": 2,
@@ -152,6 +153,7 @@ class TestCreateUnlimitedMemberQuestionnaire():
         assert res == {
             "id": 3,
             "form": 1,
+            "form_name": "Form Test",
             "name": "Direct submit",
             "geo": None,
             "locked_by": 2,

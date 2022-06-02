@@ -56,6 +56,7 @@ class TestThirdSubmissionRoutes():
         assert res == {
             "id": 4,
             "form": 3,
+            "form_name": "Third limited survey",
             "name": "",
             "geo": None,
             "locked_by": 1,

@@ -40,6 +40,7 @@ class ReportDict(TypedDict):
 class DataDict(TypedDict):
     id: int
     form: int
+    form_name: str
     name: str
     geo: Optional[GeoData] = None
     locked_by: Optional[int] = None
@@ -150,22 +151,17 @@ class Data(Base):
     @property
     def serialize(self) -> DataDict:
         return {
-            "id":
-            self.id,
-            "name":
-            self.name,
-            "form":
-            self.form,
+            "id": self.id,
+            "name": self.name,
+            "form": self.form,
+            "form_name": self.form_detail.name,
             "geo": {
                 "lat": self.geo[0],
                 "long": self.geo[1]
             } if self.geo else None,
-            "locked_by":
-            self.locked_by,
-            "created_by":
-            self.created_by_user.name,
-            "organisation":
-            self.organisation_detail.name,
+            "locked_by": self.locked_by,
+            "created_by": self.created_by_user.name,
+            "organisation": self.organisation_detail.name,
             "submitted_by":
             self.submitted_by_user.name if self.submitted_by else None,
             "created":
