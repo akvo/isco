@@ -65,6 +65,7 @@ async def new_summary_file(req: Request,
                            member_type: Optional[int] = None,
                            session: Session = Depends(get_session),
                            credentials: credentials = Depends(security)):
+    TESTING = os.environ.get("TESTING")
     user = verify_super_admin(
         session=session, authenticated=req.state.authenticated)
     uuid = str(uuid4()).replace("-", "")
@@ -75,6 +76,8 @@ async def new_summary_file(req: Request,
                             form_id=form_id,
                             user_org=user.organisation,
                             member_type=member_type)
+    if TESTING:
+        return {"uuid": uuid, "code": code}
     background_tasks.add_task(delete_temporary, file_id)
     send_email_code(user=user, code=code)
     return {"uuid": uuid}
