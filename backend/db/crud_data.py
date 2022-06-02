@@ -74,10 +74,13 @@ def delete_bulk(session: Session, ids: List[int]) -> None:
 
 
 def get_data(session: Session, form: int, skip: int,
-             perpage: int, submitted: Optional[bool] = False) -> PaginatedData:
+             perpage: int, submitted: Optional[bool] = False,
+             org_ids: Optional[List[int]] = None) -> PaginatedData:
     data = session.query(Data).filter(Data.form == form)
     if submitted:
         data = data.filter(Data.submitted != null())
+    if org_ids:
+        data = data.filter(Data.organisation.in_(org_ids))
     count = data.count()
     data = data.order_by(desc(Data.id)).offset(skip).limit(perpage).all()
     return PaginatedData(data=data, count=count)

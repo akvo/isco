@@ -20,7 +20,7 @@ from models.data import DataResponseQuestionName
 from models.data import DataDict, DataOptionDict
 from models.data import Data, SubmissionProgressDict
 from models.organisation import Organisation
-from middleware import verify_editor, verify_super_admin
+from middleware import verify_editor, verify_super_admin, verify_user
 from middleware import organisations_in_same_isco, find_secretariat_admins
 from util.survey_config import MEMBER_SURVEY, PROJECT_SURVEY, LIMITED_SURVEY
 from util.mailer import Email, MailTypeEnum
@@ -80,13 +80,21 @@ def get(req: Request,
         page: int = 1,
         perpage: int = 10,
         submitted: Optional[bool] = False,
+        filter_same_isco: Optional[bool] = False,
         session: Session = Depends(get_session),
         credentials: credentials = Depends(security)):
+    user = verify_user(
+        session=session, authenticated=req.state.authenticated)
+    org_ids = []
+    if filter_same_isco:
+        org_ids = organisations_in_same_isco(
+            session=session, organisation=user.organisation)
     data = crud.get_data(session=session,
                          form=form_id,
                          skip=(perpage * (page - 1)),
                          perpage=perpage,
-                         submitted=submitted)
+                         submitted=submitted,
+                         org_ids=org_ids)
     if not data["count"]:
         raise HTTPException(status_code=404, detail="Not found")
     total_page = ceil(data["count"] / 10) if data["count"] > 0 else 0
