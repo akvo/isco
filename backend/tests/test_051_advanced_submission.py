@@ -18,6 +18,16 @@ class TestAdvancedSubmissionRoute():
                                 client: AsyncClient) -> None:
         res = await client.get(
             app.url_path_for("data:get", form_id=1),
+            params={"submitted": True},
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 200
+        res = res.json()
+        assert "current" in res
+        assert "total" in res
+        assert "total_page" in res
+        assert "data" in res
+        res = await client.get(
+            app.url_path_for("data:get", form_id=1),
             headers={"Authorization": f"Bearer {account.token}"})
         assert res.status_code == 200
         res = res.json()

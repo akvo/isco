@@ -8,12 +8,13 @@ from fastapi import Depends, Request, Response, APIRouter, HTTPException, Query
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
 from typing import List, Optional
-from sqlalchemy import func
+from sqlalchemy import func, and_
 from sqlalchemy.orm import Session
 import db.crud_data as crud
 from db import crud_answer, crud_form, crud_collaborator, crud_organisation
 from models.answer import Answer, AnswerDict
-from models.question import QuestionType
+from models.question import QuestionType, Question
+from models.cascade_list import CascadeList
 from db.connection import get_session
 from models.data import DataResponse
 from models.data import DataDict, DataOptionDict
@@ -78,20 +79,44 @@ def get(req: Request,
         form_id: int,
         page: int = 1,
         perpage: int = 10,
+        submitted: Optional[bool] = False,
         session: Session = Depends(get_session),
         credentials: credentials = Depends(security)):
     data = crud.get_data(session=session,
                          form=form_id,
                          skip=(perpage * (page - 1)),
-                         perpage=perpage)
+                         perpage=perpage,
+                         submitted=submitted)
     if not data["count"]:
         raise HTTPException(status_code=404, detail="Not found")
     total_page = ceil(data["count"] / 10) if data["count"] > 0 else 0
     if total_page < page:
         raise HTTPException(status_code=404, detail="Not found")
+    # transform cascade answer value
+    questions = session.query(Question).filter(and_(
+        Question.form == form_id,
+        Question.type == QuestionType.cascade.value
+    )).all()
+    cascades = {}
+    for q in questions:
+        temp = {}
+        cascade_list = session.query(CascadeList).filter(
+            CascadeList.cascade == q.cascade).all()
+        for cl in cascade_list:
+            temp.update(({cl.id: cl.name}))
+        cascades.update({q.id: temp})
+    result = [d.serialize for d in data["data"]]
+    for res in result:
+        for a in res['answer']:
+            qid = a['question']
+            value = a['value']
+            if qid in cascades and cascades[qid] and value:
+                temp = cascades[qid]
+                new_value = [temp[int(x)] for x in value]
+                a['value'] = "|".join(new_value)
     return {
         'current': page,
-        'data': [d.serialize for d in data["data"]],
+        'data': result,
         'total': data["count"],
         'total_page': total_page,
     }
