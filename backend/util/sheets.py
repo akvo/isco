@@ -32,8 +32,11 @@ def write_sheet(df, writer, sheet_name):
     df.columns = df.columns.rename("", level=2)
     if len(sheet_name) > 20:
         sheet_name = sheet_name[:15] + "..."
-    df = df["answer"]
-    df.to_excel(writer, sheet_name=sheet_name)
+    try:
+        df = df["answer"]
+        df.to_excel(writer, sheet_name=sheet_name)
+    except KeyError as e:
+        print(f"LOG::ERROR - GENERATE SPREADSHEET {sheet_name}: key error {e}")
 
 
 def generate_summary(session: Session,
