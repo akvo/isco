@@ -42,20 +42,15 @@
         color: #777777;
       }
 
-      button.ant-table-row-expand-icon.ant-table-row-expand-icon-expanded,
-      .ant-table-cell.ant-table-row-expand-icon-cell {
-        display: none;
-      }
-
-      .expanded-description {
-        margin: 0;
-        width: 43%;
-      }
+      // button.ant-table-row-expand-icon.ant-table-row-expand-icon-expanded,
+      // .ant-table-cell.ant-table-row-expand-icon-cell {
+      //   display: none;
+      // }
 
       tr.ant-table-expanded-row:hover > td,
       tr.ant-table-expanded-row > td {
         background: $white;
-        padding: 30px 20px 30px 66px;
+        padding: 24px;
       }
     }
     // END OF TABLE

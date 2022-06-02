@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./style.scss";
 import { Row, Col, Table, Typography, Space, Button, Select } from "antd";
+import { PlusSquareOutlined, CloseSquareOutlined } from "@ant-design/icons";
 import { api } from "../../lib";
 // import { useNotification } from "../../util";
 
@@ -12,6 +13,8 @@ const DataCleaning = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [forms, setForms] = useState([]);
   const [formSelected, setFormSelected] = useState(null);
+
+  const [expandedRowKeys, setExpandedRowKeys] = useState([]);
 
   const pageSize = 10;
   const [page, setPage] = useState(1);
@@ -46,7 +49,6 @@ const DataCleaning = () => {
     {
       title: "Action",
       key: "action",
-      width: "20%",
       render: (record) => {
         return (
           <Space>
@@ -125,7 +127,6 @@ const DataCleaning = () => {
               <Select
                 showArrow
                 showSearch
-                allowClear
                 className="custom-dropdown-wrapper"
                 placeholder="Select Questionnaire"
                 optionFilterProp="children"
@@ -141,11 +142,13 @@ const DataCleaning = () => {
           <Row>
             <Col span={24}>
               <Table
-                rowKey={(record, ri) =>
-                  `${record.organisation}-${record.id}-${ri}`
-                }
+                rowKey="id"
                 className="table-wrapper"
-                columns={columns}
+                columns={
+                  data?.data?.length
+                    ? [...columns, Table.EXPAND_COLUMN]
+                    : columns
+                }
                 dataSource={data?.data ? data.data : []}
                 loading={isLoading}
                 pagination={{
@@ -153,6 +156,58 @@ const DataCleaning = () => {
                   pageSize: pageSize,
                   total: data?.total,
                   onChange: (page) => setPage(page),
+                }}
+                expandable={{
+                  expandedRowKeys,
+                  expandedRowRender: (record) => {
+                    return (
+                      <div>
+                        <Table
+                          size="small"
+                          pagination={false}
+                          dataSource={record.answer}
+                          rowKey={(answer, ri) =>
+                            `${record.id}-${answer.question}-${ri}`
+                          }
+                          columns={[
+                            {
+                              title: "Question",
+                              dataIndex: "question_name",
+                            },
+                            {
+                              title: "Answer",
+                              dataIndex: "value",
+                              render: (val) => val || "-",
+                            },
+                            {
+                              title: "Comment",
+                              dataIndex: "comment",
+                              render: (val) => val || "-",
+                            },
+                          ]}
+                        />
+                      </div>
+                    );
+                  },
+                  expandIcon: ({ expanded, onExpand, record }) => {
+                    return expanded ? (
+                      <CloseSquareOutlined
+                        onClick={(e) => {
+                          setExpandedRowKeys([]);
+                          onExpand(record, e);
+                        }}
+                        style={{ color: "#e94b4c", margin: "0 5px" }}
+                      />
+                    ) : (
+                      <PlusSquareOutlined
+                        onClick={(e) => {
+                          setExpandedRowKeys([record.id]);
+                          onExpand(record, e);
+                        }}
+                        style={{ color: "#7d7d7d", margin: "0 5px" }}
+                      />
+                    );
+                  },
                 }}
               />
             </Col>
