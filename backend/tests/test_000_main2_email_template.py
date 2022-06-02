@@ -67,3 +67,8 @@ class TestEmailTemplate():
             app.url_path_for("template:email"),
             params={"type": n_sa_sb.value})
         assert res.status_code == 200
+        # otp code
+        res = await client.get(
+            app.url_path_for("template:email"),
+            params={"type": MailTypeEnum.otp_code.value})
+        assert res.status_code == 200
