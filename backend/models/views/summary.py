@@ -45,6 +45,6 @@ class Summary(Base):
             'data_id': self.data_id,
             'organisation': self.organisation,
             'members': self.members,
-            "submitted": self.submitted.strftime("%B %d, %Y"),
+            'submitted': self.submitted.strftime("%B %d, %Y"),
             'answer': self.answer
         }

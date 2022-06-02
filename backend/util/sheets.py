@@ -1,10 +1,13 @@
 from typing import Optional
 from fastapi import HTTPException
 from sqlalchemy import and_, null
+from sqlalchemy.sql.expression import false
 from sqlalchemy.orm import Session
 from models.views.summary import Summary
 from models.organisation_isco import OrganisationIsco
 from models.data import Data
+from models.question import Question, QuestionType
+from models.cascade_list import CascadeList
 from middleware import organisations_in_same_isco
 import pandas as pd
 
@@ -40,7 +43,6 @@ def generate_summary(session: Session,
                      user_org: int,
                      member_type: Optional[int] = None):
     tmp_file = f"./tmp/{filename}.xlsx"
-    summary = session.query(Summary).filter(Summary.fid == form_id)
     # find user organisation isco
     org_isco = session.query(OrganisationIsco).filter(
         OrganisationIsco.organisation == user_org).all()
@@ -54,8 +56,16 @@ def generate_summary(session: Session,
         Data.organisation.in_(org_in_same_isco),
         Data.submitted != null())).all()
     data_ids = [d.id for d in data]
-    # filter summary by data ids
-    summary = summary.filter(Summary.data_id.in_(data_ids))
+    # filter question with personal data flag
+    questions = session.query(Question).filter(and_(
+        Question.form == form_id,
+        Question.personal_data == false()))
+    qids_no_personal_data = [q.id for q in questions.all()]
+    # query summary view and filter by data ids and qids_no_personal_data
+    summary = session.query(Summary).filter(and_(
+        Summary.fid == form_id,
+        Summary.data_id.in_(data_ids),
+        Summary.qid.in_(qids_no_personal_data)))
     # question - filter by user isco
     if isco_ids:
         isco_ids += [1]  # add all isco type
@@ -71,6 +81,29 @@ def generate_summary(session: Session,
     if not summary:
         raise HTTPException(status_code=404, detail="No Data Available")
     summary = [s.serialize for s in summary]
+    # transform cascade answer value
+    questions = questions.filter(
+        Question.type == QuestionType.cascade.value).all()
+    q_cascades = {}
+    for q in questions:
+        temp = {}
+        cascade_list = session.query(CascadeList).filter(
+            CascadeList.cascade == q.cascade).all()
+        for cl in cascade_list:
+            temp.update({cl.id: cl.name})
+        q_cascades.update({q.id: temp})
+    for s in summary:
+        if s['qid'] in q_cascades and q_cascades[s['qid']] \
+           and s['answer'] is not None:
+            cascade_list_ids = [int(x) for x in s['answer'].split("|")]
+            cascade_answer = []
+            temp = q_cascades[s['qid']]
+            for cl in cascade_list_ids:
+                if cl in temp and temp[cl]:
+                    cascade_answer.append(temp[cl])
+            s['answer'] = '|'.join(cascade_answer) \
+                if cascade_answer else s['answer']
+    # start create spreadsheet
     source = pd.DataFrame(summary)
     writer = pd.ExcelWriter(tmp_file, engine='xlsxwriter')
     data = source[~source["repeat"]].reset_index()
