@@ -280,22 +280,31 @@ def update_by_id(req: Request,
                  submitted: int,
                  answers: List[AnswerDict],
                  locked_by: Optional[int] = None,
+                 data_cleaning: Optional[bool] = False,
                  session: Session = Depends(get_session),
                  credentials: credentials = Depends(security)):
-    user = verify_editor(session=session,
-                         authenticated=req.state.authenticated)
+    # data cleaning verify super admin/secretariat admin
+    if data_cleaning:
+        user = verify_super_admin(
+            session=session, authenticated=req.state.authenticated)
+    if not data_cleaning:
+        user = verify_editor(
+            session=session, authenticated=req.state.authenticated)
     # check data status before update
     # to prevent update submitted data
-    data = crud.get_data_by_id(session=session, id=id, submitted=False)
+    data = crud.get_data_by_id(
+        session=session, id=id, submitted=True if data_cleaning else False)
     if not data:
         raise HTTPException(status_code=208,
                             detail="Submission already reported")
     # if locked, allow update only by locked_by === user id
-    if data.locked_by and data.locked_by != user.id:
+    # but open for data cleaning
+    if data.locked_by and data.locked_by != user.id and not data_cleaning:
         raise HTTPException(status_code=401, detail="Submission is locked")
-    submitted_by = None
-    submitted_date = None
-    if submitted:
+    # update submitted_by & submitted if not data cleaning
+    submitted_by = data.submitted_by
+    submitted_date = data.submitted
+    if submitted and not data_cleaning:
         submitted_by = user.id
         submitted_date = datetime.now()
 
@@ -361,7 +370,9 @@ def update_by_id(req: Request,
                                        type=qtype,
                                        value=a["value"])
         if execute:
-            data.locked_by = locked_by
+            # don't update locked_by for data_cleaning
+            data.locked_by = locked_by \
+                if not data_cleaning else data.locked_by
             data.updated = datetime.now()
             data.submitted = submitted_date
             data.submitted_by = submitted_by
@@ -374,8 +385,9 @@ def update_by_id(req: Request,
         c_key = f"{c['question']}_{c['repeat_index']}"
         if c_key not in checked_payload:
             crud_answer.delete_answer_by_id(session=session, id=c['id'])
-    # if submitted send notification email to secretariat admin
-    if submitted:
+    # if submitted send and not
+    # data_cleaning notification email to secretariat admin
+    if submitted and not data_cleaning:
         notify_secretariat_admin(
             session=session, user=user, form_name=published['form_name'])
     return data.serialize

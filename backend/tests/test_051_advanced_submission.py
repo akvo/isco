@@ -138,3 +138,35 @@ class TestAdvancedSubmissionRoute():
             params={"data_id": 1},
             headers={"Authorization": f"Bearer {account.token}"})
         assert res.status_code == 208
+
+    @pytest.mark.asyncio
+    async def test_data_cleaning(self, app: FastAPI, session: Session,
+                                 client: AsyncClient) -> None:
+        # get data by id
+        res = await client.get(
+            app.url_path_for("data:get_by_id", id=1),
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 200
+        res = res.json()
+        submitted = res['submitted']
+        submitted_by = res['submitted_by']
+        assert res["id"] == 1
+        # update data
+        res = await client.put(
+            app.url_path_for("data:update", id=1, submitted=0),
+            params={"locked_by": 0, "data_cleaning": True},
+            json=[{
+                "question": 5,
+                "repeat_index": 0,
+                "comment": "Q5 comment data cleaning",
+                "value": 100
+            }],
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 200
+        res = res.json()
+        assert res['submitted'] == submitted
+        assert res['submitted_by'] == submitted_by
+        for a in res['answer']:
+            if a['question'] == 5:
+                assert a['value'] == 100
+                assert a['comment'] == "Q5 comment data cleaning"
