@@ -34,6 +34,66 @@ const reorderAnswersRepeatIndex = (formValue, answer) => {
   // end  of reorder repeat index
 };
 
+const checkDependentValue = (formValue, answer) => {
+  const questions = formValue.question_group.flatMap((qg) => qg.question);
+  const dependencies = questions
+    .filter((q) => q?.dependency)
+    .map((q) => {
+      const dependency = q.dependency.map((d) => {
+        const question = questions.find((q) => q.id === d.id);
+        return {
+          ...d,
+          qtype: question?.type ? question.type : null,
+        };
+      });
+      return {
+        qid: q.id,
+        dependency: dependency,
+      };
+    });
+  // transform answer
+  if (answer && answer.length) {
+    const transformAnswer = answer.filter((a) => {
+      const findDependency = dependencies.find((q) => q.qid === a.question);
+      if (findDependency) {
+        // check dependency answer
+        const check = findDependency.dependency.map((d) => {
+          const dependentToAnswer = answer.find((x) => x.question === d.id);
+          if (!dependentToAnswer || !dependentToAnswer?.value) {
+            return false;
+          }
+          let value = dependentToAnswer.value;
+          if (d?.options) {
+            if (typeof value === "string") {
+              value = [value];
+            }
+            return intersection(d.options, value)?.length > 0;
+          }
+          if (d?.min) {
+            return value >= d.min;
+          }
+          if (d?.max) {
+            return value <= d.max;
+          }
+          if (d?.equal) {
+            return value === d.equal;
+          }
+          if (d?.notEqual) {
+            return value !== d.notEqual && !!value;
+          }
+        });
+        if (intersection(check, [false])?.length > 0) {
+          return false;
+        }
+        return true;
+      }
+      return true;
+    });
+    return transformAnswer;
+  }
+  return answer;
+};
+
 const DataCleaningWebform = ({ datapoint, orgDetail, handleBack }) => {
   const { notify } = useNotification();
 
@@ -253,7 +313,8 @@ const DataCleaningWebform = ({ datapoint, orgDetail, handleBack }) => {
 
   const onFinish = (/*values*/) => {
     if (answer.length) {
-      const payload = reorderAnswersRepeatIndex(formValue, answer);
+      const filteredAnswer = checkDependentValue(formValue, answer);
+      const payload = reorderAnswersRepeatIndex(formValue, filteredAnswer);
       setIsSubmitting(true);
       const url = `/data/${savedData.id}/0?data_cleaning=1`;
       api
@@ -291,9 +352,9 @@ const DataCleaningWebform = ({ datapoint, orgDetail, handleBack }) => {
     setIsForce(true);
     setModalWarningVisible(true);
   };
-
   const handleOnForceSubmit = () => {
-    const payload = reorderAnswersRepeatIndex(formValue, answer);
+    const filteredAnswer = checkDependentValue(formValue, answer);
+    const payload = reorderAnswersRepeatIndex(formValue, filteredAnswer);
     setIsSubmitting(true);
     const url = `/data/${savedData.id}/0?data_cleaning=1`;
     api
