@@ -36,10 +36,8 @@ const reorderAnswersRepeatIndex = (formValue, answer) => {
 const DataCleaningWebform = ({ datapoint, orgDetail, setReloadData }) => {
   const { notify } = useNotification();
 
-  const formId = datapoint.form;
-  const { language } = store.useState((s) => s);
-  const { member: orgMember, isco: orgIsco } = orgDetail;
   const allAccess = "All";
+  const { language } = store.useState((s) => s);
   const { active: activeLang } = language;
 
   const [formValue, setFormValue] = useState({});
@@ -60,8 +58,9 @@ const DataCleaningWebform = ({ datapoint, orgDetail, setReloadData }) => {
 
   // transform & filter form definition
   useEffect(() => {
-    if (isEmpty(formValue) && formId && orgDetail) {
-      const url = `/webform/${formId}?data_id=${datapoint.id}&data_cleaning=1`;
+    if (isEmpty(formValue) && datapoint?.form && orgDetail?.id) {
+      const { member: orgMember, isco: orgIsco } = orgDetail;
+      const url = `/webform/${datapoint.form}?data_id=${datapoint.id}&data_cleaning=1`;
       api
         .get(url)
         .then((res) => {
@@ -161,17 +160,7 @@ const DataCleaningWebform = ({ datapoint, orgDetail, setReloadData }) => {
           console.error(e);
         });
     }
-  }, [
-    formValue,
-    formId,
-    orgDetail,
-    orgMember,
-    orgIsco,
-    datapoint,
-    savedData,
-    activeLang,
-    answer,
-  ]);
+  }, [formValue, orgDetail, datapoint, savedData, activeLang, answer]);
 
   // set default language
   useEffect(() => {
