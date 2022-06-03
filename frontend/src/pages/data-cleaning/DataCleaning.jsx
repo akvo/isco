@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import "./style.scss";
 import { Row, Col, Table, Typography, Space, Button, Select } from "antd";
-import { PlusSquareOutlined, CloseSquareOutlined } from "@ant-design/icons";
+import {
+  PlusSquareOutlined,
+  CloseSquareOutlined,
+  RightOutlined,
+} from "@ant-design/icons";
 import { api } from "../../lib";
 // import { useNotification } from "../../util";
 
@@ -15,6 +19,10 @@ const DataCleaning = () => {
   const [formSelected, setFormSelected] = useState(null);
 
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
+  const [isEdit, setIsEdit] = useState(false);
+  const [editDatapointName, setEditDatapointName] = useState(null);
+  const [fetchingOrgDetail, setFetchingOrgDetail] = useState(false);
+  const [orgDetail, setOrgDetail] = useState({});
 
   const pageSize = 10;
   const [page, setPage] = useState(1);
@@ -33,8 +41,8 @@ const DataCleaning = () => {
     },
     {
       title: "Organisation",
-      dataIndex: "organisation",
-      key: "organisation",
+      dataIndex: "organisation_name",
+      key: "organisation_name",
     },
     {
       title: "Submitter",
@@ -56,8 +64,8 @@ const DataCleaning = () => {
               size="small"
               type="primary"
               ghost
-              onClick={() => console.info(record)}
-              // loading={isView === record?.id}
+              onClick={() => handleEditOnClick(record)}
+              loading={fetchingOrgDetail === record?.id}
             >
               Edit
             </Button>
@@ -107,6 +115,48 @@ const DataCleaning = () => {
     }
   }, [formSelected, page, pageSize]);
 
+  const handleEditOnClick = (record) => {
+    if (record?.organisation && record?.id) {
+      const {
+        id,
+        form_name,
+        organisation,
+        organisation_name,
+        submitted_by,
+        submitted,
+      } = record;
+      setFetchingOrgDetail(id);
+      api
+        .get(`/organisation/${organisation}`)
+        .then((res) => {
+          setOrgDetail(res.data);
+          setEditDatapointName(
+            `${form_name} - ${organisation_name} - ${submitted_by} - ${submitted}`
+          );
+          setTimeout(() => {
+            setExpandedRowKeys([]);
+            setIsEdit(true);
+          }, 500);
+        })
+        .catch((e) => console.error(e))
+        .finally(() => {
+          setTimeout(() => {
+            setFetchingOrgDetail(false);
+          }, 500);
+        });
+    }
+  };
+
+  const handleBack = () => {
+    if (isEdit) {
+      setIsEdit(false);
+      setEditDatapointName(null);
+      setOrgDetail({});
+    }
+  };
+
+  console.info(orgDetail);
+
   return (
     <div id="data-cleaning">
       <Row className="container bg-grey">
@@ -117,9 +167,26 @@ const DataCleaning = () => {
             justify="space-between"
           >
             <Col span={24} align="start">
-              <Title className="page-title" level={3}>
-                Data Cleaning
-              </Title>
+              <Space align="middle" size={20}>
+                <Title
+                  className={`page-title ${isEdit ? "clickable" : ""}`}
+                  level={3}
+                  onClick={handleBack}
+                >
+                  Data Cleaning
+                </Title>
+                {isEdit && (
+                  <RightOutlined
+                    className="page-title separator"
+                    style={{ fontSize: "24px" }}
+                  />
+                )}
+                {isEdit && (
+                  <Title className="page-title datapoint-name" level={4}>
+                    {editDatapointName}
+                  </Title>
+                )}
+              </Space>
             </Col>
           </Row>
           <Row className="filter-wrapper">

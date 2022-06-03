@@ -8,6 +8,15 @@
 
     .page-title {
       margin: 40px 0 20px 0;
+      &.clickable {
+        cursor: pointer;
+      }
+      &.separator {
+        padding: 5px 0;
+      }
+      &.datapoint-name {
+        padding: 3px 0;
+      }
     }
 
     .filter-wrapper {
