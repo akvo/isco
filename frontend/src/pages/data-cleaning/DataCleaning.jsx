@@ -7,19 +7,18 @@ import {
   RightOutlined,
 } from "@ant-design/icons";
 import { api } from "../../lib";
-// import { useNotification } from "../../util";
+import DataCleaningWebform from "./DataCleaningWebform";
 
 const { Title } = Typography;
 
 const DataCleaning = () => {
-  // const { notify } = useNotification();
-
   const [isLoading, setIsLoading] = useState(false);
   const [forms, setForms] = useState([]);
   const [formSelected, setFormSelected] = useState(null);
 
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
+  const [selectedDatapoint, setSelectedDatapoint] = useState(null);
   const [editDatapointName, setEditDatapointName] = useState(null);
   const [fetchingOrgDetail, setFetchingOrgDetail] = useState(false);
   const [orgDetail, setOrgDetail] = useState({});
@@ -133,6 +132,7 @@ const DataCleaning = () => {
           setEditDatapointName(
             `${form_name} - ${organisation_name} - ${submitted_by} - ${submitted}`
           );
+          setSelectedDatapoint(record);
           setTimeout(() => {
             setExpandedRowKeys([]);
             setIsEdit(true);
@@ -155,7 +155,50 @@ const DataCleaning = () => {
     }
   };
 
-  console.info(orgDetail);
+  if (isEdit && orgDetail?.id) {
+    return (
+      <div id="data-cleaning">
+        <Row className="container" align="top" justify="center">
+          <Col span={24}>
+            <Row
+              className="page-title-wrapper"
+              align="middle"
+              justify="space-between"
+            >
+              <Col span={24} align="start">
+                <Space align="middle" size={20}>
+                  <Title
+                    className={`page-title ${isEdit ? "clickable" : ""}`}
+                    level={3}
+                    onClick={handleBack}
+                  >
+                    Data Cleaning
+                  </Title>
+                  {isEdit && (
+                    <RightOutlined
+                      className="page-title separator"
+                      style={{ fontSize: "24px" }}
+                    />
+                  )}
+                  {isEdit && (
+                    <Title className="page-title datapoint-name" level={4}>
+                      {editDatapointName}
+                    </Title>
+                  )}
+                </Space>
+              </Col>
+            </Row>
+            <div className="webform-wrapper">
+              <DataCleaningWebform
+                datapoint={selectedDatapoint}
+                orgDetail={orgDetail}
+              />
+            </div>
+          </Col>
+        </Row>
+      </div>
+    );
+  }
 
   return (
     <div id="data-cleaning">
@@ -167,26 +210,13 @@ const DataCleaning = () => {
             justify="space-between"
           >
             <Col span={24} align="start">
-              <Space align="middle" size={20}>
-                <Title
-                  className={`page-title ${isEdit ? "clickable" : ""}`}
-                  level={3}
-                  onClick={handleBack}
-                >
-                  Data Cleaning
-                </Title>
-                {isEdit && (
-                  <RightOutlined
-                    className="page-title separator"
-                    style={{ fontSize: "24px" }}
-                  />
-                )}
-                {isEdit && (
-                  <Title className="page-title datapoint-name" level={4}>
-                    {editDatapointName}
-                  </Title>
-                )}
-              </Space>
+              <Title
+                className={`page-title ${isEdit ? "clickable" : ""}`}
+                level={3}
+                onClick={handleBack}
+              >
+                Data Cleaning
+              </Title>
             </Col>
           </Row>
           <Row className="filter-wrapper">

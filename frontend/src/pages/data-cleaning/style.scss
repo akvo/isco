@@ -86,5 +86,89 @@
         background-color: #777777;
       }
     }
+
+    // WEBFORM
+    .webform-wrapper {
+      padding-top: 24px;
+    }
+
+    #webform {
+      .loading-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      /* customize webform/akvo-react-form style */
+      .arf-form-header {
+        .ant-select {
+          display: none;
+        }
+      }
+
+      .arf-field-cascade-api {
+        margin-top: -65px;
+        // padding: 0 20px;
+      }
+
+      .ant-select.arf-cascade-api-select.ant-select-single.ant-select-show-arrow {
+        margin-bottom: 10px;
+      }
+
+      .arf-next {
+        button {
+          background-color: transparent;
+          border: 2px solid #777777;
+        }
+      }
+
+      /* repeat group */
+      .ant-input-group.ant-input-group-compact {
+        display: inline-block;
+      }
+
+      /* Field background */
+      .arf-field {
+        background: #f3f3f3;
+        margin-bottom: 18px;
+        padding-top: 14px;
+        padding-bottom: 14px;
+      }
+
+      /* Question group description */
+      .arf-description {
+        background-color: #f3f3f3;
+        padding: 8px;
+        font-style: italic;
+      }
+
+      button.ant-btn.ant-btn-default.ant-btn-sm.ant-btn-icon-only {
+        min-height: 0;
+        background-color: #777777;
+        color: $white;
+
+        &.arf-disabled {
+          background-color: #eaeaea;
+          color: $black;
+        }
+      }
+
+      button.ant-btn.ant-btn-primary.ant-btn-icon-only {
+        border: none;
+        background: transparent;
+        color: $black;
+        box-shadow: none;
+        &:disabled {
+          color: #777777;
+        }
+      }
+
+      /* end customize webform/akvo-react-form style */
+    }
   }
 }
