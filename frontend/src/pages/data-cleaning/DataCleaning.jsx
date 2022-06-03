@@ -22,7 +22,6 @@ const DataCleaning = () => {
   const [editDatapointName, setEditDatapointName] = useState(null);
   const [fetchingOrgDetail, setFetchingOrgDetail] = useState(false);
   const [orgDetail, setOrgDetail] = useState({});
-  const [reloadData, setReloadData] = useState(false);
 
   const pageSize = 10;
   const [page, setPage] = useState(1);
@@ -91,18 +90,9 @@ const DataCleaning = () => {
   }, [forms]);
 
   useEffect(() => {
-    if (formSelected || reloadData) {
-      let currentPage = page;
-      let formId = formSelected;
-      if (reloadData) {
-        currentPage = 1;
-        formId = reloadData;
-        setIsEdit(false);
-        setEditDatapointName(null);
-        setOrgDetail({});
-      }
+    if (formSelected) {
       setIsLoading(true);
-      let url = `/data/form/${formId}?page=${currentPage}&perpage=${pageSize}`;
+      let url = `/data/form/${formSelected}?page=${page}&perpage=${pageSize}`;
       url += `&submitted=1&filter_same_isco=1`;
       api
         .get(url)
@@ -122,7 +112,7 @@ const DataCleaning = () => {
           setIsLoading(false);
         });
     }
-  }, [formSelected, page, pageSize, reloadData]);
+  }, [formSelected, page, pageSize]);
 
   const handleEditOnClick = (record) => {
     if (record?.organisation && record?.id) {
@@ -155,6 +145,27 @@ const DataCleaning = () => {
       setIsEdit(false);
       setEditDatapointName(null);
       setOrgDetail({});
+      //  reload data
+      setIsLoading(true);
+      let url = `/data/form/${selectedDatapoint.form}?page=1&perpage=${pageSize}`;
+      url += `&submitted=1&filter_same_isco=1`;
+      api
+        .get(url)
+        .then((res) => {
+          setData(res.data);
+        })
+        .catch((e) => {
+          console.error(e);
+          setData({
+            current: 1,
+            data: [],
+            total: 0,
+            total_page: 0,
+          });
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
   };
 
@@ -193,9 +204,12 @@ const DataCleaning = () => {
             </Row>
             <div className="webform-wrapper">
               <DataCleaningWebform
-                datapoint={selectedDatapoint}
+                datapoint={{
+                  ...selectedDatapoint,
+                  datapoint_name: editDatapointName,
+                }}
                 orgDetail={orgDetail}
-                setReloadData={setReloadData}
+                handleBack={handleBack}
               />
             </div>
           </Col>

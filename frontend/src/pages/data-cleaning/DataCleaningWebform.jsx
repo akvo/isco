@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import "./style.scss";
-import { Spin } from "antd";
+import { Row, Col, Button, Space, Spin, Modal } from "antd";
+import { WarningOutlined } from "@ant-design/icons";
 import { Webform } from "akvo-react-form";
 import { api, store } from "../../lib";
 import { useNotification } from "../../util";
 import { intersection, isEmpty, orderBy } from "lodash";
-import { CommentField, SubmitWarningModal } from "../../components";
+import { CommentField } from "../../components";
 
 const reorderAnswersRepeatIndex = (formValue, answer) => {
   // reordered repeat index answer
@@ -33,7 +34,7 @@ const reorderAnswersRepeatIndex = (formValue, answer) => {
   // end  of reorder repeat index
 };
 
-const DataCleaningWebform = ({ datapoint, orgDetail, setReloadData }) => {
+const DataCleaningWebform = ({ datapoint, orgDetail, handleBack }) => {
   const { notify } = useNotification();
 
   const allAccess = "All";
@@ -260,13 +261,13 @@ const DataCleaningWebform = ({ datapoint, orgDetail, setReloadData }) => {
           "content-type": "application/json",
         })
         .then(() => {
+          setModalWarningVisible(false);
+          setFormValue({});
+          handleBack();
           notify({
             type: "success",
             message: "Submission updated successfully.",
           });
-          setFormValue({});
-          setModalWarningVisible(false);
-          setReloadData(datapoint.form);
         })
         .catch((e) => {
           console.error(e);
@@ -300,13 +301,14 @@ const DataCleaningWebform = ({ datapoint, orgDetail, setReloadData }) => {
         "content-type": "application/json",
       })
       .then(() => {
+        setModalWarningVisible(false);
+        setFormValue({});
+        handleBack();
         notify({
           type: "success",
           message: "Submission updated successfully.",
         });
         setFormValue({});
-        setModalWarningVisible(false);
-        setReloadData(datapoint.form);
       })
       .catch((e) => {
         console.error(e);
@@ -342,12 +344,48 @@ const DataCleaningWebform = ({ datapoint, orgDetail, setReloadData }) => {
         )}
       </div>
       {/* Modal */}
-      <SubmitWarningModal
+      <Modal
+        title=""
         visible={modalWarningVisible}
-        onOk={isForce ? handleOnForceSubmit : onFinish}
+        centered
         onCancel={() => setModalWarningVisible(false)}
-        force={isForce}
-      />
+        width="600px"
+        destroyOnClose
+        footer={
+          <Row align="middle" justify="center">
+            <Button
+              type="primary"
+              onClick={isForce ? handleOnForceSubmit : onFinish}
+            >
+              Update
+            </Button>
+            <Button onClick={() => setModalWarningVisible(false)}>
+              Cancel
+            </Button>
+          </Row>
+        }
+      >
+        <Row align="middle" justify="center">
+          <Col span={24}>
+            <Space
+              align="center"
+              direction="vertical"
+              style={{ width: "100%" }}
+            >
+              <WarningOutlined
+                style={{
+                  fontSize: "50px",
+                  color: "#F9CFA8",
+                  marginBottom: "24px",
+                }}
+              />
+              <h3>
+                Are you sure want to update {datapoint?.datapoint_name || ""} ?
+              </h3>
+            </Space>
+          </Col>
+        </Row>
+      </Modal>
     </>
   );
 };
