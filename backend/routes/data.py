@@ -97,7 +97,7 @@ def get(req: Request,
                          org_ids=org_ids)
     if not data["count"]:
         raise HTTPException(status_code=404, detail="Not found")
-    total_page = ceil(data["count"] / 10) if data["count"] > 0 else 0
+    total_page = ceil(data["count"] / perpage) if data["count"] > 0 else 0
     if total_page < page:
         raise HTTPException(status_code=404, detail="Not found")
     # transform cascade answer value

@@ -102,8 +102,8 @@ const DataCleaning = () => {
         setOrgDetail({});
       }
       setIsLoading(true);
-      let url = `/data/form/${formId}?submitted=1&filter_same_isco=1`;
-      url += `&page=${currentPage}&page_size=${pageSize}`;
+      let url = `/data/form/${formId}?page=${currentPage}&perpage=${pageSize}`;
+      url += `&submitted=1&filter_same_isco=1`;
       api
         .get(url)
         .then((res) => {
