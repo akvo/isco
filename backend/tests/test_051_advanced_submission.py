@@ -158,6 +158,12 @@ class TestAdvancedSubmissionRoute():
             params={"data_id": 1},
             headers={"Authorization": f"Bearer {account.token}"})
         assert res.status_code == 208
+        # get form data cleaning
+        res = await client.get(
+            app.url_path_for("form:get_webform_from_bucket", form_id=1),
+            params={"data_id": 1, "data_cleaning": True},
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 200
 
     @pytest.mark.asyncio
     async def test_data_cleaning(self, app: FastAPI, session: Session,
