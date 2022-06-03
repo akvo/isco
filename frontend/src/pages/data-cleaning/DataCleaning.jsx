@@ -40,14 +40,14 @@ const DataCleaning = () => {
       key: "form_name",
     },
     {
-      title: "Organisation",
-      dataIndex: "organisation_name",
-      key: "organisation_name",
+      title: "Data",
+      dataIndex: "id",
+      key: "id",
     },
     {
-      title: "Submitter",
-      dataIndex: "submitted_by",
-      key: "submitted_by",
+      title: "Member Type",
+      dataIndex: "member_type",
+      key: "member_type",
     },
     {
       title: "Submitted Date",
@@ -126,21 +126,14 @@ const DataCleaning = () => {
 
   const handleEditOnClick = (record) => {
     if (record?.organisation && record?.id) {
-      const {
-        id,
-        form_name,
-        organisation,
-        organisation_name,
-        submitted_by,
-        submitted,
-      } = record;
+      const { id, form_name, organisation, member_type, submitted } = record;
       setFetchingOrgDetail(id);
       api
         .get(`/organisation/${organisation}`)
         .then((res) => {
           setOrgDetail(res.data);
           setEditDatapointName(
-            `${form_name} - ${organisation_name} - ${submitted_by} - ${submitted}`
+            `${form_name} - ${id} - ${member_type} - ${submitted}`
           );
           setSelectedDatapoint(record);
           setTimeout(() => {

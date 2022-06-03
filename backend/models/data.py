@@ -59,12 +59,9 @@ class DataDictQuestionName(TypedDict):
     form_name: str
     name: str
     geo: Optional[GeoData] = None
-    locked_by: Optional[int] = None
     created: Optional[str] = None
-    created_by: str
     organisation: int
-    organisation_name: str
-    submitted_by: Optional[str] = None
+    member_type: str
     updated: Optional[str] = None
     submitted: Optional[str] = None
     answer: List[AnswerDictWithQuestionName]
@@ -199,6 +196,10 @@ class Data(Base):
 
     @property
     def serializeWithQuestionName(self) -> DataDictQuestionName:
+        member_type = self.organisation_detail.member_type
+        member_type = [x.serialize for x in member_type]
+        member_type = [s["member"] for s in member_type]
+        member_type = ", ".join(member_type)
         return {
             "id": self.id,
             "name": self.name,
@@ -208,12 +209,8 @@ class Data(Base):
                 "lat": self.geo[0],
                 "long": self.geo[1]
             } if self.geo else None,
-            "locked_by": self.locked_by,
-            "created_by": self.created_by_user.name,
             "organisation": self.organisation,
-            "organisation_name": self.organisation_detail.name,
-            "submitted_by":
-            self.submitted_by_user.name if self.submitted_by else None,
+            "member_type": member_type,
             "created":
             self.created.strftime("%B %d, %Y"),
             "updated":

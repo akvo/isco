@@ -47,17 +47,14 @@ class TestAdvancedSubmissionRoute():
         assert len(res["data"]) > 0
         assert res["data"][0] == {
             'created': today,
-            'created_by': 'John Doe',
             'form': 1,
             "form_name": "Form Test",
             'geo': None,
             'id': 1,
-            'locked_by': 1,
             'name': 'Depend to Q1 Option 1',
             'organisation': 1,
-            'organisation_name': 'Akvo',
+            'member_type': 'All',
             'submitted': today,
-            'submitted_by': 'John Doe',
             'updated': today,
             'answer': [{
                 'comment': None,
