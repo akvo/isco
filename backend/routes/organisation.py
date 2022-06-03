@@ -95,7 +95,7 @@ def get_organisation_in_same_isco(
 
 
 @organisation_route.get("/organisation/{id:path}",
-                        response_model=OrganisationBase,
+                        response_model=OrganisationDict,
                         summary="get organisation by id",
                         name="organisation:get_by_id",
                         tags=["Organisation"])
