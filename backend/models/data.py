@@ -62,7 +62,8 @@ class DataDictQuestionName(TypedDict):
     locked_by: Optional[int] = None
     created: Optional[str] = None
     created_by: str
-    organisation: str
+    organisation: int
+    organisation_name: str
     submitted_by: Optional[str] = None
     updated: Optional[str] = None
     submitted: Optional[str] = None
@@ -209,7 +210,8 @@ class Data(Base):
             } if self.geo else None,
             "locked_by": self.locked_by,
             "created_by": self.created_by_user.name,
-            "organisation": self.organisation_detail.name,
+            "organisation": self.organisation,
+            "organisation_name": self.organisation_detail.name,
             "submitted_by":
             self.submitted_by_user.name if self.submitted_by else None,
             "created":
