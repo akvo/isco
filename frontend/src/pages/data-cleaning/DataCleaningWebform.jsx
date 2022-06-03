@@ -33,7 +33,7 @@ const reorderAnswersRepeatIndex = (formValue, answer) => {
   // end  of reorder repeat index
 };
 
-const DataCleaningWebform = ({ datapoint, orgDetail }) => {
+const DataCleaningWebform = ({ datapoint, orgDetail, setReloadData }) => {
   const { notify } = useNotification();
 
   const formId = datapoint.form;
@@ -270,12 +270,14 @@ const DataCleaningWebform = ({ datapoint, orgDetail }) => {
         .put(url, payload, {
           "content-type": "application/json",
         })
-        .then((res) => {
+        .then(() => {
           notify({
             type: "success",
             message: "Submission updated successfully.",
           });
           setFormValue({});
+          setModalWarningVisible(false);
+          setReloadData(datapoint.form);
         })
         .catch((e) => {
           console.error(e);
@@ -286,7 +288,6 @@ const DataCleaningWebform = ({ datapoint, orgDetail }) => {
         })
         .finally(() => {
           setIsSubmitting(false);
-          setModalWarningVisible(false);
         });
     }
   };
@@ -309,12 +310,14 @@ const DataCleaningWebform = ({ datapoint, orgDetail }) => {
       .put(url, payload, {
         "content-type": "application/json",
       })
-      .then((res) => {
+      .then(() => {
         notify({
           type: "success",
           message: "Submission updated successfully.",
         });
         setFormValue({});
+        setModalWarningVisible(false);
+        setReloadData(datapoint.form);
       })
       .catch((e) => {
         console.error(e);
@@ -325,7 +328,6 @@ const DataCleaningWebform = ({ datapoint, orgDetail }) => {
       })
       .finally(() => {
         setIsSubmitting(false);
-        setModalWarningVisible(false);
       });
   };
 

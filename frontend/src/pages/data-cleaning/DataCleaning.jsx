@@ -22,6 +22,7 @@ const DataCleaning = () => {
   const [editDatapointName, setEditDatapointName] = useState(null);
   const [fetchingOrgDetail, setFetchingOrgDetail] = useState(false);
   const [orgDetail, setOrgDetail] = useState({});
+  const [reloadData, setReloadData] = useState(false);
 
   const pageSize = 10;
   const [page, setPage] = useState(1);
@@ -90,12 +91,21 @@ const DataCleaning = () => {
   }, [forms]);
 
   useEffect(() => {
-    if (formSelected) {
+    if (formSelected || reloadData) {
+      let currentPage = page;
+      let formId = formSelected;
+      if (reloadData) {
+        currentPage = 1;
+        formId = reloadData;
+        setIsEdit(false);
+        setEditDatapointName(null);
+        setOrgDetail({});
+      }
       setIsLoading(true);
+      let url = `/data/form/${formId}?submitted=1&filter_same_isco=1`;
+      url += `&page=${currentPage}&page_size=${pageSize}`;
       api
-        .get(
-          `/data/form/${formSelected}?submitted=1&filter_same_isco=1&page=${page}&page_size=${pageSize}`
-        )
+        .get(url)
         .then((res) => {
           setData(res.data);
         })
@@ -112,7 +122,7 @@ const DataCleaning = () => {
           setIsLoading(false);
         });
     }
-  }, [formSelected, page, pageSize]);
+  }, [formSelected, page, pageSize, reloadData]);
 
   const handleEditOnClick = (record) => {
     if (record?.organisation && record?.id) {
@@ -192,6 +202,7 @@ const DataCleaning = () => {
               <DataCleaningWebform
                 datapoint={selectedDatapoint}
                 orgDetail={orgDetail}
+                setReloadData={setReloadData}
               />
             </div>
           </Col>
