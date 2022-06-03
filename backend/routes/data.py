@@ -330,17 +330,28 @@ def update_by_id(req: Request,
             for qid in qg['question']:
                 repeat_qids.append(qid)
 
-    # get current repeat group answer
-    current_repeat = crud_answer.get_answer_by_data_and_question(
-        session=session, data=data.id, questions=repeat_qids)
-
     # questions = form.list_of_questions
-    current_answers = crud_answer.get_answer_by_data_and_question(
-        session=session, data=id, questions=[a["question"] for a in answers])
     checked = {}
     checked_payload = {}
-    # dict key is pair of questionid_repeat_index
-    [checked.update(a.to_dict) for a in current_answers]
+
+    # if data_cleaning, delete old answer and save payload
+    if data_cleaning:
+        current_repeat = []
+        crud_answer.delete_answer_by_data_id(
+            session=session, data_id=data.id)
+
+    if not data_cleaning:
+        # get current repeat group answer
+        current_repeat = crud_answer.get_answer_by_data_and_question(
+            session=session, data=data.id, questions=repeat_qids)
+
+        current_answers = crud_answer.get_answer_by_data_and_question(
+            session=session, data=id,
+            questions=[a["question"] for a in answers])
+
+        # dict key is pair of questionid_repeat_index
+        [checked.update(a.to_dict) for a in current_answers]
+
     for a in answers:
         key = f"{a['question']}_{a['repeat_index']}"
         checked_payload.update({key: a})

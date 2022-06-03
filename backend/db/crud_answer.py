@@ -75,3 +75,8 @@ def get_answer_by_data_and_question(session: Session, data: int,
 def delete_answer_by_id(session: Session, id: int) -> None:
     session.query(Answer).filter(Answer.id == id).delete()
     session.commit()
+
+
+def delete_answer_by_data_id(session: Session, data_id: int) -> None:
+    session.query(Answer).filter(Answer.data == data_id).delete()
+    session.commit()
