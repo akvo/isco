@@ -97,6 +97,9 @@ const uiText = {
     btnView: "View",
     btnAgreeContinue: "Agree & Continue",
     btnCancel: "Cancel",
+    // comment
+    btnAddComment: "Add Comment",
+    btnDeleteComment: "Delete Comment",
     // Table
     tbColName: "Name",
     tbColEmail: "Email",
@@ -254,6 +257,12 @@ const uiText = {
     numberCharText: "Numbers",
     specialCharText: "Special Character",
     eightCharText: "Min 8 Character",
+    // download tab
+    downloadDataText: "Download Data",
+    formNameText: "Form Name",
+    formTypeText: "Form Type",
+    submittedDateText: "Submitted Date / Monitoring Round",
+    actionText: "Action",
   },
 
   de: {
@@ -288,7 +297,7 @@ const uiText = {
     navSearch: "Suchen",
     navGettingStarted: "Getting Started",
     navSubmission: "Submission",
-    navHome: "Home",
+    navHome: "Startseite",
     navAdmin: "Admin",
     navDownload: "Download",
     navImpressum: "Impressum",
@@ -354,6 +363,9 @@ const uiText = {
     btnView: "View",
     btnAgreeContinue: "Zustimmung und weiter Löschen",
     btnCancel: "Cancel",
+    // comment
+    btnAddComment: "Kommentar hinzufügen",
+    btnDeleteComment: "Kommentar löschen",
     // Table
     tbColName: "Name",
     tbColEmail: "Email",
@@ -519,6 +531,12 @@ const uiText = {
     numberCharText: "Zahlen",
     specialCharText: "Sonderzeichen",
     eightCharText: "Mindestens 8 Zeichen",
+    // download tab
+    downloadDataText: "Daten herunterladen",
+    formNameText: "Name des Fragebogens",
+    formTypeText: "Art des Fragebogens",
+    submittedDateText: "Datum und Jahr der Datenerhebung",
+    actionText: "Aktion",
   },
 };
 
