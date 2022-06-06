@@ -31,6 +31,7 @@ class AnswerDict(TypedDict):
 
 
 class AnswerDictWithQuestionName(TypedDict):
+    question_group: str
     question: int
     question_name: str
     repeat_index: Optional[int] = None
@@ -125,6 +126,7 @@ class Answer(Base):
     @property
     def formattedWithQuestionName(self) -> AnswerDictWithQuestionName:
         answer = {
+            "question_group": self.question_detail.question_group_detail.name,
             "question": self.question,
             "question_name": self.question_detail.name,
             "repeat_index": self.repeat_index,

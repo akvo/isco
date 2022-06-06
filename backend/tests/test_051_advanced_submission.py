@@ -58,24 +58,28 @@ class TestAdvancedSubmissionRoute():
             'updated': today,
             'answer': [{
                 'comment': None,
+                'question_group': 'Question Group 1',
                 'question': 1,
                 'question_name': 'Question 1',
                 'repeat_index': 0,
                 'value': 'Option 1'
             }, {
                 'comment': 'This is comment',
+                'question_group': 'Question Group 1',
                 'question': 2,
                 'question_name': 'Question 2',
                 'repeat_index': 0,
                 'value': 'Depend to Q1 Option 1'
             }, {
                 'comment': 'Q3 comment',
+                'question_group': 'Question Group 1',
                 'question': 3,
                 'question_name': 'Gender',
                 'repeat_index': 0,
                 'value': 'Male'
             }, {
                 'comment': 'Q4 comment',
+                'question_group': 'Question Group 2',
                 'question': 4,
                 'question_name': 'Age',
                 'repeat_index': 0,
@@ -83,23 +87,27 @@ class TestAdvancedSubmissionRoute():
             }, {
                 'comment': None,
                 'question': 1,
+                'question_group': 'Question Group 1',
                 'question_name': 'Question 1',
                 'repeat_index': 1,
                 'value': 'Option 1'
             }, {
                 'comment': None,
                 'question': 2,
+                'question_group': 'Question Group 1',
                 'question_name': 'Question 2',
                 'repeat_index': 1,
                 'value': 'Test repeat'
             }, {
                 'comment': 'Q3 comment 1',
+                'question_group': 'Question Group 1',
                 'question': 3,
                 'question_name': 'Gender',
                 'repeat_index': 1,
                 'value': 'Female'
             }, {
                 'comment': 'Q5 comment',
+                'question_group': 'Question Group 2',
                 'question': 5,
                 'question_name': 'Weight',
                 'repeat_index': 0,
