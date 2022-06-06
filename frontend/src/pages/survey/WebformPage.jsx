@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import "./style.scss";
 import { Spin, Button, Checkbox } from "antd";
 import { Webform } from "akvo-react-form";
@@ -7,16 +7,17 @@ import { useNotification } from "../../util";
 import { intersection, isEmpty, orderBy } from "lodash";
 import ErrorPage from "../error/ErrorPage";
 import { CommentField, SubmitWarningModal } from "../../components";
+import { uiText } from "../../static";
 
-const SaveButton = ({ onClick, isSaving }) => (
+const SaveButton = ({ onClick, isSaving, text }) => (
   <Button loading={isSaving} onClick={onClick}>
-    Save
+    {text.btnSave}
   </Button>
 );
 
-const LockedCheckbox = ({ onChange, isLocked }) => (
+const LockedCheckbox = ({ onChange, isLocked, text }) => (
   <>
-    <Checkbox checked={isLocked} onChange={onChange} /> Locked
+    <Checkbox checked={isLocked} onChange={onChange} /> {text.lockedBy}
   </>
 );
 
@@ -70,6 +71,8 @@ const WebformPage = ({
   const [isLocked, setIsLocked] = useState(true);
 
   const [isForce, setIsForce] = useState(false);
+  const [isSave, setIsSave] = useState(false);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [disableSubmit, setDisableSubmit] = useState(true);
   // save savedData here, for loaded form this must be saved when loading form value
@@ -78,6 +81,10 @@ const WebformPage = ({
 
   // warning modal
   const [modalWarningVisible, setModalWarningVisible] = useState(false);
+
+  const text = useMemo(() => {
+    return uiText[activeLang];
+  }, [activeLang]);
 
   // transform & filter form definition
   useEffect(() => {
@@ -373,6 +380,7 @@ const WebformPage = ({
           });
         })
         .finally(() => {
+          setModalWarningVisible(false);
           setIsSaving(false);
           setReloadDropdownValue(true);
         });
@@ -381,10 +389,12 @@ const WebformPage = ({
 
   const onFinishShowWarning = () => {
     setIsForce(false);
+    setIsSave(false);
     setModalWarningVisible(true);
   };
 
   const onCompleteFailed = () => {
+    setIsSave(false);
     setIsForce(true);
     setModalWarningVisible(true);
   };
@@ -447,12 +457,18 @@ const WebformPage = ({
             extraButton={
               <>
                 <SaveButton
-                  onClick={handleOnClickSaveButton}
+                  onClick={() => {
+                    setIsForce(false);
+                    setIsSave(true);
+                    setModalWarningVisible(true);
+                  }}
                   isSaving={isSaving}
+                  text={text}
                 />
                 <LockedCheckbox
                   onChange={(val) => setIsLocked(val.target.checked)}
                   isLocked={isLocked}
+                  text={text}
                 />
               </>
             }
@@ -471,9 +487,16 @@ const WebformPage = ({
       {/* Modal */}
       <SubmitWarningModal
         visible={modalWarningVisible}
-        onOk={isForce ? handleOnForceSubmit : onFinish}
+        onOk={
+          isForce
+            ? handleOnForceSubmit
+            : isSave
+            ? handleOnClickSaveButton
+            : onFinish
+        }
         onCancel={() => setModalWarningVisible(false)}
         force={isForce}
+        save={isSave}
       />
     </>
   );

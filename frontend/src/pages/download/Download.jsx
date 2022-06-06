@@ -128,27 +128,27 @@ const Download = () => {
 
   const columns = [
     {
-      title: "Form Name",
+      title: text.formNameText,
       dataIndex: "form",
       key: "form",
       width: "10%",
     },
     {
-      title: "Form Type",
+      title: text.formTypeText,
       dataIndex: "form_type",
       key: "form_type",
       width: "10%",
       render: (value) => (value ? value?.toUpperCase() : "-"),
     },
     {
-      title: "Submitted Date / Monitoring Round",
+      title: text.submittedDateText,
       dataIndex: "submitted",
       key: "submitted",
       width: "12%",
       render: (value) => (value ? value : "-"),
     },
     {
-      title: "Action",
+      title: text.actionText,
       dataIndex: "",
       key: "action",
       width: "8%",
@@ -211,7 +211,7 @@ const Download = () => {
           >
             <Col span={24} align="start">
               <Title className="page-title" level={3}>
-                Download Data
+                {text.downloadDataText}
               </Title>
             </Col>
           </Row>

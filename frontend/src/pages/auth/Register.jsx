@@ -77,9 +77,13 @@ const Register = () => {
     return webformContent(handleOnClickDataSecurity)[activeLang];
   }, [activeLang]);
 
+  const passwordCriteria = useMemo(() => {
+    return passwordCheckBoxOptions(text);
+  }, [text]);
+
   const onChange = ({ target }) => {
     if (target.id === "password") {
-      const criteria = passwordCheckBoxOptions
+      const criteria = passwordCriteria
         .map((x) => {
           const available = x.re.test(target.value);
           return available ? x.name : false;
@@ -146,9 +150,12 @@ const Register = () => {
         </p>
         <Row align="middle" justify="space-between" gutter={[12, 12]}>
           <Col span={24} align="start">
+            <p>
+              <u>{text.passwordCriteriaInfoText}</u>
+            </p>
             <Checkbox.Group
               className="checkbox-criteria"
-              options={passwordCheckBoxOptions.map((x) => x.name)}
+              options={passwordCriteria.map((x) => x.name)}
               value={checkedList}
             />
           </Col>
