@@ -239,6 +239,12 @@ const uiText = {
         ?
       </>
     ),
+    submitModalC4: (
+      <>
+        If your survey is <b>locked</b>, please remember to <b>unlock</b> it if
+        you want your colleague to continue to add data.
+      </>
+    ),
     infoSubmissionDropdown: "(saved/submitted)",
   },
 
@@ -488,6 +494,12 @@ const uiText = {
           <i>„Save“</i>
         </b>
         . Sind Sie sicher, dass Sie diesen Fragebogen final einreichen wollen?
+      </>
+    ),
+    submitModalC4: (
+      <>
+        If your survey is <b>locked</b>, please remember to <b>unlock</b> it if
+        you want your colleague to continue to add data.
       </>
     ),
     infoSubmissionDropdown: "(gespeichert/eingereicht)",

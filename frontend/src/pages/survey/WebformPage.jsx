@@ -70,6 +70,8 @@ const WebformPage = ({
   const [isLocked, setIsLocked] = useState(true);
 
   const [isForce, setIsForce] = useState(false);
+  const [isSave, setIsSave] = useState(false);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [disableSubmit, setDisableSubmit] = useState(true);
   // save savedData here, for loaded form this must be saved when loading form value
@@ -373,6 +375,7 @@ const WebformPage = ({
           });
         })
         .finally(() => {
+          setModalWarningVisible(false);
           setIsSaving(false);
           setReloadDropdownValue(true);
         });
@@ -381,10 +384,12 @@ const WebformPage = ({
 
   const onFinishShowWarning = () => {
     setIsForce(false);
+    setIsSave(false);
     setModalWarningVisible(true);
   };
 
   const onCompleteFailed = () => {
+    setIsSave(false);
     setIsForce(true);
     setModalWarningVisible(true);
   };
@@ -447,7 +452,11 @@ const WebformPage = ({
             extraButton={
               <>
                 <SaveButton
-                  onClick={handleOnClickSaveButton}
+                  onClick={() => {
+                    setIsForce(false);
+                    setIsSave(true);
+                    setModalWarningVisible(true);
+                  }}
                   isSaving={isSaving}
                 />
                 <LockedCheckbox
@@ -471,9 +480,16 @@ const WebformPage = ({
       {/* Modal */}
       <SubmitWarningModal
         visible={modalWarningVisible}
-        onOk={isForce ? handleOnForceSubmit : onFinish}
+        onOk={
+          isForce
+            ? handleOnForceSubmit
+            : isSave
+            ? handleOnClickSaveButton
+            : onFinish
+        }
         onCancel={() => setModalWarningVisible(false)}
         force={isForce}
+        save={isSave}
       />
     </>
   );
