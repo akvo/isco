@@ -7,7 +7,7 @@ import {
   RightOutlined,
 } from "@ant-design/icons";
 import { api } from "../../lib";
-import DataCleaningWebform from "./DataCleaningWebform";
+import { DataCleaningWebform, DataDetail } from ".";
 
 const { Title } = Typography;
 
@@ -266,6 +266,7 @@ const DataCleaning = () => {
                 }
                 dataSource={data?.data ? data.data : []}
                 loading={isLoading}
+                scroll={{ y: 500 }}
                 pagination={{
                   current: data?.current,
                   pageSize: pageSize,
@@ -274,36 +275,7 @@ const DataCleaning = () => {
                 }}
                 expandable={{
                   expandedRowKeys,
-                  expandedRowRender: (record) => {
-                    return (
-                      <div>
-                        <Table
-                          size="small"
-                          pagination={false}
-                          dataSource={record.answer}
-                          rowKey={(answer, ri) =>
-                            `${record.id}-${answer.question}-${ri}`
-                          }
-                          columns={[
-                            {
-                              title: "Question",
-                              dataIndex: "question_name",
-                            },
-                            {
-                              title: "Answer",
-                              dataIndex: "value",
-                              render: (val) => val || "-",
-                            },
-                            {
-                              title: "Comment",
-                              dataIndex: "comment",
-                              render: (val) => val || "-",
-                            },
-                          ]}
-                        />
-                      </div>
-                    );
-                  },
+                  expandedRowRender: (record) => <DataDetail record={record} />,
                   expandIcon: ({ expanded, onExpand, record }) => {
                     return expanded ? (
                       <CloseSquareOutlined
