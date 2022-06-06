@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import "./style.scss";
 import { Spin, Button, Checkbox } from "antd";
 import { Webform } from "akvo-react-form";
@@ -7,16 +7,17 @@ import { useNotification } from "../../util";
 import { intersection, isEmpty, orderBy } from "lodash";
 import ErrorPage from "../error/ErrorPage";
 import { CommentField, SubmitWarningModal } from "../../components";
+import { uiText } from "../../static";
 
-const SaveButton = ({ onClick, isSaving }) => (
+const SaveButton = ({ onClick, isSaving, text }) => (
   <Button loading={isSaving} onClick={onClick}>
-    Save
+    {text.btnSave}
   </Button>
 );
 
-const LockedCheckbox = ({ onChange, isLocked }) => (
+const LockedCheckbox = ({ onChange, isLocked, text }) => (
   <>
-    <Checkbox checked={isLocked} onChange={onChange} /> Locked
+    <Checkbox checked={isLocked} onChange={onChange} /> {text.lockedBy}
   </>
 );
 
@@ -80,6 +81,10 @@ const WebformPage = ({
 
   // warning modal
   const [modalWarningVisible, setModalWarningVisible] = useState(false);
+
+  const text = useMemo(() => {
+    return uiText[activeLang];
+  }, [activeLang]);
 
   // transform & filter form definition
   useEffect(() => {
@@ -458,10 +463,12 @@ const WebformPage = ({
                     setModalWarningVisible(true);
                   }}
                   isSaving={isSaving}
+                  text={text}
                 />
                 <LockedCheckbox
                   onChange={(val) => setIsLocked(val.target.checked)}
                   isLocked={isLocked}
+                  text={text}
                 />
               </>
             }
