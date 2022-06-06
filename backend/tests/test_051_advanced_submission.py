@@ -197,7 +197,9 @@ class TestAdvancedSubmissionRoute():
         res = res.json()
         assert res['submitted'] == submitted
         assert res['submitted_by'] == submitted_by
-        for a in res['answer']:
-            if a['question'] == 5:
-                assert a['value'] == 100
-                assert a['comment'] == "Q5 comment data cleaning"
+        assert res['answer'] == [{
+            "question": 5,
+            "repeat_index": 0,
+            "comment": "Q5 comment data cleaning",
+            "value": 100
+        }]
