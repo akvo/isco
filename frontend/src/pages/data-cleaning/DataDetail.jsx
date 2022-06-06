@@ -1,4 +1,5 @@
 import React from "react";
+import ReactHtmlParser from "react-html-parser";
 import "./style.scss";
 import { Table, Space } from "antd";
 import _ from "lodash";
@@ -14,6 +15,7 @@ const DataDetail = ({ record }) => {
     {
       title: "Question",
       dataIndex: "question_name",
+      render: (val) => ReactHtmlParser(val),
       width: "50%",
     },
     {
@@ -33,6 +35,8 @@ const DataDetail = ({ record }) => {
   return Object.keys(answers).map((key, ki) => {
     const length = Object.values(answers[key]).length;
     const values = Object.values(answers[key]);
+    const title = ReactHtmlParser(key);
+
     return values.map((v, vi) => {
       return (
         <Space
@@ -47,7 +51,7 @@ const DataDetail = ({ record }) => {
             dataSource={v}
             columns={[
               {
-                title: length > 1 ? `${key} - ${vi + 1}` : key,
+                title: length > 1 ? `${title} - ${vi + 1}` : title,
                 children: [...columns],
               },
             ]}
