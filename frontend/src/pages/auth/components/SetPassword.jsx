@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Row, Col, Form, Input, Button, Checkbox } from "antd";
 import { useNavigate } from "react-router-dom";
-import { api } from "../../../lib";
+import { api, store } from "../../../lib";
 import { passwordCheckBoxOptions } from "../../../lib/util";
+import { uiText } from "../../../static";
 
 const SetPassword = ({ url, invalidUrl, notify }) => {
   const [form] = Form.useForm();
@@ -10,8 +11,19 @@ const SetPassword = ({ url, invalidUrl, notify }) => {
   const [btnLoading, setBtnLoading] = useState(false);
   const navigate = useNavigate();
 
+  const { language } = store.useState((s) => s);
+  const { active: activeLang } = language;
+
+  const text = useMemo(() => {
+    return uiText[activeLang];
+  }, [activeLang]);
+
+  const passwordCriteria = useMemo(() => {
+    return passwordCheckBoxOptions(text);
+  }, [text]);
+
   const onChange = ({ target }) => {
-    const criteria = passwordCheckBoxOptions
+    const criteria = passwordCriteria
       .map((x) => {
         const available = x.re.test(target.value);
         return available ? x.name : false;
@@ -52,9 +64,12 @@ const SetPassword = ({ url, invalidUrl, notify }) => {
       gutter={[12, 12]}
     >
       <Col span={24} align="start">
+        <p>
+          <u>{text.passwordCriteriaInfoText}</u>
+        </p>
         <Checkbox.Group
           className="checkbox-criteria"
-          options={passwordCheckBoxOptions.map((x) => x.name)}
+          options={passwordCriteria.map((x) => x.name)}
           value={checkedList}
         />
       </Col>

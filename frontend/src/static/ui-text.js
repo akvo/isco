@@ -246,6 +246,12 @@ const uiText = {
       </>
     ),
     infoSubmissionDropdown: "(saved/submitted)",
+    // password criteria
+    passwordCriteriaInfoText: "Criteria for the password:",
+    lowercaseCharText: "Lowercase Character",
+    numberCharText: "Numbers",
+    specialCharText: "Special Character",
+    eightCharText: "Min 8 Character",
   },
 
   de: {
@@ -503,6 +509,12 @@ const uiText = {
       </>
     ),
     infoSubmissionDropdown: "(gespeichert/eingereicht)",
+    // password criteria
+    passwordCriteriaInfoText: "Kriterien für das Passwort:",
+    lowercaseCharText: "Kleinbuchstabe",
+    numberCharText: "Zahlen",
+    specialCharText: "Sonderzeichen",
+    eightCharText: "Mindestens 8 Zeichen",
   },
 };
 
