@@ -1,10 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Row, Col, Input, Button } from "antd";
 import { PlusSquareFilled, DeleteFilled } from "@ant-design/icons";
+import { uiText } from "../../static";
+import { store } from "../../lib";
 
 const CommentField = ({ onChange, onDelete, defaultValue }) => {
   const [showField, setShowField] = useState(false);
   const isVisible = showField || defaultValue;
+
+  const { language } = store.useState((s) => s);
+  const { active: activeLang } = language;
+
+  const text = useMemo(() => {
+    return uiText[activeLang];
+  }, [activeLang]);
 
   return (
     <Row className="comment-field-wrapper">
@@ -18,11 +27,11 @@ const CommentField = ({ onChange, onDelete, defaultValue }) => {
               onDelete();
             }}
           >
-            <DeleteFilled /> Delete Comment
+            <DeleteFilled /> {text.btnDeleteComment}
           </Button>
         ) : (
           <Button size="small" type="link" onClick={() => setShowField(true)}>
-            <PlusSquareFilled /> Add Comment
+            <PlusSquareFilled /> {text.btnAddComment}
           </Button>
         )}
       </Col>

@@ -4,10 +4,17 @@ import { WarningOutlined } from "@ant-design/icons";
 import { uiText } from "../../static";
 import { store } from "../../lib";
 
-const DataSecurityModal = ({ visible, onOk, onCancel, force = true }) => {
+const SubmitWarningModal = ({
+  visible,
+  onOk,
+  onCancel,
+  force = true,
+  save = false,
+}) => {
   const [checkboxOne, setCheckboxOne] = useState(false);
   const [checkboxTwo, setCheckboxTwo] = useState(false);
   const [checkboxThree, setCheckboxThree] = useState(false);
+  const [checkboxFour, setCheckboxFour] = useState(false);
 
   const { active: activeLang } = store.useState((s) => s.language);
 
@@ -16,8 +23,12 @@ const DataSecurityModal = ({ visible, onOk, onCancel, force = true }) => {
   }, [activeLang]);
 
   const disableOkBtn = useMemo(() => {
-    return force ? checkboxOne && checkboxTwo && checkboxThree : checkboxThree;
-  }, [force, checkboxOne, checkboxTwo, checkboxThree]);
+    return force
+      ? checkboxOne && checkboxTwo && checkboxThree && checkboxFour
+      : save
+      ? checkboxFour
+      : checkboxThree && checkboxFour;
+  }, [force, save, checkboxOne, checkboxTwo, checkboxThree, checkboxFour]);
 
   return (
     <Modal
@@ -69,15 +80,28 @@ const DataSecurityModal = ({ visible, onOk, onCancel, force = true }) => {
               </Row>
             </>
           )}
+          {!save && (
+            <Row align="top" justify="space-between" gutter={[24, 24]}>
+              <Col span={1}>
+                <Checkbox
+                  checked={checkboxThree}
+                  onChange={(val) => setCheckboxThree(val.target.checked)}
+                />
+              </Col>
+              <Col span={23} style={{ fontSize: "1rem" }}>
+                {text.submitModalC3}
+              </Col>
+            </Row>
+          )}
           <Row align="top" justify="space-between" gutter={[24, 24]}>
             <Col span={1}>
               <Checkbox
-                checked={checkboxThree}
-                onChange={(val) => setCheckboxThree(val.target.checked)}
+                checked={checkboxFour}
+                onChange={(val) => setCheckboxFour(val.target.checked)}
               />
             </Col>
             <Col span={23} style={{ fontSize: "1rem" }}>
-              {text.submitModalC3}
+              {text.submitModalC4}
             </Col>
           </Row>
         </Space>
@@ -86,4 +110,4 @@ const DataSecurityModal = ({ visible, onOk, onCancel, force = true }) => {
   );
 };
 
-export default DataSecurityModal;
+export default SubmitWarningModal;

@@ -69,6 +69,8 @@ const uiText = {
     btnBackToLogin: "Back to Login Page",
     btnUpdate: "Update",
     btnClose: "Close",
+    btnSave: "Save",
+    lockedBy: "Locked",
     btnSaveChanges: "Save Changes",
     btnDeleteUser: "Delete User",
     btnInformUser: "Inform User",
@@ -95,6 +97,9 @@ const uiText = {
     btnView: "View",
     btnAgreeContinue: "Agree & Continue",
     btnCancel: "Cancel",
+    // comment
+    btnAddComment: "Add Comment",
+    btnDeleteComment: "Delete Comment",
     // Table
     tbColName: "Name",
     tbColEmail: "Email",
@@ -239,7 +244,25 @@ const uiText = {
         ?
       </>
     ),
+    submitModalC4: (
+      <>
+        If your survey is <b>locked</b>, please remember to <b>unlock</b> it if
+        you want your colleague to continue to add data.
+      </>
+    ),
     infoSubmissionDropdown: "(saved/submitted)",
+    // password criteria
+    passwordCriteriaInfoText: "Criteria for the password:",
+    lowercaseCharText: "Lowercase Character",
+    numberCharText: "Numbers",
+    specialCharText: "Special Character",
+    eightCharText: "Min 8 Character",
+    // download tab
+    downloadDataText: "Download Data",
+    formNameText: "Form Name",
+    formTypeText: "Form Type",
+    submittedDateText: "Submitted Date / Monitoring Round",
+    actionText: "Action",
   },
 
   de: {
@@ -274,7 +297,7 @@ const uiText = {
     navSearch: "Suchen",
     navGettingStarted: "Getting Started",
     navSubmission: "Submission",
-    navHome: "Home",
+    navHome: "Startseite",
     navAdmin: "Admin",
     navDownload: "Download",
     navImpressum: "Impressum",
@@ -312,6 +335,8 @@ const uiText = {
     btnBackToLogin: "Terug naar Inlogpagina",
     btnUpdate: "Update",
     btnClose: "Schließen",
+    btnSave: "Speichern",
+    lockedBy: "Reserviert",
     btnSaveChanges: "Änderungen speichern",
     btnDeleteUser: "Nutzer löschen",
     btnInformUser: "Nutzer/in informieren",
@@ -338,6 +363,9 @@ const uiText = {
     btnView: "View",
     btnAgreeContinue: "Zustimmung und weiter Löschen",
     btnCancel: "Cancel",
+    // comment
+    btnAddComment: "Kommentar hinzufügen",
+    btnDeleteComment: "Kommentar löschen",
     // Table
     tbColName: "Name",
     tbColEmail: "Email",
@@ -490,7 +518,25 @@ const uiText = {
         . Sind Sie sicher, dass Sie diesen Fragebogen final einreichen wollen?
       </>
     ),
+    submitModalC4: (
+      <>
+        If your survey is <b>locked</b>, please remember to <b>unlock</b> it if
+        you want your colleague to continue to add data.
+      </>
+    ),
     infoSubmissionDropdown: "(gespeichert/eingereicht)",
+    // password criteria
+    passwordCriteriaInfoText: "Kriterien für das Passwort:",
+    lowercaseCharText: "Kleinbuchstabe",
+    numberCharText: "Zahlen",
+    specialCharText: "Sonderzeichen",
+    eightCharText: "Mindestens 8 Zeichen",
+    // download tab
+    downloadDataText: "Daten herunterladen",
+    formNameText: "Name des Fragebogens",
+    formTypeText: "Art des Fragebogens",
+    submittedDateText: "Datum und Jahr der Datenerhebung",
+    actionText: "Aktion",
   },
 };
 

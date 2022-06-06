@@ -46,9 +46,13 @@ export const deleteQuestionSkipLogic = (
   return;
 };
 
-export const passwordCheckBoxOptions = [
-  { name: "Lowercase Character", re: /[a-z]/ },
-  { name: "Numbers", re: /\d/ },
-  { name: "Special Character", re: /[-._!"`'#%&,:;<>=@{}~$()*+/?[\]^|]/ },
-  { name: "Min 8 Character", re: /[^ ]{8}/ },
-];
+export const passwordCheckBoxOptions = (text) => {
+  const { lowercaseCharText, numberCharText, specialCharText, eightCharText } =
+    text;
+  return [
+    { name: lowercaseCharText, re: /[a-z]/ },
+    { name: numberCharText, re: /\d/ },
+    { name: specialCharText, re: /[-._!"`'#%&,:;<>=@{}~$()*+/?[\]^|]/ },
+    { name: eightCharText, re: /[^ ]{8}/ },
+  ];
+};
