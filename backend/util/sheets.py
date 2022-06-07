@@ -50,6 +50,8 @@ def write_sheet(df, writer, sheet_name):
                                    max_order=max_qo,
                                    axis=1)
     df = df[cols + ["answer"]]
+    # replace NaN with empty string
+    df = df.fillna('')
     df = df.groupby(cols).first()
     df = df.unstack(["question_group_name", "question_name"])
     df.columns = df.columns.rename("", level=1)
