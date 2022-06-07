@@ -10,24 +10,48 @@ from models.question import Question, QuestionType
 from models.cascade_list import CascadeList
 from middleware import organisations_in_same_isco
 import pandas as pd
+import math
 
 main_sheet_name = "Index"
 
 
+def add_order_to_name(x, order, column_name, max_order):
+    num = str(x[order])
+    count = math.floor(math.log10(max_order))
+    order_count = math.floor(math.log10(x[order]))
+    if len(num) <= count:
+        prefix = ['0' for c in range(count - order_count)]
+        prefix = ''.join(prefix)
+        num = f'{prefix}{num}'
+    return num + '. ' + x[column_name]
+
+
 def write_sheet(df, writer, sheet_name):
     cols = [
-        "data_id", "question_group", "question", "member_type",
+        "data_id", "question_group_name", "question_name", "member_type",
         "submitted"
     ]
     if sheet_name != main_sheet_name:
         cols = [
-            "data_id", "repeat_index", "question_group", "question",
+            "data_id", "repeat_index", "question_group_name", "question_name",
             "member_type", "submitted"
         ]
         df["repeat_index"] = df["repeat_index"] + 1
+    max_go = df["go"].max()
+    max_qo = df["qo"].max()
+    df["question_group_name"] = df.apply(add_order_to_name,
+                                         order='go',
+                                         column_name='question_group',
+                                         max_order=max_go,
+                                         axis=1)
+    df["question_name"] = df.apply(add_order_to_name,
+                                   order='qo',
+                                   column_name='question',
+                                   max_order=max_qo,
+                                   axis=1)
     df = df[cols + ["answer"]]
     df = df.groupby(cols).first()
-    df = df.unstack(["question_group", "question"])
+    df = df.unstack(["question_group_name", "question_name"])
     df.columns = df.columns.rename("", level=1)
     df.columns = df.columns.rename("", level=2)
     if len(sheet_name) > 20:
