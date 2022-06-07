@@ -6,7 +6,13 @@ import _ from "lodash";
 
 const DataDetail = ({ record }) => {
   // transform answer to group by question group and repeat index
-  const answers = _.chain(record.answer)
+  const answers = _.chain(
+    _.orderBy(
+      record.answer,
+      ["question_group_order", "question_order"],
+      ["asc"]
+    )
+  )
     .groupBy("question_group")
     .mapValues((value) => _.chain(value).groupBy("repeat_index").value())
     .value();
@@ -42,7 +48,11 @@ const DataDetail = ({ record }) => {
 
   return Object.keys(answers).map((key, ki) => {
     const length = Object.values(answers[key]).length;
-    const values = Object.values(answers[key]);
+    const values = _.orderBy(
+      Object.values(answers[key]),
+      ["question_order"],
+      ["asc"]
+    );
     const title = ReactHtmlParser(key);
 
     return values.map((v, vi) => {
