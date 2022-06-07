@@ -417,6 +417,7 @@ const DataCleaningWebform = ({ datapoint, orgDetail, handleBack }) => {
             <Button
               type="primary"
               onClick={isForce ? handleOnForceSubmit : onFinish}
+              loading={isSubmitting}
             >
               Update
             </Button>

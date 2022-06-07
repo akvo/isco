@@ -32,8 +32,10 @@ class AnswerDict(TypedDict):
 
 class AnswerDictWithQuestionName(TypedDict):
     question_group: str
+    question_group_order: int
     question: int
     question_name: str
+    question_order: int
     repeat_index: Optional[int] = None
     comment: Optional[str] = None
     value: Union[int, float, str, bool, dict, List[str], List[int],
@@ -125,10 +127,13 @@ class Answer(Base):
 
     @property
     def formattedWithQuestionName(self) -> AnswerDictWithQuestionName:
+        question_group = self.question_detail.question_group_detail
         answer = {
-            "question_group": self.question_detail.question_group_detail.name,
+            "question_group": question_group.name,
+            "question_group_order": question_group.order,
             "question": self.question,
             "question_name": self.question_detail.name,
+            "question_order": self.question_detail.order,
             "repeat_index": self.repeat_index,
             "comment": self.comment
         }

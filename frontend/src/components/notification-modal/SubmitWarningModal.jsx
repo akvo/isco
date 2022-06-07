@@ -8,6 +8,7 @@ const SubmitWarningModal = ({
   visible,
   onOk,
   onCancel,
+  btnLoading = false,
   force = true,
   save = false,
 }) => {
@@ -40,7 +41,12 @@ const SubmitWarningModal = ({
       destroyOnClose
       footer={
         <Row align="middle" justify="center">
-          <Button type="primary" onClick={onOk} disabled={!disableOkBtn}>
+          <Button
+            type="primary"
+            onClick={onOk}
+            disabled={!disableOkBtn}
+            loading={btnLoading}
+          >
             {force ? text.btnAgreeContinue : text.btnYes}
           </Button>
           <Button onClick={onCancel}>
