@@ -495,6 +495,7 @@ const WebformPage = ({
             : onFinish
         }
         onCancel={() => setModalWarningVisible(false)}
+        btnLoading={isSubmitting || isSaving}
         force={isForce}
         save={isSave}
       />
