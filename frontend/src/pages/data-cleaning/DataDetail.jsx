@@ -60,6 +60,7 @@ const DataDetail = ({ record }) => {
             columns={[
               {
                 title: length > 1 ? `${title} - ${vi + 1}` : title,
+                className: "group-header",
                 children: [...columns],
               },
             ]}

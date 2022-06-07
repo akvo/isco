@@ -67,9 +67,13 @@
     // DATA DETAIL TABLE
     .data-detail-table-wrapper {
       width: 100%;
+      .group-header {
+        text-align: left;
+      }
+
       .ant-table-cell {
         font-size: 12px;
-        padding: 4px 8px;
+        padding: 4px 10px;
       }
     }
     // EOL DATA DETAIL TABLE
