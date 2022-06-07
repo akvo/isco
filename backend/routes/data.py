@@ -8,18 +8,19 @@ from fastapi import Depends, Request, Response, APIRouter, HTTPException, Query
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
 from typing import List, Optional
-from sqlalchemy import func
+from sqlalchemy import func, and_
 from sqlalchemy.orm import Session
 import db.crud_data as crud
 from db import crud_answer, crud_form, crud_collaborator, crud_organisation
 from models.answer import Answer, AnswerDict
-from models.question import QuestionType
+from models.question import QuestionType, Question
+from models.cascade_list import CascadeList
 from db.connection import get_session
-from models.data import DataResponse
+from models.data import DataResponseQuestionName
 from models.data import DataDict, DataOptionDict
 from models.data import Data, SubmissionProgressDict
 from models.organisation import Organisation
-from middleware import verify_editor, verify_super_admin
+from middleware import verify_editor, verify_super_admin, verify_user
 from middleware import organisations_in_same_isco, find_secretariat_admins
 from util.survey_config import MEMBER_SURVEY, PROJECT_SURVEY, LIMITED_SURVEY
 from util.mailer import Email, MailTypeEnum
@@ -70,7 +71,7 @@ def notify_secretariat_admin(session: Session, user, form_name: str):
 
 
 @data_route.get("/data/form/{form_id:path}",
-                response_model=DataResponse,
+                response_model=DataResponseQuestionName,
                 name="data:get",
                 summary="get all datas",
                 tags=["Data"])
@@ -78,20 +79,52 @@ def get(req: Request,
         form_id: int,
         page: int = 1,
         perpage: int = 10,
+        submitted: Optional[bool] = False,
+        filter_same_isco: Optional[bool] = False,
         session: Session = Depends(get_session),
         credentials: credentials = Depends(security)):
+    user = verify_user(
+        session=session, authenticated=req.state.authenticated)
+    org_ids = []
+    if filter_same_isco:
+        org_ids = organisations_in_same_isco(
+            session=session, organisation=user.organisation)
     data = crud.get_data(session=session,
                          form=form_id,
                          skip=(perpage * (page - 1)),
-                         perpage=perpage)
+                         perpage=perpage,
+                         submitted=submitted,
+                         org_ids=org_ids)
     if not data["count"]:
         raise HTTPException(status_code=404, detail="Not found")
-    total_page = ceil(data["count"] / 10) if data["count"] > 0 else 0
+    total_page = ceil(data["count"] / perpage) if data["count"] > 0 else 0
     if total_page < page:
         raise HTTPException(status_code=404, detail="Not found")
+    # transform cascade answer value
+    questions = session.query(Question).filter(and_(
+        Question.form == form_id,
+        Question.type == QuestionType.cascade.value
+    )).all()
+    cascades = {}
+    for q in questions:
+        temp = {}
+        cascade_list = session.query(CascadeList).filter(
+            CascadeList.cascade == q.cascade).all()
+        for cl in cascade_list:
+            temp.update(({cl.id: cl.name}))
+        cascades.update({q.id: temp})
+    result = [d.serializeWithQuestionName for d in data["data"]]
+    for res in result:
+        for a in res['answer']:
+            qid = a['question']
+            value = a['value']
+            if qid in cascades and cascades[qid] and value:
+                temp = cascades[qid]
+                new_value = [temp[int(x)] for x in value]
+                a['value'] = "|".join(new_value)
     return {
         'current': page,
-        'data': [d.serialize for d in data["data"]],
+        'data': result,
         'total': data["count"],
         'total_page': total_page,
     }
@@ -255,22 +288,31 @@ def update_by_id(req: Request,
                  submitted: int,
                  answers: List[AnswerDict],
                  locked_by: Optional[int] = None,
+                 data_cleaning: Optional[bool] = False,
                  session: Session = Depends(get_session),
                  credentials: credentials = Depends(security)):
-    user = verify_editor(session=session,
-                         authenticated=req.state.authenticated)
+    # data cleaning verify super admin/secretariat admin
+    if data_cleaning:
+        user = verify_super_admin(
+            session=session, authenticated=req.state.authenticated)
+    if not data_cleaning:
+        user = verify_editor(
+            session=session, authenticated=req.state.authenticated)
     # check data status before update
     # to prevent update submitted data
-    data = crud.get_data_by_id(session=session, id=id, submitted=False)
+    data = crud.get_data_by_id(
+        session=session, id=id, submitted=True if data_cleaning else False)
     if not data:
         raise HTTPException(status_code=208,
                             detail="Submission already reported")
     # if locked, allow update only by locked_by === user id
-    if data.locked_by and data.locked_by != user.id:
+    # but open for data cleaning
+    if data.locked_by and data.locked_by != user.id and not data_cleaning:
         raise HTTPException(status_code=401, detail="Submission is locked")
-    submitted_by = None
-    submitted_date = None
-    if submitted:
+    # update submitted_by & submitted if not data cleaning
+    submitted_by = data.submitted_by
+    submitted_date = data.submitted
+    if submitted and not data_cleaning:
         submitted_by = user.id
         submitted_date = datetime.now()
 
@@ -288,17 +330,30 @@ def update_by_id(req: Request,
             for qid in qg['question']:
                 repeat_qids.append(qid)
 
-    # get current repeat group answer
-    current_repeat = crud_answer.get_answer_by_data_and_question(
-        session=session, data=data.id, questions=repeat_qids)
-
     # questions = form.list_of_questions
-    current_answers = crud_answer.get_answer_by_data_and_question(
-        session=session, data=id, questions=[a["question"] for a in answers])
     checked = {}
     checked_payload = {}
-    # dict key is pair of questionid_repeat_index
-    [checked.update(a.to_dict) for a in current_answers]
+
+    # if data_cleaning, delete old answer and save payload
+    answer_ids = []
+    if data_cleaning:
+        current_repeat = []
+        answers_to_delete = session.query(Answer).filter(
+            Answer.data == data.id).all()
+        answer_ids = [a.id for a in answers_to_delete]
+
+    if not data_cleaning:
+        # get current repeat group answer
+        current_repeat = crud_answer.get_answer_by_data_and_question(
+            session=session, data=data.id, questions=repeat_qids)
+
+        current_answers = crud_answer.get_answer_by_data_and_question(
+            session=session, data=id,
+            questions=[a["question"] for a in answers])
+
+        # dict key is pair of questionid_repeat_index
+        [checked.update(a.to_dict) for a in current_answers]
+
     for a in answers:
         key = f"{a['question']}_{a['repeat_index']}"
         checked_payload.update({key: a})
@@ -336,7 +391,9 @@ def update_by_id(req: Request,
                                        type=qtype,
                                        value=a["value"])
         if execute:
-            data.locked_by = locked_by
+            # don't update locked_by for data_cleaning
+            data.locked_by = locked_by \
+                if not data_cleaning else data.locked_by
             data.updated = datetime.now()
             data.submitted = submitted_date
             data.submitted_by = submitted_by
@@ -349,8 +406,14 @@ def update_by_id(req: Request,
         c_key = f"{c['question']}_{c['repeat_index']}"
         if c_key not in checked_payload:
             crud_answer.delete_answer_by_id(session=session, id=c['id'])
-    # if submitted send notification email to secretariat admin
-    if submitted:
+    # delete old answer after insert
+    if data_cleaning and answer_ids:
+        session.query(Answer).filter(
+            Answer.id.in_(answer_ids)).delete(synchronize_session='fetch')
+        session.commit()
+    # if submitted send and not
+    # data_cleaning notification email to secretariat admin
+    if submitted and not data_cleaning:
         notify_secretariat_admin(
             session=session, user=user, form_name=published['form_name'])
     return data.serialize

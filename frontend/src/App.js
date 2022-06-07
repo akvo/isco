@@ -23,6 +23,7 @@ import {
   Faq,
   ManageMember,
   ManageDownload,
+  DataCleaning,
   DownloadReport,
 } from "./pages";
 import { Alert } from "antd";
@@ -248,6 +249,11 @@ const App = () => {
             exact
             path="/download-report"
             element={<Secure element={DownloadReport} adminPage={true} />}
+          />
+          <Route
+            exact
+            path="/data-cleaning"
+            element={<Secure element={DataCleaning} adminPage={true} />}
           />
           <Route exact path="/survey" element={<Secure element={Survey} />} />
           <Route

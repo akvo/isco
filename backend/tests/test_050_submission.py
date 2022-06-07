@@ -41,6 +41,7 @@ class TestSubmissionRoutes():
         assert res == {
             "id": 1,
             "form": 1,
+            "form_name": "Form Test",
             "name": "Depend to Q1 Option 1",
             "geo": None,
             "locked_by": 1,
@@ -95,6 +96,7 @@ class TestSubmissionRoutes():
             'created': today,
             'created_by': 'John Doe',
             'form': 1,
+            "form_name": "Form Test",
             'geo': None,
             'id': 1,
             'locked_by': 1,
@@ -172,6 +174,7 @@ class TestSubmissionRoutes():
         assert res == {
             "id": 1,
             "form": 1,
+            "form_name": "Form Test",
             "name": "Depend to Q1 Option 1",
             "geo": None,
             "locked_by": None,
@@ -271,6 +274,7 @@ class TestSubmissionRoutes():
         assert res == {
             "id": 1,
             "form": 1,
+            "form_name": "Form Test",
             "name": "Depend to Q1 Option 1",
             "geo": None,
             "locked_by": None,
@@ -370,6 +374,7 @@ class TestSubmissionRoutes():
         assert res == {
             "id": 1,
             "form": 1,
+            "form_name": "Form Test",
             "name": "Depend to Q1 Option 1",
             "geo": None,
             "locked_by": 1,

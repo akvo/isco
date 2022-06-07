@@ -167,16 +167,22 @@ def get_form_options(req: Request, session: Session = Depends(get_session),
                 tags=["Form"])
 def get_form_from_bucket(req: Request, form_id: int,
                          data_id: Optional[int] = None,
+                         data_cleaning: Optional[bool] = False,
                          session: Session = Depends(get_session),
                          credentials: credentials = Depends(security)):
-    user = verify_editor(session=session,
-                         authenticated=req.state.authenticated)
+    if data_cleaning:
+        user = verify_super_admin(
+            session=session, authenticated=req.state.authenticated)
+    if not data_cleaning:
+        user = verify_editor(
+            session=session, authenticated=req.state.authenticated)
     # check if user organisation already have a member survey saved/submitted
     exists = check_member_submission_exists(session=session,
                                             form=form_id,
                                             organisation=user.organisation,
                                             saved=True)
-    if exists:
+    # if data cleaning True, allow to access form
+    if exists and not data_cleaning:
         raise HTTPException(status_code=208,
                             detail="Submission already reported")
     form = crud.get_form_by_id(session=session, id=form_id)
@@ -188,7 +194,9 @@ def get_form_from_bucket(req: Request, form_id: int,
         webform = webform.json()
     results = {"form": webform}
     if data_id:
-        data = get_data_by_id(session=session, id=data_id, submitted=False)
+        data = get_data_by_id(
+            session=session, id=data_id,
+            submitted=False if not data_cleaning else True)
         if not data:
             raise HTTPException(status_code=208,
                                 detail="Submission already reported")
