@@ -15,7 +15,7 @@ const SubmitWarningModal = ({
   const [checkboxOne, setCheckboxOne] = useState(false);
   const [checkboxTwo, setCheckboxTwo] = useState(false);
   const [checkboxThree, setCheckboxThree] = useState(false);
-  const [checkboxFour, setCheckboxFour] = useState(false);
+  const checkboxFour = true;
 
   const { active: activeLang } = store.useState((s) => s.language);
 
@@ -99,17 +99,13 @@ const SubmitWarningModal = ({
               </Col>
             </Row>
           )}
-          <Row align="top" justify="space-between" gutter={[24, 24]}>
-            <Col span={1}>
-              <Checkbox
-                checked={checkboxFour}
-                onChange={(val) => setCheckboxFour(val.target.checked)}
-              />
-            </Col>
-            <Col span={23} style={{ fontSize: "1rem" }}>
-              {text.submitModalC4}
-            </Col>
-          </Row>
+          {save && (
+            <Row align="top" justify="space-between" gutter={[24, 24]}>
+              <Col span={24} style={{ fontSize: "1rem" }}>
+                {text.submitModalC4}
+              </Col>
+            </Row>
+          )}
         </Space>
       </Row>
     </Modal>
