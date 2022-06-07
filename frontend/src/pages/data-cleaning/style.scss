@@ -1,0 +1,188 @@
+@import "../../variables.scss";
+
+#root {
+  #data-cleaning {
+    .page-title-wrapper {
+      border-bottom: 1px solid #777777;
+    }
+
+    .page-title {
+      margin: 40px 0 20px 0;
+      &.clickable {
+        cursor: pointer;
+      }
+      &.separator {
+        padding: 5px 0;
+      }
+      &.datapoint-name {
+        padding: 3px 0;
+      }
+    }
+
+    .filter-wrapper {
+      padding: 24px 0 0 0;
+      font-size: 14px;
+
+      .custom-dropdown-wrapper {
+        width: 350px;
+      }
+    }
+
+    // TABLE
+    .table-wrapper {
+      margin-top: 24px;
+      border: none !important;
+
+      .ant-table {
+        border: 2px solid #c5c4c5;
+        border-radius: 5px;
+      }
+
+      th.ant-table-cell {
+        border-bottom: 2px solid #c5c4c5;
+        font-weight: 600;
+      }
+
+      .title {
+        font-weight: 600;
+      }
+
+      .action-btn {
+        color: #777777;
+      }
+
+      // button.ant-table-row-expand-icon.ant-table-row-expand-icon-expanded,
+      // .ant-table-cell.ant-table-row-expand-icon-cell {
+      //   display: none;
+      // }
+
+      tr.ant-table-expanded-row:hover > td,
+      tr.ant-table-expanded-row > td {
+        background: $white;
+        padding: 0 24px 24px 24px;
+      }
+    }
+    // END OF TABLE
+
+    // DATA DETAIL TABLE
+    .data-detail-table-wrapper {
+      width: 100%;
+      .group-header {
+        text-align: left;
+      }
+
+      .ant-table-cell {
+        font-size: 12px;
+        padding: 4px 10px;
+      }
+    }
+    // EOL DATA DETAIL TABLE
+
+    .ant-pagination {
+      .ant-pagination-item-link {
+        background-color: transparent;
+        border: none;
+        color: #777777;
+      }
+      .ant-pagination-item {
+        background-color: transparent;
+        border-radius: 5px;
+        border: 2px solid #777777;
+        a {
+          color: #777777;
+        }
+      }
+      .ant-pagination-item-active {
+        a {
+          color: $white;
+        }
+        background: transparent;
+        background-color: #777777;
+      }
+    }
+
+    // WEBFORM
+    .webform-wrapper {
+      padding-top: 24px;
+    }
+
+    #webform {
+      .loading-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        top: 100;
+        left: 0;
+      }
+
+      /* customize webform/akvo-react-form style */
+      .arf-form-header {
+        .ant-select {
+          display: none;
+        }
+      }
+
+      .arf-field-cascade-api {
+        margin-top: -65px;
+        // padding: 0 20px;
+      }
+
+      .ant-select.arf-cascade-api-select.ant-select-single.ant-select-show-arrow {
+        margin-bottom: 10px;
+      }
+
+      .arf-next {
+        button {
+          background-color: transparent;
+          border: 2px solid #777777;
+        }
+      }
+
+      /* repeat group */
+      .ant-input-group.ant-input-group-compact {
+        display: inline-block;
+      }
+
+      /* Field background */
+      .arf-field {
+        background: #f3f3f3;
+        margin-bottom: 18px;
+        padding-top: 14px;
+        padding-bottom: 14px;
+      }
+
+      /* Question group description */
+      .arf-description {
+        background-color: #f3f3f3;
+        padding: 8px;
+        font-style: italic;
+      }
+
+      button.ant-btn.ant-btn-default.ant-btn-sm.ant-btn-icon-only {
+        min-height: 0;
+        background-color: #777777;
+        color: $white;
+
+        &.arf-disabled {
+          background-color: #eaeaea;
+          color: $black;
+        }
+      }
+
+      button.ant-btn.ant-btn-primary.ant-btn-icon-only {
+        border: none;
+        background: transparent;
+        color: $black;
+        box-shadow: none;
+        &:disabled {
+          color: #777777;
+        }
+      }
+
+      /* end customize webform/akvo-react-form style */
+    }
+  }
+}
