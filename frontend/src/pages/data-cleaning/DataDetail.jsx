@@ -23,10 +23,10 @@ const DataDetail = ({ record }) => {
       dataIndex: "value",
       render: (val) => {
         if (typeof val === "object" && !Array.isArray(val)) {
-          return Object.values(val).length ? val.join("|") : "-";
+          return Object.values(val).length ? val.join(" | ") : "-";
         }
         if (Array.isArray(val)) {
-          return val.length ? val.join("|") : "-";
+          return val.length ? val.join(" | ") : "-";
         }
         return val || val === 0 ? val : "-";
       },

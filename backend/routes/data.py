@@ -335,10 +335,12 @@ def update_by_id(req: Request,
     checked_payload = {}
 
     # if data_cleaning, delete old answer and save payload
+    answer_ids = []
     if data_cleaning:
         current_repeat = []
-        crud_answer.delete_answer_by_data_id(
-            session=session, data_id=data.id)
+        answers_to_delete = session.query(Answer).filter(
+            Answer.data == data.id).all()
+        answer_ids = [a.id for a in answers_to_delete]
 
     if not data_cleaning:
         # get current repeat group answer
@@ -404,6 +406,11 @@ def update_by_id(req: Request,
         c_key = f"{c['question']}_{c['repeat_index']}"
         if c_key not in checked_payload:
             crud_answer.delete_answer_by_id(session=session, id=c['id'])
+    # delete old answer after insert
+    if data_cleaning and answer_ids:
+        session.query(Answer).filter(
+            Answer.id.in_(answer_ids)).delete(synchronize_session='fetch')
+        session.commit()
     # if submitted send and not
     # data_cleaning notification email to secretariat admin
     if submitted and not data_cleaning:
