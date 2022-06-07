@@ -64,6 +64,16 @@
     }
     // END OF TABLE
 
+    // DATA DETAIL TABLE
+    .data-detail-table-wrapper {
+      width: 100%;
+      .ant-table-cell {
+        font-size: 12px;
+        padding: 4px 8px;
+      }
+    }
+    // EOL DATA DETAIL TABLE
+
     .ant-pagination {
       .ant-pagination-item-link {
         background-color: transparent;

@@ -41,8 +41,8 @@ const DataDetail = ({ record }) => {
       return (
         <Space
           key={`${key}-${ki}-${vi}`}
+          className="data-detail-table-wrapper"
           direction="vertical"
-          style={{ width: "100%" }}
         >
           <Table
             rowKey={(answer, ri) => `${record.id}-${answer.question}-${ri}`}
