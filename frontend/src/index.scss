@@ -14,10 +14,6 @@ body {
   letter-spacing: 0.11px;
 
   #root,
-  .ant-checkbox-inner {
-    border: 1px solid #000000;
-  }
-
   .ant-modal-root {
     // button primary
     button.ant-btn.ant-btn-primary,
@@ -116,6 +112,10 @@ body {
     span.anticon.anticon-down.ant-select-suffix {
       color: $black;
       text-align: left;
+    }
+
+    .ant-checkbox-inner {
+      border: 1px solid #000000;
     }
 
     // End of Form Style
