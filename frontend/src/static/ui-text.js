@@ -127,7 +127,7 @@ const uiText = {
     // Validation & Message
     valEmail: "The email field is required.",
     valFeedbackError: "Something wrong, please try again!",
-    valFeedBackSuccess: "Your message has been successfully sent!",
+    valFeedbackSuccess: "Your message has been successfully sent!",
     valTitle: "The title field is required.",
     valCategory: "The category field is required.",
     valFeedback: "The feedback field is required.",
@@ -395,7 +395,7 @@ const uiText = {
     valEmail: "Die Email Angabe ist obligatorisch.",
     valFeedbackError:
       "Etwas ist schiefgelaufen, versuchen Sie es bitte noch einmal.",
-    valFeedBackSuccess: "Ihre Nachricht wurde erfolgreich versendet.",
+    valFeedbackSuccess: "Ihre Nachricht wurde erfolgreich versendet.",
     valTitle: "Die Titelangabe ist obligatorisch.",
     valCategory: "The category field is required.",
     valFeedback: "Das Feedback-Feld ist obligatorisch.",

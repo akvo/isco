@@ -74,6 +74,7 @@ class MailTypeEnum(enum.Enum):
     notify_submission_completed_to_secretariat_admin = \
         "notify_submission_completed_to_secretariat_admin"
     otp_code = "otp_code"
+    feedback = "feedback"
 
 
 class Email:
