@@ -362,8 +362,8 @@ const uiText = {
     btnReject: "Reject",
     btnRejected: "Rejected",
     btnView: "View",
-    btnAgreeContinue: "Zustimmung und weiter Löschen",
-    btnCancel: "Cancel",
+    btnAgreeContinue: "Zustimmen und weiter",
+    btnCancel: "Löschen",
     // comment
     btnAddComment: "Kommentar hinzufügen",
     btnDeleteComment: "Kommentar löschen",
