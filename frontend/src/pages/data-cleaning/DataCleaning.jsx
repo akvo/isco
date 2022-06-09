@@ -34,14 +34,14 @@ const DataCleaning = () => {
 
   const columns = [
     {
-      title: "Questionnaire",
-      dataIndex: "form_name",
-      key: "form_name",
-    },
-    {
       title: "Data",
       dataIndex: "id",
       key: "id",
+    },
+    {
+      title: "Organisation",
+      dataIndex: "organisation_name",
+      key: "organisation_name",
     },
     {
       title: "Member Type",
