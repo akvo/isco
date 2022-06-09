@@ -34,14 +34,16 @@ const DataCleaning = () => {
 
   const columns = [
     {
-      title: "Data",
+      title: "ID",
       dataIndex: "id",
       key: "id",
+      width: "60px",
     },
     {
       title: "Organisation",
       dataIndex: "organisation_name",
       key: "organisation_name",
+      width: "20%",
     },
     {
       title: "Member Type",
@@ -52,10 +54,12 @@ const DataCleaning = () => {
       title: "Submitted Date",
       dataIndex: "submitted",
       key: "submitted",
+      width: "20%",
     },
     {
       title: "Action",
       key: "action",
+      align: "center",
       render: (record) => {
         return (
           <Space>
@@ -71,6 +75,7 @@ const DataCleaning = () => {
           </Space>
         );
       },
+      width: "120px",
     },
   ];
 
