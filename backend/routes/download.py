@@ -71,18 +71,30 @@ def get_available_downloads(req: Request,
     for sf in storage_files:
         data_object = sf.replace(".html", "").split("/")[2].split("_")
         old_data.append({
-            "created": data_object[0],
-            "created_by": data_object[4],
-            "expired": None,
-            "form": "-".join([data_object[1], data_object[0]]).upper(),
-            "form_type": data_object[1],
-            "id": int(data_object[4]),
-            "name": "",
-            "organisation": user.organisation,
-            "status": None,
-            "submitted": data_object[0],
-            "submitted_by": data_object[3],
-            "uuid": None,
+            "created":
+            data_object[0],
+            "created_by":
+            data_object[4],
+            "expired":
+            None,
+            "form":
+            "-".join([data_object[1], data_object[0]]).upper(),
+            "form_type":
+            data_object[1],
+            "id":
+            int(data_object[4]),
+            "name":
+            "",
+            "organisation":
+            user.organisation,
+            "status":
+            None,
+            "submitted":
+            data_object[0],
+            "submitted_by":
+            data_object[3],
+            "uuid":
+            None,
         })
     old_data.sort(key=operator.itemgetter('created'), reverse=True)
     data += old_data
@@ -172,6 +184,8 @@ def request_new_download(req: Request,
         form_type = FormType.member
     if data["form"]["id"] in PROJECT_SURVEY:
         form_type = FormType.project
+    if data["form"]["id"] not in MEMBER_SURVEY + PROJECT_SURVEY:
+        form_type = FormType.member
     download = crud.new_download(session=session,
                                  user=user.id,
                                  data=data["id"],
