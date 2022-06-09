@@ -21,12 +21,15 @@ def send_feedback_to_secretariat_admin(session: Session, user,
     org_name = organisation.name
     secretariat_admins = find_secretariat_admins(
         session=session, organisation=user.organisation)
+    recipients = [a.recipient for a in secretariat_admins]
     if secretariat_admins:
         title = feedback["title"]
         category = feedback["category"]
         content = feedback["content"]
         body = f'''
         <div>
+        A member has submitted some feedback<br/>\
+        <br/>\
         Name: {user.name}<br/>\
         Email: {user.email}<br/>\
         Organisation: {org_name}<br/>\
@@ -35,7 +38,7 @@ def send_feedback_to_secretariat_admin(session: Session, user,
         Feedback: {content}\
         </div>
         '''
-        email = Email(recipients=[a.recipient for a in secretariat_admins],
+        email = Email(recipients=recipients,
                       body=body,
                       body_translation="",
                       type=MailTypeEnum.feedback)
