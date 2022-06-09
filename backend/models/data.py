@@ -61,6 +61,7 @@ class DataDictQuestionName(TypedDict):
     geo: Optional[GeoData] = None
     created: Optional[str] = None
     organisation: int
+    organisation_name: str
     member_type: str
     updated: Optional[str] = None
     submitted: Optional[str] = None
@@ -210,6 +211,7 @@ class Data(Base):
                 "long": self.geo[1]
             } if self.geo else None,
             "organisation": self.organisation,
+            "organisation_name": self.organisation_detail.name,
             "member_type": member_type,
             "created":
             self.created.strftime("%B %d, %Y"),
