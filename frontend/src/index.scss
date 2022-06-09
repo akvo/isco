@@ -19,7 +19,7 @@ body {
   }
 
   .ant-modal-root {
-    // button primary
+    /* button primary */
     button.ant-btn.ant-btn-primary,
     a.ant-btn.ant-btn-primary {
       border-width: 2px;
@@ -28,7 +28,7 @@ body {
       border-radius: 5px;
     }
 
-    // button primary ghost
+    /* button primary ghost */
     button.ant-btn.ant-btn-primary.ant-btn-background-ghost,
     a.ant-btn.ant-btn-primary.ant-btn-background-ghost {
       border-width: 2px;
@@ -37,7 +37,7 @@ body {
       border-radius: 5px;
     }
 
-    // button default
+    /* button default */
     button.ant-btn.ant-btn-default,
     a.ant-btn.ant-btn-default {
       border-width: 2px;
@@ -48,7 +48,7 @@ body {
       border-color: #777777;
     }
 
-    // button text
+    /* button text */
     button.ant-btn.ant-btn-text,
     a.ant-btn.ant-btn-text {
       &:hover,
@@ -57,8 +57,8 @@ body {
       }
     }
 
-    // Form Style
-    // set input border-bottom
+    /* Form Style */
+    /* set input border-bottom */
     .ant-input,
     .ant-input-affix-wrapper,
     .ant-input-number,
@@ -118,10 +118,14 @@ body {
       text-align: left;
     }
 
-    // End of Form Style
+    .ant-checkbox-inner {
+      border: 1px solid #000000;
+    }
+
+    /* End of Form Style */
   }
 
-  // dropdown list z-index
+  /* dropdown list z-index */
   .ant-select-dropdown {
     z-index: 10001;
   }
