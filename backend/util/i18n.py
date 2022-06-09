@@ -375,3 +375,21 @@ class EmailText(enum.Enum):
         "info": None,
         "signature": False,
     }
+    feedback = {
+        "title": None,
+        "title_translation": None,
+        "subject": "New Feedback",
+        "body": '''<div>
+            Name: #user_name#</br>
+            Organisation: #organisation_name#</br>
+            Title: #Title#</br>
+            Category: #Category#</br>
+            Feedback: #Content#
+            </div>''',
+        "body_translation": None,
+        "message": None,
+        "image": None,
+        "button": None,
+        "info": None,
+        "signature": False,
+    }
