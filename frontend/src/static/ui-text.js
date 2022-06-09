@@ -522,9 +522,10 @@ const uiText = {
     // unlock warning translation
     submitModalC4: (
       <>
-        If your survey is <b>locked</b>, please remember to <b>unlock</b> it if
-        you want your colleague to continue to add data. Would you like to save
-        the data?
+        Wenn das Häkchen bei <b>Reserviert</b> (rechts oben) aktiviert ist,
+        denken Sie bitte daran, das <b>Häkchen</b> vor dem Speichern zu
+        entfernen, falls eine Kollegin/ ein Kollege noch Daten eingeben soll.
+        Möchten Sie den Fragebogen speichern?
       </>
     ),
     infoSubmissionDropdown: "(gespeichert/eingereicht)",
