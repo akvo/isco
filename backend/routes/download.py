@@ -11,7 +11,7 @@ from db.connection import get_session
 import db.crud_download as crud
 import db.crud_data as crud_data
 import db.crud_user as crud_user
-from util.survey_config import MEMBER_SURVEY, PROJECT_SURVEY
+from util.survey_config import PROJECT_SURVEY
 import db.crud_organisation as crud_organisation
 import util.report as report
 import util.storage as storage
@@ -179,13 +179,9 @@ def request_new_download(req: Request,
     data = report.get_cascade_value(data=data, session=session)
     detail = report.transform_data(answers=data["answer"], session=session)
     file = report.generate(data=data, detail=detail)
-    form_type = None
-    if data["form"]["id"] in MEMBER_SURVEY:
-        form_type = FormType.member
+    form_type = FormType.member
     if data["form"]["id"] in PROJECT_SURVEY:
         form_type = FormType.project
-    if data["form"]["id"] not in MEMBER_SURVEY + PROJECT_SURVEY:
-        form_type = FormType.member
     download = crud.new_download(session=session,
                                  user=user.id,
                                  data=data["id"],
