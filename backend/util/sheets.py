@@ -37,6 +37,12 @@ def write_sheet(df, writer, sheet_name):
             "member_type", "submitted"
         ]
         df["repeat_index"] = df["repeat_index"] + 1
+
+        # TODO: Confirm https://github.com/akvo/isco/issues/240
+        # TEMPORARY FIX
+        df = df[df["repeat_index"] == df["repeat_index"]].reset_index()
+        # END FIX
+
     max_go = df["go"].max()
     max_qo = df["qo"].max()
     df["question_group_name"] = df.apply(add_order_to_name,
