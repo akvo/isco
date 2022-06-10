@@ -38,11 +38,6 @@ def write_sheet(df, writer, sheet_name):
         ]
         df["repeat_index"] = df["repeat_index"] + 1
 
-        # TODO: Confirm https://github.com/akvo/isco/issues/240
-        # TEMPORARY FIX
-        df = df[df["repeat_index"] == df["repeat_index"]].reset_index()
-        # END FIX
-
     max_go = df["go"].max()
     max_qo = df["qo"].max()
     df["question_group_name"] = df.apply(add_order_to_name,
@@ -66,6 +61,15 @@ def write_sheet(df, writer, sheet_name):
         sheet_name = sheet_name[:15] + "..."
     try:
         df = df["answer"]
+        # TODO: Confirm https://github.com/akvo/isco/issues/240
+        # TEMPORARY FIX
+        if sheet_name != main_sheet_name:
+            df = df[df.index.get_level_values(1) != ""]
+        # FILL IF DATAFRAME IS EMPTY
+        if not df.shape[0]:
+            # https://github.com/pandas-dev/pandas/issues/19543
+            df.loc[tuple("" for _ in list(df.index.names)), :] = ""
+        # END FIX
         df.to_excel(writer, sheet_name=sheet_name)
     except KeyError as e:
         print(f"LOG::ERROR - GENERATE SPREADSHEET {sheet_name}: key error {e}")
@@ -82,24 +86,21 @@ def generate_summary(session: Session,
         OrganisationIsco.organisation == user_org).all()
     isco_ids = [i.isco_type for i in org_isco]
     # find organisation in same isco
-    org_in_same_isco = organisations_in_same_isco(
-        session=session, organisation=user_org)
+    org_in_same_isco = organisations_in_same_isco(session=session,
+                                                  organisation=user_org)
     # find data id by organisation in same isco
-    data = session.query(Data).filter(and_(
-        Data.form == form_id,
-        Data.organisation.in_(org_in_same_isco),
-        Data.submitted != null())).all()
+    data = session.query(Data).filter(
+        and_(Data.form == form_id, Data.organisation.in_(org_in_same_isco),
+             Data.submitted != null())).all()
     data_ids = [d.id for d in data]
     # filter question with personal data flag
-    questions = session.query(Question).filter(and_(
-        Question.form == form_id,
-        Question.personal_data == false()))
+    questions = session.query(Question).filter(
+        and_(Question.form == form_id, Question.personal_data == false()))
     qids_no_personal_data = [q.id for q in questions.all()]
     # query summary view and filter by data ids and qids_no_personal_data
-    summary = session.query(Summary).filter(and_(
-        Summary.fid == form_id,
-        Summary.data_id.in_(data_ids),
-        Summary.qid.in_(qids_no_personal_data)))
+    summary = session.query(Summary).filter(
+        and_(Summary.fid == form_id, Summary.data_id.in_(data_ids),
+             Summary.qid.in_(qids_no_personal_data)))
     # question - filter by user isco
     if isco_ids:
         isco_ids += [1]  # add all isco type
