@@ -153,13 +153,15 @@ def generate_summary(session: Session,
                     cascade_answer.append(temp[cl])
             s['answer'] = '|'.join(cascade_answer) \
                 if cascade_answer else s['answer']
-    print("============== Summary:", summary)
 
     # start create spreadsheet
     source = pd.DataFrame(summary)
     writer = pd.ExcelWriter(tmp_file, engine='xlsxwriter')
     data = source[~source["repeat"]].reset_index()
-    write_sheet(data, writer, main_sheet_name)
+    # exception for filtered by member type return only repeatable question
+    if data.shape[0]:
+        write_sheet(data, writer, main_sheet_name)
+    # rendering repeatable question group
     repeat_rows = source[source["repeat"]]
     group_names = list(repeat_rows["question_group"].unique())
     for group_name in group_names:
