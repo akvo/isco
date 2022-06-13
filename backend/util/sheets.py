@@ -92,7 +92,7 @@ def generate_summary(session: Session,
                                                   organisation=user_org)
 
     org_in_same_isco_member = org_in_same_isco
-    # TODO:: filter download data / answer by selected member type dropdown
+    # filter download data / answer by selected member type dropdown
     if member_type:
         org_in_same_isco_member_tmp = session.query(OrganisationMember).filter(
             and_(
