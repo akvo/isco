@@ -105,7 +105,6 @@ def generate_summary(session: Session,
              Data.organisation.in_(org_in_same_isco_member),
              Data.submitted != null())).all()
     data_ids = [d.id for d in data]
-    print("============== Data IDs:", data_ids)
 
     # filter question with personal data flag
     questions = session.query(Question).filter(
@@ -119,13 +118,13 @@ def generate_summary(session: Session,
     # question - filter by user isco
     if isco_ids:
         isco_ids += [1]  # add all isco type
-        summary = summary.filter(Summary.isco_type.contained_by(isco_ids))
+        summary = summary.filter(Summary.isco_type.overlap(isco_ids))
     # question - filter by member type dropdown
     if member_type:
         members = [1]  # add all member type
         members += [member_type]
         summary = summary.filter(
-            Summary.member_type.contained_by(members)).all()
+            Summary.member_type.overlap(members)).all()
     else:
         summary = summary.all()
     if not summary:
