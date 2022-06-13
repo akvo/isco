@@ -117,22 +117,18 @@ class EmailText(enum.Enum):
                 <p>
                 Thank you for signing up to the online monitoring tool of
                 Beyond Chocolate, DISCO and GISCO. Please click following
-                button to verify your email address. As a next step, the admin
-                within your organisation/company will need to approve your
-                registration. You will be notified when as soon as your
-                account has been approved.
+                button to verify your email address. You will be notified
+                when as soon as your account has been approved.
                 </p>
                 </div>''',
         "body_translation": '''<div>
-                Sehr geehrtes meldendes Mitglied,
+                „Liebes Mitglied,
                 <p>
-                vielen Dank, dass Sie sich für das Online-Überwachungstool
-                von Beyond Chocolate, DISCO und GISCO angemeldet haben. Bitte
-                klicken Sie auf den untenstehenden Link, um Ihre
-                E-Mail-Adresse zu verifizieren. Im nächsten Schritt muss der
-                Administrator Ihrer Organisation/Ihres Unternehmens Ihre
-                Registrierung bestätigen. Sie werden benachrichtigt, sobald
-                Ihr Konto genehmigt wurde.
+                vielen Dank, dass Sie sich für das Online-Monitoringtool von
+                Beyond Chocolate, DISCO und Forum Nachhaltiger Kakao
+                angemeldet haben. Bitte klicken Sie auf den unten stehenden
+                Link, um Ihre E-Mail-Adresse zu verifizieren. Sie werden
+                benachrichtigt, sobald Ihre Registrierung genehmigt wurde.
                 </p>
                 </div>''',
         "message": None,
