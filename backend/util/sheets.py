@@ -60,20 +60,17 @@ def write_sheet(df, writer, sheet_name):
     df.columns = df.columns.rename("", level=2)
     if len(sheet_name) > 20:
         sheet_name = sheet_name[:15] + "..."
-    try:
-        df = df["answer"]
-        # TODO: Confirm https://github.com/akvo/isco/issues/240
-        # TEMPORARY FIX
-        if sheet_name != main_sheet_name:
-            df = df[df.index.get_level_values(1) != ""]
-        # FILL IF DATAFRAME IS EMPTY
-        if not df.shape[0]:
-            # https://github.com/pandas-dev/pandas/issues/19543
-            df.loc[tuple("" for _ in list(df.index.names)), :] = ""
-        # END FIX
-        df.to_excel(writer, sheet_name=sheet_name)
-    except KeyError as e:
-        print(f"LOG::ERROR - GENERATE SPREADSHEET {sheet_name}: key error {e}")
+    df = df["answer"]
+    # NULL REPEAT INDEX FIX
+    # null repeat index because of that question doesn't have answer
+    if sheet_name != main_sheet_name:
+        df = df[df.index.get_level_values(1) != ""]
+    # FILL IF DATAFRAME IS EMPTY
+    if not df.shape[0]:
+        # https://github.com/pandas-dev/pandas/issues/19543
+        df.loc[tuple("" for _ in list(df.index.names)), :] = ""
+    # END FIX
+    df.to_excel(writer, sheet_name=sheet_name)
 
 
 def generate_summary(session: Session,
