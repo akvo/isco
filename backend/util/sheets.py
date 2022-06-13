@@ -105,6 +105,7 @@ def generate_summary(session: Session,
              Data.organisation.in_(org_in_same_isco_member),
              Data.submitted != null())).all()
     data_ids = [d.id for d in data]
+    print("============== Data IDs:", data_ids)
 
     # filter question with personal data flag
     questions = session.query(Question).filter(
@@ -153,6 +154,7 @@ def generate_summary(session: Session,
                     cascade_answer.append(temp[cl])
             s['answer'] = '|'.join(cascade_answer) \
                 if cascade_answer else s['answer']
+    print("============== Summary:", summary)
 
     # start create spreadsheet
     source = pd.DataFrame(summary)
