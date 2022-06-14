@@ -67,6 +67,9 @@ class TestUserAuthentication():
             app.url_path_for("cascade:get_by_id", id=res['id']))
         assert res.status_code == 200
         res = res.json()
+        assert res['id'] == 1
+        assert res['name'] == 'Bali and Java'
+        assert res['type'] == 'cascade'
         assert len(res['cascades']) > 0
 
     @pytest.mark.asyncio
@@ -80,6 +83,9 @@ class TestUserAuthentication():
             app.url_path_for("cascade:get_by_id", id=res['id']))
         assert res.status_code == 200
         res = res.json()
+        assert res['id'] == 2
+        assert res['name'] == 'Sport & Technology'
+        assert res['type'] == 'nested'
         assert len(res['cascades']) > 0
 
     @pytest.mark.asyncio

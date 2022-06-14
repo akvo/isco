@@ -129,6 +129,42 @@ class TestAdvancedSubmissionRoute():
                 'question_order': 2,
                 'repeat_index': 0,
                 'value': 75
+            }, {
+                'comment': None,
+                'question': 6,
+                'question_group': 'Question Group 2',
+                'question_group_order': 2,
+                'question_name': 'Cascade',
+                'question_order': 3,
+                'repeat_index': 0,
+                'value': 'Bali|Gianyar'
+            }, {
+                'comment': None,
+                'question': 7,
+                'question_group': 'Question Group 2',
+                'question_group_order': 2,
+                'question_name': 'Nested List',
+                'question_order': 4,
+                'repeat_index': 0,
+                'value': ['Technology|Programming', 'Sports|Football']
+            }, {
+                'comment': None,
+                'question': 8,
+                'question_group': 'Question Group 2',
+                'question_group_order': 2,
+                'question_name': 'Date',
+                'question_order': 5,
+                'repeat_index': 0,
+                'value': '2022-01-01'
+            }, {
+                'comment': None,
+                'question': 9,
+                'question_group': 'Question Group 2',
+                'question_group_order': 2,
+                'question_name': 'Multiple Option',
+                'question_order': 6,
+                'repeat_index': 0,
+                'value': ['MO-1', 'MO-2']
             }],
         }
 
