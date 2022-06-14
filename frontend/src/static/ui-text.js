@@ -333,7 +333,7 @@ const uiText = {
     formPhoneNumber: "Phone Number (Optional)",
     // Button
     btnLogin: "Einloggen",
-    btnBackToLogin: "Terug naar Inlogpagina",
+    btnBackToLogin: "Zurück zur Login-Seite",
     btnUpdate: "Update",
     btnClose: "Schließen",
     btnSave: "Speichern",
