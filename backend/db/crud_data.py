@@ -150,6 +150,7 @@ def check_member_submission_exists(session: Session,
     if form and form in PROJECT_SURVEY:
         return False
     # handle limited member questionnaire or limited survey
+    form_config = []
     if form and form in MEMBER_SURVEY:
         # handle unlimited member questionnaire
         # for organisation ISCO contains DISCO
