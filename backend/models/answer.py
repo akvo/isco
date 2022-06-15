@@ -182,25 +182,27 @@ class Answer(Base):
             }
         }
 
-    @property
-    def only_value(self) -> List:
-        type = self.question_detail.type
-        if type in [QuestionType.number]:
-            return self.value
-        if type in [QuestionType.input, QuestionType.text, QuestionType.date]:
-            return self.text
-        if type == QuestionType.number:
-            return self.value
-        if type == QuestionType.option:
-            return self.options[0] if self.options else None
-        if type in [
-                QuestionType.multiple_option, QuestionType.cascade,
-                QuestionType.nested_list
-        ]:
-            return self.options
-        if type == QuestionType.cascade:
-            return [int(o) for o in self.options]
-        return None
+    # comment for now
+    # @property
+    # def only_value(self) -> List:
+    #     type = self.question_detail.type
+    #     if type in [QuestionType.number]:
+    #         return self.value
+    #     if type in [QuestionType.input,
+    # QuestionType.text, QuestionType.date]:
+    #         return self.text
+    #     if type == QuestionType.number:
+    #         return self.value
+    #     if type == QuestionType.option:
+    #         return self.options[0] if self.options else None
+    #     if type in [
+    #             QuestionType.multiple_option, QuestionType.cascade,
+    #             QuestionType.nested_list
+    #     ]:
+    #         return self.options
+    #     if type == QuestionType.cascade:
+    #         return [int(o) for o in self.options]
+    #     return None
 
     @property
     def simplified(self) -> TypedDict:
