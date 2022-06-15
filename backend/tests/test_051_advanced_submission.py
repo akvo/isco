@@ -240,10 +240,65 @@ class TestAdvancedSubmissionRoute():
             app.url_path_for("data:update", id=1, submitted=0),
             params={"locked_by": 0, "data_cleaning": True},
             json=[{
+                "comment": None,
+                "question": 1,
+                "repeat_index": 0,
+                "value": "Option 1"
+            }, {
+                "comment": "This is comment",
+                "question": 2,
+                "repeat_index": 0,
+                "value": "Depend to Q1 Option 1"
+            }, {
+                "question": 3,
+                "repeat_index": 0,
+                "comment": "Q3 comment",
+                "value": "Male"
+            }, {
+                "question": 1,
+                "repeat_index": 1,
+                "comment": None,
+                "value": "Option 1"
+            }, {
+                "question": 2,
+                "repeat_index": 1,
+                "comment": None,
+                "value": "Test repeat"
+            }, {
+                "question": 3,
+                "repeat_index": 1,
+                "comment": "Q3 comment 1",
+                "value": "Female"
+            }, {
+                "question": 4,
+                "repeat_index": 0,
+                "comment": "Q4 comment",
+                "value": 25
+            }, {
                 "question": 5,
                 "repeat_index": 0,
                 "comment": "Q5 comment data cleaning",
                 "value": 100
+            }, {
+                "question": 6,
+                "repeat_index": 0,
+                "comment": None,
+                "value": [2, 12]
+            }, {
+                "question": 7,
+                "repeat_index": 0,
+                "comment": None,
+                "value": ["Technology|Programming", "Sports|Football"]
+            }, {
+                "question": 8,
+                "repeat_index": 0,
+                "comment": None,
+                "value": "2022-01-01"
+            }, {
+                "question": 9,
+                "repeat_index": 0,
+                "comment": None,
+                "value": ["MO-1", "MO-2"]
             }],
             headers={"Authorization": f"Bearer {account.token}"})
         assert res.status_code == 200
@@ -251,8 +306,63 @@ class TestAdvancedSubmissionRoute():
         assert res['submitted'] == submitted
         assert res['submitted_by'] == submitted_by
         assert res['answer'] == [{
+            "comment": None,
+            "question": 1,
+            "repeat_index": 0,
+            "value": "Option 1"
+        }, {
+            "comment": "This is comment",
+            "question": 2,
+            "repeat_index": 0,
+            "value": "Depend to Q1 Option 1"
+        }, {
+            "question": 3,
+            "repeat_index": 0,
+            "comment": "Q3 comment",
+            "value": "Male"
+        }, {
+            "question": 1,
+            "repeat_index": 1,
+            "comment": None,
+            "value": "Option 1"
+        }, {
+            "question": 2,
+            "repeat_index": 1,
+            "comment": None,
+            "value": "Test repeat"
+        }, {
+            "question": 3,
+            "repeat_index": 1,
+            "comment": "Q3 comment 1",
+            "value": "Female"
+        }, {
+            "question": 4,
+            "repeat_index": 0,
+            "comment": "Q4 comment",
+            "value": 25
+        }, {
             "question": 5,
             "repeat_index": 0,
             "comment": "Q5 comment data cleaning",
             "value": 100
+        }, {
+            "question": 6,
+            "repeat_index": 0,
+            "comment": None,
+            "value": ["2", "12"]
+        }, {
+            "question": 7,
+            "repeat_index": 0,
+            "comment": None,
+            "value": ["Technology|Programming", "Sports|Football"]
+        }, {
+            "question": 8,
+            "repeat_index": 0,
+            "comment": None,
+            "value": "2022-01-01"
+        }, {
+            "question": 9,
+            "repeat_index": 0,
+            "comment": None,
+            "value": ["MO-1", "MO-2"]
         }]
