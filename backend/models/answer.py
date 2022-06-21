@@ -266,7 +266,11 @@ class Answer(Base):
             if q.repeating_objects:
                 unit = list(
                     filter(lambda x: x["field"] == "unit",
-                           q.repeating_objects))[0]["value"]
+                           q.repeating_objects))
+                if unit:
+                    unit = unit[0].get("value")
+                else:
+                    unit = ""
                 answer = f"{answer} {unit}" if answer else None
         if q.type == QuestionType.option:
             answer = self.options[0] if self.options else None
