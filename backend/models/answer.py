@@ -26,8 +26,8 @@ class AnswerDict(TypedDict):
     question: int
     repeat_index: Optional[int] = None
     comment: Optional[str] = None
-    value: Union[int, float, str, bool, dict, List[str], List[int],
-                 List[float], None]
+    value: Union[float, int, str, bool, dict, List[str], List[float],
+                 List[int], None]
 
 
 class AnswerDictWithQuestionName(TypedDict):
