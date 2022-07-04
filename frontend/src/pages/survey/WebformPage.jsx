@@ -283,7 +283,7 @@ const WebformPage = ({
           comment: findAnswer ? findAnswer?.comment : null,
         };
       })
-      .filter((x) => x.value);
+      .filter((x) => x.value || x.value === 0);
     setDisableSubmit(transformValues.length === 0);
     setAnswer(transformValues);
   };
