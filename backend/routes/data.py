@@ -18,7 +18,7 @@ from models.cascade_list import CascadeList
 from db.connection import get_session
 from models.data import DataResponseQuestionName
 from models.data import DataDict, DataOptionDict
-from models.data import Data, SubmissionProgressDict, DataSubmittedDict
+from models.data import Data, SubmissionProgressDict
 from models.organisation import Organisation
 from middleware import verify_editor, verify_super_admin, verify_user
 from middleware import organisations_in_same_isco, find_secretariat_admins
