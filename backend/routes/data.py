@@ -18,7 +18,7 @@ from models.cascade_list import CascadeList
 from db.connection import get_session
 from models.data import DataResponseQuestionName
 from models.data import DataDict, DataOptionDict
-from models.data import Data, SubmissionProgressDict
+from models.data import Data, SubmissionProgressDict, DataSubmittedDict
 from models.organisation import Organisation
 from middleware import verify_editor, verify_super_admin, verify_user
 from middleware import organisations_in_same_isco, find_secretariat_admins
@@ -304,6 +304,28 @@ def get_saved_data_by_organisation(
     if not data:
         return []
     return [d.to_options for d in data]
+
+
+@data_route.put("/data/unsubmit/{id}",
+                response_model=DataDict,
+                summary="undo data submission",
+                name="data:unsubmit",
+                tags=["Data"])
+def undo_submission(req: Request,
+                    id: int,
+                    session: Session = Depends(get_session),
+                    credentials: credentials = Depends(security)):
+    verify_super_admin(
+        session=session, authenticated=req.state.authenticated)
+    data = crud.get_data_by_id(
+        session=session, id=id, submitted=True)
+    if not data:
+        raise HTTPException(status_code=404,
+                            detail="data {} is not found".format(id))
+    data.submitted = None
+    data.submitted_by = None
+    data = crud.update_data(session=session, data=data)
+    return data.serialize
 
 
 @data_route.get(
