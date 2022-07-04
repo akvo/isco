@@ -22,6 +22,7 @@ const DataCleaning = () => {
   const [selectedDatapoint, setSelectedDatapoint] = useState(null);
   const [editDatapointName, setEditDatapointName] = useState(null);
   const [fetchingOrgDetail, setFetchingOrgDetail] = useState(false);
+  const [undoSubmit, setUndoSubmit] = useState(null);
   const [orgDetail, setOrgDetail] = useState({});
 
   const pageSize = 10;
@@ -73,10 +74,18 @@ const DataCleaning = () => {
             >
               Edit
             </Button>
+            <Button
+              size="small"
+              type="primary"
+              onClick={() => handleUndoSubmitOnClick(record)}
+              loading={undoSubmit?.id === record?.id}
+            >
+              Undo Submit
+            </Button>
           </Space>
         );
       },
-      width: "120px",
+      width: "200px",
     },
   ];
 
@@ -143,6 +152,16 @@ const DataCleaning = () => {
             setFetchingOrgDetail(false);
           }, 500);
         });
+    }
+  };
+
+  const handleUndoSubmitOnClick = (record) => {
+    if (record?.id) {
+      setUndoSubmit(record);
+      console.log(record.id);
+      setTimeout(() => {
+        setUndoSubmit(null);
+      }, 1000);
     }
   };
 
