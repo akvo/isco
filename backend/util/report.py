@@ -79,7 +79,9 @@ def get_cascade_value(data: dict, session: Session):
         if a['value'] and a['question_type'] == QuestionType.cascade:
             ids = []
             for v in a['value'].split(" - "):
-                if v.isnumeric():
+                try:
+                    ids.append(int(float(v)))
+                except ValueError:
                     ids.append(v)
             cascades = session.query(CascadeList).filter(
                 CascadeList.id.in_(ids)).all()

@@ -112,11 +112,18 @@ class Answer(Base):
             "repeat_index": self.repeat_index,
             "comment": self.comment
         }
-        type = self.question_detail.type
+        q = self.question_detail
+        type = q.type
         if type in [QuestionType.input, QuestionType.text, QuestionType.date]:
             answer.update({"value": self.text})
         if type == QuestionType.number:
-            answer.update({"value": self.value})
+            val = self.value
+            if q.rule:
+                if q.rule.get("allow_decimal"):
+                    val = float(val) if val else None
+            else:
+                val = int(val) if val else None
+            answer.update({"value": val})
         if type == QuestionType.option:
             answer.update({"value": self.options[0]})
         if type in [QuestionType.multiple_option, QuestionType.nested_list]:
@@ -127,21 +134,28 @@ class Answer(Base):
 
     @property
     def formattedWithQuestionName(self) -> AnswerDictWithQuestionName:
-        question_group = self.question_detail.question_group_detail
+        q = self.question_detail
+        question_group = q.question_group_detail
         answer = {
             "question_group": question_group.name,
             "question_group_order": question_group.order,
             "question": self.question,
-            "question_name": self.question_detail.name,
-            "question_order": self.question_detail.order,
+            "question_name": q.name,
+            "question_order": q.order,
             "repeat_index": self.repeat_index,
             "comment": self.comment
         }
-        type = self.question_detail.type
+        type = q.type
         if type in [QuestionType.input, QuestionType.text, QuestionType.date]:
             answer.update({"value": self.text})
         if type == QuestionType.number:
-            answer.update({"value": self.value})
+            val = self.value
+            if q.rule:
+                if q.rule.get("allow_decimal"):
+                    val = float(val) if val else None
+            else:
+                val = int(val) if val else None
+            answer.update({"value": val})
         if type == QuestionType.option:
             answer.update({"value": self.options[0]})
         if type in [QuestionType.multiple_option, QuestionType.nested_list]:
@@ -158,11 +172,18 @@ class Answer(Base):
             "repeat_index": self.repeat_index,
             "comment": self.comment
         }
-        type = self.question_detail.type
+        q = self.question_detail
+        type = q.type
         if type in [QuestionType.input, QuestionType.text, QuestionType.date]:
             answer.update({"value": self.text})
         if type == QuestionType.number:
-            answer.update({"value": self.value})
+            val = self.value
+            if q.rule:
+                if q.rule.get("allow_decimal"):
+                    val = float(val) if val else None
+            else:
+                val = int(val) if val else None
+            answer.update({"value": val})
         if type == QuestionType.option:
             answer.update({"value": self.options[0]})
         if type in [QuestionType.multiple_option, QuestionType.nested_list]:
@@ -184,13 +205,18 @@ class Answer(Base):
 
     @property
     def only_value(self) -> List:
-        type = self.question_detail.type
-        if type in [QuestionType.number]:
-            return self.value
+        q = self.question_detail
+        type = q.type
         if type in [QuestionType.input, QuestionType.text, QuestionType.date]:
             return self.text
         if type == QuestionType.number:
-            return self.value
+            answer = self.value
+            if q.rule:
+                if q.rule.get("allow_decimal"):
+                    answer = float(answer) if answer else None
+            else:
+                answer = int(answer) if answer else None
+            return answer
         if type == QuestionType.option:
             return self.options[0] if self.options else None
         if type in [
@@ -204,13 +230,19 @@ class Answer(Base):
 
     @property
     def simplified(self) -> TypedDict:
+        q = self.question_detail
         date = self.updated or self.created
-        type = self.question_detail.type
+        type = q.type
         answer = None
         if type in [QuestionType.input, QuestionType.text, QuestionType.date]:
             answer = self.text
         if type == QuestionType.number:
             answer = self.value
+            if q.rule:
+                if q.rule.get("allow_decimal"):
+                    answer = float(answer) if answer else None
+            else:
+                answer = int(answer) if answer else None
         if type == QuestionType.option:
             answer = self.options[0] if self.options else None
         if type in [
@@ -238,6 +270,11 @@ class Answer(Base):
             answer = self.text
         if q.type == QuestionType.number:
             answer = self.value
+            if q.rule:
+                if q.rule.get("allow_decimal"):
+                    answer = float(answer) if answer else None
+            else:
+                answer = int(answer) if answer else None
         if q.type == QuestionType.option:
             answer = self.options[0] if self.options else None
         if q.type in [
