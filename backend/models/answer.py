@@ -18,16 +18,16 @@ class AnswerDictWithId(TypedDict):
     question: int
     repeat_index: Optional[int] = None
     comment: Optional[str] = None
-    value: Union[int, float, str, bool, dict, List[str], List[int],
-                 List[float], None]
+    value: Union[float, int, str, bool, dict, List[float], List[int],
+                 List[str], None]
 
 
 class AnswerDict(TypedDict):
     question: int
     repeat_index: Optional[int] = None
     comment: Optional[str] = None
-    value: Union[float, int, str, bool, dict, List[str], List[float],
-                 List[int], None]
+    value: Union[float, int, str, bool, dict, List[float], List[int],
+                 List[str], None]
 
 
 class AnswerDictWithQuestionName(TypedDict):
@@ -38,8 +38,8 @@ class AnswerDictWithQuestionName(TypedDict):
     question_order: int
     repeat_index: Optional[int] = None
     comment: Optional[str] = None
-    value: Union[int, float, str, bool, dict, List[str], List[int],
-                 List[float], None]
+    value: Union[float, int, str, bool, dict, List[float], List[int],
+                 List[str], None]
 
 
 class Answer(Base):
@@ -122,7 +122,7 @@ class Answer(Base):
         if type in [QuestionType.multiple_option, QuestionType.nested_list]:
             answer.update({"value": self.options})
         if type == QuestionType.cascade:
-            answer.update({"value": [int(o) for o in self.options]})
+            answer.update({"value": [int(float(o)) for o in self.options]})
         return answer
 
     @property
@@ -147,7 +147,7 @@ class Answer(Base):
         if type in [QuestionType.multiple_option, QuestionType.nested_list]:
             answer.update({"value": self.options})
         if type == QuestionType.cascade:
-            answer.update({"value": [int(o) for o in self.options]})
+            answer.update({"value": [int(float(o)) for o in self.options]})
         return answer
 
     @property
@@ -168,7 +168,7 @@ class Answer(Base):
         if type in [QuestionType.multiple_option, QuestionType.nested_list]:
             answer.update({"value": self.options})
         if type == QuestionType.cascade:
-            answer.update({"value": [int(o) for o in self.options]})
+            answer.update({"value": [int(float(o)) for o in self.options]})
         return answer
 
     @property
@@ -199,7 +199,7 @@ class Answer(Base):
         ]:
             return self.options
         if type == QuestionType.cascade:
-            return [int(o) for o in self.options]
+            return [int(float(o)) for o in self.options]
         return None
 
     @property
@@ -219,7 +219,7 @@ class Answer(Base):
         ]:
             return self.options
         if type == QuestionType.cascade:
-            return [int(o) for o in self.options]
+            return [int(float(o)) for o in self.options]
         return {
             "value": answer,
             "repeat_index": self.repeat_index,

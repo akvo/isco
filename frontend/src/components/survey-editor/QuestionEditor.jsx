@@ -172,11 +172,11 @@ const QuestionEditor = ({
               if (val?.type?.includes("option") && key === "value") {
                 if (String(skipValue)?.includes("|")) {
                   //transform value from db
-                  skipValue = skipValue?.split("|")?.map((x) => parseInt(x));
+                  skipValue = skipValue?.split("|")?.map((x) => Number(x));
                 }
                 skipValue = Array.isArray(skipValue)
                   ? skipValue
-                  : [parseInt(skipValue)];
+                  : [Number(skipValue)];
               }
               form.setFieldsValue({ [skipField]: skipValue });
             });

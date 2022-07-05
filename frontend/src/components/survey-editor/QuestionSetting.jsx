@@ -254,7 +254,7 @@ const Detail = ({
       );
       const lookup = allSkipLogic
         ?.filter((x) => x?.dependent_to === opt?.question)
-        .flatMap((x) => x.value.split("|").map((v) => parseInt(v)));
+        .flatMap((x) => x.value.split("|").map((v) => Number(v)));
       const check = lookup.some((val) => val === opt.id);
       if (check) {
         notify({

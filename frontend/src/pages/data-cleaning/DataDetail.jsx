@@ -28,9 +28,6 @@ const DataDetail = ({ record }) => {
       title: "Answer",
       dataIndex: "value",
       render: (val) => {
-        if (!val) {
-          return " - ";
-        }
         if (typeof val === "object" && !Array.isArray(val)) {
           return Object.values(val).length ? val.join(" | ") : "-";
         }
