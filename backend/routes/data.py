@@ -22,6 +22,7 @@ from models.data import Data, SubmissionProgressDict
 from models.organisation import Organisation
 from middleware import verify_editor, verify_super_admin, verify_user
 from middleware import organisations_in_same_isco, find_secretariat_admins
+from middleware import find_member_admins
 from util.survey_config import MEMBER_SURVEY, PROJECT_SURVEY, LIMITED_SURVEY
 from util.mailer import Email, MailTypeEnum
 
@@ -325,6 +326,19 @@ def undo_submission(req: Request,
     data.submitted = None
     data.submitted_by = None
     data = crud.update_data(session=session, data=data)
+    # TODO::Send an email to the member submitter and member admin
+    # (if any and only one if submitter and member admin is the same user)
+    # Only implement this after Joy have discussed it with the ISCO's]
+    member_submitter = data.created_by_user.email
+    member_admins = find_member_admins(
+        session=session, organisation=data.organisation)
+    member_admin_email = [ma.email for ma in member_admins]
+    if member_submitter in member_admin_email:
+        # send only to member admin
+        pass
+    else:
+        # send email to member admin and member submitter
+        pass
     return data.serialize
 
 
