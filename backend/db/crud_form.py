@@ -142,7 +142,10 @@ def generate_webform_json(session: Session, id: int):
                         option = [opt.optionName for opt in option]
                         d.update({"options": option})
                     if d['type'] == QuestionType.number.value:
-                        value = int(d['value'])
+                        try:
+                            value = int(d['value'])
+                        except ValueError:
+                            value = float(d['value'])
                         operator = d['operator']
                         if d['operator'] == OperatorType.greater_than:
                             operator = "min"
