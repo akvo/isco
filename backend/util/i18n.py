@@ -44,7 +44,7 @@ class EmailText(enum.Enum):
                 <li>For DISCO:
                 Mark de Waard (dewaard@idhtrade.org)</li>
                 <li>For GISCO:
-                Julia Jawtusch (julia.jawtusch@giz.de)</li>
+                Ulrike Joras (ulrike.joras@giz.de)</li>
             </ul>
             ''',
         "message": None,
@@ -67,7 +67,7 @@ class EmailText(enum.Enum):
                 <li>Für DISCO:
                 Mark de Waard (dewaard@idhtrade.org)</li>
                 <li>Für GISCO:
-                Julia Jawtusch (julia.jawtusch@giz.de)</li>
+                Ulrike Joras (ulrike.joras@giz.de)</li>
             </ul>
             ''',
         "image": None,
@@ -201,7 +201,7 @@ class EmailText(enum.Enum):
                     <li>For DISCO:
                     Mark de Waard (dewaard@idhtrade.org)</li>
                     <li>For GISCO:
-                    Julia Jawtusch (julia.jawtusch@giz.de)</li>
+                    Ulrike Joras (ulrike.joras@giz.de)</li>
                 </ul>
                 </p>
                 </div>''',
@@ -232,7 +232,7 @@ class EmailText(enum.Enum):
                     <li>Für DISCO:
                     Mark de Waard (dewaard@idhtrade.org)</li>
                     <li>Für GISCO:
-                    Julia Jawtusch (julia.jawtusch@giz.de)</li>
+                    Ulrike Joras (ulrike.joras@giz.de)</li>
                 </ul>
                 </div>''',
         "message": None,
