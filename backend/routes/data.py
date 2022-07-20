@@ -120,7 +120,7 @@ def get(req: Request,
             value = a['value']
             if qid in cascades and cascades[qid] and value:
                 temp = cascades[qid]
-                new_value = [temp[int(x)] for x in value]
+                new_value = [temp[int(float(x))] for x in value]
                 a['value'] = "|".join(new_value)
     return {
         'current': page,
