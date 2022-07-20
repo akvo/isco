@@ -129,7 +129,7 @@ const dataSecurityContent = {
       </p>
       <ul className="pl-5">
         <li>Beate Weiskopf, GISCO</li>
-        <li>Julia Jawtusch, GISCO</li>
+        <li>Ulrike Joras, GISCO</li>
         <li>Patrick Stoop, C-Lever.org</li>
         <li>Hilde Geens, C-Lever.org</li>
       </ul>
@@ -366,7 +366,7 @@ const dataSecurityContent = {
       </p>
       <ul className="pl-5">
         <li>Beate Weiskopf</li>
-        <li>Julia Jawtusch</li>
+        <li>Ulrike Joras</li>
         <li>Weiterer Mitarbeitender der Geschäftsstelle, zu benennen</li>
         <li>Patrick Stoop, C-Lever.org</li>
         <li>Hilde Geens, C-Lever.org</li>
