@@ -145,7 +145,7 @@ def generate_summary(session: Session,
     for s in summary:
         if s['qid'] in q_cascades and q_cascades[s['qid']] \
            and s['answer'] is not None:
-            cascade_list_ids = [int(x) for x in s['answer'].split("|")]
+            cascade_list_ids = [int(float(x)) for x in s['answer'].split("|")]
             cascade_answer = []
             temp = q_cascades[s['qid']]
             for cl in cascade_list_ids:
