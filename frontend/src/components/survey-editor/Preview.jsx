@@ -135,6 +135,16 @@ const Preview = () => {
                 rule: q.rule,
               };
             }
+            // allow decimal
+            if (q.rule && q.rule?.allow_decimal) {
+              qVal = {
+                ...qVal,
+                rule: {
+                  ...q.rule,
+                  allowDecimal: true,
+                },
+              };
+            }
             // allow other
             if (q.rule && q.rule?.allow_other) {
               qVal = {

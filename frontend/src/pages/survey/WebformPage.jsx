@@ -154,6 +154,13 @@ const WebformPage = ({
                     ),
                   },
                 ];
+                // allow decimal
+                if (q?.rule && q?.rule?.allowDecimal) {
+                  q.rule = {
+                    ...q.rule,
+                    allowDecimal: true,
+                  };
+                }
                 if (q?.extra) {
                   extra = [...extra, q.extra];
                 }
