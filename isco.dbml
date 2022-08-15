@@ -1,0 +1,215 @@
+Table "alembic_version" {
+ 	"version_num" varchar(32)  
+ } 
+ 
+ Table "answer" {
+ 	"id" integer   
+ 	"question" integer   
+ 	"data" integer   
+ 	"value" number   
+ 	"text" text   
+ 	"options" ARRAY   
+ 	"repeat_index" integer   
+ 	"created" timestamp  [default: 'CURRENT_TIMESTAMP'] 
+ 	"updated" timestamp   
+ 	"comment" text   
+ } 
+ 
+ Table "cascade" {
+ 	"id" integer   
+ 	"name" varchar   
+ 	"type" USER-DEFINED   
+ } 
+ 
+ Table "cascade_list" {
+ 	"id" integer   
+ 	"cascade" integer   
+ 	"parent" integer   
+ 	"code" varchar   
+ 	"name" varchar   
+ 	"path" varchar   
+ 	"level" integer   
+ } 
+ 
+ Table "collaborator" {
+ 	"id" integer   
+ 	"data" integer   
+ 	"organisation" integer   
+ } 
+ 
+ Table "data" {
+ 	"id" integer   
+ 	"form" integer   
+ 	"name" varchar   
+ 	"geo" ARRAY   
+ 	"created_by" integer   
+ 	"submitted_by" integer   
+ 	"created" timestamp  [default: 'CURRENT_TIMESTAMP'] 
+ 	"updated" timestamp   
+ 	"submitted" timestamp   
+ 	"organisation" integer   
+ 	"locked_by" integer   
+ } 
+ 
+ Table "download" {
+ 	"id" integer   
+ 	"uuid" uuid   
+ 	"data" integer   
+ 	"organisation" integer   
+ 	"file" varchar   
+ 	"request_by" integer   
+ 	"approved_by" integer   
+ 	"created" timestamp  [default: 'CURRENT_TIMESTAMP'] 
+ 	"expired" timestamp   
+ 	"form_type" USER-DEFINED   
+ } 
+ 
+ Table "feedback" {
+ 	"id" integer   
+ 	"user" integer   
+ 	"title" varchar   
+ 	"category" varchar   
+ 	"content" text   
+ 	"created" timestamp  [default: 'CURRENT_TIMESTAMP'] 
+ } 
+ 
+ Table "form" {
+ 	"id" integer   
+ 	"name" varchar   
+ 	"languages" ARRAY   
+ 	"created" timestamp   
+ 	"description" text   
+ 	"version" number   
+ 	"url" text   
+ 	"published" timestamp   
+ } 
+ 
+ Table "isco_type" {
+ 	"id" integer   
+ 	"name" varchar   
+ } 
+ 
+ Table "member_type" {
+ 	"id" integer   
+ 	"name" varchar   
+ } 
+ 
+ Table "option" {
+ 	"id" integer   
+ 	"code" varchar   
+ 	"name" varchar   
+ 	"translations" ARRAY   
+ 	"question" integer   
+ 	"order" integer   
+ } 
+ 
+ Table "organisation" {
+ 	"id" integer   
+ 	"code" varchar   
+ 	"name" varchar   
+ 	"active" boolean   
+ 	"created" timestamp   
+ } 
+ 
+ Table "organisation_isco" {
+ 	"id" integer   
+ 	"isco_type" integer   
+ 	"organisation" integer   
+ } 
+ 
+ Table "organisation_member" {
+ 	"id" integer   
+ 	"member_type" integer   
+ 	"organisation" integer   
+ } 
+ 
+ Table "question" {
+ 	"id" integer   
+ 	"form" integer   
+ 	"question_group" integer   
+ 	"name" varchar   
+ 	"translations" ARRAY   
+ 	"mandatory" boolean  [default: true] 
+ 	"datapoint_name" boolean  [default: false] 
+ 	"variable_name" varchar   
+ 	"type" USER-DEFINED   
+ 	"personal_data" boolean  [default: false] 
+ 	"rule" jsonb   
+ 	"tooltip" varchar   
+ 	"tooltip_translations" ARRAY   
+ 	"repeating_objects" ARRAY   
+ 	"created" timestamp   
+ 	"cascade" integer   
+ 	"order" integer   
+ } 
+ 
+ Table "question_group" {
+ 	"id" integer   
+ 	"form" integer   
+ 	"name" varchar   
+ 	"translations" ARRAY   
+ 	"repeat" boolean  [default: true] 
+ 	"created" timestamp   
+ 	"order" integer   
+ 	"description" text   
+ 	"repeat_text" varchar   
+ } 
+ 
+ Table "question_group_isco_access" {
+ 	"id" integer   
+ 	"question_group" integer   
+ 	"isco_type" integer   
+ } 
+ 
+ Table "question_group_member_access" {
+ 	"id" integer   
+ 	"question_group" integer   
+ 	"member_type" integer   
+ } 
+ 
+ Table "question_isco_access" {
+ 	"id" integer   
+ 	"question" integer   
+ 	"isco_type" integer   
+ } 
+ 
+ Table "question_member_access" {
+ 	"id" integer   
+ 	"question" integer   
+ 	"member_type" integer   
+ } 
+ 
+ Table "reset_password" {
+ 	"id" integer   
+ 	"user" integer   
+ 	"url" varchar   
+ 	"valid" timestamp   
+ } 
+ 
+ Table "skip_logic" {
+ 	"id" integer   
+ 	"question" integer   
+ 	"dependent_to" integer   
+ 	"operator" USER-DEFINED   
+ 	"value" varchar   
+ 	"type" varchar   
+ } 
+ 
+ Table "user" {
+ 	"id" integer   
+ 	"organisation" integer   
+ 	"name" varchar   
+ 	"email" varchar(254)  
+ 	"phone_number" varchar   
+ 	"password" varchar   
+ 	"email_verified" timestamp   
+ 	"role" USER-DEFINED   
+ 	"last_activity" timestamp   
+ 	"created" timestamp   
+ 	"invitation" text   
+ 	"questionnaires" ARRAY   
+ 	"approved" boolean   
+ } 
+ 
+  
+ 
