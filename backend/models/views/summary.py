@@ -26,6 +26,7 @@ class Summary(Base):
     members = Column(String)
     submitted = Column(DateTime)
     answer = Column(Text)
+    comment = Column(Text)
 
     def __repr__(self) -> int:
         return f"<Summary {self.id}>"
@@ -46,5 +47,6 @@ class Summary(Base):
             'organisation': self.organisation,
             'member_type': self.members,
             'submitted': self.submitted.strftime("%B %d, %Y"),
-            'answer': self.answer
+            'answer': self.answer,
+            'comment': self.comment
         }

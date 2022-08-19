@@ -27,11 +27,14 @@ def add_order_to_name(x, order, column_name, max_order):
     return num + '. ' + x[column_name]
 
 
-def write_sheet(df, writer, sheet_name):
+def write_sheet(df, writer, sheet_name, show_comment=False):
+    answer_col = ['answer']
+    unstack_col = ["question_group_name", "question_name"]
     cols = [
         "data_id", "question_group_name", "question_name", "member_type",
         "submitted"
     ]
+
     if sheet_name != main_sheet_name:
         cols = [
             "data_id", "repeat_index", "question_group_name", "question_name",
@@ -51,16 +54,19 @@ def write_sheet(df, writer, sheet_name):
                                    column_name='question',
                                    max_order=max_qo,
                                    axis=1)
-    df = df[cols + ["answer"]]
+    if show_comment:
+        answer_col.append('comment')
+
+    df = df[cols + answer_col]
     # replace NaN with empty string
     df = df.fillna('')
     df = df.groupby(cols).first()
-    df = df.unstack(["question_group_name", "question_name"])
+    df = df.unstack(unstack_col)
     df.columns = df.columns.rename("", level=1)
     df.columns = df.columns.rename("", level=2)
     if len(sheet_name) > 20:
         sheet_name = sheet_name[:15] + "..."
-    df = df["answer"]
+    df = df[answer_col]
     # NULL REPEAT INDEX FIX
     # null repeat index because of that question doesn't have answer
     if sheet_name != main_sheet_name:
@@ -77,7 +83,8 @@ def generate_summary(session: Session,
                      filename: str,
                      form_id: int,
                      user_org: int,
-                     member_type: Optional[int] = None):
+                     member_type: Optional[int] = None,
+                     show_comment: Optional[bool] = False):
     tmp_file = f"./tmp/{filename}.xlsx"
     # find user organisation isco to filter the question
     org_isco = session.query(OrganisationIsco).filter(
@@ -142,6 +149,7 @@ def generate_summary(session: Session,
         for cl in cascade_list:
             temp.update({cl.id: cl.name})
         q_cascades.update({q.id: temp})
+
     for s in summary:
         if s['qid'] in q_cascades and q_cascades[s['qid']] \
            and s['answer'] is not None:
@@ -160,14 +168,14 @@ def generate_summary(session: Session,
     data = source[~source["repeat"]].reset_index()
     # exception for filtered by member type return only repeatable question
     if data.shape[0]:
-        write_sheet(data, writer, main_sheet_name)
+        write_sheet(data, writer, main_sheet_name, show_comment)
     # rendering repeatable question group
     repeat_rows = source[source["repeat"]]
     group_names = list(repeat_rows["question_group"].unique())
     for group_name in group_names:
         data = repeat_rows[repeat_rows["question_group"] ==
                            group_name].reset_index()
-        write_sheet(data, writer, group_name)
+        write_sheet(data, writer, group_name, show_comment)
     session.close()
     writer.save()
     return tmp_file
