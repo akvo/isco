@@ -226,6 +226,8 @@ class Question(Base):
         if self.rule:
             if "allow_other" not in self.rule:
                 question.update({"rule": self.rule})
+            if "allow_decimal" in self.rule:
+                question.get('rule').update({"allowDecimal": True})
             if "allow_other" in self.rule:
                 question.update({"allowOther": self.rule['allow_other']})
                 question.update({"allowOtherText": "Other"})
