@@ -14,17 +14,22 @@ import pandas as pd
 import math
 
 main_sheet_name = "Index"
+COMMENT_PREFIX_MARK = "Z#Z#"  # to put comment after each question
 
 
-def add_order_to_name(x, order, column_name, max_order):
+def add_order_to_name(x, order, column_name, max_order, show_comment):
     num = str(x[order])
     count = math.floor(math.log10(max_order))
     order_count = math.floor(math.log10(x[order]))
+    col_name = x[column_name]
     if len(num) <= count:
         prefix = ['0' for c in range(count - order_count)]
         prefix = ''.join(prefix)
         num = f'{prefix}{num}'
-    return num + '. ' + x[column_name]
+    if show_comment and COMMENT_PREFIX_MARK in col_name:
+        num = f"{num}|comment"
+        col_name = col_name.replace(COMMENT_PREFIX_MARK, '')
+    return f"{num}. {col_name}"
 
 
 def write_sheet(df, writer, sheet_name, show_comment=False):
@@ -48,15 +53,14 @@ def write_sheet(df, writer, sheet_name, show_comment=False):
                                          order='go',
                                          column_name='question_group',
                                          max_order=max_go,
-                                         axis=1)
+                                         axis=1,
+                                         show_comment=show_comment)
     df["question_name"] = df.apply(add_order_to_name,
                                    order='qo',
                                    column_name='question',
                                    max_order=max_qo,
-                                   axis=1)
-    if show_comment:
-        answer_col.append('comment')
-
+                                   axis=1,
+                                   show_comment=show_comment)
     df = df[cols + answer_col]
     # replace NaN with empty string
     df = df.fillna('')
@@ -150,6 +154,7 @@ def generate_summary(session: Session,
             temp.update({cl.id: cl.name})
         q_cascades.update({q.id: temp})
 
+    transform = []
     for s in summary:
         if s['qid'] in q_cascades and q_cascades[s['qid']] \
            and s['answer'] is not None:
@@ -161,9 +166,16 @@ def generate_summary(session: Session,
                     cascade_answer.append(temp[cl])
             s['answer'] = '|'.join(cascade_answer) \
                 if cascade_answer else s['answer']
+        transform.append(s)
+        if show_comment:
+            # add comment as new row for each question
+            temp = s.copy()
+            temp['question'] = f"{COMMENT_PREFIX_MARK}{s['question']}"
+            temp['answer'] = s['comment']
+            transform.append(temp)
 
     # start create spreadsheet
-    source = pd.DataFrame(summary)
+    source = pd.DataFrame(transform)
     writer = pd.ExcelWriter(tmp_file, engine='xlsxwriter')
     data = source[~source["repeat"]].reset_index()
     # exception for filtered by member type return only repeatable question
@@ -173,8 +185,8 @@ def generate_summary(session: Session,
     repeat_rows = source[source["repeat"]]
     group_names = list(repeat_rows["question_group"].unique())
     for group_name in group_names:
-        data = repeat_rows[repeat_rows["question_group"] ==
-                           group_name].reset_index()
+        data = repeat_rows[
+            repeat_rows["question_group"] == group_name].reset_index()
         write_sheet(data, writer, group_name, show_comment)
     session.close()
     writer.save()
