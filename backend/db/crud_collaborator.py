@@ -33,11 +33,10 @@ def get_collaborator_by_data(session: Session,
     return collaborator
 
 
-# comment for now
-# def delete_collaborator_by_data(session: Session, data: int):
-#     session.query(Collaborator).filter(
-#         Collaborator.data == data).delete()
-#     session.commit()
+def delete_collaborator_by_data(session: Session, data: int):
+    session.query(Collaborator).filter(
+        Collaborator.data == data).delete()
+    session.commit()
 
 
 def delete_collaborator_by_ids(session: Session, ids: List[int]):

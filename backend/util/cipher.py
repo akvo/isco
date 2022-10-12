@@ -21,20 +21,19 @@ class Cipher():
             [keys[nab.find(a)] if a in nab else a for a in self.str_param])
         return f"{ad}{n}"
 
-    # commented for now
-    # def decode(self):
-    #     n = int(self.str_param[-1])
-    #     nab = "".join([
-    #         chars[-i if i + int(n) > an else int(n) + i - an]
-    #         for i, a in enumerate(chars)
-    #     ])
-    #     try:
-    #         ad = "".join([
-    #             nab[keys.find(a)] if a in keys else a
-    #             for a in self.str_param[:-1]
-    #         ])
-    #         ad = ad.split("-")
-    #         return ad[0], int(ad[1])
-    #     except IndexError:
-    #         pass
-    #     return None, None
+    def decode(self):
+        n = int(self.str_param[-1])
+        nab = "".join([
+            chars[-i if i + int(n) > an else int(n) + i - an]
+            for i, a in enumerate(chars)
+        ])
+        try:
+            ad = "".join([
+                nab[keys.find(a)] if a in keys else a
+                for a in self.str_param[:-1]
+            ])
+            ad = ad.split("-")
+            return ad[0], int(ad[1])
+        except IndexError:
+            pass
+        return None, None

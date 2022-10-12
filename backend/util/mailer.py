@@ -27,18 +27,18 @@ def send(data):
     res = res.json()
     return res
 
-# commented for now
-# def generate_icon(icon: str, color: Optional[str] = None):
-#     svg_path = f"./templates/icons/{icon}.svg"
-#     try:
-#         open(svg_path)
-#     except (OSError, IOError):
-#         return None
-#     soup = BeautifulSoup(open(svg_path, "r"), "lxml")
-#     if color:
-#         for spath in soup.findAll("path"):
-#             spath['style'] = f"fill: {color};"
-#     return soup
+
+def generate_icon(icon: str, color: Optional[str] = None):
+    svg_path = f"./templates/icons/{icon}.svg"
+    try:
+        open(svg_path)
+    except (OSError, IOError):
+        return None
+    soup = BeautifulSoup(open(svg_path, "r"), "lxml")
+    if color:
+        for spath in soup.findAll("path"):
+            spath['style'] = f"fill: {color};"
+    return soup
 
 
 def html_to_text(html):
