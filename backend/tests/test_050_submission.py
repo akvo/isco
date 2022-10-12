@@ -431,7 +431,7 @@ class TestSubmissionRoutes():
                     "comment": "Q4 comment",
                     "question": 4,
                     "repeat_index": 0,
-                    "value": 25
+                    "value": 25.0
                 },
                 {
                     "comment": None,
@@ -455,13 +455,13 @@ class TestSubmissionRoutes():
                     "comment": "Q5 comment",
                     "question": 5,
                     "repeat_index": 0,
-                    "value": 75
+                    "value": 75.0
                 },
                 {
                     'comment': None,
                     'question': 6,
                     'repeat_index': 0,
-                    'value': ['2', '12']
+                    'value': [2.0, 12.0]
                 },
                 {
                     'comment': None,

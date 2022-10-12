@@ -339,17 +339,17 @@ class TestAdvancedSubmissionRoute():
             "question": 4,
             "repeat_index": 0,
             "comment": "Q4 comment",
-            "value": 25
+            "value": 25.0
         }, {
             "question": 5,
             "repeat_index": 0,
             "comment": "Q5 comment data cleaning",
-            "value": 100
+            "value": 100.0
         }, {
             "question": 6,
             "repeat_index": 0,
             "comment": None,
-            "value": ["2", "12"]
+            "value": [2.0, 12.0]
         }, {
             "question": 7,
             "repeat_index": 0,
