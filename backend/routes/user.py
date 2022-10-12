@@ -238,7 +238,7 @@ def verify_email(req: Request,
                 <li>For DISCO:
                 Mark de Waard (dewaard@idhtrade.org)</li>
                 <li>For GISCO:
-                Julia Jawtusch (julia.jawtusch@giz.de)</li>
+                Ulrike Joras (ulrike.joras@giz.de)</li>
             </ul>
             '''
         body_member_translation = f'''
@@ -260,7 +260,7 @@ def verify_email(req: Request,
                 <li>Für DISCO:
                 Mark de Waard (dewaard@idhtrade.org)</li>
                 <li>Für GISCO:
-                Julia Jawtusch (julia.jawtusch@giz.de)</li>
+                Ulrike Joras (ulrike.joras@giz.de)</li>
             </ul>
         '''
         email_member = Email(

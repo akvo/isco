@@ -75,7 +75,8 @@ async def new_summary_file(req: Request,
                             filename=file_id,
                             form_id=form_id,
                             user_org=user.organisation,
-                            member_type=member_type)
+                            member_type=member_type,
+                            show_comment=True)
     if TESTING:
         return {"uuid": uuid, "code": code}
     background_tasks.add_task(delete_temporary, file_id)

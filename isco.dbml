@@ -1,0 +1,283 @@
+Table "alembic_version" {
+ 	"version_num" varchar(32)
+ }
+
+ Table "answer" {
+ 	"id" integer
+ 	"question" integer
+ 	"data" integer
+ 	"value" number
+ 	"text" text
+ 	"options" ARRAY
+ 	"repeat_index" integer
+ 	"created" timestamp  [default: 'CURRENT_TIMESTAMP']
+ 	"updated" timestamp
+ 	"comment" text
+ }
+
+ Enum cascade_type {
+  cascade
+  nested
+}
+
+ Table "cascade" {
+ 	"id" integer
+ 	"name" varchar
+ 	"type" cascade_type
+ }
+
+ Table "cascade_list" {
+ 	"id" integer
+ 	"cascade" integer
+ 	"parent" integer
+ 	"code" varchar
+ 	"name" varchar
+ 	"path" varchar
+ 	"level" integer
+ }
+
+ Table "collaborator" {
+ 	"id" integer
+ 	"data" integer
+ 	"organisation" integer
+ }
+
+ Table "data" {
+ 	"id" integer
+ 	"form" integer
+ 	"name" varchar
+ 	"geo" ARRAY
+ 	"created_by" integer
+ 	"submitted_by" integer
+ 	"created" timestamp  [default: 'CURRENT_TIMESTAMP']
+ 	"updated" timestamp
+ 	"submitted" timestamp
+ 	"organisation" integer
+ 	"locked_by" integer
+ }
+
+Enum form_type {
+  member
+  project
+}
+
+ Table "download" {
+ 	"id" integer
+ 	"uuid" uuid
+ 	"data" integer
+ 	"organisation" integer
+ 	"file" varchar
+ 	"request_by" integer
+ 	"approved_by" integer
+ 	"created" timestamp  [default: 'CURRENT_TIMESTAMP']
+ 	"expired" timestamp
+ 	"form_type" form_type
+ }
+
+ Table "feedback" {
+ 	"id" integer
+ 	"user" integer
+ 	"title" varchar
+ 	"category" varchar
+ 	"content" text
+ 	"created" timestamp  [default: 'CURRENT_TIMESTAMP']
+ }
+
+ Table "form" {
+ 	"id" integer
+ 	"name" varchar
+ 	"languages" ARRAY
+ 	"created" timestamp
+ 	"description" text
+ 	"version" number
+ 	"url" text
+ 	"published" timestamp
+ }
+
+ Table "isco_type" {
+ 	"id" integer
+ 	"name" varchar
+ }
+
+ Table "member_type" {
+ 	"id" integer
+ 	"name" varchar
+ }
+
+ Table "option" {
+ 	"id" integer
+ 	"code" varchar
+ 	"name" varchar
+ 	"translations" ARRAY
+ 	"question" integer
+ 	"order" integer
+ }
+
+ Table "organisation" {
+ 	"id" integer
+ 	"code" varchar
+ 	"name" varchar
+ 	"active" boolean
+ 	"created" timestamp
+ }
+
+ Table "organisation_isco" {
+ 	"id" integer
+ 	"isco_type" integer
+ 	"organisation" integer
+ }
+
+ Table "organisation_member" {
+ 	"id" integer
+ 	"member_type" integer
+ 	"organisation" integer
+ }
+
+Enum question_type {
+  input
+	text
+	number
+	option
+	multiple_option
+	date
+	nested_list
+	cascade
+}
+
+ Table "question" {
+ 	"id" integer
+ 	"form" integer
+ 	"question_group" integer
+ 	"name" varchar
+ 	"translations" ARRAY
+ 	"mandatory" boolean  [default: true]
+ 	"datapoint_name" boolean  [default: false]
+ 	"variable_name" varchar
+ 	"type" question_type
+ 	"personal_data" boolean  [default: false]
+ 	"rule" jsonb
+ 	"tooltip" varchar
+ 	"tooltip_translations" ARRAY
+ 	"repeating_objects" ARRAY
+ 	"created" timestamp
+ 	"cascade" integer
+ 	"order" integer
+ }
+
+ Table "question_group" {
+ 	"id" integer
+ 	"form" integer
+ 	"name" varchar
+ 	"translations" ARRAY
+ 	"repeat" boolean  [default: true]
+ 	"created" timestamp
+ 	"order" integer
+ 	"description" text
+ 	"repeat_text" varchar
+ }
+
+ Table "question_group_isco_access" {
+ 	"id" integer
+ 	"question_group" integer
+ 	"isco_type" integer
+ }
+
+ Table "question_group_member_access" {
+ 	"id" integer
+ 	"question_group" integer
+ 	"member_type" integer
+ }
+
+ Table "question_isco_access" {
+ 	"id" integer
+ 	"question" integer
+ 	"isco_type" integer
+ }
+
+ Table "question_member_access" {
+ 	"id" integer
+ 	"question" integer
+ 	"member_type" integer
+ }
+
+ Table "reset_password" {
+ 	"id" integer
+ 	"user" integer
+ 	"url" varchar
+ 	"valid" timestamp
+ }
+
+ Enum sk_operator {
+  equal
+	not_equal
+	greater_than
+	less_than
+	greater_than_or_equal
+	less_than_or_equal
+}
+
+ Table "skip_logic" {
+ 	"id" integer
+ 	"question" integer
+ 	"dependent_to" integer
+ 	"operator" sk_operator
+ 	"value" varchar
+ 	"type" varchar
+ }
+
+ Enum user_role {
+  secretariat_admin
+	member_admin
+	member_user
+}
+
+ Table "user" {
+ 	"id" integer
+ 	"organisation" integer
+ 	"name" varchar
+ 	"email" varchar(254)
+ 	"phone_number" varchar
+ 	"password" varchar
+ 	"email_verified" timestamp
+ 	"role" user_role
+ 	"last_activity" timestamp
+ 	"created" timestamp
+ 	"invitation" text
+ 	"questionnaires" ARRAY
+ 	"approved" boolean
+ }
+
+
+
+Ref: cascade.id < cascade_list.cascade
+Ref: data.id < answer.data
+Ref: question.id < answer.question
+Ref: data.id < collaborator.data
+Ref: organisation.id < collaborator.organisation
+Ref: user.id < data.created_by
+Ref: form.id < data.form
+Ref: user.id < data.submitted_by
+Ref: user.id < download.approved_by
+Ref: user.id < download.request_by
+Ref: organisation.id < download.organisation
+Ref: user.id < feedback.user
+Ref: question.id < option.question
+Ref: isco_type.id < organisation_isco.isco_type
+Ref: organisation.id < organisation_isco.organisation
+Ref: member_type.id < organisation_member.member_type
+Ref: organisation.id < organisation_member.organisation
+Ref: form.id < question.form
+Ref: cascade.id < question.cascade
+Ref: question_group.id < question.question_group
+Ref: form.id < question_group.form
+Ref: isco_type.id < question_group_isco_access.isco_type
+Ref: question_group.id < question_group_isco_access.question_group
+Ref: member_type.id < question_group_member_access.member_type
+Ref: question_group.id < question_group_member_access.question_group
+Ref: isco_type.id < question_isco_access.isco_type
+Ref: question.id < question_isco_access.question
+Ref: member_type.id < question_member_access.member_type
+Ref: question.id < question_member_access.question
+Ref: user.id < reset_password.user
+Ref: question.id - skip_logic.question
+Ref: organisation.id < user.organisation

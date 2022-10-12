@@ -18,16 +18,16 @@ class AnswerDictWithId(TypedDict):
     question: int
     repeat_index: Optional[int] = None
     comment: Optional[str] = None
-    value: Union[int, float, str, bool, dict, List[str], List[int],
-                 List[float], None]
+    value: Union[
+        float, int, str, bool, dict, List[float], List[int], List[str], None]
 
 
 class AnswerDict(TypedDict):
     question: int
     repeat_index: Optional[int] = None
     comment: Optional[str] = None
-    value: Union[int, float, str, bool, dict, List[str], List[int],
-                 List[float], None]
+    value: Union[
+        float, int, str, bool, dict, List[float], List[int], List[str], None]
 
 
 class AnswerDictWithQuestionName(TypedDict):
@@ -38,26 +38,29 @@ class AnswerDictWithQuestionName(TypedDict):
     question_order: int
     repeat_index: Optional[int] = None
     comment: Optional[str] = None
-    value: Union[int, float, str, bool, dict, List[str], List[int],
-                 List[float], None]
+    value: Union[
+        float, int, str, bool, dict, List[float], List[int], List[str], None]
 
 
 class Answer(Base):
     __tablename__ = "answer"
-    id = Column(Integer,
-                primary_key=True,
-                index=True,
-                nullable=True,
-                autoincrement=True)
-    question = Column(Integer,
-                      ForeignKey('question.id',
-                                 onupdate="CASCADE",
-                                 ondelete="CASCADE"),
-                      primary_key=True)
-    data = Column(Integer,
-                  ForeignKey('data.id', onupdate="CASCADE",
-                             ondelete="CASCADE"),
-                  primary_key=True)
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
+        nullable=True,
+        autoincrement=True
+    )
+    question = Column(
+        Integer,
+        ForeignKey("question.id", onupdate="CASCADE", ondelete="CASCADE"),
+        primary_key=True,
+    )
+    data = Column(
+        Integer,
+        ForeignKey("data.id", onupdate="CASCADE", ondelete="CASCADE"),
+        primary_key=True,
+    )
     text = Column(Text, nullable=True)
     value = Column(Float, nullable=True)
     options = Column(pg.ARRAY(String), nullable=True)
@@ -67,16 +70,18 @@ class Answer(Base):
     updated = Column(DateTime, nullable=True)
     question_detail = relationship("Question", backref="answer")
 
-    def __init__(self,
-                 question: int,
-                 created: datetime,
-                 data: Optional[int] = None,
-                 text: Optional[str] = None,
-                 value: Optional[float] = None,
-                 options: Optional[List[str]] = None,
-                 comment: Optional[str] = None,
-                 repeat_index: Optional[int] = None,
-                 updated: Optional[datetime] = None):
+    def __init__(
+        self,
+        question: int,
+        created: datetime,
+        data: Optional[int] = None,
+        text: Optional[str] = None,
+        value: Optional[float] = None,
+        options: Optional[List[str]] = None,
+        comment: Optional[str] = None,
+        repeat_index: Optional[int] = None,
+        updated: Optional[datetime] = None,
+    ):
         self.question = question
         self.data = data
         self.text = text
@@ -110,44 +115,58 @@ class Answer(Base):
         answer = {
             "question": self.question,
             "repeat_index": self.repeat_index,
-            "comment": self.comment
+            "comment": self.comment,
         }
-        type = self.question_detail.type
+        q = self.question_detail
+        type = q.type
         if type in [QuestionType.input, QuestionType.text, QuestionType.date]:
             answer.update({"value": self.text})
         if type == QuestionType.number:
-            answer.update({"value": self.value})
+            val = self.value
+            if q.rule:
+                if q.rule.get("allow_decimal"):
+                    val = float(val) if val else None
+            else:
+                val = int(val) if val else None
+            answer.update({"value": val})
         if type == QuestionType.option:
             answer.update({"value": self.options[0]})
         if type in [QuestionType.multiple_option, QuestionType.nested_list]:
             answer.update({"value": self.options})
         if type == QuestionType.cascade:
-            answer.update({"value": [int(o) for o in self.options]})
+            answer.update({"value": [int(float(o)) for o in self.options]})
         return answer
 
     @property
     def formattedWithQuestionName(self) -> AnswerDictWithQuestionName:
-        question_group = self.question_detail.question_group_detail
+        q = self.question_detail
+        question_group = q.question_group_detail
         answer = {
             "question_group": question_group.name,
             "question_group_order": question_group.order,
             "question": self.question,
-            "question_name": self.question_detail.name,
-            "question_order": self.question_detail.order,
+            "question_name": q.name,
+            "question_order": q.order,
             "repeat_index": self.repeat_index,
-            "comment": self.comment
+            "comment": self.comment,
         }
-        type = self.question_detail.type
+        type = q.type
         if type in [QuestionType.input, QuestionType.text, QuestionType.date]:
             answer.update({"value": self.text})
         if type == QuestionType.number:
-            answer.update({"value": self.value})
+            val = self.value
+            if q.rule:
+                if q.rule.get("allow_decimal"):
+                    val = float(val) if val else None
+            else:
+                val = int(val) if val else None
+            answer.update({"value": val})
         if type == QuestionType.option:
             answer.update({"value": self.options[0]})
         if type in [QuestionType.multiple_option, QuestionType.nested_list]:
             answer.update({"value": self.options})
         if type == QuestionType.cascade:
-            answer.update({"value": [int(o) for o in self.options]})
+            answer.update({"value": [int(float(o)) for o in self.options]})
         return answer
 
     @property
@@ -156,19 +175,26 @@ class Answer(Base):
             "id": self.id,
             "question": self.question,
             "repeat_index": self.repeat_index,
-            "comment": self.comment
+            "comment": self.comment,
         }
-        type = self.question_detail.type
+        q = self.question_detail
+        type = q.type
         if type in [QuestionType.input, QuestionType.text, QuestionType.date]:
             answer.update({"value": self.text})
         if type == QuestionType.number:
-            answer.update({"value": self.value})
+            val = self.value
+            if q.rule:
+                if q.rule.get("allow_decimal"):
+                    val = float(val) if val else None
+            else:
+                val = int(val) if val else None
+            answer.update({"value": val})
         if type == QuestionType.option:
             answer.update({"value": self.options[0]})
         if type in [QuestionType.multiple_option, QuestionType.nested_list]:
             answer.update({"value": self.options})
         if type == QuestionType.cascade:
-            answer.update({"value": [int(o) for o in self.options]})
+            answer.update({"value": [int(float(o)) for o in self.options]})
         return answer
 
     @property
@@ -178,50 +204,61 @@ class Answer(Base):
                 "value": self.text or self.value or self.options,
                 "repeat_index": self.repeat_index,
                 "comment": self.comment,
-                "data": self
+                "data": self,
             }
         }
 
-    # comment for now
-    # @property
-    # def only_value(self) -> List:
-    #     type = self.question_detail.type
-    #     if type in [QuestionType.number]:
-    #         return self.value
-    #     if type in [QuestionType.input,
-    # QuestionType.text, QuestionType.date]:
-    #         return self.text
-    #     if type == QuestionType.number:
-    #         return self.value
-    #     if type == QuestionType.option:
-    #         return self.options[0] if self.options else None
-    #     if type in [
-    #             QuestionType.multiple_option, QuestionType.cascade,
-    #             QuestionType.nested_list
-    #     ]:
-    #         return self.options
-    #     if type == QuestionType.cascade:
-    #         return [int(o) for o in self.options]
-    #     return None
+    @property
+    def only_value(self) -> List:
+        q = self.question_detail
+        type = q.type
+        if type in [QuestionType.input, QuestionType.text, QuestionType.date]:
+            return self.text
+        if type == QuestionType.number:
+            answer = self.value
+            if q.rule:
+                if q.rule.get("allow_decimal"):
+                    answer = float(answer) if answer else None
+            else:
+                answer = int(answer) if answer else None
+            return answer
+        if type == QuestionType.option:
+            return self.options[0] if self.options else None
+        if type in [
+            QuestionType.multiple_option,
+            QuestionType.cascade,
+            QuestionType.nested_list,
+        ]:
+            return self.options
+        if type == QuestionType.cascade:
+            return [int(float(o)) for o in self.options]
+        return None
 
     @property
     def simplified(self) -> TypedDict:
+        q = self.question_detail
         date = self.updated or self.created
-        type = self.question_detail.type
+        type = q.type
         answer = None
         if type in [QuestionType.input, QuestionType.text, QuestionType.date]:
             answer = self.text
         if type == QuestionType.number:
             answer = self.value
+            if q.rule:
+                if q.rule.get("allow_decimal"):
+                    answer = float(answer) if answer else None
+            else:
+                answer = int(answer) if answer else None
         if type == QuestionType.option:
             answer = self.options[0] if self.options else None
         if type in [
-                QuestionType.multiple_option, QuestionType.cascade,
-                QuestionType.nested_list
+            QuestionType.multiple_option,
+            QuestionType.cascade,
+            QuestionType.nested_list,
         ]:
             return self.options
         if type == QuestionType.cascade:
-            return [int(o) for o in self.options]
+            return [int(float(o)) for o in self.options]
         return {
             "value": answer,
             "repeat_index": self.repeat_index,
@@ -235,16 +272,21 @@ class Answer(Base):
         q = self.question_detail
         qname = f"{self.question_detail.id}|{self.question_detail.name}"
         if q.type in [
-                QuestionType.input, QuestionType.text, QuestionType.date
-        ]:
+                QuestionType.input, QuestionType.text, QuestionType.date]:
             answer = self.text
         if q.type == QuestionType.number:
             answer = self.value
+            if q.rule:
+                if q.rule.get("allow_decimal"):
+                    answer = float(answer) if answer else None
+            else:
+                answer = int(answer) if answer else None
         if q.type == QuestionType.option:
             answer = self.options[0] if self.options else None
         if q.type in [
-                QuestionType.multiple_option, QuestionType.cascade,
-                QuestionType.nested_list
+            QuestionType.multiple_option,
+            QuestionType.cascade,
+            QuestionType.nested_list,
         ]:
             answer = "|".join(self.options) if self.options else None
         return {qname: answer}
@@ -255,8 +297,7 @@ class Answer(Base):
         q = self.question_detail
         value_type = "string"
         if q.type in [
-                QuestionType.input, QuestionType.text, QuestionType.date
-        ]:
+                QuestionType.input, QuestionType.text, QuestionType.date]:
             answer = self.text
         if q.type == QuestionType.number:
             answer = self.value
@@ -266,15 +307,20 @@ class Answer(Base):
             else:
                 answer = int(answer) if answer else None
             if q.repeating_objects:
-                unit = list(
-                    filter(lambda x: x["field"] == "unit",
-                           q.repeating_objects))[0]["value"]
+                unit = list(filter(
+                    lambda x: x["field"] == "unit", q.repeating_objects))
+                if unit:
+                    unit = unit[0].get("value")
+                else:
+                    unit = ""
                 answer = f"{answer} {unit}" if answer else None
         if q.type == QuestionType.option:
             answer = self.options[0] if self.options else None
         if q.type in [
-                QuestionType.option, QuestionType.multiple_option,
-                QuestionType.cascade, QuestionType.nested_list
+            QuestionType.option,
+            QuestionType.multiple_option,
+            QuestionType.cascade,
+            QuestionType.nested_list,
         ]:
             answer = self.options
             value_type = "list"

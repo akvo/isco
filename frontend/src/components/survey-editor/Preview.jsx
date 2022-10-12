@@ -135,6 +135,16 @@ const Preview = () => {
                 rule: q.rule,
               };
             }
+            // allow decimal
+            if (q.rule && q.rule?.allow_decimal) {
+              qVal = {
+                ...qVal,
+                rule: {
+                  ...q.rule,
+                  allowDecimal: true,
+                },
+              };
+            }
             // allow other
             if (q.rule && q.rule?.allow_other) {
               qVal = {
@@ -226,7 +236,7 @@ const Preview = () => {
                 // number
                 if (sk.type === "number") {
                   let logic;
-                  let value = parseInt(sk.value);
+                  let value = Number(sk.value);
                   switch (sk.operator) {
                     case "not_equal":
                       logic = "not_equal";

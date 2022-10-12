@@ -28,13 +28,10 @@ const DataDetail = ({ record }) => {
       title: "Answer",
       dataIndex: "value",
       render: (val) => {
-        if (!val) {
-          return " - ";
-        }
-        if (typeof val === "object" && !Array.isArray(val)) {
+        if (val && typeof val === "object" && !Array.isArray(val)) {
           return Object.values(val).length ? val.join(" | ") : "-";
         }
-        if (Array.isArray(val)) {
+        if (val && Array.isArray(val)) {
           return val.length ? val.join(" | ") : "-";
         }
         return val || val === 0 ? val : "-";
@@ -48,6 +45,24 @@ const DataDetail = ({ record }) => {
       width: "25%",
     },
   ];
+
+  if (_.isEmpty(answers)) {
+    return (
+      <Space
+        key={`space-no-data-${record.id}`}
+        className="data-detail-table-wrapper"
+        direction="vertical"
+      >
+        <Table
+          rowKey={`table-no-data-${record.id}`}
+          size="small"
+          pagination={false}
+          dataSource={[]}
+          columns={[]}
+        />
+      </Space>
+    );
+  }
 
   return Object.keys(answers).map((key, ki) => {
     const length = Object.values(answers[key]).length;
