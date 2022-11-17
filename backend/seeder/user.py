@@ -1,6 +1,5 @@
 import os
 import json
-from uuid import uuid4
 from db.connection import Base, SessionLocal, engine
 from db import crud_user
 from models.user import UserRole, UserBase
