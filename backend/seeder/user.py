@@ -24,12 +24,11 @@ for d in data:
         payload = UserBase(
             name=d['name'],
             email=d['email'],
-            phone_numer=None,
+            phone_number=d.get('phone_number'),
             password=password,
             role=UserRole.secretariat_admin.value,
-            organisation=d['organisation_id'],
-            invitation=str(uuid4()))
-        user = crud_user.add_user(session=session, payload=payload)
+            organisation=d['organisation_id'])
+        user = crud_user.add_user(session=session, payload=payload, invitation=True)
         user = crud_user.verify_user_email(session=session, email=user.email)
         print(f"Seed {user.name} done")
 
