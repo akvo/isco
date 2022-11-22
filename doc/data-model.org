@@ -7,7 +7,6 @@
 #+PROPERTY: header-args :tangle data-model.sql
 #+STARTUP: showall
 
-
 * Roadmap Question Group
 
 #+begin_src sql
@@ -61,6 +60,9 @@
 | text               |               |               |      |          |       |                   |             |
 | table              |               |               |      |          |       |                   |             |
 
+#+begin_src sql
+  \d question;
+#+end_src
 
 #+RESULTS:
 | Table "public.question"                                                                                                         |                             |           |          |                                      |
@@ -123,6 +125,7 @@
     }]
   }]
 #+end_src
+
 
 * Roadmap Option
 
