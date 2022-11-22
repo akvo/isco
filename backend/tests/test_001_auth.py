@@ -67,6 +67,9 @@ class TestUserAuthentication():
             app.url_path_for("cascade:get_by_id", id=res['id']))
         assert res.status_code == 200
         res = res.json()
+        assert res['id'] == 1
+        assert res['name'] == 'Bali and Java'
+        assert res['type'] == 'cascade'
         assert len(res['cascades']) > 0
 
     @pytest.mark.asyncio
@@ -80,6 +83,9 @@ class TestUserAuthentication():
             app.url_path_for("cascade:get_by_id", id=res['id']))
         assert res.status_code == 200
         res = res.json()
+        assert res['id'] == 2
+        assert res['name'] == 'Sport & Technology'
+        assert res['type'] == 'nested'
         assert len(res['cascades']) > 0
 
     @pytest.mark.asyncio
@@ -202,8 +208,82 @@ class TestUserAuthentication():
         assert res["approved"] is True
 
     @pytest.mark.asyncio
-    async def test_user_login(self, app: FastAPI, session: Session,
-                              client: AsyncClient) -> None:
+    async def test_invalid_user_login(self, app: FastAPI, session: Session,
+                                      client: AsyncClient) -> None:
+        # test invalid login with wrong password
+        res = await client.post(
+            app.url_path_for("user:login"),
+            headers={"content-type": "application/x-www-form-urlencoded"},
+            data={
+                "username": "support@akvo.org",
+                "password": "wrong_password",
+                "grant_type": "password",
+                "scopes": ["openid", "email"],
+                "client_id": os.environ["CLIENT_ID"],
+                "client_secret": os.environ["CLIENT_SECRET"]
+            })
+        assert res.status_code == 401
+        res = res.json()
+        assert res == {'detail': 'Incorrect email or password'}
+        # test invalid login with wrong email
+        res = await client.post(
+            app.url_path_for("user:login"),
+            headers={"content-type": "application/x-www-form-urlencoded"},
+            data={
+                "username": "xxx@akvo.org",
+                "password": "test",
+                "grant_type": "password",
+                "scopes": ["openid", "email"],
+                "client_id": os.environ["CLIENT_ID"],
+                "client_secret": os.environ["CLIENT_SECRET"]
+            })
+        assert res.status_code == 401
+        res = res.json()
+        assert res == {'detail': 'Incorrect email or password'}
+        # test invalid login grant type
+        res = await client.post(
+            app.url_path_for("user:login"),
+            headers={"content-type": "application/x-www-form-urlencoded"},
+            data={
+                "username": "support@akvo.org",
+                "password": "test",
+                "grant_type": "email",
+                "scopes": ["openid", "email"],
+                "client_id": os.environ["CLIENT_ID"],
+                "client_secret": os.environ["CLIENT_SECRET"]
+            })
+        assert res.status_code == 422
+        # test invalid login client_id
+        res = await client.post(
+            app.url_path_for("user:login"),
+            headers={"content-type": "application/x-www-form-urlencoded"},
+            data={
+                "username": "support@akvo.org",
+                "password": "test",
+                "grant_type": "password",
+                "scopes": ["openid", "email"],
+                "client_id": 123456789,
+                "client_secret": 987654321
+            })
+        assert res.status_code == 404
+        # test invalid login client_secret
+        res = await client.post(
+            app.url_path_for("user:login"),
+            headers={"content-type": "application/x-www-form-urlencoded"},
+            data={
+                "username": "support@akvo.org",
+                "password": "test",
+                "grant_type": "password",
+                "scopes": ["openid", "email"],
+                "client_id": os.environ["CLIENT_ID"],
+                "client_secret": 987654321
+            })
+        assert res.status_code == 404
+
+    @pytest.mark.asyncio
+    async def test_valid_user_login(self, app: FastAPI, session: Session,
+                                    client: AsyncClient) -> None:
+        # valid login
         res = await client.post(
             app.url_path_for("user:login"),
             headers={"content-type": "application/x-www-form-urlencoded"},

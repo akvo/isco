@@ -40,12 +40,12 @@ class TestThirdSubmissionRoutes():
             app.url_path_for("data:create", form_id=3, submitted=1),
             params={"locked_by": 1},
             json=[{
-                "question": 8,
+                "question": 12,
                 "repeat_index": 0,
                 "comment": None,
                 "value": "Testing 1"
             }, {
-                "question": 9,
+                "question": 13,
                 "repeat_index": 0,
                 "comment": "This is comment",
                 "value": "Testing 2"
@@ -69,13 +69,13 @@ class TestThirdSubmissionRoutes():
             "answer": [
                 {
                     "comment": None,
-                    "question": 8,
+                    "question": 12,
                     "repeat_index": 0,
                     "value": "Testing 1"
                 },
                 {
                     "comment": "This is comment",
-                    "question": 9,
+                    "question": 13,
                     "repeat_index": 0,
                     "value": "Testing 2"
                 }
