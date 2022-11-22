@@ -25,10 +25,14 @@ def get_user_by_id(session: Session, id: int) -> UserDict:
 def add_user(session: Session,
              payload: UserBase,
              invitation: Optional[bool] = False) -> UserDict:
+    try:
+        password = payload.password.get_secret_value()
+    except AttributeError:
+        password = payload.password
     user = User(name=payload.name,
                 email=payload.email,
                 phone_number=payload.phone_number,
-                password=payload.password,
+                password=password,
                 role=payload.role,
                 organisation=payload.organisation,
                 invitation=str(uuid4()) if invitation else None,
