@@ -1,0 +1,202 @@
+#+PROPERTY: header-args:sql     :exports both
+#+PROPERTY: header-args:sql+    :engine postgresql
+#+PROPERTY: header-args:sql+    :dbhost localhost
+#+PROPERTY: header-args:sql+    :dbuser isco_user
+#+PROPERTY: header-args:sql+    :dbpassword password
+#+PROPERTY: header-args:sql+    :database isco
+#+PROPERTY: header-args :tangle data-model.sql
+#+STARTUP: showall
+
+
+* Roadmap Question Group
+
+#+begin_src sql
+  \d question_group;
+#+end_src
+
+#+RESULTS:
+| Table "public.question_group"                                                                                                                                          |                             |           |          |                                            |
+|------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------+-----------+----------+--------------------------------------------|
+| Column                                                                                                                                                                 | Type                        | Collation | Nullable | Default                                    |
+| id                                                                                                                                                                     | integer                     |           | not null | nextval('question_group_id_seq'::regclass) |
+| name                                                                                                                                                                   | character varying           |           |          |                                            |
+| translations                                                                                                                                                           | jsonb[]                     |           |          |                                            |
+| repeat                                                                                                                                                                 | boolean                     |           | not null | true                                       |
+| created                                                                                                                                                                | timestamp without time zone |           |          |                                            |
+| order                                                                                                                                                                  | integer                     |           |          |                                            |
+| description                                                                                                                                                            | text                        |           |          |                                            |
+| repeat_text                                                                                                                                                            | character varying           |           |          |                                            |
+| Indexes:                                                                                                                                                               |                             |           |          |                                            |
+| "question_group_pkey" PRIMARY KEY, btree (id)                                                                                                                          |                             |           |          |                                            |
+| "ix_question_group_id" UNIQUE, btree (id)                                                                                                                              |                             |           |          |                                            |
+| Referenced by:                                                                                                                                                         |                             |           |          |                                            |
+| TABLE "question" CONSTRAINT "question_group_question_constraint" FOREIGN KEY (question_group) REFERENCES question_group(id) ON DELETE CASCADE                          |                             |           |          |                                            |
+| TABLE "question" CONSTRAINT "question_question_group_fkey" FOREIGN KEY (question_group) REFERENCES question_group(id)                                                  |                             |           |          |                                            |
+
+
+#+begin_src sql
+  \d question;
+#+end_src
+
+* Roadmap Question
+
+** Roadmap Question Type
+
+#+begin_src sql
+  \dT+ question_type;
+#+end_src
+
+#+RESULTS:
+| List of data types |               |               |      |          |       |                   |             |
+|--------------------+---------------+---------------+------+----------+-------+-------------------+-------------|
+| Schema             | Name          | Internal name | Size | Elements | Owner | Access privileges | Description |
+| public             | question_type | question_type |    4 | text     |       |                   |             |
+| number             |               |               |      |          |       |                   |             |
+| option             |               |               |      |          |       |                   |             |
+| multiple_option    |               |               |      |          |       |                   |             |
+| date               |               |               |      |          |       |                   |             |
+| nested_list        |               |               |      |          |       |                   |             |
+| cascade            |               |               |      |          |       |                   |             |
+| input              |               |               |      |          |       |                   |             |
+| text               |               |               |      |          |       |                   |             |
+| table              |               |               |      |          |       |                   |             |
+
+
+#+RESULTS:
+| Table "public.question"                                                                                                         |                             |           |          |                                      |
+|---------------------------------------------------------------------------------------------------------------------------------+-----------------------------+-----------+----------+--------------------------------------|
+| Column                                                                                                                          | Type                        | Collation | Nullable | Default                              |
+| id                                                                                                                              | integer                     |           | not null | nextval('question_id_seq'::regclass) |
+| question_group                                                                                                                  | integer                     |           |          |                                      |
+| name                                                                                                                            | character varying           |           |          |                                      |
+| columns                                                                                                                         | jsonb[]                     |           |          |                                      |
+| translations                                                                                                                    | jsonb[]                     |           |          |                                      |
+| mandatory                                                                                                                       | boolean                     |           | not null | true                                 |
+| datapoint_name                                                                                                                  | boolean                     |           | not null | false                                |
+| variable_name                                                                                                                   | character varying           |           |          |                                      |
+| type                                                                                                                            | question_type               |           |          |                                      |
+| personal_data                                                                                                                   | boolean                     |           | not null | false                                |
+| rule                                                                                                                            | jsonb                       |           |          |                                      |
+| tooltip                                                                                                                         | character varying           |           |          |                                      |
+| tooltip_translations                                                                                                            | jsonb[]                     |           |          |                                      |
+| repeating_objects                                                                                                               | jsonb[]                     |           |          |                                      |
+| created                                                                                                                         | timestamp without time zone |           |          |                                      |
+| cascade                                                                                                                         | integer                     |           |          |                                      |
+| order                                                                                                                           | integer                     |           |          |                                      |
+| Indexes:                                                                                                                        |                             |           |          |                                      |
+| "question_pkey" PRIMARY KEY, btree (id)                                                                                         |                             |           |          |                                      |
+| "ix_question_id" UNIQUE, btree (id)                                                                                             |                             |           |          |                                      |
+| "question_variable_name_key" UNIQUE CONSTRAINT, btree (variable_name)                                                           |                             |           |          |                                      |
+| Foreign-key constraints:                                                                                                        |                             |           |          |                                      |
+| "question_cascade_constraint" FOREIGN KEY (cascade) REFERENCES cascade(id)                                                      |                             |           |          |                                      |
+| "question_cascade_fkey" FOREIGN KEY (cascade) REFERENCES cascade(id)                                                            |                             |           |          |                                      |
+| "question_group_question_constraint" FOREIGN KEY (question_group) REFERENCES question_group(id) ON DELETE CASCADE               |                             |           |          |                                      |
+| "question_question_group_fkey" FOREIGN KEY (question_group) REFERENCES question_group(id)                                       |                             |           |          |                                      |
+| Referenced by:                                                                                                                  |                             |           |          |                                      |
+| TABLE "answer" CONSTRAINT "answer_question_fkey" FOREIGN KEY (question) REFERENCES question(id)                                 |                             |           |          |                                      |
+| TABLE "option" CONSTRAINT "option_question_fkey" FOREIGN KEY (question) REFERENCES question(id)                                 |                             |           |          |                                      |
+| TABLE "answer" CONSTRAINT "question_answer_constraint" FOREIGN KEY (question) REFERENCES question(id) ON DELETE CASCADE         |                             |           |          |                                      |
+| TABLE "option" CONSTRAINT "question_option_constraint" FOREIGN KEY (question) REFERENCES question(id) ON DELETE CASCADE         |                             |           |          |                                      |
+| TABLE "skip_logic" CONSTRAINT "question_skip_logic_constraint" FOREIGN KEY (question) REFERENCES question(id) ON DELETE CASCADE |                             |           |          |                                      |
+| TABLE "skip_logic" CONSTRAINT "skip_logic_question_fkey" FOREIGN KEY (question) REFERENCES question(id)                         |                             |           |          |                                      |
+
+** Organisation Template
+
+*** Schema
+#+begin_src sql
+  DROP TABLE IF EXIST roadmap_template CASCADE;
+  CREATE TABLE roadmap_template (
+    id serial NOT NULL PRIMARY KEY,
+    organisation integer REFERENCES organisation(id);
+    question integer REFERENCES roadmap_question(id);
+    mandatory boolean NOT NULL DEFAULT False;
+  );
+#+end_src
+
+*** Seeder Template
+#+begin_src json
+  [{
+    "organisation_name": "Akvo",
+    "questions": [{
+	"id": 1,
+	"mandatory": false
+    }]
+  }]
+#+end_src
+
+* Roadmap Option
+
+#+begin_src sql
+  \d option;
+#+end_src
+
+#+RESULTS:
+| Table "public.option"                                                                         |                   |           |          |                                    |
+|-----------------------------------------------------------------------------------------------+-------------------+-----------+----------+------------------------------------|
+| Column                                                                                        | Type              | Collation | Nullable | Default                            |
+| id                                                                                            | integer           |           | not null | nextval('option_id_seq'::regclass) |
+| code                                                                                          | character varying |           |          |                                    |
+| name                                                                                          | character varying |           |          |                                    |
+| translations                                                                                  | jsonb[]           |           |          |                                    |
+| question                                                                                      | integer           |           |          |                                    |
+| order                                                                                         | integer           |           |          |                                    |
+| Indexes:                                                                                      |                   |           |          |                                    |
+| "option_pkey" PRIMARY KEY, btree (id)                                                         |                   |           |          |                                    |
+| "ix_option_id" UNIQUE, btree (id)                                                             |                   |           |          |                                    |
+| Foreign-key constraints:                                                                      |                   |           |          |                                    |
+| "option_question_fkey" FOREIGN KEY (question) REFERENCES question(id)                         |                   |           |          |                                    |
+| "question_option_constraint" FOREIGN KEY (question) REFERENCES question(id) ON DELETE CASCADE |                   |           |          |                                    |
+
+* Roadmap Data
+
+#+begin_src sql
+  \d data;
+#+end_src
+
+#+RESULTS:
+| Table "public.data"                                                                                                     |                             |           |          |                                  |
+|-------------------------------------------------------------------------------------------------------------------------+-----------------------------+-----------+----------+----------------------------------|
+| Column                                                                                                                  | Type                        | Collation | Nullable | Default                          |
+| id                                                                                                                      | integer                     |           | not null | nextval('data_id_seq'::regclass) |
+| name                                                                                                                    | character varying           |           |          |                                  |
+| created_by                                                                                                              | integer                     |           |          |                                  |
+| created                                                                                                                 | timestamp without time zone |           |          | CURRENT_TIMESTAMP                |
+| updated                                                                                                                 | timestamp without time zone |           |          |                                  |
+| organisation                                                                                                            | integer                     |           | not null |                                  |
+| Indexes:                                                                                                                |                             |           |          |                                  |
+| "data_pkey" PRIMARY KEY, btree (id)                                                                                     |                             |           |          |                                  |
+| "ix_data_id" UNIQUE, btree (id)                                                                                         |                             |           |          |                                  |
+| Foreign-key constraints:                                                                                                |                             |           |          |                                  |
+| "created_by_data_constraint" FOREIGN KEY (created_by) REFERENCES "user"(id) ON DELETE CASCADE                           |                             |           |          |                                  |
+| "data_created_by_fkey" FOREIGN KEY (created_by) REFERENCES "user"(id)                                                   |                             |           |          |                                  |
+| Referenced by:                                                                                                          |                             |           |          |                                  |
+| TABLE "answer" CONSTRAINT "answer_data_fkey" FOREIGN KEY (data) REFERENCES data(id)                                     |                             |           |          |                                  |
+| TABLE "answer" CONSTRAINT "data_answer_constraint" FOREIGN KEY (data) REFERENCES data(id) ON DELETE CASCADE             |                             |           |          |                                  |
+
+* Roadmap Answer
+
+#+begin_src sql
+  \d answer;
+#+end_src
+
+#+RESULTS:
+| Table "public.answer"                                                                         |                             |           |          |                                    |
+|-----------------------------------------------------------------------------------------------+-----------------------------+-----------+----------+------------------------------------|
+| Column                                                                                        | Type                        | Collation | Nullable | Default                            |
+| id                                                                                            | integer                     |           | not null | nextval('answer_id_seq'::regclass) |
+| question                                                                                      | integer                     |           |          |                                    |
+| data                                                                                          | integer                     |           |          |                                    |
+| value                                                                                         | double precision            |           |          |                                    |
+| text                                                                                          | text                        |           |          |                                    |
+| options                                                                                       | character varying[]         |           |          |                                    |
+| repeat_index                                                                                  | integer                     |           |          |                                    |
+| created                                                                                       | timestamp without time zone |           |          | CURRENT_TIMESTAMP                  |
+| updated                                                                                       | timestamp without time zone |           |          |                                    |
+| Indexes:                                                                                      |                             |           |          |                                    |
+| "answer_pkey" PRIMARY KEY, btree (id)                                                         |                             |           |          |                                    |
+| "ix_answer_id" UNIQUE, btree (id)                                                             |                             |           |          |                                    |
+| Foreign-key constraints:                                                                      |                             |           |          |                                    |
+| "answer_data_fkey" FOREIGN KEY (data) REFERENCES data(id)                                     |                             |           |          |                                    |
+| "answer_question_fkey" FOREIGN KEY (question) REFERENCES question(id)                         |                             |           |          |                                    |
+| "data_answer_constraint" FOREIGN KEY (data) REFERENCES data(id) ON DELETE CASCADE             |                             |           |          |                                    |
+| "question_answer_constraint" FOREIGN KEY (question) REFERENCES question(id) ON DELETE CASCADE |                             |           |          |                                    |
