@@ -80,6 +80,7 @@ class RoadmapQuestionGroup(Base):
 
     @property
     def serializeJson(self):
+        print(self.question)
         group = {
             "name": self.name,
             "description": self.description,
@@ -129,6 +130,19 @@ class RoadmapQuestionGroupJson(BaseModel):
     repeatable: bool
     repeatText: Optional[str] = None
     question: Optional[List[RoadmapQuestionJson]] = []
+
+    class Config:
+        orm_mode = True
+
+
+class RoadmapFormJson(BaseModel):
+    id: int
+    name: str
+    description: Optional[str] = None
+    languages: Optional[List[str]] = None
+    version: Optional[float] = None
+    question_group: Optional[List[dict]] = []
+    tree: Optional[dict] = None
 
     class Config:
         orm_mode = True

@@ -169,7 +169,7 @@ class RoadmapQuestion(Base):
             "id": self.id,
             "name": self.name,
             "required": self.mandatory,
-            "datapoint_name": self.datapoint_name,
+            "meta": self.datapoint_name,
             "type": self.type.value,
             "order": self.order,
         }
@@ -205,6 +205,8 @@ class RoadmapQuestion(Base):
                     })
                 tooltip.update({"translations": temp})
             question.update({"tooltip": tooltip})
+        if self.dependency:
+            question.update({"dependency": self.dependency})
         return question
 
 
@@ -238,7 +240,7 @@ class RoadmapQuestionJson(BaseModel):
     translations: Optional[List[dict]] = []
     required: bool
     order: Optional[int] = None
-    datapoint_name: bool
+    meta: bool
     variable_name: Optional[str] = None
     type: RoadmapQuestionType
     personal_data: bool
