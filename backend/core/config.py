@@ -17,6 +17,7 @@ from routes.download import download_route
 from routes.download_summary import download_summary_route
 from routes.collaborator import collaborator_route
 from routes.feedback import feedback_route
+from routes.roadmap import roadmap_route
 from templates.main import template_route
 
 
@@ -53,6 +54,7 @@ app.include_router(download_summary_route)
 app.include_router(collaborator_route)
 app.include_router(feedback_route)
 app.include_router(template_route)
+app.include_router(roadmap_route)
 
 
 @app.get("/", tags=["Dev"])
