@@ -16,7 +16,10 @@ f = open(source_file)
 
 
 # truncate
-for table in ["roadmap_question_group", "roadmap_question", "roadmap_option"]:
+for table in [
+    "roadmap_question_group", "roadmap_question", "roadmap_option",
+    "roadmap_data", "roadmap_answer"
+]:
     action = truncate(session=session, table=table)
     print(action)
 print("---------------------------")

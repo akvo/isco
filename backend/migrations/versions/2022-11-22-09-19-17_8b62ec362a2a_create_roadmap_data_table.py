@@ -23,6 +23,7 @@ def upgrade():
         sa.Column('name', sa.String(), nullable=True),
         sa.Column(
             'organisation', sa.Integer(), sa.ForeignKey('organisation.id')),
+        sa.Column('reporting_year', sa.Integer(), nullable=True),
         sa.Column('created_by', sa.Integer(), sa.ForeignKey('user.id')),
         sa.Column(
             'created', sa.DateTime(),
