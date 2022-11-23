@@ -12,6 +12,8 @@ Base.metadata.create_all(bind=engine)
 session = SessionLocal()
 
 source_file = "./source/roadmap.json"
+f = open(source_file)
+
 
 # truncate
 for table in ["roadmap_question_group", "roadmap_question", "roadmap_option"]:
@@ -19,7 +21,8 @@ for table in ["roadmap_question_group", "roadmap_question", "roadmap_option"]:
     print(action)
 print("---------------------------")
 
-f = open(source_file)
+
+# seed
 data = json.load(f)
 if "question_group" in data:
     for qg in data.get('question_group'):
