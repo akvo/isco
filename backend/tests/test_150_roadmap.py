@@ -1,7 +1,7 @@
 import sys
 import pytest
 from sqlalchemy.orm import Session
-from seeder.roadmap import roadmap_seeder
+from seeder.util_roadmap import roadmap_form_seeder
 from httpx import AsyncClient
 from fastapi import FastAPI
 
@@ -15,7 +15,7 @@ class TestSeedAndGetRoadmapWebform():
     async def test_roadmap_seeder_and_get_roadmap_webform(
         self, app: FastAPI, session: Session, client: AsyncClient
     ) -> None:
-        seed_roadmap = roadmap_seeder(session=session)
+        seed_roadmap = roadmap_form_seeder(session=session)
         assert seed_roadmap is True
         # get roadmap webform
         res = await client.get(app.url_path_for("roadmap:get_webform"))
