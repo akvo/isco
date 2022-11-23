@@ -10,15 +10,17 @@ from models.roadmap_option import RoadmapOption
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 Base.metadata.create_all(bind=engine)
 session = SessionLocal()
+TESTING = os.environ.get("TESTING")
 
 # truncate
-for table in [
-    "roadmap_question_group", "roadmap_question", "roadmap_option",
-    "roadmap_data", "roadmap_answer"
-]:
-    action = truncate(session=session, table=table)
-    print(action)
-print("---------------------------")
+if not TESTING:
+    for table in [
+        "roadmap_question_group", "roadmap_question", "roadmap_option",
+        "roadmap_data", "roadmap_answer"
+    ]:
+        action = truncate(session=session, table=table)
+        print(action)
+    print("---------------------------")
 
 
 def roadmap_seeder(session):
