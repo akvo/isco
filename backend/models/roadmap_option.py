@@ -73,7 +73,7 @@ class RoadmapOption(Base):
         return option
 
 
-class OptionBase(BaseModel):
+class RoadmapOptionBase(BaseModel):
     id: int
     question: int
     code: Optional[str] = None
@@ -85,7 +85,7 @@ class OptionBase(BaseModel):
         orm_mode = True
 
 
-class OptionJson(BaseModel):
+class RoadmapOptionJson(BaseModel):
     code: Optional[str] = None
     name: str
     translations: Optional[List[dict]] = []

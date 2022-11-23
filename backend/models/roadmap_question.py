@@ -9,7 +9,7 @@ from typing_extensions import TypedDict
 from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy import Boolean, Enum, ForeignKey, BigInteger
 from sqlalchemy.ext.mutable import MutableDict
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship
 from models.roadmap_option import RoadmapOptionBase, RoadmapOptionJson
 import sqlalchemy.dialects.postgresql as pg
 from datetime import datetime
@@ -68,7 +68,8 @@ class RoadmapQuestionDict(TypedDict):
 class RoadmapQuestion(Base):
     __tablename__ = "roadmap_question"
     id = Column(BigInteger, primary_key=True, index=True, nullable=True)
-    question_group = Column(BigInteger, ForeignKey('question_group.id'))
+    question_group = Column(
+        BigInteger, ForeignKey('roadmap_question_group.id'))
     name = Column(String)
     columns = Column(pg.ARRAY(pg.JSONB), nullable=True)
     translations = Column(pg.ARRAY(pg.JSONB), nullable=True)
@@ -81,7 +82,7 @@ class RoadmapQuestion(Base):
     rule = Column(MutableDict.as_mutable(pg.JSONB), nullable=True)
     tooltip = Column(String, nullable=True)
     tooltip_translations = Column(pg.ARRAY(pg.JSONB), nullable=True)
-    cascade = Column(Integer, ForeignKey('cascade.id'), nullable=True)
+    cascade = Column(Integer, nullable=True)
     repeating_objects = Column(pg.ARRAY(pg.JSONB), nullable=True)
     created = Column(DateTime, default=datetime.utcnow)
     order = Column(Integer, nullable=True)
@@ -91,9 +92,6 @@ class RoadmapQuestion(Base):
         cascade="all, delete",
         passive_deletes=True,
         backref="roadmap_question_option")
-    cascades = relationship(
-        "Cascade",
-        backref=backref("roadmap_question", uselist=False))
 
     def __init__(
         self, id: Optional[int], name: str, question_group: int,

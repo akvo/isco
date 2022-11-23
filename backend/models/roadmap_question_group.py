@@ -120,7 +120,7 @@ class RoadmapQuestionGroupBase(BaseModel):
         orm_mode = True
 
 
-class QuestionGroupJson(BaseModel):
+class RoadmapQuestionGroupJson(BaseModel):
     id: int
     name: str
     description: Optional[str] = None
