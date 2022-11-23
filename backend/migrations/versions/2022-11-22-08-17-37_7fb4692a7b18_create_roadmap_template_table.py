@@ -28,12 +28,13 @@ def upgrade():
         sa.Column(
             'mandatory', sa.Boolean(),
             server_default=expression.false(), nullable=False),
+        sa.PrimaryKeyConstraint('id'),
         sa.ForeignKeyConstraint(
             ['organisation'], ['organisation.id'],
             name='roadmap_template_organisation_constraint',
             ondelete='CASCADE'),
         sa.ForeignKeyConstraint(
-            ['question'], ['question.id'],
+            ['question'], ['roadmap_question.id'],
             name='roadmap_template_question_constraint',
             ondelete='CASCADE')
     )

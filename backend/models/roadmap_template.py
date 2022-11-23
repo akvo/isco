@@ -18,14 +18,16 @@ class RoadmapTemplateDict(TypedDict):
 
 class RoadmapTemplate(Base):
     __tablename__ = "roadmap_template"
-    id = Column(Integer, primary_key=True, index=True, nullable=True)
+    id = Column(
+        Integer, primary_key=True, index=True, nullable=True)
     organisation = Column(Integer, ForeignKey('organisation.id'))
     question = Column(BigInteger, ForeignKey('roadmap_question.id'))
     mandatory = Column(Boolean, default=False)
 
     def __init__(
-        self, id: Optional[int], organisation: int,
-        question: int, mandatory: bool
+        self, organisation: int,
+        question: int, mandatory: bool,
+        id: Optional[int]
     ):
         self.id = id
         self.organisation = organisation
