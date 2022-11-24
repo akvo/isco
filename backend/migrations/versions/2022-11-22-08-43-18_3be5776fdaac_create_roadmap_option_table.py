@@ -1,7 +1,7 @@
 """create roadmap option table
 
 Revision ID: 3be5776fdaac
-Revises: 7fb4692a7b18
+Revises: a7f0e4fa8360
 Create Date: 2022-11-22 08:43:18.770457
 
 """
@@ -13,7 +13,7 @@ import sqlalchemy.dialects.postgresql as pg
 
 # revision identifiers, used by Alembic.
 revision = '3be5776fdaac'
-down_revision = '7fb4692a7b18'
+down_revision = 'a7f0e4fa8360'
 branch_labels = None
 depends_on = None
 
