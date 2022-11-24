@@ -17,9 +17,9 @@ class RoadmapAnswerDict(TypedDict):
     id: int
     question: int
     repeat_index: Optional[int] = None
-    comment: Optional[str] = None
     value: Union[
-        float, int, str, bool, dict, List[float], List[int], List[str], None]
+        float, int, str, bool, dict, List[float],
+        List[int], List[str], None, List[dict]]
 
 
 class RoadmapAnswer(Base):
@@ -46,7 +46,7 @@ class RoadmapAnswer(Base):
     text = Column(Text, nullable=True)
     value = Column(Float, nullable=True)
     options = Column(pg.ARRAY(String), nullable=True)
-    comment = Column(Text, nullable=True)
+    table = Column(pg.ARRAY(pg.JSONB), nullable=True)
     repeat_index = Column(Integer, nullable=True, default=0)
     created = Column(DateTime, nullable=True)
     updated = Column(DateTime, nullable=True)
@@ -60,7 +60,7 @@ class RoadmapAnswer(Base):
         text: Optional[str] = None,
         value: Optional[float] = None,
         options: Optional[List[str]] = None,
-        comment: Optional[str] = None,
+        table: Optional[List[dict]] = None,
         repeat_index: Optional[int] = None,
         updated: Optional[datetime] = None,
     ):
@@ -69,7 +69,7 @@ class RoadmapAnswer(Base):
         self.text = text
         self.value = value
         self.options = options
-        self.comment = comment
+        self.table = table
         self.repeat_index = repeat_index
         self.updated = updated
         self.created = created
@@ -86,7 +86,7 @@ class RoadmapAnswer(Base):
             "text": self.text,
             "value": self.value,
             "options": self.options,
-            "comment": self.comment,
+            "table": self.table,
             "repeat_index": self.repeat_index,
             "created": self.created,
             "updated": self.updated,
@@ -97,7 +97,6 @@ class RoadmapAnswer(Base):
         answer = {
             "question": self.question,
             "repeat_index": self.repeat_index,
-            "comment": self.comment,
         }
         q = self.question_detail
         type = q.type
@@ -125,7 +124,6 @@ class RoadmapAnswer(Base):
             "id": self.id,
             "question": self.question,
             "repeat_index": self.repeat_index,
-            "comment": self.comment,
         }
         q = self.question_detail
         type = q.type
@@ -153,7 +151,6 @@ class RoadmapAnswer(Base):
             f"{self.question}_{self.repeat_index}": {
                 "value": self.text or self.value or self.options,
                 "repeat_index": self.repeat_index,
-                "comment": self.comment,
                 "data": self,
             }
         }
@@ -212,7 +209,6 @@ class RoadmapAnswer(Base):
         return {
             "value": answer,
             "repeat_index": self.repeat_index,
-            "comment": self.comment,
             "date": date.strftime("%B %d, %Y"),
         }
 
@@ -224,7 +220,7 @@ class RoadmapAnswerBase(BaseModel):
     text: Optional[str] = None
     value: Optional[float] = None
     options: Optional[List[str]] = None
-    comment: Optional[List[str]] = None
+    table: Optional[List[dict]] = None
     repeat_index: Optional[int] = None
     created: Optional[datetime] = None
     updated: Optional[datetime] = None

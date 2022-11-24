@@ -9,10 +9,10 @@ from sqlalchemy import Column, ForeignKey
 from sqlalchemy import DateTime, Integer, String
 from sqlalchemy.orm import relationship
 from db.connection import Base
-from models.answer import AnswerDict, AnswerBase
-from .answer import Answer
-from .user import User
-from .organisation import Organisation
+from models.roadmap_answer import RoadmapAnswerDict, RoadmapAnswerBase
+from models.roadmap_answer import RoadmapAnswer
+from models.user import User
+from models.organisation import Organisation
 
 
 class RoadmapDataPaylod(TypedDict):
@@ -28,7 +28,7 @@ class RoadmapDataDict(TypedDict):
     created_by: str
     organisation: str
     updated: Optional[str] = None
-    answer: List[AnswerDict]
+    answer: List[RoadmapAnswerDict]
 
 
 class RoadmapData(Base):
@@ -45,8 +45,8 @@ class RoadmapData(Base):
     created = Column(DateTime, nullable=True)
     updated = Column(DateTime, nullable=True)
     answer = relationship(
-        Answer, cascade="all, delete", passive_deletes=True,
-        backref="roadmap_answer", order_by=Answer.id.asc())
+        RoadmapAnswer, cascade="all, delete", passive_deletes=True,
+        backref="roadmap_answer", order_by=RoadmapAnswer.id.asc())
     created_by_user = relationship(User, foreign_keys=[created_by])
     organisation_detail = relationship(
         Organisation, foreign_keys=[organisation])
@@ -89,7 +89,7 @@ class RoadmapDataBase(BaseModel):
     organisation: str
     created: Optional[str] = None
     updated: Optional[str] = None
-    answer: List[AnswerBase]
+    answer: List[RoadmapAnswerBase]
 
     class Config:
         orm_mode = True

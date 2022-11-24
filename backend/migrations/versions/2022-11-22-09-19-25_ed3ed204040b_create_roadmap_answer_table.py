@@ -6,6 +6,7 @@ Create Date: 2022-11-22 09:19:25.776014
 
 """
 from alembic import op
+from db.util import CastingArray
 import sqlalchemy as sa
 import sqlalchemy.dialects.postgresql as pg
 
@@ -27,6 +28,7 @@ def upgrade():
         sa.Column('value', sa.Float(), nullable=True),
         sa.Column('text', sa.Text(), nullable=True),
         sa.Column('options', pg.ARRAY(sa.String()), nullable=True),
+        sa.Column('table', CastingArray(pg.JSONB()), nullable=True),
         sa.Column('repeat_index', sa.Integer(), nullable=True, default=0),
         sa.Column(
             'created', sa.DateTime(),
