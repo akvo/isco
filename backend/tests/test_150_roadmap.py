@@ -20,8 +20,6 @@ class TestSeedAndGetRoadmapWebform():
     ) -> None:
         seed_roadmap = util_roadmap.roadmap_form_seeder(session=session)
         assert seed_roadmap is True
-        seed_template = util_roadmap.roadmap_template_seeder(session=session)
-        assert seed_template is True
         # get roadmap webform
         res = await client.get(
             app.url_path_for("roadmap:get_webform"),
@@ -46,7 +44,7 @@ class TestSeedAndGetRoadmapWebform():
                         {
                             "id": 1669095326962,
                             "name": "Commitment",
-                            "required": True,
+                            "required": False,
                             "meta": False,
                             "type": "input",
                             "order": 1,
@@ -54,7 +52,7 @@ class TestSeedAndGetRoadmapWebform():
                         {
                             "id": 1669107420032,
                             "name": "Milestones",
-                            "required": True,
+                            "required": False,
                             "meta": False,
                             "type": "table",
                             "order": 2,
@@ -63,7 +61,7 @@ class TestSeedAndGetRoadmapWebform():
                         {
                             "id": 1669107484181,
                             "name": "Challenges",
-                            "required": True,
+                            "required": False,
                             "meta": False,
                             "type": "text",
                             "order": 3,
@@ -79,7 +77,7 @@ class TestSeedAndGetRoadmapWebform():
                         {
                             "id": 1669107562769,
                             "name": "Example Question 1",
-                            "required": True,
+                            "required": False,
                             "meta": False,
                             "type": "input",
                             "order": 1,

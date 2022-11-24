@@ -1,10 +1,37 @@
 from fastapi import HTTPException, status
-from typing import List
+from typing import List, Union
 from sqlalchemy.orm import Session
 from models.roadmap_question_group import RoadmapQuestionGroupDict
 from models.roadmap_question_group import RoadmapQuestionGroup
-from models.roadmap_template import RoadmapTemplateDict
-from models.roadmap_template import RoadmapTemplate
+from models.roadmap_data import RoadmapData
+from models.roadmap_answer import RoadmapAnswer
+from models.roadmap_question import RoadmapQuestionType
+
+
+def append_value(
+    answer: RoadmapAnswer,
+    value: Union[int, float, str, bool, List[str], List[int], List[float]],
+    type: RoadmapQuestionType
+) -> RoadmapAnswer:
+    if type == RoadmapQuestionType.input.value:
+        answer.text = value
+    if type == RoadmapQuestionType.number.value:
+        answer.value = value
+    if type == RoadmapQuestionType.text.value:
+        answer.text = value
+    if type == RoadmapQuestionType.date.value:
+        answer.text = value
+    if type == RoadmapQuestionType.option.value:
+        answer.options = [value]
+    if type == RoadmapQuestionType.multiple_option.value:
+        answer.options = value
+    if type == RoadmapQuestionType.nested_list.value or type == "tree":
+        answer.options = value
+    if type == RoadmapQuestionType.cascade.value:
+        answer.options = value
+    if type == RoadmapQuestionType.table.value:
+        answer.table = value
+    return answer
 
 
 def get_roadmap_question_group(
@@ -18,8 +45,12 @@ def get_roadmap_question_group(
     return qg
 
 
-def get_roadmap_template_by_organisation_id(
-    session: Session, organisation_id: int
-) -> List[RoadmapTemplateDict]:
-    return session.query(RoadmapTemplate).filter(
-        RoadmapTemplate.organisation == organisation_id).all()
+def add_roadmap_data(
+    session: Session, data: RoadmapData, answers: List[dict]
+) -> None:
+    if len(answers):
+        data.answer.append(answers)
+    session.add(data)
+    session.commit()
+    session.flush()
+    session.refresh(data)

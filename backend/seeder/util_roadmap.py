@@ -3,8 +3,6 @@ import json
 from models.roadmap_question_group import RoadmapQuestionGroup
 from models.roadmap_question import RoadmapQuestion
 from models.roadmap_option import RoadmapOption
-from models.organisation import Organisation
-from sqlalchemy import func
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 

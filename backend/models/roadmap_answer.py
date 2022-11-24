@@ -5,12 +5,20 @@ from datetime import datetime
 from typing_extensions import TypedDict
 from typing import Optional, List, Union
 from pydantic import BaseModel
-from .question import QuestionType
+from models.roadmap_question import RoadmapQuestionType
 from sqlalchemy import Column, Integer, Float, Text, String
 from sqlalchemy import ForeignKey, DateTime, BigInteger
 from sqlalchemy.orm import relationship
 import sqlalchemy.dialects.postgresql as pg
 from db.connection import Base
+
+
+class RoadmapAnswerPayload(TypedDict):
+    question: int
+    type: RoadmapQuestionType
+    value: Union[
+        float, int, str, bool, dict, List[float],
+        List[int], List[str], None, List[dict]]
 
 
 class RoadmapAnswerDict(TypedDict):
@@ -100,9 +108,11 @@ class RoadmapAnswer(Base):
         }
         q = self.question_detail
         type = q.type
-        if type in [QuestionType.input, QuestionType.text, QuestionType.date]:
+        if type in [RoadmapQuestionType.input,
+                    RoadmapQuestionType.text,
+                    RoadmapQuestionType.date]:
             answer.update({"value": self.text})
-        if type == QuestionType.number:
+        if type == RoadmapQuestionType.number:
             val = self.value
             if q.rule:
                 if q.rule.get("allow_decimal"):
@@ -110,11 +120,12 @@ class RoadmapAnswer(Base):
             else:
                 val = int(val) if val else None
             answer.update({"value": val})
-        if type == QuestionType.option:
+        if type == RoadmapQuestionType.option:
             answer.update({"value": self.options[0]})
-        if type in [QuestionType.multiple_option, QuestionType.nested_list]:
+        if type in [RoadmapQuestionType.multiple_option,
+                    RoadmapQuestionType.nested_list]:
             answer.update({"value": self.options})
-        if type == QuestionType.cascade:
+        if type == RoadmapQuestionType.cascade:
             answer.update({"value": [int(float(o)) for o in self.options]})
         return answer
 
@@ -127,9 +138,11 @@ class RoadmapAnswer(Base):
         }
         q = self.question_detail
         type = q.type
-        if type in [QuestionType.input, QuestionType.text, QuestionType.date]:
+        if type in [RoadmapQuestionType.input,
+                    RoadmapQuestionType.text,
+                    RoadmapQuestionType.date]:
             answer.update({"value": self.text})
-        if type == QuestionType.number:
+        if type == RoadmapQuestionType.number:
             val = self.value
             if q.rule:
                 if q.rule.get("allow_decimal"):
@@ -137,11 +150,12 @@ class RoadmapAnswer(Base):
             else:
                 val = int(val) if val else None
             answer.update({"value": val})
-        if type == QuestionType.option:
+        if type == RoadmapQuestionType.option:
             answer.update({"value": self.options[0]})
-        if type in [QuestionType.multiple_option, QuestionType.nested_list]:
+        if type in [RoadmapQuestionType.multiple_option,
+                    RoadmapQuestionType.nested_list]:
             answer.update({"value": self.options})
-        if type == QuestionType.cascade:
+        if type == RoadmapQuestionType.cascade:
             answer.update({"value": [int(float(o)) for o in self.options]})
         return answer
 
@@ -159,9 +173,11 @@ class RoadmapAnswer(Base):
     def only_value(self) -> List:
         q = self.question_detail
         type = q.type
-        if type in [QuestionType.input, QuestionType.text, QuestionType.date]:
+        if type in [RoadmapQuestionType.input,
+                    RoadmapQuestionType.text,
+                    RoadmapQuestionType.date]:
             return self.text
-        if type == QuestionType.number:
+        if type == RoadmapQuestionType.number:
             answer = self.value
             if q.rule:
                 if q.rule.get("allow_decimal"):
@@ -169,15 +185,15 @@ class RoadmapAnswer(Base):
             else:
                 answer = int(answer) if answer else None
             return answer
-        if type == QuestionType.option:
+        if type == RoadmapQuestionType.option:
             return self.options[0] if self.options else None
         if type in [
-            QuestionType.multiple_option,
-            QuestionType.cascade,
-            QuestionType.nested_list,
+            RoadmapQuestionType.multiple_option,
+            RoadmapQuestionType.cascade,
+            RoadmapQuestionType.nested_list,
         ]:
             return self.options
-        if type == QuestionType.cascade:
+        if type == RoadmapQuestionType.cascade:
             return [int(float(o)) for o in self.options]
         return None
 
@@ -187,24 +203,26 @@ class RoadmapAnswer(Base):
         date = self.updated or self.created
         type = q.type
         answer = None
-        if type in [QuestionType.input, QuestionType.text, QuestionType.date]:
+        if type in [RoadmapQuestionType.input,
+                    RoadmapQuestionType.text,
+                    RoadmapQuestionType.date]:
             answer = self.text
-        if type == QuestionType.number:
+        if type == RoadmapQuestionType.number:
             answer = self.value
             if q.rule:
                 if q.rule.get("allow_decimal"):
                     answer = float(answer) if answer else None
             else:
                 answer = int(answer) if answer else None
-        if type == QuestionType.option:
+        if type == RoadmapQuestionType.option:
             answer = self.options[0] if self.options else None
         if type in [
-            QuestionType.multiple_option,
-            QuestionType.cascade,
-            QuestionType.nested_list,
+            RoadmapQuestionType.multiple_option,
+            RoadmapQuestionType.cascade,
+            RoadmapQuestionType.nested_list,
         ]:
             return self.options
-        if type == QuestionType.cascade:
+        if type == RoadmapQuestionType.cascade:
             return [int(float(o)) for o in self.options]
         return {
             "value": answer,
