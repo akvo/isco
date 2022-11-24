@@ -4,10 +4,13 @@ from sqlalchemy.orm import Session
 from seeder import util_roadmap
 from httpx import AsyncClient
 from fastapi import FastAPI
+from tests.test_000_main import Acc
 
 
 pytestmark = pytest.mark.asyncio
 sys.path.append("..")
+
+account = Acc(email=None, token=None)
 
 
 class TestSeedAndGetRoadmapWebform():
@@ -20,7 +23,11 @@ class TestSeedAndGetRoadmapWebform():
         seed_template = util_roadmap.roadmap_template_seeder(session=session)
         assert seed_template is True
         # get roadmap webform
-        res = await client.get(app.url_path_for("roadmap:get_webform"))
+        res = await client.get(
+            app.url_path_for("roadmap:get_webform"),
+            headers={"Authorization": f"Bearer {account.token}"},
+            params={'organisation_id': 1}
+        )
         assert res.status_code == 200
         res = res.json()
         assert res == {
@@ -39,7 +46,7 @@ class TestSeedAndGetRoadmapWebform():
                         {
                             "id": 1669095326962,
                             "name": "Commitment",
-                            "required": False,
+                            "required": True,
                             "meta": False,
                             "type": "input",
                             "order": 1,
@@ -47,7 +54,7 @@ class TestSeedAndGetRoadmapWebform():
                         {
                             "id": 1669107420032,
                             "name": "Milestones",
-                            "required": False,
+                            "required": True,
                             "meta": False,
                             "type": "table",
                             "order": 2,
@@ -56,7 +63,7 @@ class TestSeedAndGetRoadmapWebform():
                         {
                             "id": 1669107484181,
                             "name": "Challenges",
-                            "required": False,
+                            "required": True,
                             "meta": False,
                             "type": "text",
                             "order": 3,
@@ -72,7 +79,7 @@ class TestSeedAndGetRoadmapWebform():
                         {
                             "id": 1669107562769,
                             "name": "Example Question 1",
-                            "required": False,
+                            "required": True,
                             "meta": False,
                             "type": "input",
                             "order": 1,

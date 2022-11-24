@@ -53,7 +53,7 @@ class TestAdvancedSubmissionRoute():
             'id': 1,
             'name': 'Depend to Q1 Option 1',
             'organisation': 1,
-            'organisation_name': "Akvo",
+            'organisation_name': "staff Akvo",
             'member_type': 'All',
             'submitted': today,
             'updated': today,

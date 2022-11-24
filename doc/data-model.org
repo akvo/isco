@@ -118,7 +118,7 @@
 *** Seeder Template
 #+begin_src json
   [{
-    "organisation_name": "Akvo",
+    "organisation_name": "staff Akvo",
     "questions": [{
 	"id": 1,
 	"mandatory": false
