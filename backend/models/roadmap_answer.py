@@ -25,6 +25,7 @@ class RoadmapAnswerPayload(TypedDict):
 class RoadmapAnswerDict(TypedDict):
     id: int
     question: int
+    type: RoadmapQuestionType
     repeat_index: Optional[int] = None
     value: Union[
         float, int, str, bool, dict, List[float],
@@ -87,7 +88,7 @@ class RoadmapAnswer(Base):
         return f"<RoadmapAnswer {self.id}>"
 
     @property
-    def serialize(self) -> RoadmapAnswerDict:
+    def serialize(self) -> TypedDict:
         return {
             "id": self.id,
             "question": self.question,
@@ -104,41 +105,14 @@ class RoadmapAnswer(Base):
     @property
     def formatted(self) -> RoadmapAnswerDict:
         answer = {
-            "question": self.question,
-            "repeat_index": self.repeat_index,
-        }
-        q = self.question_detail
-        type = q.type
-        if type in [RoadmapQuestionType.input,
-                    RoadmapQuestionType.text,
-                    RoadmapQuestionType.date]:
-            answer.update({"value": self.text})
-        if type == RoadmapQuestionType.number:
-            val = self.value
-            if q.rule:
-                if q.rule.get("allow_decimal"):
-                    val = float(val) if val else None
-            else:
-                val = int(val) if val else None
-            answer.update({"value": val})
-        if type == RoadmapQuestionType.option:
-            answer.update({"value": self.options[0]})
-        if type in [RoadmapQuestionType.multiple_option,
-                    RoadmapQuestionType.nested_list]:
-            answer.update({"value": self.options})
-        if type == RoadmapQuestionType.cascade:
-            answer.update({"value": [int(float(o)) for o in self.options]})
-        return answer
-
-    @property
-    def format_with_answer_id(self) -> RoadmapAnswerDict:
-        answer = {
             "id": self.id,
             "question": self.question,
+            "type": None,
             "repeat_index": self.repeat_index,
         }
         q = self.question_detail
         type = q.type
+        answer.update({"type": type.value})
         if type in [RoadmapQuestionType.input,
                     RoadmapQuestionType.text,
                     RoadmapQuestionType.date]:
@@ -158,77 +132,19 @@ class RoadmapAnswer(Base):
             answer.update({"value": self.options})
         if type == RoadmapQuestionType.cascade:
             answer.update({"value": [int(float(o)) for o in self.options]})
+        if type == RoadmapQuestionType.table:
+            answer.update({"value": self.table})
         return answer
 
     @property
     def to_dict(self) -> TypedDict:
         return {
             f"{self.question}_{self.repeat_index}": {
-                "value": self.text or self.value or self.options,
+                "value": self.text or self.value or self.options or self.table,
                 "repeat_index": self.repeat_index,
+                "type": self.question_detail.type.value,
                 "data": self,
             }
-        }
-
-    @property
-    def only_value(self) -> List:
-        q = self.question_detail
-        type = q.type
-        if type in [RoadmapQuestionType.input,
-                    RoadmapQuestionType.text,
-                    RoadmapQuestionType.date]:
-            return self.text
-        if type == RoadmapQuestionType.number:
-            answer = self.value
-            if q.rule:
-                if q.rule.get("allow_decimal"):
-                    answer = float(answer) if answer else None
-            else:
-                answer = int(answer) if answer else None
-            return answer
-        if type == RoadmapQuestionType.option:
-            return self.options[0] if self.options else None
-        if type in [
-            RoadmapQuestionType.multiple_option,
-            RoadmapQuestionType.cascade,
-            RoadmapQuestionType.nested_list,
-        ]:
-            return self.options
-        if type == RoadmapQuestionType.cascade:
-            return [int(float(o)) for o in self.options]
-        return None
-
-    @property
-    def simplified(self) -> TypedDict:
-        q = self.question_detail
-        date = self.updated or self.created
-        type = q.type
-        answer = None
-        if type in [RoadmapQuestionType.input,
-                    RoadmapQuestionType.text,
-                    RoadmapQuestionType.date]:
-            answer = self.text
-        if type == RoadmapQuestionType.number:
-            answer = self.value
-            if q.rule:
-                if q.rule.get("allow_decimal"):
-                    answer = float(answer) if answer else None
-            else:
-                answer = int(answer) if answer else None
-        if type == RoadmapQuestionType.option:
-            answer = self.options[0] if self.options else None
-        if type in [
-            RoadmapQuestionType.multiple_option,
-            RoadmapQuestionType.cascade,
-            RoadmapQuestionType.nested_list,
-        ]:
-            return self.options
-        if type == RoadmapQuestionType.cascade:
-            return [int(float(o)) for o in self.options]
-        return {
-            "value": answer,
-            "repeat_index": self.repeat_index,
-            "date": date.strftime("%B %d, %Y"),
         }
 
 

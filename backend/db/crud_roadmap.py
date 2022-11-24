@@ -1,6 +1,6 @@
 from datetime import datetime
 from fastapi import HTTPException, status
-from typing import List, Union
+from typing import List, Union, Optional
 from typing_extensions import TypedDict
 from sqlalchemy import desc
 from sqlalchemy.orm import Session
@@ -8,6 +8,7 @@ from models.roadmap_question_group import RoadmapQuestionGroupDict
 from models.roadmap_question_group import RoadmapQuestionGroup
 from models.roadmap_data import RoadmapData, RoadmapDataDict
 from models.roadmap_answer import RoadmapAnswer, RoadmapAnswerPayload
+from models.roadmap_answer import RoadmapAnswerDict
 from models.roadmap_question import RoadmapQuestion
 from models.roadmap_question import RoadmapQuestionType
 from models.roadmap_question import RoadmapQuestionTypeDict
@@ -51,7 +52,7 @@ def get_roadmap_question_group(
     if not len(qg):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Roadmapp form not found")
+            detail="Roadmap form not found")
     return qg
 
 
@@ -92,3 +93,32 @@ def get_data(
     data = data.order_by(
         desc(RoadmapData.id)).offset(skip).limit(page_size).all()
     return PaginatedData(data=data, count=count)
+
+
+def get_data_by_id(
+    session: Session, id: Optional[int] = None,
+    organisation_id: Optional[int] = None
+) -> RoadmapDataDict:
+    data = session.query(RoadmapData)
+    if id:
+        data = data.filter(RoadmapData.id == id)
+    if organisation_id:
+        data = data.filter(RoadmapData.organisation == organisation_id)
+    data = data.first()
+    if not data:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Roadmap datapoint not found")
+    return data
+
+
+def get_answer_by_data(
+    session: Session, data_id: int
+) -> RoadmapAnswerDict:
+    answer = session.query(RoadmapAnswer).filter(
+        RoadmapAnswer.data == data_id).all()
+    if not len(answer):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Roadmap answer not found")
+    return answer

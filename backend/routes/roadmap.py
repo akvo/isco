@@ -152,3 +152,27 @@ def get_datapoints(
         "total": count,
         "total_page": total_page
     }
+
+
+@roadmap_route.put(
+    "/roadmap-data/{id}",
+    status_code=HTTPStatus.NO_CONTENT,
+    summary="update roadmap datapoint by id",
+    name="roadmap:update_datapoint",
+    tags=["Roadmap"])
+def update_datapoint(
+    req: Request,
+    id: int,
+    payload: RoadmapDataPaylod,
+    session: Session = Depends(get_session),
+    credentials: credentials = Depends(security)
+):
+    organisation_id = payload.get('organisation_id')
+    data = crud_roadmap.get_data_by_id(
+        session=session, id=id, organisation_id=organisation_id)
+    current_answers = crud_roadmap.get_answer_by_data(
+        session=session, data_id=data.id)
+    current_answer = {}
+    [current_answer.update(ca.to_dict) for ca in current_answers]
+    print(current_answer)
+    return Response(status_code=HTTPStatus.NO_CONTENT.value)
