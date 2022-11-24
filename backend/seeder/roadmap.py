@@ -13,8 +13,7 @@ TESTING = os.environ.get("TESTING")
 if not TESTING:
     for table in [
         "roadmap_question_group", "roadmap_question",
-        "roadmap_template", "roadmap_option",
-        "roadmap_data", "roadmap_answer"
+        "roadmap_option", "roadmap_data", "roadmap_answer"
     ]:
         action = truncate(session=session, table=table)
         print(action)
