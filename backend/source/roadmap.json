@@ -7,14 +7,15 @@
       "id": 1669095326961,
       "name": "Traceability",
       "order": 1,
-      "repeatable": false,
+      "repeatable": true,
+      "repeatText": "Add another Commitment",
       "question": [
         {
           "id": 1669095326962,
           "order": 1,
           "questionGroupId": 1669095326961,
           "name": "Commitment",
-          "type": "input",
+          "type": "text",
           "required": false,
           "meta": false
         },

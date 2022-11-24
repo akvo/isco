@@ -39,14 +39,15 @@ class TestSeedAndGetRoadmapWebform():
                     "name": "Traceability",
                     "description": "Lorem Ipsum Dolor sit Amet",
                     "order": 1,
-                    "repeatable": False,
+                    "repeatable": True,
+                    "repeatText": "Add another Commitment",
                     "question": [
                         {
                             "id": 1669095326962,
                             "name": "Commitment",
                             "required": False,
                             "meta": False,
-                            "type": "input",
+                            "type": "text",
                             "order": 1,
                         },
                         {
