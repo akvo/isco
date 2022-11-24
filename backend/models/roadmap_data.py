@@ -23,7 +23,6 @@ class RoadmapDataPaylod(TypedDict):
 class RoadmapDataDict(TypedDict):
     id: int
     name: str
-    reporting_year: int
     created: Optional[str] = None
     created_by: str
     organisation: str
@@ -39,7 +38,6 @@ class RoadmapData(Base):
                 nullable=True,
                 autoincrement=True)
     name = Column(String)
-    reporting_year = Column(Integer)
     created_by = Column(Integer, ForeignKey(User.id))
     organisation = Column(Integer(), ForeignKey(Organisation.id))
     created = Column(DateTime, nullable=True)
@@ -53,10 +51,9 @@ class RoadmapData(Base):
 
     def __init__(
         self, name: str, created_by: int, organisation: int,
-        updated: datetime, created: datetime, reporting_year: Optional[int]
+        updated: datetime, created: datetime
     ):
         self.name = name
-        self.reporting_year = reporting_year
         self.created_by = created_by
         self.organisation = organisation
         self.created = created
@@ -70,7 +67,6 @@ class RoadmapData(Base):
         return {
             "id": self.id,
             "name": self.name,
-            "reporting_year": self.reporting_year,
             "created_by": self.created_by_user.name,
             "organisation": self.organisation_detail.name,
             "created":
@@ -84,7 +80,6 @@ class RoadmapData(Base):
 class RoadmapDataBase(BaseModel):
     id: int
     name: str
-    reporting_year: int
     created_by: str
     organisation: str
     created: Optional[str] = None
