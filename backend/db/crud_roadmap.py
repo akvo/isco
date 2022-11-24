@@ -1,14 +1,21 @@
 from datetime import datetime
 from fastapi import HTTPException, status
 from typing import List, Union
+from typing_extensions import TypedDict
+from sqlalchemy import desc
 from sqlalchemy.orm import Session
 from models.roadmap_question_group import RoadmapQuestionGroupDict
 from models.roadmap_question_group import RoadmapQuestionGroup
-from models.roadmap_data import RoadmapData
+from models.roadmap_data import RoadmapData, RoadmapDataDict
 from models.roadmap_answer import RoadmapAnswer, RoadmapAnswerPayload
 from models.roadmap_question import RoadmapQuestion
 from models.roadmap_question import RoadmapQuestionType
 from models.roadmap_question import RoadmapQuestionTypeDict
+
+
+class PaginatedData(TypedDict):
+    data: List[RoadmapDataDict]
+    count: int
 
 
 def append_value(
@@ -75,3 +82,13 @@ def get_questions_by_ids(
 ) -> List[RoadmapQuestionTypeDict]:
     return session.query(RoadmapQuestion).filter(
         RoadmapQuestion.id.in_(ids)).all()
+
+
+def get_data(
+    session: Session, skip: int, page_size: int,
+) -> PaginatedData:
+    data = session.query(RoadmapData)
+    count = data.count()
+    data = data.order_by(
+        desc(RoadmapData.id)).offset(skip).limit(page_size).all()
+    return PaginatedData(data=data, count=count)

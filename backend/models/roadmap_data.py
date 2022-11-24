@@ -30,6 +30,21 @@ class RoadmapDataDict(TypedDict):
     answer: List[RoadmapAnswerDict]
 
 
+class RoadmapDataResDict(TypedDict):
+    id: int
+    organisation_id: int
+    organisation: str
+    datapoint_name: str
+    submitted_date: str
+
+
+class RoadmapDataResponse(BaseModel):
+    current: int
+    data: List[RoadmapDataResDict]
+    total: int
+    total_page: int
+
+
 class RoadmapData(Base):
     __tablename__ = "roadmap_data"
     id = Column(Integer,
@@ -74,6 +89,16 @@ class RoadmapData(Base):
             "updated":
             self.updated.strftime("%B %d, %Y") if self.updated else None,
             "answer": [a.formatted for a in self.answer],
+        }
+
+    @property
+    def serializeDatapoint(self) -> RoadmapDataResDict:
+        return {
+            "id": self.id,
+            "organisation_id": self.organisation,
+            "organisation": self.organisation_detail.name,
+            "datapoint_name": self.name,
+            "submitted_date": self.created.strftime("%B %d, %Y"),
         }
 
 

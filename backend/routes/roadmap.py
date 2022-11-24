@@ -1,5 +1,6 @@
 import os
 import json
+from math import ceil
 from datetime import datetime
 from http import HTTPStatus
 # from pydantic import Required
@@ -14,6 +15,7 @@ from db import crud_roadmap
 from db import crud_organisation
 from models.roadmap_question_group import RoadmapFormJson
 from models.roadmap_data import RoadmapDataPaylod, RoadmapData
+from models.roadmap_data import RoadmapDataResponse
 from middleware import verify_admin
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -24,7 +26,7 @@ roadmap_route = APIRouter()
 
 
 @roadmap_route.get(
-    "/roadmap-webform/",
+    "/roadmap-webform",
     response_model=RoadmapFormJson,
     summary="get roadmap report form",
     name="roadmap:get_webform",
@@ -117,3 +119,36 @@ def post(
     crud_roadmap.add_roadmap_data(
         session=session, data=roadmap_data, answers=answers)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)
+
+
+@roadmap_route.get(
+    "/roadmap-data",
+    response_model=RoadmapDataResponse,
+    summary="get all roadmap datapoint",
+    name="roadmap:get_datapoints",
+    tags=["Roadmap"])
+def get_datapoints(
+    req: Request,
+    page: int = Query(default=1),
+    page_size: int = Query(default=10),
+    session: Session = Depends(get_session),
+    credentials: credentials = Depends(security)
+):
+    data = crud_roadmap.get_data(
+        session=session,
+        skip=(page_size * (page - 1)),
+        page_size=page_size)
+    count = data.get('count')
+    if not count:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Not Found")
+    total_page = ceil(count / page_size) if count > 0 else 0
+    if total_page < page:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Not Found")
+    return {
+        "current": page,
+        "data": [d.serializeDatapoint for d in data.get('data')],
+        "total": count,
+        "total_page": total_page
+    }
