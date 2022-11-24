@@ -21,7 +21,9 @@ class PaginatedData(TypedDict):
 
 def append_value(
     answer: RoadmapAnswer,
-    value: Union[int, float, str, bool, List[str], List[int], List[float]],
+    value: Union[
+        int, float, str, bool, List[str],
+        List[int], List[float], List[dict]],
     type: RoadmapQuestionType
 ) -> RoadmapAnswer:
     if type == RoadmapQuestionType.input.value:
@@ -78,6 +80,15 @@ def add_roadmap_data(
     session.refresh(data)
 
 
+def update_roadmap_data(
+    session: Session, data: RoadmapData
+) -> RoadmapDataDict:
+    session.commit()
+    session.flush()
+    session.refresh(data)
+    return data
+
+
 def get_questions_by_ids(
     session: Session, ids: List[int]
 ) -> List[RoadmapQuestionTypeDict]:
@@ -121,4 +132,38 @@ def get_answer_by_data(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Roadmap answer not found")
+    return answer
+
+
+def add_aroadmap_nswer(
+    session: Session,
+    answer: RoadmapAnswer,
+    type: RoadmapQuestionType,
+    value: Union[
+        int, float, str, bool, List[str],
+        List[int], List[float], List[dict]]
+) -> RoadmapAnswerDict:
+    answer = append_value(answer, value, type)
+    session.add(answer)
+    session.commit()
+    session.flush()
+    # session.refresh(answer)
+    return answer
+
+
+def update_roadmap_answer(
+    session: Session,
+    answer: RoadmapAnswer,
+    type: RoadmapQuestionType,
+    repeat_index: int,
+    value: Union[
+        int, float, str, bool, List[str],
+        List[int], List[float], List[dict]]
+) -> RoadmapAnswerDict:
+    answer.updated = datetime.now()
+    answer.repeat_index = repeat_index
+    answer = append_value(answer, value, type)
+    session.commit()
+    session.flush()
+    # session.refresh(answer)
     return answer
