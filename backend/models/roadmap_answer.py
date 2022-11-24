@@ -138,8 +138,11 @@ class RoadmapAnswer(Base):
 
     @property
     def to_dict(self) -> TypedDict:
+        key = str(self.question)
+        if self.repeat_index:
+            key = f"{key}-{self.repeat_index}"
         return {
-            f"{self.question}_{self.repeat_index}": {
+            key: {
                 "value": self.text or self.value or self.options or self.table,
                 "repeat_index": self.repeat_index,
                 "type": self.question_detail.type.value,
