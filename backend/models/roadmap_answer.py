@@ -16,6 +16,7 @@ from db.connection import Base
 class RoadmapAnswerPayload(TypedDict):
     question: int
     type: RoadmapQuestionType
+    repeat_index: Optional[int] = 0
     value: Union[
         float, int, str, bool, dict, List[float],
         List[int], List[str], None, List[dict]]

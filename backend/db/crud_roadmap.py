@@ -1,11 +1,14 @@
+from datetime import datetime
 from fastapi import HTTPException, status
 from typing import List, Union
 from sqlalchemy.orm import Session
 from models.roadmap_question_group import RoadmapQuestionGroupDict
 from models.roadmap_question_group import RoadmapQuestionGroup
 from models.roadmap_data import RoadmapData
-from models.roadmap_answer import RoadmapAnswer
+from models.roadmap_answer import RoadmapAnswer, RoadmapAnswerPayload
+from models.roadmap_question import RoadmapQuestion
 from models.roadmap_question import RoadmapQuestionType
+from models.roadmap_question import RoadmapQuestionTypeDict
 
 
 def append_value(
@@ -46,11 +49,29 @@ def get_roadmap_question_group(
 
 
 def add_roadmap_data(
-    session: Session, data: RoadmapData, answers: List[dict]
+    session: Session, data: RoadmapData, answers: List[RoadmapAnswerPayload]
 ) -> None:
     if len(answers):
-        data.answer.append(answers)
+        for a in answers:
+            answer = RoadmapAnswer(
+                question=a.get('question'),
+                repeat_index=a.get('repeat_index'),
+                created=datetime.now()
+            )
+            answer = append_value(
+                answer=answer,
+                value=a.get('value'),
+                type=a.get('type')
+            )
+            data.answer.append(answer)
     session.add(data)
     session.commit()
     session.flush()
     session.refresh(data)
+
+
+def get_questions_by_ids(
+    session: Session, ids: List[int]
+) -> List[RoadmapQuestionTypeDict]:
+    return session.query(RoadmapQuestion).filter(
+        RoadmapQuestion.id.in_(ids)).all()

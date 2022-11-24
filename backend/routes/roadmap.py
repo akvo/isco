@@ -1,5 +1,6 @@
 import os
 import json
+from datetime import datetime
 from http import HTTPStatus
 # from pydantic import Required
 from typing import Optional
@@ -10,9 +11,10 @@ from fastapi.security import HTTPBasicCredentials as credentials
 from sqlalchemy.orm import Session
 from db.connection import get_session
 from db import crud_roadmap
+from db import crud_organisation
 from models.roadmap_question_group import RoadmapFormJson
-from models.roadmap_data import RoadmapDataPaylod
-# from middleware import verify_super_admin, verify_editor
+from models.roadmap_data import RoadmapDataPaylod, RoadmapData
+from middleware import verify_admin
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 source_file = "./source/roadmap.json"
@@ -33,6 +35,8 @@ def get(
     session: Session = Depends(get_session),
     credentials: credentials = Depends(security)
 ):
+    verify_admin(
+        session=session, authenticated=req.state.authenticated)
     # get roadmap form
     f = open(source_file)
     try:
@@ -67,4 +71,49 @@ def post(
     session: Session = Depends(get_session),
     credentials: credentials = Depends(security)
 ):
+    user = verify_admin(
+        session=session, authenticated=req.state.authenticated)
+    organisation_id = payload.get('organisation_id')
+    organisation = crud_organisation.get_organisation_by_id(
+        session=session, id=organisation_id)
+    organisation = organisation.serialize
+    org_member = " - ".join(organisation.get('member'))
+    org_name = organisation.get('name')
+    datapoint_name = " | ".join([org_member, org_name])
+    roadmap_data = RoadmapData(
+        name=datapoint_name,
+        created_by=user.id,
+        organisation=organisation_id,
+        created=datetime.now(),
+        updated=None
+    )
+    keys = [key for key, value in payload.get('answers').items()]
+    qids = []
+    for qid in keys:
+        if "-" in qid:
+            continue
+        qids.append(int(qid))
+    questions = crud_roadmap.get_questions_by_ids(
+        session=session, ids=qids)
+    question_type = {}
+    for q in [q.serializeType for q in questions]:
+        question_type.update({str(q.get('id')): q.get('type')})
+    answers = []
+    for key, value in payload.get('answers').items():
+        qid = key
+        repeat_index = 0
+        if '-' in key:
+            splitted = key.split('-')
+            qid = str(splitted[0])
+            repeat_index = int(splitted[1])
+        if qid not in question_type:
+            continue
+        answers.append({
+            'question': int(qid),
+            'type': question_type.get(qid),
+            'repeat_index': repeat_index,
+            'value': value
+        })
+    crud_roadmap.add_roadmap_data(
+        session=session, data=roadmap_data, answers=answers)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)

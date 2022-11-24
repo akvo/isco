@@ -41,6 +41,7 @@ class TestSeedAndGetRoadmapWebform():
                     "order": 1,
                     "repeatable": True,
                     "repeatText": "Add another Commitment",
+                    "repeatButtonPlacement": "bottom",
                     "question": [
                         {
                             "id": 1669095326962,

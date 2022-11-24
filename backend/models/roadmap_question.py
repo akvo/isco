@@ -65,6 +65,11 @@ class RoadmapQuestionDict(TypedDict):
     order: Optional[int] = None
 
 
+class RoadmapQuestionTypeDict(TypedDict):
+    id: int
+    type: RoadmapQuestionType
+
+
 class RoadmapQuestion(Base):
     __tablename__ = "roadmap_question"
     id = Column(BigInteger, primary_key=True, index=True, nullable=True)
@@ -161,6 +166,13 @@ class RoadmapQuestion(Base):
             "repeating_objects": repeating_objects,
             "option": [opt.serialize for opt in self.option],
             "order": self.order
+        }
+
+    @property
+    def serializeType(self) -> RoadmapQuestionTypeDict:
+        return {
+            "id": self.id,
+            "type": self.type.value
         }
 
     @property
