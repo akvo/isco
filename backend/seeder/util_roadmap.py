@@ -3,7 +3,6 @@ import json
 from models.roadmap_question_group import RoadmapQuestionGroup
 from models.roadmap_question import RoadmapQuestion
 from models.roadmap_option import RoadmapOption
-from models.roadmap_template import RoadmapTemplate
 from models.organisation import Organisation
 from sqlalchemy import func
 
@@ -74,42 +73,4 @@ def roadmap_form_seeder(session):
 
     print("---------------------------")
     print("Seeding Roadmap Form done")
-    return True
-
-
-def roadmap_template_seeder(session):
-    source_file = "./source/roadmap_template.json"
-    f = open(source_file)
-    try:
-        data = json.load(f)
-    except FileNotFoundError:
-        data = []
-    for d in data:
-        org_name = d.get('organisation_name')
-        org_name = org_name.lower().strip() if org_name else None
-        organisation = session.query(Organisation).filter(
-            func.lower(Organisation.name) == org_name).first()
-        if not organisation:
-            print("ERROR -----------------------------------")
-            print(f"404 - Organisation {org_name} not found!")
-            print("-----------------------------------------")
-            continue
-        if not d.get('questions'):
-            print("ERROR -----------------------------------")
-            print(f"404 - Organisation {org_name} doesn't have questions!")
-            print("-----------------------------------------")
-            continue
-        for q in d.get('questions'):
-            template = RoadmapTemplate(
-                id=None,
-                organisation=organisation.id,
-                question=q.get('id'),
-                mandatory=q.get('mandatory'))
-            session.add(template)
-            session.commit()
-            session.flush()
-            session.refresh(template)
-        print(f"Seeding Roadmap Template for Organisation {org_name} done")
-    print("---------------------------")
-    print("Seeding Roadmap Template done")
     return True

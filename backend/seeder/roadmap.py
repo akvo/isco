@@ -22,4 +22,3 @@ if not TESTING:
 
 # seed
 util_roadmap.roadmap_form_seeder(session=session)
-util_roadmap.roadmap_template_seeder(session=session)
