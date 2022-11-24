@@ -15,7 +15,12 @@ from .user import User
 from .organisation import Organisation
 
 
-class DataDict(TypedDict):
+class RoadmapDataPaylod(TypedDict):
+    organisation_id: int
+    answers: dict
+
+
+class RoadmapDataDict(TypedDict):
     id: int
     name: str
     reporting_year: int
@@ -26,7 +31,7 @@ class DataDict(TypedDict):
     answer: List[AnswerDict]
 
 
-class Data(Base):
+class RoadmapData(Base):
     __tablename__ = "roadmap_data"
     id = Column(Integer,
                 primary_key=True,
@@ -61,7 +66,7 @@ class Data(Base):
         return f"<RoadmapData {self.id}>"
 
     @property
-    def serialize(self) -> DataDict:
+    def serialize(self) -> RoadmapDataDict:
         return {
             "id": self.id,
             "name": self.name,
@@ -76,7 +81,7 @@ class Data(Base):
         }
 
 
-class DataBase(BaseModel):
+class RoadmapDataBase(BaseModel):
     id: int
     name: str
     reporting_year: int

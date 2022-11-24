@@ -13,7 +13,7 @@ import sqlalchemy.dialects.postgresql as pg
 from db.connection import Base
 
 
-class AnswerDict(TypedDict):
+class RoadmapAnswerDict(TypedDict):
     id: int
     question: int
     repeat_index: Optional[int] = None
@@ -22,7 +22,7 @@ class AnswerDict(TypedDict):
         float, int, str, bool, dict, List[float], List[int], List[str], None]
 
 
-class Answer(Base):
+class RoadmapAnswer(Base):
     __tablename__ = "roadmap_answer"
     id = Column(
         Integer,
@@ -78,7 +78,7 @@ class Answer(Base):
         return f"<RoadmapAnswer {self.id}>"
 
     @property
-    def serialize(self) -> AnswerDict:
+    def serialize(self) -> RoadmapAnswerDict:
         return {
             "id": self.id,
             "question": self.question,
@@ -93,7 +93,7 @@ class Answer(Base):
         }
 
     @property
-    def formatted(self) -> AnswerDict:
+    def formatted(self) -> RoadmapAnswerDict:
         answer = {
             "question": self.question,
             "repeat_index": self.repeat_index,
@@ -120,7 +120,7 @@ class Answer(Base):
         return answer
 
     @property
-    def format_with_answer_id(self) -> AnswerDict:
+    def format_with_answer_id(self) -> RoadmapAnswerDict:
         answer = {
             "id": self.id,
             "question": self.question,
@@ -217,7 +217,7 @@ class Answer(Base):
         }
 
 
-class AnswerBase(BaseModel):
+class RoadmapAnswerBase(BaseModel):
     id: int
     question: int
     data: int
