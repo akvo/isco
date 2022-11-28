@@ -13,12 +13,12 @@ const roadmapTabs = [
   { key: "current-roadmap", label: "Current Roadmaps" },
 ];
 
-const renderTabContent = (currentTab) => {
+const renderTabContent = ({ currentTab, setCurrentTab }) => {
   switch (currentTab) {
     case "setup-roadmap":
-      return <SetupRoadmap />;
+      return <SetupRoadmap setCurrentTab={setCurrentTab} />;
     case "current-roadmap":
-      return <CurrentRoadmap />;
+      return <CurrentRoadmap setCurrentTab={setCurrentTab} />;
     default:
       return <Guidance />;
   }
@@ -52,7 +52,9 @@ const ManageRoadmap = () => {
             </Col>
           </Row>
           <Row className="tab-content-wrapper">
-            <Col span={24}>{renderTabContent(currentTab)}</Col>
+            <Col span={24}>
+              {renderTabContent({ currentTab, setCurrentTab })}
+            </Col>
           </Row>
         </Col>
       </Row>
