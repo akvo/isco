@@ -32,6 +32,46 @@
       left: 0;
     }
 
+    // TABLE
+    .table-wrapper {
+      border: none !important;
+
+      .ant-table {
+        border: 2px solid #c5c4c5;
+        border-radius: 5px;
+      }
+
+      th.ant-table-cell {
+        border-bottom: 2px solid #c5c4c5;
+        font-weight: 600;
+      }
+
+      .title {
+        font-weight: 600;
+      }
+
+      .action-btn {
+        color: #777777;
+      }
+
+      button.ant-table-row-expand-icon.ant-table-row-expand-icon-expanded,
+      .ant-table-cell.ant-table-row-expand-icon-cell {
+        display: none;
+      }
+
+      .expanded-description {
+        margin: 0;
+        width: 43%;
+      }
+
+      tr.ant-table-expanded-row:hover > td,
+      tr.ant-table-expanded-row > td {
+        background: $white;
+        padding: 30px 20px 30px 66px;
+      }
+    }
+    // END OF TABLE
+
     /* customize webform/akvo-react-form style */
     #webform {
       border: 1px solid #cecece;
