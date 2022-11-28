@@ -185,6 +185,8 @@ class RoadmapQuestion(Base):
             "type": self.type.value,
             "order": self.order,
         }
+        if self.type == RoadmapQuestionType.table:
+            question.update({"columns": self.columns})
         if self.rule:
             if "allow_other" not in self.rule:
                 question.update({"rule": self.rule})

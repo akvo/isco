@@ -58,6 +58,12 @@ class TestSeedAndGetRoadmapWebform():
                             "type": "table",
                             "order": 2,
                             "tooltip": {"text": "Lorem Ipsum Dolor sit Amet"},
+                            "columns": [{
+                                "id": 1669107433881,
+                                "label": "Milestone",
+                                "name": "milestone",
+                                "type": "input"
+                            }]
                         },
                         {
                             "id": 1669107484181,
