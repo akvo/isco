@@ -16,6 +16,7 @@ from db import crud_organisation
 from models.roadmap_question_group import RoadmapFormJson
 from models.roadmap_data import RoadmapDataPaylod, RoadmapData
 from models.roadmap_data import RoadmapDataResponse
+from models.roadmap_answer import RoadmapAnswer
 from middleware import verify_admin
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -170,9 +171,61 @@ def update_datapoint(
     organisation_id = payload.get('organisation_id')
     data = crud_roadmap.get_data_by_id(
         session=session, id=id, organisation_id=organisation_id)
+    # get current answer
     current_answers = crud_roadmap.get_answer_by_data(
         session=session, data_id=data.id)
     current_answer = {}
     [current_answer.update(ca.to_dict) for ca in current_answers]
-    print(current_answer)
+    # get question type from answer
+    keys = [key for key, value in payload.get('answers').items()]
+    qids = []
+    for qid in keys:
+        if "-" in qid:
+            continue
+        qids.append(int(qid))
+    questions = crud_roadmap.get_questions_by_ids(
+        session=session, ids=qids)
+    question_type = {}
+    for q in [q.serializeType for q in questions]:
+        question_type.update({str(q.get('id')): q.get('type')})
+    # iterate answer payload to check if new/update answer
+    for key, value in payload.get('answers').items():
+        qid = key
+        repeat_index = 0
+        if '-' in key:
+            splitted = key.split('-')
+            qid = str(splitted[0])
+            repeat_index = int(splitted[1])
+        if qid not in question_type:
+            continue
+        # update answer
+        if key in current_answer and value != current_answer.get('value'):
+            current = current_answer.get(key)
+            crud_roadmap.update_roadmap_answer(
+                session=session,
+                answer=current.get('data'),
+                type=question_type.get(qid),
+                repeat_index=current.get('repeat_index'),
+                value=value)
+        # new answer
+        if key not in current_answer:
+            new_answer = RoadmapAnswer(
+                question=int(qid),
+                data=data.id,
+                repeat_index=repeat_index,
+                created=datetime.now())
+            crud_roadmap.add_roadmap_answer(
+                session=session,
+                answer=new_answer,
+                type=question_type.get(qid),
+                value=value)
+    # delete answer
+    for key, obj in current_answer.items():
+        if key in payload.get('answers'):
+            continue
+        # delete
+        crud_roadmap.delete_roadmap_answer_by_id(
+            session=session, id=obj.get('id'))
+    # update roadmap data
+    crud_roadmap.update_roadmap_data(session=session, data=data)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)

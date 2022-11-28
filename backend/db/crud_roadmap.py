@@ -83,9 +83,10 @@ def add_roadmap_data(
 def update_roadmap_data(
     session: Session, data: RoadmapData
 ) -> RoadmapDataDict:
+    data.updated = datetime.now()
     session.commit()
     session.flush()
-    session.refresh(data)
+    # session.refresh(data)
     return data
 
 
@@ -135,7 +136,7 @@ def get_answer_by_data(
     return answer
 
 
-def add_aroadmap_nswer(
+def add_roadmap_answer(
     session: Session,
     answer: RoadmapAnswer,
     type: RoadmapQuestionType,
@@ -167,3 +168,10 @@ def update_roadmap_answer(
     session.flush()
     # session.refresh(answer)
     return answer
+
+
+def delete_roadmap_answer_by_id(
+    session: Session, id: int
+) -> None:
+    session.query(RoadmapAnswer).filter(RoadmapAnswer.id == id).delete()
+    session.commit()

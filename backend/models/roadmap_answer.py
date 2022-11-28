@@ -145,8 +145,8 @@ class RoadmapAnswer(Base):
             key: {
                 "value": self.text or self.value or self.options or self.table,
                 "repeat_index": self.repeat_index,
-                "type": self.question_detail.type.value,
                 "data": self,
+                "id": self.id,
             }
         }
 
