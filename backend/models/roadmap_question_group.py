@@ -144,6 +144,7 @@ class RoadmapFormJson(BaseModel):
     question_group: Optional[List[dict]] = []
     tree: Optional[dict] = None
     initial_value: Optional[List[dict]] = None
+    organisation_ids: Optional[List[int]] = None
 
     class Config:
         orm_mode = True

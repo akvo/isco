@@ -57,8 +57,17 @@ def get(
         "version": 1,
         "tree": None,
         "question_group": question_group,
-        "initial_value": None
+        "initial_value": None,
+        "organisation_ids": None,
     })
+    # Get organisation ids from roadmap data to detect
+    # which org has submitted roadmap setup
+    orgs = session.query(RoadmapData).all()
+    org_ids = [o.organisation for o in orgs]
+    if len(org_ids):
+        roadmap_webform.update({
+            "organisation_ids": org_ids,
+        })
     if data_id:
         answers = crud_roadmap.get_answer_by_data(
             session=session, data_id=data_id)

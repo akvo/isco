@@ -282,5 +282,6 @@ class TestManageRoadmapDatapoint():
             }, {
                 "question": 1669107635129,
                 "value": "Example answer 2"
-            }]
+            }],
+            "organisation_ids": [1]
         }
