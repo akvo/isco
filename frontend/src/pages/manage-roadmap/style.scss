@@ -13,5 +13,16 @@
     .tab-menu-wrapper {
       margin: 10px 0;
     }
+
+    .loading-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      top: 35px;
+      left: 0;
+    }
   }
 }
