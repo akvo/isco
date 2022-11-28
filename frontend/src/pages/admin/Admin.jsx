@@ -5,6 +5,49 @@ import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
 
+const adminMenu = [
+  {
+    title: "Manage Users",
+    buttonText: "Manage Users",
+    link: "/manage-user",
+  },
+  {
+    title: "Manage Surveys",
+    buttonText: "Manage Surveys",
+    link: "/manage-survey",
+  },
+  {
+    title: "View Submission Progress",
+    buttonText: "View Submission Progress",
+    link: "/submission-progress",
+  },
+  {
+    title: "Manage Download",
+    buttonText: "Manage Download",
+    link: "/manage-download",
+  },
+  {
+    title: "Manage Members",
+    buttonText: "Manage Members",
+    link: "/manage-member",
+  },
+  {
+    title: "Manage Data",
+    buttonText: "Manage Data",
+    link: "/download-report",
+  },
+  {
+    title: "Data Cleaning",
+    buttonText: "Data Cleaning",
+    link: "/data-cleaning",
+  },
+  {
+    title: "Manage Roadmaps",
+    buttonText: "Manage Roadmaps",
+    link: "/manage-roadmaps",
+  },
+];
+
 const Admin = () => {
   const navigate = useNavigate();
 
@@ -16,125 +59,25 @@ const Admin = () => {
             Welcome Admin
           </Title>
           <Row className="card-row" gutter={[20, 20]}>
-            <Col md={24} lg={12}>
-              <Card
-                className="card-wrapper"
-                title={<Title level={5}>Manage Users</Title>}
-              >
-                <div className="card-footer">
-                  <Button
-                    type="primary"
-                    ghost
-                    block
-                    onClick={() => navigate("/manage-user")}
-                  >
-                    Manage Users
-                  </Button>
-                </div>
-              </Card>
-            </Col>
-            <Col md={24} lg={12}>
-              <Card
-                title={<Title level={5}>Manage Surveys</Title>}
-                className="card-wrapper"
-              >
-                <div className="card-footer">
-                  <Button
-                    type="primary"
-                    ghost
-                    block
-                    onClick={() => navigate("/manage-survey")}
-                  >
-                    Manage Surveys
-                  </Button>
-                </div>
-              </Card>
-            </Col>
-            <Col md={24} lg={12}>
-              <Card
-                title={<Title level={5}>View Submission Progress</Title>}
-                className="card-wrapper"
-              >
-                <div className="card-footer">
-                  <Button
-                    type="primary"
-                    ghost
-                    block
-                    onClick={() => navigate("/submission-progress")}
-                  >
-                    View Submission Progress
-                  </Button>
-                </div>
-              </Card>
-            </Col>
-            <Col md={24} lg={12}>
-              <Card
-                title={<Title level={5}>Manage Download</Title>}
-                className="card-wrapper"
-              >
-                <div className="card-footer">
-                  <Button
-                    type="primary"
-                    ghost
-                    block
-                    onClick={() => navigate("/manage-download")}
-                  >
-                    Manage Download
-                  </Button>
-                </div>
-              </Card>
-            </Col>
-            <Col md={24} lg={12}>
-              <Card
-                title={<Title level={5}>Manage Members</Title>}
-                className="card-wrapper"
-              >
-                <div className="card-footer">
-                  <Button
-                    type="primary"
-                    ghost
-                    block
-                    onClick={() => navigate("/manage-member")}
-                  >
-                    Manage members
-                  </Button>
-                </div>
-              </Card>
-            </Col>
-            <Col md={24} lg={12}>
-              <Card
-                title={<Title level={5}>Manage Data</Title>}
-                className="card-wrapper"
-              >
-                <div className="card-footer">
-                  <Button
-                    type="primary"
-                    ghost
-                    block
-                    onClick={() => navigate("/download-report")}
-                  >
-                    Manage Data
-                  </Button>
-                </div>
-              </Card>
-            </Col>
-            <Col md={24} lg={12}>
-              <Card
-                title={<Title level={5}>Data Cleaning</Title>}
-                className="card-wrapper"
-              >
-                <div className="card-footer">
-                  <Button
-                    type="primary"
-                    ghost
-                    block
-                    onClick={() => navigate("/data-cleaning")}
-                  >
-                    Data Cleaning
-                  </Button>
-                </div>
-              </Card>
-            </Col>
+            {adminMenu.map((m, mi) => (
+              <Col key={`admin-menu-${mi}`} md={24} lg={12}>
+                <Card
+                  className="card-wrapper"
+                  title={<Title level={5}>{m.title}</Title>}
+                >
+                  <div className="card-footer">
+                    <Button
+                      type="primary"
+                      ghost
+                      block
+                      onClick={() => navigate(m.link)}
+                    >
+                      {m.buttonText}
+                    </Button>
+                  </div>
+                </Card>
+              </Col>
+            ))}
           </Row>
         </Col>
       </Row>
