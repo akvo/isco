@@ -103,7 +103,7 @@ class RoadmapAnswer(Base):
         }
 
     @property
-    def formatted(self) -> RoadmapAnswerDict:
+    def formatted(self) -> TypedDict:
         answer = {
             "id": self.id,
             "question": self.question,
@@ -149,6 +149,40 @@ class RoadmapAnswer(Base):
                 "id": self.id,
             }
         }
+
+    @property
+    def to_initial_value(self) -> TypedDict:
+        answer = {
+            "question": self.question
+        }
+        q = self.question_detail
+        type = q.type
+        if self.repeat_index:
+            answer.update({
+                "repeatIndex": self.repeat_index
+            })
+        if type in [RoadmapQuestionType.input,
+                    RoadmapQuestionType.text,
+                    RoadmapQuestionType.date]:
+            answer.update({"value": self.text})
+        if type == RoadmapQuestionType.number:
+            val = self.value
+            if q.rule:
+                if q.rule.get("allow_decimal"):
+                    val = float(val) if val else None
+            else:
+                val = int(val) if val else None
+            answer.update({"value": val})
+        if type == RoadmapQuestionType.option:
+            answer.update({"value": self.options[0]})
+        if type in [RoadmapQuestionType.multiple_option,
+                    RoadmapQuestionType.nested_list]:
+            answer.update({"value": self.options})
+        if type == RoadmapQuestionType.cascade:
+            answer.update({"value": [int(float(o)) for o in self.options]})
+        if type == RoadmapQuestionType.table:
+            answer.update({"value": self.table})
+        return answer
 
 
 class RoadmapAnswerBase(BaseModel):

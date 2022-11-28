@@ -23,8 +23,7 @@ class TestSeedAndGetRoadmapWebform():
         # get roadmap webform
         res = await client.get(
             app.url_path_for("roadmap:get_webform"),
-            headers={"Authorization": f"Bearer {account.token}"},
-            params={'organisation_id': 1}
+            headers={"Authorization": f"Bearer {account.token}"}
         )
         assert res.status_code == 200
         res = res.json()
@@ -104,4 +103,5 @@ class TestSeedAndGetRoadmapWebform():
                 },
             ],
             "tree": None,
+            "initial_value": None
         }

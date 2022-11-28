@@ -52,13 +52,20 @@ def get(
     question_groups = crud_roadmap.get_roadmap_question_group(
         session=session)
     question_group = [qg.serializeJson for qg in question_groups]
-    # TODO:: Get initial value when receive data_id query param
     roadmap_webform.update({
         "languages": None,
         "version": 1,
         "tree": None,
-        "question_group": question_group
+        "question_group": question_group,
+        "initial_value": None
     })
+    if data_id:
+        answers = crud_roadmap.get_answer_by_data(
+            session=session, data_id=data_id)
+        values = [a.to_initial_value for a in answers]
+        roadmap_webform.update({
+            "initial_value": values
+        })
     return roadmap_webform
 
 

@@ -159,3 +159,122 @@ class TestManageRoadmapDatapoint():
                 "value": "Example answer 2",
             },
         ]
+
+    @pytest.mark.asyncio
+    async def test_get_roadmap_webform_with_initial_value(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
+        # get roadmap webform
+        res = await client.get(
+            app.url_path_for("roadmap:get_webform"),
+            headers={"Authorization": f"Bearer {account.token}"},
+            params={'data_id': 1}
+        )
+        assert res.status_code == 200
+        res = res.json()
+        assert res == {
+            "id": 1669095326959,
+            "name": "Roadmap",
+            "description": "Lorem Ipsum Dolor sit Amet",
+            "languages": None,
+            "version": 1.0,
+            "question_group": [
+                {
+                    "name": "Traceability",
+                    "description": "Lorem Ipsum Dolor sit Amet",
+                    "order": 1,
+                    "repeatable": True,
+                    "repeatText": "Add another Commitment",
+                    "repeatButtonPlacement": "bottom",
+                    "question": [
+                        {
+                            "id": 1669095326962,
+                            "name": "Commitment",
+                            "required": False,
+                            "meta": False,
+                            "type": "text",
+                            "order": 1,
+                        },
+                        {
+                            "id": 1669107420032,
+                            "name": "Milestones",
+                            "required": False,
+                            "meta": False,
+                            "type": "table",
+                            "order": 2,
+                            "tooltip": {"text": "Lorem Ipsum Dolor sit Amet"},
+                        },
+                        {
+                            "id": 1669107484181,
+                            "name": "Challenges",
+                            "required": False,
+                            "meta": False,
+                            "type": "text",
+                            "order": 3,
+                        },
+                    ],
+                },
+                {
+                    "name": "Certified and Independently Verified Cocoa",
+                    "description": None,
+                    "order": 2,
+                    "repeatable": False,
+                    "question": [
+                        {
+                            "id": 1669107562769,
+                            "name": "Example Question 1",
+                            "required": False,
+                            "meta": False,
+                            "type": "input",
+                            "order": 1,
+                        }
+                    ],
+                },
+                {
+                    "name": "Deforestation / Agroforestry",
+                    "description": None,
+                    "order": 3,
+                    "repeatable": False,
+                    "question": [
+                        {
+                            "id": 1669107635129,
+                            "name": "Example Question 2",
+                            "required": False,
+                            "meta": False,
+                            "type": "input",
+                            "order": 1,
+                        }
+                    ],
+                },
+            ],
+            "tree": None,
+            "initial_value": [{
+                "question": 1669095326962,
+                "value": "Updated first commitment"
+            }, {
+                "question": 1669107420032,
+                "value": [{"milestone": "Updated First Milestone"}],
+            }, {
+                "question": 1669095326962,
+                "repeatIndex": 1,
+                "value": "Updated second commitment"
+            }, {
+                "question": 1669107420032,
+                "repeatIndex": 1,
+                "value": [{"milestone": "Update Milestone 1"}],
+            }, {
+                "question": 1669095326962,
+                "repeatIndex": 2,
+                "value": "Third commitment"
+            }, {
+                "question": 1669107420032,
+                "repeatIndex": 2,
+                "value": [{"milestone": "Milestone 1"}],
+            }, {
+                "question": 1669107562769,
+                "value": "Example answer 1"
+            }, {
+                "question": 1669107635129,
+                "value": "Example answer 2"
+            }]
+        }
