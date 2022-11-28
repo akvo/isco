@@ -1,0 +1,17 @@
+@import "../../variables.scss";
+
+#root {
+  #manage-roadmap {
+    .page-title-wrapper {
+      border-bottom: 1px solid #777777;
+    }
+
+    .page-title {
+      margin: 40px 0 20px 0;
+    }
+
+    .tab-menu-wrapper {
+      margin: 10px 0;
+    }
+  }
+}

@@ -25,6 +25,7 @@ import {
   ManageDownload,
   DataCleaning,
   DownloadReport,
+  ManageRoadmap,
 } from "./pages";
 import { Alert } from "antd";
 import { useCookies } from "react-cookie";
@@ -254,6 +255,11 @@ const App = () => {
             exact
             path="/data-cleaning"
             element={<Secure element={DataCleaning} adminPage={true} />}
+          />
+          <Route
+            exact
+            path="/manage-roadmap"
+            element={<Secure element={ManageRoadmap} adminPage={true} />}
           />
           <Route exact path="/survey" element={<Secure element={Survey} />} />
           <Route

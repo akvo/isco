@@ -42,9 +42,9 @@ const adminMenu = [
     link: "/data-cleaning",
   },
   {
-    title: "Manage Roadmaps",
-    buttonText: "Manage Roadmaps",
-    link: "/manage-roadmaps",
+    title: "Manage Roadmap",
+    buttonText: "Manage Roadmap",
+    link: "/manage-roadmap",
   },
 ];
 
