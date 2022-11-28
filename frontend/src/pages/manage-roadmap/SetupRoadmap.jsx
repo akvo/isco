@@ -10,21 +10,33 @@ const SetupRoadmap = ({ setCurrentTab }) => {
   const { notify } = useNotification();
   const [formValue, setFormValue] = useState({});
   const [selectedOrg, setSelectedOrg] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [dataOrgIds, setDataOrgIds] = useState(null);
   const organisations = store.useState((s) => s.optionValues.organisation);
 
   const organisationOptions = useMemo(() => {
-    return organisations.map((org) => ({
-      label: org.name,
-      value: org.id,
-    }));
-  }, [organisations]);
+    if (!dataOrgIds) {
+      return [];
+    }
+    return organisations.map((org) => {
+      const disabled = dataOrgIds.includes(org.id) ? true : false;
+      const label = org.name;
+      return {
+        label: disabled ? `${label} (Submitted)` : label,
+        value: org.id,
+        disabled: disabled,
+      };
+    });
+  }, [organisations, dataOrgIds]);
 
   useEffect(() => {
     api
       .get("/roadmap-webform")
       .then((res) => {
+        setDataOrgIds(res.data.organisation_ids);
         const webform = res.data;
-        delete res.data?.initial_value;
+        delete webform?.initial_value;
+        delete webform?.organisation_ids;
         setFormValue(webform);
       })
       .catch((e) => {
@@ -33,6 +45,7 @@ const SetupRoadmap = ({ setCurrentTab }) => {
   }, []);
 
   const onFinish = (values) => {
+    setSubmitting(true);
     const findOrg = organisations.find((o) => o.id === selectedOrg);
     if (values?.datapoint) {
       delete values.datapoint;
@@ -58,6 +71,9 @@ const SetupRoadmap = ({ setCurrentTab }) => {
           type: "error",
           message: "Oops, something went wrong.",
         });
+      })
+      .finally(() => {
+        setSubmitting(false);
       });
   };
 
@@ -92,7 +108,7 @@ const SetupRoadmap = ({ setCurrentTab }) => {
             forms={formValue}
             onFinish={onFinish}
             submitButtonSetting={{
-              loading: false,
+              loading: submitting,
               disabled: !selectedOrg,
             }}
           />
