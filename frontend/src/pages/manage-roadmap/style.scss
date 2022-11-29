@@ -87,6 +87,11 @@
         button {
           background-color: transparent;
           border: 2px solid #777777;
+          border-width: 2px;
+          font-weight: 500;
+          min-height: 35px;
+          border-radius: 5px;
+          color: #777777;
         }
       }
 
@@ -123,6 +128,17 @@
         box-shadow: none;
         &:disabled {
           color: #777777;
+        }
+      }
+
+      .arf-table-data {
+        button.ant-btn.ant-btn-default {
+          border-width: none;
+          font-weight: none;
+          min-height: none;
+          border-radius: none;
+          color: none;
+          border-color: none;
         }
       }
     }
