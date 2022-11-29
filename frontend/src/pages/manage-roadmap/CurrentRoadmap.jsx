@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { Row, Col, Table, Space, Button, Popconfirm } from "antd";
-import { api } from "../../lib";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
+import { Row, Col, Table, Space, Button, Popconfirm, Select } from "antd";
+import { api, store } from "../../lib";
 import { RiPencilFill, RiDeleteBinFill } from "react-icons/ri";
 import { useNotification } from "../../util";
 
@@ -8,24 +8,43 @@ const CurrentRoadmap = ({ setCurrentTab, setEditDatapoint }) => {
   const { notify } = useNotification();
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState({});
+  const [filterMember, setFilterMember] = useState(null);
+  const memberTypes = store.useState((s) => s.optionValues.member_type);
 
   const pageSize = 10;
   const [page, setPage] = useState(1);
 
+  const memberTypeOptions = useMemo(() => {
+    return memberTypes
+      .filter((mt) => mt.name.toLowerCase() !== "all")
+      .map((mt) => ({
+        label: mt.name,
+        value: mt.id,
+      }));
+  }, [memberTypes]);
+
   const loadRoadmapData = useCallback(() => {
     setIsLoading(true);
+    let url = `/roadmap-data?page=${page}&page_size=${pageSize}`;
+    if (filterMember) {
+      url = `${url}&member_type=${filterMember}`;
+    }
     api
-      .get(`/roadmap-data?page=${page}&page_size=${pageSize}`)
+      .get(url)
       .then((res) => {
         setData(res.data);
       })
       .catch((e) => {
         console.error(e);
+        const { status } = e.response;
+        if (status === 404) {
+          setData({});
+        }
       })
       .finally(() => {
         setIsLoading(false);
       });
-  }, [page, pageSize]);
+  }, [page, pageSize, filterMember]);
 
   useEffect(() => {
     loadRoadmapData();
@@ -65,7 +84,6 @@ const CurrentRoadmap = ({ setCurrentTab, setEditDatapoint }) => {
       title: "Action",
       key: "action",
       render: (record) => (
-        // TODO:: add functionality to action button
         <Space key={`roadmap-data-action-${record.id}`}>
           <Button
             className="action-btn"
@@ -97,6 +115,27 @@ const CurrentRoadmap = ({ setCurrentTab, setEditDatapoint }) => {
 
   return (
     <div id="current-roadmap">
+      <Row
+        className="filter-wrapper"
+        align="middle"
+        justify="space-between"
+        gutter={[20, 20]}
+      >
+        <Col flex={1} align="start">
+          <Select
+            allowClear
+            showSearch
+            className="member-dropdown-wrapper"
+            placeholder="Member Type"
+            options={memberTypeOptions}
+            onChange={setFilterMember}
+            value={filterMember}
+            filterOption={(input, option) =>
+              option?.label?.toLowerCase().indexOf(input?.toLowerCase()) >= 0
+            }
+          />
+        </Col>
+      </Row>
       <Row>
         <Col span={24}>
           <Table

@@ -21,6 +21,27 @@
       }
     }
 
+    .filter-wrapper {
+      padding: 24px 0;
+      font-size: 14px;
+
+      .input-search {
+        width: 20rem;
+
+        .ant-input {
+          border: none;
+        }
+
+        .ant-input-prefix {
+          margin-right: 14px;
+        }
+      }
+
+      .member-dropdown-wrapper {
+        width: 18rem;
+      }
+    }
+
     .loading-wrapper {
       display: flex;
       justify-content: center;
