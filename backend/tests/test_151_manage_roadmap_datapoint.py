@@ -94,7 +94,7 @@ class TestManageRoadmapDatapoint():
         }
         # post roadmap datapoint
         res = await client.put(
-            app.url_path_for("roadmap:update_datapoint", id=1),
+            app.url_path_for("roadmap:update_datapoint", data_id=1),
             headers={"Authorization": f"Bearer {account.token}"},
             json=payload
         )

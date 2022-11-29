@@ -177,14 +177,14 @@ def get_datapoints(
 
 
 @roadmap_route.put(
-    "/roadmap-data/{id}",
+    "/roadmap-webform/{data_id}",
     status_code=HTTPStatus.NO_CONTENT,
     summary="update roadmap datapoint by id",
     name="roadmap:update_datapoint",
     tags=["Roadmap"])
 def update_datapoint(
     req: Request,
-    id: int,
+    data_id: int,
     payload: RoadmapDataPaylod,
     session: Session = Depends(get_session),
     credentials: credentials = Depends(security)
@@ -193,8 +193,9 @@ def update_datapoint(
         session=session,
         authenticated=req.state.authenticated)
     organisation_id = payload.get('organisation_id')
+    print(organisation_id, id, '#############')
     data = crud_roadmap.get_data_by_id(
-        session=session, id=id, organisation_id=organisation_id)
+        session=session, id=data_id, organisation_id=organisation_id)
     # get current answer
     current_answers = crud_roadmap.get_answer_by_data(
         session=session, data_id=data.id)
