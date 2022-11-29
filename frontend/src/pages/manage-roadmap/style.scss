@@ -11,11 +11,17 @@
     }
 
     .tab-menu-wrapper {
-      margin: 10px 0;
+      .ant-tabs-top > .ant-tabs-nav:before {
+        border-bottom: 1px solid #777777;
+      }
+    }
+
+    #guidance {
+      padding: 24px 0;
     }
 
     .select-organisation-wrapper {
-      margin: 12px 0;
+      padding: 24px 0;
       .select-organisation-dropdown {
         width: 250px;
       }
