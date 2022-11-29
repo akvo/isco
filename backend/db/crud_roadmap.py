@@ -175,3 +175,10 @@ def delete_roadmap_answer_by_id(
 ) -> None:
     session.query(RoadmapAnswer).filter(RoadmapAnswer.id == id).delete()
     session.commit()
+
+
+def delete_roadmap_data_by_id(
+    session: Session, id: int
+) -> None:
+    session.query(RoadmapData).filter(RoadmapData.id == id).delete()
+    session.commit()

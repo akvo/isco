@@ -39,7 +39,8 @@ def get(
     credentials: credentials = Depends(security)
 ):
     verify_admin(
-        session=session, authenticated=req.state.authenticated)
+        session=session,
+        authenticated=req.state.authenticated)
     # get roadmap form
     f = open(source_file)
     try:
@@ -91,7 +92,8 @@ def post(
     credentials: credentials = Depends(security)
 ):
     user = verify_admin(
-        session=session, authenticated=req.state.authenticated)
+        session=session,
+        authenticated=req.state.authenticated)
     organisation_id = payload.get('organisation_id')
     organisation = crud_organisation.get_organisation_by_id(
         session=session, id=organisation_id)
@@ -151,6 +153,9 @@ def get_datapoints(
     session: Session = Depends(get_session),
     credentials: credentials = Depends(security)
 ):
+    verify_admin(
+        session=session,
+        authenticated=req.state.authenticated)
     data = crud_roadmap.get_data(
         session=session,
         skip=(page_size * (page - 1)),
@@ -184,6 +189,9 @@ def update_datapoint(
     session: Session = Depends(get_session),
     credentials: credentials = Depends(security)
 ):
+    verify_admin(
+        session=session,
+        authenticated=req.state.authenticated)
     organisation_id = payload.get('organisation_id')
     data = crud_roadmap.get_data_by_id(
         session=session, id=id, organisation_id=organisation_id)
@@ -244,4 +252,23 @@ def update_datapoint(
             session=session, id=obj.get('id'))
     # update roadmap data
     crud_roadmap.update_roadmap_data(session=session, data=data)
+    return Response(status_code=HTTPStatus.NO_CONTENT.value)
+
+
+@roadmap_route.delete(
+    "/roadmap-data/{id}",
+    status_code=HTTPStatus.NO_CONTENT,
+    summary="delete roadmap datapoint by id",
+    name="roadmap:delete_datapoint",
+    tags=["Roadmap"])
+def delete_datapoint(
+    req: Request,
+    id: int,
+    session: Session = Depends(get_session),
+    credentials: credentials = Depends(security)
+):
+    verify_admin(
+        session=session,
+        authenticated=req.state.authenticated)
+    crud_roadmap.delete_roadmap_answer_by_id(session=session, id=id)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)
