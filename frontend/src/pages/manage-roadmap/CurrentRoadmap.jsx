@@ -4,7 +4,7 @@ import { api } from "../../lib";
 import { RiPencilFill, RiDeleteBinFill } from "react-icons/ri";
 import { useNotification } from "../../util";
 
-const CurrentRoadmap = () => {
+const CurrentRoadmap = ({ setCurrentTab, setEditDatapoint }) => {
   const { notify } = useNotification();
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState({});
@@ -66,15 +66,16 @@ const CurrentRoadmap = () => {
       key: "action",
       render: (record) => (
         // TODO:: add functionality to action button
-        <Space key={`${record?.id}-${record?.key}`}>
+        <Space key={`roadmap-data-action-${record.id}`}>
           <Button
             className="action-btn"
             icon={<RiPencilFill />}
             shape="circle"
             type="text"
-            // onClick={() => {
-
-            // }}
+            onClick={() => {
+              setCurrentTab("setup-roadmap");
+              setEditDatapoint(record);
+            }}
           />
           <Popconfirm
             title="Delete roadmap data can't be undone."
@@ -99,6 +100,7 @@ const CurrentRoadmap = () => {
       <Row>
         <Col span={24}>
           <Table
+            rowKey={(record) => `roadmap-data-${record.id}`}
             className="table-wrapper"
             columns={columns}
             dataSource={data?.data || []}

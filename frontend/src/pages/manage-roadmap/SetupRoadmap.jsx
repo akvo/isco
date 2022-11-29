@@ -6,10 +6,13 @@ import { api, store } from "../../lib";
 import isEmpty from "lodash/isEmpty";
 import { useNotification } from "../../util";
 
-const SetupRoadmap = ({ setCurrentTab }) => {
+const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
   const { notify } = useNotification();
   const [formValue, setFormValue] = useState({});
-  const [selectedOrg, setSelectedOrg] = useState(null);
+  const [initialValue, setInitialValue] = useState([]);
+  const [selectedOrg, setSelectedOrg] = useState(
+    editDatapoint?.organisation_id || null
+  );
   const [submitting, setSubmitting] = useState(false);
   const [dataOrgIds, setDataOrgIds] = useState(null);
   const organisations = store.useState((s) => s.optionValues.organisation);
@@ -30,10 +33,19 @@ const SetupRoadmap = ({ setCurrentTab }) => {
   }, [organisations, dataOrgIds]);
 
   useEffect(() => {
+    let url = "/roadmap-webform";
+    if (editDatapoint?.id) {
+      url = `${url}?data_id=${editDatapoint.id}`;
+    }
     api
-      .get("/roadmap-webform")
+      .get(url)
       .then((res) => {
-        setDataOrgIds(res.data.organisation_ids);
+        let orgIds = res.data.organisation_ids;
+        if (editDatapoint) {
+          orgIds = orgIds.filter((o) => o !== editDatapoint?.organisation_id);
+        }
+        setDataOrgIds(orgIds);
+        setInitialValue(res.data?.initial_value || []);
         const webform = res.data;
         delete webform?.initial_value;
         delete webform?.organisation_ids;
@@ -42,7 +54,7 @@ const SetupRoadmap = ({ setCurrentTab }) => {
       .catch((e) => {
         console.error(e);
       });
-  }, []);
+  }, [editDatapoint]);
 
   const onFinish = (values) => {
     setSubmitting(true);
@@ -54,16 +66,22 @@ const SetupRoadmap = ({ setCurrentTab }) => {
       organisation_id: selectedOrg,
       answers: values,
     };
-    api
-      .post(`/roadmap-webform`, payload, {
-        "content-type": "application/json",
-      })
+    let method = api.post;
+    let url = "/roadmap-webform";
+    if (editDatapoint?.id) {
+      method = api.put;
+      url = `${url}/${editDatapoint.id}`;
+    }
+    method(url, payload, {
+      "content-type": "application/json",
+    })
       .then(() => {
         notify({
           type: "success",
           message: `Roadmap for ${findOrg.name} submitted.`,
         });
         setCurrentTab("current-roadmap");
+        setEditDatapoint(null);
       })
       .catch((e) => {
         console.error(e);
@@ -111,6 +129,7 @@ const SetupRoadmap = ({ setCurrentTab }) => {
               loading: submitting,
               disabled: !selectedOrg,
             }}
+            initialValue={initialValue}
           />
         </div>
       )}

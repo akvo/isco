@@ -13,12 +13,28 @@ const roadmapTabs = [
   { key: "current-roadmap", label: "Current Roadmaps" },
 ];
 
-const renderTabContent = ({ currentTab, setCurrentTab }) => {
+const renderTabContent = ({
+  currentTab,
+  setCurrentTab,
+  editDatapoint,
+  setEditDatapoint,
+}) => {
   switch (currentTab) {
     case "setup-roadmap":
-      return <SetupRoadmap setCurrentTab={setCurrentTab} />;
+      return (
+        <SetupRoadmap
+          setCurrentTab={setCurrentTab}
+          editDatapoint={editDatapoint}
+          setEditDatapoint={setEditDatapoint}
+        />
+      );
     case "current-roadmap":
-      return <CurrentRoadmap setCurrentTab={setCurrentTab} />;
+      return (
+        <CurrentRoadmap
+          setCurrentTab={setCurrentTab}
+          setEditDatapoint={setEditDatapoint}
+        />
+      );
     default:
       return <Guidance />;
   }
@@ -26,6 +42,12 @@ const renderTabContent = ({ currentTab, setCurrentTab }) => {
 
 const ManageRoadmap = () => {
   const [currentTab, setCurrentTab] = useState("guidance");
+  const [editDatapoint, setEditDatapoint] = useState(null);
+
+  const handleTabClick = (key) => {
+    setCurrentTab(key);
+    setEditDatapoint(null);
+  };
 
   return (
     <div id="manage-roadmap">
@@ -44,7 +66,10 @@ const ManageRoadmap = () => {
           </Row>
           <Row className="tab-menu-wrapper">
             <Col span={24}>
-              <Tabs activeKey={currentTab} onTabClick={setCurrentTab}>
+              <Tabs
+                activeKey={currentTab}
+                onTabClick={(key) => handleTabClick(key)}
+              >
                 {roadmapTabs.map((rt) => (
                   <Tabs.TabPane tab={rt.label} key={rt.key} />
                 ))}
@@ -53,7 +78,12 @@ const ManageRoadmap = () => {
           </Row>
           <Row className="tab-content-wrapper">
             <Col span={24}>
-              {renderTabContent({ currentTab, setCurrentTab })}
+              {renderTabContent({
+                currentTab,
+                setCurrentTab,
+                editDatapoint,
+                setEditDatapoint,
+              })}
             </Col>
           </Row>
         </Col>
