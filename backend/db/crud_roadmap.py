@@ -99,8 +99,12 @@ def get_questions_by_ids(
 
 def get_data(
     session: Session, skip: int, page_size: int,
+    organisation_ids: Optional[List[int]] = None
 ) -> PaginatedData:
     data = session.query(RoadmapData)
+    if organisation_ids:
+        data = data.filter(
+            RoadmapData.organisation.in_(organisation_ids))
     count = data.count()
     data = data.order_by(
         desc(RoadmapData.id)).offset(skip).limit(page_size).all()

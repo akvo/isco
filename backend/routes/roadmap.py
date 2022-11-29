@@ -17,6 +17,7 @@ from models.roadmap_question_group import RoadmapFormJson
 from models.roadmap_data import RoadmapDataPaylod, RoadmapData
 from models.roadmap_data import RoadmapDataResponse
 from models.roadmap_answer import RoadmapAnswer
+from models.organisation_member import OrganisationMember
 from middleware import verify_admin
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -148,6 +149,7 @@ def post(
     tags=["Roadmap"])
 def get_datapoints(
     req: Request,
+    member_type: Optional[int] = Query(None),
     page: int = Query(default=1),
     page_size: int = Query(default=10),
     session: Session = Depends(get_session),
@@ -156,18 +158,28 @@ def get_datapoints(
     verify_admin(
         session=session,
         authenticated=req.state.authenticated)
+    org_ids = None
+    if member_type:
+        org_member = session.query(OrganisationMember).filter(
+            OrganisationMember.member_type.in_([member_type])).all()
+        if not org_member:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="No organisation found")
+        org_ids = [om.organisation for om in org_member]
     data = crud_roadmap.get_data(
         session=session,
+        organisation_ids=org_ids,
         skip=(page_size * (page - 1)),
         page_size=page_size)
     count = data.get('count')
     if not count:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Not Found")
+            status_code=status.HTTP_404_NOT_FOUND, detail="Data Not Found")
     total_page = ceil(count / page_size) if count > 0 else 0
     if total_page < page:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Not Found")
+            status_code=status.HTTP_404_NOT_FOUND, detail="Data Not Found")
     return {
         "current": page,
         "data": [d.serializeDatapoint for d in data.get('data')],
@@ -193,7 +205,6 @@ def update_datapoint(
         session=session,
         authenticated=req.state.authenticated)
     organisation_id = payload.get('organisation_id')
-    print(organisation_id, id, '#############')
     data = crud_roadmap.get_data_by_id(
         session=session, id=data_id, organisation_id=organisation_id)
     # get current answer

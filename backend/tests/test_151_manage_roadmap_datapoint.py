@@ -68,6 +68,33 @@ class TestManageRoadmapDatapoint():
             "total": 1,
             "total_page": 1
         }
+        # get roadmap datapoints filter by member 1
+        res = await client.get(
+            app.url_path_for("roadmap:get_datapoints"),
+            params={"member_type": 1},
+            headers={"Authorization": f"Bearer {account.token}"},
+        )
+        assert res.status_code == 200
+        res = res.json()
+        assert res == {
+            "current": 1,
+            "data": [{
+                "id": 1,
+                "datapoint_name": "All | staff Akvo",
+                "organisation": "staff Akvo",
+                "organisation_id": 1,
+                "submitted_date": today
+            }],
+            "total": 1,
+            "total_page": 1
+        }
+        # get roadmap datapoints filter by member 1
+        res = await client.get(
+            app.url_path_for("roadmap:get_datapoints"),
+            params={"member_type": 2},
+            headers={"Authorization": f"Bearer {account.token}"},
+        )
+        assert res.status_code == 404
 
     @pytest.mark.asyncio
     async def test_put_roadmap_datapoint(
