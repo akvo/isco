@@ -1,16 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Row, Col, Table, Space, Button, Popconfirm } from "antd";
 import { api } from "../../lib";
 import { RiPencilFill, RiDeleteBinFill } from "react-icons/ri";
+import { useNotification } from "../../util";
 
 const CurrentRoadmap = () => {
+  const { notify } = useNotification();
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState({});
 
   const pageSize = 10;
   const [page, setPage] = useState(1);
 
-  useEffect(() => {
+  const loadRoadmapData = useCallback(() => {
     setIsLoading(true);
     api
       .get(`/roadmap-data?page=${page}&page_size=${pageSize}`)
@@ -23,7 +25,30 @@ const CurrentRoadmap = () => {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [page]);
+  }, [page, pageSize]);
+
+  useEffect(() => {
+    loadRoadmapData();
+  }, [loadRoadmapData]);
+
+  const handleDeleteButton = ({ id, datapoint_name }) => {
+    api
+      .delete(`/roadmap-data/${id}`)
+      .then(() => {
+        notify({
+          type: "success",
+          message: `Roadmap ${datapoint_name} data deleted.`,
+        });
+        loadRoadmapData();
+      })
+      .catch((e) => {
+        console.error(e);
+        notify({
+          type: "error",
+          message: "Oops, something went wrong.",
+        });
+      });
+  };
 
   const columns = [
     {
@@ -40,6 +65,7 @@ const CurrentRoadmap = () => {
       title: "Action",
       key: "action",
       render: (record) => (
+        // TODO:: add functionality to action button
         <Space key={`${record?.id}-${record?.key}`}>
           <Button
             className="action-btn"
@@ -54,7 +80,7 @@ const CurrentRoadmap = () => {
             title="Delete roadmap data can't be undone."
             okText="Delete"
             cancelText="Cancel"
-            // onConfirm={() => handleDeleteButton(record)}
+            onConfirm={() => handleDeleteButton(record)}
           >
             <Button
               className="action-btn"

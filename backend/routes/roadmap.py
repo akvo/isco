@@ -270,5 +270,5 @@ def delete_datapoint(
     verify_admin(
         session=session,
         authenticated=req.state.authenticated)
-    crud_roadmap.delete_roadmap_answer_by_id(session=session, id=id)
+    crud_roadmap.delete_roadmap_data_by_id(session=session, id=id)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)
