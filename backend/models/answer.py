@@ -18,16 +18,16 @@ class AnswerDictWithId(TypedDict):
     question: int
     repeat_index: Optional[int] = None
     comment: Optional[str] = None
-    value: Union[float, int, str, bool, dict, List[float], List[int],
-                 List[str], None]
+    value: Union[
+        float, int, str, bool, dict, List[float], List[int], List[str], None]
 
 
 class AnswerDict(TypedDict):
     question: int
     repeat_index: Optional[int] = None
     comment: Optional[str] = None
-    value: Union[float, int, str, bool, dict, List[float], List[int],
-                 List[str], None]
+    value: Union[
+        float, int, str, bool, dict, List[float], List[int], List[str], None]
 
 
 class AnswerDictWithQuestionName(TypedDict):
@@ -38,26 +38,29 @@ class AnswerDictWithQuestionName(TypedDict):
     question_order: int
     repeat_index: Optional[int] = None
     comment: Optional[str] = None
-    value: Union[float, int, str, bool, dict, List[float], List[int],
-                 List[str], None]
+    value: Union[
+        float, int, str, bool, dict, List[float], List[int], List[str], None]
 
 
 class Answer(Base):
     __tablename__ = "answer"
-    id = Column(Integer,
-                primary_key=True,
-                index=True,
-                nullable=True,
-                autoincrement=True)
-    question = Column(Integer,
-                      ForeignKey('question.id',
-                                 onupdate="CASCADE",
-                                 ondelete="CASCADE"),
-                      primary_key=True)
-    data = Column(Integer,
-                  ForeignKey('data.id', onupdate="CASCADE",
-                             ondelete="CASCADE"),
-                  primary_key=True)
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
+        nullable=True,
+        autoincrement=True
+    )
+    question = Column(
+        Integer,
+        ForeignKey("question.id", onupdate="CASCADE", ondelete="CASCADE"),
+        primary_key=True,
+    )
+    data = Column(
+        Integer,
+        ForeignKey("data.id", onupdate="CASCADE", ondelete="CASCADE"),
+        primary_key=True,
+    )
     text = Column(Text, nullable=True)
     value = Column(Float, nullable=True)
     options = Column(pg.ARRAY(String), nullable=True)
@@ -67,16 +70,18 @@ class Answer(Base):
     updated = Column(DateTime, nullable=True)
     question_detail = relationship("Question", backref="answer")
 
-    def __init__(self,
-                 question: int,
-                 created: datetime,
-                 data: Optional[int] = None,
-                 text: Optional[str] = None,
-                 value: Optional[float] = None,
-                 options: Optional[List[str]] = None,
-                 comment: Optional[str] = None,
-                 repeat_index: Optional[int] = None,
-                 updated: Optional[datetime] = None):
+    def __init__(
+        self,
+        question: int,
+        created: datetime,
+        data: Optional[int] = None,
+        text: Optional[str] = None,
+        value: Optional[float] = None,
+        options: Optional[List[str]] = None,
+        comment: Optional[str] = None,
+        repeat_index: Optional[int] = None,
+        updated: Optional[datetime] = None,
+    ):
         self.question = question
         self.data = data
         self.text = text
@@ -110,7 +115,7 @@ class Answer(Base):
         answer = {
             "question": self.question,
             "repeat_index": self.repeat_index,
-            "comment": self.comment
+            "comment": self.comment,
         }
         q = self.question_detail
         type = q.type
@@ -143,7 +148,7 @@ class Answer(Base):
             "question_name": q.name,
             "question_order": q.order,
             "repeat_index": self.repeat_index,
-            "comment": self.comment
+            "comment": self.comment,
         }
         type = q.type
         if type in [QuestionType.input, QuestionType.text, QuestionType.date]:
@@ -170,7 +175,7 @@ class Answer(Base):
             "id": self.id,
             "question": self.question,
             "repeat_index": self.repeat_index,
-            "comment": self.comment
+            "comment": self.comment,
         }
         q = self.question_detail
         type = q.type
@@ -199,7 +204,7 @@ class Answer(Base):
                 "value": self.text or self.value or self.options,
                 "repeat_index": self.repeat_index,
                 "comment": self.comment,
-                "data": self
+                "data": self,
             }
         }
 
@@ -220,8 +225,9 @@ class Answer(Base):
         if type == QuestionType.option:
             return self.options[0] if self.options else None
         if type in [
-                QuestionType.multiple_option, QuestionType.cascade,
-                QuestionType.nested_list
+            QuestionType.multiple_option,
+            QuestionType.cascade,
+            QuestionType.nested_list,
         ]:
             return self.options
         if type == QuestionType.cascade:
@@ -246,8 +252,9 @@ class Answer(Base):
         if type == QuestionType.option:
             answer = self.options[0] if self.options else None
         if type in [
-                QuestionType.multiple_option, QuestionType.cascade,
-                QuestionType.nested_list
+            QuestionType.multiple_option,
+            QuestionType.cascade,
+            QuestionType.nested_list,
         ]:
             return self.options
         if type == QuestionType.cascade:
@@ -265,8 +272,7 @@ class Answer(Base):
         q = self.question_detail
         qname = f"{self.question_detail.id}|{self.question_detail.name}"
         if q.type in [
-                QuestionType.input, QuestionType.text, QuestionType.date
-        ]:
+                QuestionType.input, QuestionType.text, QuestionType.date]:
             answer = self.text
         if q.type == QuestionType.number:
             answer = self.value
@@ -278,8 +284,9 @@ class Answer(Base):
         if q.type == QuestionType.option:
             answer = self.options[0] if self.options else None
         if q.type in [
-                QuestionType.multiple_option, QuestionType.cascade,
-                QuestionType.nested_list
+            QuestionType.multiple_option,
+            QuestionType.cascade,
+            QuestionType.nested_list,
         ]:
             answer = "|".join(self.options) if self.options else None
         return {qname: answer}
@@ -290,8 +297,7 @@ class Answer(Base):
         q = self.question_detail
         value_type = "string"
         if q.type in [
-                QuestionType.input, QuestionType.text, QuestionType.date
-        ]:
+                QuestionType.input, QuestionType.text, QuestionType.date]:
             answer = self.text
         if q.type == QuestionType.number:
             answer = self.value
@@ -301,9 +307,8 @@ class Answer(Base):
             else:
                 answer = int(answer) if answer else None
             if q.repeating_objects:
-                unit = list(
-                    filter(lambda x: x["field"] == "unit",
-                           q.repeating_objects))
+                unit = list(filter(
+                    lambda x: x["field"] == "unit", q.repeating_objects))
                 if unit:
                     unit = unit[0].get("value")
                 else:
@@ -312,8 +317,10 @@ class Answer(Base):
         if q.type == QuestionType.option:
             answer = self.options[0] if self.options else None
         if q.type in [
-                QuestionType.option, QuestionType.multiple_option,
-                QuestionType.cascade, QuestionType.nested_list
+            QuestionType.option,
+            QuestionType.multiple_option,
+            QuestionType.cascade,
+            QuestionType.nested_list,
         ]:
             answer = self.options
             value_type = "list"

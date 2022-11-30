@@ -103,7 +103,7 @@ class TestLoadData():
         assert res == [{
             'id': 1,
             'code': 'Akvo',
-            'name': 'Akvo',
+            'name': 'staff Akvo',
             'active': True,
             'member_type': [1],
             'member': ['All'],

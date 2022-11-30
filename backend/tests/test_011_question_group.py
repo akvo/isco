@@ -13,7 +13,9 @@ account = Acc(email=None, token=None)
 
 class TestQuestionGroupRoutes():
     @pytest.mark.asyncio
-    async def test_add_question_group(self, app: FastAPI,  session: Session,
+    async def test_add_question_group(self,
+                                      app: FastAPI,
+                                      session: Session,
                                       client: AsyncClient) -> None:
         # get form
         res = await client.get(app.url_path_for("form:get_by_id", id=1))
@@ -81,14 +83,11 @@ class TestQuestionGroupRoutes():
             json={"form": 1,
                   "name": "Question Group 1",
                   "description": "Question Group 1 Description",
-                  "translations": [
-                        {
-                            "language": "id",
-                            "name": "Kelompok Pertanyaan 1",
-                            "description": "Deskripsi Kelompok Pertanyaan 1",
-                            "repeat_text": "Tambahkan jawaban lain"
-                        }
-                    ],
+                  "translations": [{
+                      "language": "id",
+                      "name": "Kelompok Pertanyaan 1",
+                      "description": "Deskripsi Kelompok Pertanyaan 1",
+                      "repeat_text": "Tambahkan jawaban lain"}],
                   "repeat": True,
                   "repeat_text": "Add another answer",
                   "order": 1,

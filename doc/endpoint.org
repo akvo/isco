@@ -1,0 +1,59 @@
+* Endpoints
+** /api/roadmap-webform
+METHOD: GET
+Return: 200 - Webform with or without initial value
+Query Params:
+- organisation_id=integer
+- data_id=optional[integer]
+IF organisation id is blank: {}
+** /api/roadmap-webform
+METHOD: POST
+Return: 204
+Data:
+#+begin_src json
+{
+  "organisation_id": 1,
+  "answers": {
+     "3154645": ["yes", "no"],
+     "3154645": "test"
+  }
+}
+#+end_src
+** /api/roadmap-webform
+METHOD: PUT
+Return: 204
+Params:
+- data_id=integer
+Data:
+#+begin_src json
+{
+  "organisation_id": 1,
+  "answers": {
+     "3154645": ["yes", "no"],
+     "3154645": "test"
+  }
+}
+#+end_src
+** /api/roadmap-data
+METHOD: GET
+Return: 200
+Query Params:
+- page=integer
+- page_size=integer
+- organisation_type=integter
+- sort_by=enum(date, name)
+- sort=enum(asc, desc)
+Response:
+#+begin_src json
+{
+  "current": 1,
+  "data": [{
+     "id": 1,
+     "organisation_id": 1,
+     "datapoint_name": "Organisation Name - Organisation Type",
+     "submitted_date": "25 Dec 2022",
+  }],
+  "total": 20,
+  "total_page": 2,
+}
+#+end_src

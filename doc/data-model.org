@@ -1,0 +1,219 @@
+#+PROPERTY: header-args:sql     :exports both
+#+PROPERTY: header-args:sql+    :engine postgresql
+#+PROPERTY: header-args:sql+    :dbhost localhost
+#+PROPERTY: header-args:sql+    :dbuser isco_user
+#+PROPERTY: header-args:sql+    :dbpassword password
+#+PROPERTY: header-args:sql+    :database isco
+#+PROPERTY: header-args :tangle data-model.sql
+#+STARTUP: showall
+
+* Table
+
+#+begin_src sql
+  \dt
+#+end_src
+
+#+RESULTS:
+| List of relations |                              |       |           |
+|-------------------+------------------------------+-------+-----------|
+| Schema            | Name                         | Type  | Owner     |
+| public            | alembic_version              | table | isco_user |
+| public            | answer                       | table | isco_user |
+| public            | cascade                      | table | isco_user |
+| public            | cascade_list                 | table | isco_user |
+| public            | collaborator                 | table | isco_user |
+| public            | data                         | table | isco_user |
+| public            | download                     | table | isco_user |
+| public            | feedback                     | table | isco_user |
+| public            | form                         | table | isco_user |
+| public            | isco_type                    | table | isco_user |
+| public            | member_type                  | table | isco_user |
+| public            | option                       | table | isco_user |
+| public            | organisation                 | table | isco_user |
+| public            | organisation_isco            | table | isco_user |
+| public            | organisation_member          | table | isco_user |
+| public            | question                     | table | isco_user |
+| public            | question_group               | table | isco_user |
+| public            | question_group_isco_access   | table | isco_user |
+| public            | question_group_member_access | table | isco_user |
+| public            | question_isco_access         | table | isco_user |
+| public            | question_member_access       | table | isco_user |
+| public            | reset_password               | table | isco_user |
+| public            | roadmap_answer               | table | isco_user |
+| public            | roadmap_data                 | table | isco_user |
+| public            | roadmap_option               | table | isco_user |
+| public            | roadmap_question             | table | isco_user |
+| public            | roadmap_question_group       | table | isco_user |
+| public            | skip_logic                   | table | isco_user |
+| public            | user                         | table | isco_user |
+
+
+* Roadmap Question Group
+
+#+begin_src sql
+  \d roadmap_question_group;
+#+end_src
+
+#+RESULTS:
+| Table "public.roadmap_question_group"                                                                                                                                 |                             |           |          |                                                    |
+|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------+-----------+----------+----------------------------------------------------|
+| Column                                                                                                                                                                | Type                        | Collation | Nullable | Default                                            |
+| id                                                                                                                                                                    | bigint                      |           | not null | nextval('roadmap_question_group_id_seq'::regclass) |
+| name                                                                                                                                                                  | character varying           |           | not null |                                                    |
+| order                                                                                                                                                                 | integer                     |           |          |                                                    |
+| description                                                                                                                                                           | text                        |           |          |                                                    |
+| repeat                                                                                                                                                                | boolean                     |           | not null | false                                              |
+| repeat_text                                                                                                                                                           | character varying           |           |          |                                                    |
+| translations                                                                                                                                                          | jsonb[]                     |           |          |                                                    |
+| created                                                                                                                                                               | timestamp without time zone |           |          |                                                    |
+| Indexes:                                                                                                                                                              |                             |           |          |                                                    |
+| "roadmap_question_group_pkey" PRIMARY KEY, btree (id)                                                                                                                 |                             |           |          |                                                    |
+| "ix_roadmap_question_group_id" UNIQUE, btree (id)                                                                                                                     |                             |           |          |                                                    |
+| Referenced by:                                                                                                                                                        |                             |           |          |                                                    |
+| TABLE "roadmap_question" CONSTRAINT "roadmap_question_group_question_constraint" FOREIGN KEY (question_group) REFERENCES roadmap_question_group(id) ON DELETE CASCADE |                             |           |          |                                                    |
+| TABLE "roadmap_question" CONSTRAINT "roadmap_question_question_group_fkey" FOREIGN KEY (question_group) REFERENCES roadmap_question_group(id)                         |                             |           |          |                                                    |
+
+* Roadmap Question
+
+*Roadmap Question Type*
+
+#+begin_src sql
+  \dT+ roadmap_question_type;
+#+end_src
+
+#+RESULTS:
+| List of data types |                       |                       |      |          |       |                   |             |
+|--------------------+-----------------------+-----------------------+------+----------+-------+-------------------+-------------|
+| Schema             | Name                  | Internal name         | Size | Elements | Owner | Access privileges | Description |
+| public             | roadmap_question_type | roadmap_question_type |    4 | number   |       |                   |             |
+| option             |                       |                       |      |          |       |                   |             |
+| multiple_option    |                       |                       |      |          |       |                   |             |
+| date               |                       |                       |      |          |       |                   |             |
+| nested_list        |                       |                       |      |          |       |                   |             |
+| cascade            |                       |                       |      |          |       |                   |             |
+| input              |                       |                       |      |          |       |                   |             |
+| text               |                       |                       |      |          |       |                   |             |
+| table              | isco_user             |                       |      |          |       |                   |             |
+
+#+begin_src sql
+  \d roadmap_question;
+#+end_src
+
+** Schema
+
+#+RESULTS:
+| Table "public.roadmap_question"                                                                                                                 |                             |           |          |                                              |
+|-------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------+-----------+----------+----------------------------------------------|
+| Column                                                                                                                                          | Type                        | Collation | Nullable | Default                                      |
+| id                                                                                                                                              | bigint                      |           | not null | nextval('roadmap_question_id_seq'::regclass) |
+| question_group                                                                                                                                  | bigint                      |           |          |                                              |
+| name                                                                                                                                            | character varying           |           | not null |                                              |
+| order                                                                                                                                           | integer                     |           |          |                                              |
+| columns                                                                                                                                         | jsonb[]                     |           |          |                                              |
+| translations                                                                                                                                    | jsonb[]                     |           |          |                                              |
+| dependency                                                                                                                                      | jsonb[]                     |           |          |                                              |
+| mandatory                                                                                                                                       | boolean                     |           | not null | false                                        |
+| datapoint_name                                                                                                                                  | boolean                     |           | not null | false                                        |
+| variable_name                                                                                                                                   | character varying           |           |          |                                              |
+| type                                                                                                                                            | roadmap_question_type       |           |          |                                              |
+| personal_data                                                                                                                                   | boolean                     |           | not null | false                                        |
+| rule                                                                                                                                            | jsonb                       |           |          |                                              |
+| tooltip                                                                                                                                         | character varying           |           |          |                                              |
+| tooltip_translations                                                                                                                            | jsonb[]                     |           |          |                                              |
+| repeating_objects                                                                                                                               | jsonb[]                     |           |          |                                              |
+| created                                                                                                                                         | timestamp without time zone |           |          |                                              |
+| cascade                                                                                                                                         | integer                     |           |          |                                              |
+| Indexes:                                                                                                                                        |                             |           |          |                                              |
+| "roadmap_question_pkey" PRIMARY KEY, btree (id)                                                                                                 |                             |           |          |                                              |
+| "ix_roadmap_question_id" UNIQUE, btree (id)                                                                                                     |                             |           |          |                                              |
+| "roadmap_question_variable_name_key" UNIQUE CONSTRAINT, btree (variable_name)                                                                   |                             |           |          |                                              |
+| Foreign-key constraints:                                                                                                                        |                             |           |          |                                              |
+| "roadmap_question_cascade_constraint" FOREIGN KEY (cascade) REFERENCES cascade(id) ON DELETE CASCADE                                            |                             |           |          |                                              |
+| "roadmap_question_cascade_fkey" FOREIGN KEY (cascade) REFERENCES cascade(id)                                                                    |                             |           |          |                                              |
+| "roadmap_question_group_question_constraint" FOREIGN KEY (question_group) REFERENCES roadmap_question_group(id) ON DELETE CASCADE               |                             |           |          |                                              |
+| "roadmap_question_question_group_fkey" FOREIGN KEY (question_group) REFERENCES roadmap_question_group(id)                                       |                             |           |          |                                              |
+| Referenced by:                                                                                                                                  |                             |           |          |                                              |
+| TABLE "roadmap_answer" CONSTRAINT "roadmap_answer_question_fkey" FOREIGN KEY (question) REFERENCES roadmap_question(id)                         |                             |           |          |                                              |
+| TABLE "roadmap_option" CONSTRAINT "roadmap_option_question_fkey" FOREIGN KEY (question) REFERENCES roadmap_question(id)                         |                             |           |          |                                              |
+| TABLE "roadmap_answer" CONSTRAINT "roadmap_question_answer_constraint" FOREIGN KEY (question) REFERENCES roadmap_question(id) ON DELETE CASCADE |                             |           |          |                                              |
+| TABLE "roadmap_option" CONSTRAINT "roadmap_question_option_constraint" FOREIGN KEY (question) REFERENCES roadmap_question(id) ON DELETE CASCADE |                             |           |          |                                              |
+
+* Roadmap Option
+
+#+begin_src sql
+  \d roadmap_option;
+#+end_src
+
+#+RESULTS:
+| Table "public.roadmap_option"                                                                                 |                   |           |          |                                            |
+|---------------------------------------------------------------------------------------------------------------+-------------------+-----------+----------+--------------------------------------------|
+| Column                                                                                                        | Type              | Collation | Nullable | Default                                    |
+| id                                                                                                            | integer           |           | not null | nextval('roadmap_option_id_seq'::regclass) |
+| code                                                                                                          | character varying |           |          |                                            |
+| name                                                                                                          | character varying |           | not null |                                            |
+| order                                                                                                         | integer           |           |          |                                            |
+| translations                                                                                                  | jsonb[]           |           |          |                                            |
+| question                                                                                                      | integer           |           |          |                                            |
+| Indexes:                                                                                                      |                   |           |          |                                            |
+| "roadmap_option_pkey" PRIMARY KEY, btree (id)                                                                 |                   |           |          |                                            |
+| "ix_roadmap_option_id" UNIQUE, btree (id)                                                                     |                   |           |          |                                            |
+| Foreign-key constraints:                                                                                      |                   |           |          |                                            |
+| "roadmap_option_question_fkey" FOREIGN KEY (question) REFERENCES roadmap_question(id)                         |                   |           |          |                                            |
+| "roadmap_question_option_constraint" FOREIGN KEY (question) REFERENCES roadmap_question(id) ON DELETE CASCADE |                   |           |          |                                            |
+
+* Roadmap Data
+
+#+begin_src sql
+  \d roadmap_data;
+#+end_src
+
+#+RESULTS:
+| Table "public.roadmap_data"                                                                                                         |                             |           |          |                                          |
+|-------------------------------------------------------------------------------------------------------------------------------------+-----------------------------+-----------+----------+------------------------------------------|
+| Column                                                                                                                              | Type                        | Collation | Nullable | Default                                  |
+| id                                                                                                                                  | integer                     |           | not null | nextval('roadmap_data_id_seq'::regclass) |
+| name                                                                                                                                | character varying           |           |          |                                          |
+| organisation                                                                                                                        | integer                     |           |          |                                          |
+| created_by                                                                                                                          | integer                     |           |          |                                          |
+| created                                                                                                                             | timestamp without time zone |           |          | CURRENT_TIMESTAMP                        |
+| updated                                                                                                                             | timestamp without time zone |           |          |                                          |
+| Indexes:                                                                                                                            |                             |           |          |                                          |
+| "roadmap_data_pkey" PRIMARY KEY, btree (id)                                                                                         |                             |           |          |                                          |
+| "ix_roadmap_data_id" UNIQUE, btree (id)                                                                                             |                             |           |          |                                          |
+| Foreign-key constraints:                                                                                                            |                             |           |          |                                          |
+| "created_by_roadmap_data_constraint" FOREIGN KEY (created_by) REFERENCES "user"(id) ON DELETE CASCADE                               |                             |           |          |                                          |
+| "roadmap_data_created_by_fkey" FOREIGN KEY (created_by) REFERENCES "user"(id)                                                       |                             |           |          |                                          |
+| "roadmap_data_organisation_constraint" FOREIGN KEY (organisation) REFERENCES organisation(id) ON DELETE CASCADE                     |                             |           |          |                                          |
+| "roadmap_data_organisation_fkey" FOREIGN KEY (organisation) REFERENCES organisation(id)                                             |                             |           |          |                                          |
+| Referenced by:                                                                                                                      |                             |           |          |                                          |
+| TABLE "roadmap_answer" CONSTRAINT "roadmap_answer_data_fkey" FOREIGN KEY (data) REFERENCES roadmap_data(id)                         |                             |           |          |                                          |
+| TABLE "roadmap_answer" CONSTRAINT "roadmap_data_answer_constraint" FOREIGN KEY (data) REFERENCES roadmap_data(id) ON DELETE CASCADE |                             |           |          |                                          |
+
+* Roadmap Answer
+
+#+begin_src sql
+  \d roadmap_answer;
+#+end_src
+
+#+RESULTS:
+| Table "public.roadmap_answer"                                                                                 |                             |           |          |                                            |
+|---------------------------------------------------------------------------------------------------------------+-----------------------------+-----------+----------+--------------------------------------------|
+| Column                                                                                                        | Type                        | Collation | Nullable | Default                                    |
+| id                                                                                                            | integer                     |           | not null | nextval('roadmap_answer_id_seq'::regclass) |
+| question                                                                                                      | bigint                      |           |          |                                            |
+| data                                                                                                          | integer                     |           |          |                                            |
+| value                                                                                                         | double precision            |           |          |                                            |
+| text                                                                                                          | text                        |           |          |                                            |
+| options                                                                                                       | character varying[]         |           |          |                                            |
+| table                                                                                                         | jsonb[]                     |           |          |                                            |
+| repeat_index                                                                                                  | integer                     |           |          |                                            |
+| created                                                                                                       | timestamp without time zone |           |          | CURRENT_TIMESTAMP                          |
+| updated                                                                                                       | timestamp without time zone |           |          |                                            |
+| Indexes:                                                                                                      |                             |           |          |                                            |
+| "roadmap_answer_pkey" PRIMARY KEY, btree (id)                                                                 |                             |           |          |                                            |
+| "ix_roadmap_answer_id" UNIQUE, btree (id)                                                                     |                             |           |          |                                            |
+| Foreign-key constraints:                                                                                      |                             |           |          |                                            |
+| "roadmap_answer_data_fkey" FOREIGN KEY (data) REFERENCES roadmap_data(id)                                     |                             |           |          |                                            |
+| "roadmap_answer_question_fkey" FOREIGN KEY (question) REFERENCES roadmap_question(id)                         |                             |           |          |                                            |
+| "roadmap_data_answer_constraint" FOREIGN KEY (data) REFERENCES roadmap_data(id) ON DELETE CASCADE             |                             |           |          |                                            |
+| "roadmap_question_answer_constraint" FOREIGN KEY (question) REFERENCES roadmap_question(id) ON DELETE CASCADE |                             |           |          |                                            |

@@ -47,7 +47,7 @@ class TestSubmissionRoutes():
             "locked_by": 1,
             "created": today,
             "created_by": "John Doe",
-            "organisation": "Akvo",
+            "organisation": "staff Akvo",
             "submitted_by": None,
             "updated": None,
             "submitted": None,
@@ -101,23 +101,27 @@ class TestSubmissionRoutes():
             'id': 1,
             'locked_by': 1,
             'name': 'Depend to Q1 Option 1',
-            'organisation': 'Akvo',
+            'organisation': 'staff Akvo',
             'submitted': None,
             'submitted_by': None,
             'updated': None,
-            'answer': [{'comment': None,
-                        'question': 1,
-                        'repeat_index': 0,
-                        'value': 'Option 1'},
-                       {'comment': 'This is comment',
-                        'question': 2,
-                        'repeat_index': 0,
-                        'value': 'Depend to Q1 Option 1'},
-                       {'comment': None,
-                        'question': 3,
-                        'repeat_index': 0,
-                        'value': 'Male'}],
-            }
+            'answer': [{
+                'comment': None,
+                'question': 1,
+                'repeat_index': 0,
+                'value': 'Option 1'
+            }, {
+                'comment': 'This is comment',
+                'question': 2,
+                'repeat_index': 0,
+                'value': 'Depend to Q1 Option 1'
+            }, {
+                'comment': None,
+                'question': 3,
+                'repeat_index': 0,
+                'value': 'Male'
+            }],
+        }
 
     @pytest.mark.asyncio
     async def test_update_data(self, app: FastAPI, session: Session,
@@ -180,7 +184,7 @@ class TestSubmissionRoutes():
             "locked_by": None,
             "created": today,
             "created_by": "John Doe",
-            "organisation": "Akvo",
+            "organisation": "staff Akvo",
             "submitted_by": None,
             "updated": today,
             "submitted": None,
@@ -280,7 +284,7 @@ class TestSubmissionRoutes():
             "locked_by": None,
             "created": today,
             "created_by": "John Doe",
-            "organisation": "Akvo",
+            "organisation": "staff Akvo",
             "submitted_by": None,
             "updated": today,
             "submitted": None,
@@ -367,6 +371,26 @@ class TestSubmissionRoutes():
                 "repeat_index": 0,
                 "comment": "Q5 comment",
                 "value": 75
+            }, {
+                "question": 6,
+                "repeat_index": 0,
+                "comment": None,
+                "value": [2, 12]
+            }, {
+                "question": 7,
+                "repeat_index": 0,
+                "comment": None,
+                "value": ["Technology|Programming", "Sports|Football"]
+            }, {
+                "question": 8,
+                "repeat_index": 0,
+                "comment": None,
+                "value": "2022-01-01"
+            }, {
+                "question": 9,
+                "repeat_index": 0,
+                "comment": None,
+                "value": ["MO-1", "MO-2"]
             }],
             headers={"Authorization": f"Bearer {account.token}"})
         assert res.status_code == 200
@@ -380,7 +404,7 @@ class TestSubmissionRoutes():
             "locked_by": 1,
             "created": today,
             "created_by": "John Doe",
-            "organisation": "Akvo",
+            "organisation": "staff Akvo",
             "submitted_by": "John Doe",
             "updated": today,
             "submitted": today,
@@ -407,7 +431,7 @@ class TestSubmissionRoutes():
                     "comment": "Q4 comment",
                     "question": 4,
                     "repeat_index": 0,
-                    "value": 25
+                    "value": 25.0
                 },
                 {
                     "comment": None,
@@ -431,8 +455,32 @@ class TestSubmissionRoutes():
                     "comment": "Q5 comment",
                     "question": 5,
                     "repeat_index": 0,
-                    "value": 75
-                }
+                    "value": 75.0
+                },
+                {
+                    'comment': None,
+                    'question': 6,
+                    'repeat_index': 0,
+                    'value': [2.0, 12.0]
+                },
+                {
+                    'comment': None,
+                    'question': 7,
+                    'repeat_index': 0,
+                    'value': ['Technology|Programming', 'Sports|Football']
+                },
+                {
+                    'comment': None,
+                    'question': 8,
+                    'repeat_index': 0,
+                    'value': '2022-01-01'
+                },
+                {
+                    'comment': None,
+                    'question': 9,
+                    'repeat_index': 0,
+                    'value': ['MO-1', 'MO-2']
+                },
             ]
         }
 
