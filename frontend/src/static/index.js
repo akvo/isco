@@ -5,3 +5,4 @@ export { default as uiText } from "./ui-text";
 export { default as homeContent } from "./home-content";
 export { default as webformContent } from "./webform-content";
 export { default as faqContent } from "./faq-content";
+export { default as roadmapGuidanceContent } from "./roadmap-guidance-content";
