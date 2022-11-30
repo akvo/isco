@@ -112,6 +112,7 @@ const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
               filterOption={(input, option) =>
                 option?.label?.toLowerCase().indexOf(input?.toLowerCase()) >= 0
               }
+              disabled={editDatapoint}
             />
           </Space>
         </Col>
