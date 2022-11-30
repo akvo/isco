@@ -160,12 +160,12 @@
 
       .arf-table-data {
         button.ant-btn.ant-btn-default {
-          border-width: none;
-          font-weight: none;
-          min-height: none;
-          border-radius: none;
-          color: none;
-          border-color: none;
+          border-width: 1px;
+          font-weight: 0;
+          min-height: 0;
+          border-radius: 0;
+          color: #000;
+          border-color: #cecece;
         }
       }
     }
