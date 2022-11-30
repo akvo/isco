@@ -83,6 +83,13 @@ body {
       }
     }
 
+    .ant-select-disabled {
+      .ant-select-selector {
+        color: #777777 !important;
+        background: #e5e5e5 !important;
+      }
+    }
+
     .ant-input-number-input {
       &::placeholder {
         color: $black;
