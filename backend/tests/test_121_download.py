@@ -31,7 +31,7 @@ class TestDownloadRoute():
             'form': "Form Test",
             'form_type': "member",
             'name': 'Depend to Q1 Option 1',
-            'organisation': 'Akvo',
+            'organisation': 'staff Akvo',
             'submitted': today,
             'submitted_by': 'John Doe',
             'created': today,
@@ -81,7 +81,7 @@ class TestDownloadRoute():
         assert res["data"][0] == {
             "id": 1,
             "uuid": str(download.uuid),
-            "organisation": "Akvo",
+            "organisation": "staff Akvo",
             "form_type": "member",
             "request_by": 1,
             "request_by_name": "John Doe",
@@ -129,7 +129,7 @@ class TestDownloadRoute():
         assert res == {
             "id": 1,
             "uuid": str(download.uuid),
-            "organisation": "Akvo",
+            "organisation": "staff Akvo",
             "form_type": "member",
             "request_by": 1,
             "request_by_name": "John Doe",

@@ -1,0 +1,174 @@
+@import "../../variables.scss";
+
+#root {
+  #manage-roadmap {
+    .page-title-wrapper {
+      border-bottom: 1px solid #777777;
+    }
+
+    .page-title {
+      margin: 40px 0 20px 0;
+    }
+
+    .tab-menu-wrapper {
+      .ant-tabs-top > .ant-tabs-nav:before {
+        border-bottom: 1px solid #777777;
+      }
+    }
+
+    #guidance {
+      padding: 24px 0;
+    }
+
+    .select-organisation-wrapper {
+      padding: 24px 0;
+      .select-organisation-dropdown {
+        width: 250px;
+      }
+    }
+
+    .filter-wrapper {
+      padding: 24px 0;
+      font-size: 14px;
+
+      .input-search {
+        width: 20rem;
+
+        .ant-input {
+          border: none;
+        }
+
+        .ant-input-prefix {
+          margin-right: 14px;
+        }
+      }
+
+      .member-dropdown-wrapper {
+        width: 18rem;
+      }
+    }
+
+    .loading-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      top: 35px;
+      left: 0;
+    }
+
+    // TABLE
+    .table-wrapper {
+      border: none !important;
+
+      .ant-table {
+        border: 2px solid #c5c4c5;
+        border-radius: 5px;
+      }
+
+      th.ant-table-cell {
+        border-bottom: 2px solid #c5c4c5;
+        font-weight: 600;
+      }
+
+      .title {
+        font-weight: 600;
+      }
+
+      .action-btn {
+        color: #777777;
+      }
+
+      button.ant-table-row-expand-icon.ant-table-row-expand-icon-expanded,
+      .ant-table-cell.ant-table-row-expand-icon-cell {
+        display: none;
+      }
+
+      .expanded-description {
+        margin: 0;
+        width: 43%;
+      }
+
+      tr.ant-table-expanded-row:hover > td,
+      tr.ant-table-expanded-row > td {
+        background: $white;
+        padding: 30px 20px 30px 66px;
+      }
+    }
+    // END OF TABLE
+
+    /* customize webform/akvo-react-form style */
+    #webform {
+      border: 1px solid #cecece;
+      padding: 1px;
+
+      .arf-form-header {
+        .ant-select {
+          display: none;
+        }
+      }
+
+      .arf-next {
+        button {
+          background-color: transparent;
+          border: 2px solid #777777;
+          border-width: 2px;
+          font-weight: 500;
+          min-height: 35px;
+          border-radius: 5px;
+          color: #777777;
+        }
+      }
+
+      /* Field background */
+      .arf-field {
+        background: #f3f3f3;
+        margin-bottom: 18px;
+        padding-top: 14px;
+        padding-bottom: 14px;
+      }
+
+      /* Question group description */
+      .arf-description {
+        background-color: #f3f3f3;
+        padding: 8px;
+        font-style: italic;
+      }
+
+      button.ant-btn.ant-btn-default.ant-btn-sm.ant-btn-icon-only {
+        min-height: 0;
+        background-color: #777777;
+        color: $white;
+
+        &.arf-disabled {
+          background-color: #eaeaea;
+          color: $black;
+        }
+      }
+
+      button.ant-btn.ant-btn-primary.ant-btn-icon-only {
+        border: none;
+        background: transparent;
+        color: $black;
+        box-shadow: none;
+        &:disabled {
+          color: #777777;
+        }
+      }
+
+      .arf-table-data {
+        button.ant-btn.ant-btn-default {
+          border-width: none;
+          font-weight: none;
+          min-height: none;
+          border-radius: none;
+          color: none;
+          border-color: none;
+        }
+      }
+    }
+    /* end customize webform/akvo-react-form style */
+  }
+}

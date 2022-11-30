@@ -45,6 +45,23 @@ class TestOrganisationRoutes():
             "member_type": [1],
             "name": "Akvo"
         }
+        org_payload['name'] = 'staff Akvo'
+        res = await client.put(
+            app.url_path_for("organisation:put", id=1),
+            headers={"Authorization": f"Bearer {account.token}"},
+            json=org_payload)
+        assert res.status_code == 200
+        res = res.json()
+        assert res == {
+            "active": True,
+            "code": "Akvo",
+            "id": 1,
+            "isco": ["All"],
+            "isco_type": [1],
+            "member": ["All"],
+            "member_type": [1],
+            "name": "staff Akvo"
+        }
 
     @pytest.mark.asyncio
     async def test_filter_user_by_member(self, app: FastAPI, session: Session,

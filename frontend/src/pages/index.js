@@ -20,3 +20,4 @@ export { default as ManageMember } from "./manage-member/ManageMember";
 export { default as ManageDownload } from "./requested-download/ManageDownload";
 export { default as DataCleaning } from "./data-cleaning/DataCleaning";
 export { default as DownloadReport } from "./download-report/DownloadReport";
+export { default as ManageRoadmap } from "./manage-roadmap/ManageRoadmap";

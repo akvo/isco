@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
+import "akvo-react-form/dist/index.css"; /* REQUIRED */
 import "./style.scss";
 import { Spin, Button, Checkbox } from "antd";
 import { Webform } from "akvo-react-form";

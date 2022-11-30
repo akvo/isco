@@ -135,18 +135,14 @@ class TestUserAuthentication():
             'member_type': [1],
             'name': 'staff GISCO Secretariat'
         }, {
-            'active':
-            True,
-            'code':
-            None,
-            'id':
-            3,
+            'active': True,
+            'code': None,
+            'id': 3,
             'isco': ['DISCO'],
             'isco_type': [3],
             'member': ['DISCO - Traders'],
             'member_type': [4],
-            'name':
-            'Organisation DISCO - Traders Member and DISCO isco'
+            'name': 'Organisation DISCO - Traders Member and DISCO isco'
         }]
 
     @pytest.mark.asyncio

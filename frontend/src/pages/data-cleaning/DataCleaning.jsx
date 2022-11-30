@@ -7,7 +7,8 @@ import {
   RightOutlined,
 } from "@ant-design/icons";
 import { api } from "../../lib";
-import { DataCleaningWebform, DataDetail } from ".";
+import DataCleaningWebform from "./DataCleaningWebform";
+import DataDetail from "./DataDetail";
 
 const { Title } = Typography;
 
