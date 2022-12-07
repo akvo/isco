@@ -19,7 +19,10 @@ const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
 
   const organisationOptions = useMemo(() => {
     if (!dataOrgIds) {
-      return [];
+      return organisations.map((org) => ({
+        label: org.name,
+        value: org.id,
+      }));
     }
     return organisations.map((org) => {
       const disabled = dataOrgIds.includes(org.id) ? true : false;
