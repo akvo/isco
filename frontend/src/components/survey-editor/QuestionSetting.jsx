@@ -506,6 +506,8 @@ const Setting = ({
   handleFormOnValuesChange,
   allowDecimal,
   setAllowDecimal,
+  coreMandatory,
+  setCoreMandatory,
 }) => {
   const { surveyEditor, tempStorage, optionValues } = store.useState((s) => s);
   const { questionGroup: questionGroupState } = surveyEditor;
@@ -563,6 +565,26 @@ const Setting = ({
     form.setFieldsValue(fieldValue);
     setMandatory(val);
     handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
+  };
+
+  const handleCoreMandatoryChange = (val, field) => {
+    const fieldValue = { [field]: val };
+    form.setFieldsValue(fieldValue);
+    // Any question that is marked as core mandatory is automatically marked as mandatory
+    let fieldMandatoryValue = {};
+    const automaticallyMarked = val && !mandatory;
+    if (automaticallyMarked) {
+      fieldMandatoryValue = { [`question-${qid}-mandatory`]: true };
+      form.setFieldsValue(fieldMandatoryValue);
+      setMandatory(true);
+    }
+    setCoreMandatory(val);
+    handleFormOnValuesChange(
+      automaticallyMarked
+        ? { ...fieldValue, ...fieldMandatoryValue }
+        : fieldValue,
+      form?.getFieldsValue()
+    );
   };
 
   const handlePersonalDataChange = (val, field) => {
@@ -676,6 +698,27 @@ const Setting = ({
                   checked={mandatory}
                   onChange={(val) =>
                     handleRequiredChange(val, `question-${qid}-mandatory`)
+                  }
+                />
+              </div>
+              <div>
+                <Form.Item
+                  name={`question-${qid}-core_mandatory`}
+                  hidden
+                  noStyle
+                >
+                  <Input />
+                </Form.Item>
+                Core Mandatory{" "}
+                <Switch
+                  key={`question-${qid}-core_mandatory-switch`}
+                  size="small"
+                  checked={coreMandatory}
+                  onChange={(val) =>
+                    handleCoreMandatoryChange(
+                      val,
+                      `question-${qid}-core_mandatory`
+                    )
                   }
                 />
               </div>
@@ -874,6 +917,8 @@ const QuestionSetting = ({
   setPersonalData,
   activeLang,
   setActiveLang,
+  coreMandatory,
+  setCoreMandatory,
 }) => {
   switch (activeSetting) {
     case "translation":
@@ -898,6 +943,8 @@ const QuestionSetting = ({
           personalData={personalData}
           setPersonalData={setPersonalData}
           handleFormOnValuesChange={handleFormOnValuesChange}
+          coreMandatory={coreMandatory}
+          setCoreMandatory={setCoreMandatory}
         />
       );
     default:
