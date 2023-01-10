@@ -48,6 +48,7 @@ class TestQuestionRoutes():
             "member_access": None,
             "isco_access": None,
             "skip_logic": None,
+            "core_mandatory": False
         }
         res = await client.post(
             app.url_path_for("question:create"),
@@ -75,12 +76,14 @@ class TestQuestionRoutes():
             "tooltip_translations": [],
             "translations": [],
             "type": 'text',
-            "variable_name": None
+            "variable_name": None,
+            "core_mandatory": False
         }
 
     @pytest.mark.asyncio
-    async def test_update_question(self, app: FastAPI, session: Session,
-                                   client: AsyncClient) -> None:
+    async def test_update_question(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # get question
         res = await client.get(
             app.url_path_for("question:get_by_id", id=1))
@@ -101,9 +104,9 @@ class TestQuestionRoutes():
             "personal_data": False,
             "rule": None,
             "tooltip": "Question 1 tooltip",
-            "tooltip_translations": [
-                {"language": "id",
-                 "tooltip_translations": "Keterangan Pertanyaan 1"}],
+            "tooltip_translations": [{
+                "language": "id",
+                "tooltip_translations": "Keterangan Pertanyaan 1"}],
             "cascade": None,
             "repeating_objects": None,
             "order": 1,
@@ -111,6 +114,7 @@ class TestQuestionRoutes():
             "member_access": None,
             "isco_access": None,
             "skip_logic": None,
+            "core_mandatory": True
         }
         res = await client.put(
             app.url_path_for("question:put", id=1),
@@ -135,11 +139,12 @@ class TestQuestionRoutes():
             "rule": None,
             "skip_logic": [],
             "tooltip": 'Question 1 tooltip',
-            "tooltip_translations": [
-                {"language": "id",
-                 "tooltip_translations": "Keterangan Pertanyaan 1"}],
-            "translations": [
-                {"language": "id", "text": "Pertanyaan 1"}],
+            "tooltip_translations": [{
+                "language": "id",
+                "tooltip_translations": "Keterangan Pertanyaan 1"}],
+            "translations": [{
+                "language": "id", "text": "Pertanyaan 1"}],
             "type": "option",
-            "variable_name": None
+            "variable_name": None,
+            "core_mandatory": True
         }

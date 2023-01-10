@@ -25,30 +25,34 @@ class TestThirdFormRoutes():
         res = await client.post(
             app.url_path_for("form:create"),
             headers={"Authorization": f"Bearer {account.token}"},
-            json={"name": "Third limited survey",
-                  "description": "Form Description",
-                  "languages": []})
+            json={
+                "name": "Third limited survey",
+                "description": "Form Description",
+                "languages": []})
         assert res.status_code == 200
         res = res.json()
-        assert res == {"created": datenow(),
-                       "description": "Form Description",
-                       "id": 3,
-                       "languages": [],
-                       "name": "Third limited survey",
-                       "published": None,
-                       "url": None,
-                       "version": 0.0}
+        assert res == {
+            "created": datenow(),
+            "description": "Form Description",
+            "id": 3,
+            "languages": [],
+            "name": "Third limited survey",
+            "published": None,
+            "url": None,
+            "version": 0.0}
 
     @pytest.mark.asyncio
-    async def test_get_form_by_id(self, app: FastAPI, session: Session,
-                                  client: AsyncClient) -> None:
+    async def test_get_form_by_id(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # get form
         res = await client.get(app.url_path_for("form:get_by_id", id=3))
         assert res.status_code == 200
 
     @pytest.mark.asyncio
-    async def test_add_default_group(self, app: FastAPI, session: Session,
-                                     client: AsyncClient) -> None:
+    async def test_add_default_group(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         res = await client.post(
             app.url_path_for(
                 "question_group:create_default", form_id=3, order=1),
@@ -86,13 +90,15 @@ class TestThirdFormRoutes():
                 'tooltip_translations': [],
                 'translations': [],
                 'type': 'input',
-                'variable_name': None
+                'variable_name': None,
+                'core_mandatory': False,
             }],
         }
 
     @pytest.mark.asyncio
-    async def test_add_default_question(self, app: FastAPI, session: Session,
-                                        client: AsyncClient) -> None:
+    async def test_add_default_question(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         res = await client.post(
             app.url_path_for(
                 "question:create_default",
@@ -121,11 +127,13 @@ class TestThirdFormRoutes():
             'translations': [],
             'type': 'input',
             'variable_name': None,
+            'core_mandatory': False,
         }
 
     @pytest.mark.asyncio
-    async def test_publish_form(self, app: FastAPI, session: Session,
-                                client: AsyncClient) -> None:
+    async def test_publish_form(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # publish form
         res = await client.post(
             app.url_path_for("form:publish"),

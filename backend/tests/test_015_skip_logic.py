@@ -15,8 +15,9 @@ account = Acc(email=None, token=None)
 
 class TestSkipLogicRoutes():
     @pytest.mark.asyncio
-    async def test_add_skip_logic(self, app: FastAPI, session: Session,
-                                  client: AsyncClient) -> None:
+    async def test_add_skip_logic(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # add question type text
         question_payload = {
             "form": 1,
@@ -38,6 +39,7 @@ class TestSkipLogicRoutes():
             "member_access": None,
             "isco_access": None,
             "skip_logic": None,
+            "core_mandatory": False,
         }
         res = await client.post(
             app.url_path_for("question:create"),
@@ -65,7 +67,8 @@ class TestSkipLogicRoutes():
             "tooltip_translations": [],
             "translations": [],
             "type": 'text',
-            "variable_name": None
+            "variable_name": None,
+            "core_mandatory": False,
         }
         # get question
         res = await client.get(app.url_path_for("question:get_by_id", id=2))
