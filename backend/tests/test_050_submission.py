@@ -124,8 +124,9 @@ class TestSubmissionRoutes():
         }
 
     @pytest.mark.asyncio
-    async def test_update_data(self, app: FastAPI, session: Session,
-                               client: AsyncClient) -> None:
+    async def test_update_data(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # get data by id
         res = await client.get(
             app.url_path_for("data:get_by_id", id=1),

@@ -19,29 +19,33 @@ def datenow():
 
 class TestSecondFormRoutes():
     @pytest.mark.asyncio
-    async def test_add_form(self, app: FastAPI, session: Session,
-                            client: AsyncClient) -> None:
+    async def test_add_form(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # create form
         res = await client.post(
             app.url_path_for("form:create"),
             headers={"Authorization": f"Bearer {account.token}"},
-            json={"name": "Second survey",
-                  "description": "Form Description",
-                  "languages": None})
+            json={
+                "name": "Second survey",
+                "description": "Form Description",
+                "languages": None})
         assert res.status_code == 200
         res = res.json()
-        assert res == {"created": datenow(),
-                       "description": "Form Description",
-                       "id": 2,
-                       "languages": None,
-                       "name": "Second survey",
-                       "published": None,
-                       "url": None,
-                       "version": 0.0}
+        assert res == {
+            "created": datenow(),
+            "description": "Form Description",
+            "id": 2,
+            "languages": None,
+            "name": "Second survey",
+            "published": None,
+            "url": None,
+            "version": 0.0}
 
     @pytest.mark.asyncio
-    async def test_get_form_by_id(self, app: FastAPI, session: Session,
-                                  client: AsyncClient) -> None:
+    async def test_get_form_by_id(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # get form
         res = await client.get(app.url_path_for("form:get_by_id", id=2))
         assert res.status_code == 200
@@ -57,8 +61,9 @@ class TestSecondFormRoutes():
         }
 
     @pytest.mark.asyncio
-    async def test_add_default_group(self, app: FastAPI, session: Session,
-                                     client: AsyncClient) -> None:
+    async def test_add_default_group(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         res = await client.post(
             app.url_path_for(
                 "question_group:create_default", form_id=2, order=1),
@@ -96,7 +101,8 @@ class TestSecondFormRoutes():
                 'tooltip_translations': [],
                 'translations': [],
                 'type': 'input',
-                'variable_name': None
+                'variable_name': None,
+                'core_mandatory': False,
             }],
         }
 
@@ -131,4 +137,5 @@ class TestSecondFormRoutes():
             'translations': [],
             'type': 'input',
             'variable_name': None,
+            'core_mandatory': False
         }

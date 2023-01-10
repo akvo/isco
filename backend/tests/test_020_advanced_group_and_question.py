@@ -15,11 +15,9 @@ account = Acc(email=None, token=None)
 
 class TestAdvancedQuestionGroupAndQuestionRoutes():
     @pytest.mark.asyncio
-    async def test_add_question_with_option_and_access(self,
-                                                       app: FastAPI,
-                                                       session: Session,
-                                                       client: AsyncClient
-                                                       ) -> None:
+    async def test_add_question_with_option_and_access(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # get form
         res = await client.get(app.url_path_for("form:get_by_id", id=1))
         assert res.status_code == 200
@@ -47,6 +45,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
             "cascade": None,
             "repeating_objects": None,
             "order": 3,
+            "core_mandatory": True,
             "option": [
                 {
                     "code": None,
@@ -127,15 +126,14 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
             "tooltip_translations": [],
             "translations": [],
             "type": "option",
-            "variable_name": None
+            "variable_name": None,
+            "core_mandatory": True,
         }
 
     @pytest.mark.asyncio
-    async def test_update_question_with_access(self,
-                                               app: FastAPI,
-                                               session: Session,
-                                               client: AsyncClient
-                                               ) -> None:
+    async def test_update_question_with_access(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # get form
         res = await client.get(app.url_path_for("form:get_by_id", id=1))
         assert res.status_code == 200
@@ -167,7 +165,8 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
             "option": [],
             "member_access": [2],
             "isco_access": [2],
-            "skip_logic": []
+            "skip_logic": [],
+            "core_mandatory": True,
         }
         res = await client.put(
             app.url_path_for("question:put", id=3),
@@ -221,15 +220,14 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
             "tooltip_translations": [],
             "translations": [],
             "type": "option",
-            "variable_name": None
+            "variable_name": None,
+            "core_mandatory": True,
         }
 
     @pytest.mark.asyncio
-    async def test_add_question_group_with_question(self,
-                                                    app: FastAPI,
-                                                    session: Session,
-                                                    client: AsyncClient
-                                                    ) -> None:
+    async def test_add_question_group_with_question(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # get form
         res = await client.get(app.url_path_for("form:get_by_id", id=1))
         assert res.status_code == 200
@@ -266,7 +264,8 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "option": None,
                     "member_access": None,
                     "isco_access": None,
-                    "skip_logic": None
+                    "skip_logic": None,
+                    "core_mandatory": True,
                 },
                 {
                     "form": None,
@@ -290,7 +289,8 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "option": None,
                     "member_access": None,
                     "isco_access": None,
-                    "skip_logic": None
+                    "skip_logic": None,
+                    "core_mandatory": False,
                 },
                 {
                     "form": None,
@@ -311,7 +311,8 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "option": None,
                     "member_access": None,
                     "isco_access": None,
-                    "skip_logic": None
+                    "skip_logic": None,
+                    "core_mandatory": False,
                 },
                 {
                     "form": None,
@@ -332,7 +333,8 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "option": None,
                     "member_access": None,
                     "isco_access": None,
-                    "skip_logic": None
+                    "skip_logic": None,
+                    "core_mandatory": False,
                 },
                 {
                     "form": None,
@@ -353,7 +355,8 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "option": None,
                     "member_access": None,
                     "isco_access": None,
-                    "skip_logic": None
+                    "skip_logic": None,
+                    "core_mandatory": False,
                 },
                 {
                     "form": None,
@@ -389,7 +392,8 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     ],
                     "member_access": None,
                     "isco_access": None,
-                    "skip_logic": None
+                    "skip_logic": None,
+                    "core_mandatory": False,
                 }
             ]
         }
@@ -431,7 +435,8 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "tooltip_translations": [],
                     "translations": [],
                     "type": "number",
-                    "variable_name": None
+                    "variable_name": None,
+                    "core_mandatory": True,
                 },
                 {
                     "cascade": None,
@@ -456,7 +461,8 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "tooltip_translations": [],
                     "translations": [],
                     "type": "number",
-                    "variable_name": None
+                    "variable_name": None,
+                    "core_mandatory": False,
                 },
                 {
                     "cascade": 1,
@@ -478,7 +484,8 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "tooltip_translations": [],
                     "translations": [],
                     "type": "cascade",
-                    "variable_name": None
+                    "variable_name": None,
+                    "core_mandatory": False,
                 },
                 {
                     "cascade": 2,
@@ -500,7 +507,8 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "tooltip_translations": [],
                     "translations": [],
                     "type": "nested_list",
-                    "variable_name": None
+                    "variable_name": None,
+                    "core_mandatory": False,
                 },
                 {
                     "cascade": None,
@@ -522,7 +530,8 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "tooltip_translations": [],
                     "translations": [],
                     "type": "date",
-                    "variable_name": None
+                    "variable_name": None,
+                    "core_mandatory": False,
                 },
                 {
                     "cascade": None,
@@ -558,7 +567,8 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "tooltip_translations": [],
                     "translations": [],
                     "type": "multiple_option",
-                    "variable_name": None
+                    "variable_name": None,
+                    "core_mandatory": False,
                 },
             ],
         }
