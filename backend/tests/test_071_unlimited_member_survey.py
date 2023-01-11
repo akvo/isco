@@ -16,9 +16,9 @@ today = datetime.today().strftime("%B %d, %Y")
 
 class TestCreateUnlimitedMemberQuestionnaire():
     @pytest.mark.asyncio
-    async def test_get_webform_from_bucket(self, app: FastAPI,
-                                           session: Session,
-                                           client: AsyncClient) -> None:
+    async def test_get_webform_from_bucket(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # get form
         res = await client.get(
             app.url_path_for(
@@ -41,17 +41,38 @@ class TestCreateUnlimitedMemberQuestionnaire():
                 assert len(q["isco_access"]) > 0
 
     @pytest.mark.asyncio
-    async def test_save_data(self, app: FastAPI, session: Session,
-                             client: AsyncClient) -> None:
+    async def test_save_data(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
+        payload = [{
+            "question": 1,
+            "repeat_index": 0,
+            "comment": "Q1 comment",
+            "value": "Option 1"
+        }]
         res = await client.post(
             app.url_path_for("data:create", form_id=1, submitted=0),
             params={"locked_by": 2},
-            json=[{
-                "question": 1,
-                "repeat_index": 0,
-                "comment": "Q1 comment",
-                "value": "Option 1"
-            }],
+            json=payload,
+            headers={"Authorization": f"Bearer {account.token}"})
+        # core mandatory question check
+        assert res.status_code == 405
+        payload.append({
+            "question": 3,
+            "repeat_index": 0,
+            "comment": None,
+            "value": "Female"
+        })
+        payload.append({
+            "question": 4,
+            "repeat_index": 0,
+            "comment": None,
+            "value": 30
+        })
+        res = await client.post(
+            app.url_path_for("data:create", form_id=1, submitted=0),
+            params={"locked_by": 2},
+            json=payload,
             headers={"Authorization": f"Bearer {account.token}"})
         assert res.status_code == 200
         res = res.json()
@@ -68,14 +89,22 @@ class TestCreateUnlimitedMemberQuestionnaire():
             "submitted_by": None,
             "updated": None,
             "submitted": None,
-            "answer": [
-                {
-                    "comment": "Q1 comment",
-                    "question": 1,
-                    "repeat_index": 0,
-                    "value": "Option 1"
-                },
-            ]
+            "answer": [{
+                "comment": "Q1 comment",
+                "question": 1,
+                "repeat_index": 0,
+                "value": "Option 1"
+            }, {
+                "comment": None,
+                "question": 3,
+                "repeat_index": 0,
+                "value": "Female"
+            }, {
+                "comment": None,
+                "question": 4,
+                "repeat_index": 0,
+                "value": 30
+            }]
         }
 
     @pytest.mark.asyncio
@@ -116,8 +145,9 @@ class TestCreateUnlimitedMemberQuestionnaire():
         assert res.status_code == 200
 
     @pytest.mark.asyncio
-    async def test_submit_data(self, app: FastAPI, session: Session,
-                               client: AsyncClient) -> None:
+    async def test_submit_data(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         res = await client.post(
             app.url_path_for("data:create", form_id=1, submitted=1),
             params={"locked_by": 2},
@@ -163,38 +193,32 @@ class TestCreateUnlimitedMemberQuestionnaire():
             "submitted_by": "Galih",
             "updated": today,
             "submitted": today,
-            "answer": [
-                {
-                    "comment": None,
-                    "question": 1,
-                    "repeat_index": 0,
-                    "value": "Option 1"
-                },
-                {
-                    "comment": None,
-                    "question": 2,
-                    "repeat_index": 0,
-                    "value": "Direct submit"
-                },
-                {
-                    "comment": None,
-                    "question": 3,
-                    "repeat_index": 0,
-                    "value": "Female"
-                },
-                {
-                    "comment": None,
-                    "question": 4,
-                    "repeat_index": 0,
-                    "value": 35
-                },
-                {
-                    "comment": "Q5 comment",
-                    "question": 5,
-                    "repeat_index": 0,
-                    "value": 55
-                }
-            ]
+            "answer": [{
+                "comment": None,
+                "question": 1,
+                "repeat_index": 0,
+                "value": "Option 1"
+            }, {
+                "comment": None,
+                "question": 2,
+                "repeat_index": 0,
+                "value": "Direct submit"
+            }, {
+                "comment": None,
+                "question": 3,
+                "repeat_index": 0,
+                "value": "Female"
+            }, {
+                "comment": None,
+                "question": 4,
+                "repeat_index": 0,
+                "value": 35
+            }, {
+                "comment": "Q5 comment",
+                "question": 5,
+                "repeat_index": 0,
+                "value": 55
+            }]
         }
 
     @pytest.mark.asyncio

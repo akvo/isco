@@ -11,6 +11,7 @@ const SubmitWarningModal = ({
   btnLoading = false,
   force = true,
   save = false,
+  showCoreMandatoryWarning = false,
 }) => {
   const [checkboxOne, setCheckboxOne] = useState(false);
   const [checkboxTwo, setCheckboxTwo] = useState(false);
@@ -41,16 +42,18 @@ const SubmitWarningModal = ({
       destroyOnClose
       footer={
         <Row align="middle" justify="center">
-          <Button
-            type="primary"
-            onClick={onOk}
-            disabled={!disableOkBtn}
-            loading={btnLoading}
-          >
-            {force ? text.btnAgreeContinue : text.btnYes}
-          </Button>
+          {!showCoreMandatoryWarning && (
+            <Button
+              type="primary"
+              onClick={onOk}
+              disabled={!disableOkBtn}
+              loading={btnLoading}
+            >
+              {force ? text.btnAgreeContinue : text.btnYes}
+            </Button>
+          )}
           <Button onClick={onCancel}>
-            {force ? text.btnCancel : text.btnNo}
+            {force ? text.btnCancel : save ? text.btnNo : text.btnClose}
           </Button>
         </Row>
       }
@@ -86,7 +89,7 @@ const SubmitWarningModal = ({
               </Row>
             </>
           )}
-          {!save && (
+          {!save && !showCoreMandatoryWarning && (
             <Row align="top" justify="space-between" gutter={[24, 24]}>
               <Col span={1}>
                 <Checkbox
@@ -103,6 +106,13 @@ const SubmitWarningModal = ({
             <Row align="top" justify="space-between" gutter={[24, 24]}>
               <Col span={24} style={{ fontSize: "1rem" }}>
                 {text.submitModalC4}
+              </Col>
+            </Row>
+          )}
+          {showCoreMandatoryWarning && (
+            <Row align="top" justify="space-between" gutter={[24, 24]}>
+              <Col span={24} style={{ fontSize: "1rem" }}>
+                {text.submitCoreMandatoryWarning}
               </Col>
             </Row>
           )}
