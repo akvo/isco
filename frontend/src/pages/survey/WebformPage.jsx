@@ -95,7 +95,9 @@ const WebformPage = ({
       return [];
     }
     return formValue.question_group.flatMap((qg) =>
-      qg.question.filter((q) => q.core_mandatory).map((q) => q.id)
+      qg.question
+        .filter((q) => q?.core_mandatory || q?.coreMandatory)
+        .map((q) => q.id)
     );
   }, [formValue]);
 
@@ -168,7 +170,7 @@ const WebformPage = ({
                   },
                 ];
                 //core mandatory
-                if (q?.core_mandatory !== undefined) {
+                if (typeof q?.core_mandatory !== "undefined") {
                   q = {
                     ...q,
                     coreMandatory: q.core_mandatory,
