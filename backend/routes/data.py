@@ -46,7 +46,7 @@ def get_questions_from_published_form(session: Session, form_id: int):
             qid = q['id']
             questions.update({qid: q})
             qids.append(qid)
-            if q.get('core_mandatory'):
+            if q.get('core_mandatory') or q.get('coreMandatory'):
                 core_mandatory_questions.append(qid)
         qg['question'] = qids
         question_groups.append(qg)
@@ -64,7 +64,8 @@ def check_core_mandatory_questions_answer(
     core_mandatory_questions = published['core_mandatory_questions']
     answer_qids = [a.get('question') for a in answers]
     # is core mandatory question answered
-    if not set(core_mandatory_questions).issubset(answer_qids):
+    if core_mandatory_questions and \
+       not set(core_mandatory_questions).issubset(answer_qids):
         # not all core mandatory answered
         raise HTTPException(
             status_code=405,

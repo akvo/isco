@@ -228,7 +228,7 @@ class Question(Base):
             "order": self.order,
             "member_access": question_member,
             "isco_access": question_isco,
-            "core_mandatory": self.core_mandatory
+            "coreMandatory": self.core_mandatory
         }
         if self.rule:
             if "allow_other" not in self.rule:
