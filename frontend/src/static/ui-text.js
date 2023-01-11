@@ -251,6 +251,12 @@ const uiText = {
         the data?
       </>
     ),
+    submitCoreMandatoryWarning: (
+      <>
+        <b>Submit is not allowed!</b> Please answer all of the core mandatory
+        questions (marked with a double asterisk **).
+      </>
+    ),
     infoSubmissionDropdown: "(saved/submitted)",
     // password criteria
     passwordCriteriaInfoText: "Criteria for the password:",
@@ -526,6 +532,12 @@ const uiText = {
         denken Sie bitte daran, das <b>Häkchen</b> vor dem Speichern zu
         entfernen, falls eine Kollegin/ ein Kollege noch Daten eingeben soll.
         Möchten Sie den Fragebogen speichern?
+      </>
+    ),
+    submitCoreMandatoryWarning: (
+      <>
+        <b>Einreichen ist nicht erlaubt!</b> Bitte beantworten Sie alle
+        Kernpflichtfragen (mit einem doppelten Sternchen ** gekennzeichnet).
       </>
     ),
     infoSubmissionDropdown: "(gespeichert/eingereicht)",

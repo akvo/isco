@@ -10,8 +10,8 @@ import ErrorPage from "../error/ErrorPage";
 import { CommentField, SubmitWarningModal } from "../../components";
 import { uiText } from "../../static";
 
-const SaveButton = ({ onClick, isSaving, text }) => (
-  <Button loading={isSaving} onClick={onClick}>
+const SaveButton = ({ onClick, isSaving, text, disabled = false }) => (
+  <Button loading={isSaving} onClick={onClick} disabled={disabled}>
     {text.btnSave}
   </Button>
 );
@@ -79,13 +79,25 @@ const WebformPage = ({
   // save savedData here, for loaded form this must be saved when loading form value
   const [savedData, setSavedData] = useState(null);
   const [initialAnswers, setInitialAnswers] = useState([]);
-
   // warning modal
   const [modalWarningVisible, setModalWarningVisible] = useState(false);
+  // core mandatory popup
+  const [showCoreMandatoryWarning, setShowCoreMandatoryWarning] =
+    useState(false);
 
   const text = useMemo(() => {
     return uiText[activeLang];
   }, [activeLang]);
+
+  // core mandatory questions
+  const coreMandatoryQuestionIds = useMemo(() => {
+    if (!formValue?.question_group) {
+      return [];
+    }
+    return formValue.question_group.flatMap((qg) =>
+      qg.question.filter((q) => q.core_mandatory).map((q) => q.id)
+    );
+  }, [formValue]);
 
   // transform & filter form definition
   useEffect(() => {
@@ -398,12 +410,29 @@ const WebformPage = ({
   const onFinishShowWarning = () => {
     setIsForce(false);
     setIsSave(false);
+    setShowCoreMandatoryWarning(false);
     setModalWarningVisible(true);
   };
 
   const onCompleteFailed = () => {
+    // check if core mandatory answered
+    const answerQids = answer.map((a) => a.question);
+    const coreMandatoryAnswers = intersection(
+      coreMandatoryQuestionIds,
+      answerQids
+    );
+    if (coreMandatoryQuestionIds.length !== coreMandatoryAnswers.length) {
+      // not all of core mandatory answered
+      // show core mandatory popup
+      setIsSave(false);
+      setIsForce(false);
+      setShowCoreMandatoryWarning(true);
+      setModalWarningVisible(true);
+      return;
+    }
     setIsSave(false);
     setIsForce(true);
+    setShowCoreMandatoryWarning(false);
     setModalWarningVisible(true);
   };
 
@@ -468,10 +497,12 @@ const WebformPage = ({
                   onClick={() => {
                     setIsForce(false);
                     setIsSave(true);
+                    setShowCoreMandatoryWarning(false);
                     setModalWarningVisible(true);
                   }}
                   isSaving={isSaving}
                   text={text}
+                  disabled={!answer.length}
                 />
                 <LockedCheckbox
                   onChange={(val) => setIsLocked(val.target.checked)}
@@ -506,6 +537,7 @@ const WebformPage = ({
         btnLoading={isSubmitting || isSaving}
         force={isForce}
         save={isSave}
+        showCoreMandatoryWarning={showCoreMandatoryWarning}
       />
     </>
   );
