@@ -59,12 +59,12 @@ def get_questions_from_published_form(session: Session, form_id: int):
 
 
 def check_core_mandatory_questions_answer(
-    published: dict, answers: List[AnswerDict]
+    published: dict, answers: List[AnswerDict], submitted: int
 ):
     core_mandatory_questions = published['core_mandatory_questions']
     answer_qids = [a.get('question') for a in answers]
     # is core mandatory question answered
-    if core_mandatory_questions and \
+    if submitted and core_mandatory_questions and \
        not set(core_mandatory_questions).issubset(answer_qids):
         # not all core mandatory answered
         raise HTTPException(
@@ -180,7 +180,7 @@ def add(req: Request,
     # end get questions published form
     # check core mandatory question answered
     check_core_mandatory_questions_answer(
-        published=published, answers=answers)
+        published=published, answers=answers, submitted=submitted)
     # end check core mandatory question answered
     geo = None
     answerlist = []
@@ -366,7 +366,7 @@ def update_by_id(
 
     # check core mandatory question answered
     check_core_mandatory_questions_answer(
-        published=published, answers=answers)
+        published=published, answers=answers, submitted=submitted)
     # end check core mandatory question answered
 
     # get repeatable question ids

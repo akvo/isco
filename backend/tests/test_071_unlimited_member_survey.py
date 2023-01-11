@@ -55,25 +55,6 @@ class TestCreateUnlimitedMemberQuestionnaire():
             params={"locked_by": 2},
             json=payload,
             headers={"Authorization": f"Bearer {account.token}"})
-        # core mandatory question check
-        assert res.status_code == 405
-        payload.append({
-            "question": 3,
-            "repeat_index": 0,
-            "comment": None,
-            "value": "Female"
-        })
-        payload.append({
-            "question": 4,
-            "repeat_index": 0,
-            "comment": None,
-            "value": 30
-        })
-        res = await client.post(
-            app.url_path_for("data:create", form_id=1, submitted=0),
-            params={"locked_by": 2},
-            json=payload,
-            headers={"Authorization": f"Bearer {account.token}"})
         assert res.status_code == 200
         res = res.json()
         assert res == {
@@ -94,16 +75,6 @@ class TestCreateUnlimitedMemberQuestionnaire():
                 "question": 1,
                 "repeat_index": 0,
                 "value": "Option 1"
-            }, {
-                "comment": None,
-                "question": 3,
-                "repeat_index": 0,
-                "value": "Female"
-            }, {
-                "comment": None,
-                "question": 4,
-                "repeat_index": 0,
-                "value": 30
             }]
         }
 

@@ -33,19 +33,14 @@ class TestSubmissionRoutes():
             "comment": None,
             "value": "Male"
         }]
+        # direct submit without core mandatory answered
         res = await client.post(
-            app.url_path_for("data:create", form_id=1, submitted=0),
+            app.url_path_for("data:create", form_id=1, submitted=1),
             params={"locked_by": 1},
             json=payload,
             headers={"Authorization": f"Bearer {account.token}"})
-        # core mandatory question check
         assert res.status_code == 405
-        payload.append({
-            "question": 4,
-            "repeat_index": 0,
-            "comment": None,
-            "value": 20
-        })
+        # save data
         res = await client.post(
             app.url_path_for("data:create", form_id=1, submitted=0),
             params={"locked_by": 1},
@@ -81,11 +76,6 @@ class TestSubmissionRoutes():
                 "question": 3,
                 "repeat_index": 0,
                 "value": "Male"
-            }, {
-                "comment": None,
-                "question": 4,
-                "repeat_index": 0,
-                "value": 20
             }]
         }
 
@@ -136,11 +126,6 @@ class TestSubmissionRoutes():
                 'question': 3,
                 'repeat_index': 0,
                 'value': 'Male'
-            }, {
-                'comment': None,
-                'question': 4,
-                'repeat_index': 0,
-                'value': 20
             }],
         }
 
@@ -155,6 +140,17 @@ class TestSubmissionRoutes():
         assert res.status_code == 200
         res = res.json()
         assert res["id"] == 1
+        # update and submit data without core mandatory answered
+        res = await client.put(
+            app.url_path_for("data:update", id=1, submitted=1),
+            json=[{
+                "question": 1,
+                "repeat_index": 0,
+                "comment": None,
+                "value": "Option 1"
+            }],
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 405
         # update data
         res = await client.put(
             app.url_path_for("data:update", id=1, submitted=0),
@@ -226,11 +222,6 @@ class TestSubmissionRoutes():
                 "repeat_index": 0,
                 "value": "Female"
             }, {
-                "comment": "Q4 comment",
-                "question": 4,
-                "repeat_index": 0,
-                "value": 20.0
-            }, {
                 "comment": None,
                 "question": 1,
                 "repeat_index": 1,
@@ -245,6 +236,11 @@ class TestSubmissionRoutes():
                 "question": 3,
                 "repeat_index": 1,
                 "value": "Male"
+            }, {
+                "comment": "Q4 comment",
+                "question": 4,
+                "repeat_index": 0,
+                "value": 20.0
             }]
         }
 
