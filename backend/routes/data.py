@@ -39,17 +39,36 @@ def get_questions_from_published_form(session: Session, form_id: int):
         webform = webform.json()
     question_groups = []
     questions = {}
+    core_mandatory_questions = []
     for qg in webform['question_group']:
         qids = []
         for q in qg['question']:
-            questions.update({q['id']: q})
-            qids.append(q['id'])
+            qid = q['id']
+            questions.update({qid: q})
+            qids.append(qid)
+            if q.get('core_mandatory'):
+                core_mandatory_questions.append(qid)
         qg['question'] = qids
         question_groups.append(qg)
     return {
         "form_name": webform['name'],
         "question_groups": question_groups,
-        "questions": questions}
+        "questions": questions,
+        "core_mandatory_questions": core_mandatory_questions,
+    }
+
+
+def check_core_mandatory_questions_answer(
+    published: dict, answers: List[AnswerDict]
+):
+    core_mandatory_questions = published['core_mandatory_questions']
+    answer_qids = [a.get('question') for a in answers]
+    # is core mandatory question answered
+    if not set(core_mandatory_questions).issubset(answer_qids):
+        # not all core mandatory answered
+        raise HTTPException(
+            status_code=405,
+            detail="Please answer all core mandatory questions")
 
 
 def notify_secretariat_admin(session: Session, user, form_name: str):
@@ -89,12 +108,13 @@ def get(req: Request,
     if filter_same_isco:
         org_ids = organisations_in_same_isco(
             session=session, organisation=user.organisation)
-    data = crud.get_data(session=session,
-                         form=form_id,
-                         skip=(perpage * (page - 1)),
-                         perpage=perpage,
-                         submitted=submitted,
-                         org_ids=org_ids)
+    data = crud.get_data(
+        session=session,
+        form=form_id,
+        skip=(perpage * (page - 1)),
+        perpage=perpage,
+        submitted=submitted,
+        org_ids=org_ids)
     if not data["count"]:
         raise HTTPException(status_code=404, detail="Not found")
     total_page = ceil(data["count"] / perpage) if data["count"] > 0 else 0
@@ -130,11 +150,12 @@ def get(req: Request,
     }
 
 
-@data_route.post("/data/form/{form_id}/{submitted:path}",
-                 response_model=DataDict,
-                 summary="add new data",
-                 name="data:create",
-                 tags=["Data"])
+@data_route.post(
+    "/data/form/{form_id}/{submitted:path}",
+    response_model=DataDict,
+    summary="add new data",
+    name="data:create",
+    tags=["Data"])
 def add(req: Request,
         form_id: int,
         submitted: int,
@@ -142,20 +163,24 @@ def add(req: Request,
         locked_by: Optional[int] = None,
         session: Session = Depends(get_session),
         credentials: credentials = Depends(security)):
-    user = verify_editor(session=session,
-                         authenticated=req.state.authenticated)
+    user = verify_editor(
+        session=session,
+        authenticated=req.state.authenticated)
     # check if submission exist
-    exist = crud.check_member_submission_exists(session=session,
-                                                form=form_id,
-                                                organisation=user.organisation)
+    exist = crud.check_member_submission_exists(
+        session=session, form=form_id, organisation=user.organisation)
     if exist:
-        raise HTTPException(status_code=208,
-                            detail="Submission already reported")
+        raise HTTPException(
+            status_code=208, detail="Submission already reported")
     # get questions from published form
-    published = get_questions_from_published_form(session=session,
-                                                  form_id=form_id)
+    published = get_questions_from_published_form(
+        session=session, form_id=form_id)
     questions = published['questions']
     # end get questions published form
+    # check core mandatory question answered
+    check_core_mandatory_questions_answer(
+        published=published, answers=answers)
+    # end check core mandatory question answered
     geo = None
     answerlist = []
     names = []
@@ -186,15 +211,16 @@ def add(req: Request,
             answer.options = a["value"]
         answerlist.append(answer)
     name = " - ".join(names)
-    data = crud.add_data(session=session,
-                         form=form_id,
-                         name=name,
-                         geo=geo,
-                         locked_by=locked_by,
-                         created_by=user.id,
-                         organisation=user.organisation,
-                         answers=answerlist,
-                         submitted=submitted)
+    data = crud.add_data(
+        session=session,
+        form=form_id,
+        name=name,
+        geo=geo,
+        locked_by=locked_by,
+        created_by=user.id,
+        organisation=user.organisation,
+        answers=answerlist,
+        submitted=submitted)
     # if submitted send notification email to secretariat admin
     if submitted:
         notify_secretariat_admin(
@@ -211,11 +237,12 @@ def get_saved_data_by_organisation(
         req: Request,
         session: Session = Depends(get_session),
         credentials: credentials = Depends(security)):
-    user = verify_editor(session=session,
-                         authenticated=req.state.authenticated)
+    user = verify_editor(
+        session=session,
+        authenticated=req.state.authenticated)
     # get saved data from logged user organisation
-    data = crud.get_data_by_organisation(session=session,
-                                         organisation=user.organisation)
+    data = crud.get_data_by_organisation(
+        session=session, organisation=user.organisation)
     # check for collaborator
     collabs = crud_collaborator.get_collaborator_by_organisation(
         session=session, organisation=user.organisation)
@@ -228,83 +255,96 @@ def get_saved_data_by_organisation(
     return [d.to_options for d in data]
 
 
-@data_route.get("/data/{id:path}",
-                response_model=DataDict,
-                summary="get data by id",
-                name="data:get_by_id",
-                tags=["Data"])
-def get_by_id(req: Request,
-              id: int,
-              session: Session = Depends(get_session),
-              credentials: credentials = Depends(security)):
+@data_route.get(
+    "/data/{id:path}",
+    response_model=DataDict,
+    summary="get data by id",
+    name="data:get_by_id",
+    tags=["Data"])
+def get_by_id(
+    req: Request,
+    id: int,
+    session: Session = Depends(get_session),
+    credentials: credentials = Depends(security)
+):
     data = crud.get_data_by_id(session=session, id=id)
     if not data:
-        raise HTTPException(status_code=404,
-                            detail="data {} is not found".format(id))
+        raise HTTPException(
+            status_code=404,
+            detail="data {} is not found".format(id))
     return data.serialize
 
 
-@data_route.delete("/data/{id:path}",
-                   responses={204: {
-                       "model": None
-                   }},
-                   status_code=HTTPStatus.NO_CONTENT,
-                   summary="delete data",
-                   name="data:delete",
-                   tags=["Data"])
-def delete(req: Request,
-           id: int,
-           session: Session = Depends(get_session),
-           credentials: credentials = Depends(security)):
+@data_route.delete(
+    "/data/{id:path}",
+    responses={204: {"model": None}},
+    status_code=HTTPStatus.NO_CONTENT,
+    summary="delete data",
+    name="data:delete",
+    tags=["Data"])
+def delete(
+    req: Request,
+    id: int,
+    session: Session = Depends(get_session),
+    credentials: credentials = Depends(security)
+):
     verify_super_admin(session=session, authenticated=req.state.authenticated)
     crud.delete_by_id(session=session, id=id)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)
 
 
-@data_route.delete("/data",
-                   responses={204: {
-                       "model": None
-                   }},
-                   status_code=HTTPStatus.NO_CONTENT,
-                   summary="bulk delete data",
-                   name="data:bulk-delete",
-                   tags=["Data"])
-def bulk_delete(req: Request,
-                id: Optional[List[int]] = Query(None),
-                session: Session = Depends(get_session),
-                credentials: credentials = Depends(security)):
+@data_route.delete(
+    "/data",
+    responses={204: {"model": None}},
+    status_code=HTTPStatus.NO_CONTENT,
+    summary="bulk delete data",
+    name="data:bulk-delete",
+    tags=["Data"])
+def bulk_delete(
+    req: Request,
+    id: Optional[List[int]] = Query(None),
+    session: Session = Depends(get_session),
+    credentials: credentials = Depends(security)
+):
     verify_super_admin(session=session, authenticated=req.state.authenticated)
     crud.delete_bulk(session=session, ids=id)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)
 
 
-@data_route.put("/data/{id}/{submitted:path}",
-                response_model=DataDict,
-                summary="update data",
-                name="data:update",
-                tags=["Data"])
-def update_by_id(req: Request,
-                 id: int,
-                 submitted: int,
-                 answers: List[AnswerDict],
-                 locked_by: Optional[int] = None,
-                 data_cleaning: Optional[bool] = False,
-                 session: Session = Depends(get_session),
-                 credentials: credentials = Depends(security)):
+@data_route.put(
+    "/data/{id}/{submitted:path}",
+    response_model=DataDict,
+    summary="update data",
+    name="data:update",
+    tags=["Data"])
+def update_by_id(
+    req: Request,
+    id: int,
+    submitted: int,
+    answers: List[AnswerDict],
+    locked_by: Optional[int] = None,
+    data_cleaning: Optional[bool] = False,
+    session: Session = Depends(get_session),
+    credentials: credentials = Depends(security)
+):
     # data cleaning verify super admin/secretariat admin
     if data_cleaning:
         user = verify_super_admin(
-            session=session, authenticated=req.state.authenticated)
+            session=session,
+            authenticated=req.state.authenticated)
     if not data_cleaning:
         user = verify_editor(
-            session=session, authenticated=req.state.authenticated)
+            session=session,
+            authenticated=req.state.authenticated)
     # check data status before update
     # to prevent update submitted data
     data = crud.get_data_by_id(
-        session=session, id=id, submitted=True if data_cleaning else False)
+        session=session, id=id,
+        submitted=True if data_cleaning else False)
     if not data:
-        raise HTTPException(status_code=208,
-                            detail="Submission already reported")
+        raise HTTPException(
+            status_code=208,
+            detail="Submission already reported")
     # if locked, allow update only by locked_by === user id
     # but open for data cleaning
     if data.locked_by and data.locked_by != user.id and not data_cleaning:
@@ -317,11 +357,16 @@ def update_by_id(req: Request,
         submitted_date = datetime.now()
 
     # get questions from published form
-    published = get_questions_from_published_form(session=session,
-                                                  form_id=data.form)
+    published = get_questions_from_published_form(
+        session=session, form_id=data.form)
     question_groups = published['question_groups']
     questions = published['questions']
     # end get questions published form
+
+    # check core mandatory question answered
+    check_core_mandatory_questions_answer(
+        published=published, answers=answers)
+    # end check core mandatory question answered
 
     # get repeatable question ids
     repeat_qids = []
@@ -374,22 +419,25 @@ def update_by_id(req: Request,
         if execute == "update" and (a["value"] != last_answer["value"]
                                     or a["comment"] != last_answer["comment"]):
             answer = last_answer["data"]
-            a = crud_answer.update_answer(session=session,
-                                          answer=answer,
-                                          repeat_index=a["repeat_index"],
-                                          comment=a["comment"],
-                                          type=qtype,
-                                          value=a["value"])
+            a = crud_answer.update_answer(
+                session=session,
+                answer=answer,
+                repeat_index=a["repeat_index"],
+                comment=a["comment"],
+                type=qtype,
+                value=a["value"])
         if execute == "new":
-            answer = Answer(question=a["question"],
-                            data=data.id,
-                            created=datetime.now(),
-                            repeat_index=a["repeat_index"],
-                            comment=a["comment"])
-            a = crud_answer.add_answer(session=session,
-                                       answer=answer,
-                                       type=qtype,
-                                       value=a["value"])
+            answer = Answer(
+                question=a["question"],
+                data=data.id,
+                created=datetime.now(),
+                repeat_index=a["repeat_index"],
+                comment=a["comment"])
+            a = crud_answer.add_answer(
+                session=session,
+                answer=answer,
+                type=qtype,
+                value=a["value"])
         if execute:
             # don't update locked_by for data_cleaning
             data.locked_by = locked_by \
@@ -419,11 +467,12 @@ def update_by_id(req: Request,
     return data.serialize
 
 
-@data_route.get("/submission/progress",
-                response_model=List[SubmissionProgressDict],
-                name="submission:progress",
-                summary="view submission progress",
-                tags=["Data"])
+@data_route.get(
+    "/submission/progress",
+    response_model=List[SubmissionProgressDict],
+    name="submission:progress",
+    summary="view submission progress",
+    tags=["Data"])
 def get_submission_progress(
     req: Request,
     organisation: Optional[List[int]] = Query(None),
