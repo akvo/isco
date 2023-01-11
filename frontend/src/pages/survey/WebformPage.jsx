@@ -167,6 +167,14 @@ const WebformPage = ({
                     ),
                   },
                 ];
+                //core mandatory
+                if (q?.core_mandatory !== undefined) {
+                  q = {
+                    ...q,
+                    coreMandatory: q.core_mandatory,
+                  };
+                  delete q.core_mandatory;
+                }
                 // allow decimal
                 if (q?.rule && q?.rule?.allowDecimal) {
                   q.rule = {
