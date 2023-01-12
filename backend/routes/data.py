@@ -28,6 +28,9 @@ from util.mailer import Email, MailTypeEnum
 security = HTTPBearer()
 data_route = APIRouter()
 
+BUCKET_FOLDER = os.environ.get("BUCKET_FOLDER")
+CONFIG_SOURCE_PATH = "./source/config"
+
 
 def get_questions_from_published_form(session: Session, form_id: int):
     form = crud_form.get_form_by_id(session=session, id=form_id)
@@ -70,6 +73,42 @@ def check_core_mandatory_questions_answer(
         raise HTTPException(
             status_code=405,
             detail="Please answer all core mandatory questions")
+
+
+def check_computed_validation(form_id: int, answers: List[AnswerDict]):
+    TESTING = os.environ.get("TESTING")
+    if TESTING:
+        BUCKET_FOLDER = "notset"
+    # read computed validation config
+    json_file_path = f"{CONFIG_SOURCE_PATH}/{BUCKET_FOLDER}"
+    json_file_path = f"{json_file_path}//computed_validations.json"
+    with open(json_file_path, 'r') as j:
+        computed_validations = json.loads(j.read())
+    computed_validation = [
+        x for x in computed_validations
+        if int(x.get('form_id')) == form_id]
+    if computed_validation:
+        errors = []
+        computed_validation = computed_validation[0]
+        for cv in computed_validation.get('validations'):
+            cv_qids = cv.get('question_ids')
+            cv_max = cv.get("max")
+            cv_min = cv.get("min")
+            cv_answers = []
+            for a in answers:
+                if not a.get('question') in cv_qids:
+                    continue
+                value = a.get('value')
+                if a.get('type') == QuestionType.number.value:
+                    value = int(value)
+                cv_answers.append(value)
+            total_cv_answers = sum(cv_answers)
+            if cv_max and total_cv_answers > cv_max:
+                errors.append(cv)
+            if cv_min and total_cv_answers < cv_min:
+                errors.append(cv)
+        if errors:
+            raise HTTPException(status_code=405, detail=errors)
 
 
 def notify_secretariat_admin(session: Session, user, form_name: str):
@@ -178,10 +217,17 @@ def add(req: Request,
         session=session, form_id=form_id)
     questions = published['questions']
     # end get questions published form
+
     # check core mandatory question answered
     check_core_mandatory_questions_answer(
         published=published, answers=answers, submitted=submitted)
     # end check core mandatory question answered
+
+    # validate by computed validations
+    check_computed_validation(form_id=form_id, answers=answers)
+    # end validate by computed validations
+
+    # generating answers
     geo = None
     answerlist = []
     names = []
@@ -368,6 +414,10 @@ def update_by_id(
     check_core_mandatory_questions_answer(
         published=published, answers=answers, submitted=submitted)
     # end check core mandatory question answered
+
+    # validate by computed validations
+    check_computed_validation(form_id=data.form, answers=answers)
+    # end validate by computed validations
 
     # get repeatable question ids
     repeat_qids = []
