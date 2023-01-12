@@ -10,6 +10,8 @@ import ErrorPage from "../error/ErrorPage";
 import { CommentField, SubmitWarningModal } from "../../components";
 import { uiText } from "../../static";
 
+const computedValidations = window?.computed_validations;
+
 const SaveButton = ({ onClick, isSaving, text, disabled = false }) => (
   <Button loading={isSaving} onClick={onClick} disabled={disabled}>
     {text.btnSave}
@@ -100,6 +102,33 @@ const WebformPage = ({
         .map((q) => q.id)
     );
   }, [formValue]);
+
+  // check computed validations
+  const checkComputedValidation = useMemo(() => {
+    const { validations } = computedValidations.find(
+      (cv) => cv.form_id === formId
+    );
+    const checkError = validations
+      .map((v) => {
+        const total = v.question_ids
+          .map((id) => {
+            const a = answer.find((a) => a.question === id);
+            return a?.value || 0;
+          })
+          .reduce((total, num) => total + num);
+        let error = false;
+        if ("max" in v) {
+          error = total > v.max;
+        }
+        if ("min" in v) {
+          error = total < v.min;
+        }
+        return { ...v, error: error };
+      })
+      .filter((v) => v.error);
+    return checkError;
+  }, [answer, formId]);
+  console.log(checkComputedValidation);
 
   // transform & filter form definition
   useEffect(() => {
