@@ -37,7 +37,8 @@ app = FastAPI(
     },
 )
 
-CONFIG_SOURCE_PATH = "./source/config"
+BUCKET_FOLDER = os.environ['BUCKET_FOLDER']
+CONFIG_SOURCE_PATH = f"./source/config/{BUCKET_FOLDER}"
 JS_FILE = "./config.min.js"
 
 app.include_router(organisation_route)
@@ -69,12 +70,15 @@ def health_check():
     return "OK"
 
 
-@app.get("/config.js",
-         response_class=FileResponse,
-         tags=["Config"],
-         name="config.js",
-         description="static javascript config")
+@app.get(
+    "/config.js",
+    response_class=FileResponse,
+    tags=["Config"],
+    name="config.js",
+    description="static javascript config")
 async def main(res: Response):
+    # we can separate computed_validations config by BUCKET_FOLDER
+    computed_validation = f"{CONFIG_SOURCE_PATH}/computed_validations.json"
     if not os.path.exists(JS_FILE):
         env_js = "var __ENV__={"
         env_js += "client_id:\"{}\"".format(os.environ["CLIENT_ID"])
@@ -82,8 +86,7 @@ async def main(res: Response):
         env_js += "};"
         min_js = jsmin("".join([
             env_js,
-            "var computed_validations=", open(
-                f"{CONFIG_SOURCE_PATH}/computed_validations.json").read(),
+            "var computed_validations=", open(computed_validation).read(),
             ";"
         ]))
         open(JS_FILE, 'w').write(min_js)
