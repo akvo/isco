@@ -12,6 +12,7 @@ import {
   Popconfirm,
   Tooltip,
   Switch,
+  Alert,
 } from "antd";
 import {
   RiSettings5Fill,
@@ -367,6 +368,26 @@ const QuestionEditor = ({
                     </>
                   }
                 >
+                  {question?.skip_logic?.length > 0 && (
+                    <Row className="dependency-row">
+                      <Alert
+                        message={
+                          <div>
+                            <ul className="arfe-dependant-list-box">
+                              Dependant Questions:
+                              <li>
+                                2. Culinary Group
+                                <ul>
+                                  <li>2.10. Order List</li>
+                                </ul>
+                              </li>
+                            </ul>
+                          </div>
+                        }
+                        type="info"
+                      />
+                    </Row>
+                  )}
                   <Row className="panel-body-wrapper">
                     <Col className="button-wrapper" style={{ width: "40px" }}>
                       <QuestionMenu

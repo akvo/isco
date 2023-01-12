@@ -160,6 +160,10 @@
         padding: 0 14px;
         background-color: $bg-grey;
 
+        .dependency-row {
+          margin: 20px 0px;
+        }
+
         &.is-move {
           background-color: #e8c8c8;
         }
