@@ -1,10 +1,10 @@
 [
   {
-    "form_id": 1,
+    "form_id": 4,
     "validations": [
       {
         "group_id": 2,
-        "question_ids": [4, 5, 6],
+        "question_ids": [14, 15],
         "max": 100
       }
     ]
