@@ -260,8 +260,40 @@ const QuestionEditor = ({
       });
   };
 
-  const handleActivateQuestionButton = (checked) => {
-    console.info(`switch to ${checked}`);
+  const handleActivateQuestionButton = (checked, question, field) => {
+    const { id } = question;
+    const data = {
+      ...question,
+      option: null,
+      skip_logic: null,
+      deactivate: !checked,
+    };
+    api
+      .put(`/question/${id}`, data, {
+        "content-type": "application/json",
+      })
+      .then(() => {
+        const updatedQuestionGroup = questionGroupState.map((qg) => {
+          const questions = qg.question.map((q) => {
+            return {
+              ...q,
+              deactivate: q.id == id ? !checked : q.deactivate,
+            };
+          });
+          return {
+            ...qg,
+            question: questions,
+          };
+        });
+
+        store.update((s) => {
+          s.surveyEditor = {
+            ...s.surveyEditor,
+            questionGroup: updatedQuestionGroup,
+          };
+        });
+      })
+      .catch((e) => console.error(e));
   };
 
   return (
@@ -274,7 +306,7 @@ const QuestionEditor = ({
               : "question-card-wrapper"
           }
         >
-          <Row align="middle" justify="space-between" gutter={[8, 8]}>
+          <Row align="top" justify="space-between" gutter={[8, 8]}>
             <Col span={18} align="start" className="left">
               <Collapse ghost activeKey={activePanel}>
                 <Panel
@@ -440,7 +472,9 @@ const QuestionEditor = ({
                 >
                   <Switch
                     checked={!question?.deactivate}
-                    onChange={handleActivateQuestionButton}
+                    onChange={(checked) =>
+                      handleActivateQuestionButton(checked, question)
+                    }
                   />
                 </Tooltip>
               </Space>
