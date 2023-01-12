@@ -46,6 +46,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
             "repeating_objects": None,
             "order": 3,
             "core_mandatory": True,
+            "deactivate": True,
             "option": [
                 {
                     "code": None,
@@ -128,6 +129,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
             "type": "option",
             "variable_name": None,
             "core_mandatory": True,
+            "deactivate": True,
         }
 
     @pytest.mark.asyncio
@@ -167,6 +169,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
             "isco_access": [2],
             "skip_logic": [],
             "core_mandatory": True,
+            "deactivate": True,
         }
         res = await client.put(
             app.url_path_for("question:put", id=3),
@@ -222,6 +225,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
             "type": "option",
             "variable_name": None,
             "core_mandatory": True,
+            "deactivate": True,
         }
 
     @pytest.mark.asyncio
@@ -266,6 +270,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "isco_access": None,
                     "skip_logic": None,
                     "core_mandatory": True,
+                    "deactivate": True,
                 },
                 {
                     "form": None,
@@ -291,6 +296,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "isco_access": None,
                     "skip_logic": None,
                     "core_mandatory": False,
+                    "deactivate": False,
                 },
                 {
                     "form": None,
@@ -313,6 +319,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "isco_access": None,
                     "skip_logic": None,
                     "core_mandatory": False,
+                    "deactivate": False,
                 },
                 {
                     "form": None,
@@ -335,6 +342,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "isco_access": None,
                     "skip_logic": None,
                     "core_mandatory": False,
+                    "deactivate": False,
                 },
                 {
                     "form": None,
@@ -357,6 +365,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "isco_access": None,
                     "skip_logic": None,
                     "core_mandatory": False,
+                    "deactivate": False,
                 },
                 {
                     "form": None,
@@ -394,6 +403,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "isco_access": None,
                     "skip_logic": None,
                     "core_mandatory": False,
+                    "deactivate": False,
                 }
             ]
         }
@@ -437,6 +447,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "type": "number",
                     "variable_name": None,
                     "core_mandatory": True,
+                    "deactivate": True,
                 },
                 {
                     "cascade": None,
@@ -463,6 +474,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "type": "number",
                     "variable_name": None,
                     "core_mandatory": False,
+                    "deactivate": False,
                 },
                 {
                     "cascade": 1,
@@ -486,6 +498,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "type": "cascade",
                     "variable_name": None,
                     "core_mandatory": False,
+                    "deactivate": False,
                 },
                 {
                     "cascade": 2,
@@ -509,6 +522,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "type": "nested_list",
                     "variable_name": None,
                     "core_mandatory": False,
+                    "deactivate": False,
                 },
                 {
                     "cascade": None,
@@ -532,6 +546,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "type": "date",
                     "variable_name": None,
                     "core_mandatory": False,
+                    "deactivate": False,
                 },
                 {
                     "cascade": None,
@@ -569,6 +584,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "type": "multiple_option",
                     "variable_name": None,
                     "core_mandatory": False,
+                    "deactivate": False,
                 },
             ],
         }

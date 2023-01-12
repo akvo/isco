@@ -48,7 +48,8 @@ class TestQuestionRoutes():
             "member_access": None,
             "isco_access": None,
             "skip_logic": None,
-            "core_mandatory": False
+            "core_mandatory": False,
+            "deactivate": False,
         }
         res = await client.post(
             app.url_path_for("question:create"),
@@ -77,7 +78,8 @@ class TestQuestionRoutes():
             "translations": [],
             "type": 'text',
             "variable_name": None,
-            "core_mandatory": False
+            "core_mandatory": False,
+            "deactivate": False,
         }
 
     @pytest.mark.asyncio
@@ -114,7 +116,8 @@ class TestQuestionRoutes():
             "member_access": None,
             "isco_access": None,
             "skip_logic": None,
-            "core_mandatory": True
+            "core_mandatory": True,
+            "deactivate": True,
         }
         res = await client.put(
             app.url_path_for("question:put", id=1),
@@ -146,5 +149,6 @@ class TestQuestionRoutes():
                 "language": "id", "text": "Pertanyaan 1"}],
             "type": "option",
             "variable_name": None,
-            "core_mandatory": True
+            "core_mandatory": True,
+            "deactivate": True,
         }
