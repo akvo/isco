@@ -260,7 +260,7 @@ const QuestionEditor = ({
       });
   };
 
-  const handleActivateQuestionButton = (checked, question, field) => {
+  const handleActivateQuestionButton = (checked, question) => {
     const { id } = question;
     const data = {
       ...question,
@@ -277,7 +277,7 @@ const QuestionEditor = ({
           const questions = qg.question.map((q) => {
             return {
               ...q,
-              deactivate: q.id == id ? !checked : q.deactivate,
+              deactivate: q.id === id ? !checked : q.deactivate,
             };
           });
           return {
