@@ -1,4 +1,5 @@
 import os
+from jsmin import jsmin
 from fastapi import FastAPI, Request, Response
 from fastapi.responses import FileResponse
 from middleware import decode_token
@@ -36,7 +37,8 @@ app = FastAPI(
     },
 )
 
-JS_FILE = "./config.js"
+CONFIG_SOURCE_PATH = "./source/config"
+JS_FILE = "./config.min.js"
 
 app.include_router(organisation_route)
 app.include_router(user_route)
@@ -74,11 +76,17 @@ def health_check():
          description="static javascript config")
 async def main(res: Response):
     if not os.path.exists(JS_FILE):
-        js = "var __ENV__={"
-        js += "client_id:\"{}\"".format(os.environ["CLIENT_ID"])
-        js += ", client_secret:\"{}\"".format(os.environ["CLIENT_SECRET"])
-        js += "}"
-        open(JS_FILE, 'w').write(js)
+        env_js = "var __ENV__={"
+        env_js += "client_id:\"{}\"".format(os.environ["CLIENT_ID"])
+        env_js += ", client_secret:\"{}\"".format(os.environ["CLIENT_SECRET"])
+        env_js += "};"
+        min_js = jsmin("".join([
+            env_js,
+            "var computed_validations=", open(
+                f"{CONFIG_SOURCE_PATH}/computed_validations.json").read(),
+            ";"
+        ]))
+        open(JS_FILE, 'w').write(min_js)
     res.headers["Content-Type"] = "application/x-javascript; charset=utf-8"
     return JS_FILE
 
