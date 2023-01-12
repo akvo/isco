@@ -211,9 +211,13 @@
         }
 
         .right {
-          position: absolute;
-          top: 12px;
-          right: 0;
+          // position: absolute;
+          // top: 12px;
+          // right: 0;
+
+          .ant-form-item {
+            margin-bottom: 0px;
+          }
 
           .ant-space {
             float: right;

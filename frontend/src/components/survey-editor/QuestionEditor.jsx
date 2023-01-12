@@ -11,6 +11,7 @@ import {
   Collapse,
   Popconfirm,
   Tooltip,
+  Switch,
 } from "antd";
 import {
   RiSettings5Fill,
@@ -259,6 +260,10 @@ const QuestionEditor = ({
       });
   };
 
+  const handleActivateQuestionButton = (checked) => {
+    console.info(`switch to ${checked}`);
+  };
+
   return (
     <Row key={`qe-${qId}`}>
       <Col span={24}>
@@ -269,7 +274,7 @@ const QuestionEditor = ({
               : "question-card-wrapper"
           }
         >
-          <Row align="middle" justify="space-between" gutter={[12, 12]}>
+          <Row align="middle" justify="space-between" gutter={[8, 8]}>
             <Col span={18} align="start" className="left">
               <Collapse ghost activeKey={activePanel}>
                 <Panel
@@ -391,7 +396,7 @@ const QuestionEditor = ({
             </Col>
 
             <Col span={6} align="end" className="right">
-              <Space align="start">
+              <Space align="center">
                 <Form.Item
                   name={`question-${qId}-type`}
                   rules={[
@@ -426,6 +431,18 @@ const QuestionEditor = ({
                     <Button type="text" icon={<RiDeleteBinFill />} />
                   </Tooltip>
                 </Popconfirm>
+                <Tooltip
+                  title={
+                    !question?.deactivate
+                      ? "Deactivate this question"
+                      : "Activate this question"
+                  }
+                >
+                  <Switch
+                    checked={!question?.deactivate}
+                    onChange={handleActivateQuestionButton}
+                  />
+                </Tooltip>
               </Space>
             </Col>
           </Row>
