@@ -35,7 +35,8 @@ def add_question(
         cascade=payload['cascade'],
         repeating_objects=payload['repeating_objects'],
         order=payload['order'],
-        core_mandatory=payload['core_mandatory'])
+        core_mandatory=payload['core_mandatory'],
+        deactivate=payload['deactivate'])
     if payload['option']:
         for o in payload['option']:
             opt = Option(
@@ -127,6 +128,7 @@ def update_question(
     question.repeating_objects = payload['repeating_objects']
     question.order = payload['order']
     question.core_mandatory = payload['core_mandatory']
+    question.deactivate = payload['deactivate']
     # Add member access
     delete_member_access_by_question_id(
         session=session, question=[id])
