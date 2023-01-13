@@ -162,6 +162,9 @@
 
         .dependency-row {
           margin: 20px 0px;
+          .ant-alert {
+            width: 100%;
+          }
         }
 
         &.is-move {
