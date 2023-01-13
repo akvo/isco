@@ -630,25 +630,25 @@ const Setting = ({
         {/* Question Options */}
         <TabPane tab="Settings" key="question-option">
           <>
-            {question?.skip_logic.length > 0 && (
+            {Object.keys(dependentQuestion).length > 0 && (
               <Row className="dependency-row">
                 <Alert
                   message={
                     <div>
                       <ul className="arfe-dependant-list-box">
                         Dependant Questions:
-                        {question?.skip_logic?.map((q) => (
-                          <li key={q.id}>
-                            {
-                              questionGroupState?.find(
-                                (item) => item.id === question.question_group
-                              )?.name
-                            }
-                            <ul>
-                              <li>2.10. Order List</li>
-                            </ul>
-                          </li>
-                        ))}
+                        <li>
+                          {
+                            questionGroupState?.find(
+                              (item) => item.id === question.question_group
+                            )?.name
+                          }
+                          <ul>
+                            <li>
+                              {dependentQuestion?.id}. {dependentQuestion?.name}
+                            </li>
+                          </ul>
+                        </li>
                       </ul>
                     </div>
                   }
