@@ -1,0 +1,12 @@
+[
+  {
+    "form_id": 4,
+    "validations": [
+      {
+        "group_id": 2,
+        "question_ids": [14, 15],
+        "max": 100
+      }
+    ]
+  }
+]

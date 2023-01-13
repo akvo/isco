@@ -57,6 +57,7 @@ const SubmitWarningModal = ({
           </Button>
         </Row>
       }
+      maskClosable={false}
     >
       <Row align="middle" justify="center">
         <WarningOutlined

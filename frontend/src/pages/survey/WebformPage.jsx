@@ -7,8 +7,14 @@ import { api, store } from "../../lib";
 import { useNotification } from "../../util";
 import { intersection, isEmpty, orderBy } from "lodash";
 import ErrorPage from "../error/ErrorPage";
-import { CommentField, SubmitWarningModal } from "../../components";
+import {
+  CommentField,
+  SubmitWarningModal,
+  ComputedValidationModal,
+} from "../../components";
 import { uiText } from "../../static";
+
+const computedValidations = window?.computed_validations;
 
 const SaveButton = ({ onClick, isSaving, text, disabled = false }) => (
   <Button loading={isSaving} onClick={onClick} disabled={disabled}>
@@ -84,6 +90,9 @@ const WebformPage = ({
   // core mandatory popup
   const [showCoreMandatoryWarning, setShowCoreMandatoryWarning] =
     useState(false);
+  // computed validation popup
+  const [computedValidationModalVisible, setComputedValidationModalVisible] =
+    useState(false);
 
   const text = useMemo(() => {
     return uiText[activeLang];
@@ -100,6 +109,52 @@ const WebformPage = ({
         .map((q) => q.id)
     );
   }, [formValue]);
+
+  // check computed validations
+  const checkComputedValidation = useMemo(() => {
+    if (!answer.length) {
+      return [];
+    }
+    const { validations } = computedValidations.find(
+      (cv) => cv.form_id === formId
+    );
+    const checkError = validations
+      .map((v) => {
+        const questions = v.question_ids.map((id) => {
+          const a = answer.find((a) => a.question === id);
+          return { id: id, answer: a?.value || 0 };
+        });
+        const total = questions
+          .map((q) => q.answer)
+          .reduce((total, num) => total + num);
+        let error = false;
+        let errorDetail = "";
+        let validationValue = 0;
+        if ("max" in v) {
+          errorDetail = text.cvMaxValueText;
+          error = total > v.max;
+          validationValue = v.max;
+        }
+        if ("min" in v) {
+          errorDetail = text.cvMinValueText;
+          error = total < v.min;
+          validationValue = v.min;
+        }
+        return {
+          ...v,
+          questions: questions,
+          error: error,
+          total: total,
+          errorDetail: errorDetail,
+          validationValue: validationValue,
+        };
+      })
+      .filter((v) => v.error);
+    setTimeout(() => {
+      setComputedValidationModalVisible(checkError.length);
+    }, 1000);
+    return checkError;
+  }, [answer, formId, text.cvMaxValueText, text.cvMinValueText]);
 
   // transform & filter form definition
   useEffect(() => {
@@ -548,6 +603,13 @@ const WebformPage = ({
         force={isForce}
         save={isSave}
         showCoreMandatoryWarning={showCoreMandatoryWarning}
+      />
+      {/* Computed Validation Warning */}
+      <ComputedValidationModal
+        visible={computedValidationModalVisible}
+        onCancel={() => setComputedValidationModalVisible(false)}
+        checkComputedValidation={checkComputedValidation}
+        formValue={formValue}
       />
     </>
   );

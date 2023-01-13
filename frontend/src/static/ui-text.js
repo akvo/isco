@@ -270,6 +270,11 @@ const uiText = {
     formTypeText: "Form Type",
     submittedDateText: "Submitted Date / Monitoring Round",
     actionText: "Action",
+    // computed validation warning
+    cvModalTitleText: "Validation Fails",
+    cvMaxValueText: "Maximum Value",
+    cvMinValueText: "Minimum Value",
+    cvTotalValueText: "Total Value",
   },
 
   de: {
@@ -553,6 +558,11 @@ const uiText = {
     formTypeText: "Art des Fragebogens",
     submittedDateText: "Datum und Jahr der Datenerhebung",
     actionText: "Aktion",
+    // computed validation warning
+    cvModalTitleText: "Validierung schlägt fehl",
+    cvMaxValueText: "Maximalwert",
+    cvMinValueText: "Mindestwert",
+    cvTotalValueText: "Gesamtwert",
   },
 };
 
