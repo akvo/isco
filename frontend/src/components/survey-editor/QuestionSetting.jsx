@@ -630,7 +630,7 @@ const Setting = ({
         {/* Question Options */}
         <TabPane tab="Settings" key="question-option">
           <>
-            {Object.keys(dependentQuestion).length > 0 && (
+            {dependentQuestion && Object.keys(dependentQuestion)?.length > 0 && (
               <Row className="dependency-row">
                 <Alert
                   message={

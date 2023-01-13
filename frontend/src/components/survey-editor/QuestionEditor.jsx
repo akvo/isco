@@ -25,6 +25,7 @@ import { store, api } from "../../lib";
 import { isoLangs } from "../../lib";
 import { useNotification } from "../../util";
 import capitalize from "lodash/capitalize";
+import { orderBy } from "lodash";
 
 const { Panel } = Collapse;
 
@@ -111,6 +112,9 @@ const QuestionEditor = ({
   const [coreMandatory, setCoreMandatory] = useState(false);
   const [personalData, setPersonalData] = useState(false);
   const [activeLang, setActiveLang] = useState(surveyEditor?.languages?.[0]);
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState("");
+  const [questionToDeactivate, setQuestionToDeactivate] = useState([]);
 
   useEffect(() => {
     if (qId) {
@@ -260,24 +264,66 @@ const QuestionEditor = ({
       });
   };
 
-  const handleActivateQuestionButton = (checked, question) => {
+  const handleDeactivateQuestionButton = (checked, question) => {
     const { id } = question;
+
+    const allSkipLogic = questionGroupState
+      ?.flatMap((qg) => qg?.question)
+      .map((item) => item.skip_logic)
+      .flat();
+
+    const findDependant = allSkipLogic.find((item) => item.dependent_to === id);
+
+    const allQuestion = orderBy(
+      questionGroupState?.flatMap((qg) => qg?.question),
+      ["order"]
+    );
+
+    const dependentQuestion = allQuestion?.find(
+      (q) => q?.id === findDependant?.question
+    );
+
+    if (dependentQuestion && !dependentQuestion.deactivate) {
+      const data = [{ ...question }];
+      setOpen(id);
+      setMessage(
+        `${question?.name} has dependancy on ${dependentQuestion?.name}. \n Do you still want to deactivate?`
+      );
+      data.push(dependentQuestion);
+      setQuestionToDeactivate(data);
+    } else {
+      const data = {
+        ...question,
+        option: null,
+        skip_logic: null,
+        deactivate: !checked,
+      };
+      deactivateQuestion(data);
+    }
+  };
+
+  const handleActivateQuestionButton = (checked, question) => {
     const data = {
       ...question,
       option: null,
       skip_logic: null,
       deactivate: !checked,
     };
-    api
-      .put(`/question/${id}`, data, {
+    deactivateQuestion(data);
+  };
+
+  const deactivateQuestion = (data) => {
+    return api
+      .put(`/question/${data?.id}`, data, {
         "content-type": "application/json",
       })
-      .then(() => {
+      .then((res) => {
         const updatedQuestionGroup = questionGroupState.map((qg) => {
           const questions = qg.question.map((q) => {
             return {
               ...q,
-              deactivate: q.id === id ? !checked : q.deactivate,
+              deactivate:
+                q.id === res?.data?.id ? res?.data?.deactivate : q.deactivate,
             };
           });
           return {
@@ -285,7 +331,6 @@ const QuestionEditor = ({
             question: questions,
           };
         });
-
         store.update((s) => {
           s.surveyEditor = {
             ...s.surveyEditor,
@@ -294,6 +339,30 @@ const QuestionEditor = ({
         });
       })
       .catch((e) => console.error(e));
+  };
+
+  const handleOk = async (data) => {
+    await Promise.all(
+      data
+        ?.map((item) => {
+          const payload = {
+            ...item,
+            option: null,
+            skip_logic: null,
+            deactivate: !item.deactivate,
+          };
+          return payload;
+        })
+        .map(async (item) => {
+          await deactivateQuestion(item);
+          setOpen(false);
+        })
+    );
+  };
+
+  const handleCancel = () => {
+    setOpen(false);
+    setQuestionToDeactivate([]);
   };
 
   return (
@@ -463,20 +532,33 @@ const QuestionEditor = ({
                     <Button type="text" icon={<RiDeleteBinFill />} />
                   </Tooltip>
                 </Popconfirm>
-                <Tooltip
-                  title={
-                    !question?.deactivate
-                      ? "Deactivate this question"
-                      : "Activate this question"
-                  }
+                <Popconfirm
+                  placement="topRight"
+                  title={message}
+                  onConfirm={() => handleOk(questionToDeactivate)}
+                  onCancel={handleCancel}
+                  visible={open}
+                  style={{ whiteSpace: "break-spaces'" }}
+                  okText="Yes"
+                  cancelText="No"
                 >
-                  <Switch
-                    checked={!question?.deactivate}
-                    onChange={(checked) =>
-                      handleActivateQuestionButton(checked, question)
+                  <Tooltip
+                    title={
+                      !question?.deactivate
+                        ? "Deactivate this question"
+                        : "Activate this question"
                     }
-                  />
-                </Tooltip>
+                  >
+                    <Switch
+                      checked={!question?.deactivate}
+                      onChange={(checked) => {
+                        !question?.deactivate
+                          ? handleDeactivateQuestionButton(checked, question)
+                          : handleActivateQuestionButton(checked, question);
+                      }}
+                    />
+                  </Tooltip>
+                </Popconfirm>
               </Space>
             </Col>
           </Row>
