@@ -71,6 +71,7 @@ const ComputedValidationModal = ({
           <Button onClick={onCancel}>{text.btnClose}</Button>
         </Row>
       }
+      maskClosable={false}
     >
       <Collapse accordion>
         {validationContent.map((vc) => (

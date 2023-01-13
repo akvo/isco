@@ -112,6 +112,9 @@ const WebformPage = ({
 
   // check computed validations
   const checkComputedValidation = useMemo(() => {
+    if (!answer.length) {
+      return [];
+    }
     const { validations } = computedValidations.find(
       (cv) => cv.form_id === formId
     );

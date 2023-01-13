@@ -15,6 +15,7 @@ const DataSecurityModal = ({ visible, onCancel, activeLang }) => {
       width="1000px"
       className="data-security-modal-wrapper"
       footer={<Button onClick={onCancel}>{text.btnClose}</Button>}
+      maskClosable={false}
     >
       {dataSecurityContent[activeLang]}
     </Modal>

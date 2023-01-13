@@ -17,6 +17,7 @@ const SaveFormDataModal = ({ visible, onOk, onCancel, activeLang }) => {
       cancelText={text.btnNo}
       centered
       destroyOnClose
+      maskClosable={false}
     >
       <p>{text.valClickSave}</p>
       <p>{text.valClickYes}</p>
