@@ -641,7 +641,7 @@ const Setting = ({
                           {`${
                             questionGroupState?.find(
                               (item) => item.id === question.question_group
-                            )?.id
+                            )?.order
                           } ${
                             questionGroupState?.find(
                               (item) => item.id === question.question_group
@@ -649,7 +649,8 @@ const Setting = ({
                           }`}
                           <ul>
                             <li>
-                              {dependentQuestion?.id}. {dependentQuestion?.name}
+                              {dependentQuestion?.order}.{" "}
+                              {dependentQuestion?.name}
                             </li>
                           </ul>
                         </li>
