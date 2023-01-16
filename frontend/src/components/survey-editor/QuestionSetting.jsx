@@ -638,11 +638,15 @@ const Setting = ({
                       <ul className="arfe-dependant-list-box">
                         Dependant Questions:
                         <li>
-                          {
+                          {`${
+                            questionGroupState?.find(
+                              (item) => item.id === question.question_group
+                            )?.id
+                          } ${
                             questionGroupState?.find(
                               (item) => item.id === question.question_group
                             )?.name
-                          }
+                          }`}
                           <ul>
                             <li>
                               {dependentQuestion?.id}. {dependentQuestion?.name}
