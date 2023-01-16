@@ -2,6 +2,7 @@
 /.pip
 /.mypy_cache
 /config.js
+/config.min.js
 __pycache__
 .coverage
 .coverage.*

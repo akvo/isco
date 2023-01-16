@@ -3,6 +3,8 @@ import { Modal } from "antd";
 import { uiText } from "../../static";
 
 const SaveFormDataModal = ({ visible, onOk, onCancel, activeLang }) => {
+  // this modal shows when user navigate away from survey
+  // to confirm that user has save/submit the survey
   const text = uiText[activeLang];
 
   return (
@@ -15,6 +17,7 @@ const SaveFormDataModal = ({ visible, onOk, onCancel, activeLang }) => {
       cancelText={text.btnNo}
       centered
       destroyOnClose
+      maskClosable={false}
     >
       <p>{text.valClickSave}</p>
       <p>{text.valClickYes}</p>

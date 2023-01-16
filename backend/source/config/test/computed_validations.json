@@ -1,0 +1,17 @@
+[
+  {
+    "form_id": 4,
+    "validations": [
+      {
+        "group_id": 14,
+        "question_ids": [634, 635],
+        "min": 25
+      },
+      {
+        "group_id": 18,
+        "question_ids": [638, 639],
+        "max": 100
+      }
+    ]
+  }
+]
