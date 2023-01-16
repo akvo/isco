@@ -573,6 +573,7 @@ const QuestionEditor = ({
                     }
                   >
                     <Switch
+                      size="small"
                       checked={!question?.deactivate}
                       onChange={(checked) => {
                         !question?.deactivate
