@@ -112,6 +112,7 @@ class QuestionGroup(Base):
     @property
     def serializeJson(self):
         group = {
+            "id": self.id,
             "name": self.name,
             "description": self.description,
             "order": self.order,
@@ -157,6 +158,7 @@ class QuestionGroupBase(BaseModel):
 
 
 class QuestionGroupJson(BaseModel):
+    id: int
     name: str
     description: Optional[str] = None
     translations: Optional[List[dict]] = []

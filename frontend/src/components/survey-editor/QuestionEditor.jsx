@@ -107,6 +107,7 @@ const QuestionEditor = ({
   const [allowOther, setAllowOther] = useState(false);
   const [allowDecimal, setAllowDecimal] = useState(false);
   const [mandatory, setMandatory] = useState(false);
+  const [coreMandatory, setCoreMandatory] = useState(false);
   const [personalData, setPersonalData] = useState(false);
   const [activeLang, setActiveLang] = useState(surveyEditor?.languages?.[0]);
 
@@ -159,6 +160,9 @@ const QuestionEditor = ({
         }
         if (key === "mandatory") {
           setMandatory(value);
+        }
+        if (key === "core_mandatory") {
+          setCoreMandatory(value);
         }
         if (key === "personal_data") {
           setPersonalData(value);
@@ -350,6 +354,8 @@ const QuestionEditor = ({
                         setPersonalData={setPersonalData}
                         activeLang={activeLang}
                         setActiveLang={setActiveLang}
+                        coreMandatory={coreMandatory}
+                        setCoreMandatory={setCoreMandatory}
                       />
                       <div className="question-button-wrapper">
                         <Space align="center">

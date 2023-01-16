@@ -251,6 +251,12 @@ const uiText = {
         the data?
       </>
     ),
+    submitCoreMandatoryWarning: (
+      <>
+        <b>Submit is not allowed!</b> Please answer all of the core mandatory
+        questions (marked with a double asterisk **).
+      </>
+    ),
     infoSubmissionDropdown: "(saved/submitted)",
     // password criteria
     passwordCriteriaInfoText: "Criteria for the password:",
@@ -264,6 +270,11 @@ const uiText = {
     formTypeText: "Form Type",
     submittedDateText: "Submitted Date / Monitoring Round",
     actionText: "Action",
+    // computed validation warning
+    cvModalTitleText: "Validation Fails",
+    cvMaxValueText: "Maximum Value",
+    cvMinValueText: "Minimum Value",
+    cvTotalValueText: "Total Value",
   },
 
   de: {
@@ -528,6 +539,12 @@ const uiText = {
         Möchten Sie den Fragebogen speichern?
       </>
     ),
+    submitCoreMandatoryWarning: (
+      <>
+        <b>Einreichen ist nicht erlaubt!</b> Bitte beantworten Sie alle
+        Kernpflichtfragen (mit einem doppelten Sternchen ** gekennzeichnet).
+      </>
+    ),
     infoSubmissionDropdown: "(gespeichert/eingereicht)",
     // password criteria
     passwordCriteriaInfoText: "Kriterien für das Passwort:",
@@ -541,6 +558,11 @@ const uiText = {
     formTypeText: "Art des Fragebogens",
     submittedDateText: "Datum und Jahr der Datenerhebung",
     actionText: "Aktion",
+    // computed validation warning
+    cvModalTitleText: "Validierung schlägt fehl",
+    cvMaxValueText: "Maximalwert",
+    cvMinValueText: "Mindestwert",
+    cvTotalValueText: "Gesamtwert",
   },
 };
 

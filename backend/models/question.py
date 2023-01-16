@@ -51,6 +51,7 @@ class QuestionPayload(TypedDict):
     name: str
     translations: Optional[List[dict]] = None
     mandatory: bool
+    core_mandatory: bool
     datapoint_name: bool
     variable_name: Optional[str] = None
     type: QuestionType
@@ -94,6 +95,7 @@ class Question(Base):
     name = Column(String)
     translations = Column(pg.ARRAY(pg.JSONB), nullable=True)
     mandatory = Column(Boolean, default=True)
+    core_mandatory = Column(Boolean, default=False)
     datapoint_name = Column(Boolean, default=False)
     variable_name = Column(String, nullable=True, unique=True)
     type = Column(Enum(QuestionType), default=QuestionType.input)
@@ -131,15 +133,17 @@ class Question(Base):
         "Cascade",
         backref=backref("question", uselist=False))
 
-    def __init__(self, id: Optional[int], name: str, form: int,
-                 question_group: int, translations: Optional[List[dict]],
-                 mandatory: Optional[bool], datapoint_name: Optional[bool],
-                 variable_name: Optional[str], type: QuestionType,
-                 personal_data: Optional[bool], rule: Optional[dict],
-                 tooltip: Optional[str], cascade: Optional[int],
-                 tooltip_translations: Optional[List[dict]],
-                 repeating_objects: Optional[List],
-                 order: Optional[int]):
+    def __init__(
+        self, id: Optional[int], name: str, form: int,
+        question_group: int, translations: Optional[List[dict]],
+        mandatory: Optional[bool], datapoint_name: Optional[bool],
+        variable_name: Optional[str], type: QuestionType,
+        personal_data: Optional[bool], rule: Optional[dict],
+        tooltip: Optional[str], cascade: Optional[int],
+        tooltip_translations: Optional[List[dict]],
+        repeating_objects: Optional[List],
+        order: Optional[int], core_mandatory: Optional[bool]
+    ):
         self.id = id
         self.form = form
         self.question_group = question_group
@@ -156,6 +160,7 @@ class Question(Base):
         self.cascade = cascade
         self.repeating_objects = repeating_objects
         self.order = order
+        self.core_mandatory = core_mandatory
 
     def __repr__(self) -> int:
         return f"<Question {self.id}>"
@@ -198,7 +203,8 @@ class Question(Base):
             "repeating_objects": repeating_objects,
             "option": [opt.serialize for opt in self.option],
             "skip_logic": [skip.serialize for skip in self.skip_logic],
-            "order": self.order
+            "order": self.order,
+            "core_mandatory": self.core_mandatory
         }
 
     @property
@@ -221,7 +227,8 @@ class Question(Base):
             "type": self.type.value,
             "order": self.order,
             "member_access": question_member,
-            "isco_access": question_isco
+            "isco_access": question_isco,
+            "coreMandatory": self.core_mandatory
         }
         if self.rule:
             if "allow_other" not in self.rule:
@@ -269,6 +276,7 @@ class QuestionBase(BaseModel):
     name: str
     translations: Optional[List[dict]] = []
     mandatory: bool
+    core_mandatory: bool
     datapoint_name: bool
     variable_name: Optional[str] = None
     type: QuestionType
@@ -293,6 +301,7 @@ class QuestionJson(BaseModel):
     name: str
     translations: Optional[List[dict]] = []
     required: bool
+    core_mandatory: bool
     order: Optional[int] = None
     datapoint_name: bool
     variable_name: Optional[str] = None

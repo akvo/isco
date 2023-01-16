@@ -7,11 +7,17 @@ import { api, store } from "../../lib";
 import { useNotification } from "../../util";
 import { intersection, isEmpty, orderBy } from "lodash";
 import ErrorPage from "../error/ErrorPage";
-import { CommentField, SubmitWarningModal } from "../../components";
+import {
+  CommentField,
+  SubmitWarningModal,
+  ComputedValidationModal,
+} from "../../components";
 import { uiText } from "../../static";
 
-const SaveButton = ({ onClick, isSaving, text }) => (
-  <Button loading={isSaving} onClick={onClick}>
+const computedValidations = window?.computed_validations;
+
+const SaveButton = ({ onClick, isSaving, text, disabled = false }) => (
+  <Button loading={isSaving} onClick={onClick} disabled={disabled}>
     {text.btnSave}
   </Button>
 );
@@ -79,13 +85,76 @@ const WebformPage = ({
   // save savedData here, for loaded form this must be saved when loading form value
   const [savedData, setSavedData] = useState(null);
   const [initialAnswers, setInitialAnswers] = useState([]);
-
   // warning modal
   const [modalWarningVisible, setModalWarningVisible] = useState(false);
+  // core mandatory popup
+  const [showCoreMandatoryWarning, setShowCoreMandatoryWarning] =
+    useState(false);
+  // computed validation popup
+  const [computedValidationModalVisible, setComputedValidationModalVisible] =
+    useState(false);
 
   const text = useMemo(() => {
     return uiText[activeLang];
   }, [activeLang]);
+
+  // core mandatory questions
+  const coreMandatoryQuestionIds = useMemo(() => {
+    if (!formValue?.question_group) {
+      return [];
+    }
+    return formValue.question_group.flatMap((qg) =>
+      qg.question
+        .filter((q) => q?.core_mandatory || q?.coreMandatory)
+        .map((q) => q.id)
+    );
+  }, [formValue]);
+
+  // check computed validations
+  const checkComputedValidation = useMemo(() => {
+    if (!answer.length) {
+      return [];
+    }
+    const { validations } = computedValidations.find(
+      (cv) => cv.form_id === formId
+    );
+    const checkError = validations
+      .map((v) => {
+        const questions = v.question_ids.map((id) => {
+          const a = answer.find((a) => a.question === id);
+          return { id: id, answer: a?.value || 0 };
+        });
+        const total = questions
+          .map((q) => q.answer)
+          .reduce((total, num) => total + num);
+        let error = false;
+        let errorDetail = "";
+        let validationValue = 0;
+        if ("max" in v) {
+          errorDetail = text.cvMaxValueText;
+          error = total > v.max;
+          validationValue = v.max;
+        }
+        if ("min" in v) {
+          errorDetail = text.cvMinValueText;
+          error = total < v.min;
+          validationValue = v.min;
+        }
+        return {
+          ...v,
+          questions: questions,
+          error: error,
+          total: total,
+          errorDetail: errorDetail,
+          validationValue: validationValue,
+        };
+      })
+      .filter((v) => v.error);
+    setTimeout(() => {
+      setComputedValidationModalVisible(checkError.length);
+    }, 1000);
+    return checkError;
+  }, [answer, formId, text.cvMaxValueText, text.cvMinValueText]);
 
   // transform & filter form definition
   useEffect(() => {
@@ -155,6 +224,14 @@ const WebformPage = ({
                     ),
                   },
                 ];
+                //core mandatory
+                if (typeof q?.core_mandatory !== "undefined") {
+                  q = {
+                    ...q,
+                    coreMandatory: q.core_mandatory,
+                  };
+                  delete q.core_mandatory;
+                }
                 // allow decimal
                 if (q?.rule && q?.rule?.allowDecimal) {
                   q.rule = {
@@ -398,12 +475,29 @@ const WebformPage = ({
   const onFinishShowWarning = () => {
     setIsForce(false);
     setIsSave(false);
+    setShowCoreMandatoryWarning(false);
     setModalWarningVisible(true);
   };
 
   const onCompleteFailed = () => {
+    // check if core mandatory answered
+    const answerQids = answer.map((a) => a.question);
+    const coreMandatoryAnswers = intersection(
+      coreMandatoryQuestionIds,
+      answerQids
+    );
+    if (coreMandatoryQuestionIds.length !== coreMandatoryAnswers.length) {
+      // not all of core mandatory answered
+      // show core mandatory popup
+      setIsSave(false);
+      setIsForce(false);
+      setShowCoreMandatoryWarning(true);
+      setModalWarningVisible(true);
+      return;
+    }
     setIsSave(false);
     setIsForce(true);
+    setShowCoreMandatoryWarning(false);
     setModalWarningVisible(true);
   };
 
@@ -468,10 +562,12 @@ const WebformPage = ({
                   onClick={() => {
                     setIsForce(false);
                     setIsSave(true);
+                    setShowCoreMandatoryWarning(false);
                     setModalWarningVisible(true);
                   }}
                   isSaving={isSaving}
                   text={text}
+                  disabled={!answer.length}
                 />
                 <LockedCheckbox
                   onChange={(val) => setIsLocked(val.target.checked)}
@@ -506,6 +602,14 @@ const WebformPage = ({
         btnLoading={isSubmitting || isSaving}
         force={isForce}
         save={isSave}
+        showCoreMandatoryWarning={showCoreMandatoryWarning}
+      />
+      {/* Computed Validation Warning */}
+      <ComputedValidationModal
+        visible={computedValidationModalVisible}
+        onCancel={() => setComputedValidationModalVisible(false)}
+        checkComputedValidation={checkComputedValidation}
+        formValue={formValue}
       />
     </>
   );
