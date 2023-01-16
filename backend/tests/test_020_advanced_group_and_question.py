@@ -46,7 +46,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
             "repeating_objects": None,
             "order": 3,
             "core_mandatory": True,
-            "deactivate": True,
+            "deactivate": False,
             "option": [
                 {
                     "code": None,
@@ -129,7 +129,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
             "type": "option",
             "variable_name": None,
             "core_mandatory": True,
-            "deactivate": True,
+            "deactivate": False,
         }
 
     @pytest.mark.asyncio
@@ -169,7 +169,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
             "isco_access": [2],
             "skip_logic": [],
             "core_mandatory": True,
-            "deactivate": True,
+            "deactivate": False,
         }
         res = await client.put(
             app.url_path_for("question:put", id=3),
@@ -225,7 +225,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
             "type": "option",
             "variable_name": None,
             "core_mandatory": True,
-            "deactivate": True,
+            "deactivate": False,
         }
 
     @pytest.mark.asyncio
@@ -270,7 +270,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "isco_access": None,
                     "skip_logic": None,
                     "core_mandatory": True,
-                    "deactivate": True,
+                    "deactivate": False,
                 },
                 {
                     "form": None,
@@ -447,7 +447,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "type": "number",
                     "variable_name": None,
                     "core_mandatory": True,
-                    "deactivate": True,
+                    "deactivate": False,
                 },
                 {
                     "cascade": None,

@@ -117,7 +117,7 @@ class TestQuestionRoutes():
             "isco_access": None,
             "skip_logic": None,
             "core_mandatory": True,
-            "deactivate": True,
+            "deactivate": False,
         }
         res = await client.put(
             app.url_path_for("question:put", id=1),
@@ -150,5 +150,5 @@ class TestQuestionRoutes():
             "type": "option",
             "variable_name": None,
             "core_mandatory": True,
-            "deactivate": True,
+            "deactivate": False,
         }
