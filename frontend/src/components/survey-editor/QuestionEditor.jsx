@@ -298,7 +298,7 @@ const QuestionEditor = ({
         skip_logic: null,
         deactivate: !checked,
       };
-      deactivateQuestion(data);
+      deactivateQuestion(data, true);
     }
   };
 
@@ -309,34 +309,36 @@ const QuestionEditor = ({
       skip_logic: null,
       deactivate: !checked,
     };
-    deactivateQuestion(data);
+    deactivateQuestion(data, true);
   };
 
-  const deactivateQuestion = (data) => {
+  const deactivateQuestion = (data, update) => {
     return api
       .put(`/question/${data?.id}`, data, {
         "content-type": "application/json",
       })
       .then((res) => {
-        const updatedQuestionGroup = questionGroupState.map((qg) => {
-          const questions = qg.question.map((q) => {
+        if (update) {
+          const updatedQuestionGroup = questionGroupState.map((qg) => {
+            const questions = qg.question.map((q) => {
+              return {
+                ...q,
+                deactivate:
+                  q.id === res?.data?.id ? res?.data?.deactivate : q.deactivate,
+              };
+            });
             return {
-              ...q,
-              deactivate:
-                q.id === res?.data?.id ? res?.data?.deactivate : q.deactivate,
+              ...qg,
+              question: questions,
             };
           });
-          return {
-            ...qg,
-            question: questions,
-          };
-        });
-        store.update((s) => {
-          s.surveyEditor = {
-            ...s.surveyEditor,
-            questionGroup: updatedQuestionGroup,
-          };
-        });
+          store.update((s) => {
+            s.surveyEditor = {
+              ...s.surveyEditor,
+              questionGroup: updatedQuestionGroup,
+            };
+          });
+        }
       })
       .catch((e) => console.error(e));
   };
@@ -354,10 +356,31 @@ const QuestionEditor = ({
           return payload;
         })
         .map(async (item) => {
-          await deactivateQuestion(item);
+          await deactivateQuestion(item, false);
           setOpen(false);
         })
     );
+    let updatedQuestionGroup = [...questionGroupState];
+    data?.map((item) => {
+      updatedQuestionGroup = updatedQuestionGroup.map((qg) => {
+        const questions = qg.question.map((q) => {
+          return {
+            ...q,
+            deactivate: q.id === item?.id ? !item?.deactivate : q.deactivate,
+          };
+        });
+        return {
+          ...qg,
+          question: questions,
+        };
+      });
+    });
+    store.update((s) => {
+      s.surveyEditor = {
+        ...s.surveyEditor,
+        questionGroup: updatedQuestionGroup,
+      };
+    });
   };
 
   const handleCancel = () => {
