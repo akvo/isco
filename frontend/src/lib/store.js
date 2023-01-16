@@ -22,6 +22,7 @@ export const defaultQuestionEditor = {
   translations: [],
   mandatory: false,
   core_mandatory: false,
+  deactivate: false,
   datapoint_name: false,
   variabel_name: null, // custom ID
   type: "input", // question type

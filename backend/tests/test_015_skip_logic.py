@@ -40,6 +40,7 @@ class TestSkipLogicRoutes():
             "isco_access": None,
             "skip_logic": None,
             "core_mandatory": False,
+            "deactivate": False,
         }
         res = await client.post(
             app.url_path_for("question:create"),
@@ -69,6 +70,7 @@ class TestSkipLogicRoutes():
             "type": 'text',
             "variable_name": None,
             "core_mandatory": False,
+            "deactivate": False,
         }
         # get question
         res = await client.get(app.url_path_for("question:get_by_id", id=2))

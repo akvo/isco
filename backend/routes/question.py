@@ -61,6 +61,7 @@ def create_default(
         "isco_access": None,
         "skip_logic": None,
         "core_mandatory": False,
+        "deactivate": False,
     }
     next_questions = session.query(Question).filter(
         and_(Question.form == form_id, Question.order >= order)).all()

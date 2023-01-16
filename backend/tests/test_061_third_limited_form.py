@@ -92,6 +92,7 @@ class TestThirdFormRoutes():
                 'type': 'input',
                 'variable_name': None,
                 'core_mandatory': False,
+                'deactivate': False,
             }],
         }
 
@@ -128,6 +129,7 @@ class TestThirdFormRoutes():
             'type': 'input',
             'variable_name': None,
             'core_mandatory': False,
+            'deactivate': False,
         }
 
     @pytest.mark.asyncio

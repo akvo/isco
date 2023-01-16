@@ -73,6 +73,7 @@ def create_default(
         "isco_access": None,
         "skip_logic": None,
         "core_mandatory": False,
+        "deactivate": False,
     }
     payload = {
         "form": form_id,

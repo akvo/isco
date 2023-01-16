@@ -12,6 +12,7 @@ import {
   Switch,
   Select,
   Tooltip,
+  Alert,
 } from "antd";
 import { AiOutlineFieldNumber } from "react-icons/ai";
 import { RiDeleteBinFill } from "react-icons/ri";
@@ -629,7 +630,38 @@ const Setting = ({
         {/* Question Options */}
         <TabPane tab="Settings" key="question-option">
           <>
-            <Row align="middle" justify="space-evenly" gutter={[12, 12]}>
+            {dependentQuestion && Object.keys(dependentQuestion)?.length > 0 && (
+              <Row className="dependency-row">
+                <Alert
+                  message={
+                    <div>
+                      <ul className="arfe-dependant-list-box">
+                        Dependant Questions:
+                        <li>
+                          {`${
+                            questionGroupState?.find(
+                              (item) => item.id === question.question_group
+                            )?.order
+                          } ${
+                            questionGroupState?.find(
+                              (item) => item.id === question.question_group
+                            )?.name
+                          }`}
+                          <ul>
+                            <li>
+                              {dependentQuestion?.order}.{" "}
+                              {dependentQuestion?.name}
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </div>
+                  }
+                  type="info"
+                />
+              </Row>
+            )}
+            <Row align="middle" justify="start" gutter={[12, 12]}>
               <Col span={9}>
                 <div className="field-wrapper">
                   <div className="field-label">Member Type</div>
