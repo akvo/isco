@@ -120,6 +120,19 @@ const WebformPage = ({
     );
     const checkError = validations
       .map((v) => {
+        // check if all computed validation answered
+        const checkAllAnswered = intersection(
+          v.question_ids,
+          answer.map((a) => a.question)
+        );
+        if (checkAllAnswered.length !== v.question_ids.length) {
+          // not all answered
+          return {
+            ...v,
+            error: false,
+          };
+        }
+        // all answered
         const questions = v.question_ids.map((id) => {
           const a = answer.find((a) => a.question === id);
           return { id: id, answer: a?.value || 0 };
@@ -140,6 +153,11 @@ const WebformPage = ({
           error = total < v.min;
           validationValue = v.min;
         }
+        if ("equal" in v) {
+          errorDetail = text.cvEqualValueText;
+          error = total !== v.equal;
+          validationValue = v.equal;
+        }
         return {
           ...v,
           questions: questions,
@@ -154,7 +172,13 @@ const WebformPage = ({
       setComputedValidationModalVisible(checkError.length);
     }, 1000);
     return checkError;
-  }, [answer, formId, text.cvMaxValueText, text.cvMinValueText]);
+  }, [
+    answer,
+    formId,
+    text.cvMaxValueText,
+    text.cvMinValueText,
+    text.cvEqualValueText,
+  ]);
 
   // transform & filter form definition
   useEffect(() => {
