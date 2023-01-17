@@ -73,6 +73,7 @@ const Preview = () => {
               order: q.order,
               type: q.type,
               required: q.mandatory,
+              coreMandatory: q.core_mandatory,
               member_access: qMemberAccess,
               isco_access: qIscoAccess,
               // add comment field
@@ -328,7 +329,7 @@ const Preview = () => {
         const transformedForm = {
           name: formName,
           description: formDescription,
-          languages: ["en", ...formLang],
+          languages: formLang?.length ? ["en", ...formLang] : ["en"],
           question_group: orderBy(transformedQuestionGroup, ["order"]),
         };
         setFormValue(
