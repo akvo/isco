@@ -528,6 +528,11 @@ const Setting = ({
     questionGroupState?.flatMap((qg) => qg?.question),
     ["order"]
   );
+
+  const dependencies = allQuestion.filter(
+    (q) => q?.skip_logic?.filter((d) => d.dependent_to === qid).length || false
+  );
+
   // take skip logic question by question current order
   const skipLogicQuestion = orderBy(
     take(allQuestion, question?.order)?.filter(
@@ -556,6 +561,7 @@ const Setting = ({
   const dependentId = parseInt(
     form?.getFieldValue(`question-${qid}-skip_logic-dependent_to`)
   );
+
   const dependentQuestion = allQuestion?.find((q) => q?.id === dependentId);
   const operators = dependentQuestion?.type.includes("option")
     ? operator_type?.filter((x) => x === "equal")
@@ -623,30 +629,31 @@ const Setting = ({
         {/* Question Options */}
         <TabPane tab="Settings" key="question-option">
           <>
-            {dependentQuestion && Object.keys(dependentQuestion)?.length > 0 && (
+            {dependencies?.length > 0 && (
               <Row className="dependency-row">
                 <Alert
                   message={
                     <div>
                       <ul className="arfe-dependant-list-box">
                         Dependant Questions:
-                        <li>
-                          {`${
-                            questionGroupState?.find(
-                              (item) => item.id === question.question_group
-                            )?.order
-                          } ${
-                            questionGroupState?.find(
-                              (item) => item.id === question.question_group
-                            )?.name
-                          }`}
-                          <ul>
-                            <li>
-                              {dependentQuestion?.order}.{" "}
-                              {dependentQuestion?.name}
-                            </li>
-                          </ul>
-                        </li>
+                        {dependencies.map((group) => (
+                          <li key={group?.id}>
+                            {`${
+                              questionGroupState?.find(
+                                (item) => item.id === group.question_group
+                              )?.order
+                            } ${
+                              questionGroupState?.find(
+                                (item) => item.id === group.question_group
+                              )?.name
+                            }`}
+                            <ul>
+                              <li>
+                                {group?.order}. {group?.name}
+                              </li>
+                            </ul>
+                          </li>
+                        ))}
                       </ul>
                     </div>
                   }
