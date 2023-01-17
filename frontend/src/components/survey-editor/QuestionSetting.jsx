@@ -571,21 +571,14 @@ const Setting = ({
   const handleCoreMandatoryChange = (val, field) => {
     const fieldValue = { [field]: val };
     form.setFieldsValue(fieldValue);
+    setCoreMandatory(val);
     // Any question that is marked as core mandatory is automatically marked as mandatory
-    let fieldMandatoryValue = {};
-    const automaticallyMarked = val && !mandatory;
-    if (automaticallyMarked) {
-      fieldMandatoryValue = { [`question-${qid}-mandatory`]: true };
+    if (val && !mandatory) {
+      const fieldMandatoryValue = { [`question-${qid}-mandatory`]: true };
       form.setFieldsValue(fieldMandatoryValue);
       setMandatory(true);
     }
-    setCoreMandatory(val);
-    handleFormOnValuesChange(
-      automaticallyMarked
-        ? { ...fieldValue, ...fieldMandatoryValue }
-        : fieldValue,
-      form?.getFieldsValue()
-    );
+    handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
   };
 
   const handlePersonalDataChange = (val, field) => {
