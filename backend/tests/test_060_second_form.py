@@ -103,6 +103,7 @@ class TestSecondFormRoutes():
                 'type': 'input',
                 'variable_name': None,
                 'core_mandatory': False,
+                'deactivate': False,
             }],
         }
 
@@ -137,5 +138,6 @@ class TestSecondFormRoutes():
             'translations': [],
             'type': 'input',
             'variable_name': None,
-            'core_mandatory': False
+            'core_mandatory': False,
+            'deactivate': False
         }

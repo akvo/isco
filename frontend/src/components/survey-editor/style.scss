@@ -160,6 +160,13 @@
         padding: 0 14px;
         background-color: $bg-grey;
 
+        .dependency-row {
+          margin: 20px 0px;
+          .ant-alert {
+            width: 100%;
+          }
+        }
+
         &.is-move {
           background-color: #e8c8c8;
         }
@@ -211,9 +218,13 @@
         }
 
         .right {
-          position: absolute;
-          top: 12px;
-          right: 0;
+          // position: absolute;
+          // top: 12px;
+          // right: 0;
+
+          .ant-form-item {
+            margin-bottom: 0px;
+          }
 
           .ant-space {
             float: right;

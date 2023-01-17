@@ -14,8 +14,9 @@ account = Acc(email=None, token=None)
 
 class TestWebformRoutes():
     @pytest.mark.asyncio
-    async def test_transform_form(self, app: FastAPI, session: Session,
-                                  client: AsyncClient) -> None:
+    async def test_transform_form(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         res = await client.get(app.url_path_for("form:transform", form_id=1))
         assert res.status_code == 200
         res = res.json()
@@ -30,8 +31,9 @@ class TestWebformRoutes():
                 assert len(q["isco_access"]) > 0
 
     @pytest.mark.asyncio
-    async def test_publish_form(self, app: FastAPI, session: Session,
-                                client: AsyncClient) -> None:
+    async def test_publish_form(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # get form
         form = await client.get(app.url_path_for("form:get_by_id", id=1))
         assert form.status_code == 200
@@ -50,9 +52,9 @@ class TestWebformRoutes():
         assert storage.check(res["url"]) is True
 
     @pytest.mark.asyncio
-    async def test_get_webform_from_bucket(self, app: FastAPI,
-                                           session: Session,
-                                           client: AsyncClient) -> None:
+    async def test_get_webform_from_bucket(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # get form
         res = await client.get(
             app.url_path_for(
@@ -73,10 +75,13 @@ class TestWebformRoutes():
             for q in qg["question"]:
                 assert len(q["member_access"]) > 0
                 assert len(q["isco_access"]) > 0
+                assert "coreMandatory" in q
+                assert "deactivate" in q
 
     @pytest.mark.asyncio
-    async def test_get_form_options(self, app: FastAPI, session: Session,
-                                    client: AsyncClient) -> None:
+    async def test_get_form_options(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # get form
         res = await client.get(
             app.url_path_for("form:get_webform_options"),
@@ -91,10 +96,7 @@ class TestWebformRoutes():
 
     @pytest.mark.asyncio
     async def test_get_all_published_form_options(
-        self,
-        app: FastAPI,
-        session: Session,
-        client: AsyncClient
+        self, app: FastAPI, session: Session, client: AsyncClient
     ) -> None:
         # get form
         res = await client.get(

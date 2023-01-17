@@ -42,7 +42,7 @@ class TestSubmissionWithComputedValidationRoutes():
             "question": 14,
             "repeat_index": 0,
             "comment": None,
-            "value": 35
+            "value": 70
         }, {
             "question": 15,
             "repeat_index": 0,
@@ -91,7 +91,7 @@ class TestSubmissionWithComputedValidationRoutes():
                 "question": 14,
                 "repeat_index": 0,
                 "comment": None,
-                "value": 35
+                "value": 60
             }, {
                 "question": 15,
                 "repeat_index": 0,
@@ -107,7 +107,7 @@ class TestSubmissionWithComputedValidationRoutes():
                 "question": 14,
                 "repeat_index": 0,
                 "comment": None,
-                "value": 35
+                "value": 40
             }, {
                 "question": 15,
                 "repeat_index": 0,

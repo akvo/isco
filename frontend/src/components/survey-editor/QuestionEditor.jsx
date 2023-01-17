@@ -11,6 +11,7 @@ import {
   Collapse,
   Popconfirm,
   Tooltip,
+  Switch,
 } from "antd";
 import {
   RiSettings5Fill,
@@ -24,6 +25,7 @@ import { store, api } from "../../lib";
 import { isoLangs } from "../../lib";
 import { useNotification } from "../../util";
 import capitalize from "lodash/capitalize";
+import { orderBy } from "lodash";
 
 const { Panel } = Collapse;
 
@@ -110,6 +112,9 @@ const QuestionEditor = ({
   const [coreMandatory, setCoreMandatory] = useState(false);
   const [personalData, setPersonalData] = useState(false);
   const [activeLang, setActiveLang] = useState(surveyEditor?.languages?.[0]);
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState("");
+  const [questionToDeactivate, setQuestionToDeactivate] = useState([]);
 
   useEffect(() => {
     if (qId) {
@@ -259,6 +264,130 @@ const QuestionEditor = ({
       });
   };
 
+  const handleDeactivateQuestionButton = (checked, question) => {
+    const { id } = question;
+
+    const allSkipLogic = questionGroupState
+      ?.flatMap((qg) => qg?.question)
+      .map((item) => item.skip_logic)
+      .flat();
+
+    const findDependant = allSkipLogic.find((item) => item.dependent_to === id);
+
+    const allQuestion = orderBy(
+      questionGroupState?.flatMap((qg) => qg?.question),
+      ["order"]
+    );
+
+    const dependentQuestion = allQuestion?.find(
+      (q) => q?.id === findDependant?.question
+    );
+
+    if (dependentQuestion && !dependentQuestion.deactivate) {
+      const data = [{ ...question }];
+      setOpen(id);
+      setMessage(
+        `${question?.name} has dependancy on ${dependentQuestion?.name}. \n Do you still want to deactivate?`
+      );
+      data.push(dependentQuestion);
+      setQuestionToDeactivate(data);
+    } else {
+      const data = {
+        ...question,
+        option: null,
+        skip_logic: null,
+        deactivate: !checked,
+      };
+      deactivateQuestion(data, true);
+    }
+  };
+
+  const handleActivateQuestionButton = (checked, question) => {
+    const data = {
+      ...question,
+      option: null,
+      skip_logic: null,
+      deactivate: !checked,
+    };
+    deactivateQuestion(data, true);
+  };
+
+  const deactivateQuestion = (data, update) => {
+    return api
+      .put(`/question/${data?.id}`, data, {
+        "content-type": "application/json",
+      })
+      .then((res) => {
+        if (update) {
+          const updatedQuestionGroup = questionGroupState.map((qg) => {
+            const questions = qg.question.map((q) => {
+              return {
+                ...q,
+                deactivate:
+                  q.id === res?.data?.id ? res?.data?.deactivate : q.deactivate,
+              };
+            });
+            return {
+              ...qg,
+              question: questions,
+            };
+          });
+          store.update((s) => {
+            s.surveyEditor = {
+              ...s.surveyEditor,
+              questionGroup: updatedQuestionGroup,
+            };
+          });
+        }
+      })
+      .catch((e) => console.error(e));
+  };
+
+  const handleOk = async (data) => {
+    await Promise.all(
+      data
+        ?.map((item) => {
+          const payload = {
+            ...item,
+            option: null,
+            skip_logic: null,
+            deactivate: !item.deactivate,
+          };
+          return payload;
+        })
+        .map(async (item) => {
+          await deactivateQuestion(item, false);
+          setOpen(false);
+        })
+    );
+    let updatedQuestionGroup = [...questionGroupState];
+    data?.map((item) => {
+      updatedQuestionGroup = updatedQuestionGroup.map((qg) => {
+        const questions = qg.question.map((q) => {
+          return {
+            ...q,
+            deactivate: q.id === item?.id ? !item?.deactivate : q.deactivate,
+          };
+        });
+        return {
+          ...qg,
+          question: questions,
+        };
+      });
+    });
+    store.update((s) => {
+      s.surveyEditor = {
+        ...s.surveyEditor,
+        questionGroup: updatedQuestionGroup,
+      };
+    });
+  };
+
+  const handleCancel = () => {
+    setOpen(false);
+    setQuestionToDeactivate([]);
+  };
+
   return (
     <Row key={`qe-${qId}`}>
       <Col span={24}>
@@ -269,7 +398,7 @@ const QuestionEditor = ({
               : "question-card-wrapper"
           }
         >
-          <Row align="middle" justify="space-between" gutter={[12, 12]}>
+          <Row align="top" justify="space-between" gutter={[8, 8]}>
             <Col span={18} align="start" className="left">
               <Collapse ghost activeKey={activePanel}>
                 <Panel
@@ -391,7 +520,7 @@ const QuestionEditor = ({
             </Col>
 
             <Col span={6} align="end" className="right">
-              <Space align="start">
+              <Space align="center">
                 <Form.Item
                   name={`question-${qId}-type`}
                   rules={[
@@ -424,6 +553,34 @@ const QuestionEditor = ({
                 >
                   <Tooltip title="Delete this question">
                     <Button type="text" icon={<RiDeleteBinFill />} />
+                  </Tooltip>
+                </Popconfirm>
+                <Popconfirm
+                  placement="topRight"
+                  title={message}
+                  onConfirm={() => handleOk(questionToDeactivate)}
+                  onCancel={handleCancel}
+                  visible={open}
+                  style={{ whiteSpace: "break-spaces'" }}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <Tooltip
+                    title={
+                      !question?.deactivate
+                        ? "Deactivate this question"
+                        : "Activate this question"
+                    }
+                  >
+                    <Switch
+                      size="small"
+                      checked={!question?.deactivate}
+                      onChange={(checked) => {
+                        !question?.deactivate
+                          ? handleDeactivateQuestionButton(checked, question)
+                          : handleActivateQuestionButton(checked, question);
+                      }}
+                    />
                   </Tooltip>
                 </Popconfirm>
               </Space>

@@ -83,7 +83,12 @@ const ComputedValidationModal = ({
             <List
               size="small"
               header={null}
-              footer={`${text.cvTotalValueText} : ${vc.total} | ${vc.errorDetail} : ${vc.validationValue}`}
+              footer={
+                <>
+                  {`${text.cvTotalValueText} : ${vc.total}`} <br />
+                  {`${vc.errorDetail} : ${vc.validationValue}`}
+                </>
+              }
               dataSource={vc.questions}
               renderItem={(item) => (
                 <List.Item

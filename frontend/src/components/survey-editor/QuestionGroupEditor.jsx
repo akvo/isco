@@ -702,6 +702,15 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
           const qid = parseInt(key.split("-")[1]);
           // update question surveyEditor
           let findQuestion = question?.find((q) => q?.id === qid);
+          // handle core_mandatory
+          // Any question that is marked as core mandatory is automatically marked as mandatory
+          if (field === "core_mandatory") {
+            findQuestion = {
+              ...findQuestion,
+              mandatory: value ? true : findQuestion.mandatory,
+              [field]: value,
+            };
+          }
           if (
             ![
               "option",

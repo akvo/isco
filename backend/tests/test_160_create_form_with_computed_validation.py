@@ -117,7 +117,8 @@ class TestFormWithComputedValidationRoutes():
             "member_access": None,
             "isco_access": None,
             "skip_logic": None,
-            "core_mandatory": False
+            "core_mandatory": False,
+            "deactivate": False,
         }
         res = await client.post(
             app.url_path_for("question:create"),
@@ -146,7 +147,8 @@ class TestFormWithComputedValidationRoutes():
             "translations": [],
             "type": 'number',
             "variable_name": None,
-            "core_mandatory": False
+            "core_mandatory": False,
+            "deactivate": False,
         }
         #
         # add question type number
@@ -170,7 +172,8 @@ class TestFormWithComputedValidationRoutes():
             "member_access": None,
             "isco_access": None,
             "skip_logic": None,
-            "core_mandatory": False
+            "core_mandatory": False,
+            "deactivate": False,
         }
         res = await client.post(
             app.url_path_for("question:create"),
@@ -199,7 +202,8 @@ class TestFormWithComputedValidationRoutes():
             "translations": [],
             "type": 'number',
             "variable_name": None,
-            "core_mandatory": False
+            "core_mandatory": False,
+            "deactivate": False,
         }
 
     @pytest.mark.asyncio

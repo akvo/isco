@@ -52,6 +52,7 @@ class QuestionPayload(TypedDict):
     translations: Optional[List[dict]] = None
     mandatory: bool
     core_mandatory: bool
+    deactivate: bool
     datapoint_name: bool
     variable_name: Optional[str] = None
     type: QuestionType
@@ -96,6 +97,7 @@ class Question(Base):
     translations = Column(pg.ARRAY(pg.JSONB), nullable=True)
     mandatory = Column(Boolean, default=True)
     core_mandatory = Column(Boolean, default=False)
+    deactivate = Column(Boolean, default=False)
     datapoint_name = Column(Boolean, default=False)
     variable_name = Column(String, nullable=True, unique=True)
     type = Column(Enum(QuestionType), default=QuestionType.input)
@@ -142,7 +144,8 @@ class Question(Base):
         tooltip: Optional[str], cascade: Optional[int],
         tooltip_translations: Optional[List[dict]],
         repeating_objects: Optional[List],
-        order: Optional[int], core_mandatory: Optional[bool]
+        order: Optional[int], core_mandatory: Optional[bool],
+        deactivate: Optional[bool]
     ):
         self.id = id
         self.form = form
@@ -161,6 +164,7 @@ class Question(Base):
         self.repeating_objects = repeating_objects
         self.order = order
         self.core_mandatory = core_mandatory
+        self.deactivate = deactivate
 
     def __repr__(self) -> int:
         return f"<Question {self.id}>"
@@ -204,7 +208,8 @@ class Question(Base):
             "option": [opt.serialize for opt in self.option],
             "skip_logic": [skip.serialize for skip in self.skip_logic],
             "order": self.order,
-            "core_mandatory": self.core_mandatory
+            "core_mandatory": self.core_mandatory,
+            "deactivate": self.deactivate
         }
 
     @property
@@ -228,7 +233,8 @@ class Question(Base):
             "order": self.order,
             "member_access": question_member,
             "isco_access": question_isco,
-            "coreMandatory": self.core_mandatory
+            "coreMandatory": self.core_mandatory,
+            "deactivate": self.deactivate
         }
         if self.rule:
             if "allow_other" not in self.rule:
@@ -277,6 +283,7 @@ class QuestionBase(BaseModel):
     translations: Optional[List[dict]] = []
     mandatory: bool
     core_mandatory: bool
+    deactivate: bool
     datapoint_name: bool
     variable_name: Optional[str] = None
     type: QuestionType
@@ -302,6 +309,7 @@ class QuestionJson(BaseModel):
     translations: Optional[List[dict]] = []
     required: bool
     core_mandatory: bool
+    deactivate: bool
     order: Optional[int] = None
     datapoint_name: bool
     variable_name: Optional[str] = None

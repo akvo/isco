@@ -86,6 +86,7 @@ def generate_webform_json(session: Session, id: int):
     form['question_group'].sort(key=get_order)
     for qg in form['question_group']:
         # Sort question by order
+        qg['question'] = [d for d in qg['question'] if not d['deactivate']]
         qg['question'].sort(key=get_order)
         # repeat text
         if qg['repeatable']:
@@ -172,7 +173,6 @@ def generate_webform_json(session: Session, id: int):
                                                   cascade_id=cascade_ids)
         if tree_obj:
             form.update({"tree": tree_obj})
-
     return form
 
 

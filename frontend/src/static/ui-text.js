@@ -272,8 +272,9 @@ const uiText = {
     actionText: "Action",
     // computed validation warning
     cvModalTitleText: "Validation Fails",
-    cvMaxValueText: "Maximum Value",
-    cvMinValueText: "Minimum Value",
+    cvMaxValueText: "Validation, maximum value",
+    cvMinValueText: "Validation, minimum value",
+    cvEqualValueText: "Validation, value must equal to",
     cvTotalValueText: "Total Value",
   },
 
@@ -560,8 +561,9 @@ const uiText = {
     actionText: "Aktion",
     // computed validation warning
     cvModalTitleText: "Validierung schlägt fehl",
-    cvMaxValueText: "Maximalwert",
-    cvMinValueText: "Mindestwert",
+    cvMaxValueText: "Validierung, Maximalwert",
+    cvMinValueText: "Validierung, Mindestwert",
+    cvEqualValueText: "Validierung, Wert muss gleich sein",
     cvTotalValueText: "Gesamtwert",
   },
 };

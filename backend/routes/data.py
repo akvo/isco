@@ -94,6 +94,7 @@ def check_computed_validation(form_id: int, answers: List[AnswerDict]):
             cv_qids = cv.get('question_ids')
             cv_max = cv.get("max")
             cv_min = cv.get("min")
+            cv_equal = cv.get("equal")
             cv_answers = []
             for a in answers:
                 if not a.get('question') in cv_qids:
@@ -103,9 +104,11 @@ def check_computed_validation(form_id: int, answers: List[AnswerDict]):
                     value = int(value)
                 cv_answers.append(value)
             total_cv_answers = sum(cv_answers)
-            if cv_max and total_cv_answers > cv_max:
+            if "max" in cv and total_cv_answers > cv_max:
                 errors.append(cv)
-            if cv_min and total_cv_answers < cv_min:
+            if "min" in cv and total_cv_answers < cv_min:
+                errors.append(cv)
+            if "equal" in cv and total_cv_answers != cv_equal:
                 errors.append(cv)
         if errors:
             raise HTTPException(status_code=405, detail=errors)
