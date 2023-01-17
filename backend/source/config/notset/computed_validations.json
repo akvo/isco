@@ -5,7 +5,12 @@
       {
         "group_id": 2,
         "question_ids": [14, 15],
-        "max": 100
+        "equal": 100
+      },
+      {
+        "group_id": 2,
+        "question_ids": [14, 15],
+        "min": 10
       }
     ]
   }
