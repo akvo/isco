@@ -77,10 +77,11 @@ def check_core_mandatory_questions_answer(
 
 def check_computed_validation(form_id: int, answers: List[AnswerDict]):
     TESTING = os.environ.get("TESTING")
+    BUCKET = BUCKET_FOLDER
     if TESTING:
-        BUCKET_FOLDER = "notset"
+        BUCKET = "notset"
     # read computed validation config
-    json_file_path = f"{CONFIG_SOURCE_PATH}/{BUCKET_FOLDER}"
+    json_file_path = f"{CONFIG_SOURCE_PATH}/{BUCKET}"
     json_file_path = f"{json_file_path}//computed_validations.json"
     with open(json_file_path, 'r') as j:
         computed_validations = json.loads(j.read())
