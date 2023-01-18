@@ -1,6 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "./style.scss";
-import { Row, Col, Table, Typography, Space, Button, Select } from "antd";
+import {
+  Row,
+  Col,
+  Table,
+  Typography,
+  Space,
+  Button,
+  Select,
+  Popconfirm,
+} from "antd";
 import {
   PlusSquareOutlined,
   CloseSquareOutlined,
@@ -9,10 +18,13 @@ import {
 import { api } from "../../lib";
 import DataCleaningWebform from "./DataCleaningWebform";
 import DataDetail from "./DataDetail";
+import { useNotification } from "../../util";
 
 const { Title } = Typography;
 
 const DataCleaning = () => {
+  const { notify } = useNotification();
+
   const [isLoading, setIsLoading] = useState(false);
   const [forms, setForms] = useState([]);
   const [formSelected, setFormSelected] = useState(null);
@@ -22,9 +34,10 @@ const DataCleaning = () => {
   const [selectedDatapoint, setSelectedDatapoint] = useState(null);
   const [editDatapointName, setEditDatapointName] = useState(null);
   const [fetchingOrgDetail, setFetchingOrgDetail] = useState(false);
+  const [undoSubmit, setUndoSubmit] = useState(null);
   const [orgDetail, setOrgDetail] = useState({});
 
-  const pageSize = 10;
+  const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
   const [data, setData] = useState({
     current: 1,
@@ -73,10 +86,25 @@ const DataCleaning = () => {
             >
               Edit
             </Button>
+            <Popconfirm
+              placement="left"
+              title={`Are you sure to undo submission for data ${record?.id}?`}
+              okText="Undo Submit"
+              cancelText="Cancel"
+              onConfirm={() => handleUndoSubmitOnClick(record)}
+            >
+              <Button
+                size="small"
+                type="primary"
+                loading={undoSubmit?.id === record?.id}
+              >
+                Undo Submit
+              </Button>
+            </Popconfirm>
           </Space>
         );
       },
-      width: "120px",
+      width: "200px",
     },
   ];
 
@@ -95,7 +123,7 @@ const DataCleaning = () => {
     }
   }, [forms]);
 
-  useEffect(() => {
+  const fetchData = useCallback(() => {
     if (formSelected) {
       setIsLoading(true);
       let url = `/data/form/${formSelected}?page=${page}&perpage=${pageSize}`;
@@ -120,6 +148,10 @@ const DataCleaning = () => {
     }
   }, [formSelected, page, pageSize]);
 
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
   const handleEditOnClick = (record) => {
     if (record?.organisation && record?.id) {
       const { id, form_name, organisation, member_type, submitted } = record;
@@ -142,6 +174,30 @@ const DataCleaning = () => {
           setTimeout(() => {
             setFetchingOrgDetail(false);
           }, 500);
+        });
+    }
+  };
+
+  const handleUndoSubmitOnClick = (record) => {
+    if (record?.id) {
+      setUndoSubmit(record);
+      api
+        .put(`/data/unsubmit/${record.id}`)
+        .then((res) => {
+          fetchData();
+          notify({
+            type: "success",
+            message: `Data ${res.data.id} unsubmitted successfully.`,
+          });
+        })
+        .catch(() => {
+          notify({
+            type: "error",
+            message: `Can't undo submission for data ${record.id}.`,
+          });
+        })
+        .finally(() => {
+          setUndoSubmit(null);
         });
     }
   };
@@ -278,6 +334,10 @@ const DataCleaning = () => {
                   pageSize: pageSize,
                   total: data?.total,
                   onChange: (page) => setPage(page),
+                  onShowSizeChange: (page, pageSize) => {
+                    setPage(page);
+                    setPageSize(pageSize);
+                  },
                 }}
                 expandable={{
                   expandedRowKeys,
