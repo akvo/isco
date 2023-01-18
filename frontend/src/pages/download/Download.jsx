@@ -1,12 +1,27 @@
 import React, { useState, useEffect, useMemo } from "react";
 import "./style.scss";
-import { Row, Col, Typography, Table, Button, Space, notification } from "antd";
+import {
+  Row,
+  Col,
+  Typography,
+  Table,
+  Button,
+  Space,
+  notification,
+  Select,
+} from "antd";
 import { api, store } from "../../lib";
 import { uiText } from "../../static";
 import { useNotification } from "../../util";
 import moment from "moment";
 
 const { Title } = Typography;
+
+const status = [
+  { name: "All", value: "all" },
+  { name: "Submitted", value: "submitted" },
+  { name: "Saved", value: "saved" },
+];
 
 const Download = () => {
   const { notify } = useNotification();
@@ -18,6 +33,7 @@ const Download = () => {
   const [requestLoading, setRequestLoading] = useState(null);
   const [downloadLoading, setDownloadLoading] = useState(null);
   const [downloadData, setDownloadData] = useState(null);
+  const [activeFilter, setActiveFilter] = useState("all");
 
   const text = useMemo(() => {
     return uiText[activeLang];
@@ -200,6 +216,10 @@ const Download = () => {
       });
   }, []);
 
+  const handleStatusFilter = (status) => {
+    setActiveFilter(status);
+  };
+
   return (
     <div id="download-data">
       <Row className="container bg-grey">
@@ -209,10 +229,29 @@ const Download = () => {
             align="middle"
             justify="space-between"
           >
-            <Col span={24} align="start">
+            <Col span={12} align="start">
               <Title className="page-title" level={3}>
                 {text.downloadDataText}
               </Title>
+            </Col>
+            <Col span={12} align="end">
+              <Select
+                style={{ width: "200px" }}
+                allowClear
+                showSearch
+                className="member-dropdown-wrapper"
+                placeholder="Select Status"
+                options={status.map((o) => ({
+                  label: o.name,
+                  value: o.value,
+                }))}
+                onChange={handleStatusFilter}
+                value={activeFilter}
+                filterOption={(input, option) =>
+                  option?.label?.toLowerCase().indexOf(input?.toLowerCase()) >=
+                  0
+                }
+              />
             </Col>
           </Row>
           <Row>
