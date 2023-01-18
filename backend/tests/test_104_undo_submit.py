@@ -14,9 +14,11 @@ account = Acc(email=None, token=None)
 
 class TestUndoSubmission():
     @pytest.mark.asyncio
-    async def test_undo_submission(self, app: FastAPI, session: Session,
-                                   client: AsyncClient) -> None:
-        data = session.query(Data).filter(Data.submitted != null()).first()
+    async def test_undo_submission(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
+        data = session.query(Data).filter(
+            Data.submitted != null()).order_by(Data.id.desc()).first()
         assert data.submitted is not None
         assert data.submitted_by is not None
         # test data not available
