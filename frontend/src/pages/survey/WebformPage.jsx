@@ -181,7 +181,7 @@ const WebformPage = ({
     text.cvEqualValueText,
   ]);
 
-  // transform & filter form definition
+  // transform & filter form definition for first load
   useEffect(() => {
     if (formId && userMember && userIsco) {
       const savedDataId = selectedSavedSubmission?.id;
@@ -317,8 +317,6 @@ const WebformPage = ({
     formId,
     // answer,
   ]);
-
-  // TODO:: create different event for activeLang changed
 
   // set default language
   useEffect(() => {
