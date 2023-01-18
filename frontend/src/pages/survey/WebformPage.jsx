@@ -112,12 +112,13 @@ const WebformPage = ({
 
   // check computed validations
   const checkComputedValidation = useMemo(() => {
-    if (!answer.length) {
-      return [];
-    }
-    const { validations } = computedValidations.find(
+    const computedValidation = computedValidations.find(
       (cv) => cv.form_id === formId
     );
+    const validations = computedValidation?.validations || [];
+    if (!answer.length && !validations?.length) {
+      return [];
+    }
     const checkError = validations
       .map((v) => {
         // check if all computed validation answered
