@@ -183,7 +183,7 @@ const WebformPage = ({
 
   // transform & filter form definition
   useEffect(() => {
-    if (isEmpty(formValue) && formId && user) {
+    if (formId && userMember && userIsco) {
       const savedDataId = selectedSavedSubmission?.id;
       let url = `/webform/${formId}`;
       if (savedDataId) {
@@ -201,7 +201,7 @@ const WebformPage = ({
           if (status === 200) {
             let commentValues = {};
             // load initial form value from saved data
-            if (initial_values && !savedData) {
+            if (initial_values && isEmpty(answer)) {
               setIsLocked(initial_values.locked_by);
               setSavedData(initial_values);
               const answers = initial_values.answer.map((a) => {
@@ -308,17 +308,17 @@ const WebformPage = ({
           console.error(e);
         });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    formValue,
-    formId,
-    user,
+    selectedSavedSubmission,
+    activeLang,
     userMember,
     userIsco,
-    selectedSavedSubmission,
-    savedData,
-    activeLang,
-    answer,
+    formId,
+    // answer,
   ]);
+
+  // TODO:: create different event for activeLang changed
 
   // set default language
   useEffect(() => {
