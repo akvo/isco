@@ -19,8 +19,8 @@ const { Title } = Typography;
 
 const status = [
   { name: "All", value: "all" },
-  { name: "Submitted", value: "submitted" },
-  { name: "Saved", value: "saved" },
+  { name: "Submitted", value: 1 },
+  { name: "Saved", value: 0 },
 ];
 
 const Download = () => {
@@ -201,9 +201,19 @@ const Download = () => {
   ];
 
   useEffect(() => {
+    getData();
+  }, []);
+
+  const getData = (submitted) => {
     setIsLoading(true);
     api
-      .get(`/download/list?page=1`)
+      .get(
+        `/download/list?page=1${
+          (submitted || submitted === 0) && submitted !== "all"
+            ? `&submitted=${submitted}`
+            : ""
+        }`
+      )
       .then((res) => {
         setData(res.data);
       })
@@ -214,10 +224,11 @@ const Download = () => {
       .finally(() => {
         setIsLoading(false);
       });
-  }, []);
+  };
 
   const handleStatusFilter = (status) => {
-    setActiveFilter(status);
+    setActiveFilter(status || status === 0 ? status : "all");
+    getData(status || status === 0 ? status : "all");
   };
 
   return (
@@ -246,6 +257,7 @@ const Download = () => {
                   value: o.value,
                 }))}
                 onChange={handleStatusFilter}
+                onClear={() => setActiveFilter("all")}
                 value={activeFilter}
                 filterOption={(input, option) =>
                   option?.label?.toLowerCase().indexOf(input?.toLowerCase()) >=

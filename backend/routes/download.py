@@ -1,6 +1,6 @@
 import operator
 from math import ceil
-from typing import List
+from typing import List, Optional
 from datetime import datetime
 from fastapi import Depends, Request, APIRouter, HTTPException
 from fastapi.security import HTTPBearer
@@ -55,49 +55,51 @@ def send_email_download_notification(session: Session, user,
                     tags=["Download"])
 def get_available_downloads(req: Request,
                             session: Session = Depends(get_session),
+                            submitted: Optional[bool] = None,
                             credentials: credentials = Depends(security)):
     user = verify_user(session=session, authenticated=req.state.authenticated)
     # get saved data from logged user organisation
     data = crud_data.get_data_by_organisation(session=session,
                                               organisation=user.organisation,
-                                              submitted=True)
+                                              submitted=submitted)
     if data:
         data = [d.simplified for d in data]
     else:
         data = []
-    storage_files = storage.get_files(f"old_html/{user.organisation}_")
-    storage_files = list(filter(lambda x: ".html" in x, storage_files))
-    old_data = []
-    for sf in storage_files:
-        data_object = sf.replace(".html", "").split("/")[2].split("_")
-        old_data.append({
-            "created":
-            data_object[0],
-            "created_by":
-            data_object[4],
-            "expired":
-            None,
-            "form":
-            "-".join([data_object[1], data_object[0]]).upper(),
-            "form_type":
-            data_object[1],
-            "id":
-            int(data_object[4]),
-            "name":
-            "",
-            "organisation":
-            user.organisation,
-            "status":
-            None,
-            "submitted":
-            data_object[0],
-            "submitted_by":
-            data_object[3],
-            "uuid":
-            None,
-        })
-    old_data.sort(key=operator.itemgetter('created'), reverse=True)
-    data += old_data
+    if submitted is None or submitted:
+        storage_files = storage.get_files(f"old_html/{user.organisation}_")
+        storage_files = list(filter(lambda x: ".html" in x, storage_files))
+        old_data = []
+        for sf in storage_files:
+            data_object = sf.replace(".html", "").split("/")[2].split("_")
+            old_data.append({
+                "created":
+                data_object[0],
+                "created_by":
+                data_object[4],
+                "expired":
+                None,
+                "form":
+                "-".join([data_object[1], data_object[0]]).upper(),
+                "form_type":
+                data_object[1],
+                "id":
+                int(data_object[4]),
+                "name":
+                "",
+                "organisation":
+                user.organisation,
+                "status":
+                None,
+                "submitted":
+                data_object[0],
+                "submitted_by":
+                data_object[3],
+                "uuid":
+                None,
+            })
+        old_data.sort(key=operator.itemgetter('created'), reverse=True)
+        data += old_data
     for d in data:
         download = crud.get_status(session=session, user=user.id, data=d["id"])
         status = None

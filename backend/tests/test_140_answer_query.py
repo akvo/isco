@@ -125,7 +125,7 @@ class TestAnswerAppendValueFunction():
         res = crud_data.get_data_by_ids(session=session, ids=[data.id])
         assert len(res) > 0
         res = crud_data.get_data_by_organisation(
-            session=session, organisation=1)
+            session=session, organisation=1, submitted=False)
         assert len(res) > 0
         res = crud_data.count(session=session, form=1)
         assert res == 4
