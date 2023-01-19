@@ -211,8 +211,6 @@ class TestManageRoadmapDatapoint():
                     "description": "Lorem Ipsum Dolor sit Amet",
                     "order": 1,
                     "repeatable": True,
-                    "repeatText": "Add another Commitment",
-                    "repeatButtonPlacement": "bottom",
                     "question": [
                         {
                             "id": 1669095326962,
@@ -229,88 +227,192 @@ class TestManageRoadmapDatapoint():
                             "meta": False,
                             "type": "table",
                             "order": 2,
-                            "tooltip": {"text": "Lorem Ipsum Dolor sit Amet"},
-                            "columns": [{
-                                "id": 1669107433881,
-                                "label": "Milestone",
-                                "name": "milestone",
-                                "type": "input"
-                            }]
+                            "columns": [
+                                {
+                                    "id": 1669107433881,
+                                    "name": "milestone",
+                                    "type": "input",
+                                    "label": "Milestone",
+                                }
+                            ],
                         },
                         {
                             "id": 1669107484181,
-                            "name": "Challenges",
+                            "name": "Challenge",
                             "required": False,
                             "meta": False,
                             "type": "text",
                             "order": 3,
                         },
                     ],
+                    "repeatButtonPlacement": "bottom",
+                    "repeatText": "Add another Commitment",
                 },
                 {
                     "name": "Certified and Independently Verified Cocoa",
                     "description": None,
                     "order": 2,
-                    "repeatable": False,
+                    "repeatable": True,
                     "question": [
                         {
                             "id": 1669107562769,
-                            "name": "Example Question 1",
+                            "name": "Commitment",
                             "required": False,
                             "meta": False,
                             "type": "input",
                             "order": 1,
-                        }
+                        },
+                        {
+                            "id": 1674113183189,
+                            "name": "Milestones",
+                            "required": False,
+                            "meta": False,
+                            "type": "table",
+                            "order": 2,
+                            "columns": [
+                                {
+                                    "id": 1669107433881,
+                                    "name": "milestone",
+                                    "type": "input",
+                                    "label": "Milestone",
+                                }
+                            ],
+                        },
+                        {
+                            "id": 1674113210618,
+                            "name": "Challenge",
+                            "required": False,
+                            "meta": False,
+                            "type": "text",
+                            "order": 3,
+                        },
                     ],
+                    "repeatButtonPlacement": "bottom",
+                    "repeatText": "Add another Commitment",
                 },
                 {
                     "name": "Deforestation / Agroforestry",
                     "description": None,
                     "order": 3,
-                    "repeatable": False,
+                    "repeatable": True,
                     "question": [
                         {
                             "id": 1669107635129,
-                            "name": "Example Question 2",
+                            "name": "Commitment",
                             "required": False,
                             "meta": False,
                             "type": "input",
                             "order": 1,
-                        }
+                        },
+                        {
+                            "id": 1674113380992,
+                            "name": "Milestones",
+                            "required": False,
+                            "meta": False,
+                            "type": "table",
+                            "order": 2,
+                            "columns": [
+                                {
+                                    "id": 1669107433881,
+                                    "name": "milestone",
+                                    "type": "input",
+                                    "label": "Milestone",
+                                }
+                            ],
+                        },
+                        {
+                            "id": 1674113384837,
+                            "name": "Challenge",
+                            "required": False,
+                            "meta": False,
+                            "type": "text",
+                            "order": 3,
+                        },
                     ],
+                    "repeatButtonPlacement": "bottom",
+                },
+                {
+                    "name": "Child Labor",
+                    "description": None,
+                    "order": 4,
+                    "repeatable": True,
+                    "question": [
+                        {
+                            "id": 1674113993933,
+                            "name": "Commitment",
+                            "required": False,
+                            "meta": False,
+                            "type": "input",
+                            "order": 1,
+                        },
+                        {
+                            "id": 1674114001466,
+                            "name": "Milestones",
+                            "required": False,
+                            "meta": False,
+                            "type": "table",
+                            "order": 2,
+                            "columns": [
+                                {
+                                    "id": 1669107433881,
+                                    "name": "milestone",
+                                    "type": "input",
+                                    "label": "Milestone",
+                                }
+                            ],
+                        },
+                        {
+                            "id": 1674114011444,
+                            "name": "Challenge",
+                            "required": False,
+                            "meta": False,
+                            "type": "text",
+                            "order": 3,
+                        },
+                    ],
+                    "repeatButtonPlacement": "bottom",
                 },
             ],
             "tree": None,
-            "initial_value": [{
-                "question": 1669095326962,
-                "value": "Updated first commitment"
-            }, {
-                "question": 1669107420032,
-                "value": [{"milestone": "Updated First Milestone"}],
-            }, {
-                "question": 1669095326962,
-                "repeatIndex": 1,
-                "value": "Updated second commitment"
-            }, {
-                "question": 1669107420032,
-                "repeatIndex": 1,
-                "value": [{"milestone": "Update Milestone 1"}],
-            }, {
-                "question": 1669095326962,
-                "repeatIndex": 2,
-                "value": "Third commitment"
-            }, {
-                "question": 1669107420032,
-                "repeatIndex": 2,
-                "value": [{"milestone": "Milestone 1"}],
-            }, {
-                "question": 1669107562769,
-                "value": "Example answer 1"
-            }, {
-                "question": 1669107635129,
-                "value": "Example answer 2"
-            }],
-            "organisation_ids": [1]
+            "initial_value": [
+                {
+                    "question": 1669095326962,
+                    "value": "Updated first commitment"
+                },
+                {
+                    "question": 1669107420032,
+                    "value": [{"milestone": "Updated First Milestone"}],
+                },
+                {
+                    "question": 1669095326962,
+                    "repeatIndex": 1,
+                    "value": "Updated second commitment",
+                },
+                {
+                    "question": 1669107420032,
+                    "repeatIndex": 1,
+                    "value": [{"milestone": "Update Milestone 1"}],
+                },
+                {
+                    "question": 1669095326962,
+                    "repeatIndex": 2,
+                    "value": "Third commitment"
+                },
+                {
+                    "question": 1669107420032,
+                    "repeatIndex": 2,
+                    "value": [{"milestone": "Milestone 1"}],
+                },
+                {
+                    "question": 1669107562769,
+                    "value": "Example answer 1"
+                },
+                {
+                    "question": 1669107635129,
+                    "value": "Example answer 2"
+                },
+            ],
+            "organisation_ids": [1],
         }
 
     @pytest.mark.asyncio

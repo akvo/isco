@@ -8,7 +8,6 @@
       "name": "Traceability",
       "order": 1,
       "repeatable": true,
-      "repeatText": "Add another Commitment",
       "question": [
         {
           "id": 1669095326962,
@@ -27,9 +26,6 @@
           "type": "table",
           "required": false,
           "meta": false,
-          "tooltip": {
-            "text": "Lorem Ipsum Dolor sit Amet"
-          },
           "columns": [
             {
               "name": "milestone",
@@ -43,43 +39,140 @@
           "id": 1669107484181,
           "order": 3,
           "questionGroupId": 1669095326961,
-          "name": "Challenges",
+          "name": "Challenge",
           "type": "text",
           "required": false,
           "meta": false
         }
       ],
+      "repeatText": "Add another Commitment",
       "description": "Lorem Ipsum Dolor sit Amet"
     },
     {
       "id": 1669107562768,
       "name": "Certified and Independently Verified Cocoa",
       "order": 2,
-      "repeatable": false,
+      "repeatable": true,
       "question": [
         {
           "id": 1669107562769,
           "order": 1,
           "questionGroupId": 1669107562768,
-          "name": "Example Question 1",
+          "name": "Commitment",
           "type": "input",
+          "required": false,
+          "meta": false
+        },
+        {
+          "id": 1674113183189,
+          "order": 2,
+          "questionGroupId": 1669107562768,
+          "name": "Milestones",
+          "type": "table",
+          "required": false,
+          "meta": false,
+          "columns": [
+            {
+              "name": "milestone",
+              "label": "Milestone",
+              "type": "input",
+              "id": 1669107433881
+            }
+          ]
+        },
+        {
+          "id": 1674113210618,
+          "order": 3,
+          "questionGroupId": 1669107562768,
+          "name": "Challenge",
+          "type": "text",
+          "required": false,
+          "meta": false
+        }
+      ],
+      "repeatText": "Add another Commitment"
+    },
+    {
+      "id": 1669107635128,
+      "name": "Deforestation / Agroforestry",
+      "order": 3,
+      "repeatable": true,
+      "question": [
+        {
+          "id": 1669107635129,
+          "order": 1,
+          "questionGroupId": 1669107635128,
+          "name": "Commitment",
+          "type": "input",
+          "required": false,
+          "meta": false
+        },
+        {
+          "id": 1674113380992,
+          "order": 2,
+          "questionGroupId": 1669107635128,
+          "name": "Milestones",
+          "type": "table",
+          "required": false,
+          "meta": false,
+          "columns": [
+            {
+              "name": "milestone",
+              "label": "Milestone",
+              "type": "input",
+              "id": 1669107433881
+            }
+          ]
+        },
+        {
+          "id": 1674113384837,
+          "order": 3,
+          "questionGroupId": 1669107635128,
+          "name": "Challenge",
+          "type": "text",
           "required": false,
           "meta": false
         }
       ]
     },
     {
-      "id": 1669107635128,
-      "name": "Deforestation / Agroforestry",
-      "order": 3,
-      "repeatable": false,
+      "id": 1674113955166,
+      "name": "Child Labor",
+      "order": 4,
+      "repeatable": true,
       "question": [
         {
-          "id": 1669107635129,
+          "id": 1674113993933,
           "order": 1,
-          "questionGroupId": 1669107635128,
-          "name": "Example Question 2",
+          "questionGroupId": 1674113955166,
+          "name": "Commitment",
           "type": "input",
+          "required": false,
+          "meta": false
+        },
+        {
+          "id": 1674114001466,
+          "order": 2,
+          "questionGroupId": 1674113955166,
+          "name": "Milestones",
+          "type": "table",
+          "required": false,
+          "meta": false,
+          "columns": [
+            {
+              "name": "milestone",
+              "label": "Milestone",
+              "type": "input",
+              "id": 1669107433881
+            }
+          ]
+        },
+        {
+          "id": 1674114011444,
+          "order": 3,
+          "questionGroupId": 1674113955166,
+          "name": "Challenge",
+          "type": "text",
           "required": false,
           "meta": false
         }
