@@ -109,6 +109,9 @@ def roadmap_form_seeder(session):
                     find_question.repeating_objects = \
                         question.repeating_objects
                     find_question.order = question.order
+                if find_group and not find_question:
+                    session.add(question)
+                    continue
                 group.question.append(question)
             if not find_group:
                 session.add(group)
