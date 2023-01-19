@@ -306,7 +306,9 @@ class Data(Base):
             "name": self.name,
             "form": self.form_detail.info,
             "organisation": self.organisation_detail.serialize,
-            "submitted_by": self.submitted_by_user.serialize,
+            "submitted_by":
+            self.submitted_by_user.serialize if self.submitted_by_user
+            else None,
             "submitted":
             self.submitted.strftime("%B %d, %Y") if self.submitted else None,
             "answer": [a.to_report for a in self.answer],
