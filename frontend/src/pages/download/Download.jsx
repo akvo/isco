@@ -17,12 +17,6 @@ import moment from "moment";
 
 const { Title } = Typography;
 
-const status = [
-  { name: "All", value: "all" },
-  { name: "Submitted", value: 1 },
-  { name: "Saved", value: 0 },
-];
-
 const Download = () => {
   const { notify } = useNotification();
   const language = store.useState((s) => s.language);
@@ -38,6 +32,12 @@ const Download = () => {
   const text = useMemo(() => {
     return uiText[activeLang];
   }, [activeLang]);
+
+  const status = [
+    { name: text.tbColAll, value: "all" },
+    { name: text.tbColSubmitted, value: 1 },
+    { name: text.tbColSaved, value: 0 },
+  ];
 
   const handleRequestButton = (id) => {
     setRequestLoading(id);
@@ -155,6 +155,13 @@ const Download = () => {
       key: "form_type",
       width: "10%",
       render: (value) => (value ? value?.toUpperCase() : "-"),
+    },
+    {
+      title: text.formStatusText,
+      dataIndex: "submitted",
+      key: "submitted",
+      width: "10%",
+      render: (value) => (value ? "Submitted" : "Saved"),
     },
     {
       title: text.submittedDateText,

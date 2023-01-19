@@ -120,6 +120,7 @@ const uiText = {
     tbColDISCOSharedMemberSurvey: "DISCO 2020 shared Member Survey",
     tbColSaved: "Saved",
     tbColSubmitted: "Submitted",
+    tbColAll: "All",
     // Modal
     modalDataSecurity: "Data Security Provisions",
     modalSaveForm: "Save Form Data",
@@ -270,6 +271,7 @@ const uiText = {
     formTypeText: "Form Type",
     submittedDateText: "Submitted Date / Monitoring Round",
     actionText: "Action",
+    formStatusText: "Status",
     // computed validation warning
     cvModalTitleText: "Validation Fails",
     cvMaxValueText: "Validation, maximum value",
