@@ -208,7 +208,7 @@ class TestManageRoadmapDatapoint():
             "question_group": [
                 {
                     "name": "Traceability",
-                    "description": "Lorem Ipsum Dolor sit Amet",
+                    "description": None,
                     "order": 1,
                     "repeatable": True,
                     "question": [
@@ -330,6 +330,7 @@ class TestManageRoadmapDatapoint():
                         },
                     ],
                     "repeatButtonPlacement": "bottom",
+                    "repeatText": "Add another Commitment",
                 },
                 {
                     "name": "Child Labor",
@@ -371,6 +372,7 @@ class TestManageRoadmapDatapoint():
                         },
                     ],
                     "repeatButtonPlacement": "bottom",
+                    "repeatText": "Add another Commitment",
                 },
             ],
             "tree": None,
