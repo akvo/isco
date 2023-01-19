@@ -4,7 +4,8 @@
 from typing import Optional, List
 from typing_extensions import TypedDict
 from db.connection import Base
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String
+from sqlalchemy import ForeignKey, BigInteger
 from pydantic import BaseModel
 import sqlalchemy.dialects.postgresql as pg
 
@@ -20,8 +21,8 @@ class RoadmapOptionDict(TypedDict):
 
 class RoadmapOption(Base):
     __tablename__ = "roadmap_option"
-    id = Column(Integer, primary_key=True, index=True, nullable=True)
-    question = Column(Integer, ForeignKey('roadmap_question.id'))
+    id = Column(BigInteger, primary_key=True, index=True, nullable=True)
+    question = Column(BigInteger, ForeignKey('roadmap_question.id'))
     code = Column(String, nullable=True)
     name = Column(String)
     order = Column(Integer, nullable=True)
