@@ -18,13 +18,17 @@ const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
   const organisations = store.useState((s) => s.optionValues.organisation);
 
   const organisationOptions = useMemo(() => {
+    // filter organisations by isco == GISCO
+    const filterOrgs = organisations.filter((org) =>
+      org.isco?.includes("GISCO")
+    );
     if (!dataOrgIds) {
-      return organisations.map((org) => ({
+      return filterOrgs.map((org) => ({
         label: org.name,
         value: org.id,
       }));
     }
-    return organisations.map((org) => {
+    return filterOrgs.map((org) => {
       const disabled = dataOrgIds.includes(org.id) ? true : false;
       const label = org.name;
       return {
