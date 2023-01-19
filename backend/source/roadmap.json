@@ -45,8 +45,7 @@
           "meta": false
         }
       ],
-      "repeatText": "Add another Commitment",
-      "description": "Lorem Ipsum Dolor sit Amet"
+      "repeatText": "Add another Commitment"
     },
     {
       "id": 1669107562768,
@@ -133,7 +132,8 @@
           "required": false,
           "meta": false
         }
-      ]
+      ],
+      "repeatText": "Add another Commitment"
     },
     {
       "id": 1674113955166,
@@ -176,7 +176,8 @@
           "required": false,
           "meta": false
         }
-      ]
+      ],
+      "repeatText": "Add another Commitment"
     }
   ]
 }
