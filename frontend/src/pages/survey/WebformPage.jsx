@@ -601,7 +601,8 @@ const WebformPage = ({
             }
             submitButtonSetting={{
               loading: isSubmitting,
-              disabled: disableSubmit,
+              // don't disabled when survey has core mandatory questions
+              disabled: disableSubmit && !coreMandatoryQuestionIds?.length,
             }}
             initialValue={initialAnswers}
           />

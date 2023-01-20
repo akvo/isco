@@ -262,6 +262,7 @@ const ManageDownload = () => {
             />
           </Space>
         }
+        maskClosable={false}
       >
         <iframe srcDoc={viewData} frameBorder="0" height="700vh" width="100%" />
       </Modal>

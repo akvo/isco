@@ -426,6 +426,7 @@ const DataCleaningWebform = ({ datapoint, orgDetail, handleBack }) => {
             </Button>
           </Row>
         }
+        maskClosable={false}
       >
         <Row align="middle" justify="center">
           <Col span={24}>
