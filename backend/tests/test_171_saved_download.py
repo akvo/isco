@@ -16,23 +16,113 @@ expired_date = expired_date.strftime("%Y-%m-%d")
 
 
 class TestSavedDownloadRoute():
+    async def test_save_data_for_download_list(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
+        payload = [{
+            "question": 14,
+            "repeat_index": 0,
+            "comment": None,
+            "value": 110
+        }]
+        # direct submit without computed validation
+        res = await client.post(
+            app.url_path_for("data:create", form_id=4, submitted=1),
+            params={"locked_by": 1},
+            json=payload,
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 405
+        # save data
+        res = await client.post(
+            app.url_path_for("data:create", form_id=4, submitted=0),
+            params={"locked_by": 1},
+            json=payload,
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 405
+        # correct value
+        payload = [{
+            "question": 14,
+            "repeat_index": 0,
+            "comment": None,
+            "value": 70
+        }, {
+            "question": 15,
+            "repeat_index": 0,
+            "comment": None,
+            "value": 30
+        }]
+        # save data
+        res = await client.post(
+            app.url_path_for("data:create", form_id=4, submitted=0),
+            params={"locked_by": 1},
+            json=payload,
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 200
+        res = res.json()
+        assert res['id'] == 7
+
     @pytest.mark.asyncio
-    async def test_get_saved_download_list(self, app: FastAPI,
-                                           session: Session,
-                                           client: AsyncClient) -> None:
+    async def test_get_saved_download_list(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
+        # submitted
+        res = await client.get(
+            app.url_path_for("download:list"),
+            params={"submitted": 1},
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 200
+        res = res.json()
+        assert len(res) > 0
+        # saved
         res = await client.get(
             app.url_path_for("download:list"),
             params={"submitted": 0},
             headers={"Authorization": f"Bearer {account.token}"})
         assert res.status_code == 200
         res = res.json()
-        assert len(res) == 0
-        assert res == []
+        assert len(res) > 0
+        assert res[0] == {
+            "id": 7,
+            "uuid": None,
+            "form": "Form with computed validation",
+            "form_type": "project",
+            "name": "",
+            "organisation": "staff Akvo",
+            "created_by": "John Doe",
+            "created": "January 20, 2023",
+            "submitted_by": None,
+            "submitted": None,
+            "status": None,
+            "expired": None,
+        }
 
     @pytest.mark.asyncio
-    async def test_get_requested_download_list(self, app: FastAPI,
-                                               session: Session,
-                                               client: AsyncClient) -> None:
+    async def test_request_download(self, app: FastAPI, session: Session,
+                                    client: AsyncClient) -> None:
+        res = await client.post(
+            app.url_path_for("download:request", data_id=7),
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 201
+        res = res.json()
+        assert res == {
+            "id": 2,
+            "data": 7,
+            "form_type": "project",
+            "organisation": 1
+        }
+        # check status
+        res = await client.get(
+            app.url_path_for("download:list"),
+            params={"submitted": 0},
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 200
+        res = res.json()
+        assert res[0]["status"] == "pending"
+
+    @pytest.mark.asyncio
+    async def test_get_requested_download_list(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         res = await client.get(
             app.url_path_for("download:requested_list"),
             headers={"Authorization": f"Bearer {account.token}"})
@@ -42,7 +132,7 @@ class TestSavedDownloadRoute():
         assert res["total"] is not None
         assert res["total_page"] is not None
         assert len(res["data"]) > 0
-        assert len(res["data"]) == 1
+        assert len(res["data"]) == 2
         download = crud.get_by_id(session=session, id=res["data"][0]["id"])
         assert res["data"][0] == {
             "id": 1,

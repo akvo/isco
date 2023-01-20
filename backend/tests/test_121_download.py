@@ -59,7 +59,6 @@ class TestDownloadRoute():
             app.url_path_for("download:list"),
             headers={"Authorization": f"Bearer {account.token}"})
         assert res.status_code == 200
-        assert res.status_code == 200
         res = res.json()
         assert res[0]["status"] == "pending"
 
