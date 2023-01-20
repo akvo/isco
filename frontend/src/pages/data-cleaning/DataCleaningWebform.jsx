@@ -119,7 +119,7 @@ const DataCleaningWebform = ({ datapoint, orgDetail, handleBack }) => {
 
   // transform & filter form definition
   useEffect(() => {
-    if (isEmpty(formValue) && datapoint?.form && orgDetail?.id) {
+    if (datapoint?.form && orgDetail?.id) {
       const { member: orgMember, isco: orgIsco } = orgDetail;
       const url = `/webform/${datapoint.form}?data_id=${datapoint.id}&data_cleaning=1`;
       api
@@ -130,7 +130,7 @@ const DataCleaningWebform = ({ datapoint, orgDetail, handleBack }) => {
           if (status === 200) {
             let commentValues = {};
             // load initial form value from saved data
-            if (initial_values && !savedData) {
+            if (initial_values && isEmpty(answer)) {
               setSavedData(initial_values);
               const answers = initial_values.answer.map((a) => {
                 const { question, repeat_index, comment } = a;
@@ -221,7 +221,8 @@ const DataCleaningWebform = ({ datapoint, orgDetail, handleBack }) => {
           console.error(e);
         });
     }
-  }, [formValue, orgDetail, datapoint, savedData, activeLang, answer]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeLang /*orgDetail, datapoint, answer*/]);
 
   // set default language
   useEffect(() => {
