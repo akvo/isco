@@ -399,8 +399,8 @@ const uiText = {
     tbColMemberQuestionnaire: "Member Questionnaire",
     tbColProjectQuestionnaire: "Project Questionnaire",
     tbColDISCOSharedMemberSurvey: "DISCO 2020 shared Member Survey",
-    tbColSaved: "Saved",
-    tbColSubmitted: "Submitted",
+    tbColSaved: "Gerettet",
+    tbColSubmitted: "Eingereicht",
     // Modal
     modalDataSecurity: "Datensicherheitsmaßnahmen",
     modalSaveForm: "Daten speichern",
