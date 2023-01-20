@@ -728,6 +728,7 @@ const Setting = ({
                   key={`question-${qid}-mandatory-switch`}
                   size="small"
                   checked={mandatory}
+                  disabled={coreMandatory}
                   onChange={(val) =>
                     handleRequiredChange(val, `question-${qid}-mandatory`)
                   }
