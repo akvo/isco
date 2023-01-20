@@ -509,6 +509,8 @@ const Setting = ({
   setAllowDecimal,
   coreMandatory,
   setCoreMandatory,
+  deactivate,
+  setDeactivate,
 }) => {
   const { surveyEditor, tempStorage, optionValues } = store.useState((s) => s);
   const { questionGroup: questionGroupState } = surveyEditor;
@@ -571,6 +573,13 @@ const Setting = ({
     const fieldValue = { [field]: val };
     form.setFieldsValue(fieldValue);
     setMandatory(val);
+    handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
+  };
+
+  const handleDeactivateChange = (val, field) => {
+    const fieldValue = { [field]: val };
+    form.setFieldsValue(fieldValue);
+    setDeactivate(val);
     handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
   };
 
@@ -719,6 +728,20 @@ const Setting = ({
               </Form.Item>
             </div>
             <Space size={100}>
+              <div>
+                <Form.Item name={`question-${qid}-deactivate`} hidden noStyle>
+                  <Input />
+                </Form.Item>
+                Deactivate{" "}
+                <Switch
+                  key={`question-${qid}-deactivate-switch`}
+                  size="small"
+                  checked={deactivate}
+                  onChange={(val) =>
+                    handleDeactivateChange(val, `question-${qid}-deactivate`)
+                  }
+                />
+              </div>
               <div>
                 <Form.Item name={`question-${qid}-mandatory`} hidden noStyle>
                   <Input />
@@ -952,6 +975,8 @@ const QuestionSetting = ({
   setActiveLang,
   coreMandatory,
   setCoreMandatory,
+  deactivate,
+  setDeactivate,
 }) => {
   switch (activeSetting) {
     case "translation":
@@ -978,6 +1003,8 @@ const QuestionSetting = ({
           handleFormOnValuesChange={handleFormOnValuesChange}
           coreMandatory={coreMandatory}
           setCoreMandatory={setCoreMandatory}
+          deactivate={deactivate}
+          setDeactivate={setDeactivate}
         />
       );
     default:
