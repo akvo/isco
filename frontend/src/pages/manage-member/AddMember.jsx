@@ -149,6 +149,7 @@ const AddMember = ({
       width={840}
       onCancel={() => setIsAddMemberVisible(false)}
       centered
+      maskClosable={false}
     >
       <Form
         form={form}

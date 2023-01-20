@@ -197,6 +197,7 @@ const DownloadReport = () => {
         destroyOnClose
         className="otp-code-modal"
         footer=""
+        maskClosable={false}
       >
         <Space
           direction="vertical"

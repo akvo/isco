@@ -254,6 +254,7 @@ const ManageSurvey = () => {
           </Space>
         }
         onCancel={() => setIsSurveyModalVisible(false)}
+        maskClosable={false}
       >
         <Form form={form} name="survey-detail" onFinish={onSubmitForm}>
           <FormEditor form={form} />
