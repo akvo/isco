@@ -108,13 +108,14 @@ def get_data_by_ids(session: Session, ids: List[int]) -> List[DataOptionDict]:
 def get_data_by_organisation(
         session: Session,
         organisation: int,
-        submitted: bool = False,
+        submitted: Optional[bool] = None,
         page: Union[int, bool] = False,
         page_size: Union[int, bool] = False) -> List[DataOptionDict]:
-    data = session.query(Data).filter(
-        and_(
-            Data.organisation == organisation, Data.submitted == null()
-            if not submitted else Data.submitted.isnot(None)))
+    data = session.query(Data).filter((Data.organisation == organisation))
+    if submitted:
+        data = data.filter(Data.submitted.isnot(None))
+    if submitted is not None and not submitted:
+        data = data.filter(Data.submitted == null())
     if page is False or page_size is False:
         return data.all()
     return data.limit(page_size).offset((page - 1) * page_size)

@@ -54,7 +54,7 @@ class DataDownloadDict(TypedDict):
     organisation: str
     created_by: str
     created: Optional[str] = None
-    submitted_by: str
+    submitted_by: Optional[str] = None
     submitted: Optional[str] = None
     status: Optional[DownloadStatusType] = None
     expired: Optional[datetime] = None

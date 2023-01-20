@@ -1,5 +1,6 @@
 # list of member survey id, submit only once
 # but have special case, unlimited only for MEMBER_SURVEY_UNLIMITED_ISCO
+# this id is refers to production form id
 MEMBER_SURVEY = [1, 7]
 # list of project survey id
 PROJECT_SURVEY = [2, 4, 6, 8]

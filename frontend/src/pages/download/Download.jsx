@@ -1,6 +1,15 @@
 import React, { useState, useEffect, useMemo } from "react";
 import "./style.scss";
-import { Row, Col, Typography, Table, Button, Space, notification } from "antd";
+import {
+  Row,
+  Col,
+  Typography,
+  Table,
+  Button,
+  Space,
+  notification,
+  Select,
+} from "antd";
 import { api, store } from "../../lib";
 import { uiText } from "../../static";
 import { useNotification } from "../../util";
@@ -18,10 +27,17 @@ const Download = () => {
   const [requestLoading, setRequestLoading] = useState(null);
   const [downloadLoading, setDownloadLoading] = useState(null);
   const [downloadData, setDownloadData] = useState(null);
+  const [activeFilter, setActiveFilter] = useState("all");
 
   const text = useMemo(() => {
     return uiText[activeLang];
   }, [activeLang]);
+
+  const status = [
+    { name: text.tbColAll, value: "all" },
+    { name: text.tbColSubmitted, value: 1 },
+    { name: text.tbColSaved, value: 0 },
+  ];
 
   const handleRequestButton = (id) => {
     setRequestLoading(id);
@@ -141,6 +157,13 @@ const Download = () => {
       render: (value) => (value ? value?.toUpperCase() : "-"),
     },
     {
+      title: text.formStatusText,
+      dataIndex: "submitted",
+      key: "submitted",
+      width: "10%",
+      render: (value) => (value ? "Submitted" : "Saved"),
+    },
+    {
       title: text.submittedDateText,
       dataIndex: "submitted",
       key: "submitted",
@@ -185,9 +208,19 @@ const Download = () => {
   ];
 
   useEffect(() => {
+    getData();
+  }, []);
+
+  const getData = (submitted) => {
     setIsLoading(true);
     api
-      .get(`/download/list?page=1`)
+      .get(
+        `/download/list?page=1${
+          (submitted || submitted === 0) && submitted !== "all"
+            ? `&submitted=${submitted}`
+            : ""
+        }`
+      )
       .then((res) => {
         setData(res.data);
       })
@@ -198,7 +231,12 @@ const Download = () => {
       .finally(() => {
         setIsLoading(false);
       });
-  }, []);
+  };
+
+  const handleStatusFilter = (status) => {
+    setActiveFilter(status || status === 0 ? status : "all");
+    getData(status || status === 0 ? status : "all");
+  };
 
   return (
     <div id="download-data">
@@ -209,10 +247,30 @@ const Download = () => {
             align="middle"
             justify="space-between"
           >
-            <Col span={24} align="start">
+            <Col span={12} align="start">
               <Title className="page-title" level={3}>
                 {text.downloadDataText}
               </Title>
+            </Col>
+            <Col span={12} align="end">
+              <Select
+                style={{ width: "200px" }}
+                allowClear
+                showSearch
+                className="member-dropdown-wrapper"
+                placeholder="Select Status"
+                options={status.map((o) => ({
+                  label: o.name,
+                  value: o.value,
+                }))}
+                onChange={handleStatusFilter}
+                onClear={() => setActiveFilter("all")}
+                value={activeFilter}
+                filterOption={(input, option) =>
+                  option?.label?.toLowerCase().indexOf(input?.toLowerCase()) >=
+                  0
+                }
+              />
             </Col>
           </Row>
           <Row>

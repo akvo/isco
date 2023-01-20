@@ -294,7 +294,7 @@ def get_saved_data_by_organisation(
         authenticated=req.state.authenticated)
     # get saved data from logged user organisation
     data = crud.get_data_by_organisation(
-        session=session, organisation=user.organisation)
+        session=session, organisation=user.organisation, submitted=False)
     # check for collaborator
     collabs = crud_collaborator.get_collaborator_by_organisation(
         session=session, organisation=user.organisation)

@@ -88,7 +88,7 @@ class DataSubmittedDict(TypedDict):
     organisation: str
     created_by: str
     created: Optional[str] = None
-    submitted_by: str
+    submitted_by: Optional[str] = None
     submitted: Optional[str] = None
 
     class Config:
@@ -280,7 +280,6 @@ class Data(Base):
     @property
     def simplified(self) -> DataSubmittedDict:
         created = self.created.strftime("%B %d, %Y")
-        submitted = self.submitted.strftime("%B %d, %Y")
         form_type = None
         if self.form in MEMBER_SURVEY:
             form_type = "member"
@@ -294,8 +293,10 @@ class Data(Base):
             "organisation": self.organisation_detail.name,
             "created_by": self.created_by_user.name,
             "created": created,
-            "submitted_by": self.submitted_by_user.name,
-            "submitted": submitted,
+            "submitted_by":
+            self.submitted_by_user.name if self.submitted_by_user else None,
+            "submitted":
+            self.submitted.strftime("%B %d, %Y") if self.submitted else None,
         }
 
     @property
@@ -305,7 +306,9 @@ class Data(Base):
             "name": self.name,
             "form": self.form_detail.info,
             "organisation": self.organisation_detail.serialize,
-            "submitted_by": self.submitted_by_user.serialize,
+            "submitted_by":
+            self.submitted_by_user.serialize if self.submitted_by_user
+            else None,
             "submitted":
             self.submitted.strftime("%B %d, %Y") if self.submitted else None,
             "answer": [a.to_report for a in self.answer],
