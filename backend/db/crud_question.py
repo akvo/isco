@@ -309,3 +309,11 @@ def delete_question(session: Session, id: int):
     reorder_question(session=session, form=form_id, exclude=id)
     session.commit()
     session.flush()
+
+
+def deactivate_bulk(session: Session, ids: List[int]) -> None:
+    for id in ids:
+        question = session.query(Question).filter(Question.id == id).first()
+        question.deactivate = not question.deactivate
+        session.commit()
+        session.flush()

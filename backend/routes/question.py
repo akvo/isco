@@ -1,8 +1,8 @@
 from http import HTTPStatus
-from fastapi import Depends, Request, APIRouter, Response
+from fastapi import Depends, Request, APIRouter, Response, Query
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
-from typing import List
+from typing import List, Optional
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
 from db.connection import get_session
@@ -131,6 +131,23 @@ def get_by_id(
 ):
     question = crud.get_question_by_id(session=session, id=id)
     return question.serialize
+
+
+@question_route.put(
+    "/question/deactivate",
+    responses={204: {"model": None}},
+    status_code=HTTPStatus.NO_CONTENT,
+    summary="bulk deactivate questions",
+    name="data:bulk-deactivate",
+    tags=["Question"])
+def bulk_deactivate(
+    req: Request,
+    id: Optional[List[int]] = Query(None),
+    session: Session = Depends(get_session),
+    credentials: credentials = Depends(security)
+):
+    crud.deactivate_bulk(session=session, ids=id)
+    return Response(status_code=HTTPStatus.NO_CONTENT.value)
 
 
 @question_route.put(
