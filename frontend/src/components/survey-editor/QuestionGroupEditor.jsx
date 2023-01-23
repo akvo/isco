@@ -270,6 +270,7 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
   const [isGroupSettingVisible, setIsGroupSettingVisible] = useState(false);
   const [isQuestionVisible, setIsQuestionVisible] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
+  const [questionToDeactivate, setQuestionToDeactivate] = useState([]);
   const [repeat, setRepeat] = useState(false);
   const [saveBtnLoading, setSaveBtnLoading] = useState(false);
   const { notify } = useNotification();
@@ -573,6 +574,32 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
               });
           }
         });
+      }
+      if (questionToDeactivate.length > 0) {
+        api
+          .put(
+            `/question/deactivate`,
+            questionToDeactivate.map((item) => {
+              return {
+                id: item.id,
+                deactivate: item.deactivate,
+              };
+            }),
+            {
+              "content-type": "application/json",
+            }
+          )
+          .then(() => {
+            setQuestionToDeactivate([]);
+          })
+          .catch((e) => {
+            const { status, statusText } = e.response;
+            console.error(status, statusText);
+            notify({
+              type: "error",
+              message: "Oops, something went wrong.",
+            });
+          });
       }
 
       api
@@ -1025,6 +1052,8 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
                     handleFormOnValuesChange={handleFormOnValuesChange}
                     submitStatus={submitStatus}
                     setSubmitStatus={setSubmitStatus}
+                    questionToDeactivate={questionToDeactivate}
+                    setQuestionToDeactivate={setQuestionToDeactivate}
                   />
                 ))}
               </div>

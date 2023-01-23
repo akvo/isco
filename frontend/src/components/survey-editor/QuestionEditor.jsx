@@ -92,6 +92,8 @@ const QuestionEditor = ({
   handleFormOnValuesChange,
   submitStatus,
   setSubmitStatus,
+  questionToDeactivate,
+  setQuestionToDeactivate,
   toggleMove = false,
 }) => {
   const { surveyEditor, optionValues } = store.useState((s) => s);
@@ -108,7 +110,6 @@ const QuestionEditor = ({
   const [allowDecimal, setAllowDecimal] = useState(false);
   const [mandatory, setMandatory] = useState(false);
   const [coreMandatory, setCoreMandatory] = useState(false);
-  const [deactivate, setDeactivate] = useState(false);
   const [personalData, setPersonalData] = useState(false);
   const [activeLang, setActiveLang] = useState(surveyEditor?.languages?.[0]);
 
@@ -357,8 +358,8 @@ const QuestionEditor = ({
                         setActiveLang={setActiveLang}
                         coreMandatory={coreMandatory}
                         setCoreMandatory={setCoreMandatory}
-                        deactivate={deactivate}
-                        setDeactivate={setDeactivate}
+                        setQuestionToDeactivate={setQuestionToDeactivate}
+                        questionToDeactivate={questionToDeactivate}
                       />
                       <div className="question-button-wrapper">
                         <Space align="center">
@@ -429,34 +430,6 @@ const QuestionEditor = ({
                     <Button type="text" icon={<RiDeleteBinFill />} />
                   </Tooltip>
                 </Popconfirm>
-                {/* <Popconfirm
-                  placement="topRight"
-                  title={message}
-                  onConfirm={() => handleOk(questionToDeactivate)}
-                  onCancel={handleCancel}
-                  visible={open}
-                  style={{ whiteSpace: "break-spaces'" }}
-                  okText="Yes"
-                  cancelText="No"
-                >
-                  <Tooltip
-                    title={
-                      !question?.deactivate
-                        ? "Deactivate this question"
-                        : "Activate this question"
-                    }
-                  >
-                    <Switch
-                      size="small"
-                      checked={!question?.deactivate}
-                      onChange={(checked) => {
-                        !question?.deactivate
-                          ? handleDeactivateQuestionButton(checked, question)
-                          : handleActivateQuestionButton(checked, question);
-                      }}
-                    />
-                  </Tooltip>
-                </Popconfirm> */}
               </Space>
             </Col>
           </Row>
