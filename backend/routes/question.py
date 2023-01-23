@@ -139,7 +139,7 @@ def get_by_id(
     responses={204: {"model": None}},
     status_code=HTTPStatus.NO_CONTENT,
     summary="bulk deactivate questions",
-    name="data:bulk-deactivate",
+    name="question:bulk_deactivate",
     tags=["Question"])
 def bulk_deactivate(
     req: Request,

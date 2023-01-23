@@ -89,7 +89,7 @@ class TestSavedDownloadRoute():
             "name": "",
             "organisation": "staff Akvo",
             "created_by": "John Doe",
-            "created": "January 20, 2023",
+            "created": today,
             "submitted_by": None,
             "submitted": None,
             "status": None,
