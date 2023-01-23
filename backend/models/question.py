@@ -45,6 +45,11 @@ class RepeatingObjectDict(TypedDict):
     value: str
 
 
+class QuestionDeactivatePayload(TypedDict):
+    id: int
+    deactivate: bool
+
+
 class QuestionPayload(TypedDict):
     form: Optional[int] = None
     question_group: Optional[int] = None

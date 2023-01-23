@@ -8,7 +8,8 @@ from sqlalchemy.orm import Session
 from db.connection import get_session
 import db.crud_question as crud
 from models.question import QuestionBase, QuestionDict
-from models.question import QuestionPayload, QuestionType
+from models.question import QuestionPayload, QuestionType, \
+    QuestionDeactivatePayload
 from models.question import RepeatingObjectType, Question
 
 security = HTTPBearer()
@@ -142,11 +143,11 @@ def get_by_id(
     tags=["Question"])
 def bulk_deactivate(
     req: Request,
-    id: Optional[List[int]] = Query(None),
+    payload: List[QuestionDeactivatePayload],
     session: Session = Depends(get_session),
     credentials: credentials = Depends(security)
 ):
-    crud.deactivate_bulk(session=session, ids=id)
+    crud.deactivate_bulk(session=session, payload=payload)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)
 
 

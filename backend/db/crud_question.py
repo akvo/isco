@@ -3,7 +3,8 @@ from typing import List, Optional
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
 from models.question import Question, QuestionBase
-from models.question import QuestionDict, QuestionPayload
+from models.question import QuestionDict, QuestionPayload, \
+    QuestionDeactivatePayload
 from models.option import Option
 from models.question_member_access import QuestionMemberAccess
 from models.question_isco_access import QuestionIscoAccess
@@ -311,9 +312,11 @@ def delete_question(session: Session, id: int):
     session.flush()
 
 
-def deactivate_bulk(session: Session, ids: List[int]) -> None:
-    for id in ids:
-        question = session.query(Question).filter(Question.id == id).first()
-        question.deactivate = not question.deactivate
+def deactivate_bulk(
+        session: Session, payload: List[QuestionDeactivatePayload]):
+    for data in payload:
+        question = session.query(Question).filter(
+            Question.id == data['id']).first()
+        question.deactivate = data['deactivate']
         session.commit()
         session.flush()
