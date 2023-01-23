@@ -13,6 +13,8 @@ const Question = ({
   handleFormOnValuesChange,
   submitStatus,
   setSubmitStatus,
+  questionToDeactivate,
+  setQuestionToDeactivate,
 }) => {
   const { surveyEditor, isMoveQuestion } = store.useState((s) => s);
   const { questionGroup: questionGroupState } = surveyEditor;
@@ -210,6 +212,8 @@ const Question = ({
         submitStatus={submitStatus}
         setSubmitStatus={setSubmitStatus}
         toggleMove={isMoveQuestion?.id}
+        questionToDeactivate={questionToDeactivate}
+        setQuestionToDeactivate={setQuestionToDeactivate}
       />
       <AddMoveButton
         className="question"
