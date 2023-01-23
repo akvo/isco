@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Row,
   Col,
@@ -13,6 +13,7 @@ import {
   Select,
   Tooltip,
   Alert,
+  Popconfirm,
 } from "antd";
 import { AiOutlineFieldNumber } from "react-icons/ai";
 import { RiDeleteBinFill } from "react-icons/ri";
@@ -509,7 +510,11 @@ const Setting = ({
   setAllowDecimal,
   coreMandatory,
   setCoreMandatory,
+  questionToDeactivate,
+  setQuestionToDeactivate,
 }) => {
+  const [message, setMessage] = useState("");
+  const [open, setOpen] = useState("");
   const { surveyEditor, tempStorage, optionValues } = store.useState((s) => s);
   const { questionGroup: questionGroupState } = surveyEditor;
   const { operator_type, member_type, isco_type } = optionValues;
@@ -574,6 +579,75 @@ const Setting = ({
     handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
   };
 
+  const handleDeactivateChange = (val, field) => {
+    const allSkipLogic = questionGroupState
+      ?.flatMap((qg) => qg?.question)
+      .map((item) => item.skip_logic)
+      .flat();
+    const findDependant = allSkipLogic.find(
+      (item) => item.dependent_to === qid
+    );
+    const allQuestion = orderBy(
+      questionGroupState?.flatMap((qg) => qg?.question),
+      ["order"]
+    );
+    const dependentQuestion = allQuestion?.find(
+      (q) => q?.id === findDependant?.question
+    );
+    if (
+      dependentQuestion &&
+      !dependentQuestion.deactivate &&
+      !question.deactivate
+    ) {
+      setOpen(true);
+      const field = `question-${dependentQuestion?.id}-deactivate`;
+      const fieldValue = { [field]: val };
+      form.setFieldsValue(fieldValue);
+      const data = [{ ...question }];
+      data.push(dependentQuestion);
+      setQuestionToDeactivate(
+        data.map((item) => {
+          return {
+            ...item,
+            deactivate: !item.deactivate,
+          };
+        })
+      );
+      setMessage(
+        `${question?.name} has dependancy on ${dependentQuestion?.name}. \n Do you still want to deactivate?`
+      );
+      return false;
+    }
+    const fieldValue = { [field]: val };
+    form.setFieldsValue(fieldValue);
+    const updatedQuestionGroup = questionGroupState.map((qg) => {
+      const questions = qg.question.map((q) => {
+        return {
+          ...q,
+          deactivate:
+            q.id === question?.id ? !question?.deactivate : q.deactivate,
+        };
+      });
+      return {
+        ...qg,
+        question: questions,
+      };
+    });
+    store.update((s) => {
+      s.surveyEditor = {
+        ...s.surveyEditor,
+        questionGroup: updatedQuestionGroup,
+      };
+    });
+    setQuestionToDeactivate([
+      {
+        ...question,
+        deactivate: val,
+      },
+    ]);
+    handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
+  };
+
   const handleCoreMandatoryChange = (val, field) => {
     const fieldValue = { [field]: val };
     form.setFieldsValue(fieldValue);
@@ -621,6 +695,36 @@ const Setting = ({
         deletedSkipLogic: [...filterTempStorage, skipLogic],
       };
     });
+  };
+
+  const handleOk = (data) => {
+    setOpen(false);
+    let updatedQuestionGroup = [...questionGroupState];
+    data?.map((item) => {
+      updatedQuestionGroup = updatedQuestionGroup.map((qg) => {
+        const questions = qg.question.map((q) => {
+          return {
+            ...q,
+            deactivate: q.id === item?.id ? item?.deactivate : q.deactivate,
+          };
+        });
+        return {
+          ...qg,
+          question: questions,
+        };
+      });
+    });
+    store.update((s) => {
+      s.surveyEditor = {
+        ...s.surveyEditor,
+        questionGroup: updatedQuestionGroup,
+      };
+    });
+  };
+
+  const handleCancel = () => {
+    setOpen(false);
+    setQuestionToDeactivate([]);
   };
 
   return (
@@ -719,6 +823,31 @@ const Setting = ({
               </Form.Item>
             </div>
             <Space size={100}>
+              <div>
+                <Popconfirm
+                  placement="topRight"
+                  title={message}
+                  onConfirm={() => handleOk(questionToDeactivate)}
+                  onCancel={handleCancel}
+                  visible={open}
+                  style={{ whiteSpace: "break-spaces'" }}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <Form.Item name={`question-${qid}-deactivate`} hidden noStyle>
+                    <Input />
+                  </Form.Item>
+                  Deactivate{" "}
+                  <Switch
+                    key={`question-${qid}-deactivate-switch`}
+                    size="small"
+                    checked={question?.deactivate}
+                    onChange={(val) =>
+                      handleDeactivateChange(val, `question-${qid}-deactivate`)
+                    }
+                  />
+                </Popconfirm>
+              </div>
               <div>
                 <Form.Item name={`question-${qid}-mandatory`} hidden noStyle>
                   <Input />
@@ -952,6 +1081,8 @@ const QuestionSetting = ({
   setActiveLang,
   coreMandatory,
   setCoreMandatory,
+  questionToDeactivate,
+  setQuestionToDeactivate,
 }) => {
   switch (activeSetting) {
     case "translation":
@@ -978,6 +1109,8 @@ const QuestionSetting = ({
           handleFormOnValuesChange={handleFormOnValuesChange}
           coreMandatory={coreMandatory}
           setCoreMandatory={setCoreMandatory}
+          questionToDeactivate={questionToDeactivate}
+          setQuestionToDeactivate={setQuestionToDeactivate}
         />
       );
     default:

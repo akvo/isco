@@ -3,8 +3,8 @@ import pytest
 from fastapi import FastAPI
 from httpx import AsyncClient
 from sqlalchemy.orm import Session
-from models.question import QuestionType
 from tests.test_000_main import Acc
+import util.storage as storage
 
 pytestmark = pytest.mark.asyncio
 sys.path.append("..")
@@ -14,7 +14,7 @@ account = Acc(email=None, token=None)
 
 class TestQuestionRoutes():
     @pytest.mark.asyncio
-    async def test_update_question_wtih_deactivate(
+    async def test_update_question_with_deactivate(
         self, app: FastAPI, session: Session, client: AsyncClient
     ) -> None:
         # get question
@@ -23,71 +23,220 @@ class TestQuestionRoutes():
         assert res.status_code == 200
         res = res.json()
         assert res["id"] == 1
-        # update question
-        question_payload = {
-            "form": 1,
-            "question_group": 1,
-            "name": "Question 1",
-            "translations": [
-                {"language": "id", "text": "Pertanyaan 1"}],
-            "mandatory": True,
-            "datapoint_name": True,
-            "variable_name": None,
-            "type": QuestionType.option.value,
-            "personal_data": False,
-            "rule": None,
-            "tooltip": "Question 1 tooltip",
-            "tooltip_translations": [{
-                "language": "id",
-                "tooltip_translations": "Keterangan Pertanyaan 1"}],
-            "cascade": None,
-            "repeating_objects": None,
-            "order": 1,
-            "option": None,
-            "member_access": None,
-            "isco_access": None,
-            "skip_logic": None,
-            "core_mandatory": True,
-            "deactivate": False,
-        }
+        # deactivate question
+        question_payload = [{
+            "id": 1,
+            "deactivate": True,
+        }]
         res = await client.put(
-            app.url_path_for("question:put", id=1),
+            app.url_path_for("question:bulk_deactivate"),
             headers={"Authorization": f"Bearer {account.token}"},
             json=question_payload)
+        assert res.status_code == 204
+        res = await client.get(
+            app.url_path_for("question:get_by_id", id=1))
+        assert res.status_code == 200
+        res = res.json()
+        assert res["deactivate"] is True
+        # activate question
+        question_payload = [{
+            "id": 1,
+            "deactivate": False,
+        }]
+        res = await client.put(
+            app.url_path_for("question:bulk_deactivate"),
+            headers={"Authorization": f"Bearer {account.token}"},
+            json=question_payload)
+        assert res.status_code == 204
+        res = await client.get(
+            app.url_path_for("question:get_by_id", id=1))
+        assert res.status_code == 200
+        res = res.json()
+        assert res["deactivate"] is False
+
+    async def test_get_form_to_deactivate_questions_in_a_group(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
+        res = await client.get(
+            app.url_path_for("form:get_webform_from_bucket", form_id=4),
+            headers={"Authorization": f"Bearer {account.token}"})
         assert res.status_code == 200
         res = res.json()
         assert res == {
-            "cascade": None,
-            "datapoint_name": True,
-            "form": 1,
-            "id": 1,
-            "isco_access": [],
-            "mandatory": True,
-            "member_access": [],
-            "name": 'Question 1',
-            "option": [{
-                "code": "opt1",
-                "id": 1,
-                "name": "Option 1",
-                "order": 1,
-                "question": 1,
-                    "translations": [
-                        {"language": "id", "text": "Pilihan 1"}]
-            }],
-            "order": 1,
-            "personal_data": False,
-            "question_group": 1,
-            "repeating_objects": [],
-            "rule": None,
-            "skip_logic": [],
-            "tooltip": 'Question 1 tooltip',
-            "tooltip_translations": [{
-                "language": "id",
-                "tooltip_translations": "Keterangan Pertanyaan 1"}],
-            "translations": [{
-                "language": "id", "text": "Pertanyaan 1"}],
-            "type": "option",
-            "variable_name": None,
-            "core_mandatory": True,
+            "form": {
+                "id": 4,
+                "name": "Form with computed validation",
+                "description": "Form Description",
+                "languages": ["en"],
+                "question_group": [
+                    {
+                        "id": 5,
+                        "name": "Computed Validation Group 1",
+                        "description": "Description",
+                        "order": 1,
+                        "repeatable": False,
+                        "member_access": [],
+                        "isco_access": [],
+                        "question": [
+                            {
+                                "id": 14,
+                                "name": "Percentage 1",
+                                "required": False,
+                                "datapoint_name": False,
+                                "type": "number",
+                                "order": 1,
+                                "member_access": [],
+                                "isco_access": [],
+                                "coreMandatory": False,
+                                "deactivate": False,
+                            },
+                            {
+                                "id": 15,
+                                "name": "Percentage 2",
+                                "required": False,
+                                "datapoint_name": False,
+                                "type": "number",
+                                "order": 2,
+                                "member_access": [],
+                                "isco_access": [],
+                                "coreMandatory": False,
+                                "deactivate": False,
+                            },
+                        ],
+                    }
+                ],
+                "version": 1,
+            }
+        }
+
+    async def test_deactivate_group_in_form_4(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
+        # deactivate question
+        question_payload = [{
+            "id": 14,
+            "deactivate": True,
+        }, {
+            "id": 15,
+            "deactivate": True,
+        }]
+        res = await client.put(
+            app.url_path_for("question:bulk_deactivate"),
+            headers={"Authorization": f"Bearer {account.token}"},
+            json=question_payload)
+        assert res.status_code == 204
+        # get form
+        form = await client.get(app.url_path_for("form:get_by_id", id=4))
+        assert form.status_code == 200
+        form = form.json()
+        # publish form
+        res = await client.post(
+            app.url_path_for("form:publish"),
+            headers={"Authorization": f"Bearer {account.token}"},
+            params={"form_id": 4})
+        assert res.status_code == 200
+        res = res.json()
+        assert res["version"] == form["version"] + 1
+        assert res["url"] is not None
+        assert res["published"] is not None
+        assert storage.check(res["url"]) is True
+        # get published form from storage
+        res = await client.get(
+            app.url_path_for("form:get_webform_from_bucket", form_id=4),
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 200
+        res = res.json()
+        assert res == {
+            "form": {
+                "id": 4,
+                "name": "Form with computed validation",
+                "description": "Form Description",
+                "languages": ["en"],
+                "question_group": [],
+                "version": 2.0,
+            }
+        }
+
+    async def test_activate_group_in_form_4(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
+        # deactivate question
+        question_payload = [{
+            "id": 14,
             "deactivate": False,
+        }, {
+            "id": 15,
+            "deactivate": False,
+        }]
+        res = await client.put(
+            app.url_path_for("question:bulk_deactivate"),
+            headers={"Authorization": f"Bearer {account.token}"},
+            json=question_payload)
+        assert res.status_code == 204
+        # get form
+        form = await client.get(app.url_path_for("form:get_by_id", id=4))
+        assert form.status_code == 200
+        form = form.json()
+        # publish form
+        res = await client.post(
+            app.url_path_for("form:publish"),
+            headers={"Authorization": f"Bearer {account.token}"},
+            params={"form_id": 4})
+        assert res.status_code == 200
+        res = res.json()
+        assert res["version"] == form["version"] + 1
+        assert res["url"] is not None
+        assert res["published"] is not None
+        assert storage.check(res["url"]) is True
+        # get published form from storage
+        res = await client.get(
+            app.url_path_for("form:get_webform_from_bucket", form_id=4),
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 200
+        res = res.json()
+        assert res == {
+            "form": {
+                "id": 4,
+                "name": "Form with computed validation",
+                "description": "Form Description",
+                "languages": ["en"],
+                "question_group": [
+                    {
+                        "id": 5,
+                        "name": "Computed Validation Group 1",
+                        "description": "Description",
+                        "order": 1,
+                        "repeatable": False,
+                        "member_access": [],
+                        "isco_access": [],
+                        "question": [
+                            {
+                                "id": 14,
+                                "name": "Percentage 1",
+                                "required": False,
+                                "datapoint_name": False,
+                                "type": "number",
+                                "order": 1,
+                                "member_access": [],
+                                "isco_access": [],
+                                "coreMandatory": False,
+                                "deactivate": False,
+                            },
+                            {
+                                "id": 15,
+                                "name": "Percentage 2",
+                                "required": False,
+                                "datapoint_name": False,
+                                "type": "number",
+                                "order": 2,
+                                "member_access": [],
+                                "isco_access": [],
+                                "coreMandatory": False,
+                                "deactivate": False,
+                            },
+                        ],
+                    }
+                ],
+                "version": 3.0,
+            }
         }
