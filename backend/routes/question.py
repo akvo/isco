@@ -1,8 +1,8 @@
 from http import HTTPStatus
-from fastapi import Depends, Request, APIRouter, Response, Query
+from fastapi import Depends, Request, APIRouter, Response
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
-from typing import List, Optional
+from typing import List
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
 from db.connection import get_session
