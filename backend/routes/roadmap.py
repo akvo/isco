@@ -294,7 +294,7 @@ def delete_datapoint(
     summary="new request download by id",
     response_model=str,
     status_code=201,
-    name="roadmap-download:request",
+    name="roadmap-download:file",
     tags=["Roadmap"])
 def request_new_download(req: Request,
                          id: int,
