@@ -85,8 +85,9 @@ def generate_webform_json(session: Session, id: int):
     # Sort question group by order
     form['question_group'].sort(key=get_order)
     for qg in form['question_group']:
-        # Sort question by order
+        # filter by deactivate
         qg['question'] = [d for d in qg['question'] if not d['deactivate']]
+        # Sort question by order
         qg['question'].sort(key=get_order)
         # repeat text
         if qg['repeatable']:
@@ -167,17 +168,21 @@ def generate_webform_json(session: Session, id: int):
                     del d['operator']
                     del d['value']
                     del d['type']
+    # filter group if doesn't have question
+    form['question_group'] = [
+        qg for qg in form['question_group'] if len(qg['question']) > 0]
     # fetch nested list / tree data
     if len(cascade_ids):
-        tree_obj = get_cascade_list_by_cascade_id(session=session,
-                                                  cascade_id=cascade_ids)
+        tree_obj = get_cascade_list_by_cascade_id(
+            session=session, cascade_id=cascade_ids)
         if tree_obj:
             form.update({"tree": tree_obj})
     return form
 
 
-def generate_webform_json_file(session: Session, id: int,
-                               version: Optional[float] = None):
+def generate_webform_json_file(
+    session: Session, id: int, version: Optional[float] = None
+):
     form = generate_webform_json(session=session, id=id)
     form_name = form['name'].lower().split(" ")
     form_name = "_".join(form_name)
