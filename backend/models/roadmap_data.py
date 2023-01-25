@@ -11,8 +11,9 @@ from sqlalchemy.orm import relationship
 from db.connection import Base
 from models.roadmap_answer import RoadmapAnswerDict, RoadmapAnswerBase
 from models.roadmap_answer import RoadmapAnswer
-from models.user import User
-from models.organisation import Organisation
+from models.user import User, UserDict
+from models.organisation import Organisation, OrganisationDict
+from models.form import FormInfo
 
 
 class RoadmapDataPaylod(TypedDict):
@@ -43,6 +44,16 @@ class RoadmapDataResponse(BaseModel):
     data: List[RoadmapDataResDict]
     total: int
     total_page: int
+
+
+class ReportDict(TypedDict):
+    id: int
+    form: FormInfo
+    name: str
+    organisation: OrganisationDict
+    submitted_by: UserDict
+    submitted: Optional[str] = None
+    answer: List[RoadmapAnswerDict]
 
 
 class RoadmapData(Base):
@@ -99,6 +110,25 @@ class RoadmapData(Base):
             "organisation": self.organisation_detail.name,
             "datapoint_name": self.name,
             "submitted_date": self.created.strftime("%B %d, %Y"),
+        }
+
+    @property
+    def to_report(self) -> ReportDict:
+        return {
+            "id": self.id,
+            "name": self.name,
+            "form": {
+                "id": 1669095326959,
+                "name": "Roadmap",
+                "description": "Lorem Ipsum Dolor sit Amet",
+            },
+            "organisation": self.organisation_detail.serialize,
+            "submitted_by":
+            self.created_by_user.serialize if self.created_by
+            else None,
+            "submitted":
+            self.created.strftime("%B %d, %Y") if self.created else None,
+            "answer": [a.to_report for a in self.answer],
         }
 
 

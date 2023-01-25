@@ -184,6 +184,54 @@ class RoadmapAnswer(Base):
             answer.update({"value": self.table})
         return answer
 
+    @property
+    def to_report(self) -> dict:
+        answer = None
+        q = self.question_detail
+        value_type = "string"
+        if q.type in [
+                RoadmapQuestionType.input, RoadmapQuestionType.text,
+                RoadmapQuestionType.date]:
+            answer = self.text
+        if q.type == RoadmapQuestionType.number:
+            answer = self.value
+            if q.rule:
+                if q.rule.get("allow_decimal"):
+                    answer = float(answer) if answer else None
+            else:
+                answer = int(answer) if answer else None
+            if q.repeating_objects:
+                unit = list(filter(
+                    lambda x: x["field"] == "unit", q.repeating_objects))
+                if unit:
+                    unit = unit[0].get("value")
+                else:
+                    unit = ""
+                answer = f"{answer} {unit}" if answer else None
+        if q.type == RoadmapQuestionType.option:
+            answer = self.options[0] if self.options else None
+        if q.type in [
+            RoadmapQuestionType.option,
+            RoadmapQuestionType.multiple_option,
+            RoadmapQuestionType.cascade,
+            RoadmapQuestionType.nested_list,
+        ]:
+            answer = self.options
+            value_type = "list"
+        if q.type == RoadmapQuestionType.cascade:
+            answer = " - ".join(answer) if answer else None
+            value_type = "string"
+        return {
+            "group": q.question_group,
+            "order": q.order,
+            "question_type": q.type,
+            "name": q.name,
+            "value": answer,
+            "value_type": value_type,
+            "repeat": self.repeat_index,
+            "tooltip": q.tooltip,
+        }
+
 
 class RoadmapAnswerBase(BaseModel):
     id: int
