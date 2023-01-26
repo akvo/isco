@@ -291,22 +291,26 @@ def delete_datapoint(
 
 @roadmap_route.get(
     "/roadmap-download/{id:path}",
-    summary="new request download by id",
+    summary="direct download roadmap data by id",
     response_model=str,
     status_code=201,
     name="roadmap:download_file",
     tags=["Roadmap"])
-def request_new_download(req: Request,
-                         id: int,
-                         session: Session = Depends(get_session),
-                         credentials: credentials = Depends(security)):
+def request_new_download(
+    req: Request,
+    id: int,
+    session: Session = Depends(get_session),
+    credentials: credentials = Depends(security)
+):
     verify_admin(
         session=session,
         authenticated=req.state.authenticated)
     data = crud_roadmap.get_data_by_id(session=session, id=id)
     data = data.to_report
-    detail = report.transform_data(answers=data["answer"], session=session,
-                                   questionGroupModel=False)
+    detail = report.transform_data(
+        answers=data["answer"],
+        session=session,
+        questionGroupModel=False)
     file = report.generate(data=data, detail=detail)
     location = storage.download(url=file)
     return FileResponse(location)
