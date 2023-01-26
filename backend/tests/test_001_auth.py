@@ -18,6 +18,7 @@ from tests.test_000_main import Acc
 sys.path.append("..")
 
 account = Acc(email="support@akvo.org", token=None)
+# not admin account => wayan_invited@test.org
 
 
 class TestUserAuthentication():

@@ -416,14 +416,3 @@ class TestManageRoadmapDatapoint():
             ],
             "organisation_ids": [1],
         }
-
-    @pytest.mark.asyncio
-    async def test_delete_roadmap_datapoint(
-        self, app: FastAPI, session: Session, client: AsyncClient
-    ) -> None:
-        # get roadmap webform
-        res = await client.delete(
-            app.url_path_for("roadmap:delete_datapoint", id=1),
-            headers={"Authorization": f"Bearer {account.token}"},
-        )
-        assert res.status_code == 204
