@@ -10,7 +10,9 @@ from fastapi import HTTPException, Query, Response
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
 from sqlalchemy.orm import Session
+from fastapi.responses import FileResponse
 from db.connection import get_session
+import util.report as report
 from db import crud_roadmap
 from db import crud_organisation
 from models.roadmap_question_group import RoadmapFormJson
@@ -19,6 +21,7 @@ from models.roadmap_data import RoadmapDataResponse
 from models.roadmap_answer import RoadmapAnswer
 from models.organisation_member import OrganisationMember
 from middleware import verify_admin
+import util.storage as storage
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 source_file = "./source/roadmap.json"
@@ -284,3 +287,30 @@ def delete_datapoint(
         authenticated=req.state.authenticated)
     crud_roadmap.delete_roadmap_data_by_id(session=session, id=id)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)
+
+
+@roadmap_route.get(
+    "/roadmap-download/{id:path}",
+    summary="direct download roadmap data by id",
+    response_model=str,
+    status_code=201,
+    name="roadmap:download_file",
+    tags=["Roadmap"])
+def request_new_download(
+    req: Request,
+    id: int,
+    session: Session = Depends(get_session),
+    credentials: credentials = Depends(security)
+):
+    verify_admin(
+        session=session,
+        authenticated=req.state.authenticated)
+    data = crud_roadmap.get_data_by_id(session=session, id=id)
+    data = data.to_report
+    detail = report.transform_data(
+        answers=data["answer"],
+        session=session,
+        questionGroupModel=False)
+    file = report.generate(data=data, detail=detail)
+    location = storage.download(url=file)
+    return FileResponse(location)

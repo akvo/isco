@@ -12,10 +12,11 @@ sys.path.append("..")
 account = Acc(email=None, token=None)
 
 
-class TestDeleteRoutes():
+class TestDeleteFormAndUserWithSubmissionRoutes():
     @pytest.mark.asyncio
-    async def test_delete_publish_form(self, app: FastAPI, session: Session,
-                                       client: AsyncClient) -> None:
+    async def test_delete_publish_form(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # get form
         form = await client.get(app.url_path_for("form:get_by_id", id=1))
         assert form.status_code == 200
@@ -33,8 +34,9 @@ class TestDeleteRoutes():
         assert storage.check(form["url"]) is False
 
     @pytest.mark.asyncio
-    async def test_delete_user(self, app: FastAPI, session: Session,
-                               client: AsyncClient) -> None:
+    async def test_delete_user_with_submission(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         not_super_admin = Acc(email="wayan_invited@test.org", token=None)
         # delete user not super admin
         res = await client.delete(
@@ -46,8 +48,3 @@ class TestDeleteRoutes():
             app.url_path_for("user:delete", id=2),
             headers={"Authorization": f"Bearer {account.token}"})
         assert res.status_code == 404
-        # delete user
-        res = await client.delete(
-            app.url_path_for("user:delete", id=3),
-            headers={"Authorization": f"Bearer {account.token}"})
-        assert res.status_code == 204

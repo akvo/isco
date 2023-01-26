@@ -1,14 +1,26 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
-import { Row, Col, Table, Space, Button, Popconfirm, Select } from "antd";
+import {
+  Row,
+  Col,
+  Table,
+  Space,
+  Button,
+  Popconfirm,
+  Select,
+  notification,
+} from "antd";
 import { api, store } from "../../lib";
-import { RiPencilFill, RiDeleteBinFill } from "react-icons/ri";
+import { RiPencilFill, RiDeleteBinFill, RiPrinterFill } from "react-icons/ri";
 import { useNotification } from "../../util";
+import moment from "moment";
 
 const CurrentRoadmap = ({ setCurrentTab, setEditDatapoint }) => {
   const { notify } = useNotification();
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState({});
   const [filterMember, setFilterMember] = useState(null);
+  const [downloadData, setDownloadData] = useState(null);
+  const [downloadLoading, setDownloadLoading] = useState(null);
   const memberTypes = store.useState((s) => s.optionValues.member_type);
 
   const pageSize = 10;
@@ -69,6 +81,80 @@ const CurrentRoadmap = ({ setCurrentTab, setEditDatapoint }) => {
       });
   };
 
+  const handleDownloadButton = ({ id, form }) => {
+    setDownloadLoading(id);
+    api
+      .get(`/roadmap-download/${id}`)
+      .then((res) => {
+        setDownloadData(res?.data);
+        setTimeout(() => {
+          const print = document.getElementById("print-iframe");
+          if (print) {
+            const today = moment().format("MMMM Do YYYY");
+            const title = `${form}_${today}`;
+            // for firefox
+            print.contentDocument.title = title;
+            // hack for chrome
+            document.title = title;
+            print.focus();
+            print.contentWindow.print();
+          }
+        }, 2500);
+      })
+      .catch((e) => {
+        const { status, statusText } = e.response;
+        console.error(status, statusText);
+        if (status === 410) {
+          notification.warning({
+            message: "Expired",
+            description: "Download link has been expired.",
+          });
+        } else {
+          notify({
+            type: "error",
+            message: "Something went wrong.",
+          });
+        }
+      })
+      .finally(() => {
+        setTimeout(() => {}, 2500);
+        setDownloadLoading(null);
+      });
+  };
+
+  if (window.frames?.["print-iframe"]) {
+    window.frames["print-iframe"].contentWindow.onafterprint = function () {
+      document.title = "ISCO";
+      setDownloadData(null);
+    };
+    setTimeout(() => {
+      document.title = "ISCO";
+    }, 1000);
+  }
+
+  const handleLoad = (event) => {
+    const iframe = event.target;
+    if (iframe?.contentDocument) {
+      let css = "@page {";
+      css += "size: 210mm 297mm; margin: 15mm;";
+      css += "}";
+      css +=
+        "* { -webkit-print-color-adjust: exact !important; color-adjust: exact !important; }";
+      const style = document.createElement("style");
+      style.type = "text/css";
+      style.media = "print";
+      if (style.styleSheet) {
+        style.styleSheet.cssText = css;
+      } else {
+        style.appendChild(document.createTextNode(css));
+      }
+      const head = iframe.contentDocument.head;
+      if (head) {
+        head.appendChild(style);
+      }
+    }
+  };
+
   const columns = [
     {
       title: "Datapoint Name",
@@ -108,6 +194,14 @@ const CurrentRoadmap = ({ setCurrentTab, setEditDatapoint }) => {
               type="text"
             />
           </Popconfirm>
+          <Button
+            loading={record.id === downloadLoading}
+            className="action-btn"
+            icon={<RiPrinterFill />}
+            shape="circle"
+            type="text"
+            onClick={() => handleDownloadButton(record)}
+          />
         </Space>
       ),
     },
@@ -155,6 +249,23 @@ const CurrentRoadmap = ({ setCurrentTab, setEditDatapoint }) => {
           />
         </Col>
       </Row>
+      {downloadData && (
+        <iframe
+          id="print-iframe"
+          title={Math.random()}
+          srcDoc={downloadData}
+          frameBorder={0}
+          height={0}
+          width={0}
+          style={{
+            visibility: "hidden",
+            position: "absolute",
+            top: 0,
+            left: 0,
+          }}
+          onLoad={handleLoad}
+        />
+      )}
     </div>
   );
 };

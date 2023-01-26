@@ -2,11 +2,13 @@ import os
 import pandas as pd
 import re
 import uuid
+from typing import Optional
 from collections import defaultdict
 from sqlalchemy.orm import Session
 from models.question_group import QuestionGroup
 from models.question import QuestionType
 from models.cascade_list import CascadeList
+from models.roadmap_question_group import RoadmapQuestionGroup
 import jinja2
 import util.storage as storage
 
@@ -37,11 +39,13 @@ def generate(data, detail):
     return file
 
 
-def transform_data(answers: list, session: Session):
+def transform_data(answers: list, session: Session, questionGroupModel:
+                   Optional[bool] = True):
+    model = QuestionGroup if questionGroupModel else RoadmapQuestionGroup
     answers = pd.DataFrame(answers)
     group = answers["group"].drop_duplicates().to_list()
-    group = session.query(QuestionGroup).filter(
-        QuestionGroup.id.in_(list(group))).all()
+    group = session.query(model).filter(
+        model.id.in_(list(group))).all()
     group = [{
         "id": g.id,
         "name": g.name,
@@ -66,7 +70,7 @@ def transform_data(answers: list, session: Session):
                 "value": a["value"],
                 "value_type": a["value_type"],
                 "tooltip": a["tooltip"],
-                "comment": a["comment"]
+                "comment": a["comment"] if questionGroupModel else None
             } for a in res[r]]
             repeat.append({"repeat": r, "answers": answer})
         g.update({"data": repeat})

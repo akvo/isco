@@ -107,7 +107,9 @@ const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
       <Row className="select-organisation-wrapper">
         <Col span={24}>
           <Space size={20}>
-            <div>Setup Roadmap for</div>
+            <div>
+              Setup Roadmap for <span className="org-required">*</span>
+            </div>
             <Select
               allowClear
               showSearch
