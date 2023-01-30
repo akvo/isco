@@ -89,6 +89,7 @@ const CurrentRoadmap = ({ setCurrentTab, setEditDatapoint }) => {
       .then((res) => {
         setDownloadData(res?.data);
         setTimeout(() => {
+          setDownloadLoading(null);
           const print = document.getElementById("print-iframe");
           if (print) {
             const today = moment().format("MMMM Do YYYY");
@@ -103,6 +104,7 @@ const CurrentRoadmap = ({ setCurrentTab, setEditDatapoint }) => {
         }, 2500);
       })
       .catch((e) => {
+        setDownloadLoading(null);
         const { status, statusText } = e.response;
         console.error(status, statusText);
         if (status === 410) {
@@ -116,10 +118,6 @@ const CurrentRoadmap = ({ setCurrentTab, setEditDatapoint }) => {
             message: "Something went wrong.",
           });
         }
-      })
-      .finally(() => {
-        setTimeout(() => {}, 2500);
-        setDownloadLoading(null);
       });
   };
 
