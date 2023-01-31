@@ -19,8 +19,7 @@ prefilled_route = APIRouter()
     response_model=List[PrevProjectSubmissionResponse],
     name="prefilled:get_previous_project_submission",
     summary="get previous submission for project questionnaire",
-    tags=["Prefilled"]
-)
+    tags=["Prefilled"])
 def get_previous_project_submission(
     req: Request,
     session: Session = Depends(get_session),
