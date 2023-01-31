@@ -34,7 +34,9 @@ class TestPrefilledRoute():
         assert data.submitted.year == get_prev_year(year=True)
         # get prev project submission list
         res = await client.get(
-            app.url_path_for("prefilled:get_previous_project_submission"),
+            app.url_path_for(
+                "prefilled:get_previous_project_submission",
+                form_id=data.form),
             headers={"Authorization": f"Bearer {account.token}"})
         assert res.status_code == 200
         res = res.json()

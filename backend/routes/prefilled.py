@@ -15,13 +15,14 @@ prefilled_route = APIRouter()
 
 
 @prefilled_route.get(
-    "/previous-project-submission",
+    "/previous-project-submission/{form_id}",
     response_model=List[PrevProjectSubmissionResponse],
     name="prefilled:get_previous_project_submission",
     summary="get previous submission for project questionnaire",
     tags=["Prefilled"])
 def get_previous_project_submission(
     req: Request,
+    form_id: int,
     session: Session = Depends(get_session),
     credentials: credentials = Depends(security)
 ):
@@ -33,6 +34,7 @@ def get_previous_project_submission(
         Data.submitted.isnot(None),
         extract('year', Data.submitted) == prev_year,
         Data.organisation == user.organisation,
+        Data.form == form_id,
         Data.form.in_(PROJECT_SURVEY)
     )).all()
     if not data:
