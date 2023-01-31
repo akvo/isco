@@ -50,6 +50,13 @@ class TestPrefilledRoute():
         res = await client.get(
             app.url_path_for(
                 "prefilled:get_webform_with_previous_submission",
+                form_id=100),
+            params={"data_id": 100},
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 400
+        res = await client.get(
+            app.url_path_for(
+                "prefilled:get_webform_with_previous_submission",
                 form_id=data.form),
             params={"data_id": data.id},
             headers={"Authorization": f"Bearer {account.token}"})
@@ -121,4 +128,5 @@ class TestPrefilledRoute():
                 }],
             },
             "mismatch": False,
+            "collaborators": []
         }

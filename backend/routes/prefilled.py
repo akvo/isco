@@ -13,7 +13,7 @@ from middleware import verify_user
 from models.data import Data, PrevProjectSubmissionResponse
 from util.survey_config import PROJECT_SURVEY
 from util.common import get_prev_year
-from db import crud_form, crud_data
+from db import crud_form, crud_data, crud_collaborator
 from pydantic import Required
 
 security = HTTPBearer()
@@ -85,12 +85,18 @@ def get_webform_with_previous_submission(
     # if there is a mismatch
     # between prefilled answer and the new form add flag True
     question_ids = []
+    answer_question_ids = []
     for qg in webform.get('question_group'):
         for q in qg.get('question'):
             question_ids.append(q.get('id'))
-    answer_question_ids = [
-        a.get('question') for a in initial_values.get('answer')]
+    if initial_values:
+        answer_question_ids = [
+            a.get('question')
+            for a in initial_values.get('answer')]
     diff = set(answer_question_ids).difference(set(question_ids))
     results.update({'mismatch': True if diff else False})
-    print(results)
+    # fetch collaborator
+    collaborators = crud_collaborator.get_collaborator_by_data(
+        session=session, data=data_id)
+    results.update({'collaborators': [c.serialize for c in collaborators]})
     return results
