@@ -124,6 +124,11 @@ class DataResponseQuestionName(BaseModel):
     total_page: int
 
 
+class PrevProjectSubmissionResponse(TypedDict):
+    id: int
+    datapoint_name: str
+
+
 class Data(Base):
     __tablename__ = "data"
     id = Column(Integer,
@@ -141,21 +146,28 @@ class Data(Base):
     created = Column(DateTime, nullable=True)
     updated = Column(DateTime, nullable=True)
     submitted = Column(DateTime, nullable=True)
-    answer = relationship(Answer,
-                          cascade="all, delete",
-                          passive_deletes=True,
-                          backref="answer",
-                          order_by=Answer.id.asc())
-    created_by_user = relationship(User, foreign_keys=[created_by])
-    organisation_detail = relationship(Organisation,
-                                       foreign_keys=[organisation])
-    submitted_by_user = relationship(User, foreign_keys=[submitted_by])
-    locked_by_user = relationship(User, foreign_keys=[locked_by])
-    form_detail = relationship(Form, foreign_keys=[form])
+    answer = relationship(
+        Answer,
+        cascade="all, delete",
+        passive_deletes=True,
+        backref="answer",
+        order_by=Answer.id.asc())
+    created_by_user = relationship(
+        User, foreign_keys=[created_by])
+    organisation_detail = relationship(
+        Organisation, foreign_keys=[organisation])
+    submitted_by_user = relationship(
+        User, foreign_keys=[submitted_by])
+    locked_by_user = relationship(
+        User, foreign_keys=[locked_by])
+    form_detail = relationship(
+        Form, foreign_keys=[form])
 
-    def __init__(self, name: str, form: int, geo: List[float], locked_by: int,
-                 created_by: int, organisation: int, submitted_by: int,
-                 updated: datetime, created: datetime, submitted: datetime):
+    def __init__(
+        self, name: str, form: int, geo: List[float], locked_by: int,
+        created_by: int, organisation: int, submitted_by: int,
+        updated: datetime, created: datetime, submitted: datetime
+    ):
         self.name = name
         self.form = form
         self.geo = geo
@@ -312,6 +324,20 @@ class Data(Base):
             "submitted":
             self.submitted.strftime("%B %d, %Y") if self.submitted else None,
             "answer": [a.to_report for a in self.answer],
+        }
+
+    @property
+    def to_prev_project_submssion_list(self) -> PrevProjectSubmissionResponse:
+        form = self.form_detail.name
+        organisation = self.organisation_detail.name
+        submitted_by = self.submitted_by_user.name
+        submitted = self.submitted.strftime("%B %d, %Y")
+        name = f"{form} - {organisation} - {submitted_by} - {submitted}"
+        if self.name:
+            name = self.name
+        return {
+            "id": self.id,
+            "datapoint_name": name
         }
 
 
