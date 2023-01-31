@@ -110,11 +110,15 @@ const Survey = () => {
     setSelectedForm(val);
   };
 
-  const handleOnChangeSavedSubmissionDropdown = (dataId) => {
+  const resetCollaboratorDropdown = () => {
     setDisableAddCollaboratorButton(true);
     setShowCollaboratorForm(false);
     setCollaborators(null);
     setSelectedCollaborators([]);
+  };
+
+  const handleOnChangeSavedSubmissionDropdown = (dataId) => {
+    resetCollaboratorDropdown();
     const findData = savedSubmissions.find((x) => x.id === dataId);
     // disable add collaborator button
     if (
@@ -154,6 +158,7 @@ const Survey = () => {
   };
 
   const handleOnClickOpenNewForm = () => {
+    resetCollaboratorDropdown();
     setSelectedSavedSubmission(null);
     if (formLoaded) {
       // show modal
@@ -319,7 +324,10 @@ const Survey = () => {
                   <Space>
                     <Button
                       onClick={handleOnClickAddCollaborator}
-                      disabled={!selectedCollaborators.length}
+                      disabled={
+                        !selectedCollaborators.length ||
+                        disableAddCollaboratorButton
+                      }
                       loading={isAddCollaboratorLoading}
                     >
                       {text.btnAdd}
