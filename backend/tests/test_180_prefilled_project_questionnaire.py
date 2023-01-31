@@ -17,7 +17,7 @@ account = Acc(email=None, token=None)
 
 class TestPrefilledRoute():
     @pytest.mark.asyncio
-    async def test_get_list_of_previous_project_submission(
+    async def test_get_previous_project_submission(
         self, app: FastAPI, session: Session, client: AsyncClient
     ) -> None:
         # update one of our project submission data
@@ -46,3 +46,79 @@ class TestPrefilledRoute():
             'id': 6,
             'datapoint_name': name
         }]
+        # get project form definition with prefilled value
+        res = await client.get(
+            app.url_path_for(
+                "prefilled:get_webform_with_previous_submission",
+                form_id=data.form),
+            params={"data_id": data.id},
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 200
+        res = res.json()
+        assert res == {
+            "form": {
+                "id": 4,
+                "name": "Form with computed validation",
+                "description": "Form Description",
+                "languages": ["en"],
+                "question_group": [{
+                    "id": 5,
+                    "name": "Computed Validation Group 1",
+                    "description": "Description",
+                    "order": 1,
+                    "repeatable": False,
+                    "member_access": [],
+                    "isco_access": [],
+                    "question": [{
+                        "id": 14,
+                        "name": "Percentage 1",
+                        "required": False,
+                        "datapoint_name": False,
+                        "type": "number",
+                        "order": 1,
+                        "member_access": [],
+                        "isco_access": [],
+                        "coreMandatory": False,
+                        "deactivate": False,
+                    }, {
+                        "id": 15,
+                        "name": "Percentage 2",
+                        "required": False,
+                        "datapoint_name": False,
+                        "type": "number",
+                        "order": 2,
+                        "member_access": [],
+                        "isco_access": [],
+                        "coreMandatory": False,
+                        "deactivate": False,
+                    }],
+                }],
+                "version": 3.0,
+            },
+            "initial_values": {
+                "id": 6,
+                "name": "",
+                "form": 4,
+                "form_name": "Form with computed validation",
+                "geo": None,
+                "locked_by": None,
+                "created_by": "John Doe",
+                "organisation": "staff Akvo",
+                "submitted_by": "John Doe",
+                "created": "January 31, 2023",
+                "updated": "January 31, 2023",
+                "submitted": "January 31, 2022",
+                "answer": [{
+                    "question": 14,
+                    "repeat_index": 0,
+                    "comment": None,
+                    "value": 40
+                }, {
+                    "question": 15,
+                    "repeat_index": 0,
+                    "comment": None,
+                    "value": 60
+                }],
+            },
+            "mismatch": False,
+        }
