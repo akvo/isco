@@ -131,11 +131,15 @@ class TestPrefilledRoute():
                 }],
             },
             "mismatch": False,
-            "collaborators": []
+            "collaborators": [{
+                'data': 6, 'id': 3, 'organisation': 2
+            }, {
+                'data': 6, 'id': 4, 'organisation': 3
+            }]
         }
 
     @pytest.mark.asyncio
-    async def test_submit_prefilled_project_questionnaire(
+    async def test_save_then_submit_prefilled_project_questionnaire(
         self, app: FastAPI, session: Session, client: AsyncClient
     ) -> None:
         payload = [{
@@ -150,11 +154,12 @@ class TestPrefilledRoute():
             "value": 50
         }]
         # save data
+        collaborator_params = [2, 3]
         res = await client.post(
             app.url_path_for("data:create", form_id=4, submitted=0),
             params={
                 "locked_by": 1,
-                "collaborators": [2, 3]
+                "collaborators": collaborator_params
             },
             json=payload,
             headers={"Authorization": f"Bearer {account.token}"})
@@ -165,4 +170,54 @@ class TestPrefilledRoute():
         collaborators = crud_collaborator.get_collaborator_by_data(
             session=session, data=8)
         collaborators = [c.organisation for c in collaborators]
-        assert collaborators == [2, 3]
+        assert collaborators == collaborator_params
+        # submit saved data
+        res = await client.put(
+            app.url_path_for("data:update", id=8, submitted=1),
+            json=[{
+                "question": 14,
+                "repeat_index": 0,
+                "comment": None,
+                "value": 50
+            }, {
+                "question": 15,
+                "repeat_index": 0,
+                "comment": None,
+                "value": 50
+            }],
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 200
+
+    @pytest.mark.asyncio
+    async def test_submit_prefilled_project_questionnaire(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
+        payload = [{
+            "question": 14,
+            "repeat_index": 0,
+            "comment": None,
+            "value": 51
+        }, {
+            "question": 15,
+            "repeat_index": 0,
+            "comment": None,
+            "value": 49
+        }]
+        # direct submit data
+        collaborator_params = [3]
+        res = await client.post(
+            app.url_path_for("data:create", form_id=4, submitted=1),
+            params={
+                "locked_by": 1,
+                "collaborators": collaborator_params
+            },
+            json=payload,
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 200
+        res = res.json()
+        assert res['id'] == 9
+        # check if collaborator inserted
+        collaborators = crud_collaborator.get_collaborator_by_data(
+            session=session, data=9)
+        collaborators = [c.organisation for c in collaborators]
+        assert collaborators == collaborator_params
