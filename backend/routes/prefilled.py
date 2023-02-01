@@ -24,7 +24,8 @@ prefilled_route = APIRouter()
     "/previous-project-submission/{form_id}",
     response_model=List[PrevProjectSubmissionResponse],
     name="prefilled:get_previous_project_submission",
-    summary="get previous submission for project questionnaire",
+    summary="get previous submission for project questionnaire \
+        and return id of datapoint with datapoint name",
     tags=["Prefilled"])
 def get_previous_project_submission(
     req: Request,

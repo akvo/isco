@@ -59,7 +59,10 @@ const WebformPage = ({
   setFormLoaded,
   selectedSavedSubmission,
   setReloadDropdownValue,
+  selectedPrevSubmission,
+  selectedFormType,
 }) => {
+  console.log(selectedPrevSubmission, selectedFormType);
   const { notify } = useNotification();
 
   const { user, language } = store.useState((s) => s);
