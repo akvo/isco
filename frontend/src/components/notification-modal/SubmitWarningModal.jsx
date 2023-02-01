@@ -43,7 +43,7 @@ const SubmitWarningModal = ({
       destroyOnClose
       footer={
         <Row align="middle" justify="center">
-          {!showCoreMandatoryWarning && !mismatch && (
+          {(force || save || (!showCoreMandatoryWarning && !mismatch)) && (
             <Button
               type="primary"
               onClick={onOk}
@@ -118,7 +118,7 @@ const SubmitWarningModal = ({
               </Col>
             </Row>
           )}
-          {mismatch && (
+          {!save && mismatch && (
             <Row align="top" justify="space-between" gutter={[24, 24]}>
               <Col span={24} style={{ fontSize: "1rem" }}>
                 {text.prefilledMismatchWarming}

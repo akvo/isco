@@ -466,6 +466,7 @@ const Survey = () => {
             selectedPrevSubmission={selectedPrevSubmission}
             setShowCollaboratorForm={setShowCollaboratorForm}
             setCollaborators={setCollaborators}
+            selectedCollaborators={selectedCollaborators}
             setSelectedCollaborators={setSelectedCollaborators}
           />
         </Space>

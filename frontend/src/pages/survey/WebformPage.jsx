@@ -61,9 +61,10 @@ const WebformPage = ({
   setReloadDropdownValue,
   selectedPrevSubmission,
   selectedFormType,
-  setShowCollaboratorForm,
   setCollaborators,
+  selectedCollaborators,
   setSelectedCollaborators,
+  // setShowCollaboratorForm,
 }) => {
   const { notify } = useNotification();
 
@@ -100,6 +101,11 @@ const WebformPage = ({
     useState(false);
   // prefilled value
   const [mismatch, setMismatch] = useState(false);
+  // check if from prev year value
+  const isSavedDataFromPrevSubmission =
+    savedData?.id &&
+    selectedPrevSubmission &&
+    savedData.id === selectedPrevSubmission;
 
   const text = useMemo(() => {
     return uiText[activeLang];
@@ -435,23 +441,41 @@ const WebformPage = ({
     setDeletedComment(qid);
   };
 
-  const onFinish = (/*values*/) => {
-    if (answer.length) {
-      const payload = reorderAnswersRepeatIndex(formValue, answer);
-      setIsSubmitting(true);
-      let url = !savedData?.id
-        ? `/data/form/${formId}/1`
-        : `/data/${savedData.id}/1`;
-      if (isLocked) {
-        url = `${url}?locked_by=${user.id}`;
-      }
-      const endpoint = !savedData?.id
+  const generateEndpoint = ({ payload, submitted }) => {
+    let url =
+      !savedData?.id || isSavedDataFromPrevSubmission
+        ? `/data/form/${formId}/${submitted}`
+        : `/data/${savedData.id}/${submitted}`;
+    if (isLocked) {
+      url = `${url}?locked_by=${user.id}`;
+    }
+    // send collaborators value when submit/save for first time
+    if (
+      selectedPrevSubmission &&
+      selectedFormType === "project" &&
+      selectedCollaborators?.length
+    ) {
+      const queryParams = selectedCollaborators.join("&collaborators=");
+      url = isLocked ? `${url}&` : `${url}?`;
+      url = `${url}collaborators=${queryParams}`;
+    }
+    // check if from prev year value
+    const endpoint =
+      !savedData?.id || isSavedDataFromPrevSubmission
         ? api.post(url, payload, {
             "content-type": "application/json",
           })
         : api.put(url, payload, {
             "content-type": "application/json",
           });
+    return endpoint;
+  };
+
+  const onFinish = (/*values*/) => {
+    if (answer.length) {
+      const payload = reorderAnswersRepeatIndex(formValue, answer);
+      setIsSubmitting(true);
+      const endpoint = generateEndpoint({ payload: payload, submitted: 1 });
       endpoint
         .then((res) => {
           if (res.status === 208) {
@@ -483,19 +507,7 @@ const WebformPage = ({
     if (answer.length) {
       const payload = reorderAnswersRepeatIndex(formValue, answer);
       setIsSaving(true);
-      let url = !savedData?.id
-        ? `/data/form/${formId}/0`
-        : `/data/${savedData.id}/0`;
-      if (isLocked) {
-        url = `${url}?locked_by=${user.id}`;
-      }
-      const endpoint = !savedData?.id
-        ? api.post(url, payload, {
-            "content-type": "application/json",
-          })
-        : api.put(url, payload, {
-            "content-type": "application/json",
-          });
+      const endpoint = generateEndpoint({ payload: payload, submitted: 0 });
       endpoint
         .then((res) => {
           // submission already submitted
@@ -556,19 +568,7 @@ const WebformPage = ({
   const handleOnForceSubmit = () => {
     const payload = reorderAnswersRepeatIndex(formValue, answer);
     setIsSubmitting(true);
-    let url = !savedData?.id
-      ? `/data/form/${formId}/1`
-      : `/data/${savedData.id}/1`;
-    if (isLocked) {
-      url = `${url}?locked_by=${user.id}`;
-    }
-    const endpoint = !savedData?.id
-      ? api.post(url, payload, {
-          "content-type": "application/json",
-        })
-      : api.put(url, payload, {
-          "content-type": "application/json",
-        });
+    const endpoint = generateEndpoint({ payload: payload, submitted: 1 });
     endpoint
       .then((res) => {
         if (res.status === 208) {
@@ -651,7 +651,10 @@ const WebformPage = ({
             ? handleOnClickSaveButton
             : onFinish
         }
-        onCancel={() => setModalWarningVisible(false)}
+        onCancel={() => {
+          setModalWarningVisible(false);
+          setMismatch(false);
+        }}
         btnLoading={isSubmitting || isSaving}
         force={isForce}
         save={isSave}
