@@ -14,7 +14,6 @@ from db.connection import get_session
 from models.form import FormBase, FormDict, FormDictWithGroupStatus
 from models.form import FormPayload, FormJson, FormOptions, Form
 from middleware import verify_super_admin, verify_editor
-# from util.survey_config import MEMBER_SURVEY
 
 security = HTTPBearer()
 form_route = APIRouter()

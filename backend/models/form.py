@@ -12,6 +12,7 @@ import sqlalchemy.dialects.postgresql as pg
 from db.connection import Base
 from datetime import datetime
 from models.question_group import QuestionGroupBase
+from util.survey_config import MEMBER_SURVEY, PROJECT_SURVEY
 
 
 class FormType(enum.Enum):
@@ -59,6 +60,7 @@ class FormOptions(TypedDict):
     label: str
     value: int
     disabled: bool
+    form_type: Optional[str] = None
 
 
 class Form(Base):
@@ -141,10 +143,16 @@ class Form(Base):
 
     @property
     def to_options(self) -> FormOptions:
+        form_type = None
+        if self.id in MEMBER_SURVEY:
+            form_type = "member"
+        if self.id in PROJECT_SURVEY:
+            form_type = "project"
         return {
             "label": self.name,
             "value": self.id,
             "disabled": False,
+            "form_type": form_type
         }
 
     @property

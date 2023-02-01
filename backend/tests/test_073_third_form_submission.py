@@ -94,11 +94,13 @@ class TestThirdSubmissionRoutes():
         assert res == [{
             'label': 'Form Test',
             'value': 1,
-            'disabled': False
+            'disabled': False,
+            'form_type': 'member'
         }, {
             'label': 'Third limited survey',
             'value': 3,
-            'disabled': True
+            'disabled': True,
+            'form_type': None
         }]
 
     @pytest.mark.asyncio
