@@ -464,6 +464,9 @@ const Survey = () => {
             setReloadDropdownValue={setReloadDropdownValue}
             selectedFormType={selectedFormType}
             selectedPrevSubmission={selectedPrevSubmission}
+            setShowCollaboratorForm={setShowCollaboratorForm}
+            setCollaborators={setCollaborators}
+            setSelectedCollaborators={setSelectedCollaborators}
           />
         </Space>
       )}

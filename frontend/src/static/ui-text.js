@@ -259,6 +259,8 @@ const uiText = {
         questions (marked with a double asterisk **).
       </>
     ),
+    prefilledMismatchWarming:
+      "Some of the answers may be not be shown because of the form updated.",
     infoSubmissionDropdown: "(saved/submitted)",
     // password criteria
     passwordCriteriaInfoText: "Criteria for the password:",
@@ -550,6 +552,8 @@ const uiText = {
         Kernpflichtfragen (mit einem doppelten Sternchen ** gekennzeichnet).
       </>
     ),
+    prefilledMismatchWarming:
+      "Einige der Antworten werden aufgrund des aktualisierten Formulars möglicherweise nicht angezeigt.",
     infoSubmissionDropdown: "(gespeichert/eingereicht)",
     // password criteria
     passwordCriteriaInfoText: "Kriterien für das Passwort:",
