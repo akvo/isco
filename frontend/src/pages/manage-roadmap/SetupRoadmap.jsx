@@ -13,6 +13,7 @@ const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
   const [selectedOrg, setSelectedOrg] = useState(
     editDatapoint?.organisation_id || null
   );
+  const [selectedLang, setSelectedLang] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [dataOrgIds, setDataOrgIds] = useState(null);
   const organisations = store.useState((s) => s.optionValues.organisation);
@@ -38,6 +39,11 @@ const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
       };
     });
   }, [organisations, dataOrgIds]);
+
+  const languages = [
+    { label: "English", value: "en" },
+    { label: "German", value: "de" },
+  ];
 
   useEffect(() => {
     let url = "/roadmap-webform";
@@ -102,6 +108,14 @@ const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
       });
   };
 
+  const handleSelectedLanguage = (val) => {
+    setFormValue({
+      ...formValue,
+      defaultLanguage: val,
+    });
+    setSelectedLang(val);
+  };
+
   return (
     <div id="setup-roadmap">
       <Row className="select-organisation-wrapper">
@@ -118,6 +132,22 @@ const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
               options={organisationOptions}
               onChange={setSelectedOrg}
               value={selectedOrg}
+              filterOption={(input, option) =>
+                option?.label?.toLowerCase().indexOf(input?.toLowerCase()) >= 0
+              }
+              disabled={editDatapoint}
+            />
+          </Space>
+          <Space size={20} style={{ paddingLeft: "20px" }}>
+            <div>Roadmap language</div>
+            <Select
+              allowClear
+              showSearch
+              className="select-organisation-dropdown"
+              placeholder="Select language"
+              options={languages}
+              onChange={(val) => handleSelectedLanguage(val)}
+              value={selectedLang}
               filterOption={(input, option) =>
                 option?.label?.toLowerCase().indexOf(input?.toLowerCase()) >= 0
               }
