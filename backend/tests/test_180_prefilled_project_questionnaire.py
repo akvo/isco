@@ -8,11 +8,14 @@ from sqlalchemy.orm import Session
 from models.data import Data
 from util.survey_config import PROJECT_SURVEY
 from util.common import get_prev_year
-from db import crud_data
+from db import crud_data, crud_collaborator
+from datetime import datetime
 
 pytestmark = pytest.mark.asyncio
 sys.path.append("..")
 account = Acc(email=None, token=None)
+prev_date = get_prev_year().strftime("%B %d, %Y")
+today = datetime.today().strftime("%B %d, %Y")
 
 
 class TestPrefilledRoute():
@@ -41,7 +44,7 @@ class TestPrefilledRoute():
         assert res.status_code == 200
         res = res.json()
         name = 'Form with computed validation - staff Akvo'
-        name += ' - John Doe - January 31, 2022'
+        name += ' - John Doe - ' + prev_date
         assert res == [{
             'id': 6,
             'datapoint_name': name
@@ -112,9 +115,9 @@ class TestPrefilledRoute():
                 "created_by": "John Doe",
                 "organisation": "staff Akvo",
                 "submitted_by": "John Doe",
-                "created": "January 31, 2023",
-                "updated": "January 31, 2023",
-                "submitted": "January 31, 2022",
+                "created": today,
+                "updated": today,
+                "submitted": prev_date,
                 "answer": [{
                     "question": 14,
                     "repeat_index": 0,
@@ -130,3 +133,36 @@ class TestPrefilledRoute():
             "mismatch": False,
             "collaborators": []
         }
+
+    @pytest.mark.asyncio
+    async def test_submit_prefilled_project_questionnaire(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
+        payload = [{
+            "question": 14,
+            "repeat_index": 0,
+            "comment": None,
+            "value": 50
+        }, {
+            "question": 15,
+            "repeat_index": 0,
+            "comment": None,
+            "value": 50
+        }]
+        # save data
+        res = await client.post(
+            app.url_path_for("data:create", form_id=4, submitted=0),
+            params={
+                "locked_by": 1,
+                "collaborators": [2, 3]
+            },
+            json=payload,
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 200
+        res = res.json()
+        assert res['id'] == 8
+        # check if collaborator inserted
+        collaborators = crud_collaborator.get_collaborator_by_data(
+            session=session, data=8)
+        collaborators = [c.organisation for c in collaborators]
+        assert collaborators == [2, 3]

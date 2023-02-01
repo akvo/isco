@@ -25,6 +25,7 @@ from middleware import organisations_in_same_isco, find_secretariat_admins
 from middleware import find_member_admins
 from util.survey_config import MEMBER_SURVEY, PROJECT_SURVEY, LIMITED_SURVEY
 from util.mailer import Email, MailTypeEnum
+from routes.collaborator import send_collaborator_email
 
 security = HTTPBearer()
 data_route = APIRouter()
@@ -72,7 +73,7 @@ def check_core_mandatory_questions_answer(
        not set(core_mandatory_questions).issubset(answer_qids):
         # not all core mandatory answered
         raise HTTPException(
-            status_code=405,
+            status_code=400,
             detail="Please answer all core mandatory questions")
 
 
@@ -113,7 +114,7 @@ def check_computed_validation(form_id: int, answers: List[AnswerDict]):
             if "equal" in cv and total_cv_answers != cv_equal:
                 errors.append(cv)
         if errors:
-            raise HTTPException(status_code=405, detail=errors)
+            raise HTTPException(status_code=400, detail=errors)
 
 
 def notify_secretariat_admin(session: Session, user, form_name: str):
@@ -198,14 +199,15 @@ def get(req: Request,
 @data_route.post(
     "/data/form/{form_id}/{submitted:path}",
     response_model=DataDict,
-    summary="add new data",
+    summary="add new data, collaborators contain organization id",
     name="data:create",
     tags=["Data"])
 def add(req: Request,
         form_id: int,
         submitted: int,
         answers: List[AnswerDict],
-        locked_by: Optional[int] = None,
+        locked_by: Optional[int] = Query(None),
+        collaborators: Optional[List[int]] = Query(None),
         session: Session = Depends(get_session),
         credentials: credentials = Depends(security)):
     user = verify_editor(
@@ -273,6 +275,20 @@ def add(req: Request,
         organisation=user.organisation,
         answers=answerlist,
         submitted=submitted)
+    # if collaborators added for the first time
+    # handling this for prefilled project questionnaire
+    # if prefilled project questionnaire,
+    # we should send collaborators as query params from FE
+    if collaborators:
+        for org_id in collaborators:
+            crud_collaborator.add_collaborator(
+                session=session,
+                data=data.id,
+                payload={"organisation": org_id})
+        send_collaborator_email(
+            session=session,
+            user=user,
+            recipient_org_ids=collaborators)
     # if submitted send notification email to secretariat admin
     if submitted:
         notify_secretariat_admin(
