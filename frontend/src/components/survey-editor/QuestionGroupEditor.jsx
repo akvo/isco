@@ -665,11 +665,14 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
           });
         })
         .catch((e) => {
-          const { status, statusText } = e.response;
+          const { status, statusText, data } = e.response;
           console.error(status, statusText);
           notify({
             type: "error",
-            message: "Oops, something went wrong.",
+            message:
+              status === 400
+                ? data?.message || statusText
+                : "Oops, something went wrong.",
           });
         })
         .finally(() => {
@@ -909,7 +912,8 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
     [questionGroupState, questionGroup]
   );
 
-  const handleFormOnFinishFailed = () => {
+  const handleFormOnFinishFailed = ({ errorFields }) => {
+    console.error("failed", errorFields);
     setSubmitStatus(null);
     setSaveBtnLoading(false);
   };
