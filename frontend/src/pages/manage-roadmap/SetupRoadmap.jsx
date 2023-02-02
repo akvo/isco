@@ -13,7 +13,7 @@ const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
   const [selectedOrg, setSelectedOrg] = useState(
     editDatapoint?.organisation_id || null
   );
-  const [selectedLang, setSelectedLang] = useState("");
+  const [selectedLang, setSelectedLang] = useState("en");
   const [submitting, setSubmitting] = useState(false);
   const [dataOrgIds, setDataOrgIds] = useState(null);
   const organisations = store.useState((s) => s.optionValues.organisation);
@@ -62,7 +62,11 @@ const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
         const webform = res.data;
         delete webform?.initial_value;
         delete webform?.organisation_ids;
-        setFormValue(webform);
+        setFormValue({
+          ...webform,
+          defaultLanguage: "en",
+          languages: ["en", "de"],
+        });
       })
       .catch((e) => {
         console.error(e);
@@ -109,11 +113,15 @@ const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
   };
 
   const handleSelectedLanguage = (val) => {
-    setFormValue({
-      ...formValue,
-      defaultLanguage: val,
-    });
+    const currentFormValue = formValue;
+    setFormValue({});
     setSelectedLang(val);
+    setTimeout(() => {
+      setFormValue({
+        ...currentFormValue,
+        defaultLanguage: val,
+      });
+    }, 1000);
   };
 
   return (
@@ -151,7 +159,7 @@ const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
               filterOption={(input, option) =>
                 option?.label?.toLowerCase().indexOf(input?.toLowerCase()) >= 0
               }
-              disabled={editDatapoint}
+              disabled={editDatapoint || isEmpty(formValue)}
             />
           </Space>
         </Col>
