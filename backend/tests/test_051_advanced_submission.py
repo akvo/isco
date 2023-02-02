@@ -181,7 +181,8 @@ class TestAdvancedSubmissionRoute():
         assert res == [{
             "disabled": True,
             "label": "Form Test",
-            "value": 1
+            "value": 1,
+            "form_type": "member"
         }]
 
     @pytest.mark.asyncio

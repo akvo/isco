@@ -29,14 +29,14 @@ class TestSubmissionWithComputedValidationRoutes():
             params={"locked_by": 1},
             json=payload,
             headers={"Authorization": f"Bearer {account.token}"})
-        assert res.status_code == 405
+        assert res.status_code == 400
         # save data
         res = await client.post(
             app.url_path_for("data:create", form_id=4, submitted=0),
             params={"locked_by": 1},
             json=payload,
             headers={"Authorization": f"Bearer {account.token}"})
-        assert res.status_code == 405
+        assert res.status_code == 400
         # correct value
         payload = [{
             "question": 14,
@@ -58,8 +58,20 @@ class TestSubmissionWithComputedValidationRoutes():
         assert res.status_code == 200
         res = res.json()
         assert res['id'] == 6
+        # add collaborators
+        res = await client.post(
+            app.url_path_for("collaborator:create", data=6),
+            json=[{"organisation": 2}, {"organisation": 3}],
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 200
+        res = res.json()
+        assert res == [{
+            'data': 6, 'id': 3, 'organisation': 2
+        }, {
+            'data': 6, 'id': 4, 'organisation': 3
+        }]
 
-    # @pytest.mark.asyncio
+    @pytest.mark.asyncio
     async def test_update_data_with_computed_validation(
         self, app: FastAPI, session: Session, client: AsyncClient
     ) -> None:
@@ -83,7 +95,7 @@ class TestSubmissionWithComputedValidationRoutes():
                 "value": 100
             }],
             headers={"Authorization": f"Bearer {account.token}"})
-        assert res.status_code == 405
+        assert res.status_code == 400
         # update data
         res = await client.put(
             app.url_path_for("data:update", id=6, submitted=0),

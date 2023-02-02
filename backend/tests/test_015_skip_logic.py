@@ -71,6 +71,7 @@ class TestSkipLogicRoutes():
             "variable_name": None,
             "core_mandatory": False,
             "deactivate": False,
+            "disableDelete": False,
         }
         # get question
         res = await client.get(app.url_path_for("question:get_by_id", id=2))

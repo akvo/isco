@@ -247,17 +247,17 @@ const QuestionEditor = ({
       .catch((e) => {
         const { status, statusText, data } = e.response;
         console.error(status, statusText);
+        let messageText = "Oops, something went wrong.";
         if (status === 422) {
-          notify({
-            type: "warning",
-            message: data?.detail,
-          });
-        } else {
-          notify({
-            type: "error",
-            message: "Oops, something went wrong.",
-          });
+          messageText = data?.detail || statusText;
         }
+        if (status === 400) {
+          messageText = data?.message || statusText;
+        }
+        notify({
+          type: "error",
+          message: messageText,
+        });
       });
   };
 
@@ -418,6 +418,7 @@ const QuestionEditor = ({
                       0
                     }
                     onChange={() => setActivePanel(panelKey)}
+                    disabled={question?.disableDelete || false}
                   />
                 </Form.Item>
                 <Popconfirm
@@ -425,9 +426,14 @@ const QuestionEditor = ({
                   okText="Delete"
                   cancelText="Cancel"
                   onConfirm={() => handleDeleteQuestionButton(question)}
+                  disabled={question?.disableDelete || false}
                 >
                   <Tooltip title="Delete this question">
-                    <Button type="text" icon={<RiDeleteBinFill />} />
+                    <Button
+                      type="text"
+                      disabled={question?.disableDelete || false}
+                      icon={<RiDeleteBinFill />}
+                    />
                   </Tooltip>
                 </Popconfirm>
               </Space>

@@ -59,6 +59,12 @@ const WebformPage = ({
   setFormLoaded,
   selectedSavedSubmission,
   setReloadDropdownValue,
+  selectedPrevSubmission,
+  selectedFormType,
+  setCollaborators,
+  selectedCollaborators,
+  setSelectedCollaborators,
+  setShowCollaboratorForm,
 }) => {
   const { notify } = useNotification();
 
@@ -93,6 +99,13 @@ const WebformPage = ({
   // computed validation popup
   const [computedValidationModalVisible, setComputedValidationModalVisible] =
     useState(false);
+  // prefilled value
+  const [mismatch, setMismatch] = useState(false);
+  // check if from prev year value
+  const isSavedDataFromPrevSubmission =
+    savedData?.id &&
+    selectedPrevSubmission &&
+    savedData.id === selectedPrevSubmission;
 
   const text = useMemo(() => {
     return uiText[activeLang];
@@ -186,6 +199,15 @@ const WebformPage = ({
     if (formId && userMember && userIsco) {
       const savedDataId = selectedSavedSubmission?.id;
       let url = `/webform/${formId}`;
+      // handle load prefilled questionnaire with prev year value
+      if (
+        selectedPrevSubmission &&
+        selectedFormType === "project" &&
+        !savedDataId
+      ) {
+        url = `/webform/previous-submission/${formId}?data_id=${selectedPrevSubmission}`;
+      }
+      // handle saved data
       if (savedDataId) {
         url = `${url}?data_id=${savedDataId}`;
       }
@@ -193,7 +215,7 @@ const WebformPage = ({
         .get(url)
         .then((res) => {
           const { data, status } = res;
-          const { form, initial_values } = data;
+          const { form, initial_values, mismatch, collaborators } = data;
           // submission already submitted
           if (status === 208) {
             setErrorPage(true);
@@ -302,6 +324,19 @@ const WebformPage = ({
               defaultLanguage: activeLang || "en",
               question_group: transformedQuestionGroup,
             });
+
+            // show prefilled value mismatch
+            setCollaborators(collaborators || []);
+            setSelectedCollaborators(
+              collaborators?.length
+                ? collaborators.map((x) => x.organisation)
+                : []
+            );
+            setShowCollaboratorForm(collaborators?.length || false);
+            setTimeout(() => {
+              setMismatch(mismatch || false);
+              setModalWarningVisible(mismatch || false);
+            }, 500);
           }
         })
         .catch((e) => {
@@ -406,23 +441,41 @@ const WebformPage = ({
     setDeletedComment(qid);
   };
 
-  const onFinish = (/*values*/) => {
-    if (answer.length) {
-      const payload = reorderAnswersRepeatIndex(formValue, answer);
-      setIsSubmitting(true);
-      let url = !savedData?.id
-        ? `/data/form/${formId}/1`
-        : `/data/${savedData.id}/1`;
-      if (isLocked) {
-        url = `${url}?locked_by=${user.id}`;
-      }
-      const endpoint = !savedData?.id
+  const generateEndpoint = ({ payload, submitted }) => {
+    let url =
+      !savedData?.id || isSavedDataFromPrevSubmission
+        ? `/data/form/${formId}/${submitted}`
+        : `/data/${savedData.id}/${submitted}`;
+    if (isLocked) {
+      url = `${url}?locked_by=${user.id}`;
+    }
+    // send collaborators value when submit/save for first time
+    if (
+      selectedPrevSubmission &&
+      selectedFormType === "project" &&
+      selectedCollaborators?.length
+    ) {
+      const queryParams = selectedCollaborators.join("&collaborators=");
+      url = isLocked ? `${url}&` : `${url}?`;
+      url = `${url}collaborators=${queryParams}`;
+    }
+    // check if from prev year value
+    const endpoint =
+      !savedData?.id || isSavedDataFromPrevSubmission
         ? api.post(url, payload, {
             "content-type": "application/json",
           })
         : api.put(url, payload, {
             "content-type": "application/json",
           });
+    return endpoint;
+  };
+
+  const onFinish = (/*values*/) => {
+    if (answer.length) {
+      const payload = reorderAnswersRepeatIndex(formValue, answer);
+      setIsSubmitting(true);
+      const endpoint = generateEndpoint({ payload: payload, submitted: 1 });
       endpoint
         .then((res) => {
           if (res.status === 208) {
@@ -454,19 +507,7 @@ const WebformPage = ({
     if (answer.length) {
       const payload = reorderAnswersRepeatIndex(formValue, answer);
       setIsSaving(true);
-      let url = !savedData?.id
-        ? `/data/form/${formId}/0`
-        : `/data/${savedData.id}/0`;
-      if (isLocked) {
-        url = `${url}?locked_by=${user.id}`;
-      }
-      const endpoint = !savedData?.id
-        ? api.post(url, payload, {
-            "content-type": "application/json",
-          })
-        : api.put(url, payload, {
-            "content-type": "application/json",
-          });
+      const endpoint = generateEndpoint({ payload: payload, submitted: 0 });
       endpoint
         .then((res) => {
           // submission already submitted
@@ -527,19 +568,7 @@ const WebformPage = ({
   const handleOnForceSubmit = () => {
     const payload = reorderAnswersRepeatIndex(formValue, answer);
     setIsSubmitting(true);
-    let url = !savedData?.id
-      ? `/data/form/${formId}/1`
-      : `/data/${savedData.id}/1`;
-    if (isLocked) {
-      url = `${url}?locked_by=${user.id}`;
-    }
-    const endpoint = !savedData?.id
-      ? api.post(url, payload, {
-          "content-type": "application/json",
-        })
-      : api.put(url, payload, {
-          "content-type": "application/json",
-        });
+    const endpoint = generateEndpoint({ payload: payload, submitted: 1 });
     endpoint
       .then((res) => {
         if (res.status === 208) {
@@ -612,7 +641,10 @@ const WebformPage = ({
           </div>
         )}
       </div>
-      {/* Modal */}
+      {/* Modal
+       * TODO: Need to refactor this submit warning modal to send more proper kind of warning
+       * then we can catch that kind of warning inside a switch case
+       */}
       <SubmitWarningModal
         visible={modalWarningVisible}
         onOk={
@@ -622,11 +654,15 @@ const WebformPage = ({
             ? handleOnClickSaveButton
             : onFinish
         }
-        onCancel={() => setModalWarningVisible(false)}
+        onCancel={() => {
+          setModalWarningVisible(false);
+          setMismatch(false);
+        }}
         btnLoading={isSubmitting || isSaving}
         force={isForce}
         save={isSave}
         showCoreMandatoryWarning={showCoreMandatoryWarning}
+        mismatch={mismatch}
       />
       {/* Computed Validation Warning */}
       <ComputedValidationModal

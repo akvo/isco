@@ -93,6 +93,7 @@ class TestThirdFormRoutes():
                 'variable_name': None,
                 'core_mandatory': False,
                 'deactivate': False,
+                'disableDelete': False,
             }],
         }
 
@@ -130,6 +131,7 @@ class TestThirdFormRoutes():
             'variable_name': None,
             'core_mandatory': False,
             'deactivate': False,
+            'disableDelete': False
         }
 
     @pytest.mark.asyncio

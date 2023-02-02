@@ -1,5 +1,6 @@
 from http import HTTPStatus
 from fastapi import Depends, Request, APIRouter, Response
+from fastapi.responses import JSONResponse
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
 from typing import List
@@ -7,6 +8,7 @@ from sqlalchemy import and_
 from sqlalchemy.orm import Session
 from db.connection import get_session
 import db.crud_question as crud
+from db import crud_answer
 from models.question import QuestionBase, QuestionDict
 from models.question import QuestionPayload, QuestionType, \
     QuestionDeactivatePayload
@@ -162,6 +164,15 @@ def update(
     session: Session = Depends(get_session),
     credentials: credentials = Depends(security)
 ):
+    # Check if question has answers & change question type
+    # don't allow to update, return 400 bad request
+    current_question = crud.get_question_by_id(session=session, id=id)
+    has_answers = crud_answer.get_answer_by_question(
+        session=session, question=id)
+    if has_answers and current_question.type != payload.get('type'):
+        return JSONResponse(
+            status_code=HTTPStatus.BAD_REQUEST.value,
+            content={"message": "This question has answers"})
     question = crud.update_question(session=session, id=id, payload=payload)
     return question.serialize
 
@@ -197,5 +208,12 @@ def delete(
     session: Session = Depends(get_session),
     credentials: credentials = Depends(security)
 ):
+    # Check if question has answers & don't allow delete
+    has_answers = crud_answer.get_answer_by_question(
+        session=session, question=id)
+    if has_answers:
+        return JSONResponse(
+            status_code=HTTPStatus.BAD_REQUEST.value,
+            content={"message": "This question has answers"})
     crud.delete_question(session=session, id=id)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)

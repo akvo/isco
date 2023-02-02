@@ -149,6 +149,7 @@ class TestFormWithComputedValidationRoutes():
             "variable_name": None,
             "core_mandatory": False,
             "deactivate": False,
+            "disableDelete": False,
         }
         #
         # add question type number
@@ -204,6 +205,7 @@ class TestFormWithComputedValidationRoutes():
             "variable_name": None,
             "core_mandatory": False,
             "deactivate": False,
+            "disableDelete": False,
         }
 
     @pytest.mark.asyncio
