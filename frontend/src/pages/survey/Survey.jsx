@@ -270,6 +270,12 @@ const Survey = () => {
   };
 
   const handleOnClickAddCollaborator = () => {
+    if (selectedFormType === "project" && selectedPrevSubmission) {
+      // don't save collaborator directly if prefilled project submission
+      // collaborators will send as a query params when first time (POST)
+      // submit/save new project submission with prefilled value
+      return;
+    }
     if (selectedCollaborators.length) {
       setIsAddCollaboratorLoading(true);
       const apiCall = (url, payload, header) =>

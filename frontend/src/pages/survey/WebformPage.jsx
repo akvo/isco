@@ -64,7 +64,7 @@ const WebformPage = ({
   setCollaborators,
   selectedCollaborators,
   setSelectedCollaborators,
-  // setShowCollaboratorForm,
+  setShowCollaboratorForm,
 }) => {
   const { notify } = useNotification();
 
@@ -332,7 +332,7 @@ const WebformPage = ({
                 ? collaborators.map((x) => x.organisation)
                 : []
             );
-            // setShowCollaboratorForm(collaborators?.length || false);
+            setShowCollaboratorForm(collaborators?.length || false);
             setTimeout(() => {
               setMismatch(mismatch || false);
               setModalWarningVisible(mismatch || false);
