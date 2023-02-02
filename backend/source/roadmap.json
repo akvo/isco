@@ -1,7 +1,16 @@
 {
   "id": 1669095326959,
   "name": "Roadmap",
-  "description": "Lorem Ipsum Dolor sit Amet",
+  "description": "At the 2022 General Meeting of the German Initiative on Sustainable Cocoa (GISCO), it was decided that the preparation of individual roadmaps by each GISCO member and annual public reporting on commitments and milestones included in these roadmaps is a valuable and mandatory contribution to achieve GISCO’s objectives. \n\nIn addition to the monitoring and based on the GISCO roadmap which lists the goals, targeted indicators and recommendations for action of the German Initiative on Sustainable Cocoa on the focus topics of certified/independently verified cocoa, traceability, deforestation/agroforestry, child labor and living income, the members of GISCO draw up individual roadmaps on these focus topics, which are published on the GISCO website. \n\nMore information on the individual roadmaps can be found in the background document.",
+  "languages": ["en", "de"],
+  "defaultLanguage": "en",
+  "translations": [
+    {
+      "language": "de",
+      "name": "Form name translated",
+      "description": "Form description translated"
+    }
+  ],
   "question_group": [
     {
       "id": 1669095326961,
@@ -16,7 +25,13 @@
           "name": "Commitment",
           "type": "text",
           "required": false,
-          "meta": false
+          "meta": false,
+          "translations": [
+            {
+              "language": "de",
+              "name": "Commitment translated"
+            }
+          ]
         },
         {
           "id": 1669107420032,
@@ -33,6 +48,12 @@
               "type": "input",
               "id": 1669107433881
             }
+          ],
+          "translations": [
+            {
+              "language": "de",
+              "name": "Milestones translated"
+            }
           ]
         },
         {
@@ -42,10 +63,23 @@
           "name": "Challenge",
           "type": "text",
           "required": false,
-          "meta": false
+          "meta": false,
+          "translations": [
+            {
+              "language": "de",
+              "name": "Challenge translated"
+            }
+          ]
         }
       ],
-      "repeatText": "Add another Commitment"
+      "repeatText": "Add another Commitment",
+      "translations": [
+        {
+          "language": "de",
+          "name": "Traceability translated",
+          "repeatText": "Add another Commitment translated"
+        }
+      ]
     },
     {
       "id": 1669107562768,
@@ -60,7 +94,13 @@
           "name": "Commitment",
           "type": "input",
           "required": false,
-          "meta": false
+          "meta": false,
+          "translations": [
+            {
+              "language": "de",
+              "name": "Commitment translated"
+            }
+          ]
         },
         {
           "id": 1674113183189,
@@ -77,6 +117,12 @@
               "type": "input",
               "id": 1669107433881
             }
+          ],
+          "translations": [
+            {
+              "language": "de",
+              "name": "Milestones translated"
+            }
           ]
         },
         {
@@ -86,10 +132,23 @@
           "name": "Challenge",
           "type": "text",
           "required": false,
-          "meta": false
+          "meta": false,
+          "translations": [
+            {
+              "language": "de",
+              "name": "Challenge translated"
+            }
+          ]
         }
       ],
-      "repeatText": "Add another Commitment"
+      "repeatText": "Add another Commitment",
+      "translations": [
+        {
+          "language": "de",
+          "name": "Certified and Independently Verified Cocoa translated",
+          "repeatText": "Add another Commitment translated"
+        }
+      ]
     },
     {
       "id": 1669107635128,
@@ -104,7 +163,13 @@
           "name": "Commitment",
           "type": "input",
           "required": false,
-          "meta": false
+          "meta": false,
+          "translations": [
+            {
+              "language": "de",
+              "name": "Commitment translated"
+            }
+          ]
         },
         {
           "id": 1674113380992,
@@ -121,6 +186,12 @@
               "type": "input",
               "id": 1669107433881
             }
+          ],
+          "translations": [
+            {
+              "language": "de",
+              "name": "Milestones translated"
+            }
           ]
         },
         {
@@ -130,10 +201,23 @@
           "name": "Challenge",
           "type": "text",
           "required": false,
-          "meta": false
+          "meta": false,
+          "translations": [
+            {
+              "language": "de",
+              "name": "Challenge translated"
+            }
+          ]
         }
       ],
-      "repeatText": "Add another Commitment"
+      "repeatText": "Add another Commitment",
+      "translations": [
+        {
+          "language": "de",
+          "name": "Deforestation / Agroforestry translated",
+          "repeatText": "Add another Commitment translated"
+        }
+      ]
     },
     {
       "id": 1674113955166,
@@ -148,7 +232,13 @@
           "name": "Commitment",
           "type": "input",
           "required": false,
-          "meta": false
+          "meta": false,
+          "translations": [
+            {
+              "language": "de",
+              "name": "Commitment translated"
+            }
+          ]
         },
         {
           "id": 1674114001466,
@@ -165,6 +255,12 @@
               "type": "input",
               "id": 1669107433881
             }
+          ],
+          "translations": [
+            {
+              "language": "de",
+              "name": "Milestones translated"
+            }
           ]
         },
         {
@@ -174,10 +270,23 @@
           "name": "Challenge",
           "type": "text",
           "required": false,
-          "meta": false
+          "meta": false,
+          "translations": [
+            {
+              "language": "de",
+              "name": "Challenge translated"
+            }
+          ]
         }
       ],
-      "repeatText": "Add another Commitment"
+      "repeatText": "Add another Commitment",
+      "translations": [
+        {
+          "language": "de",
+          "name": "Child Labor translated",
+          "repeatText": "Add another Commitment translated"
+        }
+      ]
     }
   ]
 }

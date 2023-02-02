@@ -54,6 +54,7 @@ const uiText = {
     formCaptcha: "Insert captcha value",
     formPickPreviousSavedForms: "Pick a previously saved form",
     formStartFillingNewForm: "Start filling a new form",
+    formPreviousYearSubmission: "Submission from previous year",
     formLogin: "Login User",
     formRememberLogin: "Remember Login",
     formForgotPwd: "Forgot Password",
@@ -258,6 +259,8 @@ const uiText = {
         questions (marked with a double asterisk **).
       </>
     ),
+    prefilledMismatchWarming:
+      "Some of the answers may be not be shown because of the form updated.",
     infoSubmissionDropdown: "(saved/submitted)",
     // password criteria
     passwordCriteriaInfoText: "Criteria for the password:",
@@ -335,6 +338,7 @@ const uiText = {
     formCaptcha: "Bitte tragen die den Wert/die Werte ein",
     formPickPreviousSavedForms: "Auswahl eines zuvor gespeicherten Fragebogens",
     formStartFillingNewForm: "Beginn eines neuen Fragebogens",
+    formPreviousYearSubmission: "Abgabe aus dem Vorjahr",
     formLogin: "Einloggen",
     formRememberLogin: "Login-Daten erinnern",
     formForgotPwd: "Passwort vergessen",
@@ -548,6 +552,8 @@ const uiText = {
         Kernpflichtfragen (mit einem doppelten Sternchen ** gekennzeichnet).
       </>
     ),
+    prefilledMismatchWarming:
+      "Einige der Antworten werden aufgrund des aktualisierten Formulars möglicherweise nicht angezeigt.",
     infoSubmissionDropdown: "(gespeichert/eingereicht)",
     // password criteria
     passwordCriteriaInfoText: "Kriterien für das Passwort:",

@@ -13,6 +13,7 @@ import {
 import { api, store } from "../../lib";
 import { uiText } from "../../static";
 import { useNotification } from "../../util";
+import { handleLoad } from "../../util/common";
 import moment from "moment";
 
 const { Title } = Typography;
@@ -74,6 +75,7 @@ const Download = () => {
       .then((res) => {
         setDownloadData(res?.data);
         setTimeout(() => {
+          setDownloadLoading(null);
           const print = document.getElementById("print-iframe");
           if (print) {
             const today = moment().format("MMMM Do YYYY");
@@ -88,6 +90,7 @@ const Download = () => {
         }, 2500);
       })
       .catch((e) => {
+        setDownloadLoading(null);
         const { status, statusText } = e.response;
         console.error(status, statusText);
         if (status === 410) {
@@ -101,11 +104,6 @@ const Download = () => {
             message: "Something went wrong.",
           });
         }
-      })
-      .finally(() => {
-        setTimeout(() => {
-          setDownloadLoading(null);
-        }, 2500);
       });
   };
 
@@ -118,29 +116,6 @@ const Download = () => {
       document.title = "ISCO";
     }, 1000);
   }
-
-  const handleLoad = (event) => {
-    const iframe = event.target;
-    if (iframe?.contentDocument) {
-      let css = "@page {";
-      css += "size: 210mm 297mm; margin: 15mm;";
-      css += "}";
-      css +=
-        "* { -webkit-print-color-adjust: exact !important; color-adjust: exact !important; }";
-      const style = document.createElement("style");
-      style.type = "text/css";
-      style.media = "print";
-      if (style.styleSheet) {
-        style.styleSheet.cssText = css;
-      } else {
-        style.appendChild(document.createTextNode(css));
-      }
-      const head = iframe.contentDocument.head;
-      if (head) {
-        head.appendChild(style);
-      }
-    }
-  };
 
   const columns = [
     {

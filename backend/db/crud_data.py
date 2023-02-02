@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List, Optional, Union
 from typing_extensions import TypedDict
 from sqlalchemy.orm import Session
-from sqlalchemy import desc, and_, null
+from sqlalchemy import desc, and_, null, extract
 from models.data import Data, DataDict, DataOptionDict
 from models.answer import Answer
 from models.answer import AnswerBase
@@ -86,10 +86,16 @@ def get_data(session: Session, form: int, skip: int,
     return PaginatedData(data=data, count=count)
 
 
-def get_data_by_id(session: Session,
-                   id: int,
-                   submitted: Optional[bool] = None) -> DataDict:
+def get_data_by_id(
+    session: Session,
+    id: int,
+    submitted: Optional[bool] = None,
+    prev_year: Optional[int] = None
+) -> DataDict:
     data = session.query(Data).filter(Data.id == id)
+    if prev_year:
+        data = data.filter(
+            extract('year', Data.submitted) == prev_year)
     if submitted is None:
         return data.first()
     if submitted:
