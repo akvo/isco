@@ -641,7 +641,10 @@ const WebformPage = ({
           </div>
         )}
       </div>
-      {/* Modal */}
+      {/* Modal
+       * TODO: Need to refactor this submit warning modal to send more proper kind of warning
+       * then we can catch that kind of warning inside a switch case
+       */}
       <SubmitWarningModal
         visible={modalWarningVisible}
         onOk={
