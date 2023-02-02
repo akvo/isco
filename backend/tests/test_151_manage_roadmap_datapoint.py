@@ -23,6 +23,7 @@ class TestManageRoadmapDatapoint():
     ) -> None:
         payload = {
             "organisation_id": 1,
+            "language": "en",
             "answers": {
                 "1669095326962": "This is first commitment",
                 "1669107420032": [{
@@ -103,6 +104,7 @@ class TestManageRoadmapDatapoint():
     ) -> None:
         payload = {
             "organisation_id": 1,
+            "language": "en",
             "answers": {
                 "1669095326962": "Updated first commitment",
                 "1669107420032": [{

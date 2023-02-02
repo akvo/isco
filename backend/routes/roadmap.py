@@ -99,6 +99,7 @@ def post(
         session=session,
         authenticated=req.state.authenticated)
     organisation_id = payload.get('organisation_id')
+    language = payload.get('language')
     organisation = crud_organisation.get_organisation_by_id(
         session=session, id=organisation_id)
     organisation = organisation.serialize
@@ -109,6 +110,7 @@ def post(
         name=datapoint_name,
         created_by=user.id,
         organisation=organisation_id,
+        language=language,
         created=datetime.now(),
         updated=None
     )

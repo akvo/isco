@@ -82,6 +82,7 @@ const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
     const payload = {
       organisation_id: selectedOrg,
       answers: values,
+      language: selectedLang,
     };
     let method = api.post;
     let url = "/roadmap-webform";

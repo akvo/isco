@@ -19,6 +19,7 @@ from models.form import FormInfo
 class RoadmapDataPaylod(TypedDict):
     organisation_id: int
     answers: dict
+    language: str
 
 
 class RoadmapDataDict(TypedDict):
@@ -74,16 +75,18 @@ class RoadmapData(Base):
     created_by_user = relationship(User, foreign_keys=[created_by])
     organisation_detail = relationship(
         Organisation, foreign_keys=[organisation])
+    language = Column(String)
 
     def __init__(
         self, name: str, created_by: int, organisation: int,
-        updated: datetime, created: datetime
+        updated: datetime, created: datetime, language: language
     ):
         self.name = name
         self.created_by = created_by
         self.organisation = organisation
         self.created = created
         self.updated = updated
+        self.language = language
 
     def __repr__(self) -> int:
         return f"<RoadmapData {self.id}>"
@@ -100,6 +103,7 @@ class RoadmapData(Base):
             "updated":
             self.updated.strftime("%B %d, %Y") if self.updated else None,
             "answer": [a.formatted for a in self.answer],
+            "language": self.language,
         }
 
     @property
