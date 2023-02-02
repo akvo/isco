@@ -163,6 +163,7 @@ def get_survey_editor_by_id(
     session: Session = Depends(get_session)
 ):
     form = crud.get_form_by_id(session=session, id=form_id)
+    form = form.serialize
     for qg in form.get('question_group'):
         for q in qg.get('question'):
             check_answer = get_answer_by_question(
@@ -170,7 +171,7 @@ def get_survey_editor_by_id(
             q.update({
                 "disableDelete": True if check_answer else False
             })
-    return form.serialize
+    return form
 
 
 @form_route.get(
