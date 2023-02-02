@@ -63,6 +63,7 @@ class TestManageRoadmapDatapoint():
             "data": [{
                 "id": 1,
                 "datapoint_name": "All | staff Akvo",
+                "language": "en",
                 "organisation": "staff Akvo",
                 "organisation_id": 1,
                 "submitted_date": today
@@ -84,6 +85,7 @@ class TestManageRoadmapDatapoint():
                 "id": 1,
                 "datapoint_name": "All | staff Akvo",
                 "organisation": "staff Akvo",
+                "language": "en",
                 "organisation_id": 1,
                 "submitted_date": today
             }],

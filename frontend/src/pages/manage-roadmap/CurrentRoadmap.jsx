@@ -143,6 +143,11 @@ const CurrentRoadmap = ({ setCurrentTab, setEditDatapoint }) => {
       dataIndex: "submitted_date",
     },
     {
+      title: "Language",
+      key: "language",
+      dataIndex: "language",
+    },
+    {
       title: "Action",
       key: "action",
       render: (record) => (

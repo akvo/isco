@@ -38,6 +38,7 @@ class RoadmapDataResDict(TypedDict):
     organisation: str
     datapoint_name: str
     submitted_date: str
+    language: Optional[str] = None
 
 
 class RoadmapDataResponse(BaseModel):
@@ -114,6 +115,7 @@ class RoadmapData(Base):
             "organisation": self.organisation_detail.name,
             "datapoint_name": self.name,
             "submitted_date": self.created.strftime("%B %d, %Y"),
+            "language": self.language,
         }
 
     @property
