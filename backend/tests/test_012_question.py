@@ -80,6 +80,7 @@ class TestQuestionRoutes():
             "variable_name": None,
             "core_mandatory": False,
             "deactivate": False,
+            "disableDelete": False,
         }
 
     @pytest.mark.asyncio
@@ -151,4 +152,5 @@ class TestQuestionRoutes():
             "variable_name": None,
             "core_mandatory": True,
             "deactivate": False,
+            "disableDelete": False,
         }

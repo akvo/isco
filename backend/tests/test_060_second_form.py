@@ -104,6 +104,7 @@ class TestSecondFormRoutes():
                 'variable_name': None,
                 'core_mandatory': False,
                 'deactivate': False,
+                'disableDelete': False,
             }],
         }
 
@@ -139,5 +140,6 @@ class TestSecondFormRoutes():
             'type': 'input',
             'variable_name': None,
             'core_mandatory': False,
-            'deactivate': False
+            'deactivate': False,
+            'disableDelete': False
         }

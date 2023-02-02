@@ -303,6 +303,7 @@ class QuestionBase(BaseModel):
     option: Optional[List[OptionBase]] = []
     skip_logic: Optional[List[SkipLogicBase]] = []
     order: Optional[int] = None
+    disableDelete: Optional[bool] = False
 
     class Config:
         orm_mode = True

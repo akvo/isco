@@ -130,6 +130,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
             "variable_name": None,
             "core_mandatory": True,
             "deactivate": False,
+            "disableDelete": False,
         }
 
     @pytest.mark.asyncio
@@ -226,6 +227,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
             "variable_name": None,
             "core_mandatory": True,
             "deactivate": False,
+            "disableDelete": False,
         }
 
     @pytest.mark.asyncio
@@ -448,6 +450,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "variable_name": None,
                     "core_mandatory": True,
                     "deactivate": False,
+                    "disableDelete": False,
                 },
                 {
                     "cascade": None,
@@ -475,6 +478,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "variable_name": None,
                     "core_mandatory": False,
                     "deactivate": False,
+                    "disableDelete": False,
                 },
                 {
                     "cascade": 1,
@@ -499,6 +503,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "variable_name": None,
                     "core_mandatory": False,
                     "deactivate": False,
+                    "disableDelete": False,
                 },
                 {
                     "cascade": 2,
@@ -523,6 +528,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "variable_name": None,
                     "core_mandatory": False,
                     "deactivate": False,
+                    "disableDelete": False,
                 },
                 {
                     "cascade": None,
@@ -547,6 +553,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "variable_name": None,
                     "core_mandatory": False,
                     "deactivate": False,
+                    "disableDelete": False,
                 },
                 {
                     "cascade": None,
@@ -585,6 +592,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "variable_name": None,
                     "core_mandatory": False,
                     "deactivate": False,
+                    "disableDelete": False,
                 },
             ],
         }
