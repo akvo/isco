@@ -135,17 +135,19 @@ def notify_secretariat_admin(session: Session, user, form_name: str):
         email_secretariat.send
 
 
-@data_route.get("/data/form/{form_id:path}",
-                response_model=DataResponseQuestionName,
-                name="data:get",
-                summary="get all datas",
-                tags=["Data"])
+@data_route.get(
+    "/data/form/{form_id:path}",
+    response_model=DataResponseQuestionName,
+    name="data:get",
+    summary="get all datas",
+    tags=["Data"])
 def get(req: Request,
         form_id: int,
         page: int = 1,
         perpage: int = 10,
         submitted: Optional[bool] = False,
         filter_same_isco: Optional[bool] = False,
+        monitoring_round: Optional[int] = Query(None),
         session: Session = Depends(get_session),
         credentials: credentials = Depends(security)):
     user = verify_user(
@@ -160,7 +162,8 @@ def get(req: Request,
         skip=(perpage * (page - 1)),
         perpage=perpage,
         submitted=submitted,
-        org_ids=org_ids)
+        org_ids=org_ids,
+        monitoring_round=monitoring_round)
     if not data["count"]:
         raise HTTPException(status_code=404, detail="Not found")
     total_page = ceil(data["count"] / perpage) if data["count"] > 0 else 0
