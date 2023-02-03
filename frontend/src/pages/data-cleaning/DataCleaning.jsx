@@ -19,6 +19,7 @@ import { api } from "../../lib";
 import DataCleaningWebform from "./DataCleaningWebform";
 import DataDetail from "./DataDetail";
 import { useNotification } from "../../util";
+import { MonitoringRoundSelector } from "../../components";
 
 const { Title } = Typography;
 
@@ -36,7 +37,11 @@ const DataCleaning = () => {
   const [fetchingOrgDetail, setFetchingOrgDetail] = useState(false);
   const [undoSubmit, setUndoSubmit] = useState(null);
   const [orgDetail, setOrgDetail] = useState({});
+  // monitoring round selector
+  const [selectedMonitoringRound, setSelectedMonitoringRound] = useState(null);
 
+  console.log(selectedMonitoringRound);
+  // pagination
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
   const [data, setData] = useState({
@@ -313,6 +318,10 @@ const DataCleaning = () => {
                 options={forms}
                 value={formSelected}
                 onChange={(val) => setFormSelected(val)}
+              />
+              <MonitoringRoundSelector
+                value={selectedMonitoringRound}
+                onChange={setSelectedMonitoringRound}
               />
             </Col>
           </Row>
