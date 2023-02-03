@@ -19,6 +19,7 @@ import { api } from "../../lib";
 import DataCleaningWebform from "./DataCleaningWebform";
 import DataDetail from "./DataDetail";
 import { useNotification } from "../../util";
+import { MonitoringRoundSelector } from "../../components";
 
 const { Title } = Typography;
 
@@ -36,7 +37,10 @@ const DataCleaning = () => {
   const [fetchingOrgDetail, setFetchingOrgDetail] = useState(false);
   const [undoSubmit, setUndoSubmit] = useState(null);
   const [orgDetail, setOrgDetail] = useState({});
+  // monitoring round selector
+  const [selectedMonitoringRound, setSelectedMonitoringRound] = useState(null);
 
+  // pagination
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
   const [data, setData] = useState({
@@ -127,7 +131,10 @@ const DataCleaning = () => {
     if (formSelected) {
       setIsLoading(true);
       let url = `/data/form/${formSelected}?page=${page}&perpage=${pageSize}`;
-      url += `&submitted=1&filter_same_isco=1`;
+      url = `${url}&submitted=1&filter_same_isco=1`;
+      if (selectedMonitoringRound) {
+        url = `${url}&monitoring_round=${selectedMonitoringRound}`;
+      }
       api
         .get(url)
         .then((res) => {
@@ -146,7 +153,7 @@ const DataCleaning = () => {
           setIsLoading(false);
         });
     }
-  }, [formSelected, page, pageSize]);
+  }, [formSelected, page, pageSize, selectedMonitoringRound]);
 
   useEffect(() => {
     fetchData();
@@ -313,6 +320,10 @@ const DataCleaning = () => {
                 options={forms}
                 value={formSelected}
                 onChange={(val) => setFormSelected(val)}
+              />
+              <MonitoringRoundSelector
+                value={selectedMonitoringRound}
+                onChange={setSelectedMonitoringRound}
               />
             </Col>
           </Row>

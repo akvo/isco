@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from httpx import AsyncClient
 from tests.test_001_auth import Acc
 from sqlalchemy.orm import Session
+from util.common import get_prev_year
 
 pytestmark = pytest.mark.asyncio
 sys.path.append("..")
@@ -36,6 +37,23 @@ class TestAdvancedSubmissionRoute():
         assert "total" in res
         assert "total_page" in res
         assert "data" in res
+        # test filter with monitoring round
+        monitoring_round = get_prev_year(year=True)
+        res = await client.get(
+            app.url_path_for("data:get", form_id=1),
+            params={
+                "submitted": True,
+                "filter_same_isco": True,
+                "monitoring_round": monitoring_round
+            },
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 200
+        res = res.json()
+        assert "current" in res
+        assert "total" in res
+        assert "total_page" in res
+        assert "data" in res
+        assert res["total"] > 0
         res = await client.get(
             app.url_path_for("data:get", form_id=1),
             headers={"Authorization": f"Bearer {account.token}"})
