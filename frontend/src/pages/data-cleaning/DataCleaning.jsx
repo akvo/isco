@@ -40,7 +40,6 @@ const DataCleaning = () => {
   // monitoring round selector
   const [selectedMonitoringRound, setSelectedMonitoringRound] = useState(null);
 
-  console.log(selectedMonitoringRound);
   // pagination
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
