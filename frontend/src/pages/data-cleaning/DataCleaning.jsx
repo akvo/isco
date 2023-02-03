@@ -132,7 +132,10 @@ const DataCleaning = () => {
     if (formSelected) {
       setIsLoading(true);
       let url = `/data/form/${formSelected}?page=${page}&perpage=${pageSize}`;
-      url += `&submitted=1&filter_same_isco=1`;
+      url = `${url}&submitted=1&filter_same_isco=1`;
+      if (selectedMonitoringRound) {
+        url = `${url}&monitoring_round=${selectedMonitoringRound}`;
+      }
       api
         .get(url)
         .then((res) => {
@@ -151,7 +154,7 @@ const DataCleaning = () => {
           setIsLoading(false);
         });
     }
-  }, [formSelected, page, pageSize]);
+  }, [formSelected, page, pageSize, selectedMonitoringRound]);
 
   useEffect(() => {
     fetchData();

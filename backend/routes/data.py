@@ -147,7 +147,7 @@ def get(req: Request,
         perpage: int = 10,
         submitted: Optional[bool] = False,
         filter_same_isco: Optional[bool] = False,
-        monitoring_round: Optional[int] = None,
+        monitoring_round: Optional[int] = Query(None),
         session: Session = Depends(get_session),
         credentials: credentials = Depends(security)):
     user = verify_user(
