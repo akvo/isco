@@ -8,7 +8,7 @@ const MonitoringRoundSelector = ({ options, value, onChange }) => {
     // generate monitoring round
     let startYear = 2021;
     const currentYear = new Date().getFullYear();
-    let roundTmp = [];
+    const roundTmp = [];
     while (startYear <= currentYear - 1) {
       roundTmp.push(startYear++);
     }
