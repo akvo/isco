@@ -10,7 +10,7 @@ import ErrorPage from "../error/ErrorPage";
 import {
   CommentField,
   SubmitWarningModal,
-  ComputedValidationModal,
+  ValidationWarningModal,
 } from "../../components";
 import { uiText } from "../../static";
 
@@ -94,10 +94,10 @@ const WebformPage = ({
   // warning modal
   const [modalWarningVisible, setModalWarningVisible] = useState(false);
   // core mandatory popup
-  const [showCoreMandatoryWarning, setShowCoreMandatoryWarning] =
+  const [checkCoreMandatoryQuestion, setCheckCoreMandatoryQuestion] =
     useState(false);
   // computed validation popup
-  const [computedValidationModalVisible, setComputedValidationModalVisible] =
+  const [validationWarningModalVisible, setValidationWarningModalVisible] =
     useState(false);
   // prefilled value
   const [mismatch, setMismatch] = useState(false);
@@ -183,7 +183,7 @@ const WebformPage = ({
       })
       .filter((v) => v.error);
     setTimeout(() => {
-      setComputedValidationModalVisible(checkError.length);
+      setValidationWarningModalVisible(checkError.length);
     }, 1000);
     return checkError;
   }, [
@@ -405,14 +405,34 @@ const WebformPage = ({
     }
   }, [deletedComment, answer]);
 
-  const onSubmitCheckComputedValidationOrShowSubmitWarning = () => {
-    if (checkComputedValidation?.length) {
-      // show computed validation warning
-      setComputedValidationModalVisible(checkComputedValidation.length);
+  const onSubmitValidationOrShowSubmitWarning = () => {
+    // begin check core mandatory answered
+    if (!coreMandatoryQuestionIds.length) {
+      return false;
+    }
+    // check if core mandatory answered
+    const answerQids = answer.map((a) => a.question);
+    const coreMandatoryAnswers = intersection(
+      coreMandatoryQuestionIds,
+      answerQids
+    );
+    // return true if not all mandatory questions answered
+    const checkCoreMandatoryQuestionFailed =
+      coreMandatoryQuestionIds.length !== coreMandatoryAnswers.length;
+    if (checkComputedValidation?.length || checkCoreMandatoryQuestionFailed) {
+      // show computed/core mandatory validation warning
+      setValidationWarningModalVisible(true);
+      setCheckCoreMandatoryQuestion(checkCoreMandatoryQuestionFailed);
       return;
     }
     // show warning before submit
     setModalWarningVisible(true);
+    onCloseValidationWarningModal();
+  };
+
+  const onCloseValidationWarningModal = () => {
+    setValidationWarningModalVisible(false);
+    setCheckCoreMandatoryQuestion(false);
   };
 
   const onChange = ({ /*current*/ values /*progress*/ }) => {
@@ -549,30 +569,14 @@ const WebformPage = ({
   const onFinishShowWarning = () => {
     setIsForce(false);
     setIsSave(false);
-    setShowCoreMandatoryWarning(false);
-    onSubmitCheckComputedValidationOrShowSubmitWarning();
+    onSubmitValidationOrShowSubmitWarning();
   };
 
   const onCompleteFailed = () => {
-    // check if core mandatory answered
-    const answerQids = answer.map((a) => a.question);
-    const coreMandatoryAnswers = intersection(
-      coreMandatoryQuestionIds,
-      answerQids
-    );
-    if (coreMandatoryQuestionIds.length !== coreMandatoryAnswers.length) {
-      // not all of core mandatory answered
-      // show core mandatory popup
-      setIsSave(false);
-      setIsForce(false);
-      setShowCoreMandatoryWarning(true);
-      onSubmitCheckComputedValidationOrShowSubmitWarning();
-      return;
-    }
+    // force submit
     setIsSave(false);
     setIsForce(true);
-    setShowCoreMandatoryWarning(false);
-    onSubmitCheckComputedValidationOrShowSubmitWarning();
+    onSubmitValidationOrShowSubmitWarning();
   };
 
   const handleOnForceSubmit = () => {
@@ -624,8 +628,7 @@ const WebformPage = ({
                   onClick={() => {
                     setIsForce(false);
                     setIsSave(true);
-                    setShowCoreMandatoryWarning(false);
-                    onSubmitCheckComputedValidationOrShowSubmitWarning();
+                    setModalWarningVisible(true);
                   }}
                   isSaving={isSaving}
                   text={text}
@@ -671,15 +674,15 @@ const WebformPage = ({
         btnLoading={isSubmitting || isSaving}
         force={isForce}
         save={isSave}
-        showCoreMandatoryWarning={showCoreMandatoryWarning}
         mismatch={mismatch}
       />
       {/* Computed Validation Warning */}
-      <ComputedValidationModal
-        visible={computedValidationModalVisible}
-        onCancel={() => setComputedValidationModalVisible(false)}
+      <ValidationWarningModal
+        visible={validationWarningModalVisible}
+        onCancel={onCloseValidationWarningModal}
         checkComputedValidation={checkComputedValidation}
         formValue={formValue}
+        checkCoreMandatoryQuestion={checkCoreMandatoryQuestion}
       />
     </>
   );

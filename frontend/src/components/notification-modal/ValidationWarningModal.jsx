@@ -1,16 +1,17 @@
 import React, { useMemo } from "react";
-import { Modal, Row, Button, Collapse, List } from "antd";
+import { Modal, Row, Col, Button, Collapse, List } from "antd";
 import { uiText } from "../../static";
 import { store } from "../../lib";
 import intersection from "lodash/intersection";
 
 const { Panel } = Collapse;
 
-const ComputedValidationModal = ({
+const ValidationWarningModal = ({
   visible,
   onCancel,
   checkComputedValidation,
   formValue,
+  checkCoreMandatoryQuestion,
 }) => {
   const { active: activeLang } = store.useState((s) => s.language);
 
@@ -73,34 +74,48 @@ const ComputedValidationModal = ({
       }
       maskClosable={false}
     >
-      <Collapse accordion>
-        {validationContent.map((vc) => (
-          <Panel
-            header={vc.group}
-            key={`vc-panel-${vc.group_id}`}
-            style={{ padding: 0 }}
-          >
-            <List
-              size="small"
-              header={null}
-              footer={
-                <>
-                  {`${text.cvTotalValueText} : ${vc.total}`} <br />
-                  {`${vc.errorDetail} : ${vc.validationValue}`}
-                </>
-              }
-              dataSource={vc.questions}
-              renderItem={(item) => (
-                <List.Item
-                  key={`list-item-${item.id}`}
-                >{`${item.question} : ${item.answer}`}</List.Item>
-              )}
-            />
-          </Panel>
-        ))}
-      </Collapse>
+      {validationContent?.length ? (
+        <>
+          <Collapse accordion>
+            {validationContent.map((vc) => (
+              <Panel
+                header={vc.group}
+                key={`vc-panel-${vc.group_id}`}
+                style={{ padding: 0 }}
+              >
+                <List
+                  size="small"
+                  header={null}
+                  footer={
+                    <>
+                      {`${text.cvTotalValueText} : ${vc.total}`} <br />
+                      {`${vc.errorDetail} : ${vc.validationValue}`}
+                    </>
+                  }
+                  dataSource={vc.questions}
+                  renderItem={(item) => (
+                    <List.Item
+                      key={`list-item-${item.id}`}
+                    >{`${item.question} : ${item.answer}`}</List.Item>
+                  )}
+                />
+              </Panel>
+            ))}
+          </Collapse>
+          <br />
+        </>
+      ) : (
+        ""
+      )}
+      {checkCoreMandatoryQuestion && (
+        <Row align="top" justify="space-between" gutter={[24, 24]}>
+          <Col span={24} style={{ fontSize: "1rem" }}>
+            {text.submitCoreMandatoryWarning}
+          </Col>
+        </Row>
+      )}
     </Modal>
   );
 };
 
-export default ComputedValidationModal;
+export default ValidationWarningModal;
