@@ -5,6 +5,7 @@ import { Webform } from "akvo-react-form";
 import { api, store } from "../../lib";
 import isEmpty from "lodash/isEmpty";
 import { useNotification } from "../../util";
+import orderBy from "lodash/orderBy";
 
 const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
   const { notify } = useNotification();
@@ -56,6 +57,10 @@ const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
         setDataOrgIds(orgIds);
         setInitialValue(res.data?.initial_value || []);
         const webform = res.data;
+        const questionGroup = webform?.question_group.map((qg) => ({
+          ...qg,
+          question: orderBy(qg.question, "order"),
+        }));
         delete webform?.initial_value;
         delete webform?.organisation_ids;
         setSelectedLang(res.data.language ? res.data.language : null);
@@ -63,6 +68,7 @@ const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
           ...webform,
           defaultLanguage: res.data.language ? res.data.language : "en",
           languages: ["en", "de"],
+          question_group: orderBy(questionGroup, "order"),
         });
       })
       .catch((e) => {
