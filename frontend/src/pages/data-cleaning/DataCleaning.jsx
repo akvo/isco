@@ -12,8 +12,8 @@ import {
 } from "antd";
 import {
   PlusSquareOutlined,
-  CloseSquareOutlined,
   RightOutlined,
+  MinusSquareOutlined,
 } from "@ant-design/icons";
 import { api } from "../../lib";
 import DataCleaningWebform from "./DataCleaningWebform";
@@ -355,12 +355,12 @@ const DataCleaning = () => {
                   expandedRowRender: (record) => <DataDetail record={record} />,
                   expandIcon: ({ expanded, onExpand, record }) => {
                     return expanded ? (
-                      <CloseSquareOutlined
+                      <MinusSquareOutlined
                         onClick={(e) => {
                           setExpandedRowKeys([]);
                           onExpand(record, e);
                         }}
-                        style={{ color: "#e94b4c", margin: "0 5px" }}
+                        style={{ color: "#7d7d7d", margin: "0 5px" }}
                       />
                     ) : (
                       <PlusSquareOutlined
