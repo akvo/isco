@@ -78,7 +78,7 @@ def get(
         data = crud_roadmap.get_data_by_id(
             session=session, id=data_id)
         roadmap_webform.update({
-            "language": data.language
+            "language": data.language if data.language else 'en'
         })
         answers = crud_roadmap.get_answer_by_data(
             session=session, data_id=data_id)
