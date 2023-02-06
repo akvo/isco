@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import "akvo-react-form/dist/index.css"; /* REQUIRED */
 import "./style.scss";
 import { Spin, Button, Checkbox } from "antd";
@@ -99,6 +99,8 @@ const WebformPage = ({
   // computed validation popup
   const [validationWarningModalVisible, setValidationWarningModalVisible] =
     useState(false);
+  // to save computed validation error detail (array of object)
+  const [checkComputedValidation, setCheckComputedValidation] = useState([]);
   // prefilled value
   const [mismatch, setMismatch] = useState(false);
   // check if from prev year value
@@ -124,75 +126,91 @@ const WebformPage = ({
   }, [formValue]);
 
   // check computed validations
-  const checkComputedValidation = useMemo(() => {
-    const computedValidation = computedValidations.find(
-      (cv) => cv.form_id === formId
-    );
-    const validations = computedValidation?.validations || [];
-    if (!answer.length && !validations?.length) {
-      return [];
-    }
-    const checkError = validations
-      .map((v) => {
-        // check if all computed validation answered
-        const checkAllAnswered = intersection(
-          v.question_ids,
-          answer.map((a) => a.question)
-        );
-        if (checkAllAnswered.length !== v.question_ids.length) {
-          // not all answered
+  const checkComputedValidationFunction = useCallback(
+    (onChangeEvent = true) => {
+      const computedValidation = computedValidations.find(
+        (cv) => cv.form_id === formId
+      );
+      const validations = computedValidation?.validations || [];
+      if (!answer.length && !validations?.length) {
+        return [];
+      }
+      const checkError = validations
+        .map((v) => {
+          // check if all computed validation answered
+          const checkAllAnswered = intersection(
+            v.question_ids,
+            answer.map((a) => a.question)
+          );
+          // only do this when use on change event TRUE
+          if (
+            onChangeEvent &&
+            checkAllAnswered.length !== v.question_ids.length
+          ) {
+            // not all answered
+            return {
+              ...v,
+              error: false,
+            };
+          }
+          // all answered
+          const questions = v.question_ids.map((id) => {
+            const a = answer.find((a) => a.question === id);
+            return { id: id, answer: a?.value || 0 };
+          });
+          const total = questions
+            .map((q) => q.answer)
+            .reduce((total, num) => total + num);
+          let error = false;
+          let errorDetail = "";
+          let validationValue = 0;
+          if ("max" in v) {
+            errorDetail = text.cvMaxValueText;
+            error = total > v.max;
+            validationValue = v.max;
+          }
+          if ("min" in v) {
+            errorDetail = text.cvMinValueText;
+            error = total < v.min;
+            validationValue = v.min;
+          }
+          if ("equal" in v) {
+            errorDetail = text.cvEqualValueText;
+            error = total !== v.equal;
+            validationValue = v.equal;
+          }
           return {
             ...v,
-            error: false,
+            questions: questions,
+            error: error,
+            total: total,
+            errorDetail: errorDetail,
+            validationValue: validationValue,
           };
-        }
-        // all answered
-        const questions = v.question_ids.map((id) => {
-          const a = answer.find((a) => a.question === id);
-          return { id: id, answer: a?.value || 0 };
-        });
-        const total = questions
-          .map((q) => q.answer)
-          .reduce((total, num) => total + num);
-        let error = false;
-        let errorDetail = "";
-        let validationValue = 0;
-        if ("max" in v) {
-          errorDetail = text.cvMaxValueText;
-          error = total > v.max;
-          validationValue = v.max;
-        }
-        if ("min" in v) {
-          errorDetail = text.cvMinValueText;
-          error = total < v.min;
-          validationValue = v.min;
-        }
-        if ("equal" in v) {
-          errorDetail = text.cvEqualValueText;
-          error = total !== v.equal;
-          validationValue = v.equal;
-        }
-        return {
-          ...v,
-          questions: questions,
-          error: error,
-          total: total,
-          errorDetail: errorDetail,
-          validationValue: validationValue,
-        };
-      })
-      .filter((v) => v.error);
-    setTimeout(() => {
-      setValidationWarningModalVisible(checkError.length);
-    }, 1000);
-    return checkError;
-  }, [
-    answer,
-    formId,
-    text.cvMaxValueText,
-    text.cvMinValueText,
-    text.cvEqualValueText,
-  ]);
+        })
+        .filter((v) => v.error);
+      if (onChangeEvent) {
+        setTimeout(() => {
+          setValidationWarningModalVisible(checkError.length);
+        }, 1000);
+        setCheckComputedValidation(checkError);
+        return;
+      }
+      return checkError;
+    },
+    [
+      answer,
+      formId,
+      text.cvMaxValueText,
+      text.cvMinValueText,
+      text.cvEqualValueText,
+    ]
+  );
+
+  // check computed validation when on change answer
+  useEffect(() => {
+    checkComputedValidationFunction();
+  }, [checkComputedValidationFunction]);
 
   // transform & filter form definition for first load
   useEffect(() => {
@@ -406,6 +424,9 @@ const WebformPage = ({
   }, [deletedComment, answer]);
 
   const onSubmitValidationOrShowSubmitWarning = () => {
+    // check computed validation
+    const checkComputedValidaitonOnSubmit =
+      checkComputedValidationFunction(false);
     // begin check core mandatory answered
     if (!coreMandatoryQuestionIds.length) {
       return false;
@@ -416,11 +437,15 @@ const WebformPage = ({
       coreMandatoryQuestionIds,
       answerQids
     );
-    // return true if not all mandatory questions answered
+    // true if not all mandatory questions answered
     const checkCoreMandatoryQuestionFailed =
       coreMandatoryQuestionIds.length !== coreMandatoryAnswers.length;
-    if (checkComputedValidation?.length || checkCoreMandatoryQuestionFailed) {
+    if (
+      checkComputedValidaitonOnSubmit?.length ||
+      checkCoreMandatoryQuestionFailed
+    ) {
       // show computed/core mandatory validation warning
+      setCheckComputedValidation(checkComputedValidaitonOnSubmit);
       setValidationWarningModalVisible(true);
       setCheckCoreMandatoryQuestion(checkCoreMandatoryQuestionFailed);
       return;
@@ -433,6 +458,7 @@ const WebformPage = ({
   const onCloseValidationWarningModal = () => {
     setValidationWarningModalVisible(false);
     setCheckCoreMandatoryQuestion(false);
+    setCheckComputedValidation([]);
   };
 
   const onChange = ({ /*current*/ values /*progress*/ }) => {
@@ -676,7 +702,7 @@ const WebformPage = ({
         save={isSave}
         mismatch={mismatch}
       />
-      {/* Computed Validation Warning */}
+      {/* Core Mandatory / Computed Validation Warning */}
       <ValidationWarningModal
         visible={validationWarningModalVisible}
         onCancel={onCloseValidationWarningModal}
