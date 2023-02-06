@@ -13,7 +13,7 @@ const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
   const [selectedOrg, setSelectedOrg] = useState(
     editDatapoint?.organisation_id || null
   );
-  const [selectedLang, setSelectedLang] = useState("en");
+  const [selectedLang, setSelectedLang] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [dataOrgIds, setDataOrgIds] = useState(null);
   const organisations = store.useState((s) => s.optionValues.organisation);
@@ -58,7 +58,7 @@ const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
         const webform = res.data;
         delete webform?.initial_value;
         delete webform?.organisation_ids;
-        setSelectedLang(res.data.language ? res.data.language : "en");
+        setSelectedLang(res.data.language ? res.data.language : null);
         setFormValue({
           ...webform,
           defaultLanguage: res.data.language ? res.data.language : "en",
@@ -131,7 +131,6 @@ const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
               Setup Roadmap for <span className="org-required">*</span>
             </div>
             <Select
-              allowClear
               showSearch
               className="select-organisation-dropdown"
               placeholder="Organization"
@@ -145,9 +144,10 @@ const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
             />
           </Space>
           <Space size={20} style={{ paddingLeft: "20px" }}>
-            <div>Roadmap language</div>
+            <div>
+              Roadmap language for <span className="org-required">*</span>
+            </div>
             <Select
-              allowClear
               showSearch
               className="select-organisation-dropdown"
               placeholder="Select language"
@@ -176,7 +176,7 @@ const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
             onFinish={onFinish}
             submitButtonSetting={{
               loading: submitting,
-              disabled: !selectedOrg,
+              disabled: !selectedOrg || !selectedLang,
             }}
             initialValue={initialValue}
           />

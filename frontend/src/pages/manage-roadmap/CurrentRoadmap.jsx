@@ -146,7 +146,9 @@ const CurrentRoadmap = ({ setCurrentTab, setEditDatapoint }) => {
     {
       title: "Language",
       key: "language",
-      render: (record) => <>{languages?.[record?.language]}</>,
+      render: (record) => (
+        <>{languages?.[record?.language] || "No language selected yet."}</>
+      ),
     },
     {
       title: "Action",
