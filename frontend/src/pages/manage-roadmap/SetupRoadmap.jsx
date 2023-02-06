@@ -160,7 +160,7 @@ const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
               filterOption={(input, option) =>
                 option?.label?.toLowerCase().indexOf(input?.toLowerCase()) >= 0
               }
-              disabled={editDatapoint || isEmpty(formValue)}
+              disabled={isEmpty(formValue)}
             />
           </Space>
         </Col>

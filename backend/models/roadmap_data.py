@@ -30,6 +30,7 @@ class RoadmapDataDict(TypedDict):
     organisation: str
     updated: Optional[str] = None
     answer: List[RoadmapAnswerDict]
+    language: str
 
 
 class RoadmapDataResDict(TypedDict):

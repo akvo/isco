@@ -210,8 +210,10 @@ def update_datapoint(
         session=session,
         authenticated=req.state.authenticated)
     organisation_id = payload.get('organisation_id')
+    language = payload.get('language')
     data = crud_roadmap.get_data_by_id(
         session=session, id=data_id, organisation_id=organisation_id)
+    data.language = language
     # get current answer
     current_answers = crud_roadmap.get_answer_by_data(
         session=session, data_id=data.id)
