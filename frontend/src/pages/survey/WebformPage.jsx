@@ -405,6 +405,16 @@ const WebformPage = ({
     }
   }, [deletedComment, answer]);
 
+  const onSubmitCheckComputedValidationOrShowSubmitWarning = () => {
+    if (checkComputedValidation?.length) {
+      // show computed validation warning
+      setComputedValidationModalVisible(checkComputedValidation.length);
+      return;
+    }
+    // show warning before submit
+    setModalWarningVisible(true);
+  };
+
   const onChange = ({ /*current*/ values /*progress*/ }) => {
     const transformValues = Object.keys(values)
       .map((key) => {
@@ -540,7 +550,7 @@ const WebformPage = ({
     setIsForce(false);
     setIsSave(false);
     setShowCoreMandatoryWarning(false);
-    setModalWarningVisible(true);
+    onSubmitCheckComputedValidationOrShowSubmitWarning();
   };
 
   const onCompleteFailed = () => {
@@ -556,13 +566,13 @@ const WebformPage = ({
       setIsSave(false);
       setIsForce(false);
       setShowCoreMandatoryWarning(true);
-      setModalWarningVisible(true);
+      onSubmitCheckComputedValidationOrShowSubmitWarning();
       return;
     }
     setIsSave(false);
     setIsForce(true);
     setShowCoreMandatoryWarning(false);
-    setModalWarningVisible(true);
+    onSubmitCheckComputedValidationOrShowSubmitWarning();
   };
 
   const handleOnForceSubmit = () => {
@@ -615,7 +625,7 @@ const WebformPage = ({
                     setIsForce(false);
                     setIsSave(true);
                     setShowCoreMandatoryWarning(false);
-                    setModalWarningVisible(true);
+                    onSubmitCheckComputedValidationOrShowSubmitWarning();
                   }}
                   isSaving={isSaving}
                   text={text}
