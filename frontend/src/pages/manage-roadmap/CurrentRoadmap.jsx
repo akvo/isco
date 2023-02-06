@@ -23,6 +23,7 @@ const CurrentRoadmap = ({ setCurrentTab, setEditDatapoint }) => {
   const [downloadData, setDownloadData] = useState(null);
   const [downloadLoading, setDownloadLoading] = useState(null);
   const memberTypes = store.useState((s) => s.optionValues.member_type);
+  const languages = store.useState((s) => s.language.langs);
 
   const pageSize = 10;
   const [page, setPage] = useState(1);
@@ -145,7 +146,7 @@ const CurrentRoadmap = ({ setCurrentTab, setEditDatapoint }) => {
     {
       title: "Language",
       key: "language",
-      dataIndex: "language",
+      render: (record) => <>{languages?.[record?.language]}</>,
     },
     {
       title: "Action",

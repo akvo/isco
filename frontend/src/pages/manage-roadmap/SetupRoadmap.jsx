@@ -17,6 +17,7 @@ const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
   const [submitting, setSubmitting] = useState(false);
   const [dataOrgIds, setDataOrgIds] = useState(null);
   const organisations = store.useState((s) => s.optionValues.organisation);
+  const languages = store.useState((s) => s.language.langs);
 
   const organisationOptions = useMemo(() => {
     // filter organisations by isco == GISCO
@@ -39,11 +40,6 @@ const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
       };
     });
   }, [organisations, dataOrgIds]);
-
-  const languages = [
-    { label: "English", value: "en" },
-    { label: "German", value: "de" },
-  ];
 
   useEffect(() => {
     let url = "/roadmap-webform";
@@ -155,7 +151,10 @@ const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
               showSearch
               className="select-organisation-dropdown"
               placeholder="Select language"
-              options={languages}
+              options={Object.keys(languages)?.map((key) => ({
+                value: key,
+                label: languages[key],
+              }))}
               onChange={(val) => handleSelectedLanguage(val)}
               value={selectedLang}
               filterOption={(input, option) =>
