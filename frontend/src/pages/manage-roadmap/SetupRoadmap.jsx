@@ -62,9 +62,10 @@ const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
         const webform = res.data;
         delete webform?.initial_value;
         delete webform?.organisation_ids;
+        setSelectedLang(res.data.language ? res.data.language : "en");
         setFormValue({
           ...webform,
-          defaultLanguage: "en",
+          defaultLanguage: res.data.language ? res.data.language : "en",
           languages: ["en", "de"],
         });
       })

@@ -145,6 +145,7 @@ class RoadmapFormJson(BaseModel):
     tree: Optional[dict] = None
     initial_value: Optional[List[dict]] = None
     organisation_ids: Optional[List[int]] = None
+    language: str
 
     class Config:
         orm_mode = True

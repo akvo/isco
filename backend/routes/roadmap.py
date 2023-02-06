@@ -64,6 +64,7 @@ def get(
         "question_group": question_group,
         "initial_value": None,
         "organisation_ids": None,
+        "language": 'en',
     })
     # Get organisation ids from roadmap data to detect
     # which org has submitted roadmap setup
@@ -74,6 +75,11 @@ def get(
             "organisation_ids": org_ids,
         })
     if data_id:
+        data = crud_roadmap.get_data_by_id(
+            session=session, id=data_id)
+        roadmap_webform.update({
+            "language": data.language
+        })
         answers = crud_roadmap.get_answer_by_data(
             session=session, data_id=data_id)
         values = [a.to_initial_value for a in answers]
