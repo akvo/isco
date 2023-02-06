@@ -11,7 +11,6 @@ const SubmitWarningModal = ({
   btnLoading = false,
   force = true,
   save = false,
-  showCoreMandatoryWarning = false,
   mismatch = false,
 }) => {
   const [checkboxOne, setCheckboxOne] = useState(false);
@@ -43,7 +42,7 @@ const SubmitWarningModal = ({
       destroyOnClose
       footer={
         <Row align="middle" justify="center">
-          {(force || save || (!showCoreMandatoryWarning && !mismatch)) && (
+          {!mismatch && (
             <Button
               type="primary"
               onClick={onOk}
@@ -91,7 +90,7 @@ const SubmitWarningModal = ({
               </Row>
             </>
           )}
-          {!save && !showCoreMandatoryWarning && !mismatch && (
+          {!save && !mismatch && (
             <Row align="top" justify="space-between" gutter={[24, 24]}>
               <Col span={1}>
                 <Checkbox
@@ -108,13 +107,6 @@ const SubmitWarningModal = ({
             <Row align="top" justify="space-between" gutter={[24, 24]}>
               <Col span={24} style={{ fontSize: "1rem" }}>
                 {text.submitModalC4}
-              </Col>
-            </Row>
-          )}
-          {showCoreMandatoryWarning && (
-            <Row align="top" justify="space-between" gutter={[24, 24]}>
-              <Col span={24} style={{ fontSize: "1rem" }}>
-                {text.submitCoreMandatoryWarning}
               </Col>
             </Row>
           )}

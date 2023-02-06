@@ -6,5 +6,5 @@ export { default as CommentField } from "./survey-editor/CommentField";
 export { default as SaveFormDataModal } from "./notification-modal/SaveFormDataModal";
 export { default as DataSecurityModal } from "./notification-modal/DataSecurityModal";
 export { default as SubmitWarningModal } from "./notification-modal/SubmitWarningModal";
-export { default as ComputedValidationModal } from "./notification-modal/ComputedValidationModal";
+export { default as ValidationWarningModal } from "./notification-modal/ValidationWarningModal";
 export { default as MonitoringRoundSelector } from "./MonitoringRoundSelector";

@@ -24,6 +24,7 @@ form_def = {
     "name": "Roadmap",
     "description": data.get('description'),
     "languages": None,
+    'language': 'en',
     "version": 1.0,
     "question_group": [{
         "name": "Traceability",

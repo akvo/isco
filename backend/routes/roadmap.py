@@ -64,6 +64,7 @@ def get(
         "question_group": question_group,
         "initial_value": None,
         "organisation_ids": None,
+        "language": 'en',
     })
     # Get organisation ids from roadmap data to detect
     # which org has submitted roadmap setup
@@ -74,6 +75,11 @@ def get(
             "organisation_ids": org_ids,
         })
     if data_id:
+        data = crud_roadmap.get_data_by_id(
+            session=session, id=data_id)
+        roadmap_webform.update({
+            "language": data.language
+        })
         answers = crud_roadmap.get_answer_by_data(
             session=session, data_id=data_id)
         values = [a.to_initial_value for a in answers]
@@ -99,6 +105,7 @@ def post(
         session=session,
         authenticated=req.state.authenticated)
     organisation_id = payload.get('organisation_id')
+    language = payload.get('language')
     organisation = crud_organisation.get_organisation_by_id(
         session=session, id=organisation_id)
     organisation = organisation.serialize
@@ -109,6 +116,7 @@ def post(
         name=datapoint_name,
         created_by=user.id,
         organisation=organisation_id,
+        language=language,
         created=datetime.now(),
         updated=None
     )
@@ -208,8 +216,10 @@ def update_datapoint(
         session=session,
         authenticated=req.state.authenticated)
     organisation_id = payload.get('organisation_id')
+    language = payload.get('language')
     data = crud_roadmap.get_data_by_id(
         session=session, id=data_id, organisation_id=organisation_id)
+    data.language = language
     # get current answer
     current_answers = crud_roadmap.get_answer_by_data(
         session=session, data_id=data.id)

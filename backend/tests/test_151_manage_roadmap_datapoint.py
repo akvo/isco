@@ -23,6 +23,7 @@ class TestManageRoadmapDatapoint():
     ) -> None:
         payload = {
             "organisation_id": 1,
+            "language": "en",
             "answers": {
                 "1669095326962": "This is first commitment",
                 "1669107420032": [{
@@ -62,6 +63,7 @@ class TestManageRoadmapDatapoint():
             "data": [{
                 "id": 1,
                 "datapoint_name": "All | staff Akvo",
+                "language": "en",
                 "organisation": "staff Akvo",
                 "organisation_id": 1,
                 "submitted_date": today
@@ -83,6 +85,7 @@ class TestManageRoadmapDatapoint():
                 "id": 1,
                 "datapoint_name": "All | staff Akvo",
                 "organisation": "staff Akvo",
+                "language": "en",
                 "organisation_id": 1,
                 "submitted_date": today
             }],
@@ -103,6 +106,7 @@ class TestManageRoadmapDatapoint():
     ) -> None:
         payload = {
             "organisation_id": 1,
+            "language": "en",
             "answers": {
                 "1669095326962": "Updated first commitment",
                 "1669107420032": [{
