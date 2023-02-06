@@ -15,8 +15,9 @@ today = datetime.today().strftime("%B %d, %Y")
 
 class TestAdvancedSubmissionRoute():
     @pytest.mark.asyncio
-    async def test_get_all_data(self, app: FastAPI, session: Session,
-                                client: AsyncClient) -> None:
+    async def test_get_all_data(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         res = await client.get(
             app.url_path_for("data:get", form_id=1),
             params={"submitted": True},
@@ -110,7 +111,7 @@ class TestAdvancedSubmissionRoute():
                 'question_name': 'Age',
                 'question_order': 1,
                 'repeat_index': 0,
-                'value': 25
+                'value': 25.0
             }, {
                 'comment': None,
                 'question': 1,
@@ -139,14 +140,14 @@ class TestAdvancedSubmissionRoute():
                 'repeat_index': 1,
                 'value': 'Female'
             }, {
-                'comment': 'Q5 comment',
+                'comment': 'Test with zero value',
                 'question_group_order': 2,
                 'question_group': 'Question Group 2',
                 'question': 5,
                 'question_name': 'Weight',
                 'question_order': 2,
                 'repeat_index': 0,
-                'value': 75
+                'value': 0.0
             }, {
                 'comment': None,
                 'question': 6,
@@ -187,9 +188,9 @@ class TestAdvancedSubmissionRoute():
         }
 
     @pytest.mark.asyncio
-    async def test_get_disabled_form_options(self, app: FastAPI,
-                                             session: Session,
-                                             client: AsyncClient) -> None:
+    async def test_get_disabled_form_options(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # get form
         res = await client.get(
             app.url_path_for("form:get_webform_options"),
@@ -204,8 +205,9 @@ class TestAdvancedSubmissionRoute():
         }]
 
     @pytest.mark.asyncio
-    async def test_update_submitted_data(self, app: FastAPI, session: Session,
-                                         client: AsyncClient) -> None:
+    async def test_update_submitted_data(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # get data by id
         res = await client.get(
             app.url_path_for("data:get_by_id", id=1),
@@ -228,7 +230,8 @@ class TestAdvancedSubmissionRoute():
 
     @pytest.mark.asyncio
     async def test_get_webform_from_bucket_with_submitted_values(
-            self, app: FastAPI, session: Session, client: AsyncClient) -> None:
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # get form
         res = await client.get(
             app.url_path_for("form:get_webform_from_bucket", form_id=1),
@@ -243,8 +246,9 @@ class TestAdvancedSubmissionRoute():
         assert res.status_code == 200
 
     @pytest.mark.asyncio
-    async def test_data_cleaning(self, app: FastAPI, session: Session,
-                                 client: AsyncClient) -> None:
+    async def test_data_cleaning(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # get data by id
         res = await client.get(
             app.url_path_for("data:get_by_id", id=1),

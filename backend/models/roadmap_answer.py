@@ -121,9 +121,9 @@ class RoadmapAnswer(Base):
             val = self.value
             if q.rule:
                 if q.rule.get("allow_decimal"):
-                    val = float(val) if val else None
+                    val = float(val) if val or val == 0 else None
             else:
-                val = int(val) if val else None
+                val = int(val) if val or val == 0 else None
             answer.update({"value": val})
         if type == RoadmapQuestionType.option:
             answer.update({"value": self.options[0]})
@@ -169,9 +169,9 @@ class RoadmapAnswer(Base):
             val = self.value
             if q.rule:
                 if q.rule.get("allow_decimal"):
-                    val = float(val) if val else None
+                    val = float(val) if val or val == 0 else None
             else:
-                val = int(val) if val else None
+                val = int(val) if val or val == 0 else None
             answer.update({"value": val})
         if type == RoadmapQuestionType.option:
             answer.update({"value": self.options[0]})

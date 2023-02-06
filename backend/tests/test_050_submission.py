@@ -376,8 +376,8 @@ class TestSubmissionRoutes():
             }, {
                 "question": 5,
                 "repeat_index": 0,
-                "comment": "Q5 comment",
-                "value": 75
+                "comment": "Test with zero value",
+                "value": 0
             }, {
                 "question": 6,
                 "repeat_index": 0,
@@ -451,10 +451,10 @@ class TestSubmissionRoutes():
                 "repeat_index": 1,
                 "value": "Female"
             }, {
-                "comment": "Q5 comment",
+                "comment": "Test with zero value",
                 "question": 5,
                 "repeat_index": 0,
-                "value": 75.0
+                "value": 0.0
             }, {
                 'comment': None,
                 'question': 6,
