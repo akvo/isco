@@ -43,7 +43,8 @@ class TestFormRoutes():
             "name": "Form Test",
             "published": None,
             "url": None,
-            "version": 0.0
+            "version": 0.0,
+            "enable_prefilled_value": True
         }
 
     @pytest.mark.asyncio
@@ -62,6 +63,7 @@ class TestFormRoutes():
             'question_group': [],
             'url': None,
             'version': 0.0,
+            'enable_prefilled_value': True
         }
 
     @pytest.mark.asyncio
@@ -88,5 +90,6 @@ class TestFormRoutes():
             "name": "Form Test",
             "published": None,
             "url": None,
-            "version": 0.0
+            "version": 0.0,
+            "enable_prefilled_value": False
         }

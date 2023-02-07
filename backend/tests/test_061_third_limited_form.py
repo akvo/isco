@@ -43,7 +43,9 @@ class TestThirdFormRoutes():
             "name": "Third limited survey",
             "published": None,
             "url": None,
-            "version": 0.0}
+            "version": 0.0,
+            "enable_prefilled_value": False
+        }
 
     @pytest.mark.asyncio
     async def test_get_form_by_id(

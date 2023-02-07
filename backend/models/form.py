@@ -37,6 +37,7 @@ class FormPayload(TypedDict):
 class FormDict(TypedDict):
     id: int
     name: str
+    enable_prefilled_value: bool
     description: Optional[str] = None
     languages: Optional[List[str]] = None
     version: Optional[float] = None
@@ -109,6 +110,7 @@ class Form(Base):
             "url": self.url,
             "created": self.created.strftime("%d-%m-%Y"),
             "published": published,
+            "enable_prefilled_value": self.enable_prefilled_value,
             "question_group": [qg.serialize for qg in self.question_group]
         }
 
@@ -186,6 +188,7 @@ class FormBase(BaseModel):
     languages: Optional[List[str]] = None
     version: Optional[float] = None
     url: Optional[str] = None
+    enable_prefilled_value: bool
     question_group: Optional[List[QuestionGroupBase]] = []
 
     class Config:

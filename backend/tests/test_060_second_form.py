@@ -43,7 +43,8 @@ class TestSecondFormRoutes():
             "name": "Second survey",
             "published": None,
             "url": None,
-            "version": 0.0
+            "version": 0.0,
+            "enable_prefilled_value": False
         }
 
     @pytest.mark.asyncio
@@ -62,6 +63,7 @@ class TestSecondFormRoutes():
             'question_group': [],
             'url': None,
             'version': 0.0,
+            'enable_prefilled_value': False
         }
 
     @pytest.mark.asyncio
