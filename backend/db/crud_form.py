@@ -17,9 +17,13 @@ webdomain = os.environ["WEBDOMAIN"]
 
 
 def add_form(session: Session, payload: FormPayload):
-    form = Form(id=None, name=payload['name'],
-                description=payload['description'],
-                languages=payload['languages'])
+    form = Form(
+        id=None,
+        name=payload['name'],
+        description=payload['description'],
+        languages=payload['languages'],
+        enable_prefilled_value=payload['enable_prefilled_value']
+    )
     session.add(form)
     session.commit()
     session.flush()
@@ -45,6 +49,7 @@ def update_form(session: Session, id: int, payload: FormPayload) -> FormDict:
     form.name = payload['name']
     form.description = payload['description']
     form.languages = payload['languages']
+    form.enable_prefilled_value = payload['enable_prefilled_value']
     session.commit()
     session.flush()
     session.refresh(form)
@@ -57,8 +62,10 @@ def delete_form(session: Session, id: int):
         QuestionGroup.form == id).all()
     if groups:
         group_ids = [g.id for g in groups]
-        delete_question_by_group(session=session, group=group_ids,
-                                 dependency=False)
+        delete_question_by_group(
+            session=session,
+            group=group_ids,
+            dependency=False)
     form = get_form_by_id(session=session, id=id)
     session.delete(form)
     session.commit()

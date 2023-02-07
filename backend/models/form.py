@@ -6,7 +6,7 @@ from typing_extensions import TypedDict
 from typing import List, Optional
 from pydantic import BaseModel
 from sqlalchemy import Column, Integer, String
-from sqlalchemy import Text, DateTime, Float
+from sqlalchemy import Text, DateTime, Float, Boolean
 from sqlalchemy.orm import relationship
 import sqlalchemy.dialects.postgresql as pg
 from db.connection import Base
@@ -29,6 +29,7 @@ class FormInfo(TypedDict):
 
 class FormPayload(TypedDict):
     name: str
+    enable_prefilled_value: bool
     description: Optional[str] = None
     languages: Optional[List[str]] = None
 
@@ -60,6 +61,7 @@ class FormOptions(TypedDict):
     label: str
     value: int
     disabled: bool
+    enable_prefilled_value: bool
     form_type: Optional[str] = None
 
 
@@ -73,17 +75,22 @@ class Form(Base):
     version = Column(Float, nullable=True, default=0.0)
     url = Column(Text, nullable=True)
     published = Column(DateTime, nullable=True)
-    question_group = relationship("QuestionGroup",
-                                  cascade="all, delete",
-                                  passive_deletes=True,
-                                  backref="form_detail")
+    enable_prefilled_value = Column(Boolean, default=False)
+    question_group = relationship(
+        "QuestionGroup", cascade="all, delete",
+        passive_deletes=True, backref="form_detail")
 
-    def __init__(self, id: Optional[int], name: str,
-                 description: Optional[str], languages: Optional[List[str]]):
+    def __init__(
+        self, id: Optional[int],
+        name: str, description: Optional[str],
+        enable_prefilled_value: bool,
+        languages: Optional[List[str]]
+    ):
         self.id = id
         self.name = name
         self.description = description
         self.languages = languages
+        self.enable_prefilled_value = enable_prefilled_value
 
     def __repr__(self) -> int:
         return f"<Form {self.id}>"
@@ -119,7 +126,7 @@ class Form(Base):
             "url": self.url,
             "created": self.created.strftime("%d-%m-%Y"),
             "published": published,
-            "has_question_group": len(self.question_group) > 0
+            "has_question_group": len(self.question_group) > 0,
         }
 
     @property
@@ -152,7 +159,8 @@ class Form(Base):
             "label": self.name,
             "value": self.id,
             "disabled": False,
-            "form_type": form_type
+            "form_type": form_type,
+            "enable_prefilled_value": self.enable_prefilled_value
         }
 
     @property
