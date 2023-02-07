@@ -30,6 +30,7 @@ const SurveyEditor = () => {
               description: data?.description,
               languages: data?.languages,
               version: data?.version,
+              enable_prefilled_value: data?.enable_prefilled_value,
               questionGroup: data?.question_group?.map((qg) => {
                 return {
                   ...qg,
