@@ -31,25 +31,25 @@ class TestSubmissionWithComputedValidationRoutes():
             headers={"Authorization": f"Bearer {account.token}"})
         assert res.status_code == 400
         # save data
-        res = await client.post(
-            app.url_path_for("data:create", form_id=4, submitted=0),
-            params={"locked_by": 1},
-            json=payload,
-            headers={"Authorization": f"Bearer {account.token}"})
-        assert res.status_code == 400
-        # correct value
-        payload = [{
-            "question": 14,
-            "repeat_index": 0,
-            "comment": None,
-            "value": 70
-        }, {
-            "question": 15,
-            "repeat_index": 0,
-            "comment": None,
-            "value": 30
-        }]
-        # save data
+        # res = await client.post(
+        #     app.url_path_for("data:create", form_id=4, submitted=0),
+        #     params={"locked_by": 1},
+        #     json=payload,
+        #     headers={"Authorization": f"Bearer {account.token}"})
+        # assert res.status_code == 400
+        # # correct value
+        # payload = [{
+        #     "question": 14,
+        #     "repeat_index": 0,
+        #     "comment": None,
+        #     "value": 70
+        # }, {
+        #     "question": 15,
+        #     "repeat_index": 0,
+        #     "comment": None,
+        #     "value": 30
+        # }]
+        # save data will not validate computed value or core mandatory
         res = await client.post(
             app.url_path_for("data:create", form_id=4, submitted=0),
             params={"locked_by": 1},
@@ -81,22 +81,23 @@ class TestSubmissionWithComputedValidationRoutes():
             headers={"Authorization": f"Bearer {account.token}"})
         assert res.status_code == 200
         # update data
-        res = await client.put(
-            app.url_path_for("data:update", id=6, submitted=0),
-            json=[{
-                "question": 14,
-                "repeat_index": 0,
-                "comment": None,
-                "value": 35
-            }, {
-                "question": 15,
-                "repeat_index": 0,
-                "comment": None,
-                "value": 100
-            }],
-            headers={"Authorization": f"Bearer {account.token}"})
-        assert res.status_code == 400
-        # update data
+        # res = await client.put(
+        #     app.url_path_for("data:update", id=6, submitted=0),
+        #     json=[{
+        #         "question": 14,
+        #         "repeat_index": 0,
+        #         "comment": None,
+        #         "value": 35
+        #     }, {
+        #         "question": 15,
+        #         "repeat_index": 0,
+        #         "comment": None,
+        #         "value": 100
+        #     }],
+        #     headers={"Authorization": f"Bearer {account.token}"})
+        # assert res.status_code == 400
+        # update data in save status
+        # will not validate computed value or core mandatory
         res = await client.put(
             app.url_path_for("data:update", id=6, submitted=0),
             json=[{

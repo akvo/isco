@@ -40,7 +40,7 @@ class TestSubmissionRoutes():
             json=payload,
             headers={"Authorization": f"Bearer {account.token}"})
         assert res.status_code == 400
-        # save data
+        # save data will not validate computed value or core mandatory
         res = await client.post(
             app.url_path_for("data:create", form_id=1, submitted=0),
             params={"locked_by": 1},
