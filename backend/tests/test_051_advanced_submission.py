@@ -201,7 +201,8 @@ class TestAdvancedSubmissionRoute():
             "disabled": True,
             "label": "Form Test",
             "value": 1,
-            "form_type": "member"
+            "form_type": "member",
+            "enable_prefilled_value": False
         }]
 
     @pytest.mark.asyncio

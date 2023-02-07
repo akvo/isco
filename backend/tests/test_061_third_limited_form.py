@@ -19,8 +19,9 @@ def datenow():
 
 class TestThirdFormRoutes():
     @pytest.mark.asyncio
-    async def test_add_form(self, app: FastAPI, session: Session,
-                            client: AsyncClient) -> None:
+    async def test_add_form(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # create form
         res = await client.post(
             app.url_path_for("form:create"),
@@ -28,7 +29,10 @@ class TestThirdFormRoutes():
             json={
                 "name": "Third limited survey",
                 "description": "Form Description",
-                "languages": []})
+                "languages": [],
+                "enable_prefilled_value": False
+            }
+        )
         assert res.status_code == 200
         res = res.json()
         assert res == {

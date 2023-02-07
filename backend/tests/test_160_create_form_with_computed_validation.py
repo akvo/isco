@@ -31,8 +31,10 @@ class TestFormWithComputedValidationRoutes():
             json={
                 "name": "Form with computed validation",
                 "description": "Form Description",
-                "languages": None
-            })
+                "languages": None,
+                "enable_prefilled_value": True
+            }
+        )
         assert res.status_code == 200
         res = res.json()
         assert res == {

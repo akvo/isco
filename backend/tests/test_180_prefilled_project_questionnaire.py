@@ -56,7 +56,16 @@ class TestPrefilledRoute():
                 form_id=100),
             params={"data_id": 100},
             headers={"Authorization": f"Bearer {account.token}"})
-        assert res.status_code == 400
+        assert res.status_code == 404  # form not found
+        # get project form definition with prefilled value
+        res = await client.get(
+            app.url_path_for(
+                "prefilled:get_webform_with_previous_submission",
+                form_id=1),
+            params={"data_id": 100},
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 400  # form not enable prefilled value
+        # get project form definition with prefilled value
         res = await client.get(
             app.url_path_for(
                 "prefilled:get_webform_with_previous_submission",
