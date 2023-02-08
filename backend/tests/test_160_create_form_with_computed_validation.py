@@ -31,8 +31,10 @@ class TestFormWithComputedValidationRoutes():
             json={
                 "name": "Form with computed validation",
                 "description": "Form Description",
-                "languages": None
-            })
+                "languages": None,
+                "enable_prefilled_value": True
+            }
+        )
         assert res.status_code == 200
         res = res.json()
         assert res == {
@@ -43,7 +45,8 @@ class TestFormWithComputedValidationRoutes():
             "name": "Form with computed validation",
             "published": None,
             "url": None,
-            "version": 0.0
+            "version": 0.0,
+            "enable_prefilled_value": True
         }
 
     @pytest.mark.asyncio
@@ -216,6 +219,7 @@ class TestFormWithComputedValidationRoutes():
         form = await client.get(app.url_path_for("form:get_by_id", id=4))
         assert form.status_code == 200
         form = form.json()
+        assert form['enable_prefilled_value'] is True
         # publish form
         res = await client.post(
             app.url_path_for("form:publish"),

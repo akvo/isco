@@ -17,6 +17,9 @@ const Survey = () => {
   const [selectedForm, setSelectedForm] = useState(null);
   const [formLoaded, setFormLoaded] = useState(null);
   const [formOptions, setFormOptions] = useState([]);
+  const [formOptionsNotTransformed, setFormOptionsNotTransformed] = useState(
+    []
+  );
   const [savedSubmissions, setSavedSubmissions] = useState([]);
   const [selectedSavedSubmission, setSelectedSavedSubmission] = useState(null);
   const [reloadDropdownValue, setReloadDropdownValue] = useState(true);
@@ -45,12 +48,14 @@ const Survey = () => {
     });
   };
 
-  const selectedFormType = useMemo(() => {
-    if (!formOptions.length) {
+  // to show prefilled value select dropdown
+  const selectedFormEnablePrefilledValue = useMemo(() => {
+    if (!formOptionsNotTransformed.length || !selectedForm) {
       return null;
     }
-    return formOptions.find((f) => f.value === selectedForm)?.form_type;
-  }, [selectedForm, formOptions]);
+    return formOptionsNotTransformed.find((f) => f.value === selectedForm)
+      ?.enable_prefilled_value;
+  }, [selectedForm, formOptionsNotTransformed]);
 
   const text = useMemo(() => {
     return uiText[activeLang];
@@ -71,7 +76,7 @@ const Survey = () => {
   }, [organisation, user]);
 
   useEffect(() => {
-    if (selectedFormType === "project" && selectedForm) {
+    if (selectedFormEnablePrefilledValue && selectedForm) {
       api.get(`/previous-project-submission/${selectedForm}`).then((res) => {
         const values = res.data.map((d) => ({
           label: d.datapoint_name,
@@ -80,7 +85,7 @@ const Survey = () => {
         setPrevSubmissionOptions(values);
       });
     }
-  }, [selectedFormType, selectedForm]);
+  }, [selectedFormEnablePrefilledValue, selectedForm]);
 
   useEffect(() => {
     if ((user && reloadDropdownValue) || text?.infoSubmissionDropdown) {
@@ -93,12 +98,14 @@ const Survey = () => {
               newLabel = `${newLabel} ${text.infoSubmissionDropdown}`;
             }
             return {
-              ...x,
+              value: x.value,
               label: newLabel,
+              disabled: x.disabled,
             };
           });
           setFormOptions(transformWebforms);
           setSavedSubmissions(savedData.data);
+          setFormOptionsNotTransformed(webforms.data);
         })
         .catch((e) => {
           console.error(e);
@@ -270,7 +277,7 @@ const Survey = () => {
   };
 
   const handleOnClickAddCollaborator = () => {
-    if (selectedFormType === "project" && selectedPrevSubmission) {
+    if (selectedFormEnablePrefilledValue && selectedPrevSubmission) {
       // don't save collaborator directly if prefilled project submission
       // collaborators will send as a query params when first time (POST)
       // submit/save new project submission with prefilled value
@@ -421,7 +428,7 @@ const Survey = () => {
                 }
               />
             </Col>
-            {selectedFormType !== "project" && (
+            {!selectedFormEnablePrefilledValue && (
               <Col>
                 <Button block onClick={handleOnClickOpenNewForm}>
                   {text.btnOpen}
@@ -432,7 +439,7 @@ const Survey = () => {
         </Col>
       </Row>
       {/* Previous Submission Panel */}
-      {selectedFormType === "project" && (
+      {selectedFormEnablePrefilledValue && (
         <div className="previous-submission-container">
           <p>{text.formPreviousYearSubmission}</p>
           <Row align="top" justify="space-between" gutter={[12, 12]}>
@@ -468,7 +475,7 @@ const Survey = () => {
             setFormLoaded={setFormLoaded}
             selectedSavedSubmission={selectedSavedSubmission}
             setReloadDropdownValue={setReloadDropdownValue}
-            selectedFormType={selectedFormType}
+            selectedFormEnablePrefilledValue={selectedFormEnablePrefilledValue}
             selectedPrevSubmission={selectedPrevSubmission}
             setShowCollaboratorForm={setShowCollaboratorForm}
             setCollaborators={setCollaborators}

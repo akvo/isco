@@ -67,6 +67,7 @@ const defaultSurveyEditor = {
   description: null,
   languages: ["en"],
   version: null,
+  enable_prefilled_value: false,
   questionGroup: [defaultQuestionGroupEditor],
 };
 

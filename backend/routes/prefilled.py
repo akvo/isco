@@ -11,7 +11,6 @@ from sqlalchemy.orm import Session
 from db.connection import get_session
 from middleware import verify_user
 from models.data import Data, PrevProjectSubmissionResponse
-from util.survey_config import PROJECT_SURVEY
 from util.common import get_prev_year
 from db import crud_form, crud_data, crud_collaborator
 from pydantic import Required
@@ -36,16 +35,17 @@ def get_previous_project_submission(
     user = verify_user(
         session=session, authenticated=req.state.authenticated)
     prev_year = get_prev_year(year=True)
+    # get enable_prefilled_value from form
+    form = crud_form.get_form_by_id(session=session, id=form_id)
+    if not form.enable_prefilled_value:
+        return []
     # query for previous year submission
     data = session.query(Data).filter(and_(
         Data.submitted.isnot(None),
         extract('year', Data.submitted) == prev_year,
         Data.organisation == user.organisation,
-        Data.form == form_id,
-        Data.form.in_(PROJECT_SURVEY)
+        Data.form == form.id
     )).all()
-    if not data:
-        return []
     return [d.to_prev_project_submssion_list for d in data]
 
 
@@ -62,10 +62,13 @@ def get_webform_with_previous_submission(
     session: Session = Depends(get_session),
     credentials: credentials = Depends(security)
 ):
-    if form_id not in PROJECT_SURVEY:
+    # get enable_prefilled_value from form
+    form = crud_form.get_form_by_id(session=session, id=form_id)
+    if not form.enable_prefilled_value:
         raise HTTPException(
             status_code=400,
-            detail="Only for project questionnaire.")
+            detail=f"{form.name} questionnaire doesn't \
+                have prefilled value enabled.")
     # get form definition
     form = crud_form.get_form_by_id(session=session, id=form_id)
     TESTING = os.environ.get("TESTING")

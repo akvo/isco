@@ -92,7 +92,8 @@ class TestWebformRoutes():
             "disabled": False,
             "label": "Form Test",
             "value": 1,
-            "form_type": "member"
+            "form_type": "member",
+            "enable_prefilled_value": False
         }]
 
     @pytest.mark.asyncio
@@ -108,5 +109,6 @@ class TestWebformRoutes():
             "disabled": False,
             "label": "Form Test",
             "value": 1,
-            "form_type": "member"
+            "form_type": "member",
+            "enable_prefilled_value": False
         }]

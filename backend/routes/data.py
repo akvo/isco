@@ -74,23 +74,28 @@ def check_core_mandatory_questions_answer(
         # not all core mandatory answered
         raise HTTPException(
             status_code=400,
-            detail="Please answer all core mandatory questions")
+            detail={
+                "type": "core-mandatory-check",
+                "message": "Please answer all core mandatory questions"
+            })
 
 
-def check_computed_validation(form_id: int, answers: List[AnswerDict]):
+def check_computed_validation(
+    form_id: int, answers: List[AnswerDict], submitted: int
+):
     TESTING = os.environ.get("TESTING")
     BUCKET = BUCKET_FOLDER
     if TESTING:
         BUCKET = "notset"
     # read computed validation config
     json_file_path = f"{CONFIG_SOURCE_PATH}/{BUCKET}"
-    json_file_path = f"{json_file_path}//computed_validations.json"
+    json_file_path = f"{json_file_path}/computed_validations.json"
     with open(json_file_path, 'r') as j:
         computed_validations = json.loads(j.read())
     computed_validation = [
         x for x in computed_validations
         if int(x.get('form_id')) == form_id]
-    if computed_validation:
+    if computed_validation and submitted:
         errors = []
         computed_validation = computed_validation[0]
         for cv in computed_validation.get('validations'):
@@ -114,7 +119,12 @@ def check_computed_validation(form_id: int, answers: List[AnswerDict]):
             if "equal" in cv and total_cv_answers != cv_equal:
                 errors.append(cv)
         if errors:
-            raise HTTPException(status_code=400, detail=errors)
+            raise HTTPException(
+                status_code=400,
+                detail={
+                    "type": "computed-validation-check",
+                    "message": errors
+                })
 
 
 def notify_secretariat_admin(session: Session, user, form_name: str):
@@ -228,13 +238,14 @@ def add(req: Request,
     questions = published['questions']
     # end get questions published form
 
+    # validate core mandatory & computed validation if submitted
     # check core mandatory question answered
     check_core_mandatory_questions_answer(
         published=published, answers=answers, submitted=submitted)
     # end check core mandatory question answered
-
     # validate by computed validations
-    check_computed_validation(form_id=form_id, answers=answers)
+    check_computed_validation(
+        form_id=form_id, answers=answers, submitted=submitted)
     # end validate by computed validations
 
     # generating answers
@@ -469,13 +480,14 @@ def update_by_id(
     questions = published['questions']
     # end get questions published form
 
+    # validate core mandatory & computed validation if submitted
     # check core mandatory question answered
     check_core_mandatory_questions_answer(
         published=published, answers=answers, submitted=submitted)
     # end check core mandatory question answered
-
     # validate by computed validations
-    check_computed_validation(form_id=data.form, answers=answers)
+    check_computed_validation(
+        form_id=data.form, answers=answers, submitted=submitted)
     # end validate by computed validations
 
     # get repeatable question ids
@@ -484,11 +496,9 @@ def update_by_id(
         if qg['repeatable'] is True:
             for qid in qg['question']:
                 repeat_qids.append(qid)
-
     # questions = form.list_of_questions
     checked = {}
     checked_payload = {}
-
     # if data_cleaning, delete old answer and save payload
     answer_ids = []
     if data_cleaning:

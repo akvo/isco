@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./style.scss";
-import { Row, Col, Form, Input, Select, Button } from "antd";
+import { Row, Col, Form, Input, Select, Switch, Button, Space } from "antd";
 import { store } from "../../lib";
 
 const FormEditor = ({
   form,
+  enable_prefilled_value = false,
   showSaveButton = false,
   saveButtonLoading = false,
 }) => {
@@ -17,6 +18,12 @@ const FormEditor = ({
       label: lang?.name,
       value: lang?.code,
     }));
+  // enable_prefilled_value
+  const [enablePrefilledValue, setEnablePrefilledValue] = useState(false);
+
+  useEffect(() => {
+    setEnablePrefilledValue(enable_prefilled_value);
+  }, [enable_prefilled_value]);
 
   return (
     <Row>
@@ -54,6 +61,17 @@ const FormEditor = ({
               }
             />
           </Form.Item>
+        </div>
+        <div className="field-wrapper" style={{ marginBottom: "24px" }}>
+          <Space align="center">
+            <Form.Item name="form-enable_prefilled_value" style={{ margin: 0 }}>
+              <Switch
+                onChange={setEnablePrefilledValue}
+                checked={enablePrefilledValue}
+              />
+            </Form.Item>
+            <span className="field-label">Enable Prefilled Value</span>
+          </Space>
         </div>
         {showSaveButton && (
           <Button
