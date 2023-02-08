@@ -111,6 +111,7 @@ const QuestionEditor = ({
   const [mandatory, setMandatory] = useState(false);
   const [coreMandatory, setCoreMandatory] = useState(false);
   const [personalData, setPersonalData] = useState(false);
+  const [datapointName, setDatapointName] = useState(false);
   const [activeLang, setActiveLang] = useState(surveyEditor?.languages?.[0]);
 
   useEffect(() => {
@@ -168,6 +169,9 @@ const QuestionEditor = ({
         }
         if (key === "personal_data") {
           setPersonalData(value);
+        }
+        if (key === "datapoint_name") {
+          setDatapointName(value);
         }
         // Load skip logic
         if (key === "skip_logic") {
@@ -360,6 +364,8 @@ const QuestionEditor = ({
                         setCoreMandatory={setCoreMandatory}
                         setQuestionToDeactivate={setQuestionToDeactivate}
                         questionToDeactivate={questionToDeactivate}
+                        datapointName={datapointName}
+                        setDatapointName={setDatapointName}
                       />
                       <div className="question-button-wrapper">
                         <Space align="center">
