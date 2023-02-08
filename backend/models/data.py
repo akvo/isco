@@ -73,9 +73,10 @@ class DataOptionDict(TypedDict):
     form: int
     name: str
     organisation: str
+    created_by: str
+    is_name_configured: bool
     locked_by: Optional[int] = None
     locked_by_user: Optional[str] = None
-    created_by: str
     created: Optional[str] = None
     form_type: Optional[str] = None
 
@@ -126,7 +127,9 @@ class DataResponseQuestionName(BaseModel):
 
 class PrevProjectSubmissionResponse(TypedDict):
     id: int
+    form: int
     datapoint_name: str
+    is_name_configured: bool
 
 
 class Data(Base):
@@ -279,6 +282,7 @@ class Data(Base):
         return {
             "id": self.id,
             "name": f"{name} - {created_by} - {created}",
+            "is_name_configured": True if self.name else False,
             "form": self.form,
             "form_type": form_type,
             "locked_by": self.locked_by,
@@ -337,7 +341,9 @@ class Data(Base):
             name = self.name
         return {
             "id": self.id,
-            "datapoint_name": f"{name} - {submitted_by} - {submitted}"
+            "form": self.form,
+            "datapoint_name": f"{name} - {submitted_by} - {submitted}",
+            "is_name_configured": True if self.name else False
         }
 
 

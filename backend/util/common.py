@@ -48,3 +48,4 @@ def generate_datapoint_name(
                 datapoint_names.append(ca.get('value'))
     datapoint_name = " - ".join(datapoint_names)
     return datapoint_name
+    # TODO: Create a test case for datapoint generator

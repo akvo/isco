@@ -333,7 +333,18 @@ def get_saved_data_by_organisation(
         data = [*data, *collab_data]
     if not data:
         return []
-    return [d.to_options for d in data]
+    options_value = [d.to_options for d in data]
+    for item in options_value:
+        if not item.get('is_configured_name'):
+            # check and regenerate datapoint/display name
+            new_name = generate_datapoint_name(
+                session=session,
+                form=item.get('form'),
+                data=item.get('id'))
+            item.update({
+                "name": new_name if new_name else item.get('name')
+            })
+    return options_value
 
 
 @data_route.put("/data/unsubmit/{id}",
