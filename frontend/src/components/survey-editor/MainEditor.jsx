@@ -22,7 +22,13 @@ const MainEditor = () => {
   const [form] = Form.useForm();
   const { surveyEditor, isAddQuestionGroup, isMoveQuestionGroup } =
     store.useState((s) => s);
-  const { id: formId, name, description, languages } = surveyEditor;
+  const {
+    id: formId,
+    name,
+    description,
+    languages,
+    enable_prefilled_value,
+  } = surveyEditor;
   const { notify } = useNotification();
 
   const { questionGroup } = surveyEditor;
@@ -35,13 +41,14 @@ const MainEditor = () => {
         "form-name": name,
         "form-description": description,
         "form-languages": languages || [],
+        "form-enable_prefilled_value": enable_prefilled_value,
       };
       // set form fields initial value
       Object.keys(formFields).forEach((key) => {
         form.setFieldsValue({ [key]: formFields?.[key] });
       });
     }
-  }, [name, description, languages, formId, form]);
+  }, [name, description, languages, formId, form, enable_prefilled_value]);
 
   const onSubmitForm = (values) => {
     setSaveButtonLoading(true);
@@ -137,6 +144,7 @@ const MainEditor = () => {
                         <Space direction="vertical">
                           <FormEditor
                             form={form}
+                            enable_prefilled_value={enable_prefilled_value}
                             showSaveButton={true}
                             saveButtonLoading={saveButtonLoading}
                           />

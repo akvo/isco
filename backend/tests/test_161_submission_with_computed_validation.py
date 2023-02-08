@@ -14,6 +14,28 @@ today = datetime.today().strftime("%B %d, %Y")
 
 class TestSubmissionWithComputedValidationRoutes():
     @pytest.mark.asyncio
+    async def test_get_all_published_form_options_with_enable_prefilled_value(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
+        # get form
+        res = await client.get(
+            app.url_path_for("form:get_published"))
+        assert res.status_code == 200
+        res = res.json()
+        assert res == [{
+            'label': 'Third limited survey',
+            'value': 3,
+            'disabled': False,
+            'enable_prefilled_value': False,
+            'form_type': None
+        }, {
+            'label': 'Form with computed validation',
+            'value': 4, 'disabled': False,
+            'enable_prefilled_value': True,
+            'form_type': 'project'
+        }]
+
+    @pytest.mark.asyncio
     async def test_save_data_with_computed_validation(
         self, app: FastAPI, session: Session, client: AsyncClient
     ) -> None:

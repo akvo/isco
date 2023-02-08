@@ -60,7 +60,7 @@ const WebformPage = ({
   selectedSavedSubmission,
   setReloadDropdownValue,
   selectedPrevSubmission,
-  selectedFormType,
+  selectedFormEnablePrefilledValue,
   setCollaborators,
   selectedCollaborators,
   setSelectedCollaborators,
@@ -220,7 +220,7 @@ const WebformPage = ({
       // handle load prefilled questionnaire with prev year value
       if (
         selectedPrevSubmission &&
-        selectedFormType === "project" &&
+        selectedFormEnablePrefilledValue &&
         !savedDataId
       ) {
         url = `/webform/previous-submission/${formId}?data_id=${selectedPrevSubmission}`;
@@ -508,7 +508,7 @@ const WebformPage = ({
     // send collaborators value when submit/save for first time
     if (
       selectedPrevSubmission &&
-      selectedFormType === "project" &&
+      selectedFormEnablePrefilledValue &&
       selectedCollaborators?.length
     ) {
       const queryParams = selectedCollaborators.join("&collaborators=");
