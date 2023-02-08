@@ -25,7 +25,7 @@ class TestSkipLogicRoutes():
             "name": "Question 2",
             "translations": None,
             "mandatory": True,
-            "datapoint_name": True,
+            "datapoint_name": False,
             "variable_name": None,
             "type": QuestionType.text.value,
             "personal_data": False,
@@ -51,7 +51,7 @@ class TestSkipLogicRoutes():
         assert res == {
             "id": 2,
             "cascade": None,
-            "datapoint_name": True,
+            "datapoint_name": False,
             "form": 1,
             "isco_access": [],
             "mandatory": True,

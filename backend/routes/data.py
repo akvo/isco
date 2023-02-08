@@ -26,6 +26,7 @@ from middleware import find_member_admins
 from util.survey_config import MEMBER_SURVEY, PROJECT_SURVEY, LIMITED_SURVEY
 from util.mailer import Email, MailTypeEnum
 from routes.collaborator import send_collaborator_email
+from util.common import generate_datapoint_name
 
 security = HTTPBearer()
 data_route = APIRouter()
@@ -251,7 +252,6 @@ def add(req: Request,
     # generating answers
     geo = None
     answerlist = []
-    names = []
     for a in answers:
         q = questions[a['question']]
         answer = Answer(question=q['id'],
@@ -263,12 +263,8 @@ def add(req: Request,
                 QuestionType.date.value
         ]:
             answer.text = a["value"]
-            if q['datapoint_name']:
-                names.append(a["value"])
         if q['type'] == QuestionType.number.value:
             answer.value = a["value"]
-            if q['datapoint_name']:
-                names.append(str(a["value"]))
         if q['type'] == QuestionType.option.value:
             answer.options = [a["value"]]
         if q['type'] == QuestionType.multiple_option.value:
@@ -278,11 +274,14 @@ def add(req: Request,
         if q['type'] == QuestionType.nested_list.value or q['type'] == "tree":
             answer.options = a["value"]
         answerlist.append(answer)
-    name = " - ".join(names)
+    name = generate_datapoint_name(
+        session=session,
+        form=form_id,
+        answers=answers)
     data = crud.add_data(
         session=session,
         form=form_id,
-        name=name,
+        name=name or "",
         geo=geo,
         locked_by=locked_by,
         created_by=user.id,
@@ -559,6 +558,11 @@ def update_by_id(
                 type=qtype,
                 value=a["value"])
         if execute:
+            name = generate_datapoint_name(
+                session=session,
+                form=data.form,
+                answers=answers)
+            data.name = name or ""
             # don't update locked_by for data_cleaning
             data.locked_by = locked_by \
                 if not data_cleaning else data.locked_by

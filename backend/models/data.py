@@ -268,7 +268,7 @@ class Data(Base):
         organisation = self.organisation_detail.name
         created_by = self.created_by_user.name
         created = self.created.strftime("%B %d, %Y")
-        name = f"{form} - {organisation} - {created_by} - {created}"
+        name = f"{form} - {organisation}"
         if self.name:
             name = self.name
         form_type = None
@@ -278,7 +278,7 @@ class Data(Base):
             form_type = "project"
         return {
             "id": self.id,
-            "name": name,
+            "name": f"{name} - {created_by} - {created}",
             "form": self.form,
             "form_type": form_type,
             "locked_by": self.locked_by,
@@ -332,12 +332,12 @@ class Data(Base):
         organisation = self.organisation_detail.name
         submitted_by = self.submitted_by_user.name
         submitted = self.submitted.strftime("%B %d, %Y")
-        name = f"{form} - {organisation} - {submitted_by} - {submitted}"
+        name = f"{form} - {organisation}"
         if self.name:
             name = self.name
         return {
             "id": self.id,
-            "datapoint_name": name
+            "datapoint_name": f"{name} - {submitted_by} - {submitted}"
         }
 
 
