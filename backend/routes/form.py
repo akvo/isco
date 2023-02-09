@@ -224,10 +224,11 @@ def get_form_from_bucket(
         user = verify_editor(
             session=session, authenticated=req.state.authenticated)
     # check if user organisation already have a member survey saved/submitted
-    exists = check_member_submission_exists(session=session,
-                                            form=form_id,
-                                            organisation=user.organisation,
-                                            saved=True)
+    exists = check_member_submission_exists(
+        session=session,
+        form=form_id,
+        organisation=user.organisation,
+        saved=True)
     # if data cleaning True, allow to access form
     if exists and not data_cleaning:
         raise HTTPException(status_code=208,
