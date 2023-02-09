@@ -127,12 +127,18 @@ const WebformPage = ({
 
   // check computed validations
   const checkComputedValidationFunction = useCallback(
-    (onChangeEvent = true) => {
+    (onChangeEvent = true, values = []) => {
+      /*
+       * const answerValues
+       * choose which answer values to be used as validation check
+       * manage this for cascade/geo value not directly saved to answer state onChange form value
+       */
+      const answerValues = values?.length ? values : answer;
       const computedValidation = computedValidations.find(
         (cv) => cv.form_id === formId
       );
       const validations = computedValidation?.validations || [];
-      if (!answer.length && !validations?.length) {
+      if (!answerValues.length && !validations?.length) {
         return [];
       }
       const checkError = validations
@@ -140,7 +146,7 @@ const WebformPage = ({
           // check if all computed validation answered
           const checkAllAnswered = intersection(
             v.question_ids,
-            answer.map((a) => a.question)
+            answerValues.map((a) => a.question)
           );
           // only do this when use on change event TRUE
           if (
@@ -155,7 +161,7 @@ const WebformPage = ({
           }
           // all answered
           const questions = v.question_ids.map((id) => {
-            const a = answer.find((a) => a.question === id);
+            const a = answerValues.find((a) => a.question === id);
             return { id: id, answer: a?.value || 0 };
           });
           const total = questions
@@ -430,15 +436,23 @@ const WebformPage = ({
     }
   }, [deletedComment, answer]);
 
-  const onSubmitValidationOrShowSubmitWarning = () => {
+  const onSubmitValidationOrShowSubmitWarning = (values = []) => {
+    /*
+     * const answerValues
+     * choose which answer values to be used as validation check
+     * manage this for cascade/geo value not directly saved to answer state onChange form value
+     */
+    const answerValues = values?.length ? values : answer;
     // check computed validation
-    const checkComputedValidaitonOnSubmit =
-      checkComputedValidationFunction(false);
+    const checkComputedValidaitonOnSubmit = checkComputedValidationFunction(
+      false,
+      values
+    );
     // begin check core mandatory answered
     let checkCoreMandatoryQuestionFailed = false;
     if (coreMandatoryQuestionIds.length) {
       // check if core mandatory answered
-      const answerQids = answer.map((a) => a.question);
+      const answerQids = answerValues.map((a) => a.question);
       const coreMandatoryAnswers = intersection(
         coreMandatoryQuestionIds,
         answerQids
@@ -468,8 +482,12 @@ const WebformPage = ({
     setCheckComputedValidation([]);
   };
 
-  const onChange = ({ /*current*/ values /*progress*/ }) => {
-    const transformValues = Object.keys(values)
+  const transformValues = (values) => {
+    return Object.keys(values)
+      .filter((key) => {
+        // filter key !== datapoint object
+        return key.toLowerCase() !== "datapoint";
+      })
       .map((key) => {
         let question = key;
         let repeatIndex = 0;
@@ -490,8 +508,12 @@ const WebformPage = ({
         };
       })
       .filter((x) => x.value || x.value === 0);
+  };
+
+  const onChange = ({ values }) => {
+    const transformedAnswerValues = transformValues(values);
     setDisableSubmit(transformValues.length === 0);
-    setAnswer(transformValues);
+    setAnswer(transformedAnswerValues);
   };
 
   const onChangeComment = (qid, val) => {
@@ -534,7 +556,7 @@ const WebformPage = ({
     return endpoint;
   };
 
-  const onFinish = (/*values*/) => {
+  const onFinish = () => {
     if (answer.length) {
       const payload = reorderAnswersRepeatIndex(formValue, answer);
       setIsSubmitting(true);
@@ -599,17 +621,29 @@ const WebformPage = ({
     }
   };
 
-  const onFinishShowWarning = () => {
+  const onFinishShowWarning = (values) => {
+    setIsSubmitting(true);
+    const transformedAnswerValues = transformValues(values);
+    setAnswer(transformedAnswerValues);
     setIsForce(false);
     setIsSave(false);
-    onSubmitValidationOrShowSubmitWarning();
+    setTimeout(() => {
+      onSubmitValidationOrShowSubmitWarning(transformedAnswerValues);
+      setIsSubmitting(false);
+    }, 1000);
   };
 
-  const onCompleteFailed = () => {
+  const onCompleteFailed = ({ values }) => {
+    setIsSubmitting(true);
+    const transformedAnswerValues = transformValues(values);
+    setAnswer(transformedAnswerValues);
     // force submit
     setIsSave(false);
     setIsForce(true);
-    onSubmitValidationOrShowSubmitWarning();
+    setTimeout(() => {
+      onSubmitValidationOrShowSubmitWarning(transformedAnswerValues);
+      setIsSubmitting(false);
+    }, 1000);
   };
 
   const handleOnForceSubmit = () => {
@@ -657,6 +691,10 @@ const WebformPage = ({
             onCompleteFailed={onCompleteFailed}
             extraButton={
               <>
+                {/* Save Button cannot do the same thing to check
+                    cascade / geo input value onClick save button,
+                    we only can get the value from answer state from form onChange event
+                  */}
                 <SaveButton
                   onClick={() => {
                     setIsForce(false);
@@ -665,7 +703,7 @@ const WebformPage = ({
                   }}
                   isSaving={isSaving}
                   text={text}
-                  disabled={!answer.length}
+                  disabled={!answer.length && !coreMandatoryQuestionIds?.length}
                 />
                 <LockedCheckbox
                   onChange={(val) => setIsLocked(val.target.checked)}
