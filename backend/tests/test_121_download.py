@@ -30,7 +30,7 @@ class TestDownloadRoute():
             'uuid': None,
             'form': "Form Test",
             'form_type': "member",
-            'name': 'Depend to Q1 Option 1',
+            'name': 'Option 1 - Option 1',
             'organisation': 'staff Akvo',
             'submitted': today,
             'submitted_by': 'John Doe',

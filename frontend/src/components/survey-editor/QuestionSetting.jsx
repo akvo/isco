@@ -512,14 +512,17 @@ const Setting = ({
   setCoreMandatory,
   questionToDeactivate,
   setQuestionToDeactivate,
+  datapointName,
+  setDatapointName,
 }) => {
   const [message, setMessage] = useState("");
   const [open, setOpen] = useState("");
   const { surveyEditor, tempStorage, optionValues } = store.useState((s) => s);
   const { questionGroup: questionGroupState } = surveyEditor;
   const { operator_type, member_type, isco_type } = optionValues;
-  const { id: qid } = question;
+  const { id: qid, type: currentQuestionType } = question;
   const skipLogicQuestionType = ["option", "number", "multiple_option"];
+  const datapointNameQuestionType = ["input", "option"];
 
   const memberAccessField = `question-${qid}-member_access`;
   const memberValue = form.getFieldValue(memberAccessField);
@@ -665,6 +668,14 @@ const Setting = ({
     const fieldValue = { [field]: val };
     form.setFieldsValue(fieldValue);
     setPersonalData(val);
+    handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
+  };
+
+  const handleDatapointNameChange = (val, field) => {
+    const { checked } = val.target;
+    const fieldValue = { [field]: checked };
+    form.setFieldsValue(fieldValue);
+    setDatapointName(checked);
     handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
   };
 
@@ -906,6 +917,28 @@ const Setting = ({
                 />
               </div>
             </Space>
+            {
+              // Set question as datapoint/display name
+              datapointNameQuestionType.includes(currentQuestionType) && (
+                <div className="field-wrapper" style={{ marginTop: "20px" }}>
+                  <Form.Item name={`question-${qid}-datapoint_name`}>
+                    <Checkbox
+                      key={`question-${qid}-datapoint_name-checkbox`}
+                      checked={datapointName}
+                      onChange={(val) =>
+                        handleDatapointNameChange(
+                          val,
+                          `question-${qid}-datapoint_name`
+                        )
+                      }
+                    >
+                      {" "}
+                      Use as data point / display name{" "}
+                    </Checkbox>
+                  </Form.Item>
+                </div>
+              )
+            }
           </>
         </TabPane>
         {/* Skip Logic */}
@@ -1083,6 +1116,8 @@ const QuestionSetting = ({
   setCoreMandatory,
   questionToDeactivate,
   setQuestionToDeactivate,
+  datapointName,
+  setDatapointName,
 }) => {
   switch (activeSetting) {
     case "translation":
@@ -1111,6 +1146,8 @@ const QuestionSetting = ({
           setCoreMandatory={setCoreMandatory}
           questionToDeactivate={questionToDeactivate}
           setQuestionToDeactivate={setQuestionToDeactivate}
+          datapointName={datapointName}
+          setDatapointName={setDatapointName}
         />
       );
     default:

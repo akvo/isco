@@ -289,6 +289,13 @@ const WebformPage = ({
                     ),
                   },
                 ];
+                // datapoint / display name
+                if (typeof q?.datapoint_name !== "undefined") {
+                  q = {
+                    ...q,
+                    meta: q.datapoint_name,
+                  };
+                }
                 //core mandatory
                 if (typeof q?.core_mandatory !== "undefined") {
                   q = {

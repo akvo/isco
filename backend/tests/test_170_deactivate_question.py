@@ -102,6 +102,18 @@ class TestQuestionRoutes():
                                 "coreMandatory": False,
                                 "deactivate": False,
                             },
+                            {
+                                "id": 16,
+                                "name": "Your Name",
+                                "required": False,
+                                "datapoint_name": False,
+                                "type": "input",
+                                "order": 3,
+                                "member_access": [],
+                                "isco_access": [],
+                                "coreMandatory": False,
+                                "deactivate": False,
+                            },
                         ],
                     }
                 ],
@@ -118,6 +130,9 @@ class TestQuestionRoutes():
             "deactivate": True,
         }, {
             "id": 15,
+            "deactivate": True,
+        }, {
+            "id": 16,
             "deactivate": True,
         }]
         res = await client.put(
@@ -166,6 +181,9 @@ class TestQuestionRoutes():
             "deactivate": False,
         }, {
             "id": 15,
+            "deactivate": False,
+        }, {
+            "id": 16,
             "deactivate": False,
         }]
         res = await client.put(
@@ -229,6 +247,18 @@ class TestQuestionRoutes():
                                 "datapoint_name": False,
                                 "type": "number",
                                 "order": 2,
+                                "member_access": [],
+                                "isco_access": [],
+                                "coreMandatory": False,
+                                "deactivate": False,
+                            },
+                            {
+                                "id": 16,
+                                "name": "Your Name",
+                                "required": False,
+                                "datapoint_name": False,
+                                "type": "input",
+                                "order": 3,
                                 "member_access": [],
                                 "isco_access": [],
                                 "coreMandatory": False,

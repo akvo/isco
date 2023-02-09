@@ -75,6 +75,7 @@ class TestWebformRoutes():
             for q in qg["question"]:
                 assert len(q["member_access"]) > 0
                 assert len(q["isco_access"]) > 0
+                assert "datapoint_name" in q
                 assert "coreMandatory" in q
                 assert "deactivate" in q
 

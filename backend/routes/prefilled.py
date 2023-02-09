@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 from db.connection import get_session
 from middleware import verify_user
 from models.data import Data, PrevProjectSubmissionResponse
-from util.common import get_prev_year
+from util.common import get_prev_year, generate_datapoint_name
 from db import crud_form, crud_data, crud_collaborator
 from pydantic import Required
 
@@ -46,7 +46,23 @@ def get_previous_project_submission(
         Data.organisation == user.organisation,
         Data.form == form.id
     )).all()
-    return [d.to_prev_project_submssion_list for d in data]
+    options_value = [d.to_prev_project_submssion_list for d in data]
+    for item in options_value:
+        if not item.get('is_name_configured'):
+            # check and regenerate datapoint/display name
+            new_name = generate_datapoint_name(
+                session=session,
+                form=item.get('form'),
+                data=item.get('id'))
+            name = item.get('datapoint_name')
+            if new_name:
+                submitted = item.get('submitted')
+                submitted_by = item.get('submitted_by')
+                name = f"{new_name} - {submitted_by} - {submitted}"
+            item.update({
+                "datapoint_name": name
+            })
+    return options_value
 
 
 @prefilled_route.get(

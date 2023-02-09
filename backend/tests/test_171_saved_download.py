@@ -29,6 +29,11 @@ class TestSavedDownloadRoute():
             "repeat_index": 0,
             "comment": None,
             "value": 30
+        }, {
+            "question": 16,
+            "repeat_index": 0,
+            "comment": None,
+            "value": "Saved download list"
         }]
         # save data
         res = await client.post(
