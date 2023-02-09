@@ -148,6 +148,11 @@ class TestSubmissionWithComputedValidationRoutes():
                 "repeat_index": 0,
                 "comment": None,
                 "value": 60
+            }, {
+                "question": 16,
+                "repeat_index": 0,
+                "comment": None,
+                "value": "My name is Lorem Ipsum"
             }],
             headers={"Authorization": f"Bearer {account.token}"})
         assert res.status_code == 200

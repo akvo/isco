@@ -48,15 +48,19 @@ def get_previous_project_submission(
     )).all()
     options_value = [d.to_prev_project_submssion_list for d in data]
     for item in options_value:
-        if not item.get('is_configured_name'):
+        if not item.get('is_name_configured'):
             # check and regenerate datapoint/display name
             new_name = generate_datapoint_name(
                 session=session,
                 form=item.get('form'),
                 data=item.get('id'))
+            name = item.get('datapoint_name')
+            if new_name:
+                submitted = item.get('submitted')
+                submitted_by = item.get('submitted_by')
+                name = f"{new_name} - {submitted_by} - {submitted}"
             item.update({
-                "datapoint_name":
-                    new_name if new_name else item.get('datapoint_name')
+                "datapoint_name": name
             })
     return options_value
 

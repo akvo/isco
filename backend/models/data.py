@@ -130,6 +130,8 @@ class PrevProjectSubmissionResponse(TypedDict):
     form: int
     datapoint_name: str
     is_name_configured: bool
+    submitted_by: str
+    submitted: Optional[str] = None
 
 
 class Data(Base):
@@ -343,7 +345,9 @@ class Data(Base):
             "id": self.id,
             "form": self.form,
             "datapoint_name": f"{name} - {submitted_by} - {submitted}",
-            "is_name_configured": True if self.name else False
+            "is_name_configured": True if self.name else False,
+            "submitted_by": submitted_by,
+            "submitted": submitted
         }
 
 

@@ -335,14 +335,19 @@ def get_saved_data_by_organisation(
         return []
     options_value = [d.to_options for d in data]
     for item in options_value:
-        if not item.get('is_configured_name'):
+        if not item.get('is_name_configured'):
             # check and regenerate datapoint/display name
             new_name = generate_datapoint_name(
                 session=session,
                 form=item.get('form'),
                 data=item.get('id'))
+            name = item.get('name')
+            if new_name:
+                created = item.get('created')
+                created_by = item.get('created_by')
+                name = f"{new_name} - {created_by} - {created}"
             item.update({
-                "name": new_name if new_name else item.get('name')
+                "name": name
             })
     return options_value
 

@@ -97,6 +97,7 @@ class TestCreateUnlimitedMemberQuestionnaire():
             'locked_by_user': 'Galih',
             "name": f"Option 1 - Galih - {today}",
             "organisation": org_name,
+            "is_name_configured": True
         }
 
     @pytest.mark.asyncio

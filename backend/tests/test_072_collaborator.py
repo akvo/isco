@@ -107,5 +107,6 @@ class TestCollaboratorRoutes():
             'locked_by': 2,
             'locked_by_user': 'Galih',
             'name': f'Option 1 - Galih - {today}',
-            'organisation': org_name
+            'organisation': org_name,
+            'is_name_configured': True
         }]
