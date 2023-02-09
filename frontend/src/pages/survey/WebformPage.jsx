@@ -435,18 +435,18 @@ const WebformPage = ({
     const checkComputedValidaitonOnSubmit =
       checkComputedValidationFunction(false);
     // begin check core mandatory answered
-    if (!coreMandatoryQuestionIds.length) {
-      return false;
+    let checkCoreMandatoryQuestionFailed = false;
+    if (coreMandatoryQuestionIds.length) {
+      // check if core mandatory answered
+      const answerQids = answer.map((a) => a.question);
+      const coreMandatoryAnswers = intersection(
+        coreMandatoryQuestionIds,
+        answerQids
+      );
+      // true if not all mandatory questions answered
+      checkCoreMandatoryQuestionFailed =
+        coreMandatoryQuestionIds.length !== coreMandatoryAnswers.length;
     }
-    // check if core mandatory answered
-    const answerQids = answer.map((a) => a.question);
-    const coreMandatoryAnswers = intersection(
-      coreMandatoryQuestionIds,
-      answerQids
-    );
-    // true if not all mandatory questions answered
-    const checkCoreMandatoryQuestionFailed =
-      coreMandatoryQuestionIds.length !== coreMandatoryAnswers.length;
     if (
       checkComputedValidaitonOnSubmit?.length ||
       checkCoreMandatoryQuestionFailed
