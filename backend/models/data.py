@@ -73,9 +73,10 @@ class DataOptionDict(TypedDict):
     form: int
     name: str
     organisation: str
+    created_by: str
+    is_name_configured: bool
     locked_by: Optional[int] = None
     locked_by_user: Optional[str] = None
-    created_by: str
     created: Optional[str] = None
     form_type: Optional[str] = None
 
@@ -126,7 +127,11 @@ class DataResponseQuestionName(BaseModel):
 
 class PrevProjectSubmissionResponse(TypedDict):
     id: int
+    form: int
     datapoint_name: str
+    is_name_configured: bool
+    submitted_by: str
+    submitted: Optional[str] = None
 
 
 class Data(Base):
@@ -268,7 +273,7 @@ class Data(Base):
         organisation = self.organisation_detail.name
         created_by = self.created_by_user.name
         created = self.created.strftime("%B %d, %Y")
-        name = f"{form} - {organisation} - {created_by} - {created}"
+        name = f"{form} - {organisation}"
         if self.name:
             name = self.name
         form_type = None
@@ -278,7 +283,8 @@ class Data(Base):
             form_type = "project"
         return {
             "id": self.id,
-            "name": name,
+            "name": f"{name} - {created_by} - {created}",
+            "is_name_configured": True if self.name else False,
             "form": self.form,
             "form_type": form_type,
             "locked_by": self.locked_by,
@@ -332,12 +338,16 @@ class Data(Base):
         organisation = self.organisation_detail.name
         submitted_by = self.submitted_by_user.name
         submitted = self.submitted.strftime("%B %d, %Y")
-        name = f"{form} - {organisation} - {submitted_by} - {submitted}"
+        name = f"{form} - {organisation}"
         if self.name:
             name = self.name
         return {
             "id": self.id,
-            "datapoint_name": name
+            "form": self.form,
+            "datapoint_name": f"{name} - {submitted_by} - {submitted}",
+            "is_name_configured": True if self.name else False,
+            "submitted_by": submitted_by,
+            "submitted": submitted
         }
 
 

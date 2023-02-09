@@ -210,6 +210,62 @@ class TestFormWithComputedValidationRoutes():
             "deactivate": False,
             "disableDelete": False,
         }
+        #
+        # add question type input
+        question_payload = {
+            "form": 4,
+            "question_group": 5,
+            "name": "Your Name",
+            "translations": None,
+            "mandatory": False,
+            "datapoint_name": False,
+            "variable_name": None,
+            "type": QuestionType.input.value,
+            "personal_data": False,
+            "rule": None,
+            "tooltip": None,
+            "tooltip_translations": None,
+            "cascade": None,
+            "repeating_objects": None,
+            "order": 3,
+            "option": None,
+            "member_access": None,
+            "isco_access": None,
+            "skip_logic": None,
+            "core_mandatory": False,
+            "deactivate": False,
+        }
+        res = await client.post(
+            app.url_path_for("question:create"),
+            headers={"Authorization": f"Bearer {account.token}"},
+            json=question_payload)
+        assert res.status_code == 200
+        res = res.json()
+        assert res == {
+            "id": 16,
+            "cascade": None,
+            "datapoint_name": False,
+            "form": 4,
+            "isco_access": [],
+            "mandatory": False,
+            "member_access": [],
+            "name": 'Your Name',
+            "option": [],
+            "order": 3,
+            "personal_data": False,
+            "question_group": 5,
+            "repeating_objects": [],
+            "rule": None,
+            "skip_logic": [],
+            "tooltip": None,
+            "tooltip_translations": [],
+            "translations": [],
+            "type": 'input',
+            "variable_name": None,
+            "core_mandatory": False,
+            "deactivate": False,
+            "disableDelete": False,
+        }
 
     @pytest.mark.asyncio
     async def test_publish_computed_validation_form(

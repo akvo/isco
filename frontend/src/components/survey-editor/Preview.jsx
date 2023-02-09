@@ -72,6 +72,7 @@ const Preview = () => {
               name: q.name,
               order: q.order,
               type: q.type,
+              meta: q.datapoint_name, // set as datapoint/display name
               required: q.mandatory,
               coreMandatory: q.core_mandatory,
               member_access: qMemberAccess,
