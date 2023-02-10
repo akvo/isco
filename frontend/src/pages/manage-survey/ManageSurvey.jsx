@@ -179,6 +179,12 @@ const ManageSurvey = () => {
         languages: null,
       };
     }
+    if (!data?.enable_prefilled_value) {
+      data = {
+        ...data,
+        enable_prefilled_value: false,
+      };
+    }
     api
       .post("/form", data, { "content-type": "application/json" })
       .then((res) => {

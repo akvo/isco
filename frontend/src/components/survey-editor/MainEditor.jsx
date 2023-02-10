@@ -60,6 +60,12 @@ const MainEditor = () => {
         ...{ [field]: values[key] },
       };
     });
+    if (typeof data?.enable_prefilled_value !== "undefined") {
+      data = {
+        ...data,
+        enable_prefilled_value: false,
+      };
+    }
     api
       .put(`/form/${formId}`, data, { "content-type": "application/json" })
       .then((res) => {
