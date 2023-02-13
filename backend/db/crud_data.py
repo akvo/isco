@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List, Optional, Union
 from typing_extensions import TypedDict
 from sqlalchemy.orm import Session
-from sqlalchemy import desc, and_, null, extract
+from sqlalchemy import desc, and_, or_, null, extract
 from models.data import Data, DataDict, DataOptionDict
 from models.answer import Answer
 from models.answer import AnswerBase
@@ -10,6 +10,7 @@ from models.organisation_isco import OrganisationIsco
 from util.survey_config import MEMBER_SURVEY, PROJECT_SURVEY
 from util.survey_config import LIMITED_SURVEY
 from util.survey_config import MEMBER_SURVEY_UNLIMITED_ISCO
+from util.common import get_prev_year
 
 
 class PaginatedData(TypedDict):
@@ -166,6 +167,7 @@ def check_member_submission_exists(
     form: Optional[int] = None,
     saved: Optional[bool] = False
 ):
+    current_year = get_prev_year(prev=0, year=True)
     # handle unlimited project questionnaire
     if form and form in PROJECT_SURVEY:
         return False
@@ -185,7 +187,11 @@ def check_member_submission_exists(
         form_config = LIMITED_SURVEY
     data = session.query(Data).filter(and_(
         Data.form.in_(form_config),
-        Data.organisation == organisation))
+        Data.organisation == organisation
+    )).filter(or_(
+        extract('year', Data.created) == current_year,
+        extract('year', Data.submitted) == current_year,
+    ))
     # filter by not submitted
     if saved:
         data = data.filter(Data.submitted == null())
