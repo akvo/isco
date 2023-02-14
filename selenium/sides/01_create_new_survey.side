@@ -2,7 +2,7 @@
   "id": "3837e61a-40bf-431a-9c80-4812b82fc9cd",
   "version": "2.0",
   "name": "ISCO",
-  "url": "http://localhost:3000",
+  "url": "http://192.168.100.52:3000",
   "tests": [{
     "id": "503ee785-e026-46d7-b3ec-957d9cd2cdce",
     "name": "Create New Survey",
