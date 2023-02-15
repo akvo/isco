@@ -78,6 +78,15 @@ backend_build () {
 
 }
 
+end_to_end_test() {
+	backend_build
+	frontend_build
+
+  dc -f docker-compose.test.yml \
+		-p end-to-end \
+		run --rm -T selenium ./run.sh
+}
+
 if [[ ${BACKEND_CHANGES} == 1 ]];
 then
     echo "================== * BACKEND BUILD * =================="
