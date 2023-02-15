@@ -2,7 +2,7 @@
   "id": "3837e61a-40bf-431a-9c80-4812b82fc9cd",
   "version": "2.0",
   "name": "ISCO",
-  "url": "http://127.0.0.1:3000",
+  "url": "http://localhost:3000",
   "tests": [{
     "id": "503ee785-e026-46d7-b3ec-957d9cd2cdce",
     "name": "Login",
@@ -120,6 +120,6 @@
     "timeout": 300,
     "tests": ["503ee785-e026-46d7-b3ec-957d9cd2cdce"]
   }],
-  "urls": ["http://127.0.0.1:3000"],
+  "urls": ["http://localhost:3000/"],
   "plugins": []
 }

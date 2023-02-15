@@ -8,11 +8,8 @@ services:
       - 5050:5050
       - 4444:4444
   chromedriver:
-    image: robcherry/docker-chromedriver
-    privileged: true
+    image: selenium/standalone-chrome
     restart: always
-    environment:
-      - CHROMEDRIVER_WHITELISTED_IPS=''
     network_mode: service:mainnetwork
   selenium-side-runner:
     image: nixel2007/docker-selenium-side-runner
