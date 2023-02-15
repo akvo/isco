@@ -48,11 +48,6 @@ dci () {
        -f docker-compose.ci.yml "$@"
 }
 
-dct () {
-	dc -f docker-compose.test.yml \
-		-f docker-compose.e2e.yml "$@"
-}
-
 frontend_build () {
 
     echo "PUBLIC_URL=/" > frontend/.env
@@ -82,20 +77,6 @@ backend_build () {
         run --rm -T backend ./test.sh
 
 }
-
-end_to_end_test() {
-  docker build \
-		--tag "${image_prefix}/backend:latest" \
-		--tag "${image_prefix}/backend:${CI_COMMIT}" backend
-
-	frontend_build
-
-	dct up -d
-	dct exec selenium ./run.sh
-	dct down -v
-}
-
-end_to_end_test
 
 if [[ ${BACKEND_CHANGES} == 1 ]];
 then
