@@ -2,6 +2,8 @@
 version: "3"
 services:
   mainnetwork:
+    image: alpine:3.14.0
+    command: ["tail", "-f", "/dev/null"]
     ports:
       - 3000:3000
       - 5000:5000
