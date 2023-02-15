@@ -6,6 +6,21 @@ services:
       - 3000:3000
       - 5000:5000
       - 5050:5050
+      - 4444:4444
+  chromedriver:
+    image: robcherry/docker-chromedriver
+    privileged: true
+    restart: always
+    environment:
+      - CHROMEDRIVER_WHITELISTED_IPS=''
+    network_mode: service:mainnetwork
+  selenium-side-runner:
+    image: nixel2007/docker-selenium-side-runner
+    command: ["tail", "-f", "/dev/null"]
+    working_dir: /app
+    volumes:
+      - ./selenium:/app
+    network_mode: service:mainnetwork
   pgadmin:
     image: dpage/pgadmin4:5.7
     environment:

@@ -47,7 +47,7 @@
         ["xpath=//div[@id='root']/div/div/div/form/div[2]/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
-      "value": ""
+      "value": "AkvoRocks!"
     }, {
       "id": "3abc6aef-6878-4e28-bdc1-d5bb21f9c323",
       "comment": "",
@@ -85,7 +85,7 @@
         ["xpath=//h1", "xpath:position"],
         ["xpath=//h1[contains(.,'Coffee Price Integration')]", "xpath:innerText"]
       ],
-      "value": "30000"
+      "value": "10000"
     }, {
       "id": "c193bcba-386f-4f82-b8f6-2dfb1483d54e",
       "comment": "",
@@ -100,11 +100,18 @@
       "target": "css=.title-page",
       "targets": [],
       "value": "Coffee Price Integration"
+    }, {
+      "id": "c361b662-e537-44f0-a5a8-16035f952c31",
+      "comment": "",
+      "command": "close",
+      "target": "",
+      "targets": [],
+      "value": ""
     }]
   }],
   "suites": [{
     "id": "639ab475-3414-446e-9eec-75cb78cc0c67",
-    "name": "Default Suite",
+    "name": "TC",
     "persistSession": false,
     "parallel": false,
     "timeout": 300,
