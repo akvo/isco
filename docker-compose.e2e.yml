@@ -9,7 +9,7 @@ services:
       - 5000:5000
       - 4444:4444
   backend:
-    command: ["sh", "e2e.sh"]
+    command: ["sh", "./e2e.sh"]
     network_mode: service:mainnetwork
   frontend:
     image: eu.gcr.io/akvo-lumen/isco/frontend:latest
