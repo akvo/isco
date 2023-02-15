@@ -85,9 +85,10 @@ end_to_end_test() {
 
 	frontend_build
 
-	dc -f docker-compose.test.yml -f docker-compose.e2e.yml \
-		-p end-to-end \
-		run --rm -T selenium ./run.sh
+	dc -f docker-compose.test.yml -f docker-compose.e2e.yml up -d
+	dc exec backend ./dev-seed.sh
+	dc exec selenium ./run.sh
+	dc down -v
 }
 
 end_to_end_test
