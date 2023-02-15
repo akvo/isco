@@ -48,6 +48,11 @@ dci () {
        -f docker-compose.ci.yml "$@"
 }
 
+dct () {
+	dc -f docker-compose.test.yml \
+		-f docker-compose.e2e.yml "$@"
+}
+
 frontend_build () {
 
     echo "PUBLIC_URL=/" > frontend/.env
@@ -85,9 +90,9 @@ end_to_end_test() {
 
 	frontend_build
 
-	dc -f docker-compose.test.yml -f docker-compose.e2e.yml up -d
-	dc exec selenium ./run.sh
-	dc down -v
+	dct up -d
+	dct exec selenium ./run.sh
+	dct down -v
 }
 
 end_to_end_test
