@@ -79,7 +79,10 @@ backend_build () {
 }
 
 end_to_end_test() {
-	backend_build
+  docker build \
+		--tag "${image_prefix}/backend:latest" \
+		--tag "${image_prefix}/backend:${CI_COMMIT}" backend
+
 	frontend_build
 
   dc -f docker-compose.test.yml \
