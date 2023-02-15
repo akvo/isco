@@ -11,12 +11,12 @@ services:
     image: selenium/standalone-chrome
     restart: always
     network_mode: service:mainnetwork
-  selenium-side-runner:
-    image: nixel2007/docker-selenium-side-runner
+  selenium:
+    image: akvo/akvo-selenium-side-runner:20230215.031651.e73d03e
     command: ["tail", "-f", "/dev/null"]
     working_dir: /app
     volumes:
-      - ./selenium:/app
+      - ./tests:/app
     network_mode: service:mainnetwork
   pgadmin:
     image: dpage/pgadmin4:5.7
