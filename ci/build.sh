@@ -87,6 +87,8 @@ end_to_end_test() {
 		run --rm -T selenium ./run.sh
 }
 
+end_to_end_test
+
 if [[ ${BACKEND_CHANGES} == 1 ]];
 then
     echo "================== * BACKEND BUILD * =================="
