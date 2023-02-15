@@ -83,9 +83,11 @@ end_to_end_test() {
 		--tag "${image_prefix}/backend:latest" \
 		--tag "${image_prefix}/backend:${CI_COMMIT}" backend
 
-	frontend_build
+  docker build \
+		--tag "${image_prefix}/frontend:latest" \
+		--tag "${image_prefix}/frontend:${CI_COMMIT}" frontend
 
-  dc -f docker-compose.test.yml \
+	dc -f docker-compose.test.yml -f docker-compose.e2e.yml \
 		-p end-to-end \
 		run --rm -T selenium ./run.sh
 }

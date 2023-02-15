@@ -1,0 +1,36 @@
+---
+version: "3"
+services:
+  mainnetwork:
+    image: alpine:3.14.0
+    command: ["tail", "-f", "/dev/null"]
+    ports:
+      - 3000:80
+      - 5000:5000
+      - 4444:4444
+  backend:
+    command: ["sh", "e2e.sh"]
+    network_mode: service:mainnetwork
+  frontend:
+    image: eu.gcr.io/akvo-lumen/isco/frontend:latest
+    command: ["nginx", "-g", "daemon off;"]
+    depends_on:
+      - backend
+      - db
+    network_mode: service:mainnetwork
+  chromedriver:
+    image: selenium/standalone-chrome
+    restart: always
+    network_mode: service:mainnetwork
+    depends_on:
+      - frontend
+  selenium:
+    image: akvo/akvo-selenium-side-runner:20230215.031651.e73d03e
+    command: ["./run.sh"]
+    working_dir: /app
+    volumes:
+      - ./tests:/app
+    network_mode: service:mainnetwork
+    depends_on:
+      - frontend
+      - chromedriver
