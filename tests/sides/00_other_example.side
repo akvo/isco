@@ -1,0 +1,298 @@
+{
+  "id": "3837e61a-40bf-431a-9c80-4812b82fc9cd",
+  "version": "2.0",
+  "name": "ISCO",
+  "url": "http://localhost:3000",
+  "tests": [{
+    "id": "503ee785-e026-46d7-b3ec-957d9cd2cdce",
+    "name": "Login",
+    "commands": [{
+      "id": "f1d16719-6f17-44fb-a359-36717dac357f",
+      "comment": "",
+      "command": "open",
+      "target": "/login",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "f06e897a-ecf5-46a9-b5a3-c4b6e48bf0e7",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "942x1012",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "dd0266b0-1221-420b-9a68-308d6c1ddd77",
+      "comment": "",
+      "command": "waitForElementPresent",
+      "target": "id=email",
+      "targets": [
+        ["id=email", "id"],
+        ["css=#email", "css:finder"],
+        ["xpath=//input[@id='email']", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div/div/div/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "a23f651f-ebbd-4071-ae1f-c4157e95f30b",
+      "comment": "",
+      "command": "type",
+      "target": "id=email",
+      "targets": [
+        ["id=email", "id"],
+        ["css=#email", "css:finder"],
+        ["xpath=//input[@id='email']", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div/div/div/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "your_email@domain.com"
+    }, {
+      "id": "9513e4ee-1839-4749-9d6b-7727879aed59",
+      "comment": "",
+      "command": "type",
+      "target": "id=password",
+      "targets": [
+        ["id=password", "id"],
+        ["css=#password", "css:finder"],
+        ["xpath=//input[@id='password']", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div[2]/div/div/div/span/input", "xpath:idRelative"],
+        ["xpath=//span/input", "xpath:position"]
+      ],
+      "value": "password"
+    }, {
+      "id": "bdecd68b-86d7-41fc-ae57-14dcd93a51fb",
+      "comment": "",
+      "command": "click",
+      "target": "css=.ant-btn-primary",
+      "targets": [
+        ["css=.ant-btn-primary", "css:finder"],
+        ["xpath=(//button[@type='button'])[3]", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/button", "xpath:idRelative"],
+        ["xpath=//form/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Login')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "ded99655-55ef-42dc-99b9-7c0209720d78",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.intro-text > h1",
+      "targets": [
+        ["css=.intro-text > h1", "css:finder"],
+        ["xpath=//div[@id='home']/div/div/h1", "xpath:idRelative"],
+        ["xpath=//h1", "xpath:position"],
+        ["xpath=//h1[contains(.,'WELCOME TO THE COCOA MONITORING OF DISCO, BEYOND CHOCOLATE AND GISCO!')]", "xpath:innerText"]
+      ],
+      "value": "WELCOME TO THE COCOA MONITORING OF DISCO, BEYOND CHOCOLATE AND GISCO!"
+    }, {
+      "id": "1a27ba6c-4ac1-47c1-abdc-0a61970b29ec",
+      "comment": "",
+      "command": "open",
+      "target": "/admin",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "cc8bde54-9dfd-4887-8b6d-7a579de4f3d4",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.page-title",
+      "targets": [
+        ["css=.page-title", "css:finder"],
+        ["xpath=//div[@id='admin']/div/div/h3", "xpath:idRelative"],
+        ["xpath=//h3", "xpath:position"],
+        ["xpath=//h3[contains(.,'Welcome Admin')]", "xpath:innerText"]
+      ],
+      "value": "Welcome Admin"
+    }, {
+      "id": "969d82f5-0487-4214-b8a9-a9ad9ba5187f",
+      "comment": "",
+      "command": "click",
+      "target": "css=.ant-col:nth-child(1) > .ant-card .ant-btn",
+      "targets": [
+        ["css=.ant-col:nth-child(1) > .ant-card .ant-btn", "css:finder"],
+        ["xpath=(//button[@type='button'])[4]", "xpath:attributes"],
+        ["xpath=//div[@id='admin']/div/div/div/div/div/div[2]/div/button", "xpath:idRelative"],
+        ["xpath=//div/div/div/div[2]/div/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Manage Users')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "d9bbbf7a-dbe9-4a8a-b6c7-5b636f95daa8",
+      "comment": "",
+      "command": "clickAt",
+      "target": "id=rc_select_1",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "fd44ea96-8d86-4c83-81c7-746c96bf8a95",
+      "comment": "",
+      "command": "executeScript",
+      "target": "document.querySelectorAll('.ant-select-item').forEach(function(x){if(x.getAttribute('title') === \"Big Industry\"){x.click()}})",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "4cdd7bfd-41ef-4aca-851f-04d8d5ee2fb4",
+      "comment": "",
+      "command": "clickAt",
+      "target": "id=rc_select_2",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "d92e9020-4ca3-46fc-abc6-9e74da6cee4b",
+      "comment": "",
+      "command": "executeScript",
+      "target": "document.querySelectorAll('.ant-select-item').forEach(function(x){if(x.getAttribute('title') === \"GISCO\"){x.click()}})",
+      "targets": [],
+      "value": ""
+    }]
+  }, {
+    "id": "96f25ca1-6eb0-4ef8-a4ac-3d17db97d763",
+    "name": "Survey",
+    "commands": [{
+      "id": "f7e3579e-ffcc-41aa-8dd1-f1a189c08067",
+      "comment": "",
+      "command": "open",
+      "target": "/survey",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "487b6d60-d1ed-4276-ba35-34039ffa6fbf",
+      "comment": "User is not logged in ",
+      "command": "assertText",
+      "target": "css=.ant-col > h2",
+      "targets": [
+        ["css=.ant-col > h2", "css:finder"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[2]/div/div/h2", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/h2", "xpath:position"],
+        ["xpath=//h2[contains(.,'Login User')]", "xpath:innerText"]
+      ],
+      "value": "Login User"
+    }]
+  }, {
+    "id": "6ed049fb-6e3e-43e2-896c-91ad5afd4e79",
+    "name": "register",
+    "commands": [{
+      "id": "d090d7f5-b07b-4817-9373-38775852cf28",
+      "comment": "",
+      "command": "open",
+      "target": "/register",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "c6b43ac2-e5e9-40a5-ba84-776790205511",
+      "comment": "",
+      "command": "waitForElementPresent",
+      "target": "id=fullname",
+      "targets": [
+        ["id=fullname", "id"],
+        ["css=#fullname", "css:finder"],
+        ["xpath=//input[@id='fullname']", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div/div/div/div/input", "xpath:idRelative"],
+        ["xpath=//div/input", "xpath:position"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "b5e01db3-06f2-4bb4-967e-dfa14e2f2cea",
+      "comment": "",
+      "command": "type",
+      "target": "id=fullname",
+      "targets": [
+        ["id=fullname", "id"],
+        ["css=#fullname", "css:finder"],
+        ["xpath=//input[@id='fullname']", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div/div/div/div/input", "xpath:idRelative"],
+        ["xpath=//div/input", "xpath:position"]
+      ],
+      "value": "navin"
+    }, {
+      "id": "fb15b1d4-0c98-4830-9446-138b270f1862",
+      "comment": "",
+      "command": "type",
+      "target": "id=email",
+      "targets": [
+        ["id=email", "id"],
+        ["css=#email", "css:finder"],
+        ["xpath=//input[@id='email']", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div[2]/div/div/div/input", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/div/input", "xpath:position"]
+      ],
+      "value": "navin@akvo.org"
+    }, {
+      "id": "e147471c-aee9-4c6e-9844-24311f79a0ef",
+      "comment": "",
+      "command": "type",
+      "target": "id=password",
+      "targets": [
+        ["id=password", "id"],
+        ["css=#password", "css:finder"],
+        ["xpath=//input[@id='password']", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div[4]/div/div/div/span/input", "xpath:idRelative"],
+        ["xpath=//div/span/input", "xpath:position"]
+      ],
+      "value": "Passcode@123"
+    }, {
+      "id": "a357e548-7301-4fb7-86a7-dd179aa757b0",
+      "comment": "",
+      "command": "type",
+      "target": "id=confirm_password",
+      "targets": [
+        ["id=confirm_password", "id"],
+        ["css=#confirm_password", "css:finder"],
+        ["xpath=//input[@id='confirm_password']", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div[5]/div/div/div/span/input", "xpath:idRelative"],
+        ["xpath=//div[5]/div/div/div/span/input", "xpath:position"]
+      ],
+      "value": "Passcode@123"
+    }, {
+      "id": "feb3183d-4e8a-422d-b912-8f01960c46e8",
+      "comment": "",
+      "command": "type",
+      "target": "id=rc_select_0",
+      "targets": [
+        ["id=rc_select_0", "id"],
+        ["css=#rc_select_0", "css:finder"],
+        ["xpath=//input[@id='rc_select_0']", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div[6]/div/div/div/div/div/span/input", "xpath:idRelative"],
+        ["xpath=//div/div/div/div/div/span/input", "xpath:position"]
+      ],
+      "value": "index=1"
+    }, {
+      "id": "64a874d0-00d8-47fb-b451-83a7713bc19a",
+      "comment": "",
+      "command": "select",
+      "target": "class=rc-virtual-list",
+      "targets": [],
+      "value": "staff Akvo"
+    }, {
+      "id": "777134a9-ab69-4727-91de-480595da3d91",
+      "comment": "",
+      "command": "click",
+      "target": "css=.ant-space-item > .ant-checkbox-wrapper .ant-checkbox-input",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "3340d344-4eef-44c9-8e55-eeefbf62380c",
+      "comment": "",
+      "command": "click",
+      "target": "css=.ant-btn-primary",
+      "targets": [
+        ["css=.ant-btn-primary", "css:finder"],
+        ["xpath=(//button[@type='button'])[3]", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/button", "xpath:idRelative"],
+        ["xpath=//form/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Register')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "9eecc3e3-ddb5-44db-a81d-e4a4935a4d48",
+    "name": "ISCO",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["503ee785-e026-46d7-b3ec-957d9cd2cdce"]
+  }],
+  "urls": ["http://localhost:3000/"],
+  "plugins": []
+}
