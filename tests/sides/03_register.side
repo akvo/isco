@@ -116,6 +116,33 @@
         ["xpath=//button[contains(.,'Manage Users')]", "xpath:innerText"]
       ],
       "value": ""
+    }, {
+      "id": "b9077d47-838d-4544-9ae8-44bb9647f784",
+      "comment": "",
+      "command": "mouseDown",
+      "target": "id=rc_select_1",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "fe6deaa9-060b-4f59-a74c-c7c8006055ac",
+      "comment": "",
+      "command": "mouseUpAt",
+      "target": "css=.ant-select-item-option-active",
+      "targets": [
+        ["css=.ant-select-item-option-active", "css:finder"],
+        ["xpath=//div[2]/div/div/div/div[4]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "cda17226-4e0b-411e-a88e-619d62ab1aed",
+      "comment": "",
+      "command": "clickAt",
+      "target": "xpath=//div[5]/div",
+      "targets": [
+        ["css=.ant-select-item-option-active > .ant-select-item-option-content", "css:finder"],
+        ["xpath=//div[5]/div", "xpath:position"]
+      ],
+      "value": ""
     }]
   }, {
     "id": "96f25ca1-6eb0-4ef8-a4ac-3d17db97d763",
