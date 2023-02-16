@@ -177,7 +177,7 @@ const QuestionEditor = ({
         if (key === "skip_logic") {
           value?.forEach((val) => {
             Object.keys(val).forEach((key) => {
-              const skipField = `${field}-${key}`;
+              let skipField = `${field}-${key}`;
               let skipValue = val?.[key];
               if (val?.type?.includes("option") && key === "value") {
                 if (String(skipValue)?.includes("|")) {
@@ -187,6 +187,10 @@ const QuestionEditor = ({
                 skipValue = Array.isArray(skipValue)
                   ? skipValue
                   : [Number(skipValue)];
+                skipField = `${skipField}-option`;
+              }
+              if (!val?.type?.includes("option") && key === "value") {
+                skipField = `${skipField}-number`;
               }
               form.setFieldsValue({ [skipField]: skipValue });
             });

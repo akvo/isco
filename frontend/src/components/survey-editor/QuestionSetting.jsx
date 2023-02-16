@@ -742,12 +742,9 @@ const Setting = ({
     setTimeout(() => {
       form.resetFields([
         `question-${qid}-skip_logic-operator`,
-        `question-${qid}-skip_logic-value`,
+        `question-${qid}-skip_logic-value-number`,
+        `question-${qid}-skip_logic-value-option`,
       ]);
-      handleFormOnValuesChange(
-        { [`question-${qid}-skip_logic`]: null },
-        form?.getFieldsValue()
-      );
     }, [250]);
   };
 
@@ -1020,15 +1017,12 @@ const Setting = ({
                   <div className="field-wrapper">
                     <div className="field-label">Value</div>
                     <Form.Item
-                      name={`question-${qid}-skip_logic-value`}
+                      name={`question-${qid}-skip_logic-value-number`}
                       rules={[
                         { required: true, message: "Please input value" },
                       ]}
                     >
-                      <InputNumber
-                        className="bg-grey"
-                        id={`question-${qid}-skip_logic-value`}
-                      />
+                      <InputNumber className="bg-grey" />
                     </Form.Item>
                   </div>
                 )}
@@ -1038,7 +1032,7 @@ const Setting = ({
                   <div className="field-wrapper">
                     <div className="field-label">Value</div>
                     <Form.Item
-                      name={`question-${qid}-skip_logic-value`}
+                      name={`question-${qid}-skip_logic-value-option`}
                       rules={[
                         { required: true, message: "Please select value" },
                       ]}

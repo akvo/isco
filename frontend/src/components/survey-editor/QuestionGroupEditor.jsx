@@ -799,6 +799,14 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
           }
           if (field.includes("skip_logic")) {
             const skipKey = key.split("-")[3];
+            let valueTmp = {};
+            if (skipKey === "dependent_to") {
+              const resetVal =
+                allQuestions.find((q) => q.id === value)?.type === "number"
+                  ? null
+                  : [];
+              valueTmp = { value: resetVal, operator: null };
+            }
             findQuestion = {
               ...findQuestion,
               skip_logic: skipKey
@@ -808,6 +816,7 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
                       flag: findQuestion?.skip_logic?.[0]?.id || "post",
                       question: qid,
                       [skipKey]: value,
+                      ...valueTmp,
                     },
                   ]
                 : null,
@@ -909,7 +918,7 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
         }
       });
     },
-    [questionGroupState, questionGroup]
+    [questionGroupState, questionGroup, allQuestions]
   );
 
   const handleFormOnFinishFailed = ({ errorFields }) => {
