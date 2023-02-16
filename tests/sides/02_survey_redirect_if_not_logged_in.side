@@ -117,6 +117,29 @@
       ],
       "value": ""
     }]
+  }, {
+    "id": "96f25ca1-6eb0-4ef8-a4ac-3d17db97d763",
+    "name": "Survey",
+    "commands": [{
+      "id": "f7e3579e-ffcc-41aa-8dd1-f1a189c08067",
+      "comment": "",
+      "command": "open",
+      "target": "/survey",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "487b6d60-d1ed-4276-ba35-34039ffa6fbf",
+      "comment": "User is not logged in ",
+      "command": "assertText",
+      "target": "css=.ant-col > h2",
+      "targets": [
+        ["css=.ant-col > h2", "css:finder"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[2]/div/div/h2", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/h2", "xpath:position"],
+        ["xpath=//h2[contains(.,'Login User')]", "xpath:innerText"]
+      ],
+      "value": "Login User"
+    }]
   }],
   "suites": [{
     "id": "9eecc3e3-ddb5-44db-a81d-e4a4935a4d48",
