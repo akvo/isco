@@ -84,6 +84,7 @@ const App = () => {
         api
           .get("/user/me")
           .then((res) => {
+            getOrg();
             const { data } = res;
             store.update((s) => {
               s.isLoggedIn = true;
@@ -152,27 +153,24 @@ const App = () => {
     });
   }, []);
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      // get organisation filtered
-      api
-        .get("/organisation/isco")
-        .then((res) => {
-          store.update((s) => {
-            s.optionValues = {
-              ...s.optionValues,
-              organisationInSameIsco: orderBy(
-                res?.data?.filter((o) => o?.active),
-                ["name"]
-              ),
-            };
-          });
-        })
-        .catch((e) => {
-          console.error(e);
+  const getOrg = () => {
+    api
+      .get("/organisation/isco")
+      .then((res) => {
+        store.update((s) => {
+          s.optionValues = {
+            ...s.optionValues,
+            organisationInSameIsco: orderBy(
+              res?.data?.filter((o) => o?.active),
+              ["name"]
+            ),
+          };
         });
-    }
-  }, [isLoggedIn]);
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  };
 
   return (
     <Layout>
