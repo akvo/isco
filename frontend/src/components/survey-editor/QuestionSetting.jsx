@@ -738,6 +738,19 @@ const Setting = ({
     setQuestionToDeactivate([]);
   };
 
+  const handleChangeQuestionSkipLogicDependentTo = () => {
+    setTimeout(() => {
+      form.resetFields([
+        `question-${qid}-skip_logic-operator`,
+        `question-${qid}-skip_logic-value`,
+      ]);
+      handleFormOnValuesChange(
+        { [`question-${qid}-skip_logic`]: null },
+        form?.getFieldsValue()
+      );
+    }, [250]);
+  };
+
   return (
     <div className="question-setting-wrapper setting">
       <Tabs size="small">
@@ -962,6 +975,7 @@ const Setting = ({
                       option.text.toLowerCase().indexOf(input.toLowerCase()) >=
                       0
                     }
+                    onChange={handleChangeQuestionSkipLogicDependentTo}
                   />
                 </Form.Item>
                 <Tooltip title="Delete question skip logic">
@@ -1011,7 +1025,10 @@ const Setting = ({
                         { required: true, message: "Please input value" },
                       ]}
                     >
-                      <InputNumber className="bg-grey" />
+                      <InputNumber
+                        className="bg-grey"
+                        id={`question-${qid}-skip_logic-value`}
+                      />
                     </Form.Item>
                   </div>
                 )}
