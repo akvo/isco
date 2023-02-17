@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   Row,
   Col,
@@ -32,6 +32,9 @@ import { generateDisabledOptions } from "./QuestionGroupEditor";
 import { useNotification } from "../../util";
 
 const { TabPane } = Tabs;
+
+const skipLogicQuestionType = ["option", "number", "multiple_option"];
+const datapointNameQuestionType = ["input", "option"];
 
 const RenderOptionInput = ({
   question,
@@ -521,8 +524,6 @@ const Setting = ({
   const { questionGroup: questionGroupState } = surveyEditor;
   const { operator_type, member_type, isco_type } = optionValues;
   const { id: qid, type: currentQuestionType } = question;
-  const skipLogicQuestionType = ["option", "number", "multiple_option"];
-  const datapointNameQuestionType = ["input", "option"];
 
   const memberAccessField = `question-${qid}-member_access`;
   const memberValue = form.getFieldValue(memberAccessField);
@@ -532,48 +533,59 @@ const Setting = ({
   const iscoValue = form.getFieldValue(iscoAccessField);
   const iscoOption = generateDisabledOptions(isco_type, iscoValue);
 
-  const allQuestion = orderBy(
-    questionGroupState?.flatMap((qg) => qg?.question),
-    ["order"]
-  );
+  const allQuestion = useMemo(() => {
+    return orderBy(
+      questionGroupState?.flatMap((qg) => qg?.question),
+      ["order"]
+    );
+  }, [questionGroupState]);
 
-  const dependencies = allQuestion.filter(
-    (q) => q?.skip_logic?.filter((d) => d.dependent_to === qid).length || false
-  );
+  const dependencies = useMemo(() => {
+    return allQuestion.filter(
+      (q) =>
+        q?.skip_logic?.filter((d) => d.dependent_to === qid).length || false
+    );
+  }, [allQuestion, qid]);
 
   // take skip logic question by question current order
-  const skipLogicQuestion = orderBy(
-    take(allQuestion, question?.order)?.filter(
-      (q) => skipLogicQuestionType.includes(q?.type) && q?.id !== qid
-    ),
-    ["order"]
-  )?.map((q) => {
-    let icon = <AiOutlineFieldNumber style={{ marginRight: "8px" }} />;
-    if (q?.type === "option") {
-      icon = <MdOutlineRadioButtonChecked style={{ marginRight: "8px" }} />;
-    }
-    if (q?.type === "multiple_option") {
-      icon = <MdOutlineLibraryAddCheck style={{ marginRight: "8px" }} />;
-    }
-    return {
-      label: (
-        <Row align="middle">
-          {icon} {q?.name}
-        </Row>
+  const skipLogicQuestion = useMemo(() => {
+    return orderBy(
+      take(allQuestion, question?.order)?.filter(
+        (q) => skipLogicQuestionType.includes(q?.type) && q?.id !== qid
       ),
-      text: q?.name,
-      value: q?.id,
-    };
-  });
+      ["order"]
+    )?.map((q) => {
+      let icon = <AiOutlineFieldNumber style={{ marginRight: "8px" }} />;
+      if (q?.type === "option") {
+        icon = <MdOutlineRadioButtonChecked style={{ marginRight: "8px" }} />;
+      }
+      if (q?.type === "multiple_option") {
+        icon = <MdOutlineLibraryAddCheck style={{ marginRight: "8px" }} />;
+      }
+      return {
+        label: (
+          <Row align="middle">
+            {icon} {q?.name}
+          </Row>
+        ),
+        text: q?.name,
+        value: q?.id,
+      };
+    });
+  }, [allQuestion, qid, question?.order]);
 
+  // handle dependencies
   const dependentId = parseInt(
     form?.getFieldValue(`question-${qid}-skip_logic-dependent_to`)
   );
-
-  const dependentQuestion = allQuestion?.find((q) => q?.id === dependentId);
-  const operators = dependentQuestion?.type.includes("option")
-    ? operator_type?.filter((x) => x === "equal")
-    : operator_type;
+  const dependentQuestion = useMemo(() => {
+    return allQuestion?.find((q) => q?.id === dependentId);
+  }, [allQuestion, dependentId]);
+  const operators = useMemo(() => {
+    return dependentQuestion?.type.includes("option")
+      ? operator_type?.filter((x) => x === "equal")
+      : operator_type;
+  }, [dependentQuestion, operator_type]);
 
   const handleRequiredChange = (val, field) => {
     const fieldValue = { [field]: val };
