@@ -379,6 +379,28 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
     });
   };
 
+  const checkQuestionOptionsAndRepeatingObjects = (sources) => {
+    let option = sources?.option?.filter((op) => {
+      const checkDelete = deletedOptions?.find((d) => d?.id === op?.id);
+      if (!checkDelete) {
+        return op;
+      }
+    });
+    let repeating_objects = sources?.repeating_objects;
+    // add option default
+    if (option?.length === 0) {
+      option = [{ ...defaultOption, id: generateID() }];
+    }
+    // add repeating object default
+    if (!repeating_objects || repeating_objects?.length === 0) {
+      repeating_objects = [{ ...defaultRepeatingObject, id: generateID() }];
+    }
+    return {
+      option: option,
+      repeating_objects: repeating_objects,
+    };
+  };
+
   const handleFormOnFinish = () => {
     const { id } = questionGroup;
     let qId = null;
@@ -395,13 +417,28 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
           "content-type": "application/json",
         })
         .then((res) => {
-          const { data } = res;
+          const { data: updatedQuestionGroup } = res;
+          const transformedQuestion = updatedQuestionGroup?.question?.map(
+            (q) => {
+              const { option, repeating_objects } =
+                checkQuestionOptionsAndRepeatingObjects(q);
+              return {
+                ...q,
+                option: option,
+                repeating_objects: repeating_objects,
+              };
+            }
+          );
+          const transformedData = {
+            ...updatedQuestionGroup,
+            question: transformedQuestion,
+          };
           store.update((s) => {
             s.surveyEditor = {
               ...s.surveyEditor,
               questionGroup: [
                 ...s.surveyEditor.questionGroup.filter((x) => x?.id !== id),
-                data,
+                transformedData,
               ],
             };
           });
@@ -607,7 +644,7 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
           "content-type": "application/json",
         })
         .then((res) => {
-          const { data } = res;
+          const { data: updatedQuestion } = res;
           store.update((s) => {
             s.surveyEditor = {
               ...s.surveyEditor,
@@ -617,30 +654,12 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
                     ...qg,
                     question: qg?.question?.map((q) => {
                       if (q?.id === qId) {
-                        let option = data?.option?.filter((op) => {
-                          const checkDelete = deletedOptions?.find(
-                            (d) => d?.id === op?.id
+                        const { option, repeating_objects } =
+                          checkQuestionOptionsAndRepeatingObjects(
+                            updatedQuestion
                           );
-                          if (!checkDelete) {
-                            return op;
-                          }
-                        });
-                        let repeating_objects = data?.repeating_objects;
-                        // add option default
-                        if (option?.length === 0) {
-                          option = [{ ...defaultOption, id: generateID() }];
-                        }
-                        // add repeating object default
-                        if (
-                          !repeating_objects ||
-                          repeating_objects?.length === 0
-                        ) {
-                          repeating_objects = [
-                            { ...defaultRepeatingObject, id: generateID() },
-                          ];
-                        }
                         return {
-                          ...data,
+                          ...updatedQuestion,
                           option: option,
                           repeating_objects: repeating_objects,
                         };
