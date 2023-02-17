@@ -267,7 +267,7 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
   const { deletedOptions, deletedSkipLogic } = tempStorage;
   const { id, question } = questionGroup;
 
-  const [isGroupSettingVisible, setIsGroupSettingVisible] = useState(false);
+  const [isGroupSettingVisible, setIsGroupSettingVisible] = useState(true);
   const [isQuestionVisible, setIsQuestionVisible] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
   const [questionToDeactivate, setQuestionToDeactivate] = useState([]);
