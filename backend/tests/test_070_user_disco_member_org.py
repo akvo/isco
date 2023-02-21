@@ -14,8 +14,9 @@ account = Acc(email="support@akvo.org", token=None)
 
 class TestUserDisco():
     @pytest.mark.asyncio
-    async def test_user_register(self, app: FastAPI, session: Session,
-                                 client: AsyncClient) -> None:
+    async def test_user_register(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # create organisation
         user_payload = {
             "name": "Galih",
@@ -46,8 +47,9 @@ class TestUserDisco():
         }
 
     @pytest.mark.asyncio
-    async def test_verify_user_email(self, app: FastAPI, session: Session,
-                                     client: AsyncClient) -> None:
+    async def test_verify_user_email(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         res = await client.put(
             app.url_path_for("user:verify_email"),
             params={"email": "galih@test.org"})
@@ -56,8 +58,9 @@ class TestUserDisco():
         assert res['email_verified'] is not None
 
     @pytest.mark.asyncio
-    async def test_user_login(self, app: FastAPI, session: Session,
-                              client: AsyncClient) -> None:
+    async def test_user_login(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         res = await client.post(
             app.url_path_for("user:login"),
             headers={"content-type": "application/x-www-form-urlencoded"},
@@ -77,8 +80,9 @@ class TestUserDisco():
         assert account.token == res['access_token']
 
     @pytest.mark.asyncio
-    async def test_get_user_me(self, app: FastAPI, session: Session,
-                               client: AsyncClient) -> None:
+    async def test_get_user_me(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         account = Acc(email="galih@test.org", token=None)
         res = await client.get(
             app.url_path_for("user:me"),
@@ -123,8 +127,9 @@ class TestUserDisco():
         account = Acc(email="galih@test.org", token=None)
         res = await client.put(
             app.url_path_for("user:update_password"),
-            headers={"Authorization": f"Bearer {account.token}",
-                     "content-type": "application/x-www-form-urlencoded"},
+            headers={
+                "Authorization": f"Bearer {account.token}",
+                "content-type": "application/x-www-form-urlencoded"},
             data={
                 "old_password": "test",
                 "new_password": "test123",
@@ -152,8 +157,9 @@ class TestUserDisco():
         assert account.token == res['access_token']
 
     @pytest.mark.asyncio
-    async def test_user_invitation(self, app: FastAPI, session: Session,
-                                   client: AsyncClient) -> None:
+    async def test_user_invitation(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # create organisation
         user_payload = {
             "name": "Galih Invited",
@@ -171,8 +177,9 @@ class TestUserDisco():
         assert res.status_code == 403
         res = await client.post(
             app.url_path_for("user:register"),
-            headers={"Authorization": f"Bearer {account.token}",
-                     "content-type": "application/x-www-form-urlencoded"},
+            headers={
+                "Authorization": f"Bearer {account.token}",
+                "content-type": "application/x-www-form-urlencoded"},
             params={"invitation": 1},
             data=user_payload)
         assert res.status_code == 200
