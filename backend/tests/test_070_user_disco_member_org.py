@@ -92,8 +92,9 @@ class TestUserDisco():
         assert res['email'] == "galih@test.org"
 
     @pytest.mark.asyncio
-    async def test_update_user_by_admin(self, app: FastAPI, session: Session,
-                                        client: AsyncClient) -> None:
+    async def test_update_user_by_admin(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         user_id = 2
         user_payload = {
             "role": UserRole.secretariat_admin.value,
@@ -122,8 +123,9 @@ class TestUserDisco():
         assert res["approved"] is True
 
     @pytest.mark.asyncio
-    async def test_user_update_password(self, app: FastAPI, session: Session,
-                                        client: AsyncClient) -> None:
+    async def test_user_update_password(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         account = Acc(email="galih@test.org", token=None)
         res = await client.put(
             app.url_path_for("user:update_password"),
@@ -160,7 +162,7 @@ class TestUserDisco():
     async def test_user_invitation(
         self, app: FastAPI, session: Session, client: AsyncClient
     ) -> None:
-        # create organisation
+        # create user
         user_payload = {
             "name": "Galih Invited",
             "email": "wayan_invited@test.org",
@@ -170,11 +172,13 @@ class TestUserDisco():
             "organisation": 1,
             "questionnaires": [],
         }
+        #
         res = await client.post(
             app.url_path_for("user:register"),
             params={"invitation": 1},
             data=user_payload)
         assert res.status_code == 403
+        #
         res = await client.post(
             app.url_path_for("user:register"),
             headers={
@@ -216,3 +220,24 @@ class TestUserDisco():
         assert user.invitation is None
         assert res['user']["email"] == user_payload["email"]
         assert res['user']["approved"] is True
+
+    @pytest.mark.asyncio
+    async def test_user_invitation_with_same_email(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
+        # create user
+        user_payload = {
+            "name": "Wayan Invited",
+            "email": "wayan_invited@test.org",
+            "phone_number": None,
+            "password": "test",
+            "role": UserRole.member_user.value,
+            "organisation": 1,
+            "questionnaires": [],
+        }
+        #
+        res = await client.post(
+            app.url_path_for("user:register"),
+            params={"invitation": 1},
+            data=user_payload)
+        assert res.status_code == 409
