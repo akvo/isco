@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import {
   Row,
   Col,
@@ -71,11 +71,15 @@ const QuestionGroupSetting = ({
 
   const memberAccessField = `question_group-${qgId}-member_access`;
   const memberValue = form.getFieldValue(memberAccessField);
-  const memberOption = generateDisabledOptions(member_type, memberValue);
+  const memberOption = useMemo(() => {
+    return generateDisabledOptions(member_type, memberValue);
+  }, [memberValue, member_type]);
 
   const iscoAccessField = `question_group-${qgId}-isco_access`;
   const iscoValue = form.getFieldValue(iscoAccessField);
-  const iscoOption = generateDisabledOptions(isco_type, iscoValue);
+  const iscoOption = useMemo(() => {
+    return generateDisabledOptions(isco_type, iscoValue);
+  }, [iscoValue, isco_type]);
 
   return (
     <div className="qge-setting-wrapper">

@@ -143,19 +143,30 @@ def me(req: Request,
     return res
 
 
-@user_route.post("/user/register",
-                 response_model=UserDict,
-                 summary="user register",
-                 name="user:register",
-                 tags=["User"])
-def register(req: Request,
-             payload: UserBase = Depends(UserBase.as_form),
-             invitation: Optional[bool] = False,
-             session: Session = Depends(get_session)):
+@user_route.post(
+    "/user/register",
+    response_model=UserDict,
+    summary="user register",
+    name="user:register",
+    tags=["User"])
+def register(
+    req: Request,
+    payload: UserBase = Depends(UserBase.as_form),
+    invitation: Optional[bool] = False,
+    session: Session = Depends(get_session)
+):
+    # Check if user exist by email
+    check_user_exist = crud_user.get_user_by_email(
+        session=session, email=payload.email)
+    if check_user_exist:
+        raise HTTPException(
+            status_code=409,
+            detail=f"User {payload.email} already exist.")
     if invitation:
         if hasattr(req.state, 'authenticated'):
-            verify_super_admin(session=session,
-                               authenticated=req.state.authenticated)
+            verify_super_admin(
+                session=session,
+                authenticated=req.state.authenticated)
         else:
             raise HTTPException(status_code=403, detail="Forbidden access")
     if payload.password:
@@ -163,17 +174,17 @@ def register(req: Request,
         payload.password = get_password_hash(payload.password)
     if payload.questionnaires:
         payload.questionnaires = [x for x in payload.questionnaires]
-    user = crud_user.add_user(session=session,
-                              payload=payload,
-                              invitation=invitation)
+    user = crud_user.add_user(
+        session=session, payload=payload, invitation=invitation)
     recipients = [user.recipient]
     user = user.serialize
     if invitation:
         # Send invitation email
         url = f"{webdomain}/invitation/{user['invitation']}"
-        email = Email(recipients=recipients,
-                      type=MailTypeEnum.invitation,
-                      button_url=url)
+        email = Email(
+            recipients=recipients,
+            type=MailTypeEnum.invitation,
+            button_url=url)
         email.send
     if not invitation:
         # send email register success with email verification link

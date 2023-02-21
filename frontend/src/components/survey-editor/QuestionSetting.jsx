@@ -56,11 +56,15 @@ const QuestionSetting = ({
 
   const memberAccessField = `question-${qid}-member_access`;
   const memberValue = form.getFieldValue(memberAccessField);
-  const memberOption = generateDisabledOptions(member_type, memberValue);
+  const memberOption = useMemo(() => {
+    return generateDisabledOptions(member_type, memberValue);
+  }, [memberValue, member_type]);
 
   const iscoAccessField = `question-${qid}-isco_access`;
   const iscoValue = form.getFieldValue(iscoAccessField);
-  const iscoOption = generateDisabledOptions(isco_type, iscoValue);
+  const iscoOption = useMemo(() => {
+    return generateDisabledOptions(isco_type, iscoValue);
+  }, [iscoValue, isco_type]);
 
   const allQuestion = useMemo(() => {
     return orderBy(
