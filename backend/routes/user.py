@@ -155,7 +155,7 @@ def register(
     invitation: Optional[bool] = False,
     session: Session = Depends(get_session)
 ):
-    # TODO:: Check if user exist by email
+    # Check if user exist by email
     check_user_exist = crud_user.get_user_by_email(
         session=session, email=payload.email)
     if check_user_exist:
