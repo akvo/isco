@@ -194,6 +194,6 @@ def delete(
     if has_answers:
         return JSONResponse(
             status_code=HTTPStatus.BAD_REQUEST.value,
-            content={"message": "This question has answers"})
+            content={"message": "Questions inside this section has answers"})
     crud.delete_question_group(session=session, id=id)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)

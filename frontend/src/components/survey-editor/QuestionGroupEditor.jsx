@@ -269,7 +269,7 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
   const { surveyEditor, tempStorage } = store.useState((s) => s);
   const { questionGroup: questionGroupState } = surveyEditor;
   const { deletedOptions, deletedSkipLogic } = tempStorage;
-  const { id, question } = questionGroup;
+  const { id, question, disableDelete } = questionGroup;
 
   const [isGroupSettingVisible, setIsGroupSettingVisible] = useState(false);
   const [isQuestionVisible, setIsQuestionVisible] = useState(false);
@@ -344,20 +344,20 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
         });
       })
       .catch((e) => {
-        const { status, statusText } = e.response;
+        const { status, statusText, data } = e.response;
         console.error(status, statusText);
+        let messageText = "Oops, something went wrong.";
         if (status === 422) {
-          notify({
-            type: "warning",
-            message:
-              "This section has question used as a dependency for other question",
-          });
-        } else {
-          notify({
-            type: "error",
-            message: "Oops, something went wrong.",
-          });
+          messageText = "This section has question used";
+          messageText += " as a dependency for other question";
         }
+        if (status === 400) {
+          messageText = data?.message || statusText;
+        }
+        notify({
+          type: "error",
+          message: messageText,
+        });
       });
   };
 
@@ -1033,9 +1033,14 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
                     onConfirm={() =>
                       handleDeleteQuestionGroupButton(questionGroup)
                     }
+                    disabled={disableDelete}
                   >
                     <Tooltip title="Delete this section">
-                      <Button type="text" icon={<RiDeleteBinFill />} />
+                      <Button
+                        type="text"
+                        disabled={disableDelete}
+                        icon={<RiDeleteBinFill />}
+                      />
                     </Tooltip>
                   </Popconfirm>
                 </Space>
