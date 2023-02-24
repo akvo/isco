@@ -81,6 +81,13 @@ const QuestionGroupSetting = ({
     return generateDisabledOptions(isco_type, iscoValue);
   }, [iscoValue, isco_type]);
 
+  // handle when form languages updated
+  useEffect(() => {
+    if (!languages?.length && groupTranslationVisible) {
+      setGroupTranslationVisible(false);
+    }
+  }, [languages, groupTranslationVisible]);
+
   return (
     <div className="qge-setting-wrapper">
       <Tabs
@@ -99,6 +106,7 @@ const QuestionGroupSetting = ({
                 icon={<RiTranslate2 />}
                 type="text"
                 onClick={() => setGroupTranslationVisible(true)}
+                disabled={!languages?.length || !languages}
               />
             </Tooltip>
           )
