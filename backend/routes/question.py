@@ -168,7 +168,7 @@ def update(
     # don't allow to update, return 400 bad request
     current_question = crud.get_question_by_id(session=session, id=id)
     has_answers = crud_answer.get_answer_by_question(
-        session=session, question=id)
+        session=session, question=[id])
     if has_answers and current_question.type != payload.get('type'):
         return JSONResponse(
             status_code=HTTPStatus.BAD_REQUEST.value,
@@ -210,7 +210,7 @@ def delete(
 ):
     # Check if question has answers & don't allow delete
     has_answers = crud_answer.get_answer_by_question(
-        session=session, question=id)
+        session=session, question=[id])
     if has_answers:
         return JSONResponse(
             status_code=HTTPStatus.BAD_REQUEST.value,

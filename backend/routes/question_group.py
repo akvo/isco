@@ -2,11 +2,12 @@ from http import HTTPStatus
 from fastapi import Depends, Request, APIRouter, Response
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
+from fastapi.responses import JSONResponse
 from typing import List
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
 import db.crud_question_group as crud
-import db.crud_question as crud_question
+from db import crud_question, crud_answer
 from db.connection import get_session
 from models.question_group import QuestionGroupBase, QuestionGroupDict
 from models.question_group import QuestionGroupPayload, QuestionGroup
@@ -182,5 +183,17 @@ def delete(
     session: Session = Depends(get_session),
     credentials: credentials = Depends(security)
 ):
+    # check if question inside group has answer
+    has_answers = None
+    questions = crud_question.get_question_by_group(
+        session=session, group=[id]).all()
+    if questions:
+        qids = [q.id for q in questions]
+        has_answers = crud_answer.get_answer_by_question(
+            session=session, question=qids)
+    if has_answers:
+        return JSONResponse(
+            status_code=HTTPStatus.BAD_REQUEST.value,
+            content={"message": "Questions inside this section has answers"})
     crud.delete_question_group(session=session, id=id)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)

@@ -245,7 +245,7 @@ def delete_isco_access_by_question_id(
     return isco_access
 
 
-def get_question_by_group(session: Session, group: int):
+def get_question_by_group(session: Session, group: List[int]):
     questions = session.query(Question).filter(
         Question.question_group.in_(group))
     return questions

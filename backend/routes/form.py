@@ -167,7 +167,8 @@ def get_survey_editor_by_id(
     for qg in form.get('question_group'):
         for q in qg.get('question'):
             check_answer = get_answer_by_question(
-                session=session, question=q.get('id'))
+                session=session,
+                question=[q.get('id')])
             q.update({
                 "disableDelete": True if check_answer else False
             })
