@@ -488,8 +488,8 @@ const Survey = () => {
             setCollaborators={setCollaborators}
             selectedCollaborators={selectedCollaborators}
             setSelectedCollaborators={setSelectedCollaborators}
-            // need to reset the collaborator button & dropdown list/value
-            // after submit/saved submission
+            // send resetSavedFormDropdown to reset the collaborator button
+            // and dropdown list after submit/saved submission
             resetSavedFormDropdown={resetSavedFormDropdown}
           />
         </Space>
