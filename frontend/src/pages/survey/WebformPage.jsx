@@ -65,6 +65,7 @@ const WebformPage = ({
   selectedCollaborators,
   setSelectedCollaborators,
   setShowCollaboratorForm,
+  resetSavedFormDropdown,
 }) => {
   const { notify } = useNotification();
 
@@ -224,11 +225,11 @@ const WebformPage = ({
       const savedDataId = selectedSavedSubmission?.id;
       let url = `/webform/${formId}`;
       // handle load prefilled questionnaire with prev year value
-      if (
+      const isLoadPrevSubmissionVal =
         selectedPrevSubmission &&
         selectedFormEnablePrefilledValue &&
-        !savedDataId
-      ) {
+        !savedDataId;
+      if (isLoadPrevSubmissionVal) {
         url = `/webform/previous-submission/${formId}?data_id=${selectedPrevSubmission}`;
       }
       // handle saved data
@@ -356,18 +357,20 @@ const WebformPage = ({
               question_group: transformedQuestionGroup,
             });
 
-            // show prefilled value mismatch
-            setCollaborators(collaborators || []);
-            setSelectedCollaborators(
-              collaborators?.length
-                ? collaborators.map((x) => x.organisation)
-                : []
-            );
-            setShowCollaboratorForm(collaborators?.length || false);
-            setTimeout(() => {
-              setMismatch(mismatch || false);
-              setModalWarningVisible(mismatch || false);
-            }, 500);
+            // show prefilled value mismatch (pre-filled value)
+            if (isLoadPrevSubmissionVal) {
+              setCollaborators(collaborators || []);
+              setSelectedCollaborators(
+                collaborators?.length
+                  ? collaborators.map((x) => x.organisation)
+                  : []
+              );
+              setShowCollaboratorForm(collaborators?.length || false);
+              setTimeout(() => {
+                setMismatch(mismatch || false);
+                setModalWarningVisible(mismatch || false);
+              }, 500);
+            }
           }
         })
         .catch((e) => {
@@ -563,6 +566,8 @@ const WebformPage = ({
       const endpoint = generateEndpoint({ payload: payload, submitted: 1 });
       endpoint
         .then((res) => {
+          // hide collaborator form & reset collaborator value
+          resetSavedFormDropdown();
           if (res.status === 208) {
             setErrorPage(true);
             return;
@@ -595,6 +600,11 @@ const WebformPage = ({
       const endpoint = generateEndpoint({ payload: payload, submitted: 0 });
       endpoint
         .then((res) => {
+          // if POST endpoint (no save data id or isSavedDataFromPrevSubmission)
+          if (!savedData?.id || isSavedDataFromPrevSubmission) {
+            // hide collaborator form & reset collaborator value
+            resetSavedFormDropdown();
+          }
           // submission already submitted
           if (res.status === 208) {
             setErrorPage(true);
@@ -652,6 +662,8 @@ const WebformPage = ({
     const endpoint = generateEndpoint({ payload: payload, submitted: 1 });
     endpoint
       .then((res) => {
+        // hide collaborator form & reset collaborator value
+        resetSavedFormDropdown();
         if (res.status === 208) {
           setErrorPage(true);
           return;
