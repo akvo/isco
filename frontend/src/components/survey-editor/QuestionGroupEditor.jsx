@@ -20,6 +20,7 @@ import {
   RiDragMove2Fill,
   RiTranslate2,
 } from "react-icons/ri";
+import { TbTrashOff } from "react-icons/tb";
 import { store, api } from "../../lib";
 import orderBy from "lodash/orderBy";
 import { defaultRepeatingObject, defaultOption } from "../../lib/store";
@@ -1047,7 +1048,9 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
                       <Button
                         type="text"
                         disabled={disableDelete}
-                        icon={<RiDeleteBinFill />}
+                        icon={
+                          disableDelete ? <TbTrashOff /> : <RiDeleteBinFill />
+                        }
                       />
                     </Tooltip>
                   </Popconfirm>
