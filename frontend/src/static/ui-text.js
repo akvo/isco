@@ -196,7 +196,7 @@ const uiText = {
     // Alert text
     textAlertFailed: "Failed!",
     textAlertSomethingWentWrong: "Something went wrong.",
-    textAlertUserExist: "User with same email already registered.",
+    textAlertUserExist: "This email was already used to register a user.",
     // info
     infoDataSecurityDoc: (
       <>
