@@ -615,8 +615,8 @@ const Setting = ({
       );
       setMessage(
         `${question?.name} has dependancy on ${dependencies
-          .map(({ name }) => `${name}`)
-          .join(", ")}. \n Do you still want to deactivate?`
+          ?.map(({ name }) => `${name}`)
+          ?.join(", ")}. \n Do you still want to deactivate?`
       );
       return false;
     }
