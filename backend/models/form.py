@@ -56,6 +56,7 @@ class FormDictWithGroupStatus(TypedDict):
     created: str
     published: Optional[str] = None
     has_question_group: bool
+    disableDelete: bool
 
 
 class FormOptions(TypedDict):
@@ -80,6 +81,9 @@ class Form(Base):
     question_group = relationship(
         "QuestionGroup", cascade="all, delete",
         passive_deletes=True, backref="form_detail")
+    datapoint = relationship(
+        "Data", cascade="all, delete",
+        passive_deletes=True, backref="data_form_detail")
 
     def __init__(
         self, id: Optional[int],
@@ -129,6 +133,7 @@ class Form(Base):
             "created": self.created.strftime("%d-%m-%Y"),
             "published": published,
             "has_question_group": len(self.question_group) > 0,
+            "disableDelete": len(self.datapoint) > 0,
         }
 
     @property
