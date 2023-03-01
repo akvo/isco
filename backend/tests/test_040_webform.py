@@ -75,6 +75,7 @@ class TestWebformRoutes():
             for q in qg["question"]:
                 assert len(q["member_access"]) > 0
                 assert len(q["isco_access"]) > 0
+                assert "datapoint_name" in q
                 assert "coreMandatory" in q
                 assert "deactivate" in q
 
@@ -91,7 +92,9 @@ class TestWebformRoutes():
         assert res == [{
             "disabled": False,
             "label": "Form Test",
-            "value": 1
+            "value": 1,
+            "form_type": "member",
+            "enable_prefilled_value": False
         }]
 
     @pytest.mark.asyncio
@@ -106,5 +109,7 @@ class TestWebformRoutes():
         assert res == [{
             "disabled": False,
             "label": "Form Test",
-            "value": 1
+            "value": 1,
+            "form_type": "member",
+            "enable_prefilled_value": False
         }]

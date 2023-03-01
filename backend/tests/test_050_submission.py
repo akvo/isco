@@ -39,8 +39,8 @@ class TestSubmissionRoutes():
             params={"locked_by": 1},
             json=payload,
             headers={"Authorization": f"Bearer {account.token}"})
-        assert res.status_code == 405
-        # save data
+        assert res.status_code == 400
+        # save data will not validate computed value or core mandatory
         res = await client.post(
             app.url_path_for("data:create", form_id=1, submitted=0),
             params={"locked_by": 1},
@@ -52,7 +52,7 @@ class TestSubmissionRoutes():
             "id": 1,
             "form": 1,
             "form_name": "Form Test",
-            "name": "Depend to Q1 Option 1",
+            'name': "Option 1",
             "geo": None,
             "locked_by": 1,
             "created": today,
@@ -106,7 +106,7 @@ class TestSubmissionRoutes():
             'geo': None,
             'id': 1,
             'locked_by': 1,
-            'name': 'Depend to Q1 Option 1',
+            'name': 'Option 1',
             'organisation': 'staff Akvo',
             'submitted': None,
             'submitted_by': None,
@@ -150,7 +150,7 @@ class TestSubmissionRoutes():
                 "value": "Option 1"
             }],
             headers={"Authorization": f"Bearer {account.token}"})
-        assert res.status_code == 405
+        assert res.status_code == 400
         # update data
         res = await client.put(
             app.url_path_for("data:update", id=1, submitted=0),
@@ -197,7 +197,7 @@ class TestSubmissionRoutes():
             "id": 1,
             "form": 1,
             "form_name": "Form Test",
-            "name": "Depend to Q1 Option 1",
+            "name": "Option 1 - Option 1",
             "geo": None,
             "locked_by": None,
             "created": today,
@@ -289,7 +289,7 @@ class TestSubmissionRoutes():
             "id": 1,
             "form": 1,
             "form_name": "Form Test",
-            "name": "Depend to Q1 Option 1",
+            "name": "Option 1",
             "geo": None,
             "locked_by": None,
             "created": today,
@@ -376,8 +376,8 @@ class TestSubmissionRoutes():
             }, {
                 "question": 5,
                 "repeat_index": 0,
-                "comment": "Q5 comment",
-                "value": 75
+                "comment": "Test with zero value",
+                "value": 0
             }, {
                 "question": 6,
                 "repeat_index": 0,
@@ -406,7 +406,7 @@ class TestSubmissionRoutes():
             "id": 1,
             "form": 1,
             "form_name": "Form Test",
-            "name": "Depend to Q1 Option 1",
+            "name": "Option 1 - Option 1",
             "geo": None,
             "locked_by": 1,
             "created": today,
@@ -451,10 +451,10 @@ class TestSubmissionRoutes():
                 "repeat_index": 1,
                 "value": "Female"
             }, {
-                "comment": "Q5 comment",
+                "comment": "Test with zero value",
                 "question": 5,
                 "repeat_index": 0,
-                "value": 75.0
+                "value": 0.0
             }, {
                 'comment': None,
                 'question': 6,

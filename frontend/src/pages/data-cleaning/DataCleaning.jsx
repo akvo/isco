@@ -12,13 +12,14 @@ import {
 } from "antd";
 import {
   PlusSquareOutlined,
-  CloseSquareOutlined,
   RightOutlined,
+  MinusSquareOutlined,
 } from "@ant-design/icons";
 import { api } from "../../lib";
 import DataCleaningWebform from "./DataCleaningWebform";
 import DataDetail from "./DataDetail";
 import { useNotification } from "../../util";
+import { MonitoringRoundSelector } from "../../components";
 
 const { Title } = Typography;
 
@@ -36,7 +37,10 @@ const DataCleaning = () => {
   const [fetchingOrgDetail, setFetchingOrgDetail] = useState(false);
   const [undoSubmit, setUndoSubmit] = useState(null);
   const [orgDetail, setOrgDetail] = useState({});
+  // monitoring round selector
+  const [selectedMonitoringRound, setSelectedMonitoringRound] = useState(null);
 
+  // pagination
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
   const [data, setData] = useState({
@@ -127,7 +131,10 @@ const DataCleaning = () => {
     if (formSelected) {
       setIsLoading(true);
       let url = `/data/form/${formSelected}?page=${page}&perpage=${pageSize}`;
-      url += `&submitted=1&filter_same_isco=1`;
+      url = `${url}&submitted=1&filter_same_isco=1`;
+      if (selectedMonitoringRound) {
+        url = `${url}&monitoring_round=${selectedMonitoringRound}`;
+      }
       api
         .get(url)
         .then((res) => {
@@ -146,7 +153,7 @@ const DataCleaning = () => {
           setIsLoading(false);
         });
     }
-  }, [formSelected, page, pageSize]);
+  }, [formSelected, page, pageSize, selectedMonitoringRound]);
 
   useEffect(() => {
     fetchData();
@@ -314,6 +321,10 @@ const DataCleaning = () => {
                 value={formSelected}
                 onChange={(val) => setFormSelected(val)}
               />
+              <MonitoringRoundSelector
+                value={selectedMonitoringRound}
+                onChange={setSelectedMonitoringRound}
+              />
             </Col>
           </Row>
           <Row>
@@ -344,12 +355,12 @@ const DataCleaning = () => {
                   expandedRowRender: (record) => <DataDetail record={record} />,
                   expandIcon: ({ expanded, onExpand, record }) => {
                     return expanded ? (
-                      <CloseSquareOutlined
+                      <MinusSquareOutlined
                         onClick={(e) => {
                           setExpandedRowKeys([]);
                           onExpand(record, e);
                         }}
-                        style={{ color: "#e94b4c", margin: "0 5px" }}
+                        style={{ color: "#7d7d7d", margin: "0 5px" }}
                       />
                     ) : (
                       <PlusSquareOutlined

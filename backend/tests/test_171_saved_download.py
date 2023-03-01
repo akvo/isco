@@ -23,33 +23,17 @@ class TestSavedDownloadRoute():
             "question": 14,
             "repeat_index": 0,
             "comment": None,
-            "value": 110
-        }]
-        # direct submit without computed validation
-        res = await client.post(
-            app.url_path_for("data:create", form_id=4, submitted=1),
-            params={"locked_by": 1},
-            json=payload,
-            headers={"Authorization": f"Bearer {account.token}"})
-        assert res.status_code == 405
-        # save data
-        res = await client.post(
-            app.url_path_for("data:create", form_id=4, submitted=0),
-            params={"locked_by": 1},
-            json=payload,
-            headers={"Authorization": f"Bearer {account.token}"})
-        assert res.status_code == 405
-        # correct value
-        payload = [{
-            "question": 14,
-            "repeat_index": 0,
-            "comment": None,
             "value": 70
         }, {
             "question": 15,
             "repeat_index": 0,
             "comment": None,
             "value": 30
+        }, {
+            "question": 16,
+            "repeat_index": 0,
+            "comment": None,
+            "value": "Saved download list"
         }]
         # save data
         res = await client.post(
@@ -146,8 +130,9 @@ class TestSavedDownloadRoute():
         }
 
     @pytest.mark.asyncio
-    async def test_view_download_request(self, app: FastAPI, session: Session,
-                                         client: AsyncClient) -> None:
+    async def test_view_download_request(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         download = crud.get_by_id(session=session, id=1)
         uuid = str(download.uuid)
         # viewed by different isco secretariat admin
@@ -163,8 +148,9 @@ class TestSavedDownloadRoute():
         assert res.status_code == 200
 
     @pytest.mark.asyncio
-    async def test_get_download_file(self, app: FastAPI, session: Session,
-                                     client: AsyncClient) -> None:
+    async def test_get_download_file(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         download = crud.get_by_id(session=session, id=1)
         uuid = str(download.uuid)
         not_valid_account = Acc(email="galih@test.org", token=None)

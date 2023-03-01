@@ -19,7 +19,8 @@ import {
   RiEditFill,
   RiTranslate2,
 } from "react-icons/ri";
-import QuestionSetting from "./QuestionSetting";
+import { TbTrashOff } from "react-icons/tb";
+import QuestionTabContent from "./QuestionTabContent";
 import { store, api } from "../../lib";
 import { isoLangs } from "../../lib";
 import { useNotification } from "../../util";
@@ -61,6 +62,9 @@ const TranslationTab = ({ activeLang, setActiveLang }) => {
 };
 
 const QuestionMenu = ({ activeSetting, setActiveSetting }) => {
+  const { surveyEditor } = store.useState((s) => s);
+  const { languages } = surveyEditor;
+
   return (
     <Space direction="vertical" size={1} className="question-menu-wrapper">
       <Tooltip title="Show question setting">
@@ -78,6 +82,7 @@ const QuestionMenu = ({ activeSetting, setActiveSetting }) => {
           type="text"
           icon={<RiTranslate2 />}
           onClick={() => setActiveSetting("translation")}
+          disabled={!languages?.length || !languages}
         />
       </Tooltip>
     </Space>
@@ -97,7 +102,7 @@ const QuestionEditor = ({
   toggleMove = false,
 }) => {
   const { surveyEditor, optionValues } = store.useState((s) => s);
-  const { questionGroup: questionGroupState } = surveyEditor;
+  const { languages, questionGroup: questionGroupState } = surveyEditor;
 
   const { question_type } = optionValues;
   const qId = question?.id;
@@ -111,7 +116,20 @@ const QuestionEditor = ({
   const [mandatory, setMandatory] = useState(false);
   const [coreMandatory, setCoreMandatory] = useState(false);
   const [personalData, setPersonalData] = useState(false);
-  const [activeLang, setActiveLang] = useState(surveyEditor?.languages?.[0]);
+  const [datapointName, setDatapointName] = useState(false);
+  const [activeLang, setActiveLang] = useState(null);
+
+  // handle when form languages updated
+  useEffect(() => {
+    if (languages?.length) {
+      setActiveLang(languages?.[0]);
+    } else {
+      setActiveLang(null);
+      if (activeSetting === "translation") {
+        setActiveSetting("detail");
+      }
+    }
+  }, [languages, activeSetting]);
 
   useEffect(() => {
     if (qId) {
@@ -169,11 +187,14 @@ const QuestionEditor = ({
         if (key === "personal_data") {
           setPersonalData(value);
         }
+        if (key === "datapoint_name") {
+          setDatapointName(value);
+        }
         // Load skip logic
         if (key === "skip_logic") {
           value?.forEach((val) => {
             Object.keys(val).forEach((key) => {
-              const skipField = `${field}-${key}`;
+              let skipField = `${field}-${key}`;
               let skipValue = val?.[key];
               if (val?.type?.includes("option") && key === "value") {
                 if (String(skipValue)?.includes("|")) {
@@ -183,6 +204,10 @@ const QuestionEditor = ({
                 skipValue = Array.isArray(skipValue)
                   ? skipValue
                   : [Number(skipValue)];
+                skipField = `${skipField}-option`;
+              }
+              if (!val?.type?.includes("option") && key === "value") {
+                skipField = `${skipField}-number`;
               }
               form.setFieldsValue({ [skipField]: skipValue });
             });
@@ -247,17 +272,17 @@ const QuestionEditor = ({
       .catch((e) => {
         const { status, statusText, data } = e.response;
         console.error(status, statusText);
+        let messageText = "Oops, something went wrong.";
         if (status === 422) {
-          notify({
-            type: "warning",
-            message: data?.detail,
-          });
-        } else {
-          notify({
-            type: "error",
-            message: "Oops, something went wrong.",
-          });
+          messageText = data?.detail || statusText;
         }
+        if (status === 400) {
+          messageText = data?.message || statusText;
+        }
+        notify({
+          type: "error",
+          message: messageText,
+        });
       });
   };
 
@@ -340,7 +365,7 @@ const QuestionEditor = ({
                       />
                     </Col>
                     <Col className="input-wrapper">
-                      <QuestionSetting
+                      <QuestionTabContent
                         form={form}
                         activeSetting={activeSetting}
                         questionGroup={questionGroup}
@@ -360,6 +385,8 @@ const QuestionEditor = ({
                         setCoreMandatory={setCoreMandatory}
                         setQuestionToDeactivate={setQuestionToDeactivate}
                         questionToDeactivate={questionToDeactivate}
+                        datapointName={datapointName}
+                        setDatapointName={setDatapointName}
                       />
                       <div className="question-button-wrapper">
                         <Space align="center">
@@ -418,6 +445,7 @@ const QuestionEditor = ({
                       0
                     }
                     onChange={() => setActivePanel(panelKey)}
+                    disabled={question?.disableDelete || false}
                   />
                 </Form.Item>
                 <Popconfirm
@@ -425,9 +453,20 @@ const QuestionEditor = ({
                   okText="Delete"
                   cancelText="Cancel"
                   onConfirm={() => handleDeleteQuestionButton(question)}
+                  disabled={question?.disableDelete || false}
                 >
                   <Tooltip title="Delete this question">
-                    <Button type="text" icon={<RiDeleteBinFill />} />
+                    <Button
+                      type="text"
+                      disabled={question?.disableDelete || false}
+                      icon={
+                        question?.disableDelete ? (
+                          <TbTrashOff />
+                        ) : (
+                          <RiDeleteBinFill />
+                        )
+                      }
+                    />
                   </Tooltip>
                 </Popconfirm>
               </Space>

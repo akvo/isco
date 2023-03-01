@@ -6,6 +6,7 @@ from httpx import AsyncClient
 from fastapi import FastAPI
 from tests.test_000_main import Acc
 from db.crud_roadmap import get_answer_by_data
+from tests.test_150_seed_and_get_roadmap import form_def
 
 
 pytestmark = pytest.mark.asyncio
@@ -22,6 +23,7 @@ class TestManageRoadmapDatapoint():
     ) -> None:
         payload = {
             "organisation_id": 1,
+            "language": "en",
             "answers": {
                 "1669095326962": "This is first commitment",
                 "1669107420032": [{
@@ -61,6 +63,7 @@ class TestManageRoadmapDatapoint():
             "data": [{
                 "id": 1,
                 "datapoint_name": "All | staff Akvo",
+                "language": "en",
                 "organisation": "staff Akvo",
                 "organisation_id": 1,
                 "submitted_date": today
@@ -82,6 +85,7 @@ class TestManageRoadmapDatapoint():
                 "id": 1,
                 "datapoint_name": "All | staff Akvo",
                 "organisation": "staff Akvo",
+                "language": "en",
                 "organisation_id": 1,
                 "submitted_date": today
             }],
@@ -102,6 +106,7 @@ class TestManageRoadmapDatapoint():
     ) -> None:
         payload = {
             "organisation_id": 1,
+            "language": "en",
             "answers": {
                 "1669095326962": "Updated first commitment",
                 "1669107420032": [{
@@ -199,183 +204,7 @@ class TestManageRoadmapDatapoint():
         )
         assert res.status_code == 200
         res = res.json()
-        assert res == {
-            "id": 1669095326959,
-            "name": "Roadmap",
-            "description": "Lorem Ipsum Dolor sit Amet",
-            "languages": None,
-            "version": 1.0,
-            "question_group": [
-                {
-                    "name": "Traceability",
-                    "description": None,
-                    "order": 1,
-                    "repeatable": True,
-                    "question": [
-                        {
-                            "id": 1669095326962,
-                            "name": "Commitment",
-                            "required": False,
-                            "meta": False,
-                            "type": "text",
-                            "order": 1,
-                        },
-                        {
-                            "id": 1669107420032,
-                            "name": "Milestones",
-                            "required": False,
-                            "meta": False,
-                            "type": "table",
-                            "order": 2,
-                            "columns": [
-                                {
-                                    "id": 1669107433881,
-                                    "name": "milestone",
-                                    "type": "input",
-                                    "label": "Milestone",
-                                }
-                            ],
-                        },
-                        {
-                            "id": 1669107484181,
-                            "name": "Challenge",
-                            "required": False,
-                            "meta": False,
-                            "type": "text",
-                            "order": 3,
-                        },
-                    ],
-                    "repeatButtonPlacement": "bottom",
-                    "repeatText": "Add another Commitment",
-                },
-                {
-                    "name": "Certified and Independently Verified Cocoa",
-                    "description": None,
-                    "order": 2,
-                    "repeatable": True,
-                    "question": [
-                        {
-                            "id": 1669107562769,
-                            "name": "Commitment",
-                            "required": False,
-                            "meta": False,
-                            "type": "input",
-                            "order": 1,
-                        },
-                        {
-                            "id": 1674113183189,
-                            "name": "Milestones",
-                            "required": False,
-                            "meta": False,
-                            "type": "table",
-                            "order": 2,
-                            "columns": [
-                                {
-                                    "id": 1669107433881,
-                                    "name": "milestone",
-                                    "type": "input",
-                                    "label": "Milestone",
-                                }
-                            ],
-                        },
-                        {
-                            "id": 1674113210618,
-                            "name": "Challenge",
-                            "required": False,
-                            "meta": False,
-                            "type": "text",
-                            "order": 3,
-                        },
-                    ],
-                    "repeatButtonPlacement": "bottom",
-                    "repeatText": "Add another Commitment",
-                },
-                {
-                    "name": "Deforestation / Agroforestry",
-                    "description": None,
-                    "order": 3,
-                    "repeatable": True,
-                    "question": [
-                        {
-                            "id": 1669107635129,
-                            "name": "Commitment",
-                            "required": False,
-                            "meta": False,
-                            "type": "input",
-                            "order": 1,
-                        },
-                        {
-                            "id": 1674113380992,
-                            "name": "Milestones",
-                            "required": False,
-                            "meta": False,
-                            "type": "table",
-                            "order": 2,
-                            "columns": [
-                                {
-                                    "id": 1669107433881,
-                                    "name": "milestone",
-                                    "type": "input",
-                                    "label": "Milestone",
-                                }
-                            ],
-                        },
-                        {
-                            "id": 1674113384837,
-                            "name": "Challenge",
-                            "required": False,
-                            "meta": False,
-                            "type": "text",
-                            "order": 3,
-                        },
-                    ],
-                    "repeatButtonPlacement": "bottom",
-                    "repeatText": "Add another Commitment",
-                },
-                {
-                    "name": "Child Labor",
-                    "description": None,
-                    "order": 4,
-                    "repeatable": True,
-                    "question": [
-                        {
-                            "id": 1674113993933,
-                            "name": "Commitment",
-                            "required": False,
-                            "meta": False,
-                            "type": "input",
-                            "order": 1,
-                        },
-                        {
-                            "id": 1674114001466,
-                            "name": "Milestones",
-                            "required": False,
-                            "meta": False,
-                            "type": "table",
-                            "order": 2,
-                            "columns": [
-                                {
-                                    "id": 1669107433881,
-                                    "name": "milestone",
-                                    "type": "input",
-                                    "label": "Milestone",
-                                }
-                            ],
-                        },
-                        {
-                            "id": 1674114011444,
-                            "name": "Challenge",
-                            "required": False,
-                            "meta": False,
-                            "type": "text",
-                            "order": 3,
-                        },
-                    ],
-                    "repeatButtonPlacement": "bottom",
-                    "repeatText": "Add another Commitment",
-                },
-            ],
-            "tree": None,
+        form_def.update({
             "initial_value": [
                 {
                     "question": 1669095326962,
@@ -415,15 +244,5 @@ class TestManageRoadmapDatapoint():
                 },
             ],
             "organisation_ids": [1],
-        }
-
-    @pytest.mark.asyncio
-    async def test_delete_roadmap_datapoint(
-        self, app: FastAPI, session: Session, client: AsyncClient
-    ) -> None:
-        # get roadmap webform
-        res = await client.delete(
-            app.url_path_for("roadmap:delete_datapoint", id=1),
-            headers={"Authorization": f"Bearer {account.token}"},
-        )
-        assert res.status_code == 204
+        })
+        assert res == form_def

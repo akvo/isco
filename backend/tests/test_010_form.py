@@ -19,29 +19,38 @@ def datenow():
 
 class TestFormRoutes():
     @pytest.mark.asyncio
-    async def test_add_form(self, app: FastAPI, session: Session,
-                            client: AsyncClient) -> None:
+    async def test_add_form(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # create form
         res = await client.post(
             app.url_path_for("form:create"),
             headers={"Authorization": f"Bearer {account.token}"},
-            json={"name": "Form Test",
-                  "description": "Form Description",
-                  "languages": None})
+            json={
+                "name": "Form Test",
+                "description": "Form Description",
+                "languages": None,
+                "enable_prefilled_value": True
+            }
+        )
         assert res.status_code == 200
         res = res.json()
-        assert res == {"created": datenow(),
-                       "description": "Form Description",
-                       "id": 1,
-                       "languages": None,
-                       "name": "Form Test",
-                       "published": None,
-                       "url": None,
-                       "version": 0.0}
+        assert res == {
+            "created": datenow(),
+            "description": "Form Description",
+            "id": 1,
+            "languages": None,
+            "name": "Form Test",
+            "published": None,
+            "url": None,
+            "version": 0.0,
+            "enable_prefilled_value": True
+        }
 
     @pytest.mark.asyncio
-    async def test_get_form_by_id(self, app: FastAPI, session: Session,
-                                  client: AsyncClient) -> None:
+    async def test_get_form_by_id(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # get form
         res = await client.get(app.url_path_for("form:get_by_id", id=1))
         assert res.status_code == 200
@@ -54,25 +63,33 @@ class TestFormRoutes():
             'question_group': [],
             'url': None,
             'version': 0.0,
+            'enable_prefilled_value': True
         }
 
     @pytest.mark.asyncio
-    async def test_update_form(self, app: FastAPI, session: Session,
-                               client: AsyncClient) -> None:
+    async def test_update_form(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # update form
         res = await client.put(
             app.url_path_for("form:put", id=1),
             headers={"Authorization": f"Bearer {account.token}"},
-            json={"name": "Form Test",
-                  "description": "Form Description",
-                  "languages": ["id"]})
+            json={
+                "name": "Form Test",
+                "description": "Form Description",
+                "languages": ["id"],
+                "enable_prefilled_value": False}
+        )
         assert res.status_code == 200
         res = res.json()
-        assert res == {"created": datenow(),
-                       "description": "Form Description",
-                       "id": 1,
-                       "languages": ["id"],
-                       "name": "Form Test",
-                       "published": None,
-                       "url": None,
-                       "version": 0.0}
+        assert res == {
+            "created": datenow(),
+            "description": "Form Description",
+            "id": 1,
+            "languages": ["id"],
+            "name": "Form Test",
+            "published": None,
+            "url": None,
+            "version": 0.0,
+            "enable_prefilled_value": False
+        }

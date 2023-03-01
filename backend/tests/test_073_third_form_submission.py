@@ -16,8 +16,9 @@ today = datetime.today().strftime("%B %d, %Y")
 
 class TestThirdSubmissionRoutes():
     @pytest.mark.asyncio
-    async def test_user_assigned(self, app: FastAPI, session: Session,
-                                 client: AsyncClient) -> None:
+    async def test_user_assigned(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         user_id = 2
         user_payload = {
             "role": UserRole.secretariat_admin.value,
@@ -34,8 +35,9 @@ class TestThirdSubmissionRoutes():
         assert res["approved"] is True
 
     @pytest.mark.asyncio
-    async def test_save_data(self, app: FastAPI, session: Session,
-                             client: AsyncClient) -> None:
+    async def test_save_data(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         res = await client.post(
             app.url_path_for("data:create", form_id=3, submitted=1),
             params={"locked_by": 1},
@@ -83,8 +85,9 @@ class TestThirdSubmissionRoutes():
         }
 
     @pytest.mark.asyncio
-    async def test_get_form_options(self, app: FastAPI, session: Session,
-                                    client: AsyncClient) -> None:
+    async def test_get_form_options(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # get form
         res = await client.get(
             app.url_path_for("form:get_webform_options"),
@@ -94,17 +97,21 @@ class TestThirdSubmissionRoutes():
         assert res == [{
             'label': 'Form Test',
             'value': 1,
-            'disabled': False
+            'disabled': False,
+            'form_type': 'member',
+            'enable_prefilled_value': False
         }, {
             'label': 'Third limited survey',
             'value': 3,
-            'disabled': True
+            'disabled': True,
+            'form_type': None,
+            'enable_prefilled_value': False
         }]
 
     @pytest.mark.asyncio
-    async def test_submit_third_survey_again(self, app: FastAPI,
-                                             session: Session,
-                                             client: AsyncClient) -> None:
+    async def test_submit_third_survey_again(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         res = await client.post(
             app.url_path_for("data:create", form_id=3, submitted=1),
             params={"locked_by": 1},

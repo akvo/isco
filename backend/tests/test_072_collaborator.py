@@ -106,6 +106,7 @@ class TestCollaboratorRoutes():
             'id': 2,
             'locked_by': 2,
             'locked_by_user': 'Galih',
-            'name': f'Form Test - {org_name} - Galih - {today}',
-            'organisation': org_name
+            'name': f'Option 1 - Galih - {today}',
+            'organisation': org_name,
+            'is_name_configured': True
         }]

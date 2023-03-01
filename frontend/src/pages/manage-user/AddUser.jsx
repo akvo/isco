@@ -105,17 +105,30 @@ const AddUser = ({
             description:
               "The User will receive an email with an activation link they must click as a final step in the process.",
           });
-          setSending(false);
           setIsAddUserVisible(false);
           setReload(reload + 1);
           form.resetFields();
         })
-        .catch(() => {
-          setSending(false);
+        .catch((e) => {
+          const { status, statusText, data } = e.response;
+          let error = {
+            msg: "An error occurred",
+            desc: "Internal Server Error",
+          };
+          if (status === 409) {
+            error = {
+              ...error,
+              msg: statusText,
+              desc: data?.detail || "User already exist",
+            };
+          }
           notification.error({
-            message: "An error occurred",
-            description: "Internal Server Error",
+            message: error.msg,
+            description: error.desc,
           });
+        })
+        .finally(() => {
+          setSending(false);
         });
     }
     if (selectedUser?.id) {

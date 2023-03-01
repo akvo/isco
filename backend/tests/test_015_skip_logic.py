@@ -25,7 +25,7 @@ class TestSkipLogicRoutes():
             "name": "Question 2",
             "translations": None,
             "mandatory": True,
-            "datapoint_name": True,
+            "datapoint_name": False,
             "variable_name": None,
             "type": QuestionType.text.value,
             "personal_data": False,
@@ -51,7 +51,7 @@ class TestSkipLogicRoutes():
         assert res == {
             "id": 2,
             "cascade": None,
-            "datapoint_name": True,
+            "datapoint_name": False,
             "form": 1,
             "isco_access": [],
             "mandatory": True,
@@ -71,6 +71,7 @@ class TestSkipLogicRoutes():
             "variable_name": None,
             "core_mandatory": False,
             "deactivate": False,
+            "disableDelete": False,
         }
         # get question
         res = await client.get(app.url_path_for("question:get_by_id", id=2))

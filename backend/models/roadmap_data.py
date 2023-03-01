@@ -11,13 +11,15 @@ from sqlalchemy.orm import relationship
 from db.connection import Base
 from models.roadmap_answer import RoadmapAnswerDict, RoadmapAnswerBase
 from models.roadmap_answer import RoadmapAnswer
-from models.user import User
-from models.organisation import Organisation
+from models.user import User, UserDict
+from models.organisation import Organisation, OrganisationDict
+from models.form import FormInfo
 
 
 class RoadmapDataPaylod(TypedDict):
     organisation_id: int
     answers: dict
+    language: str
 
 
 class RoadmapDataDict(TypedDict):
@@ -28,6 +30,7 @@ class RoadmapDataDict(TypedDict):
     organisation: str
     updated: Optional[str] = None
     answer: List[RoadmapAnswerDict]
+    language: str
 
 
 class RoadmapDataResDict(TypedDict):
@@ -36,6 +39,7 @@ class RoadmapDataResDict(TypedDict):
     organisation: str
     datapoint_name: str
     submitted_date: str
+    language: Optional[str] = None
 
 
 class RoadmapDataResponse(BaseModel):
@@ -43,6 +47,16 @@ class RoadmapDataResponse(BaseModel):
     data: List[RoadmapDataResDict]
     total: int
     total_page: int
+
+
+class ReportDict(TypedDict):
+    id: int
+    form: FormInfo
+    name: str
+    organisation: OrganisationDict
+    submitted_by: UserDict
+    submitted: Optional[str] = None
+    answer: List[RoadmapAnswerDict]
 
 
 class RoadmapData(Base):
@@ -63,16 +77,18 @@ class RoadmapData(Base):
     created_by_user = relationship(User, foreign_keys=[created_by])
     organisation_detail = relationship(
         Organisation, foreign_keys=[organisation])
+    language = Column(String)
 
     def __init__(
         self, name: str, created_by: int, organisation: int,
-        updated: datetime, created: datetime
+        updated: datetime, created: datetime, language: language
     ):
         self.name = name
         self.created_by = created_by
         self.organisation = organisation
         self.created = created
         self.updated = updated
+        self.language = language
 
     def __repr__(self) -> int:
         return f"<RoadmapData {self.id}>"
@@ -89,6 +105,7 @@ class RoadmapData(Base):
             "updated":
             self.updated.strftime("%B %d, %Y") if self.updated else None,
             "answer": [a.formatted for a in self.answer],
+            "language": self.language,
         }
 
     @property
@@ -99,6 +116,26 @@ class RoadmapData(Base):
             "organisation": self.organisation_detail.name,
             "datapoint_name": self.name,
             "submitted_date": self.created.strftime("%B %d, %Y"),
+            "language": self.language,
+        }
+
+    @property
+    def to_report(self) -> ReportDict:
+        return {
+            "id": self.id,
+            "name": self.name,
+            "form": {
+                "id": 1669095326959,
+                "name": "Roadmap",
+                "description": "Lorem Ipsum Dolor sit Amet",
+            },
+            "organisation": self.organisation_detail.serialize,
+            "submitted_by":
+            self.created_by_user.serialize if self.created_by
+            else None,
+            "submitted":
+            self.created.strftime("%B %d, %Y") if self.created else None,
+            "answer": [a.to_report for a in self.answer],
         }
 
 

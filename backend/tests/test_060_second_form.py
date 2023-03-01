@@ -29,7 +29,10 @@ class TestSecondFormRoutes():
             json={
                 "name": "Second survey",
                 "description": "Form Description",
-                "languages": None})
+                "languages": None,
+                "enable_prefilled_value": False
+            }
+        )
         assert res.status_code == 200
         res = res.json()
         assert res == {
@@ -40,7 +43,9 @@ class TestSecondFormRoutes():
             "name": "Second survey",
             "published": None,
             "url": None,
-            "version": 0.0}
+            "version": 0.0,
+            "enable_prefilled_value": False
+        }
 
     @pytest.mark.asyncio
     async def test_get_form_by_id(
@@ -58,6 +63,7 @@ class TestSecondFormRoutes():
             'question_group': [],
             'url': None,
             'version': 0.0,
+            'enable_prefilled_value': False
         }
 
     @pytest.mark.asyncio
@@ -104,12 +110,14 @@ class TestSecondFormRoutes():
                 'variable_name': None,
                 'core_mandatory': False,
                 'deactivate': False,
+                'disableDelete': False,
             }],
         }
 
     @pytest.mark.asyncio
-    async def test_add_default_question(self, app: FastAPI, session: Session,
-                                        client: AsyncClient) -> None:
+    async def test_add_default_question(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         res = await client.post(
             app.url_path_for(
                 "question:create_default",
@@ -139,5 +147,6 @@ class TestSecondFormRoutes():
             'type': 'input',
             'variable_name': None,
             'core_mandatory': False,
-            'deactivate': False
+            'deactivate': False,
+            'disableDelete': False
         }

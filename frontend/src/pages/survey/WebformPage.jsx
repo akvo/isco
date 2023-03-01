@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import "akvo-react-form/dist/index.css"; /* REQUIRED */
 import "./style.scss";
 import { Spin, Button, Checkbox } from "antd";
@@ -10,7 +10,7 @@ import ErrorPage from "../error/ErrorPage";
 import {
   CommentField,
   SubmitWarningModal,
-  ComputedValidationModal,
+  ValidationWarningModal,
 } from "../../components";
 import { uiText } from "../../static";
 
@@ -59,6 +59,13 @@ const WebformPage = ({
   setFormLoaded,
   selectedSavedSubmission,
   setReloadDropdownValue,
+  selectedPrevSubmission,
+  selectedFormEnablePrefilledValue,
+  setCollaborators,
+  selectedCollaborators,
+  setSelectedCollaborators,
+  setShowCollaboratorForm,
+  resetSavedFormDropdown,
 }) => {
   const { notify } = useNotification();
 
@@ -88,11 +95,20 @@ const WebformPage = ({
   // warning modal
   const [modalWarningVisible, setModalWarningVisible] = useState(false);
   // core mandatory popup
-  const [showCoreMandatoryWarning, setShowCoreMandatoryWarning] =
+  const [checkCoreMandatoryQuestion, setCheckCoreMandatoryQuestion] =
     useState(false);
   // computed validation popup
-  const [computedValidationModalVisible, setComputedValidationModalVisible] =
+  const [validationWarningModalVisible, setValidationWarningModalVisible] =
     useState(false);
+  // to save computed validation error detail (array of object)
+  const [checkComputedValidation, setCheckComputedValidation] = useState([]);
+  // prefilled value
+  const [mismatch, setMismatch] = useState(false);
+  // check if from prev year value
+  const isSavedDataFromPrevSubmission =
+    savedData?.id &&
+    selectedPrevSubmission &&
+    savedData.id === selectedPrevSubmission;
 
   const text = useMemo(() => {
     return uiText[activeLang];
@@ -111,81 +127,112 @@ const WebformPage = ({
   }, [formValue]);
 
   // check computed validations
-  const checkComputedValidation = useMemo(() => {
-    const computedValidation = computedValidations.find(
-      (cv) => cv.form_id === formId
-    );
-    const validations = computedValidation?.validations || [];
-    if (!answer.length && !validations?.length) {
-      return [];
-    }
-    const checkError = validations
-      .map((v) => {
-        // check if all computed validation answered
-        const checkAllAnswered = intersection(
-          v.question_ids,
-          answer.map((a) => a.question)
-        );
-        if (checkAllAnswered.length !== v.question_ids.length) {
-          // not all answered
+  const checkComputedValidationFunction = useCallback(
+    (onChangeEvent = true, values = []) => {
+      /*
+       * const answerValues
+       * choose which answer values to be used as validation check
+       * manage this for cascade/geo value not directly saved to answer state onChange form value
+       */
+      const answerValues = values?.length ? values : answer;
+      const computedValidation = computedValidations.find(
+        (cv) => cv.form_id === formId
+      );
+      const validations = computedValidation?.validations || [];
+      if (!answerValues.length && !validations?.length) {
+        return [];
+      }
+      const checkError = validations
+        .map((v) => {
+          // check if all computed validation answered
+          const checkAllAnswered = intersection(
+            v.question_ids,
+            answerValues.map((a) => a.question)
+          );
+          // only do this when use on change event TRUE
+          if (
+            onChangeEvent &&
+            checkAllAnswered.length !== v.question_ids.length
+          ) {
+            // not all answered
+            return {
+              ...v,
+              error: false,
+            };
+          }
+          // all answered
+          const questions = v.question_ids.map((id) => {
+            const a = answerValues.find((a) => a.question === id);
+            return { id: id, answer: a?.value || 0 };
+          });
+          const total = questions
+            .map((q) => q.answer)
+            .reduce((total, num) => total + num);
+          let error = false;
+          let errorDetail = "";
+          let validationValue = 0;
+          if ("max" in v) {
+            errorDetail = text.cvMaxValueText;
+            error = total > v.max;
+            validationValue = v.max;
+          }
+          if ("min" in v) {
+            errorDetail = text.cvMinValueText;
+            error = total < v.min;
+            validationValue = v.min;
+          }
+          if ("equal" in v) {
+            errorDetail = text.cvEqualValueText;
+            error = total !== v.equal;
+            validationValue = v.equal;
+          }
           return {
             ...v,
-            error: false,
+            questions: questions,
+            error: error,
+            total: total,
+            errorDetail: errorDetail,
+            validationValue: validationValue,
           };
-        }
-        // all answered
-        const questions = v.question_ids.map((id) => {
-          const a = answer.find((a) => a.question === id);
-          return { id: id, answer: a?.value || 0 };
-        });
-        const total = questions
-          .map((q) => q.answer)
-          .reduce((total, num) => total + num);
-        let error = false;
-        let errorDetail = "";
-        let validationValue = 0;
-        if ("max" in v) {
-          errorDetail = text.cvMaxValueText;
-          error = total > v.max;
-          validationValue = v.max;
-        }
-        if ("min" in v) {
-          errorDetail = text.cvMinValueText;
-          error = total < v.min;
-          validationValue = v.min;
-        }
-        if ("equal" in v) {
-          errorDetail = text.cvEqualValueText;
-          error = total !== v.equal;
-          validationValue = v.equal;
-        }
-        return {
-          ...v,
-          questions: questions,
-          error: error,
-          total: total,
-          errorDetail: errorDetail,
-          validationValue: validationValue,
-        };
-      })
-      .filter((v) => v.error);
-    setTimeout(() => {
-      setComputedValidationModalVisible(checkError.length);
-    }, 1000);
-    return checkError;
-  }, [
-    answer,
-    formId,
-    text.cvMaxValueText,
-    text.cvMinValueText,
-    text.cvEqualValueText,
-  ]);
+        })
+        .filter((v) => v.error);
+      if (onChangeEvent) {
+        setTimeout(() => {
+          setValidationWarningModalVisible(checkError.length);
+        }, 1000);
+        setCheckComputedValidation(checkError);
+        return;
+      }
+      return checkError;
+    },
+    [
+      answer,
+      formId,
+      text.cvMaxValueText,
+      text.cvMinValueText,
+      text.cvEqualValueText,
+    ]
+  );
+
+  // check computed validation when on change answer
+  useEffect(() => {
+    checkComputedValidationFunction();
+  }, [checkComputedValidationFunction]);
 
   // transform & filter form definition for first load
   useEffect(() => {
     if (formId && userMember && userIsco) {
       const savedDataId = selectedSavedSubmission?.id;
       let url = `/webform/${formId}`;
+      // handle load prefilled questionnaire with prev year value
+      const isLoadPrevSubmissionVal =
+        selectedPrevSubmission &&
+        selectedFormEnablePrefilledValue &&
+        !savedDataId;
+      if (isLoadPrevSubmissionVal) {
+        url = `/webform/previous-submission/${formId}?data_id=${selectedPrevSubmission}`;
+      }
+      // handle saved data
       if (savedDataId) {
         url = `${url}?data_id=${savedDataId}`;
       }
@@ -193,7 +240,7 @@ const WebformPage = ({
         .get(url)
         .then((res) => {
           const { data, status } = res;
-          const { form, initial_values } = data;
+          const { form, initial_values, mismatch, collaborators } = data;
           // submission already submitted
           if (status === 208) {
             setErrorPage(true);
@@ -249,6 +296,13 @@ const WebformPage = ({
                     ),
                   },
                 ];
+                // datapoint / display name
+                if (typeof q?.datapoint_name !== "undefined") {
+                  q = {
+                    ...q,
+                    meta: q.datapoint_name,
+                  };
+                }
                 //core mandatory
                 if (typeof q?.core_mandatory !== "undefined") {
                   q = {
@@ -302,6 +356,21 @@ const WebformPage = ({
               defaultLanguage: activeLang || "en",
               question_group: transformedQuestionGroup,
             });
+
+            // show prefilled value mismatch (pre-filled value)
+            if (isLoadPrevSubmissionVal) {
+              setCollaborators(collaborators || []);
+              setSelectedCollaborators(
+                collaborators?.length
+                  ? collaborators.map((x) => x.organisation)
+                  : []
+              );
+              setShowCollaboratorForm(collaborators?.length || false);
+              setTimeout(() => {
+                setMismatch(mismatch || false);
+                setModalWarningVisible(mismatch || false);
+              }, 500);
+            }
           }
         })
         .catch((e) => {
@@ -370,8 +439,58 @@ const WebformPage = ({
     }
   }, [deletedComment, answer]);
 
-  const onChange = ({ /*current*/ values /*progress*/ }) => {
-    const transformValues = Object.keys(values)
+  const onSubmitValidationOrShowSubmitWarning = (values = []) => {
+    /*
+     * const answerValues
+     * choose which answer values to be used as validation check
+     * manage this for cascade/geo value not directly saved to answer state onChange form value
+     */
+    const answerValues = values?.length ? values : answer;
+    // check computed validation
+    const checkComputedValidaitonOnSubmit = checkComputedValidationFunction(
+      false,
+      values
+    );
+    // begin check core mandatory answered
+    let checkCoreMandatoryQuestionFailed = false;
+    if (coreMandatoryQuestionIds.length) {
+      // check if core mandatory answered
+      const answerQids = answerValues.map((a) => a.question);
+      const coreMandatoryAnswers = intersection(
+        coreMandatoryQuestionIds,
+        answerQids
+      );
+      // true if not all mandatory questions answered
+      checkCoreMandatoryQuestionFailed =
+        coreMandatoryQuestionIds.length !== coreMandatoryAnswers.length;
+    }
+    if (
+      checkComputedValidaitonOnSubmit?.length ||
+      checkCoreMandatoryQuestionFailed
+    ) {
+      // show computed/core mandatory validation warning
+      setCheckComputedValidation(checkComputedValidaitonOnSubmit);
+      setValidationWarningModalVisible(true);
+      setCheckCoreMandatoryQuestion(checkCoreMandatoryQuestionFailed);
+      return;
+    }
+    // show warning before submit
+    setModalWarningVisible(true);
+    onCloseValidationWarningModal();
+  };
+
+  const onCloseValidationWarningModal = () => {
+    setValidationWarningModalVisible(false);
+    setCheckCoreMandatoryQuestion(false);
+    setCheckComputedValidation([]);
+  };
+
+  const transformValues = (values) => {
+    return Object.keys(values)
+      .filter((key) => {
+        // filter key !== datapoint object
+        return key.toLowerCase() !== "datapoint";
+      })
       .map((key) => {
         let question = key;
         let repeatIndex = 0;
@@ -392,8 +511,12 @@ const WebformPage = ({
         };
       })
       .filter((x) => x.value || x.value === 0);
+  };
+
+  const onChange = ({ values }) => {
+    const transformedAnswerValues = transformValues(values);
     setDisableSubmit(transformValues.length === 0);
-    setAnswer(transformValues);
+    setAnswer(transformedAnswerValues);
   };
 
   const onChangeComment = (qid, val) => {
@@ -406,25 +529,45 @@ const WebformPage = ({
     setDeletedComment(qid);
   };
 
-  const onFinish = (/*values*/) => {
-    if (answer.length) {
-      const payload = reorderAnswersRepeatIndex(formValue, answer);
-      setIsSubmitting(true);
-      let url = !savedData?.id
-        ? `/data/form/${formId}/1`
-        : `/data/${savedData.id}/1`;
-      if (isLocked) {
-        url = `${url}?locked_by=${user.id}`;
-      }
-      const endpoint = !savedData?.id
+  const generateEndpoint = ({ payload, submitted }) => {
+    let url =
+      !savedData?.id || isSavedDataFromPrevSubmission
+        ? `/data/form/${formId}/${submitted}`
+        : `/data/${savedData.id}/${submitted}`;
+    if (isLocked) {
+      url = `${url}?locked_by=${user.id}`;
+    }
+    // send collaborators value when submit/save for first time
+    if (
+      selectedPrevSubmission &&
+      selectedFormEnablePrefilledValue &&
+      selectedCollaborators?.length
+    ) {
+      const queryParams = selectedCollaborators.join("&collaborators=");
+      url = isLocked ? `${url}&` : `${url}?`;
+      url = `${url}collaborators=${queryParams}`;
+    }
+    // check if from prev year value
+    const endpoint =
+      !savedData?.id || isSavedDataFromPrevSubmission
         ? api.post(url, payload, {
             "content-type": "application/json",
           })
         : api.put(url, payload, {
             "content-type": "application/json",
           });
+    return endpoint;
+  };
+
+  const onFinish = () => {
+    if (answer.length) {
+      const payload = reorderAnswersRepeatIndex(formValue, answer);
+      setIsSubmitting(true);
+      const endpoint = generateEndpoint({ payload: payload, submitted: 1 });
       endpoint
         .then((res) => {
+          // hide collaborator form & reset collaborator value
+          resetSavedFormDropdown();
           if (res.status === 208) {
             setErrorPage(true);
             return;
@@ -454,21 +597,14 @@ const WebformPage = ({
     if (answer.length) {
       const payload = reorderAnswersRepeatIndex(formValue, answer);
       setIsSaving(true);
-      let url = !savedData?.id
-        ? `/data/form/${formId}/0`
-        : `/data/${savedData.id}/0`;
-      if (isLocked) {
-        url = `${url}?locked_by=${user.id}`;
-      }
-      const endpoint = !savedData?.id
-        ? api.post(url, payload, {
-            "content-type": "application/json",
-          })
-        : api.put(url, payload, {
-            "content-type": "application/json",
-          });
+      const endpoint = generateEndpoint({ payload: payload, submitted: 0 });
       endpoint
         .then((res) => {
+          // if POST endpoint (no save data id or isSavedDataFromPrevSubmission)
+          if (!savedData?.id || isSavedDataFromPrevSubmission) {
+            // hide collaborator form & reset collaborator value
+            resetSavedFormDropdown();
+          }
           // submission already submitted
           if (res.status === 208) {
             setErrorPage(true);
@@ -495,53 +631,39 @@ const WebformPage = ({
     }
   };
 
-  const onFinishShowWarning = () => {
+  const onFinishShowWarning = (values) => {
+    setIsSubmitting(true);
+    const transformedAnswerValues = transformValues(values);
+    setAnswer(transformedAnswerValues);
     setIsForce(false);
     setIsSave(false);
-    setShowCoreMandatoryWarning(false);
-    setModalWarningVisible(true);
+    setTimeout(() => {
+      onSubmitValidationOrShowSubmitWarning(transformedAnswerValues);
+      setIsSubmitting(false);
+    }, 1000);
   };
 
-  const onCompleteFailed = () => {
-    // check if core mandatory answered
-    const answerQids = answer.map((a) => a.question);
-    const coreMandatoryAnswers = intersection(
-      coreMandatoryQuestionIds,
-      answerQids
-    );
-    if (coreMandatoryQuestionIds.length !== coreMandatoryAnswers.length) {
-      // not all of core mandatory answered
-      // show core mandatory popup
-      setIsSave(false);
-      setIsForce(false);
-      setShowCoreMandatoryWarning(true);
-      setModalWarningVisible(true);
-      return;
-    }
+  const onCompleteFailed = ({ values }) => {
+    setIsSubmitting(true);
+    const transformedAnswerValues = transformValues(values);
+    setAnswer(transformedAnswerValues);
+    // force submit
     setIsSave(false);
     setIsForce(true);
-    setShowCoreMandatoryWarning(false);
-    setModalWarningVisible(true);
+    setTimeout(() => {
+      onSubmitValidationOrShowSubmitWarning(transformedAnswerValues);
+      setIsSubmitting(false);
+    }, 1000);
   };
 
   const handleOnForceSubmit = () => {
     const payload = reorderAnswersRepeatIndex(formValue, answer);
     setIsSubmitting(true);
-    let url = !savedData?.id
-      ? `/data/form/${formId}/1`
-      : `/data/${savedData.id}/1`;
-    if (isLocked) {
-      url = `${url}?locked_by=${user.id}`;
-    }
-    const endpoint = !savedData?.id
-      ? api.post(url, payload, {
-          "content-type": "application/json",
-        })
-      : api.put(url, payload, {
-          "content-type": "application/json",
-        });
+    const endpoint = generateEndpoint({ payload: payload, submitted: 1 });
     endpoint
       .then((res) => {
+        // hide collaborator form & reset collaborator value
+        resetSavedFormDropdown();
         if (res.status === 208) {
           setErrorPage(true);
           return;
@@ -581,16 +703,19 @@ const WebformPage = ({
             onCompleteFailed={onCompleteFailed}
             extraButton={
               <>
+                {/* Save Button cannot do the same thing to check
+                    cascade / geo input value onClick save button,
+                    we only can get the value from answer state from form onChange event
+                  */}
                 <SaveButton
                   onClick={() => {
                     setIsForce(false);
                     setIsSave(true);
-                    setShowCoreMandatoryWarning(false);
                     setModalWarningVisible(true);
                   }}
                   isSaving={isSaving}
                   text={text}
-                  disabled={!answer.length}
+                  disabled={!answer.length && !coreMandatoryQuestionIds?.length}
                 />
                 <LockedCheckbox
                   onChange={(val) => setIsLocked(val.target.checked)}
@@ -612,7 +737,10 @@ const WebformPage = ({
           </div>
         )}
       </div>
-      {/* Modal */}
+      {/* Modal
+       * TODO: Need to refactor this submit warning modal to send more proper kind of warning
+       * then we can catch that kind of warning inside a switch case
+       */}
       <SubmitWarningModal
         visible={modalWarningVisible}
         onOk={
@@ -622,18 +750,22 @@ const WebformPage = ({
             ? handleOnClickSaveButton
             : onFinish
         }
-        onCancel={() => setModalWarningVisible(false)}
+        onCancel={() => {
+          setModalWarningVisible(false);
+          setMismatch(false);
+        }}
         btnLoading={isSubmitting || isSaving}
         force={isForce}
         save={isSave}
-        showCoreMandatoryWarning={showCoreMandatoryWarning}
+        mismatch={mismatch}
       />
-      {/* Computed Validation Warning */}
-      <ComputedValidationModal
-        visible={computedValidationModalVisible}
-        onCancel={() => setComputedValidationModalVisible(false)}
+      {/* Core Mandatory / Computed Validation Warning */}
+      <ValidationWarningModal
+        visible={validationWarningModalVisible}
+        onCancel={onCloseValidationWarningModal}
         checkComputedValidation={checkComputedValidation}
         formValue={formValue}
+        checkCoreMandatoryQuestion={checkCoreMandatoryQuestion}
       />
     </>
   );

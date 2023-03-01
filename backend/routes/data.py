@@ -25,6 +25,8 @@ from middleware import organisations_in_same_isco, find_secretariat_admins
 from middleware import find_member_admins
 from util.survey_config import MEMBER_SURVEY, PROJECT_SURVEY, LIMITED_SURVEY
 from util.mailer import Email, MailTypeEnum
+from routes.collaborator import send_collaborator_email
+from util.common import generate_datapoint_name
 
 security = HTTPBearer()
 data_route = APIRouter()
@@ -72,24 +74,29 @@ def check_core_mandatory_questions_answer(
        not set(core_mandatory_questions).issubset(answer_qids):
         # not all core mandatory answered
         raise HTTPException(
-            status_code=405,
-            detail="Please answer all core mandatory questions")
+            status_code=400,
+            detail={
+                "type": "core-mandatory-check",
+                "message": "Please answer all core mandatory questions"
+            })
 
 
-def check_computed_validation(form_id: int, answers: List[AnswerDict]):
+def check_computed_validation(
+    form_id: int, answers: List[AnswerDict], submitted: int
+):
     TESTING = os.environ.get("TESTING")
     BUCKET = BUCKET_FOLDER
     if TESTING:
         BUCKET = "notset"
     # read computed validation config
     json_file_path = f"{CONFIG_SOURCE_PATH}/{BUCKET}"
-    json_file_path = f"{json_file_path}//computed_validations.json"
+    json_file_path = f"{json_file_path}/computed_validations.json"
     with open(json_file_path, 'r') as j:
         computed_validations = json.loads(j.read())
     computed_validation = [
         x for x in computed_validations
         if int(x.get('form_id')) == form_id]
-    if computed_validation:
+    if computed_validation and submitted:
         errors = []
         computed_validation = computed_validation[0]
         for cv in computed_validation.get('validations'):
@@ -113,7 +120,12 @@ def check_computed_validation(form_id: int, answers: List[AnswerDict]):
             if "equal" in cv and total_cv_answers != cv_equal:
                 errors.append(cv)
         if errors:
-            raise HTTPException(status_code=405, detail=errors)
+            raise HTTPException(
+                status_code=400,
+                detail={
+                    "type": "computed-validation-check",
+                    "message": errors
+                })
 
 
 def notify_secretariat_admin(session: Session, user, form_name: str):
@@ -134,17 +146,19 @@ def notify_secretariat_admin(session: Session, user, form_name: str):
         email_secretariat.send
 
 
-@data_route.get("/data/form/{form_id:path}",
-                response_model=DataResponseQuestionName,
-                name="data:get",
-                summary="get all datas",
-                tags=["Data"])
+@data_route.get(
+    "/data/form/{form_id:path}",
+    response_model=DataResponseQuestionName,
+    name="data:get",
+    summary="get all datas",
+    tags=["Data"])
 def get(req: Request,
         form_id: int,
         page: int = 1,
         perpage: int = 10,
         submitted: Optional[bool] = False,
         filter_same_isco: Optional[bool] = False,
+        monitoring_round: Optional[int] = Query(None),
         session: Session = Depends(get_session),
         credentials: credentials = Depends(security)):
     user = verify_user(
@@ -159,7 +173,8 @@ def get(req: Request,
         skip=(perpage * (page - 1)),
         perpage=perpage,
         submitted=submitted,
-        org_ids=org_ids)
+        org_ids=org_ids,
+        monitoring_round=monitoring_round)
     if not data["count"]:
         raise HTTPException(status_code=404, detail="Not found")
     total_page = ceil(data["count"] / perpage) if data["count"] > 0 else 0
@@ -198,14 +213,15 @@ def get(req: Request,
 @data_route.post(
     "/data/form/{form_id}/{submitted:path}",
     response_model=DataDict,
-    summary="add new data",
+    summary="add new data, collaborators contain organization id",
     name="data:create",
     tags=["Data"])
 def add(req: Request,
         form_id: int,
         submitted: int,
         answers: List[AnswerDict],
-        locked_by: Optional[int] = None,
+        locked_by: Optional[int] = Query(None),
+        collaborators: Optional[List[int]] = Query(None),
         session: Session = Depends(get_session),
         credentials: credentials = Depends(security)):
     user = verify_editor(
@@ -223,19 +239,19 @@ def add(req: Request,
     questions = published['questions']
     # end get questions published form
 
+    # validate core mandatory & computed validation if submitted
     # check core mandatory question answered
     check_core_mandatory_questions_answer(
         published=published, answers=answers, submitted=submitted)
     # end check core mandatory question answered
-
     # validate by computed validations
-    check_computed_validation(form_id=form_id, answers=answers)
+    check_computed_validation(
+        form_id=form_id, answers=answers, submitted=submitted)
     # end validate by computed validations
 
     # generating answers
     geo = None
     answerlist = []
-    names = []
     for a in answers:
         q = questions[a['question']]
         answer = Answer(question=q['id'],
@@ -247,12 +263,8 @@ def add(req: Request,
                 QuestionType.date.value
         ]:
             answer.text = a["value"]
-            if q['datapoint_name']:
-                names.append(a["value"])
         if q['type'] == QuestionType.number.value:
             answer.value = a["value"]
-            if q['datapoint_name']:
-                names.append(str(a["value"]))
         if q['type'] == QuestionType.option.value:
             answer.options = [a["value"]]
         if q['type'] == QuestionType.multiple_option.value:
@@ -262,17 +274,34 @@ def add(req: Request,
         if q['type'] == QuestionType.nested_list.value or q['type'] == "tree":
             answer.options = a["value"]
         answerlist.append(answer)
-    name = " - ".join(names)
+    name = generate_datapoint_name(
+        session=session,
+        form=form_id,
+        answers=answers)
     data = crud.add_data(
         session=session,
         form=form_id,
-        name=name,
+        name=name or "",
         geo=geo,
         locked_by=locked_by,
         created_by=user.id,
         organisation=user.organisation,
         answers=answerlist,
         submitted=submitted)
+    # if collaborators added for the first time
+    # handling this for prefilled project questionnaire
+    # if prefilled project questionnaire,
+    # we should send collaborators as query params from FE
+    if collaborators:
+        for org_id in collaborators:
+            crud_collaborator.add_collaborator(
+                session=session,
+                data=data.id,
+                payload={"organisation": org_id})
+        send_collaborator_email(
+            session=session,
+            user=user,
+            recipient_org_ids=collaborators)
     # if submitted send notification email to secretariat admin
     if submitted:
         notify_secretariat_admin(
@@ -304,7 +333,23 @@ def get_saved_data_by_organisation(
         data = [*data, *collab_data]
     if not data:
         return []
-    return [d.to_options for d in data]
+    options_value = [d.to_options for d in data]
+    for item in options_value:
+        if not item.get('is_name_configured'):
+            # check and regenerate datapoint/display name
+            new_name = generate_datapoint_name(
+                session=session,
+                form=item.get('form'),
+                data=item.get('id'))
+            name = item.get('name')
+            if new_name:
+                created = item.get('created')
+                created_by = item.get('created_by')
+                name = f"{new_name} - {created_by} - {created}"
+            item.update({
+                "name": name
+            })
+    return options_value
 
 
 @data_route.put("/data/unsubmit/{id}",
@@ -450,13 +495,14 @@ def update_by_id(
     questions = published['questions']
     # end get questions published form
 
+    # validate core mandatory & computed validation if submitted
     # check core mandatory question answered
     check_core_mandatory_questions_answer(
         published=published, answers=answers, submitted=submitted)
     # end check core mandatory question answered
-
     # validate by computed validations
-    check_computed_validation(form_id=data.form, answers=answers)
+    check_computed_validation(
+        form_id=data.form, answers=answers, submitted=submitted)
     # end validate by computed validations
 
     # get repeatable question ids
@@ -465,11 +511,9 @@ def update_by_id(
         if qg['repeatable'] is True:
             for qid in qg['question']:
                 repeat_qids.append(qid)
-
     # questions = form.list_of_questions
     checked = {}
     checked_payload = {}
-
     # if data_cleaning, delete old answer and save payload
     answer_ids = []
     if data_cleaning:
@@ -530,6 +574,11 @@ def update_by_id(
                 type=qtype,
                 value=a["value"])
         if execute:
+            name = generate_datapoint_name(
+                session=session,
+                form=data.form,
+                answers=answers)
+            data.name = name or ""
             # don't update locked_by for data_cleaning
             data.locked_by = locked_by \
                 if not data_cleaning else data.locked_by

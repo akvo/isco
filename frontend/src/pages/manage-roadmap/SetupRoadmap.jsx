@@ -5,6 +5,7 @@ import { Webform } from "akvo-react-form";
 import { api, store } from "../../lib";
 import isEmpty from "lodash/isEmpty";
 import { useNotification } from "../../util";
+import orderBy from "lodash/orderBy";
 
 const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
   const { notify } = useNotification();
@@ -13,9 +14,11 @@ const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
   const [selectedOrg, setSelectedOrg] = useState(
     editDatapoint?.organisation_id || null
   );
+  const [selectedLang, setSelectedLang] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [dataOrgIds, setDataOrgIds] = useState(null);
   const organisations = store.useState((s) => s.optionValues.organisation);
+  const languages = store.useState((s) => s.language.langs);
 
   const organisationOptions = useMemo(() => {
     // filter organisations by isco == GISCO
@@ -54,9 +57,19 @@ const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
         setDataOrgIds(orgIds);
         setInitialValue(res.data?.initial_value || []);
         const webform = res.data;
+        const questionGroup = webform?.question_group.map((qg) => ({
+          ...qg,
+          question: orderBy(qg.question, "order"),
+        }));
         delete webform?.initial_value;
         delete webform?.organisation_ids;
-        setFormValue(webform);
+        setSelectedLang(res.data.language ? res.data.language : null);
+        setFormValue({
+          ...webform,
+          defaultLanguage: res.data.language ? res.data.language : "en",
+          languages: ["en", "de"],
+          question_group: orderBy(questionGroup, "order"),
+        });
       })
       .catch((e) => {
         console.error(e);
@@ -72,6 +85,7 @@ const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
     const payload = {
       organisation_id: selectedOrg,
       answers: values,
+      language: selectedLang,
     };
     let method = api.post;
     let url = "/roadmap-webform";
@@ -102,14 +116,27 @@ const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
       });
   };
 
+  const handleSelectedLanguage = (val) => {
+    const currentFormValue = formValue;
+    setFormValue({});
+    setSelectedLang(val);
+    setTimeout(() => {
+      setFormValue({
+        ...currentFormValue,
+        defaultLanguage: val,
+      });
+    }, 1000);
+  };
+
   return (
     <div id="setup-roadmap">
       <Row className="select-organisation-wrapper">
         <Col span={24}>
           <Space size={20}>
-            <div>Setup Roadmap for</div>
+            <div>
+              Setup Roadmap for <span className="org-required">*</span>
+            </div>
             <Select
-              allowClear
               showSearch
               className="select-organisation-dropdown"
               placeholder="Organization"
@@ -120,6 +147,26 @@ const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
                 option?.label?.toLowerCase().indexOf(input?.toLowerCase()) >= 0
               }
               disabled={editDatapoint}
+            />
+          </Space>
+          <Space size={20} style={{ paddingLeft: "20px" }}>
+            <div>
+              Roadmap language for <span className="org-required">*</span>
+            </div>
+            <Select
+              showSearch
+              className="select-organisation-dropdown"
+              placeholder="Select language"
+              options={Object.keys(languages)?.map((key) => ({
+                value: key,
+                label: languages[key],
+              }))}
+              onChange={(val) => handleSelectedLanguage(val)}
+              value={selectedLang}
+              filterOption={(input, option) =>
+                option?.label?.toLowerCase().indexOf(input?.toLowerCase()) >= 0
+              }
+              disabled={isEmpty(formValue)}
             />
           </Space>
         </Col>
@@ -135,7 +182,7 @@ const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
             onFinish={onFinish}
             submitButtonSetting={{
               loading: submitting,
-              disabled: !selectedOrg,
+              disabled: !selectedOrg || !selectedLang,
             }}
             initialValue={initialValue}
           />

@@ -68,7 +68,7 @@ def decode_token(token: str = Depends(oauth2_scheme)):
 
 
 def verify_token(authenticated):
-    if datetime.now().timestamp() > authenticated.get("exp"):
+    if authenticated and datetime.now().timestamp() > authenticated.get("exp"):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail="Unauthorized")
     return authenticated

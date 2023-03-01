@@ -72,6 +72,7 @@ const Preview = () => {
               name: q.name,
               order: q.order,
               type: q.type,
+              meta: q.datapoint_name, // set as datapoint/display name
               required: q.mandatory,
               coreMandatory: q.core_mandatory,
               member_access: qMemberAccess,
@@ -329,7 +330,8 @@ const Preview = () => {
         const transformedForm = {
           name: formName,
           description: formDescription,
-          languages: formLang?.length ? ["en", ...formLang] : ["en"],
+          languages:
+            formLang && formLang?.length ? ["en", ...formLang] : ["en"],
           question_group: orderBy(transformedQuestionGroup, ["order"]),
         };
         setFormValue(

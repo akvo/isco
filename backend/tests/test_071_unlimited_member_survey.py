@@ -61,7 +61,7 @@ class TestCreateUnlimitedMemberQuestionnaire():
             "id": 2,
             "form": 1,
             "form_name": "Form Test",
-            "name": "",
+            "name": "Option 1",
             "geo": None,
             "locked_by": 2,
             "created": today,
@@ -95,8 +95,9 @@ class TestCreateUnlimitedMemberQuestionnaire():
             "id": 2,
             "locked_by": 2,
             'locked_by_user': 'Galih',
-            "name": f"Form Test - {org_name} - Galih - {today}",
+            "name": f"Option 1 - Galih - {today}",
             "organisation": org_name,
+            "is_name_configured": True
         }
 
     @pytest.mark.asyncio
@@ -155,7 +156,7 @@ class TestCreateUnlimitedMemberQuestionnaire():
             "id": 3,
             "form": 1,
             "form_name": "Form Test",
-            "name": "Direct submit",
+            "name": "Option 1",
             "geo": None,
             "locked_by": 2,
             "created": today,

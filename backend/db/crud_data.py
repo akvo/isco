@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List, Optional, Union
 from typing_extensions import TypedDict
 from sqlalchemy.orm import Session
-from sqlalchemy import desc, and_, null
+from sqlalchemy import desc, and_, or_, null, extract
 from models.data import Data, DataDict, DataOptionDict
 from models.answer import Answer
 from models.answer import AnswerBase
@@ -10,6 +10,7 @@ from models.organisation_isco import OrganisationIsco
 from util.survey_config import MEMBER_SURVEY, PROJECT_SURVEY
 from util.survey_config import LIMITED_SURVEY
 from util.survey_config import MEMBER_SURVEY_UNLIMITED_ISCO
+from util.common import get_prev_year
 
 
 class PaginatedData(TypedDict):
@@ -17,15 +18,17 @@ class PaginatedData(TypedDict):
     count: int
 
 
-def add_data(session: Session,
-             name: str,
-             form: int,
-             locked_by: int,
-             created_by: int,
-             organisation: int,
-             answers: List[AnswerBase],
-             submitted: Optional[int] = 0,
-             geo: Optional[List[float]] = None) -> DataDict:
+def add_data(
+    session: Session,
+    name: str,
+    form: int,
+    locked_by: int,
+    created_by: int,
+    organisation: int,
+    answers: List[AnswerBase],
+    submitted: Optional[int] = 0,
+    geo: Optional[List[float]] = None
+) -> DataDict:
     submitted_by = None
     submitted_date = None
     updated = None
@@ -73,23 +76,38 @@ def delete_bulk(session: Session, ids: List[int]) -> None:
     session.commit()
 
 
-def get_data(session: Session, form: int, skip: int,
-             perpage: int, submitted: Optional[bool] = False,
-             org_ids: Optional[List[int]] = None) -> PaginatedData:
+def get_data(
+    session: Session, form: int, skip: int,
+    perpage: int, submitted: Optional[bool] = False,
+    org_ids: Optional[List[int]] = None,
+    monitoring_round: Optional[int] = None
+) -> PaginatedData:
     data = session.query(Data).filter(Data.form == form)
     if submitted:
         data = data.filter(Data.submitted != null())
     if org_ids:
         data = data.filter(Data.organisation.in_(org_ids))
+    if monitoring_round:
+        # On selecting a year , increment it by 1 and
+        # then fetch all records where createdAt is for that year
+        monitoring_round = monitoring_round + 1
+        data = data.filter(
+            extract('year', Data.created) == monitoring_round)
     count = data.count()
     data = data.order_by(desc(Data.id)).offset(skip).limit(perpage).all()
     return PaginatedData(data=data, count=count)
 
 
-def get_data_by_id(session: Session,
-                   id: int,
-                   submitted: Optional[bool] = None) -> DataDict:
+def get_data_by_id(
+    session: Session,
+    id: int,
+    submitted: Optional[bool] = None,
+    prev_year: Optional[int] = None
+) -> DataDict:
     data = session.query(Data).filter(Data.id == id)
+    if prev_year:
+        data = data.filter(
+            extract('year', Data.submitted) == prev_year)
     if submitted is None:
         return data.first()
     if submitted:
@@ -143,10 +161,13 @@ def download(session: Session, form: int):
     return [d.to_data_frame for d in data]
 
 
-def check_member_submission_exists(session: Session,
-                                   organisation: int,
-                                   form: Optional[int] = None,
-                                   saved: Optional[bool] = False):
+def check_member_submission_exists(
+    session: Session,
+    organisation: int,
+    form: Optional[int] = None,
+    saved: Optional[bool] = False
+):
+    current_year = get_prev_year(prev=0, year=True)
     # handle unlimited project questionnaire
     if form and form in PROJECT_SURVEY:
         return False
@@ -166,7 +187,11 @@ def check_member_submission_exists(session: Session,
         form_config = LIMITED_SURVEY
     data = session.query(Data).filter(and_(
         Data.form.in_(form_config),
-        Data.organisation == organisation))
+        Data.organisation == organisation
+    )).filter(or_(
+        extract('year', Data.created) == current_year,
+        extract('year', Data.submitted) == current_year,
+    ))
     # filter by not submitted
     if saved:
         data = data.filter(Data.submitted == null())
@@ -175,3 +200,9 @@ def check_member_submission_exists(session: Session,
         return False if data.count() == 1 else True
     data = data.count()
     return data > 0
+
+
+def get_data_by_form(session: Session, form: int):
+    data = session.query(Data).filter(
+        Data.form == form).all()
+    return data
