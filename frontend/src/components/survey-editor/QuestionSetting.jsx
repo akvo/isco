@@ -154,7 +154,7 @@ const QuestionSetting = ({
       const data = [{ ...question }];
       data.push(dependentQuestion);
       setQuestionToDeactivate(
-        data.map((item) => {
+        dependencies?.concat(question)?.map((item) => {
           return {
             ...item,
             deactivate: !item.deactivate,
