@@ -65,6 +65,12 @@ const Survey = () => {
     return webformContent(handleOnClickDataSecurity)[activeLang];
   }, [activeLang]);
 
+  const showPrevSubmissionDropdown = useMemo(() => {
+    return (
+      selectedFormEnablePrefilledValue && prevSubmissionOptions?.length > 0
+    );
+  }, [selectedFormEnablePrefilledValue, prevSubmissionOptions]);
+
   const organisationOptions = useMemo(() => {
     const transform = organisation
       .filter((o) => o.id !== user.organisation.id)
@@ -435,7 +441,7 @@ const Survey = () => {
                 }
               />
             </Col>
-            {!selectedFormEnablePrefilledValue && (
+            {!showPrevSubmissionDropdown && (
               <Col>
                 <Button block onClick={handleOnClickOpenNewForm}>
                   {text.btnOpen}
@@ -446,7 +452,7 @@ const Survey = () => {
         </Col>
       </Row>
       {/* Previous Submission Panel */}
-      {selectedFormEnablePrefilledValue && (
+      {showPrevSubmissionDropdown && (
         <div className="previous-submission-container">
           <p>{text.formPreviousYearSubmission}</p>
           <Row align="top" justify="space-between" gutter={[12, 12]}>
