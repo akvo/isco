@@ -65,6 +65,12 @@ const Survey = () => {
     return webformContent(handleOnClickDataSecurity)[activeLang];
   }, [activeLang]);
 
+  const showPrevSubmissionDropdown = useMemo(() => {
+    return (
+      selectedFormEnablePrefilledValue && prevSubmissionOptions?.length > 0
+    );
+  }, [selectedFormEnablePrefilledValue, prevSubmissionOptions]);
+
   const organisationOptions = useMemo(() => {
     const transform = organisation
       .filter((o) => o.id !== user.organisation.id)
@@ -149,20 +155,25 @@ const Survey = () => {
     setSelectedForm(null);
   };
 
-  const resetCollaboratorDropdown = () => {
-    setDisableAddCollaboratorButton(true);
+  const resetCollaboratorDropdown = (
+    disableAddCollaboratorDropdownValue = true,
+    resetCollaboratorDropdownListValue = false
+  ) => {
+    setDisableAddCollaboratorButton(disableAddCollaboratorDropdownValue);
     setShowCollaboratorForm(false);
-    setCollaborators(null);
+    if (resetCollaboratorDropdownListValue) {
+      setCollaborators(null);
+    }
     setSelectedCollaborators([]);
   };
 
   const resetSavedFormDropdown = () => {
-    resetCollaboratorDropdown();
+    resetCollaboratorDropdown(true, true);
     setSelectedSavedSubmission(null);
   };
 
   const handleOnChangeSavedSubmissionDropdown = (dataId) => {
-    resetCollaboratorDropdown();
+    resetCollaboratorDropdown(true, true);
     const findData = savedSubmissions.find((x) => x.id === dataId);
     // disable add collaborator button
     if (
@@ -246,7 +257,9 @@ const Survey = () => {
   };
 
   const handleOnClickOpenSavedForm = () => {
-    resetCollaboratorDropdown();
+    const disableAddCollaboratorDropdownValue =
+      selectedSavedSubmission?.form_type === "project" ? false : true;
+    resetCollaboratorDropdown(disableAddCollaboratorDropdownValue, false);
     resetNewFormDropdown();
     if (formLoaded) {
       // show modal
@@ -428,7 +441,7 @@ const Survey = () => {
                 }
               />
             </Col>
-            {!selectedFormEnablePrefilledValue && (
+            {!showPrevSubmissionDropdown && (
               <Col>
                 <Button block onClick={handleOnClickOpenNewForm}>
                   {text.btnOpen}
@@ -439,7 +452,7 @@ const Survey = () => {
         </Col>
       </Row>
       {/* Previous Submission Panel */}
-      {selectedFormEnablePrefilledValue && (
+      {showPrevSubmissionDropdown && (
         <div className="previous-submission-container">
           <p>{text.formPreviousYearSubmission}</p>
           <Row align="top" justify="space-between" gutter={[12, 12]}>
@@ -481,6 +494,9 @@ const Survey = () => {
             setCollaborators={setCollaborators}
             selectedCollaborators={selectedCollaborators}
             setSelectedCollaborators={setSelectedCollaborators}
+            // send resetSavedFormDropdown to reset the collaborator button
+            // and dropdown list after submit/saved submission
+            resetSavedFormDropdown={resetSavedFormDropdown}
           />
         </Space>
       )}

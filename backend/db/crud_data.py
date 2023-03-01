@@ -200,3 +200,9 @@ def check_member_submission_exists(
         return False if data.count() == 1 else True
     data = data.count()
     return data > 0
+
+
+def get_data_by_form(session: Session, form: int):
+    data = session.query(Data).filter(
+        Data.form == form).all()
+    return data

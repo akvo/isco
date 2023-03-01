@@ -19,6 +19,7 @@ import {
   RiEditFill,
   RiTranslate2,
 } from "react-icons/ri";
+import { TbTrashOff } from "react-icons/tb";
 import QuestionTabContent from "./QuestionTabContent";
 import { store, api } from "../../lib";
 import { isoLangs } from "../../lib";
@@ -458,7 +459,13 @@ const QuestionEditor = ({
                     <Button
                       type="text"
                       disabled={question?.disableDelete || false}
-                      icon={<RiDeleteBinFill />}
+                      icon={
+                        question?.disableDelete ? (
+                          <TbTrashOff />
+                        ) : (
+                          <RiDeleteBinFill />
+                        )
+                      }
                     />
                   </Tooltip>
                 </Popconfirm>
