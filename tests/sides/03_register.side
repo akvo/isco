@@ -1,0 +1,145 @@
+{
+  "id": "3837e61a-40bf-431a-9c80-4812b82fc9cd",
+  "version": "2.0",
+  "name": "ISCO",
+  "url": "http://localhost:3000",
+  "tests": [{
+    "id": "6ed049fb-6e3e-43e2-896c-91ad5afd4e79",
+    "name": "register",
+    "commands": [{
+      "id": "d090d7f5-b07b-4817-9373-38775852cf28",
+      "comment": "open register page",
+      "command": "open",
+      "target": "/register",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "c6b43ac2-e5e9-40a5-ba84-776790205511",
+      "comment": "wait for registration forms available",
+      "command": "waitForElementPresent",
+      "target": "id=fullname",
+      "targets": [
+        ["id=fullname", "id"],
+        ["css=#fullname", "css:finder"],
+        ["xpath=//input[@id='fullname']", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div/div/div/div/input", "xpath:idRelative"],
+        ["xpath=//div/input", "xpath:position"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "b5e01db3-06f2-4bb4-967e-dfa14e2f2cea",
+      "comment": "fill name field",
+      "command": "type",
+      "target": "id=fullname",
+      "targets": [
+        ["id=fullname", "id"],
+        ["css=#fullname", "css:finder"],
+        ["xpath=//input[@id='fullname']", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div/div/div/div/input", "xpath:idRelative"],
+        ["xpath=//div/input", "xpath:position"]
+      ],
+      "value": "navin"
+    }, {
+      "id": "fb15b1d4-0c98-4830-9446-138b270f1862",
+      "comment": "fill email field",
+      "command": "type",
+      "target": "id=email",
+      "targets": [
+        ["id=email", "id"],
+        ["css=#email", "css:finder"],
+        ["xpath=//input[@id='email']", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div[2]/div/div/div/input", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/div/input", "xpath:position"]
+      ],
+      "value": "your_name@domain.com"
+    }, {
+      "id": "e147471c-aee9-4c6e-9844-24311f79a0ef",
+      "comment": "fill password field",
+      "command": "type",
+      "target": "id=password",
+      "targets": [
+        ["id=password", "id"],
+        ["css=#password", "css:finder"],
+        ["xpath=//input[@id='password']", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div[4]/div/div/div/span/input", "xpath:idRelative"],
+        ["xpath=//div/span/input", "xpath:position"]
+      ],
+      "value": "Passcode@123"
+    }, {
+      "id": "a357e548-7301-4fb7-86a7-dd179aa757b0",
+      "comment": "fill confirm password field",
+      "command": "type",
+      "target": "id=confirm_password",
+      "targets": [
+        ["id=confirm_password", "id"],
+        ["css=#confirm_password", "css:finder"],
+        ["xpath=//input[@id='confirm_password']", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div[5]/div/div/div/span/input", "xpath:idRelative"],
+        ["xpath=//div[5]/div/div/div/span/input", "xpath:position"]
+      ],
+      "value": "Passcode@123"
+   }, {
+      "id": "feb3183d-4e8a-422d-b912-8f01960c46e8",
+      "comment": "type something in organisation filter field",
+      "command": "click",
+      "target": "id=organisation",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "cf476d17-919b-45df-80e0-63a1ce80a220",
+      "comment": "Execute script to select organisation ",
+      "command": "executeScript",
+      "target": "document.querySelectorAll('.ant-select-item').forEach(function(d){if(d.getAttribute('title') === \"Agro Eco\"){d.click()}})",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "777134a9-ab69-4727-91de-480595da3d91",
+      "comment": "click I agree checkbox",
+      "command": "click",
+      "target": "xpath=//div[@id='agreement']/div/label",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "3340d344-4eef-44c9-8e55-eeefbf62380c",
+      "comment": "click register button",
+      "command": "click",
+      "target": "css=.ant-btn-primary",
+      "targets": [
+        ["css=.ant-btn-primary", "css:finder"],
+        ["xpath=(//button[@type='button'])[3]", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/button", "xpath:idRelative"],
+        ["xpath=//form/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Register')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "5947ba0e-9440-415b-8b66-9e9616af835c",
+      "comment": "Check if Registration is succeeded",
+      "command": "assertText",
+      "target": "css=.ant-alert-success .ant-alert-message",
+      "targets": [
+        ["css=.ant-alert-success .ant-alert-message", "css:finder"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[2]/div[2]/div[2]/div[2]/div/div/div", "xpath:position"]
+      ],
+      "value": "Congratulations, you have been registered."
+    }, {
+      "id": "00eedc64-8c0b-49ca-beac-86a7e965b6e7",
+      "comment": "",
+      "command": "close",
+      "target": "",
+      "targets": [],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "3837e61a-40bf-431a-9c80-4812b82fc9cd",
+    "name": "ISCO",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["6ed049fb-6e3e-43e2-896c-91ad5afd4e79"]
+  }],
+  "urls": ["http://localhost:3000/"],
+  "plugins": []
+}

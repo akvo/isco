@@ -5,39 +5,9 @@ set -exuo pipefail
 
 [[ -n "${CI_TAG:=}" ]] && { echo "Skip build"; exit 0; }
 
-BACKEND_CHANGES=0
-FRONTEND_CHANGES=0
-
-COMMIT_CONTENT=$(git diff --name-only "${CI_COMMIT_RANGE}")
-
-if grep -q "backend" <<< "${COMMIT_CONTENT}"
-then
-    BACKEND_CHANGES=1
-fi
-
-if grep -q "frontend" <<< "${COMMIT_CONTENT}"
-then
-    FRONTEND_CHANGES=1
-fi
-
-if grep -q "ci" <<< "${COMMIT_CONTENT}"
-then
-    BACKEND_CHANGES=1
-    FRONTEND_CHANGES=1
-fi
-
-if [[ "${CI_BRANCH}" ==  "main" && "${CI_PULL_REQUEST}" !=  "true" ]];
-then
-    BACKEND_CHANGES=1
-    FRONTEND_CHANGES=1
-fi
-
-
-image_prefix="eu.gcr.io/akvo-lumen/isco"
-
 # Normal Docker Compose
 dc () {
-    docker-compose \
+    docker compose \
         --ansi never \
         "$@"
 }
@@ -48,6 +18,42 @@ dci () {
        -f docker-compose.ci.yml "$@"
 }
 
+
+## RESTORE IMAGE CACHE
+IMAGE_CACHE_LIST=$(dc \
+	-f ./docker-compose.e2e.yml \
+	-f ./docker-compose.ci.yml  \
+	-f ./docker-compose.yml \
+	config \
+	  | grep image \
+	  | grep -e 'selenium' -e 'chrome'\
+	  | cut -d ':' -f2- \
+    | sort -u \
+    | sed 's/^ *//g')
+mkdir -p ./ci/images
+
+while IFS= read -r IMAGE_CACHE; do
+    IMAGE_CACHE_LOC="./ci/images/${IMAGE_CACHE//\//-}.tar"
+    if [ -f "${IMAGE_CACHE_LOC}" ]; then
+        docker load -i "${IMAGE_CACHE_LOC}"
+    fi
+done <<< "${IMAGE_CACHE_LIST}"
+
+image_prefix="eu.gcr.io/akvo-lumen/isco"
+
+integration_test() {
+		for file in ./tests/sides/*.side; do
+			sed -i 's/localhost\:3000/localhost/g' $file
+		done
+
+		dci -f docker-compose.e2e.yml \
+			-p integration-test \
+			run --rm -T selenium ./run.sh
+
+		./tests/logs.sh
+
+}
+
 frontend_build () {
 
     echo "PUBLIC_URL=/" > frontend/.env
@@ -56,18 +62,22 @@ frontend_build () {
 
     dc run \
        --rm \
-       --no-deps \
        frontend \
-       bash release.sh
+			 bash release.sh
 
     docker build \
+			  --quiet \
         --tag "${image_prefix}/frontend:latest" \
         --tag "${image_prefix}/frontend:${CI_COMMIT}" frontend
+
+		dc down
+
 }
 
 backend_build () {
 
     docker build \
+			  --quiet \
         --tag "${image_prefix}/backend:latest" \
         --tag "${image_prefix}/backend:${CI_COMMIT}" backend
 
@@ -78,29 +88,24 @@ backend_build () {
 
 }
 
-if [[ ${BACKEND_CHANGES} == 1 ]];
-then
-    echo "================== * BACKEND BUILD * =================="
-    backend_build
-else
-    echo "No Changes detected for backend -- SKIP BUILD"
-fi
-
-if [[ ${FRONTEND_CHANGES} == 1 ]];
-then
-    echo "================== * FRONTEND BUILD * =================="
-    frontend_build
-else
-    echo "No Changes detected for frontend -- SKIP BUILD"
-fi
-
-
+backend_build
+frontend_build
+integration_test
 
 #test-connection
-if [[ ${FRONTEND_CHANGES} == 1 && ${BACKEND_CHANGES} == 1 ]]; then
+if [[ "${CI_BRANCH}" ==  "main" && "${CI_PULL_REQUEST}" !=  "true" ]]; then
     if ! dci run -T ci ./basic.sh; then
       dci logs
       echo "Build failed when running basic.sh"
       exit 1
     fi
 fi
+
+## STORE IMAGE CACHE
+while IFS= read -r IMAGE_CACHE; do
+    IMAGE_CACHE_LOC="./ci/images/${IMAGE_CACHE//\//-}.tar"
+    if [[ ! -f "${IMAGE_CACHE_LOC}" ]]; then
+        docker save -o "${IMAGE_CACHE_LOC}" "${IMAGE_CACHE}"
+    fi
+done <<< "${IMAGE_CACHE_LIST}"
+## END STORE IMAGE CACHE

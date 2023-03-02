@@ -26,7 +26,7 @@ global_job_config:
       - export MAILJET_VERIFICATION_FILE="${MAILJET_VERIFICATION_FILE}"
       - export SERVICE_ACCOUNT=/home/semaphore/credentials
 blocks:
-  - name: 'Build, Test & Deploy'
+  - name: "Build, Test & Deploy"
     skip:
       when: "tag =~ '.*'"
     task:
