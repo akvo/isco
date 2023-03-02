@@ -152,9 +152,23 @@ const QuestionSetting = ({
       const fieldValue = { [field]: val };
       form.setFieldsValue(fieldValue);
       const data = [{ ...question }];
-      data.push(dependentQuestion);
+      allQuestion.map((item) => {
+        const find = item?.skip_logic?.find((d) => d.dependent_to === qid);
+        if (find) {
+          data.push({ ...item });
+        } else {
+          data.map((inner) => {
+            const find = item?.skip_logic?.find(
+              (d) => d.dependent_to === inner.id
+            );
+            if (find) {
+              data.push({ ...item });
+            }
+          });
+        }
+      });
       setQuestionToDeactivate(
-        dependencies?.concat(question)?.map((item) => {
+        data?.map((item) => {
           return {
             ...item,
             deactivate: !item.deactivate,
