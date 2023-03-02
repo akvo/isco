@@ -26,26 +26,10 @@ global_job_config:
       - export MAILJET_VERIFICATION_FILE="${MAILJET_VERIFICATION_FILE}"
       - export SERVICE_ACCOUNT=/home/semaphore/credentials
 blocks:
-  - name: 'Build, Test & Deploy'
+  - name: "Build, Test & Deploy"
     skip:
       when: "tag =~ '.*'"
     task:
-      prologue:
-        commands:
-          - checkout
-          - cache restore "npm-$(checksum frontend/package.json)"
-          - cache restore "node-modules-$(checksum frontend/package.json)"
-          - cache restore "pip-$(checksum backend/requirements.txt)"
-          - cache restore "$SEMAPHORE_PROJECT_ID-$SEMAPHORE_GIT_BRANCH"
-      epilogue:
-        commands:
-          - cache store "npm-$(checksum frontend/package.json)" "$HOME/.npm"
-          - cache store "node-modules-$(checksum frontend/package.json)"
-            "frontend/node_modules"
-          - cache store "pip-$(checksum backend/requirements.txt)"
-            "backend/.pip"
-          - cache store "$SEMAPHORE_PROJECT_ID-$SEMAPHORE_GIT_BRANCH"
-            "$HOME/.cache"
       jobs:
         - name: Build and test
           commands:
