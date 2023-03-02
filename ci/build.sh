@@ -23,7 +23,7 @@ image_prefix="eu.gcr.io/akvo-lumen/isco"
 # Normal Docker Compose
 dc () {
     docker compose \
-        --no-ansi \
+        --ansi never \
         "$@"
 }
 
