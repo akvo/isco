@@ -79,6 +79,8 @@ const DataCleaning = () => {
       key: "action",
       align: "center",
       render: (record) => {
+        const currentTime = new Date();
+        const year = currentTime.getFullYear();
         return (
           <Space>
             <Button
@@ -90,21 +92,23 @@ const DataCleaning = () => {
             >
               Edit
             </Button>
-            <Popconfirm
-              placement="left"
-              title={`Are you sure to undo submission for data ${record?.id}?`}
-              okText="Undo Submit"
-              cancelText="Cancel"
-              onConfirm={() => handleUndoSubmitOnClick(record)}
-            >
-              <Button
-                size="small"
-                type="primary"
-                loading={undoSubmit?.id === record?.id}
+            {new Date(record.submitted)?.getFullYear() === year && (
+              <Popconfirm
+                placement="left"
+                title={`Are you sure to undo submission for data ${record?.id}?`}
+                okText="Undo Submit"
+                cancelText="Cancel"
+                onConfirm={() => handleUndoSubmitOnClick(record)}
               >
-                Undo Submit
-              </Button>
-            </Popconfirm>
+                <Button
+                  size="small"
+                  type="primary"
+                  loading={undoSubmit?.id === record?.id}
+                >
+                  Undo Submit
+                </Button>
+              </Popconfirm>
+            )}
           </Space>
         );
       },
