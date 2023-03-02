@@ -33,6 +33,7 @@ blocks:
       jobs:
         - name: Build and test
           commands:
+            - checkout
             - ./ci/build.sh
             - ./ci/deploy.sh
   - name: "Promote to production"
