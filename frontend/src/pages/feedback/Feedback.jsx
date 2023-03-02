@@ -111,7 +111,7 @@ const Feedback = () => {
                 <Form.Item
                   label={text.formFeedback}
                   name="content"
-                  rules={[{ required: true, message: text.Feedback }]}
+                  rules={[{ required: true, message: text.valFeedback }]}
                 >
                   <Input.TextArea className="bg-grey" rows={5} />
                 </Form.Item>

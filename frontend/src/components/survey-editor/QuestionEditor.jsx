@@ -19,7 +19,8 @@ import {
   RiEditFill,
   RiTranslate2,
 } from "react-icons/ri";
-import QuestionSetting from "./QuestionSetting";
+import { TbTrashOff } from "react-icons/tb";
+import QuestionTabContent from "./QuestionTabContent";
 import { store, api } from "../../lib";
 import { isoLangs } from "../../lib";
 import { useNotification } from "../../util";
@@ -61,6 +62,9 @@ const TranslationTab = ({ activeLang, setActiveLang }) => {
 };
 
 const QuestionMenu = ({ activeSetting, setActiveSetting }) => {
+  const { surveyEditor } = store.useState((s) => s);
+  const { languages } = surveyEditor;
+
   return (
     <Space direction="vertical" size={1} className="question-menu-wrapper">
       <Tooltip title="Show question setting">
@@ -78,6 +82,7 @@ const QuestionMenu = ({ activeSetting, setActiveSetting }) => {
           type="text"
           icon={<RiTranslate2 />}
           onClick={() => setActiveSetting("translation")}
+          disabled={!languages?.length || !languages}
         />
       </Tooltip>
     </Space>
@@ -97,7 +102,7 @@ const QuestionEditor = ({
   toggleMove = false,
 }) => {
   const { surveyEditor, optionValues } = store.useState((s) => s);
-  const { questionGroup: questionGroupState } = surveyEditor;
+  const { languages, questionGroup: questionGroupState } = surveyEditor;
 
   const { question_type } = optionValues;
   const qId = question?.id;
@@ -112,7 +117,19 @@ const QuestionEditor = ({
   const [coreMandatory, setCoreMandatory] = useState(false);
   const [personalData, setPersonalData] = useState(false);
   const [datapointName, setDatapointName] = useState(false);
-  const [activeLang, setActiveLang] = useState(surveyEditor?.languages?.[0]);
+  const [activeLang, setActiveLang] = useState(null);
+
+  // handle when form languages updated
+  useEffect(() => {
+    if (languages?.length) {
+      setActiveLang(languages?.[0]);
+    } else {
+      setActiveLang(null);
+      if (activeSetting === "translation") {
+        setActiveSetting("detail");
+      }
+    }
+  }, [languages, activeSetting]);
 
   useEffect(() => {
     if (qId) {
@@ -177,7 +194,7 @@ const QuestionEditor = ({
         if (key === "skip_logic") {
           value?.forEach((val) => {
             Object.keys(val).forEach((key) => {
-              const skipField = `${field}-${key}`;
+              let skipField = `${field}-${key}`;
               let skipValue = val?.[key];
               if (val?.type?.includes("option") && key === "value") {
                 if (String(skipValue)?.includes("|")) {
@@ -187,6 +204,10 @@ const QuestionEditor = ({
                 skipValue = Array.isArray(skipValue)
                   ? skipValue
                   : [Number(skipValue)];
+                skipField = `${skipField}-option`;
+              }
+              if (!val?.type?.includes("option") && key === "value") {
+                skipField = `${skipField}-number`;
               }
               form.setFieldsValue({ [skipField]: skipValue });
             });
@@ -344,7 +365,7 @@ const QuestionEditor = ({
                       />
                     </Col>
                     <Col className="input-wrapper">
-                      <QuestionSetting
+                      <QuestionTabContent
                         form={form}
                         activeSetting={activeSetting}
                         questionGroup={questionGroup}
@@ -438,7 +459,13 @@ const QuestionEditor = ({
                     <Button
                       type="text"
                       disabled={question?.disableDelete || false}
-                      icon={<RiDeleteBinFill />}
+                      icon={
+                        question?.disableDelete ? (
+                          <TbTrashOff />
+                        ) : (
+                          <RiDeleteBinFill />
+                        )
+                      }
                     />
                   </Tooltip>
                 </Popconfirm>

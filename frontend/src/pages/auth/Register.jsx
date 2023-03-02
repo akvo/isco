@@ -106,16 +106,21 @@ const Register = () => {
     api
       .post("/user/register", payload)
       .then(() => {
-        setSending(false);
         form.resetFields();
         setRegisterComplete(true);
       })
-      .catch(() => {
-        setSending(false);
+      .catch((e) => {
+        const { status } = e.response;
         notify({
           type: "error",
-          message: text.textAlertSomethingWentWrong,
+          message:
+            status === 409
+              ? text.textAlertUserExist
+              : text.textAlertSomethingWentWrong,
         });
+      })
+      .finally(() => {
+        setSending(false);
       });
   };
 

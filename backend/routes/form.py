@@ -3,6 +3,7 @@ import json
 import requests as r
 from http import HTTPStatus
 from fastapi import Depends, Request, APIRouter, Response, HTTPException
+from fastapi.responses import JSONResponse
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
 from typing import List, Optional
@@ -10,6 +11,7 @@ from sqlalchemy import null
 from sqlalchemy.orm import Session
 import db.crud_form as crud
 from db.crud_data import check_member_submission_exists, get_data_by_id
+from db.crud_data import get_data_by_form
 from db.crud_answer import get_answer_by_question
 from db.connection import get_session
 from models.form import FormBase, FormDict, FormDictWithGroupStatus
@@ -147,6 +149,13 @@ def delete(
     session: Session = Depends(get_session),
     credentials: credentials = Depends(security)
 ):
+    verify_super_admin(session=session, authenticated=req.state.authenticated)
+    # check if form has datapoint
+    has_datapoint = get_data_by_form(session=session, form=id)
+    if has_datapoint:
+        return JSONResponse(
+            status_code=HTTPStatus.BAD_REQUEST.value,
+            content={"message": "This survey has submission."})
     crud.delete_form(session=session, id=id)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)
 
@@ -167,7 +176,8 @@ def get_survey_editor_by_id(
     for qg in form.get('question_group'):
         for q in qg.get('question'):
             check_answer = get_answer_by_question(
-                session=session, question=q.get('id'))
+                session=session,
+                question=[q.get('id')])
             q.update({
                 "disableDelete": True if check_answer else False
             })

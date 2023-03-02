@@ -30,13 +30,14 @@ class TestUserAuthentication():
         assert verify['exp'] > 0
 
     @pytest.mark.asyncio
-    async def test_add_member_type(self, app: FastAPI, session: Session,
-                                   client: AsyncClient) -> None:
+    async def test_add_member_type(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # create member type
         for m in member_values:
             payload = {"name": m}
-            res = crud_member_type.add_member_type(session=session,
-                                                   payload=payload)
+            res = crud_member_type.add_member_type(
+                session=session, payload=payload)
         # get all member type
         res = await client.get(app.url_path_for("member_type:get_all"))
         assert res.status_code == 200
@@ -44,13 +45,14 @@ class TestUserAuthentication():
         assert len(res) == len(member_values)
 
     @pytest.mark.asyncio
-    async def test_add_isco_type(self, app: FastAPI, session: Session,
-                                 client: AsyncClient) -> None:
+    async def test_add_isco_type(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # create isco type
         for i in isco_values:
             payload = {"name": i}
-            res = crud_isco_type.add_isco_type(session=session,
-                                               payload=payload)
+            res = crud_isco_type.add_isco_type(
+                session=session, payload=payload)
         # get all isco type
         res = await client.get(app.url_path_for("isco_type:get_all"))
         assert res.status_code == 200
@@ -58,8 +60,9 @@ class TestUserAuthentication():
         assert len(res) == len(isco_values)
 
     @pytest.mark.asyncio
-    async def test_add_cascade(self, app: FastAPI, session: Session,
-                               client: AsyncClient) -> None:
+    async def test_add_cascade(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # create cascade
         res = crud_cascade.add_cascade(session=session, payload=cascade_values)
         res = res.serialize
@@ -74,8 +77,9 @@ class TestUserAuthentication():
         assert len(res['cascades']) > 0
 
     @pytest.mark.asyncio
-    async def test_add_nested_list(self, app: FastAPI, session: Session,
-                                   client: AsyncClient) -> None:
+    async def test_add_nested_list(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # create cascade
         res = crud_cascade.add_cascade(session=session, payload=nested_values)
         res = res.serialize
@@ -90,8 +94,9 @@ class TestUserAuthentication():
         assert len(res['cascades']) > 0
 
     @pytest.mark.asyncio
-    async def test_add_organisation(self, app: FastAPI, session: Session,
-                                    client: AsyncClient) -> None:
+    async def test_add_organisation(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # create organisation
         payload = [{
             "code": None,
@@ -147,8 +152,9 @@ class TestUserAuthentication():
         }]
 
     @pytest.mark.asyncio
-    async def test_user_register(self, app: FastAPI, session: Session,
-                                 client: AsyncClient) -> None:
+    async def test_user_register(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # create organisation
         user_payload = {
             "name": "John Doe",
@@ -159,8 +165,8 @@ class TestUserAuthentication():
             "organisation": 1,
             "questionnaires": [1],
         }
-        res = await client.post(app.url_path_for("user:register"),
-                                data=user_payload)
+        res = await client.post(
+            app.url_path_for("user:register"), data=user_payload)
         assert res.status_code == 200
         res = res.json()
         assert res == {
@@ -177,8 +183,27 @@ class TestUserAuthentication():
         }
 
     @pytest.mark.asyncio
-    async def test_verify_user_email(self, app: FastAPI, session: Session,
-                                     client: AsyncClient) -> None:
+    async def test_user_register_with_same_email(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
+        # create organisation
+        user_payload = {
+            "name": "Lorem Ipsum",
+            "email": "support@akvo.org",
+            "phone_number": None,
+            "password": "pass",
+            "role": UserRole.member_user.value,
+            "organisation": 1,
+            "questionnaires": [1],
+        }
+        res = await client.post(
+            app.url_path_for("user:register"), data=user_payload)
+        assert res.status_code == 409
+
+    @pytest.mark.asyncio
+    async def test_verify_user_email(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         res = await client.put(
             app.url_path_for("user:verify_email"),
             params={"email": "support@akvo.org"})
@@ -187,8 +212,9 @@ class TestUserAuthentication():
         assert res['email_verified'] is not None
 
     @pytest.mark.asyncio
-    async def test_user_approve_by_admin(self, app: FastAPI, session: Session,
-                                         client: AsyncClient) -> None:
+    async def test_user_approve_by_admin(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         user_id = 1
         user_payload = {
             "role": UserRole.secretariat_admin.value,
@@ -205,8 +231,9 @@ class TestUserAuthentication():
         assert res["approved"] is True
 
     @pytest.mark.asyncio
-    async def test_invalid_user_login(self, app: FastAPI, session: Session,
-                                      client: AsyncClient) -> None:
+    async def test_invalid_user_login(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # test invalid login with wrong password
         res = await client.post(
             app.url_path_for("user:login"),
@@ -278,8 +305,9 @@ class TestUserAuthentication():
         assert res.status_code == 404
 
     @pytest.mark.asyncio
-    async def test_valid_user_login(self, app: FastAPI, session: Session,
-                                    client: AsyncClient) -> None:
+    async def test_valid_user_login(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # valid login
         res = await client.post(
             app.url_path_for("user:login"),
@@ -300,8 +328,9 @@ class TestUserAuthentication():
         assert account.token == res['access_token']
 
     @pytest.mark.asyncio
-    async def test_user_forgot_password(self, app: FastAPI, session: Session,
-                                        client: AsyncClient) -> None:
+    async def test_user_forgot_password(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         user_payload = {"email": "support@akvo.org"}
         user = session.query(User).filter(
             User.email == user_payload["email"]).first()
@@ -329,9 +358,9 @@ class TestUserAuthentication():
         assert res.status_code == 410
 
     @pytest.mark.asyncio
-    async def test_forgot_password_then_change(self, app: FastAPI,
-                                               session: Session,
-                                               client: AsyncClient) -> None:
+    async def test_forgot_password_then_change(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         user_payload = {"email": "support@akvo.org"}
         user = session.query(User).filter(
             User.email == user_payload["email"]).first()
@@ -347,17 +376,18 @@ class TestUserAuthentication():
         assert res.status_code == 201
         reset_password = session.query(ResetPassword).filter(
             ResetPassword.user == user.id).first()
-        res = await client.post(app.url_path_for("user:reset-password",
-                                                 url=reset_password.url),
-                                data={"password": "test"})
+        res = await client.post(
+            app.url_path_for("user:reset-password", url=reset_password.url),
+            data={"password": "test"})
         assert res.status_code == 200
         res = await client.get(
             app.url_path_for("user:reset-password", url=reset_password.url))
         assert res.status_code == 404
 
     @pytest.mark.asyncio
-    async def test_get_user_me(self, app: FastAPI, session: Session,
-                               client: AsyncClient) -> None:
+    async def test_get_user_me(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         account = Acc(email="support@akvo.org", token=None)
         res = await client.get(
             app.url_path_for("user:me"),

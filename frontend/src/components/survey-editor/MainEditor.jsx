@@ -28,10 +28,10 @@ const MainEditor = () => {
     description,
     languages,
     enable_prefilled_value,
+    questionGroup,
   } = surveyEditor;
   const { notify } = useNotification();
 
-  const { questionGroup } = surveyEditor;
   const [saveButtonLoading, setSaveButtonLoading] = useState(false);
   const [publishButtonLoading, setPublishButtonLoading] = useState(false);
 
@@ -60,6 +60,12 @@ const MainEditor = () => {
         ...{ [field]: values[key] },
       };
     });
+    if (typeof data?.enable_prefilled_value === "undefined") {
+      data = {
+        ...data,
+        enable_prefilled_value: false,
+      };
+    }
     api
       .put(`/form/${formId}`, data, { "content-type": "application/json" })
       .then((res) => {

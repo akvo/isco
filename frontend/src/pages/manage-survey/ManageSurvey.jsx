@@ -13,6 +13,7 @@ import {
   Popconfirm,
 } from "antd";
 import { RiPencilFill, RiDeleteBinFill } from "react-icons/ri";
+import { TbTrashOff } from "react-icons/tb";
 import { FormEditor } from "../../components";
 import { api } from "../../lib";
 import { useNotification } from "../../util";
@@ -56,11 +57,15 @@ const ManageSurvey = () => {
         });
       })
       .catch((e) => {
-        const { status, statusText } = e.response;
+        const { status, statusText, data } = e.response;
         console.error(status, statusText);
+        let messageText = "Oops, something went wrong.";
+        if (status === 400) {
+          messageText = data?.message || statusText;
+        }
         notify({
           type: "error",
-          message: "Oops, something went wrong.",
+          message: messageText,
         });
       });
   };
@@ -110,6 +115,7 @@ const ManageSurvey = () => {
       className: "bg-grey",
       width: "8%",
       render: (record) => {
+        const disableDelete = record?.disableDelete || false;
         return (
           <Space key={`${record?.id}-${record?.key}`}>
             <Button
@@ -124,10 +130,12 @@ const ManageSurvey = () => {
               okText="Delete"
               cancelText="Cancel"
               onConfirm={() => handleDeleteButton(record)}
+              disabled={disableDelete || false}
             >
               <Button
                 className="action-btn"
-                icon={<RiDeleteBinFill />}
+                disabled={disableDelete || false}
+                icon={disableDelete ? <TbTrashOff /> : <RiDeleteBinFill />}
                 shape="circle"
                 type="text"
               />
@@ -177,6 +185,12 @@ const ManageSurvey = () => {
       data = {
         ...data,
         languages: null,
+      };
+    }
+    if (!data?.enable_prefilled_value) {
+      data = {
+        ...data,
+        enable_prefilled_value: false,
       };
     }
     api

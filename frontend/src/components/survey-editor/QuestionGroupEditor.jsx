@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import {
   Row,
   Col,
@@ -20,6 +20,7 @@ import {
   RiDragMove2Fill,
   RiTranslate2,
 } from "react-icons/ri";
+import { TbTrashOff } from "react-icons/tb";
 import { store, api } from "../../lib";
 import orderBy from "lodash/orderBy";
 import { defaultRepeatingObject, defaultOption } from "../../lib/store";
@@ -71,11 +72,22 @@ const QuestionGroupSetting = ({
 
   const memberAccessField = `question_group-${qgId}-member_access`;
   const memberValue = form.getFieldValue(memberAccessField);
-  const memberOption = generateDisabledOptions(member_type, memberValue);
+  const memberOption = useMemo(() => {
+    return generateDisabledOptions(member_type, memberValue);
+  }, [memberValue, member_type]);
 
   const iscoAccessField = `question_group-${qgId}-isco_access`;
   const iscoValue = form.getFieldValue(iscoAccessField);
-  const iscoOption = generateDisabledOptions(isco_type, iscoValue);
+  const iscoOption = useMemo(() => {
+    return generateDisabledOptions(isco_type, iscoValue);
+  }, [iscoValue, isco_type]);
+
+  // handle when form languages updated
+  useEffect(() => {
+    if (!languages?.length && groupTranslationVisible) {
+      setGroupTranslationVisible(false);
+    }
+  }, [languages, groupTranslationVisible]);
 
   return (
     <div className="qge-setting-wrapper">
@@ -95,6 +107,7 @@ const QuestionGroupSetting = ({
                 icon={<RiTranslate2 />}
                 type="text"
                 onClick={() => setGroupTranslationVisible(true)}
+                disabled={!languages?.length || !languages}
               />
             </Tooltip>
           )
@@ -265,7 +278,7 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
   const { surveyEditor, tempStorage } = store.useState((s) => s);
   const { questionGroup: questionGroupState } = surveyEditor;
   const { deletedOptions, deletedSkipLogic } = tempStorage;
-  const { id, question } = questionGroup;
+  const { id, question, disableDelete } = questionGroup;
 
   const [isGroupSettingVisible, setIsGroupSettingVisible] = useState(false);
   const [isQuestionVisible, setIsQuestionVisible] = useState(false);
@@ -340,20 +353,20 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
         });
       })
       .catch((e) => {
-        const { status, statusText } = e.response;
+        const { status, statusText, data } = e.response;
         console.error(status, statusText);
+        let messageText = "Oops, something went wrong.";
         if (status === 422) {
-          notify({
-            type: "warning",
-            message:
-              "This section has question used as a dependency for other question",
-          });
-        } else {
-          notify({
-            type: "error",
-            message: "Oops, something went wrong.",
-          });
+          messageText = "This section has question used";
+          messageText += " as a dependency for other question";
         }
+        if (status === 400) {
+          messageText = data?.message || statusText;
+        }
+        notify({
+          type: "error",
+          message: messageText,
+        });
       });
   };
 
@@ -379,6 +392,28 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
     });
   };
 
+  const checkQuestionOptionsAndRepeatingObjects = (sources) => {
+    let option = sources?.option?.filter((op) => {
+      const checkDelete = deletedOptions?.find((d) => d?.id === op?.id);
+      if (!checkDelete) {
+        return op;
+      }
+    });
+    let repeating_objects = sources?.repeating_objects;
+    // add option default
+    if (option?.length === 0) {
+      option = [{ ...defaultOption, id: generateID() }];
+    }
+    // add repeating object default
+    if (!repeating_objects || repeating_objects?.length === 0) {
+      repeating_objects = [{ ...defaultRepeatingObject, id: generateID() }];
+    }
+    return {
+      option: option,
+      repeating_objects: repeating_objects,
+    };
+  };
+
   const handleFormOnFinish = () => {
     const { id } = questionGroup;
     let qId = null;
@@ -395,13 +430,28 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
           "content-type": "application/json",
         })
         .then((res) => {
-          const { data } = res;
+          const { data: updatedQuestionGroup } = res;
+          const transformedQuestion = updatedQuestionGroup?.question?.map(
+            (q) => {
+              const { option, repeating_objects } =
+                checkQuestionOptionsAndRepeatingObjects(q);
+              return {
+                ...q,
+                option: option,
+                repeating_objects: repeating_objects,
+              };
+            }
+          );
+          const transformedData = {
+            ...updatedQuestionGroup,
+            question: transformedQuestion,
+          };
           store.update((s) => {
             s.surveyEditor = {
               ...s.surveyEditor,
               questionGroup: [
                 ...s.surveyEditor.questionGroup.filter((x) => x?.id !== id),
-                data,
+                transformedData,
               ],
             };
           });
@@ -607,7 +657,7 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
           "content-type": "application/json",
         })
         .then((res) => {
-          const { data } = res;
+          const { data: updatedQuestion } = res;
           store.update((s) => {
             s.surveyEditor = {
               ...s.surveyEditor,
@@ -617,30 +667,12 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
                     ...qg,
                     question: qg?.question?.map((q) => {
                       if (q?.id === qId) {
-                        let option = data?.option?.filter((op) => {
-                          const checkDelete = deletedOptions?.find(
-                            (d) => d?.id === op?.id
+                        const { option, repeating_objects } =
+                          checkQuestionOptionsAndRepeatingObjects(
+                            updatedQuestion
                           );
-                          if (!checkDelete) {
-                            return op;
-                          }
-                        });
-                        let repeating_objects = data?.repeating_objects;
-                        // add option default
-                        if (option?.length === 0) {
-                          option = [{ ...defaultOption, id: generateID() }];
-                        }
-                        // add repeating object default
-                        if (
-                          !repeating_objects ||
-                          repeating_objects?.length === 0
-                        ) {
-                          repeating_objects = [
-                            { ...defaultRepeatingObject, id: generateID() },
-                          ];
-                        }
                         return {
-                          ...data,
+                          ...updatedQuestion,
                           option: option,
                           repeating_objects: repeating_objects,
                         };
@@ -799,6 +831,14 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
           }
           if (field.includes("skip_logic")) {
             const skipKey = key.split("-")[3];
+            let valueTmp = {};
+            if (skipKey === "dependent_to") {
+              const resetVal =
+                allQuestions.find((q) => q.id === value)?.type === "number"
+                  ? null
+                  : [];
+              valueTmp = { value: resetVal, operator: null };
+            }
             findQuestion = {
               ...findQuestion,
               skip_logic: skipKey
@@ -808,6 +848,7 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
                       flag: findQuestion?.skip_logic?.[0]?.id || "post",
                       question: qid,
                       [skipKey]: value,
+                      ...valueTmp,
                     },
                   ]
                 : null,
@@ -909,7 +950,7 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
         }
       });
     },
-    [questionGroupState, questionGroup]
+    [questionGroupState, questionGroup, allQuestions]
   );
 
   const handleFormOnFinishFailed = ({ errorFields }) => {
@@ -1001,9 +1042,16 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
                     onConfirm={() =>
                       handleDeleteQuestionGroupButton(questionGroup)
                     }
+                    disabled={disableDelete}
                   >
                     <Tooltip title="Delete this section">
-                      <Button type="text" icon={<RiDeleteBinFill />} />
+                      <Button
+                        type="text"
+                        disabled={disableDelete}
+                        icon={
+                          disableDelete ? <TbTrashOff /> : <RiDeleteBinFill />
+                        }
+                      />
                     </Tooltip>
                   </Popconfirm>
                 </Space>

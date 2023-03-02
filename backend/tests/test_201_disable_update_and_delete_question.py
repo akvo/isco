@@ -54,8 +54,21 @@ class TestDisableDeleteQuestion():
     async def test_disable_delete_question(
         self, app: FastAPI, session: Session, client: AsyncClient
     ) -> None:
-        # delete user which has answers
+        # delete question which has answers
         res = await client.delete(
             app.url_path_for("question:delete", id=14),
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 400
+
+    @pytest.mark.asyncio
+    async def test_disable_delete_question_group(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
+        # delete question group which has answers
+        question = crud_question.get_question_by_id(
+            session=session, id=14)
+        qgid = question.question_group
+        res = await client.delete(
+            app.url_path_for("question_group:delete", id=qgid),
             headers={"Authorization": f"Bearer {account.token}"})
         assert res.status_code == 400

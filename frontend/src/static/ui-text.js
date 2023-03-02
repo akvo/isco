@@ -196,6 +196,7 @@ const uiText = {
     // Alert text
     textAlertFailed: "Failed!",
     textAlertSomethingWentWrong: "Something went wrong.",
+    textAlertUserExist: "This email was already used to register a user.",
     // info
     infoDataSecurityDoc: (
       <>
@@ -485,6 +486,8 @@ const uiText = {
     // Alert text
     textAlertFailed: "Failed!",
     textAlertSomethingWentWrong: "Something went wrong.",
+    textAlertUserExist:
+      "Diese E-Mail wurde bereits verwendet, um einen Benutzer zu registrieren.",
     // info
     infoDataSecurityDoc: (
       <>

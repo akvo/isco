@@ -28,12 +28,17 @@ const SurveyEditor = () => {
               id: data?.id,
               name: data?.name,
               description: data?.description,
-              languages: data?.languages,
+              languages: data?.languages || [],
               version: data?.version,
-              enable_prefilled_value: data?.enable_prefilled_value,
+              enable_prefilled_value: data?.enable_prefilled_value || false,
               questionGroup: data?.question_group?.map((qg) => {
+                // check for disableDelete a group based on question disableDelete value
+                const questionDisableDelete = qg?.question?.filter(
+                  (q) => q?.disableDelete
+                );
                 return {
                   ...qg,
+                  disableDelete: questionDisableDelete?.length ? true : false,
                   question: qg?.question?.map((q) => {
                     let option = q?.option;
                     let repeating_objects = q?.repeating_objects;
