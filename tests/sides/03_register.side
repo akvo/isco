@@ -51,7 +51,7 @@
         ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div[2]/div/div/div/input", "xpath:idRelative"],
         ["xpath=//div[2]/div/div/div/input", "xpath:position"]
       ],
-      "value": "navin+2@akvo.org"
+      "value": "your_name@domain.com"
     }, {
       "id": "e147471c-aee9-4c6e-9844-24311f79a0ef",
       "comment": "fill password field",
@@ -78,49 +78,19 @@
         ["xpath=//div[5]/div/div/div/span/input", "xpath:position"]
       ],
       "value": "Passcode@123"
-    }, {
+   }, {
       "id": "feb3183d-4e8a-422d-b912-8f01960c46e8",
       "comment": "type something in organisation filter field",
-      "command": "type",
-      "target": "id=rc_select_0",
-      "targets": [
-        ["id=rc_select_0", "id"],
-        ["css=#rc_select_0", "css:finder"],
-        ["xpath=//input[@id='rc_select_0']", "xpath:attributes"],
-        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div[6]/div/div/div/div/div/span/input", "xpath:idRelative"],
-        ["xpath=//div/div/div/div/div/span/input", "xpath:position"]
-      ],
-      "value": "index=1"
-    }, {
-      "id": "166d5c55-a92e-4cc1-b5cf-e9bec1911c9d",
-      "comment": "click organisation field",
-      "command": "mouseDown",
+      "command": "click",
       "target": "id=organisation",
-      "targets": [
-        ["id=organisation", "id"],
-        ["css=#organisation", "css:finder"],
-        ["xpath=//input[@id='organisation']", "xpath:attributes"],
-        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div[7]/div/div/div/div/div/span/input", "xpath:idRelative"],
-        ["xpath=//div[7]/div/div/div/div/div/span/input", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "24ee03e2-7fbc-4b11-a7f4-2d0f2efab93a",
-      "comment": "mouse up organisation field",
-      "command": "mouseUpAt",
-      "target": "css=.ant-select-item-option-active",
       "targets": [],
       "value": ""
     }, {
-      "id": "1865e27c-055c-489e-815c-8dd936b5855e",
-      "comment": "click one of the organisation",
-      "command": "clickAt",
-      "target": "css=.ant-select-item-option-active > .ant-select-item-option-content",
-      "targets": [
-        ["css=.ant-select-item-option-active > .ant-select-item-option-content", "css:finder"],
-        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div[7]/div/div/div/div/div[2]/div/div/div/div[2]/div/div/div/div[2]/div", "xpath:idRelative"],
-        ["xpath=//div[2]/div/div/div/div[2]/div/div/div/div[2]/div", "xpath:position"]
-      ],
+      "id": "cf476d17-919b-45df-80e0-63a1ce80a220",
+      "comment": "Execute script to select organisation ",
+      "command": "executeScript",
+      "target": "document.querySelectorAll('.ant-select-item').forEach(function(d){if(d.getAttribute('title') === \"Agro Eco\"){d.click()}})",
+      "targets": [],
       "value": ""
     }, {
       "id": "777134a9-ab69-4727-91de-480595da3d91",
