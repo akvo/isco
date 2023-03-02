@@ -6,12 +6,7 @@ set -exuo pipefail
 [[ -n "${CI_TAG:=}" ]] && { echo "Skip build"; exit 0; }
 
 ## RESTORE IMAGE CACHE
-IMAGE_CACHE_LIST=$(grep image \
-	./docker-compose.yml \
-	./docker-compose.e2e.yml \
-	  | cut -d ':' -f3 \
-    | sort -u \
-    | sed 's/^ *//g')
+IMAGE_CACHE_LIST=$(docker images --format "{{.Repository}}:{{.Tag}}")
 mkdir -p ./ci/images
 
 while IFS= read -r IMAGE_CACHE; do
@@ -97,6 +92,7 @@ if [[ "${CI_BRANCH}" ==  "main" && "${CI_PULL_REQUEST}" !=  "true" ]]; then
 fi
 
 ## STORE IMAGE CACHE
+IMAGE_CACHE_LIST=$(docker images --format "{{.Repository}}:{{.Tag}}")
 while IFS= read -r IMAGE_CACHE; do
     IMAGE_CACHE_LOC="./ci/images/${IMAGE_CACHE//\//-}.tar"
     if [[ ! -f "${IMAGE_CACHE_LOC}" ]]; then
