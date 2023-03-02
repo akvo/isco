@@ -9,7 +9,7 @@ image_prefix="eu.gcr.io/akvo-lumen/isco"
 
 # Normal Docker Compose
 dc () {
-    docker-compose \
+    docker compose \
         --ansi never \
         "$@"
 }
@@ -41,13 +41,14 @@ frontend_build () {
 
     dc run \
        --rm \
-       --no-deps \
        frontend \
-       bash release.sh
+			 bash release.sh
 
     docker build \
         --tag "${image_prefix}/frontend:latest" \
         --tag "${image_prefix}/frontend:${CI_COMMIT}" frontend
+
+		dc down
 
 }
 

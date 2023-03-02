@@ -6,7 +6,6 @@ services:
       - 3000:3000
       - 5000:5000
       - 5050:5050
-      - 4444:4444
   chromedriver:
     image: selenium/standalone-chrome
     restart: always
