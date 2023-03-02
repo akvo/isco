@@ -76,6 +76,10 @@ backend_build () {
         -p backend-test \
         run --rm -T backend ./test.sh
 
+		dc -f docker-compose.e2e.yml \
+			-p integration-test \
+			run --rm -T selenium ./run.sh
+
 }
 
 if [[ ${BACKEND_CHANGES} == 1 ]];
