@@ -96,7 +96,7 @@
       "id": "777134a9-ab69-4727-91de-480595da3d91",
       "comment": "click I agree checkbox",
       "command": "click",
-      "target": "css=.ant-space-item > .ant-checkbox-wrapper .ant-checkbox-input",
+      "target": "xpath=//div[@id='agreement']/div/label/span/span",
       "targets": [],
       "value": ""
     }, {
