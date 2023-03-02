@@ -26,7 +26,7 @@ IMAGE_CACHE_LIST=$(dc \
 	-f ./docker-compose.yml \
 	config \
 	  | grep image \
-	  | grep -v 'eu' \
+	  | grep -v 'eu' -v 'python' \
 	  | cut -d ':' -f2- \
     | sort -u \
     | sed 's/^ *//g')
