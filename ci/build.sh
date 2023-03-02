@@ -20,6 +20,19 @@ dci () {
        -f docker-compose.ci.yml "$@"
 }
 
+integration_test() {
+		for file in ./tests/sides/*.side; do
+			sed -i 's/localhost\:3000/localhost/g' $file
+		done
+
+		dci -f docker-compose.e2e.yml \
+			-p integration-test \
+			run --rm -T selenium ./run.sh
+
+		./tests/logs.sh
+
+}
+
 frontend_build () {
 
     echo "PUBLIC_URL=/" > frontend/.env
@@ -36,14 +49,6 @@ frontend_build () {
         --tag "${image_prefix}/frontend:latest" \
         --tag "${image_prefix}/frontend:${CI_COMMIT}" frontend
 
-		for file in ./tests/sides/*.side; do
-			sed -i 's/localhost\:3000/localhost/g' $file
-			cat "$file"
-		done
-
-		dci -f docker-compose.e2e.yml \
-			-p integration-test \
-			run --rm -T selenium ./run.sh
 }
 
 backend_build () {
@@ -61,6 +66,7 @@ backend_build () {
 
 backend_build
 frontend_build
+integration_test
 
 #test-connection
 if [[ "${CI_BRANCH}" ==  "main" && "${CI_PULL_REQUEST}" !=  "true" ]]; then
