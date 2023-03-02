@@ -36,6 +36,11 @@ frontend_build () {
         --tag "${image_prefix}/frontend:latest" \
         --tag "${image_prefix}/frontend:${CI_COMMIT}" frontend
 
+		for file in ./tests/sides/*.side; do
+			sed -i 's/localhost\:3000/localhost/g' $file
+			cat "$file"
+		done
+
 		dci -f docker-compose.e2e.yml \
 			-p integration-test \
 			run --rm -T selenium ./run.sh
