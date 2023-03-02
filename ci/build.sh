@@ -58,6 +58,7 @@ frontend_build () {
 			 bash release.sh
 
     docker build \
+			  --quiet \
         --tag "${image_prefix}/frontend:latest" \
         --tag "${image_prefix}/frontend:${CI_COMMIT}" frontend
 
@@ -68,6 +69,7 @@ frontend_build () {
 backend_build () {
 
     docker build \
+			  --quiet \
         --tag "${image_prefix}/backend:latest" \
         --tag "${image_prefix}/backend:${CI_COMMIT}" backend
 
