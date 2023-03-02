@@ -8,3 +8,4 @@ export { default as DataSecurityModal } from "./notification-modal/DataSecurityM
 export { default as SubmitWarningModal } from "./notification-modal/SubmitWarningModal";
 export { default as ValidationWarningModal } from "./notification-modal/ValidationWarningModal";
 export { default as MonitoringRoundSelector } from "./MonitoringRoundSelector";
+export { default as MainEditorSkeleton } from "./survey-editor/MainEditorSkeleton";
