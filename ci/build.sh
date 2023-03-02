@@ -5,23 +5,6 @@ set -exuo pipefail
 
 [[ -n "${CI_TAG:=}" ]] && { echo "Skip build"; exit 0; }
 
-## RESTORE IMAGE CACHE
-IMAGE_CACHE_LIST=$(grep image \
-	./docker-compose.e2e.yml \
-	  | cut -d ':' -f3- \
-    | sort -u \
-    | sed 's/^ *//g')
-mkdir -p ./ci/images
-
-while IFS= read -r IMAGE_CACHE; do
-    IMAGE_CACHE_LOC="./ci/images/${IMAGE_CACHE//\//-}.tar"
-    if [ -f "${IMAGE_CACHE_LOC}" ]; then
-        docker load -i "${IMAGE_CACHE_LOC}"
-    fi
-done <<< "${IMAGE_CACHE_LIST}"
-
-image_prefix="eu.gcr.io/akvo-lumen/isco"
-
 # Normal Docker Compose
 dc () {
     docker compose \
@@ -34,6 +17,28 @@ dci () {
     dc -f docker-compose.yml \
        -f docker-compose.ci.yml "$@"
 }
+
+
+## RESTORE IMAGE CACHE
+IMAGE_CACHE_LIST=$(dc \
+	-f docker-compose.e2e.yml \
+	-f ./docker-compose.ci.yml  \
+	-f ./docker-compose.yml \
+	  | grep image \
+	  | grep -v 'eu' \
+	  | cut -d ':' -f2- \
+    | sort -u \
+    | sed 's/^ *//g')
+mkdir -p ./ci/images
+
+while IFS= read -r IMAGE_CACHE; do
+    IMAGE_CACHE_LOC="./ci/images/${IMAGE_CACHE//\//-}.tar"
+    if [ -f "${IMAGE_CACHE_LOC}" ]; then
+        docker load -i "${IMAGE_CACHE_LOC}"
+    fi
+done <<< "${IMAGE_CACHE_LIST}"
+
+image_prefix="eu.gcr.io/akvo-lumen/isco"
 
 integration_test() {
 		for file in ./tests/sides/*.side; do
