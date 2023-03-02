@@ -144,6 +144,13 @@
       "target": "document.querySelectorAll('.ant-select-item').forEach(function(d){if(d.getAttribute('title') === \"GISCO\"){d.click()}})",
       "targets": [],
       "value": ""
+    }, {
+      "id": "c632d71b-ca5e-4bde-86e0-aee92647459a",
+      "comment": "",
+      "command": "close",
+      "target": "",
+      "targets": [],
+      "value": ""
     }]
   }],
   "suites": [{

@@ -8,21 +8,21 @@
     "name": "Login",
     "commands": [{
       "id": "f1d16719-6f17-44fb-a359-36717dac357f",
-      "comment": "",
+      "comment": "Open login page",
       "command": "open",
       "target": "/login",
       "targets": [],
       "value": ""
     }, {
       "id": "f06e897a-ecf5-46a9-b5a3-c4b6e48bf0e7",
-      "comment": "",
+      "comment": "set window size",
       "command": "setWindowSize",
       "target": "942x1012",
       "targets": [],
       "value": ""
     }, {
       "id": "dd0266b0-1221-420b-9a68-308d6c1ddd77",
-      "comment": "",
+      "comment": "wait for email field show",
       "command": "waitForElementPresent",
       "target": "id=email",
       "targets": [
@@ -35,7 +35,7 @@
       "value": "30000"
     }, {
       "id": "a23f651f-ebbd-4071-ae1f-c4157e95f30b",
-      "comment": "",
+      "comment": "filling the email field",
       "command": "type",
       "target": "id=email",
       "targets": [
@@ -48,7 +48,7 @@
       "value": "your_email@domain.com"
     }, {
       "id": "9513e4ee-1839-4749-9d6b-7727879aed59",
-      "comment": "",
+      "comment": "filling password field",
       "command": "type",
       "target": "id=password",
       "targets": [
@@ -61,7 +61,7 @@
       "value": "password"
     }, {
       "id": "bdecd68b-86d7-41fc-ae57-14dcd93a51fb",
-      "comment": "",
+      "comment": "clicking login button",
       "command": "click",
       "target": "css=.ant-btn-primary",
       "targets": [
@@ -74,7 +74,7 @@
       "value": ""
     }, {
       "id": "ded99655-55ef-42dc-99b9-7c0209720d78",
-      "comment": "",
+      "comment": "check if Welcome Page shows",
       "command": "assertText",
       "target": "css=.intro-text > h1",
       "targets": [
@@ -86,14 +86,14 @@
       "value": "WELCOME TO THE COCOA MONITORING OF DISCO, BEYOND CHOCOLATE AND GISCO!"
     }, {
       "id": "1a27ba6c-4ac1-47c1-abdc-0a61970b29ec",
-      "comment": "",
+      "comment": "open admin page",
       "command": "open",
       "target": "/admin",
       "targets": [],
       "value": ""
     }, {
       "id": "cc8bde54-9dfd-4887-8b6d-7a579de4f3d4",
-      "comment": "",
+      "comment": "check if admin page show",
       "command": "assertText",
       "target": "css=.page-title",
       "targets": [
@@ -115,6 +115,13 @@
         ["xpath=//div/div/div/div[2]/div/button", "xpath:position"],
         ["xpath=//button[contains(.,'Manage Users')]", "xpath:innerText"]
       ],
+      "value": "clicking manage users button"
+    }, {
+      "id": "8ad2286f-8829-49bf-b7c1-db9dc9e5d5f7",
+      "comment": "close browser",
+      "command": "close",
+      "target": "",
+      "targets": [],
       "value": ""
     }]
   }],

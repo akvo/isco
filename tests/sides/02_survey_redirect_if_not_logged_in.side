@@ -7,6 +7,13 @@
     "id": "96f25ca1-6eb0-4ef8-a4ac-3d17db97d763",
     "name": "Survey",
     "commands": [{
+      "id": "65f346a7-5e90-4a79-a5a1-b0bd52831b3a",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
       "id": "f7e3579e-ffcc-41aa-8dd1-f1a189c08067",
       "comment": "",
       "command": "open",
@@ -25,15 +32,22 @@
         ["xpath=//h2[contains(.,'Login User')]", "xpath:innerText"]
       ],
       "value": "Login User"
+    }, {
+      "id": "deca62e8-b1bd-401e-9232-ec5c5ff6458d",
+      "comment": "",
+      "command": "close",
+      "target": "",
+      "targets": [],
+      "value": ""
     }]
   }],
   "suites": [{
-    "id": "9eecc3e3-ddb5-44db-a81d-e4a4935a4d48",
+    "id": "3837e61a-40bf-431a-9c80-4812b82fc9cb",
     "name": "ISCO",
     "persistSession": false,
     "parallel": false,
     "timeout": 300,
-    "tests": ["503ee785-e026-46d7-b3ec-957d9cd2cdce"]
+    "tests": ["96f25ca1-6eb0-4ef8-a4ac-3d17db97d763"]
   }],
   "urls": ["http://localhost:3000/"],
   "plugins": []
