@@ -24,6 +24,7 @@ IMAGE_CACHE_LIST=$(dc \
 	-f docker-compose.e2e.yml \
 	-f ./docker-compose.ci.yml  \
 	-f ./docker-compose.yml \
+	config \
 	  | grep image \
 	  | grep -v 'eu' \
 	  | cut -d ':' -f2- \
