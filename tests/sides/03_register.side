@@ -8,14 +8,14 @@
     "name": "register",
     "commands": [{
       "id": "d090d7f5-b07b-4817-9373-38775852cf28",
-      "comment": "",
+      "comment": "open register page",
       "command": "open",
       "target": "/register",
       "targets": [],
       "value": ""
     }, {
       "id": "c6b43ac2-e5e9-40a5-ba84-776790205511",
-      "comment": "",
+      "comment": "wait for registration forms available",
       "command": "waitForElementPresent",
       "target": "id=fullname",
       "targets": [
@@ -28,7 +28,7 @@
       "value": "30000"
     }, {
       "id": "b5e01db3-06f2-4bb4-967e-dfa14e2f2cea",
-      "comment": "",
+      "comment": "fill name field",
       "command": "type",
       "target": "id=fullname",
       "targets": [
@@ -41,7 +41,7 @@
       "value": "navin"
     }, {
       "id": "fb15b1d4-0c98-4830-9446-138b270f1862",
-      "comment": "",
+      "comment": "fill email field",
       "command": "type",
       "target": "id=email",
       "targets": [
@@ -54,7 +54,7 @@
       "value": "navin+2@akvo.org"
     }, {
       "id": "e147471c-aee9-4c6e-9844-24311f79a0ef",
-      "comment": "",
+      "comment": "fill password field",
       "command": "type",
       "target": "id=password",
       "targets": [
@@ -67,7 +67,7 @@
       "value": "Passcode@123"
     }, {
       "id": "a357e548-7301-4fb7-86a7-dd179aa757b0",
-      "comment": "",
+      "comment": "fill confirm password field",
       "command": "type",
       "target": "id=confirm_password",
       "targets": [
@@ -80,7 +80,7 @@
       "value": "Passcode@123"
     }, {
       "id": "feb3183d-4e8a-422d-b912-8f01960c46e8",
-      "comment": "",
+      "comment": "type something in organisation filter field",
       "command": "type",
       "target": "id=rc_select_0",
       "targets": [
@@ -93,7 +93,7 @@
       "value": "index=1"
     }, {
       "id": "166d5c55-a92e-4cc1-b5cf-e9bec1911c9d",
-      "comment": "",
+      "comment": "click organisation field",
       "command": "mouseDown",
       "target": "id=organisation",
       "targets": [
@@ -106,14 +106,14 @@
       "value": ""
     }, {
       "id": "24ee03e2-7fbc-4b11-a7f4-2d0f2efab93a",
-      "comment": "",
+      "comment": "mouse up organisation field",
       "command": "mouseUpAt",
       "target": "css=.ant-select-item-option-active",
       "targets": [],
       "value": ""
     }, {
       "id": "1865e27c-055c-489e-815c-8dd936b5855e",
-      "comment": "",
+      "comment": "click one of the organisation",
       "command": "clickAt",
       "target": "css=.ant-select-item-option-active > .ant-select-item-option-content",
       "targets": [
@@ -124,14 +124,14 @@
       "value": ""
     }, {
       "id": "777134a9-ab69-4727-91de-480595da3d91",
-      "comment": "",
+      "comment": "click I agree checkbox",
       "command": "click",
       "target": "css=.ant-space-item > .ant-checkbox-wrapper .ant-checkbox-input",
       "targets": [],
       "value": ""
     }, {
       "id": "3340d344-4eef-44c9-8e55-eeefbf62380c",
-      "comment": "",
+      "comment": "click register button",
       "command": "click",
       "target": "css=.ant-btn-primary",
       "targets": [
@@ -144,7 +144,7 @@
       "value": ""
     }, {
       "id": "5947ba0e-9440-415b-8b66-9e9616af835c",
-      "comment": "",
+      "comment": "Check if Registration is succeeded",
       "command": "assertText",
       "target": "css=.ant-alert-success .ant-alert-message",
       "targets": [
@@ -153,6 +153,13 @@
         ["xpath=//div[2]/div[2]/div[2]/div[2]/div/div/div", "xpath:position"]
       ],
       "value": "Congratulations, you have been registered."
+    }, {
+      "id": "00eedc64-8c0b-49ca-beac-86a7e965b6e7",
+      "comment": "",
+      "command": "close",
+      "target": "",
+      "targets": [],
+      "value": ""
     }]
   }],
   "suites": [{
