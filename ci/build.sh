@@ -21,12 +21,12 @@ dci () {
 
 ## RESTORE IMAGE CACHE
 IMAGE_CACHE_LIST=$(dc \
-	-f docker-compose.e2e.yml \
+	-f ./docker-compose.e2e.yml \
 	-f ./docker-compose.ci.yml  \
 	-f ./docker-compose.yml \
 	config \
 	  | grep image \
-	  | grep -v -e 'eu' -e 'python' \
+	  | grep -e 'selenium' -e 'chrome'\
 	  | cut -d ':' -f2- \
     | sort -u \
     | sed 's/^ *//g')
