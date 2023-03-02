@@ -9,7 +9,7 @@ set -exuo pipefail
 IMAGE_CACHE_LIST=$(grep image \
 	./docker-compose.yml \
 	./docker-compose.e2e.yml \
-	  | cut -d ':' -f3- \
+	  | cut -d ':' -f3 \
     | sort -u \
     | sed 's/^ *//g')
 mkdir -p ./ci/images
