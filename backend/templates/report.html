@@ -60,11 +60,29 @@
           margin: 0;
           font-size: 15px;
           margin-bottom: 20px;
+          float: left;
         "
       >
         <li>Member : {{ data.organisation.name }}</li>
         <li>Submitter : {{ data.submitted_by.name }}</li>
         <li>Date of submission : {{ data.submitted }}</li>
+      </ul>
+      <ul
+        style="
+          list-style-type: none;
+          padding: 15px;
+          margin: 0;
+          font-size: 15px;
+          margin-bottom: 20px;
+          text-align: right;
+          float: right;
+        "
+      >
+      {% if data.submitted %}
+        <li>Status : Submitted</li>
+      {% else %}
+        <li>Status : Saved</li>
+      {% endif %}
       </ul>
       <!-- {{data.form.description}}  -->
       {% for dt in detail %}
