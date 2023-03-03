@@ -368,6 +368,9 @@ def undo_submission(req: Request,
     if not data:
         raise HTTPException(status_code=404,
                             detail="data {} is not found".format(id))
+    if data.submitted and data.submitted.year != datetime.now().year:
+        raise HTTPException(status_code=401,
+                            detail="Undo submission is not allowed")
     data.submitted = None
     data.submitted_by = None
     data = crud.update_data(session=session, data=data)
