@@ -77,7 +77,7 @@ const DataCleaning = () => {
     {
       title: "Action",
       key: "action",
-      align: "center",
+      align: "left",
       render: (record) => {
         const currentTime = new Date();
         const year = currentTime.getFullYear();
