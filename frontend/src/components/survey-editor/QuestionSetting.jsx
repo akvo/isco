@@ -47,8 +47,10 @@ const QuestionSetting = ({
   datapointName,
   setDatapointName,
 }) => {
-  const [message, setMessage] = useState("");
-  const [open, setOpen] = useState("");
+  const [deactivatePopconfirmMessage, setDeactivatePopconfirmMessage] =
+    useState("");
+  const [deactivatePopconfirmVisible, setDeactivatePopconfirmVisible] =
+    useState(false);
   const { surveyEditor, tempStorage, optionValues } = store.useState((s) => s);
   const { questionGroup: questionGroupState } = surveyEditor;
   const { operator_type, member_type, isco_type } = optionValues;
@@ -128,16 +130,13 @@ const QuestionSetting = ({
   };
 
   const handleDeactivateChange = (val, field) => {
-    const allSkipLogic = questionGroupState
-      ?.flatMap((qg) => qg?.question)
-      .map((item) => item.skip_logic)
-      .flat();
-    const findDependant = allSkipLogic.find(
-      (item) => item.dependent_to === qid
-    );
     const allQuestion = orderBy(
       questionGroupState?.flatMap((qg) => qg?.question),
       ["order"]
+    );
+    const allSkipLogic = allQuestion.map((item) => item.skip_logic).flat();
+    const findDependant = allSkipLogic.find(
+      (item) => item.dependent_to === qid
     );
     const dependentQuestion = allQuestion?.find(
       (q) => q?.id === findDependant?.question
@@ -147,22 +146,50 @@ const QuestionSetting = ({
       !dependentQuestion.deactivate &&
       !question.deactivate
     ) {
-      setOpen(true);
+      setDeactivatePopconfirmVisible(true);
       const field = `question-${dependentQuestion?.id}-deactivate`;
       const fieldValue = { [field]: val };
       form.setFieldsValue(fieldValue);
       const data = [{ ...question }];
-      data.push(dependentQuestion);
+      allQuestion.map((item) => {
+        const find = item?.skip_logic?.find((d) => d.dependent_to === qid);
+        if (find) {
+          data.push({ ...item });
+        } else {
+          data.map((inner) => {
+            const find = item?.skip_logic?.find(
+              (d) => d.dependent_to === inner.id
+            );
+            if (find) {
+              data.push({ ...item });
+            }
+          });
+        }
+      });
       setQuestionToDeactivate(
-        data.map((item) => {
+        data?.map((item) => {
           return {
             ...item,
             deactivate: !item.deactivate,
           };
         })
       );
-      setMessage(
-        `${question?.name} has dependancy on ${dependentQuestion?.name}. \n Do you still want to deactivate?`
+      // create warning message for deactivate popconfirm
+      const dependencyPopconfirmList = (
+        <ul>
+          {data
+            .filter((d) => d?.id !== qid)
+            .map(({ id, name }) => (
+              <li key={`li-${id}`}>{name}</li>
+            ))}
+        </ul>
+      );
+      setDeactivatePopconfirmMessage(
+        <div>
+          {question?.name} has dependency on:
+          {dependencyPopconfirmList}
+          Do you still want to deactivate?
+        </div>
       );
       return false;
     }
@@ -253,8 +280,8 @@ const QuestionSetting = ({
     });
   };
 
-  const handleOk = (data) => {
-    setOpen(false);
+  const handleOkDeactivatePopconfirm = (data) => {
+    setDeactivatePopconfirmVisible(false);
     let updatedQuestionGroup = [...questionGroupState];
     data?.map((item) => {
       updatedQuestionGroup = updatedQuestionGroup.map((qg) => {
@@ -278,8 +305,8 @@ const QuestionSetting = ({
     });
   };
 
-  const handleCancel = () => {
-    setOpen(false);
+  const handleCancelDeactivatePopconfirm = () => {
+    setDeactivatePopconfirmVisible(false);
     setQuestionToDeactivate([]);
   };
 
@@ -392,10 +419,12 @@ const QuestionSetting = ({
               <div>
                 <Popconfirm
                   placement="topRight"
-                  title={message}
-                  onConfirm={() => handleOk(questionToDeactivate)}
-                  onCancel={handleCancel}
-                  visible={open}
+                  title={() => deactivatePopconfirmMessage}
+                  onConfirm={() =>
+                    handleOkDeactivatePopconfirm(questionToDeactivate)
+                  }
+                  onCancel={handleCancelDeactivatePopconfirm}
+                  visible={deactivatePopconfirmVisible}
                   style={{ whiteSpace: "break-spaces'" }}
                   okText="Yes"
                   cancelText="No"
