@@ -8,8 +8,7 @@ apk add \
     bash~=5 \
     curl~=7 \
     jq~=1.6 \
-		psql~=9.4.15 \
-		postgresql-client~=9.4.15 \
+		postgresql14-client~=14.7-r0 \
 		wait4ports~=0.3.3
 
 RETRIES=10
