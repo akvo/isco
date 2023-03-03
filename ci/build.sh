@@ -18,28 +18,6 @@ dci () {
        -f docker-compose.ci.yml "$@"
 }
 
-
-## RESTORE IMAGE CACHE
-IMAGE_CACHE_LIST=$(dc \
-	-f ./docker-compose.ci.yml  \
-	-f ./docker-compose.yml \
-	config \
-	  | grep image \
-	  | grep -e 'selenium' -e 'chrome'\
-	  | cut -d ':' -f2- \
-    | sort -u \
-    | sed 's/^ *//g')
-mkdir -p ./ci/images
-
-ls ./ci/images
-
-while IFS= read -r IMAGE_CACHE; do
-    IMAGE_CACHE_LOC="./ci/images/${IMAGE_CACHE//\//-}.tar"
-    if [ -f "${IMAGE_CACHE_LOC}" ]; then
-        docker load -i "${IMAGE_CACHE_LOC}"
-    fi
-done <<< "${IMAGE_CACHE_LIST}"
-
 image_prefix="eu.gcr.io/akvo-lumen/isco"
 
 integration_test() {
@@ -93,12 +71,3 @@ backend_build () {
 backend_build
 frontend_build
 integration_test
-
-## STORE IMAGE CACHE
-while IFS= read -r IMAGE_CACHE; do
-    IMAGE_CACHE_LOC="./ci/images/${IMAGE_CACHE//\//-}.tar"
-    if [[ ! -f "${IMAGE_CACHE_LOC}" ]]; then
-        docker save -o "${IMAGE_CACHE_LOC}" "${IMAGE_CACHE}"
-    fi
-done <<< "${IMAGE_CACHE_LIST}"
-## END STORE IMAGE CACHE
