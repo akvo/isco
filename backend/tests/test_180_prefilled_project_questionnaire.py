@@ -38,6 +38,11 @@ class TestPrefilledRoute():
         data = crud_data.get_data_by_id(
             session=session, id=submitted_project.id)
         assert data.submitted.year == get_prev_year(year=True)
+        # don't allow unsubmit submission from prev year
+        res = await client.put(
+            app.url_path_for("data:unsubmit", id=submitted_project.id),
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 401
         # get prev project submission list
         res = await client.get(
             app.url_path_for(
