@@ -31,6 +31,8 @@ IMAGE_CACHE_LIST=$(dc \
     | sed 's/^ *//g')
 mkdir -p ./ci/images
 
+ls ./ci/images
+
 while IFS= read -r IMAGE_CACHE; do
     IMAGE_CACHE_LOC="./ci/images/${IMAGE_CACHE//\//-}.tar"
     if [ -f "${IMAGE_CACHE_LOC}" ]; then
