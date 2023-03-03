@@ -42,7 +42,7 @@ services:
     entrypoint: ./entrypoint.sh
     working_dir: /app
     environment:
-      - DATABASE_URL=postgresql://isco_user:password@db:5432/isco
+      - MAILJET_VERIFICATION_FILE
     volumes:
       - ./tests:/app
     network_mode: service:mainnetwork

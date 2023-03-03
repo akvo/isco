@@ -85,6 +85,7 @@ backend_build () {
         -p backend-test \
         run --rm -T backend ./test.sh
 
+		dc -f docker-compose.test.yml down
 }
 
 backend_build
