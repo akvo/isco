@@ -25,7 +25,7 @@ integration_test() {
 			sed -i 's/localhost\:3000/localhost/g' $file
 		done
 
-    if ! dci run -T selenium ./run.sh; then
+    if ! dci run --quiet-pull -T selenium ./run.sh; then
       dci logs
       echo "Build failed when running integration test"
       exit 1
@@ -41,6 +41,7 @@ frontend_build () {
 
     dc run \
        --rm \
+			 --quiet-pull \
        frontend \
 			 bash release.sh
 
@@ -63,7 +64,7 @@ backend_build () {
     # Test and Code Quality
     dc -f docker-compose.test.yml \
         -p backend-test \
-        run --rm -T backend ./test.sh
+        run --rm --quiet-pull -T backend ./test.sh
 
 		dc -f docker-compose.test.yml down
 }
