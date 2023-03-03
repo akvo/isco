@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2155
 
+"Running with E2E environment"
+
 pip -q install --upgrade pip
 pip -q install --cache-dir=.pip -r requirements.txt
 pip check

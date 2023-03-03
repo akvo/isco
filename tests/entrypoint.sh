@@ -9,11 +9,12 @@ apk add \
     curl~=7 \
     jq~=1.6 \
 		psql~=9.4.15 \
+		postgresql-client~=9.4.15 \
 		wait4ports~=0.3.3
 
 RETRIES=10
 
-until psql -h db:5432 -U isco_user -w password -d isco -c "select 1" &>/dev/null 2>&1 || [ $RETRIES -eq 0 ];
+until psql -h 5432 -U isco_user -w password -d isco -c "select 1" &>/dev/null 2>&1 || [ $RETRIES -eq 0 ];
 do
   echo "Waiting for postgres server, $((RETRIES--)) remaining attempts..."
   sleep 1

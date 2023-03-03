@@ -5,7 +5,7 @@ services:
     image: alpine:3.14.0
     command: ["tail", "-f", "/dev/null"]
     ports:
-      - 3000:3000
+      - 80:80
       - 5000:5000
   db:
     command: "postgres -c 'shared_buffers=128MB' -c 'fsync=off' -c 'synchronous_commit=off' -c 'full_page_writes=off' -c 'max_connections=100' -c 'bgwriter_lru_maxpages=0' -c 'client_min_messages=warning'"
