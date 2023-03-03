@@ -12,7 +12,7 @@ dc () {
         "$@"
 }
 
-# Docker compose using CI env
+# Docker compose using integration test env
 dci () {
     dc -f docker-compose.yml \
        -f docker-compose.ci.yml "$@"
@@ -21,7 +21,6 @@ dci () {
 
 ## RESTORE IMAGE CACHE
 IMAGE_CACHE_LIST=$(dc \
-	-f ./docker-compose.e2e.yml \
 	-f ./docker-compose.ci.yml  \
 	-f ./docker-compose.yml \
 	config \
@@ -46,11 +45,11 @@ integration_test() {
 			sed -i 's/localhost\:3000/localhost/g' $file
 		done
 
-		dci -f docker-compose.e2e.yml \
-			-p integration-test \
-			run --rm -T selenium ./run.sh
-
-		./tests/logs.sh
+    if ! dci run -T selenium ./run.sh; then
+      dci logs
+      echo "Build failed when running integration test"
+      exit 1
+    fi
 
 }
 
@@ -91,15 +90,6 @@ backend_build () {
 backend_build
 frontend_build
 integration_test
-
-#test-connection
-if [[ "${CI_BRANCH}" ==  "main" && "${CI_PULL_REQUEST}" !=  "true" ]]; then
-    if ! dci run -T ci ./basic.sh; then
-      dci logs
-      echo "Build failed when running basic.sh"
-      exit 1
-    fi
-fi
 
 ## STORE IMAGE CACHE
 while IFS= read -r IMAGE_CACHE; do

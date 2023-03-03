@@ -18,13 +18,12 @@ services:
       - db
   backend:
     image: eu.gcr.io/akvo-lumen/isco/backend:latest
-    network_mode: service:mainnetwork
-    command: ["sh", "run.sh"]
+    command: ["sh", "./e2e.sh"]
     environment:
       - DATABASE_URL=postgresql://isco_user:password@db:5432/isco
+      - GOOGLE_APPLICATION_CREDENTIALS=/credentials/isco-service-account.json
       - SECRET_KEY=36ca26dbc9f6a435aa7ad404491d1650cd9485eef9ca8ea60501495b0526d4df
-      - SKIP_MIGRATION=yes
-      - WEBDOMAIN=notset
+      - WEBDOMAIN=http://localhost:3000
       - MAILJET_SECRET=notset
       - MAILJET_APIKEY=notset
     depends_on:
@@ -33,16 +32,22 @@ services:
     volumes:
       - ./backend:/app:delegated
       - ${SERVICE_ACCOUNT}:/credentials/:ro
-  ci:
-    image: alpine:3.14
     network_mode: service:mainnetwork
-    volumes:
-      - ./ci/test:/test:ro
-    working_dir: /test
+  chromedriver:
+    image: selenium/standalone-chrome
+    restart: always
+    network_mode: service:mainnetwork
+  selenium:
+    image: akvo/akvo-selenium-side-runner:20230215.031651.e73d03e
     entrypoint: ./entrypoint.sh
+    working_dir: /app
     environment:
-      - MAILJET_VERIFICATION_FILE
+      - DATABASE_URL=postgresql://isco_user:password@db:5432/isco
+    volumes:
+      - ./tests:/app
+    network_mode: service:mainnetwork
     depends_on:
       - db
       - backend
       - frontend
+      - chromedriver
