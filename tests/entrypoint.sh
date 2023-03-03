@@ -13,7 +13,7 @@ apk add \
 
 RETRIES=10
 
-until psql -h 5432 -U isco_user -w password -d isco -c "select 1" &>/dev/null 2>&1 || [ $RETRIES -eq 0 ];
+until PGPASSWORD=password psql -h db -U isco_user -d isco -c "select 1" &>/dev/null 2>&1 || [ $RETRIES -eq 0 ];
 do
   echo "Waiting for postgres server, $((RETRIES--)) remaining attempts..."
   sleep 1
