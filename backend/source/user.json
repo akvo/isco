@@ -1,9 +1,9 @@
 [
-	{
-		"name": "Your name",
-		"email": "your_email@domain.com",
-		"password": "password",
-		"organisation_id": 1,
-		"organisation": "staff Akvo"
-	}
+  {
+    "name": "User Test",
+    "email": "user@test.com",
+    "password": "password",
+    "organisation_id": 1,
+    "organisation": "staff Akvo"
+  }
 ]
