@@ -1,7 +1,7 @@
 [
   {
     "name": "User Test",
-    "email": "user@test.com",
+    "email": "user@test.test",
     "password": "password",
     "organisation_id": 1,
     "organisation": "staff Akvo"
