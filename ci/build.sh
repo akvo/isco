@@ -5,47 +5,32 @@ set -exuo pipefail
 
 [[ -n "${CI_TAG:=}" ]] && { echo "Skip build"; exit 0; }
 
-BACKEND_CHANGES=0
-FRONTEND_CHANGES=0
-
-COMMIT_CONTENT=$(git diff --name-only "${CI_COMMIT_RANGE}")
-
-if grep -q "backend" <<< "${COMMIT_CONTENT}"
-then
-    BACKEND_CHANGES=1
-fi
-
-if grep -q "frontend" <<< "${COMMIT_CONTENT}"
-then
-    FRONTEND_CHANGES=1
-fi
-
-if grep -q "ci" <<< "${COMMIT_CONTENT}"
-then
-    BACKEND_CHANGES=1
-    FRONTEND_CHANGES=1
-fi
-
-if [[ "${CI_BRANCH}" ==  "main" && "${CI_PULL_REQUEST}" !=  "true" ]];
-then
-    BACKEND_CHANGES=1
-    FRONTEND_CHANGES=1
-fi
-
-
-image_prefix="eu.gcr.io/akvo-lumen/isco"
-
 # Normal Docker Compose
 dc () {
-    docker-compose \
+    docker compose \
         --ansi never \
         "$@"
 }
 
-# Docker compose using CI env
+# Docker compose using integration test env
 dci () {
     dc -f docker-compose.yml \
        -f docker-compose.ci.yml "$@"
+}
+
+image_prefix="eu.gcr.io/akvo-lumen/isco"
+
+integration_test() {
+		for file in ./tests/sides/*.side; do
+			sed -i 's/localhost\:3000/localhost/g' $file
+		done
+
+    if ! dci run --quiet-pull -T selenium ./run.sh; then
+      dci logs
+      echo "Build failed when running integration test"
+      exit 1
+    fi
+
 }
 
 frontend_build () {
@@ -56,51 +41,34 @@ frontend_build () {
 
     dc run \
        --rm \
-       --no-deps \
+			 --quiet-pull \
        frontend \
-       bash release.sh
+			 bash release.sh
 
     docker build \
+			  --quiet \
         --tag "${image_prefix}/frontend:latest" \
         --tag "${image_prefix}/frontend:${CI_COMMIT}" frontend
+
+		dc down
+
 }
 
 backend_build () {
 
     docker build \
+			  --quiet \
         --tag "${image_prefix}/backend:latest" \
         --tag "${image_prefix}/backend:${CI_COMMIT}" backend
 
     # Test and Code Quality
     dc -f docker-compose.test.yml \
         -p backend-test \
-        run --rm -T backend ./test.sh
+        run --rm --quiet-pull -T backend ./test.sh
 
+		dc -f docker-compose.test.yml down
 }
 
-if [[ ${BACKEND_CHANGES} == 1 ]];
-then
-    echo "================== * BACKEND BUILD * =================="
-    backend_build
-else
-    echo "No Changes detected for backend -- SKIP BUILD"
-fi
-
-if [[ ${FRONTEND_CHANGES} == 1 ]];
-then
-    echo "================== * FRONTEND BUILD * =================="
-    frontend_build
-else
-    echo "No Changes detected for frontend -- SKIP BUILD"
-fi
-
-
-
-#test-connection
-if [[ ${FRONTEND_CHANGES} == 1 && ${BACKEND_CHANGES} == 1 ]]; then
-    if ! dci run -T ci ./basic.sh; then
-      dci logs
-      echo "Build failed when running basic.sh"
-      exit 1
-    fi
-fi
+backend_build
+frontend_build
+integration_test

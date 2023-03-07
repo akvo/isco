@@ -378,4 +378,21 @@
 
     /* end customize webform/akvo-react-form style */
   }
+
+  // skeleton animation
+  .ant-skeleton {
+    animation: skeletonAnim 3s ease-in-out 2s infinite alternate-reverse
+      forwards;
+  }
+  @keyframes skeletonAnim {
+    0%,
+    50%,
+    100% {
+      opacity: 1;
+    }
+    25%,
+    75% {
+      opacity: 0.5;
+    }
+  }
 }

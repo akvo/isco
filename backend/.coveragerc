@@ -5,6 +5,7 @@ omit = */__init__*
        */migrations/*
        */db/connection.py
        */source/*
+       */routes/test.py
 disable_warnings = no-data-collected
 # Required for parallel
 parallel = true

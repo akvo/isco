@@ -1,7 +1,7 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "./style.scss";
 import { Row, Col, Card, Tabs, Typography, Space } from "antd";
-import { MainEditor, Preview } from "../../components";
+import { MainEditor, Preview, MainEditorSkeleton } from "../../components";
 import { useParams } from "react-router-dom";
 import { store, api } from "../../lib";
 import { defaultRepeatingObject, defaultOption } from "../../lib/store";
@@ -15,9 +15,11 @@ const SurveyEditor = () => {
   const { isLoggedIn, surveyEditor } = store.useState((s) => s);
   const { questionGroup, version } = surveyEditor;
   const versionNumber = version ? version : 0.0;
+  const [isLoadingSurveyEditor, setIsLoadingSurveyEditor] = useState(false);
 
   useEffect(() => {
     if (formId && isLoggedIn) {
+      setIsLoadingSurveyEditor(true);
       api
         .get(`/survey_editor/${formId}`)
         .then((res) => {
@@ -66,6 +68,9 @@ const SurveyEditor = () => {
         .catch((e) => {
           const { status, statusText } = e.response;
           console.error(status, statusText);
+        })
+        .finally(() => {
+          setIsLoadingSurveyEditor(false);
         });
     }
   }, [formId, isLoggedIn]);
@@ -98,9 +103,17 @@ const SurveyEditor = () => {
               }
             >
               <TabPane tab="Form Editor" key="form-editor">
-                <MainEditor />
+                {isLoadingSurveyEditor ? (
+                  <MainEditorSkeleton />
+                ) : (
+                  <MainEditor />
+                )}
               </TabPane>
-              <TabPane tab="Preview" key="preview">
+              <TabPane
+                tab="Preview"
+                key="preview"
+                disabled={isLoadingSurveyEditor}
+              >
                 <Preview />
               </TabPane>
             </Tabs>
