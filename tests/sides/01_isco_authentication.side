@@ -269,7 +269,7 @@
         ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div/div/div/div/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
-      "value": "user@test.test"
+      "value": "johndoe@test.test"
     }, {
       "id": "7e241cfc-f4ac-482e-ab5e-46232bb15cbf",
       "comment": "Enter password",
@@ -282,7 +282,7 @@
         ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div[2]/div/div/div/span/input", "xpath:idRelative"],
         ["xpath=//span/input", "xpath:position"]
       ],
-      "value": "password"
+      "value": "Passcode@123"
     }, {
       "id": "daf5abe6-30e1-4711-b02f-383e4e84d3ac",
       "comment": "Click on login button",
@@ -313,7 +313,7 @@
         ["xpath=//div[@id='root']/div/div/div[2]/div/div[2]/a/div/div[2]", "xpath:idRelative"],
         ["xpath=//a/div/div[2]", "xpath:position"]
       ],
-      "value": "USER TEST"
+      "value": "JOHN DOE"
     }]
   }, {
     "id": "f78a1a64-4b7d-4a64-8524-7a70e856f573",
