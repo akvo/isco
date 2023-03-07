@@ -234,6 +234,80 @@
       "targets": [],
       "value": ""
     }]
+  }, {
+    "id": "415c439f-b443-47cd-b2da-ae33fb9acc8c",
+    "name": "02_login_user",
+    "commands": [{
+      "id": "d4a7871b-849d-40b0-8c03-70697a5d3018",
+      "comment": "Open login page",
+      "command": "open",
+      "target": "/login",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "40c23c7e-156b-4ff2-bc98-2d0df0364760",
+      "comment": "Wait for email field to be present",
+      "command": "waitForElementPresent",
+      "target": "id=email",
+      "targets": [
+        ["id=email", "id"],
+        ["css=#email", "css:finder"],
+        ["xpath=//input[@id='email']", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div/div/div/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "b4f53dc4-65fd-41ed-97c9-28a0e277be7f",
+      "comment": "Enter email address",
+      "command": "type",
+      "target": "id=email",
+      "targets": [
+        ["id=email", "id"],
+        ["css=#email", "css:finder"],
+        ["xpath=//input[@id='email']", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div/div/div/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "user@test.test"
+    }, {
+      "id": "7e241cfc-f4ac-482e-ab5e-46232bb15cbf",
+      "comment": "Enter password",
+      "command": "type",
+      "target": "id=password",
+      "targets": [
+        ["id=password", "id"],
+        ["css=#password", "css:finder"],
+        ["xpath=//input[@id='password']", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div[2]/div/div/div/span/input", "xpath:idRelative"],
+        ["xpath=//span/input", "xpath:position"]
+      ],
+      "value": "password"
+    }, {
+      "id": "daf5abe6-30e1-4711-b02f-383e4e84d3ac",
+      "comment": "Click on login button",
+      "command": "click",
+      "target": "css=.ant-btn-primary",
+      "targets": [
+        ["css=.ant-btn-primary", "css:finder"],
+        ["xpath=(//button[@type='button'])[3]", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/button", "xpath:idRelative"],
+        ["xpath=//form/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Login')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "809caeab-c4d9-4e66-b940-e70ca522e0eb",
+      "comment": "Username is visible",
+      "command": "assertText",
+      "target": "css=.ant-dropdown-trigger .ant-space-item:nth-child(2)",
+      "targets": [
+        ["css=.ant-dropdown-trigger .ant-space-item:nth-child(2)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div[2]/div/div[2]/a/div/div[2]", "xpath:idRelative"],
+        ["xpath=//a/div/div[2]", "xpath:position"]
+      ],
+      "value": "USER TEST"
+    }]
   }],
   "suites": [{
     "id": "3837e61a-40bf-431a-9c80-4812b82fc9cd",
@@ -241,7 +315,7 @@
     "persistSession": false,
     "parallel": false,
     "timeout": 300,
-    "tests": ["4318d2a1-c064-495e-93ad-f308f4bc75c8", "6ed049fb-6e3e-43e2-896c-91ad5afd4e79"]
+    "tests": ["4318d2a1-c064-495e-93ad-f308f4bc75c8", "6ed049fb-6e3e-43e2-896c-91ad5afd4e79", "415c439f-b443-47cd-b2da-ae33fb9acc8c"]
   }],
   "urls": ["http://localhost:3000/", "http://localhost:3000/api/docs"],
   "plugins": []
