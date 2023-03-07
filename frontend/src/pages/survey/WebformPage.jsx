@@ -5,7 +5,7 @@ import { Spin, Button, Checkbox } from "antd";
 import { Webform } from "akvo-react-form";
 import { api, store } from "../../lib";
 import { useNotification } from "../../util";
-import { intersection, isEmpty, orderBy } from "lodash";
+import { intersection, isEmpty, orderBy, groupBy } from "lodash";
 import ErrorPage from "../error/ErrorPage";
 import {
   CommentField,
@@ -133,69 +133,82 @@ const WebformPage = ({
        * const answerValues
        * choose which answer values to be used as validation check
        * manage this for cascade/geo value not directly saved to answer state onChange form value
+       * group by repeat_index to support repeatable question
        */
-      const answerValues = values?.length ? values : answer;
+      let answerValues = values?.length ? values : answer;
+      answerValues = answerValues.map((av) => ({
+        ...av,
+        group: String(av.repeat_index),
+      }));
+      answerValues = groupBy(answerValues, "group");
       const computedValidation = computedValidations.find(
         (cv) => cv.form_id === formId
       );
       const validations = computedValidation?.validations || [];
-      if (!answerValues.length && !validations?.length) {
+      if (!Object.keys(answerValues).length && !validations?.length) {
         return [];
       }
-      const checkError = validations
-        .map((v) => {
-          // check if all computed validation answered
-          const checkAllAnswered = intersection(
-            v.question_ids,
-            answerValues.map((a) => a.question)
-          );
-          // only do this when use on change event TRUE
-          if (
-            onChangeEvent &&
-            checkAllAnswered.length !== v.question_ids.length
-          ) {
-            // not all answered
-            return {
-              ...v,
-              error: false,
-            };
-          }
-          // all answered
-          const questions = v.question_ids.map((id) => {
-            const a = answerValues.find((a) => a.question === id);
-            return { id: id, answer: a?.value || 0 };
-          });
-          const total = questions
-            .map((q) => q.answer)
-            .reduce((total, num) => total + num);
-          let error = false;
-          let errorDetail = "";
-          let validationValue = 0;
-          if ("max" in v) {
-            errorDetail = text.cvMaxValueText;
-            error = total > v.max;
-            validationValue = v.max;
-          }
-          if ("min" in v) {
-            errorDetail = text.cvMinValueText;
-            error = total < v.min;
-            validationValue = v.min;
-          }
-          if ("equal" in v) {
-            errorDetail = text.cvEqualValueText;
-            error = total !== v.equal;
-            validationValue = v.equal;
-          }
-          return {
-            ...v,
-            questions: questions,
-            error: error,
-            total: total,
-            errorDetail: errorDetail,
-            validationValue: validationValue,
-          };
+      const checkError = Object.keys(answerValues)
+        .map((k) => {
+          const resValues = answerValues[k];
+          const repeatIndex = resValues?.[0]?.repeat_index;
+          return validations
+            .map((v) => {
+              // check if all computed validation answered
+              const checkAllAnswered = intersection(
+                v.question_ids,
+                resValues.map((a) => a.question)
+              );
+              // only do this when use on change event TRUE
+              if (
+                onChangeEvent &&
+                checkAllAnswered.length !== v.question_ids.length
+              ) {
+                // not all answered
+                return {
+                  ...v,
+                  error: false,
+                };
+              }
+              // all answered
+              const questions = v.question_ids.map((id) => {
+                const a = resValues.find((a) => a.question === id);
+                return { id: id, answer: a?.value || 0 };
+              });
+              const total = questions
+                .map((q) => q.answer)
+                .reduce((total, num) => total + num);
+              let error = false;
+              let errorDetail = "";
+              let validationValue = 0;
+              if ("max" in v) {
+                errorDetail = text.cvMaxValueText;
+                error = total > v.max;
+                validationValue = v.max;
+              }
+              if ("min" in v) {
+                errorDetail = text.cvMinValueText;
+                error = total < v.min;
+                validationValue = v.min;
+              }
+              if ("equal" in v) {
+                errorDetail = text.cvEqualValueText;
+                error = total !== v.equal;
+                validationValue = v.equal;
+              }
+              return {
+                ...v,
+                questions: questions,
+                error: error,
+                total: total,
+                errorDetail: errorDetail,
+                validationValue: validationValue,
+                repeatIndex: repeatIndex + 1,
+              };
+            })
+            .filter((v) => v.error);
         })
-        .filter((v) => v.error);
+        .flat();
       if (onChangeEvent) {
         setTimeout(() => {
           setValidationWarningModalVisible(checkError.length);
