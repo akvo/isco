@@ -1,8 +1,15 @@
 [
 	{
-		"name": "Navin Shingote",
-		"email": "navin@akvo.org",
-		"password": "Passcode@123",
+		"name": "User Test",
+		"email": "user@test.test",
+		"password": "password",
+		"organisation_id": 1,
+		"organisation": "staff Akvo"
+	},
+	{
+		"name": "Verified User Test",
+		"email": "verified_user@test.com",
+		"password": "password",
 		"organisation_id": 1,
 		"organisation": "staff Akvo"
 	}
