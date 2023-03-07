@@ -85,14 +85,64 @@
       ],
       "value": "WELCOME TO THE COCOA MONITORING OF DISCO, BEYOND CHOCOLATE AND GISCO!"
     }]
+  }, {
+    "id": "d3e9eaa1-9ead-467a-9c1e-cb32c72f34cf",
+    "name": "open_manage_user_page",
+    "commands": [{
+      "id": "515f300f-1c30-4f03-93b9-f64b6aab2a1f",
+      "comment": "login with verified super admin",
+      "command": "run",
+      "target": "login_with_verified_super_admin",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "88c65f61-ed95-41e9-aedf-7e3f291f0a50",
+      "comment": "open admin page",
+      "command": "open",
+      "target": "/admin",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "c2726225-49bc-4761-975e-c13cb2a77288",
+      "comment": "check if admin page show",
+      "command": "assertText",
+      "target": "css=.page-title",
+      "targets": [
+        ["css=.page-title", "css:finder"],
+        ["xpath=//div[@id='admin']/div/div/h3", "xpath:idRelative"],
+        ["xpath=//h3", "xpath:position"],
+        ["xpath=//h3[contains(.,'Welcome Admin')]", "xpath:innerText"]
+      ],
+      "value": "Welcome Admin"
+    }, {
+      "id": "7bebeb3f-faf7-4e4c-b0e3-c97dd9ef625a",
+      "comment": "clicking manage users button",
+      "command": "click",
+      "target": "css=.ant-col:nth-child(1) > .ant-card .ant-btn",
+      "targets": [
+        ["css=.ant-col:nth-child(1) > .ant-card .ant-btn", "css:finder"],
+        ["xpath=(//button[@type='button'])[4]", "xpath:attributes"],
+        ["xpath=//div[@id='admin']/div/div/div/div/div/div[2]/div/button", "xpath:idRelative"],
+        ["xpath=//div/div/div/div[2]/div/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Manage Users')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "92a02f58-f647-4f65-a7c1-cc0a56f59008",
+      "comment": "close window",
+      "command": "close",
+      "target": "",
+      "targets": [],
+      "value": ""
+    }]
   }],
   "suites": [{
-    "id": "9eecc3e3-ddb5-44db-a81d-e4a4935a4d48",
-    "name": "login_with_verified_super_admin",
+    "id": "87bf2d98-5f09-4abf-a63d-3f7df856fb4d",
+    "name": "isco_admin_page",
     "persistSession": false,
     "parallel": false,
     "timeout": 300,
-    "tests": ["503ee785-e026-46d7-b3ec-957d9cd2cdce"]
+    "tests": ["d3e9eaa1-9ead-467a-9c1e-cb32c72f34cf"]
   }],
   "urls": ["http://localhost:3000/"],
   "plugins": []
