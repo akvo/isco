@@ -44,7 +44,7 @@ const ValidationWarningModal = ({
         return {
           id: cvq.id,
           question: `${findQuestion.order}. ${findQuestion.name}`,
-          answer: cvq.answer,
+          answer: !isNaN(cvq.answer) ? cvq.answer : "-",
           order: findQuestion.order,
         };
       });
@@ -54,6 +54,7 @@ const ValidationWarningModal = ({
         : group;
       return {
         ...cv,
+        total: !isNaN(cv.total) ? cv.total : "-",
         group: group,
         questions: orderBy(questions, ["order"]),
         order: findGroup.order,

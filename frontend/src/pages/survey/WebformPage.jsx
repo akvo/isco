@@ -171,14 +171,13 @@ const WebformPage = ({
                 };
               }
               // all answered
-              const questions = v.question_ids
-                .map((id) => {
-                  const a = resValues.find((a) => a.question === id);
-                  return { id: id, answer: a?.value };
-                })
-                .filter((v) => !isNaN(v.answer));
+              const questions = v.question_ids.map((id) => {
+                const a = resValues.find((a) => a.question === id);
+                return { id: id, answer: a?.value };
+              });
               const total = questions
                 .map((q) => q.answer)
+                .filter((q) => !isNaN(q))
                 .reduce((total, num) => total + num, 0);
               let error = false;
               let errorDetail = "";
