@@ -160,8 +160,6 @@ def request_new_download(req: Request,
                          credentials: credentials = Depends(security)):
     user = verify_user(session=session, authenticated=req.state.authenticated)
     data = crud_data.get_data_by_id(session=session, id=data_id)
-    download = crud.get_by_id(session=session, id=data_id)
-    download = download.saved_download_request
     secretariat_admins = find_secretariat_admins(
         session=session, organisation=user.organisation)
     if not data:
@@ -180,8 +178,8 @@ def request_new_download(req: Request,
             send_email_download_notification(session, user, secretariat_admins)
         return download.response
     data = data.to_report
-    data["request_by"] = download["request_by_name"]
-    data["request_date"] = download["request_date"]
+    data["request_by"] = user.name
+    data["request_date"] = datetime.utcnow().strftime("%B %d, %Y")
     data = report.get_cascade_value(data=data, session=session)
     detail = report.transform_data(answers=data["answer"], session=session)
     file = report.generate(data=data, detail=detail)
