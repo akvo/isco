@@ -77,6 +77,7 @@ const ValidationWarningModal = ({
         </Row>
       }
       maskClosable={false}
+      className="validation-popup"
     >
       {validationContent?.length ? (
         <>

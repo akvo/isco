@@ -287,12 +287,12 @@ const uiText = {
     ),
     cvEqualValueText: (
       <>
-        <b>Expected value must equal to</b>
+        <b>Expected &quot;total value&quot; value must be equal to</b>
       </>
     ),
     cvTotalValueText: (
       <>
-        <b>Expected Total Value</b>
+        <b>Total Value</b>
       </>
     ),
   },
