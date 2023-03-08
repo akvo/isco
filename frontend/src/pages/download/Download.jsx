@@ -222,12 +222,14 @@ const Download = () => {
             align="middle"
             justify="space-between"
           >
-            <Col span={12} align="start">
+            <Col span={24}>
               <Title className="page-title" level={3}>
                 {text.downloadDataText}
               </Title>
             </Col>
-            <Col span={12} align="end">
+          </Row>
+          <Row>
+            <Col span={24}>
               <Select
                 style={{ width: "200px" }}
                 allowClear
@@ -247,8 +249,6 @@ const Download = () => {
                 }
               />
             </Col>
-          </Row>
-          <Row>
             <Col span={24}>
               <Space
                 direction="vertical"

@@ -255,10 +255,7 @@ const uiText = {
       </>
     ),
     submitCoreMandatoryWarning: (
-      <>
-        <b>Submit is not allowed!</b> Please answer all of the core mandatory
-        questions (marked with a double asterisk **).
-      </>
+      <>Please answer all questions (marked with **) before submission.</>
     ),
     prefilledMismatchWarming:
       "Some of the answers may be not be shown because of the form updated.",
@@ -277,11 +274,27 @@ const uiText = {
     actionText: "Action",
     formStatusText: "Status",
     // computed validation warning
-    cvModalTitleText: "Validation Fails",
-    cvMaxValueText: "Validation, maximum value",
-    cvMinValueText: "Validation, minimum value",
-    cvEqualValueText: "Validation, value must equal to",
-    cvTotalValueText: "Total Value",
+    cvModalTitleText: "Failed validation(s)",
+    cvMaxValueText: (
+      <>
+        <b>Expected maximum value</b>
+      </>
+    ),
+    cvMinValueText: (
+      <>
+        <b>Expected minimum value</b>
+      </>
+    ),
+    cvEqualValueText: (
+      <>
+        <b>Expected value must equal to</b>
+      </>
+    ),
+    cvTotalValueText: (
+      <>
+        <b>Expected Total Value</b>
+      </>
+    ),
   },
 
   de: {

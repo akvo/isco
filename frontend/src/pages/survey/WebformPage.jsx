@@ -316,13 +316,20 @@ const WebformPage = ({
                     meta: q.datapoint_name,
                   };
                 }
-                //core mandatory
+                // core mandatory
                 if (typeof q?.core_mandatory !== "undefined") {
                   q = {
                     ...q,
                     coreMandatory: q.core_mandatory,
                   };
                   delete q.core_mandatory;
+                }
+                // requiredSign
+                if (q?.coreMandatory) {
+                  q = {
+                    ...q,
+                    requiredSign: "**",
+                  };
                 }
                 // allow decimal
                 if (q?.rule && q?.rule?.allowDecimal) {
@@ -711,6 +718,7 @@ const WebformPage = ({
         {!isEmpty(formValue) ? (
           <Webform
             forms={formValue}
+            fieldIcons={false}
             onChange={onChange}
             onFinish={onFinishShowWarning}
             onCompleteFailed={onCompleteFailed}

@@ -45,6 +45,6 @@ def generate_datapoint_name(
     for q in questions:
         for ca in current_answers:
             if ca.get('question') == q.id:
-                datapoint_names.append(ca.get('value'))
+                datapoint_names.append(str(ca.get('value')))
     datapoint_name = " - ".join(datapoint_names)
     return datapoint_name
