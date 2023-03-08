@@ -13,5 +13,15 @@
         "equal": 100
       }
     ]
+  },
+  {
+    "form_id": 17,
+    "validations": [
+      {
+        "group_id": 85,
+        "question_ids": [670, 671, 673, 660],
+        "max": 100
+      }
+    ]
   }
 ]

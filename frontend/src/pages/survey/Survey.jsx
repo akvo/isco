@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useMemo } from "react";
 import "./style.scss";
-import { Row, Col, Select, Button, Space, Alert } from "antd";
+import { Row, Col, Select, Button, Space, Alert, Tooltip } from "antd";
 import WebformPage from "./WebformPage";
 import { api, store } from "../../lib";
 import { useNotification } from "../../util";
 import { uiText, webformContent } from "../../static";
-import { FiRefreshCw } from "react-icons/fi";
+import { FiRefreshCw, FiInfo } from "react-icons/fi";
 
 const Survey = () => {
   const { notify } = useNotification();
@@ -454,7 +454,12 @@ const Survey = () => {
       {/* Previous Submission Panel */}
       {showPrevSubmissionDropdown && (
         <div className="previous-submission-container">
-          <p>{text.formPreviousYearSubmission}</p>
+          <Space align="middle">
+            <p>{text.formPreviousYearSubmission}</p>
+            <Tooltip title={text.prefilledMismatchWarming} placement="right">
+              <FiInfo style={{ fontSize: 16 }} />
+            </Tooltip>
+          </Space>
           <Row align="top" justify="space-between" gutter={[12, 12]}>
             <Col flex={1}>
               <Select
