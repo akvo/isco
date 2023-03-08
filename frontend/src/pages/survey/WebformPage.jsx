@@ -711,6 +711,7 @@ const WebformPage = ({
         {!isEmpty(formValue) ? (
           <Webform
             forms={formValue}
+            fieldIcons={false}
             onChange={onChange}
             onFinish={onFinishShowWarning}
             onCompleteFailed={onCompleteFailed}
