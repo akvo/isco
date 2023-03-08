@@ -145,9 +145,9 @@ const WebformPage = ({
         (cv) => cv.form_id === formId
       );
       const validations = computedValidation?.validations || [];
-      if (!Object.keys(answerValues).length && !validations?.length) {
-        return [];
-      }
+      // if (!Object.keys(answerValues).length && !validations?.length) {
+      //   return [];
+      // }
       const checkError = Object.keys(answerValues)
         .map((k) => {
           const resValues = answerValues[k];
@@ -171,10 +171,12 @@ const WebformPage = ({
                 };
               }
               // all answered
-              const questions = v.question_ids.map((id) => {
-                const a = resValues.find((a) => a.question === id);
-                return { id: id, answer: a?.value || 0 };
-              });
+              const questions = v.question_ids
+                .map((id) => {
+                  const a = resValues.find((a) => a.question === id);
+                  return { id: id, answer: a?.value };
+                })
+                .filter((v) => !isNaN(v.answer));
               const total = questions
                 .map((q) => q.answer)
                 .reduce((total, num) => total + num);
@@ -228,9 +230,9 @@ const WebformPage = ({
   );
 
   // check computed validation when on change answer
-  useEffect(() => {
-    checkComputedValidationFunction();
-  }, [checkComputedValidationFunction]);
+  // useEffect(() => {
+  //   checkComputedValidationFunction();
+  // }, [checkComputedValidationFunction]);
 
   // transform & filter form definition for first load
   useEffect(() => {

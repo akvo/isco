@@ -18,5 +18,15 @@
         "equal": 100
       }
     ]
+  },
+  {
+    "form_id": 2,
+    "validations": [
+      {
+        "group_id": 19,
+        "question_ids": [48, 49, 50, 51],
+        "equal": 100
+      }
+    ]
   }
 ]
