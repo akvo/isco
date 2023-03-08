@@ -92,8 +92,14 @@ const ValidationWarningModal = ({
                   header={null}
                   footer={
                     <>
-                      {`${text.cvTotalValueText} : ${vc.total}`} <br />
-                      {`${vc.errorDetail} : ${vc.validationValue}`}
+                      <div>
+                        {text.cvTotalValueText}
+                        {` : ${vc.total}`} <br />
+                      </div>
+                      <div>
+                        {vc.errorDetail}
+                        {` : ${vc.validationValue}`}
+                      </div>
                     </>
                   }
                   dataSource={vc.questions}
