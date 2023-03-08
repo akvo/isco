@@ -287,7 +287,10 @@ const QuestionEditor = ({
   };
 
   return (
-    <Row key={`qe-${qId}`}>
+    <Row
+      key={`qe-${qId}`}
+      style={{ opacity: question?.deactivate ? "0.3" : "1" }}
+    >
       <Col span={24}>
         <Card
           className={
@@ -296,7 +299,12 @@ const QuestionEditor = ({
               : "question-card-wrapper"
           }
         >
-          <Row align="top" justify="space-between" gutter={[8, 8]}>
+          <Row
+            align="top"
+            justify="space-between"
+            gutter={[8, 8]}
+            className="sads"
+          >
             <Col span={18} align="start" className="left">
               <Collapse ghost activeKey={activePanel}>
                 <Panel
