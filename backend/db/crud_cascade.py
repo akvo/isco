@@ -123,10 +123,6 @@ def get_cascade_list_by_cascade_id_path(session: Session,
         CascadeList).filter(and_(
             CascadeList.cascade == cascade_id,
             CascadeList.path == path_tmp)).all()
-    if not clist:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"cascade list {id} not found")
     return clist
 
 

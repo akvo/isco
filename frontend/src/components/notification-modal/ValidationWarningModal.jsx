@@ -46,9 +46,13 @@ const ValidationWarningModal = ({
           answer: cvq.answer,
         };
       });
+      let group = `${findGroup.order}. ${findGroup.name}`;
+      group = findGroup?.repeatable
+        ? `${group} - ${cv?.repeatIndex || 1}`
+        : group;
       return {
         ...cv,
-        group: `${findGroup.order}. ${findGroup.name}`,
+        group: group,
         questions: questions,
       };
     });
@@ -77,10 +81,10 @@ const ValidationWarningModal = ({
       {validationContent?.length ? (
         <>
           <Collapse accordion>
-            {validationContent.map((vc) => (
+            {validationContent.map((vc, vci) => (
               <Panel
                 header={vc.group}
-                key={`vc-panel-${vc.group_id}`}
+                key={`vc-panel-${vc.group_id}-${vci}`}
                 style={{ padding: 0 }}
               >
                 <List

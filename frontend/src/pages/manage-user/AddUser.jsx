@@ -197,7 +197,7 @@ const AddUser = ({
         </Space>
       }
       width={840}
-      onCancel={() => setIsAddUserVisible(false)}
+      onCancel={handleOnClickModalCancel}
       centered
       maskClosable={false}
     >

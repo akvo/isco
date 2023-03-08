@@ -5,7 +5,7 @@
   "url": "http://localhost:3000",
   "tests": [{
     "id": "503ee785-e026-46d7-b3ec-957d9cd2cdce",
-    "name": "Login",
+    "name": "login_with_verified_super_admin",
     "commands": [{
       "id": "f1d16719-6f17-44fb-a359-36717dac357f",
       "comment": "Open login page",
@@ -45,7 +45,7 @@
         ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div/div/div/div/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
-      "value": "your_email@domain.com"
+      "value": "verified_user@test.com"
     }, {
       "id": "9513e4ee-1839-4749-9d6b-7727879aed59",
       "comment": "filling password field",
@@ -84,50 +84,11 @@
         ["xpath=//h1[contains(.,'WELCOME TO THE COCOA MONITORING OF DISCO, BEYOND CHOCOLATE AND GISCO!')]", "xpath:innerText"]
       ],
       "value": "WELCOME TO THE COCOA MONITORING OF DISCO, BEYOND CHOCOLATE AND GISCO!"
-    }, {
-      "id": "1a27ba6c-4ac1-47c1-abdc-0a61970b29ec",
-      "comment": "open admin page",
-      "command": "open",
-      "target": "/admin",
-      "targets": [],
-      "value": ""
-    }, {
-      "id": "cc8bde54-9dfd-4887-8b6d-7a579de4f3d4",
-      "comment": "check if admin page show",
-      "command": "assertText",
-      "target": "css=.page-title",
-      "targets": [
-        ["css=.page-title", "css:finder"],
-        ["xpath=//div[@id='admin']/div/div/h3", "xpath:idRelative"],
-        ["xpath=//h3", "xpath:position"],
-        ["xpath=//h3[contains(.,'Welcome Admin')]", "xpath:innerText"]
-      ],
-      "value": "Welcome Admin"
-    }, {
-      "id": "969d82f5-0487-4214-b8a9-a9ad9ba5187f",
-      "comment": "",
-      "command": "click",
-      "target": "css=.ant-col:nth-child(1) > .ant-card .ant-btn",
-      "targets": [
-        ["css=.ant-col:nth-child(1) > .ant-card .ant-btn", "css:finder"],
-        ["xpath=(//button[@type='button'])[4]", "xpath:attributes"],
-        ["xpath=//div[@id='admin']/div/div/div/div/div/div[2]/div/button", "xpath:idRelative"],
-        ["xpath=//div/div/div/div[2]/div/button", "xpath:position"],
-        ["xpath=//button[contains(.,'Manage Users')]", "xpath:innerText"]
-      ],
-      "value": "clicking manage users button"
-    }, {
-      "id": "8ad2286f-8829-49bf-b7c1-db9dc9e5d5f7",
-      "comment": "close browser",
-      "command": "close",
-      "target": "",
-      "targets": [],
-      "value": ""
     }]
   }],
   "suites": [{
     "id": "9eecc3e3-ddb5-44db-a81d-e4a4935a4d48",
-    "name": "ISCO",
+    "name": "login_with_verified_super_admin",
     "persistSession": false,
     "parallel": false,
     "timeout": 300,

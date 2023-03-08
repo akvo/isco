@@ -20,6 +20,7 @@ from routes.collaborator import collaborator_route
 from routes.feedback import feedback_route
 from routes.roadmap import roadmap_route
 from routes.prefilled import prefilled_route
+from routes.test import test_route
 from templates.main import template_route
 
 
@@ -38,6 +39,8 @@ app = FastAPI(
     },
 )
 
+# use bucket folder as env cluster
+# bucket folder will be sed by cluster name when deploy
 BUCKET_FOLDER = os.environ['BUCKET_FOLDER']
 CONFIG_SOURCE_PATH = f"./source/config/{BUCKET_FOLDER}"
 JS_FILE = "./config.min.js"
@@ -60,6 +63,9 @@ app.include_router(feedback_route)
 app.include_router(template_route)
 app.include_router(roadmap_route)
 app.include_router(prefilled_route)
+# add test route except for production
+if BUCKET_FOLDER != "production":
+    app.include_router(test_route)
 
 
 @app.get("/", tags=["Dev"])
