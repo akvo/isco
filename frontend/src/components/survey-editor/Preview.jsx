@@ -75,6 +75,7 @@ const Preview = () => {
               meta: q.datapoint_name, // set as datapoint/display name
               required: q.mandatory,
               coreMandatory: q.core_mandatory,
+              requiredSign: q.core_mandatory ? "**" : "*",
               member_access: qMemberAccess,
               isco_access: qIscoAccess,
               // add comment field
