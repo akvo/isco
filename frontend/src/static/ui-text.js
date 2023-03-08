@@ -54,7 +54,8 @@ const uiText = {
     formCaptcha: "Insert captcha value",
     formPickPreviousSavedForms: "Pick a previously saved form",
     formStartFillingNewForm: "Start filling a new form",
-    formPreviousYearSubmission: "Submission from previous year",
+    formPreviousYearSubmission:
+      "Choose a submission from previous year to pre-fill",
     formLogin: "Login User",
     formRememberLogin: "Remember Login",
     formForgotPwd: "Forgot Password",
@@ -258,7 +259,7 @@ const uiText = {
       <>Please answer all questions (marked with **) before submission.</>
     ),
     prefilledMismatchWarming:
-      "Some of the answers may be not be shown because of the form updated.",
+      "Some responses may not be prefilled because of modifications to the questionnaire. Please review the data carefully before submitting.",
     infoSubmissionDropdown: "(saved/submitted)",
     // password criteria
     passwordCriteriaInfoText: "Criteria for the password:",
