@@ -78,11 +78,11 @@
           float: right;
         "
       >
-      {% if data.submitted %}
-        <li>Status : Submitted</li>
-      {% else %}
+      {% if data.submitted == None %}
         <li>Status : Draft</li>
       {% endif %}
+      <li>Requested by : {{ data.request_by }}</li>
+      <li>Requested date : {{ data.request_date }}</li>
       </ul>
       <!-- {{data.form.description}}  -->
       {% for dt in detail %}
