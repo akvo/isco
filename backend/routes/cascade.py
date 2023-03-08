@@ -65,6 +65,8 @@ def get_cascade_list_by_cascade_id_path(req: Request,
                                             get_session)):
     clist = crud.get_cascade_list_by_cascade_id_path(
         session=session, cascade_id=cascade_id, path=path)
+    if not clist:
+        return []
     return [c.serializeWithoutChildren for c in clist]
 
 

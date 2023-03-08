@@ -246,3 +246,12 @@ class TestCascadeAndCascadeListRoutes():
              'name': 'Denpasar',
              'parent': 2,
              'path': '2.'}]
+        # get cascade not found
+        res = await client.get(
+            app.url_path_for(
+                "cascade_list:get_by_cascade_id_and_path",
+                cascade_id=1, path=1000
+            ))
+        assert res.status_code == 200
+        res = res.json()
+        assert res == []
