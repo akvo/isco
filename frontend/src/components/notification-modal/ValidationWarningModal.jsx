@@ -56,9 +56,10 @@ const ValidationWarningModal = ({
         ...cv,
         group: group,
         questions: orderBy(questions, ["order"]),
+        order: findGroup.order,
       };
     });
-    return res;
+    return orderBy(res, ["order"]);
   }, [checkComputedValidation, questionGroups]);
 
   const text = useMemo(() => {
