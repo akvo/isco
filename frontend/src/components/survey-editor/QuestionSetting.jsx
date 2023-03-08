@@ -98,6 +98,7 @@ const QuestionSetting = ({
         icon = <MdOutlineLibraryAddCheck style={{ marginRight: "8px" }} />;
       }
       return {
+        disabled: q.deactivate,
         label: (
           <Row align="middle">
             {icon} {q?.name}

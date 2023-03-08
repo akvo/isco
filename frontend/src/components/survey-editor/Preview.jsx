@@ -58,6 +58,7 @@ const Preview = () => {
            *         if question doesn't have member/isco access, inherit group member/isco access.
            * Step 2. After this, all questions will have access,
            *         then we can filter it by member/isco selected from dropdown */
+          questions = questions.filter((q) => !q.deactivate);
           questions = questions.map((q) => {
             /** Step 1 */
             const qMemberAccess = q.member_access.length
