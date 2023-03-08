@@ -3,6 +3,7 @@ import { Modal, Row, Col, Button, Collapse, List } from "antd";
 import { uiText } from "../../static";
 import { store } from "../../lib";
 import intersection from "lodash/intersection";
+import orderBy from "lodash/orderBy";
 
 const { Panel } = Collapse;
 
@@ -42,8 +43,9 @@ const ValidationWarningModal = ({
         const findQuestion = findGroup.question.find((q) => q.id === cvq.id);
         return {
           id: cvq.id,
-          question: ` ${findQuestion.order}. ${findQuestion.name}`,
+          question: `${findQuestion.order}. ${findQuestion.name}`,
           answer: cvq.answer,
+          order: findQuestion.order,
         };
       });
       let group = `${findGroup.order}. ${findGroup.name}`;
@@ -53,7 +55,7 @@ const ValidationWarningModal = ({
       return {
         ...cv,
         group: group,
-        questions: questions,
+        questions: orderBy(questions, ["order"]),
       };
     });
     return res;
