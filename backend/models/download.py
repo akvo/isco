@@ -166,6 +166,14 @@ class Download(Base):
         }
 
     @property
+    def saved_download_request(self) -> DownloadRequestedDict:
+        return {
+            "request_by": self.request_by,
+            "request_by_name": self.request_by_user.name,
+            "request_date": self.created.strftime("%B %d, %Y"),
+        }
+
+    @property
     def check_download_list(self):
         status = None
         if self.uuid:

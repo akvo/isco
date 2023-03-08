@@ -178,6 +178,8 @@ def request_new_download(req: Request,
             send_email_download_notification(session, user, secretariat_admins)
         return download.response
     data = data.to_report
+    data["request_by"] = user.name
+    data["request_date"] = datetime.utcnow().strftime("%B %d, %Y")
     data = report.get_cascade_value(data=data, session=session)
     detail = report.transform_data(answers=data["answer"], session=session)
     file = report.generate(data=data, detail=detail)
