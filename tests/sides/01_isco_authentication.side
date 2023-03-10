@@ -427,6 +427,130 @@
       "targets": [],
       "value": "Email password doesn't match."
     }]
+  }, {
+    "id": "b07e6dfc-6e70-40c8-9474-d63e191c10cb",
+    "name": "04_forgot_password_registered_user",
+    "commands": [{
+      "id": "e63c5664-11f4-49bd-a482-e9d101c7c965",
+      "comment": "Open login page",
+      "command": "open",
+      "target": "/login",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "db6c36fb-e562-4a86-95d9-993c2c11aab2",
+      "comment": "Click on forgot password",
+      "command": "click",
+      "target": "xpath=//span[contains(.,'Forgot Password')]",
+      "targets": [
+        ["css=.ant-btn-text > span", "css:finder"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[5]/button/span", "xpath:idRelative"],
+        ["xpath=//div[5]/button/span", "xpath:position"],
+        ["xpath=//span[contains(.,'Forgot Password')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "a0ef6e43-ef3f-40c0-b7ff-81082db29ba5",
+      "comment": "Forgot password text visible",
+      "command": "assertText",
+      "target": "css=.ant-col > h2",
+      "targets": [
+        ["css=.ant-col > h2", "css:finder"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[2]/div/div/h2", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/h2", "xpath:position"],
+        ["xpath=//h2[contains(.,'Forgot Password')]", "xpath:innerText"]
+      ],
+      "value": "Forgot Password"
+    }, {
+      "id": "348dd916-5e25-411e-9032-82ab6df1acc4",
+      "comment": "",
+      "command": "type",
+      "target": "id=email",
+      "targets": [],
+      "value": "johndoe@test.test"
+    }, {
+      "id": "b5d967d5-1c7b-4e8c-b036-06b1a8aa3296",
+      "comment": "",
+      "command": "click",
+      "target": "css=.ant-btn-primary",
+      "targets": [
+        ["css=.ant-btn-primary", "css:finder"],
+        ["xpath=(//button[@type='button'])[3]", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/button", "xpath:idRelative"],
+        ["xpath=//form/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Reset Password')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "cd8145f0-0c30-4066-a0b8-e237b77e96d6",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.ant-message-custom-content > span:nth-child(2)",
+      "targets": [],
+      "value": "Reset Password link has been sent to your email"
+    }]
+  }, {
+    "id": "7b97a2a8-2383-4b79-b1e9-63c3908f9517",
+    "name": "05_forgot_password_for_an_un_registered_user",
+    "commands": [{
+      "id": "a6b62b74-fd21-4ebf-9027-6c1d419579a0",
+      "comment": "Open login page",
+      "command": "open",
+      "target": "/login",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "66738acb-5627-4153-9a00-d7ae428a896c",
+      "comment": "Click on forgot password",
+      "command": "click",
+      "target": "xpath=//span[contains(.,'Forgot Password')]",
+      "targets": [
+        ["css=.ant-btn-text > span", "css:finder"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[5]/button/span", "xpath:idRelative"],
+        ["xpath=//div[5]/button/span", "xpath:position"],
+        ["xpath=//span[contains(.,'Forgot Password')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "2928c733-d0b9-49af-9282-b4aaf8d4f62b",
+      "comment": "Forgot password text visible",
+      "command": "assertText",
+      "target": "css=.ant-col > h2",
+      "targets": [
+        ["css=.ant-col > h2", "css:finder"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[2]/div/div/h2", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/h2", "xpath:position"],
+        ["xpath=//h2[contains(.,'Forgot Password')]", "xpath:innerText"]
+      ],
+      "value": "Forgot Password"
+    }, {
+      "id": "5a9d9456-bae6-449d-897b-97a0c647a582",
+      "comment": "",
+      "command": "type",
+      "target": "id=email",
+      "targets": [],
+      "value": "test@test.test"
+    }, {
+      "id": "5bcee4fb-d0cf-4d36-9689-58591b134e87",
+      "comment": "",
+      "command": "click",
+      "target": "css=.ant-btn-primary",
+      "targets": [
+        ["css=.ant-btn-primary", "css:finder"],
+        ["xpath=(//button[@type='button'])[3]", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/button", "xpath:idRelative"],
+        ["xpath=//form/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Reset Password')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "f7366ba3-0c1e-4e12-bce9-7cf282818f47",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.ant-message-custom-content > span:nth-child(2)",
+      "targets": [],
+      "value": "Email not found"
+    }]
   }],
   "suites": [{
     "id": "3837e61a-40bf-431a-9c80-4812b82fc9cd",
@@ -434,7 +558,7 @@
     "persistSession": false,
     "parallel": false,
     "timeout": 300,
-    "tests": ["4318d2a1-c064-495e-93ad-f308f4bc75c8", "6ed049fb-6e3e-43e2-896c-91ad5afd4e79", "415c439f-b443-47cd-b2da-ae33fb9acc8c", "f78a1a64-4b7d-4a64-8524-7a70e856f573"]
+    "tests": ["4318d2a1-c064-495e-93ad-f308f4bc75c8", "6ed049fb-6e3e-43e2-896c-91ad5afd4e79", "415c439f-b443-47cd-b2da-ae33fb9acc8c", "f78a1a64-4b7d-4a64-8524-7a70e856f573", "b07e6dfc-6e70-40c8-9474-d63e191c10cb", "7b97a2a8-2383-4b79-b1e9-63c3908f9517"]
   }],
   "urls": ["http://localhost:3000/", "http://localhost:3000/api/docs"],
   "plugins": []
