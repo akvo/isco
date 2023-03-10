@@ -586,7 +586,7 @@
         ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div/div/div/div/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
-      "value": "navin@akvo.org"
+      "value": "verified_user@test.com"
     }, {
       "id": "903c94bf-1554-4070-b930-a8bff02becc3",
       "comment": "Enter password",
@@ -599,7 +599,7 @@
         ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div[2]/div/div/div/span/input", "xpath:idRelative"],
         ["xpath=//span/input", "xpath:position"]
       ],
-      "value": "Passcode@123"
+      "value": "password"
     }, {
       "id": "0a4ebde8-58f4-4537-8752-8f03825f3bd7",
       "comment": "Click on login button",
@@ -795,7 +795,7 @@
       ],
       "value": "Please provide your feedback. It is highly valuable to improve the system."
     }, {
-      "id": "2a5ac885-d4a1-43c8-84ba-70fd44dcffb4",
+      "id": "1b44fc17-da40-44d4-9711-022a3dab62fd",
       "comment": "",
       "command": "close",
       "target": "",
