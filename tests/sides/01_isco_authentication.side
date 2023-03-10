@@ -614,6 +614,21 @@
       ],
       "value": ""
     }, {
+      "id": "162819d9-74ea-448d-afb5-d8a759d79984",
+      "comment": "Wait for data security link",
+      "command": "waitForElementPresent",
+      "target": "linkText=link",
+      "targets": [
+        ["linkText=link", "linkText"],
+        ["css=a:nth-child(4)", "css:finder"],
+        ["xpath=//a[contains(text(),'link')]", "xpath:link"],
+        ["xpath=//div[@id='home']/div/div/p/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '/')])[8]", "xpath:href"],
+        ["xpath=//p/a", "xpath:position"],
+        ["xpath=//a[contains(.,'link')]", "xpath:innerText"]
+      ],
+      "value": "30000"
+    }, {
       "id": "4ffe8187-5014-4716-99d5-8d0a3a0ef813",
       "comment": "Click on data security link",
       "command": "click",
@@ -647,6 +662,17 @@
         ["css=.ant-modal-close-icon > svg", "css:finder"]
       ],
       "value": ""
+    }, {
+      "id": "d7dd316e-eeb0-4983-a0a7-62e3953ac7db",
+      "comment": "Wait for survey button",
+      "command": "waitForElementPresent",
+      "target": "css=.ant-btn-primary > span",
+      "targets": [
+        ["css=.ant-btn-primary > span", "css:finder"],
+        ["xpath=//div[@id='home']/div/div/div/button/span", "xpath:idRelative"],
+        ["xpath=//div[2]/div[2]/div/div/div/button/span", "xpath:position"]
+      ],
+      "value": "30000"
     }, {
       "id": "8eafa0ad-32f2-4fe0-a559-7cf02b2325a1",
       "comment": "Click on start survey",
@@ -682,6 +708,21 @@
         ["xpath=//a/span", "xpath:position"]
       ],
       "value": ""
+    }, {
+      "id": "8472e055-155d-481d-a5c8-ee4f792cf956",
+      "comment": "Wait for faq link",
+      "command": "waitForElementPresent",
+      "target": "linkText=FAQ section",
+      "targets": [
+        ["linkText=FAQ section", "linkText"],
+        ["css=p:nth-child(2) > a:nth-child(1)", "css:finder"],
+        ["xpath=//a[contains(text(),'FAQ section')]", "xpath:link"],
+        ["xpath=//div[@id='home']/div[2]/div/p/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '/faq')])[2]", "xpath:href"],
+        ["xpath=//div[2]/div/p/a", "xpath:position"],
+        ["xpath=//a[contains(.,'FAQ section')]", "xpath:innerText"]
+      ],
+      "value": "30000"
     }, {
       "id": "367a8749-fe84-44b3-9db4-00beedb1f77d",
       "comment": "Click on FAQ",
@@ -721,6 +762,21 @@
       ],
       "value": ""
     }, {
+      "id": "d7af0b8e-78a9-417e-8f40-1cd6a052a19a",
+      "comment": "Wait for feedback form link",
+      "command": "waitForElementPresent",
+      "target": "linkText=feedback form",
+      "targets": [
+        ["linkText=feedback form", "linkText"],
+        ["css=p:nth-child(3) > a", "css:finder"],
+        ["xpath=//a[contains(text(),'feedback form')]", "xpath:link"],
+        ["xpath=//div[@id='home']/div[2]/div/p[2]/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '/feedback')])[2]", "xpath:href"],
+        ["xpath=//p[2]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'feedback form')]", "xpath:innerText"]
+      ],
+      "value": "30000"
+    }, {
       "id": "5e56e2a7-2202-45a7-8483-a97b7b4a28fe",
       "comment": "Click on feedback form",
       "command": "click",
@@ -746,6 +802,13 @@
         ["xpath=//div[2]/div[2]/div/div/div/div/div/div", "xpath:position"]
       ],
       "value": "Please provide your feedback. It is highly valuable to improve the system."
+    }, {
+      "id": "7ca736de-7435-49a7-bcae-45b8b54f32c3",
+      "comment": "",
+      "command": "close",
+      "target": "",
+      "targets": [],
+      "value": ""
     }]
   }],
   "suites": [{
