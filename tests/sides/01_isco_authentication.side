@@ -615,19 +615,16 @@
       "value": ""
     }, {
       "id": "162819d9-74ea-448d-afb5-d8a759d79984",
-      "comment": "Wait for data security link",
-      "command": "waitForElementPresent",
-      "target": "linkText=link",
+      "comment": "Wait for home page to load",
+      "command": "assertText",
+      "target": "css=.intro-text > h1",
       "targets": [
-        ["linkText=link", "linkText"],
-        ["css=a:nth-child(4)", "css:finder"],
-        ["xpath=//a[contains(text(),'link')]", "xpath:link"],
-        ["xpath=//div[@id='home']/div/div/p/a", "xpath:idRelative"],
-        ["xpath=(//a[contains(@href, '/')])[8]", "xpath:href"],
-        ["xpath=//p/a", "xpath:position"],
-        ["xpath=//a[contains(.,'link')]", "xpath:innerText"]
+        ["css=.intro-text > h1", "css:finder"],
+        ["xpath=//div[@id='home']/div/div/h1", "xpath:idRelative"],
+        ["xpath=//h1", "xpath:position"],
+        ["xpath=//h1[contains(.,'WELCOME TO THE COCOA MONITORING OF DISCO, BEYOND CHOCOLATE AND GISCO!')]", "xpath:innerText"]
       ],
-      "value": "30000"
+      "value": "WELCOME TO THE COCOA MONITORING OF DISCO, BEYOND CHOCOLATE AND GISCO!"
     }, {
       "id": "4ffe8187-5014-4716-99d5-8d0a3a0ef813",
       "comment": "Click on data security link",
@@ -663,16 +660,17 @@
       ],
       "value": ""
     }, {
-      "id": "d7dd316e-eeb0-4983-a0a7-62e3953ac7db",
-      "comment": "Wait for survey button",
-      "command": "waitForElementPresent",
-      "target": "css=.ant-btn-primary > span",
+      "id": "4f2454cf-5abc-413f-8f5a-a50012d9573d",
+      "comment": "Wait for home page to load",
+      "command": "assertText",
+      "target": "css=.intro-text > h1",
       "targets": [
-        ["css=.ant-btn-primary > span", "css:finder"],
-        ["xpath=//div[@id='home']/div/div/div/button/span", "xpath:idRelative"],
-        ["xpath=//div[2]/div[2]/div/div/div/button/span", "xpath:position"]
+        ["css=.intro-text > h1", "css:finder"],
+        ["xpath=//div[@id='home']/div/div/h1", "xpath:idRelative"],
+        ["xpath=//h1", "xpath:position"],
+        ["xpath=//h1[contains(.,'WELCOME TO THE COCOA MONITORING OF DISCO, BEYOND CHOCOLATE AND GISCO!')]", "xpath:innerText"]
       ],
-      "value": "30000"
+      "value": "WELCOME TO THE COCOA MONITORING OF DISCO, BEYOND CHOCOLATE AND GISCO!"
     }, {
       "id": "8eafa0ad-32f2-4fe0-a559-7cf02b2325a1",
       "comment": "Click on start survey",
@@ -709,20 +707,17 @@
       ],
       "value": ""
     }, {
-      "id": "8472e055-155d-481d-a5c8-ee4f792cf956",
-      "comment": "Wait for faq link",
-      "command": "waitForElementPresent",
-      "target": "linkText=FAQ section",
+      "id": "1b9e4937-7987-4107-9cd6-c84e3933ca88",
+      "comment": "Wait for home page to load",
+      "command": "assertText",
+      "target": "css=.intro-text > h1",
       "targets": [
-        ["linkText=FAQ section", "linkText"],
-        ["css=p:nth-child(2) > a:nth-child(1)", "css:finder"],
-        ["xpath=//a[contains(text(),'FAQ section')]", "xpath:link"],
-        ["xpath=//div[@id='home']/div[2]/div/p/a", "xpath:idRelative"],
-        ["xpath=(//a[contains(@href, '/faq')])[2]", "xpath:href"],
-        ["xpath=//div[2]/div/p/a", "xpath:position"],
-        ["xpath=//a[contains(.,'FAQ section')]", "xpath:innerText"]
+        ["css=.intro-text > h1", "css:finder"],
+        ["xpath=//div[@id='home']/div/div/h1", "xpath:idRelative"],
+        ["xpath=//h1", "xpath:position"],
+        ["xpath=//h1[contains(.,'WELCOME TO THE COCOA MONITORING OF DISCO, BEYOND CHOCOLATE AND GISCO!')]", "xpath:innerText"]
       ],
-      "value": "30000"
+      "value": "WELCOME TO THE COCOA MONITORING OF DISCO, BEYOND CHOCOLATE AND GISCO!"
     }, {
       "id": "367a8749-fe84-44b3-9db4-00beedb1f77d",
       "comment": "Click on FAQ",
@@ -762,20 +757,17 @@
       ],
       "value": ""
     }, {
-      "id": "d7af0b8e-78a9-417e-8f40-1cd6a052a19a",
-      "comment": "Wait for feedback form link",
-      "command": "waitForElementPresent",
-      "target": "linkText=feedback form",
+      "id": "db193eb7-f6ac-4eb4-92f8-baa840677ce9",
+      "comment": "Wait for home page to load",
+      "command": "assertText",
+      "target": "css=.intro-text > h1",
       "targets": [
-        ["linkText=feedback form", "linkText"],
-        ["css=p:nth-child(3) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'feedback form')]", "xpath:link"],
-        ["xpath=//div[@id='home']/div[2]/div/p[2]/a", "xpath:idRelative"],
-        ["xpath=(//a[contains(@href, '/feedback')])[2]", "xpath:href"],
-        ["xpath=//p[2]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'feedback form')]", "xpath:innerText"]
+        ["css=.intro-text > h1", "css:finder"],
+        ["xpath=//div[@id='home']/div/div/h1", "xpath:idRelative"],
+        ["xpath=//h1", "xpath:position"],
+        ["xpath=//h1[contains(.,'WELCOME TO THE COCOA MONITORING OF DISCO, BEYOND CHOCOLATE AND GISCO!')]", "xpath:innerText"]
       ],
-      "value": "30000"
+      "value": "WELCOME TO THE COCOA MONITORING OF DISCO, BEYOND CHOCOLATE AND GISCO!"
     }, {
       "id": "5e56e2a7-2202-45a7-8483-a97b7b4a28fe",
       "comment": "Click on feedback form",
