@@ -326,9 +326,9 @@
       ],
       "value": ""
     }, {
-      "id": "71f9a1d8-7ed6-44a5-941e-1c693ec15fd5",
-      "comment": "Wait for dropdown to present",
-      "command": "waitForElementVisible",
+      "id": "02cebfbb-e69b-473d-8f40-ebc50e000a5b",
+      "comment": "Wait for dropdown to visible ",
+      "command": "waitForElementPresent",
       "target": "css=.account-dropdown-menu",
       "targets": [
         ["css=.ant-dropdown-menu", "css:finder"],
@@ -336,17 +336,17 @@
       ],
       "value": "30000"
     }, {
-      "id": "9cad4dd4-ffb5-4a9a-a6b1-485ed227d900",
-      "comment": "Move mouse to logout",
-      "command": "mouseOver",
-      "target": "xpath=//li[contains(@data-menu-id,'logout')]",
+      "id": "71f9a1d8-7ed6-44a5-941e-1c693ec15fd5",
+      "comment": "Click on logout",
+      "command": "executeScript",
+      "target": "document.querySelectorAll('.ant-dropdown-menu-item').forEach(function(d){if(d.querySelector('a').textContent == \"Logout\"){d.querySelector('a').click()}})",
       "targets": [],
       "value": ""
     }, {
-      "id": "b84efcf6-32b3-4a1c-a3c3-fa07745a22df",
-      "comment": "Click on logout",
-      "command": "click",
-      "target": "xpath=//li[contains(@data-menu-id,'logout')]/span/a",
+      "id": "a03ade1c-80bd-4815-b8ff-d20bb326c46f",
+      "comment": "",
+      "command": "close",
+      "target": "",
       "targets": [],
       "value": ""
     }]
