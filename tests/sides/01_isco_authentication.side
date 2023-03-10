@@ -314,6 +314,41 @@
         ["xpath=//a/div/div[2]", "xpath:position"]
       ],
       "value": "JOHN DOE"
+    }, {
+      "id": "6e20d37b-fdcf-4b77-bdb6-b3e6c6b94e29",
+      "comment": "Logout user",
+      "command": "click",
+      "target": "css=.ant-dropdown-trigger .ant-space-item:nth-child(2)",
+      "targets": [
+        ["css=.ant-dropdown-trigger .ant-space-item:nth-child(2)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div[2]/div/div[2]/a/div/div[2]", "xpath:idRelative"],
+        ["xpath=//a/div/div[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "71f9a1d8-7ed6-44a5-941e-1c693ec15fd5",
+      "comment": "Wait for dropdown to present",
+      "command": "waitForElementVisible",
+      "target": "css=.account-dropdown-menu",
+      "targets": [
+        ["css=.ant-dropdown-menu", "css:finder"],
+        ["xpath=//ul", "xpath:position"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "9cad4dd4-ffb5-4a9a-a6b1-485ed227d900",
+      "comment": "Move mouse to logout",
+      "command": "mouseOver",
+      "target": "xpath=//li[contains(@data-menu-id,'logout')]",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "b84efcf6-32b3-4a1c-a3c3-fa07745a22df",
+      "comment": "Click on logout",
+      "command": "click",
+      "target": "xpath=//li[contains(@data-menu-id,'logout')]/span/a",
+      "targets": [],
+      "value": ""
     }]
   }, {
     "id": "f78a1a64-4b7d-4a64-8524-7a70e856f573",
