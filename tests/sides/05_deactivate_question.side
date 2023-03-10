@@ -1,0 +1,273 @@
+{
+  "id": "3837e61a-40bf-431a-9c80-4812b82fc9cb",
+  "version": "2.0",
+  "name": "ISCO",
+  "url": "http://localhost:3000",
+  "tests": [{
+    "id": "503ee785-e026-46d7-b3ec-957d9cd2cdce",
+    "name": "01_deactivate_question_create_survey",
+    "commands": [{
+      "id": "f1d16719-6f17-44fb-a359-36717dac357f",
+      "comment": "Open manage survey",
+      "command": "open",
+      "target": "/manage-survey",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "dd0266b0-1221-420b-9a68-308d6c1ddd77",
+      "comment": "Wait for new survey button",
+      "command": "waitForElementPresent",
+      "target": "css=.button-add",
+      "targets": [
+        ["css=.button-add", "css:finder"],
+        ["xpath=(//button[@type='button'])[4]", "xpath:attributes"],
+        ["xpath=//div[@id='manage-survey']/div/div/div/div/button", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/div/div/button", "xpath:position"],
+        ["xpath=//button[contains(.,'New Survey')]", "xpath:innerText"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "c05a2efe-02df-444b-8187-49d83bd06db2",
+      "comment": "",
+      "command": "click",
+      "target": "css=.button-add",
+      "targets": [
+        ["css=.button-add", "css:finder"],
+        ["xpath=(//button[@type='button'])[4]", "xpath:attributes"],
+        ["xpath=//div[@id='manage-survey']/div/div/div/div/button", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/div/div/button", "xpath:position"],
+        ["xpath=//button[contains(.,'New Survey')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "0ba808b7-c9a3-4572-b7d5-640825ea6ab1",
+      "comment": "",
+      "command": "type",
+      "target": "id=survey-detail_form-name",
+      "targets": [
+        ["id=survey-detail_form-name", "id"],
+        ["css=#survey-detail_form-name", "css:finder"],
+        ["xpath=//input[@id='survey-detail_form-name']", "xpath:attributes"],
+        ["xpath=//form[@id='survey-detail']/div/div/div/div[2]/div/div/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "test deactivate "
+    }, {
+      "id": "f7ed686d-8720-4ca4-a384-a291066ef9f1",
+      "comment": "",
+      "command": "type",
+      "target": "id=survey-detail_form-description",
+      "targets": [
+        ["id=survey-detail_form-description", "id"],
+        ["css=#survey-detail_form-description", "css:finder"],
+        ["xpath=//textarea[@id='survey-detail_form-description']", "xpath:attributes"],
+        ["xpath=//form[@id='survey-detail']/div/div/div[2]/div[2]/div/div/div/textarea", "xpath:idRelative"],
+        ["xpath=//textarea", "xpath:position"]
+      ],
+      "value": "test deactivate "
+    }, {
+      "id": "a0e7badd-3baa-42da-ad08-0dddcd0af9c3",
+      "comment": "",
+      "command": "click",
+      "target": "css=.ant-select-selector",
+      "targets": [
+        ["css=.ant-select-selector", "css:finder"],
+        ["xpath=//form[@id='survey-detail']/div/div/div[3]/div[2]/div/div/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[3]/div[2]/div/div/div/div/div", "xpath:position"]
+      ],
+      "value": "hindi"
+    }, {
+      "id": "ed6483c0-de13-4c71-b544-399dc91f3a94",
+      "comment": "",
+      "command": "waitForElementPresent",
+      "target": "css=.ant-select-dropdown",
+      "targets": [
+        ["css=.ant-select-selection-overflow", "css:finder"],
+        ["xpath=//form[@id='survey-detail']/div/div/div[3]/div[2]/div/div/div/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[3]/div[2]/div/div/div/div/div/div", "xpath:position"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "a90d6007-33bf-48b7-8273-311a3a6ab9fb",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//*[text()='Afar']",
+      "targets": [
+        ["css=.ant-select-selection-overflow", "css:finder"],
+        ["xpath=//form[@id='survey-detail']/div/div/div[3]/div[2]/div/div/div/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[3]/div[2]/div/div/div/div/div/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "48d3986e-9222-4bd2-8366-bba38ae28d5a",
+      "comment": "",
+      "command": "click",
+      "target": "css=.ant-space-item > .ant-btn-primary",
+      "targets": [
+        ["css=.ant-space-item > .ant-btn-primary", "css:finder"],
+        ["xpath=(//button[@type='button'])[8]", "xpath:attributes"],
+        ["xpath=//div[3]/div/div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Create Survey')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "f83862da-bb1b-4954-ae32-9ee4892bea4b",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.ant-message-custom-content > span:nth-child(2)",
+      "targets": [],
+      "value": "Survey saved successfully."
+    }, {
+      "id": "d499ba65-487e-4412-910b-b940d18473e6",
+      "comment": "",
+      "command": "click",
+      "target": "css=.ant-space-item:nth-child(1) > .ant-btn-circle",
+      "targets": [
+        ["css=.ant-space-item:nth-child(1) > .ant-btn-circle", "css:finder"],
+        ["xpath=(//button[@type='button'])[5]", "xpath:attributes"],
+        ["xpath=//div[@id='manage-survey']/div/div/div/div/div/div/div/div/div/div/table/tbody/tr/td[6]/div/div/button", "xpath:idRelative"],
+        ["xpath=//td[6]/div/div/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "b1fb3188-8a3f-4df0-806e-3cd9f774cec0",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.ant-space-align-middle > .ant-space-item:nth-child(2) > div",
+      "targets": [
+        ["css=.ant-space-align-middle > .ant-space-item:nth-child(2) > div", "css:finder"],
+        ["xpath=//div[@id='survey-editor']/div/div/div/div/div/div/div[3]/div/div[2]/div", "xpath:idRelative"],
+        ["xpath=//div[3]/div/div[2]/div", "xpath:position"]
+      ],
+      "value": "Mandatory Questions"
+    }, {
+      "id": "72eeeab6-90d8-4952-a38b-4840f9aef81b",
+      "comment": "",
+      "command": "type",
+      "target": "id=survey-detail_question_group-1-name",
+      "targets": [
+        ["id=survey-detail_question_group-1-name", "id"],
+        ["css=#survey-detail_question_group-1-name", "css:finder"],
+        ["xpath=//input[@id='survey-detail_question_group-1-name']", "xpath:attributes"],
+        ["xpath=//form[@id='survey-detail']/div/div/div/div[2]/div/div/div/div/input", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/div/div/input", "xpath:position"]
+      ],
+      "value": "Test question"
+    }, {
+      "id": "bd430822-67e1-4163-9182-cae7fb82df8b",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=(//button[@type='button'])[11]",
+      "targets": [
+        ["css=.ant-tooltip-open", "css:finder"],
+        ["xpath=(//button[@type='button'])[11]", "xpath:attributes"],
+        ["xpath=//form[@id='survey-detail']/div/div/div/div[3]/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[3]/div/div[2]/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "c78d6899-2e89-4d43-b7d0-a2e2cf019e0a",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.ant-col-9 .field-label",
+      "targets": [
+        ["css=.ant-col-9 .field-label", "css:finder"],
+        ["xpath=//div[@id='rc-tabs-2-panel-group-setting']/div/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div[2]/div/div/div/div/div/div", "xpath:position"]
+      ],
+      "value": "Section Description"
+    }, {
+      "id": "f4098256-98bb-4608-81d4-2318fa4f22f6",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//input[@id='survey-detail_question_group-1-member_access']",
+      "targets": [
+        ["css=.ant-select-focused > .ant-select-selector", "css:finder"],
+        ["xpath=//div[@id='rc-tabs-3-panel-group-setting']/div/div[3]/div/div[2]/div/div/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[3]/div/div[2]/div/div/div/div/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "368401d0-d136-47e5-b69d-0dc7feede2d4",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "id=survey-detail_question_group-1-member_access_list",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "80b162d0-0279-4b10-ad22-10c15c0fa432",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//*[text()='All']",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "a70aefb8-bda4-4a39-97bd-8cc25ce64a26",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//input[@id='survey-detail_question_group-1-member_access']",
+      "targets": [
+        ["css=.ant-select-focused > .ant-select-selector", "css:finder"],
+        ["xpath=//div[@id='rc-tabs-3-panel-group-setting']/div/div[3]/div/div[2]/div/div/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[3]/div/div[2]/div/div/div/div/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "9210ddaf-6711-435d-a257-620bff34a459",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//input[@id='survey-detail_question_group-1-isco_access']",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "f32675f4-38be-431a-b373-0bc33e97cf99",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "id=survey-detail_question_group-1-isco_access_list",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "66c494ff-3c3b-4c31-b585-d52ff2a52e3e",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//*[text()='GISCO']",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "56ea0995-16b6-4ded-8ab3-54b59a0f2bc8",
+      "comment": "",
+      "command": "click",
+      "target": "css=.ant-space-item > .ant-btn-primary",
+      "targets": [
+        ["css=.ant-space-item > .ant-btn-primary", "css:finder"],
+        ["xpath=(//button[@type='button'])[17]", "xpath:attributes"],
+        ["xpath=//form[@id='survey-detail']/div/div/div[3]/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//form/div/div/div[3]/div/div[2]/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "bdd538db-aa15-4482-b086-8f5db3525b32",
+      "comment": "",
+      "command": "click",
+      "target": "css=.ant-space-item > .ant-btn-default",
+      "targets": [
+        ["css=.ant-space-item > .ant-btn-default", "css:finder"],
+        ["xpath=(//button[@type='button'])[16]", "xpath:attributes"],
+        ["xpath=//form[@id='survey-detail']/div/div/div[3]/div/div/button", "xpath:idRelative"],
+        ["xpath=//form/div/div/div[3]/div/div/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Close')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "9eecc3e3-ddb5-44db-a81d-e4a4935a4d28",
+    "name": "deactivate_question",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["503ee785-e026-46d7-b3ec-957d9cd2cdce"]
+  }],
+  "urls": ["http://localhost:3000/"],
+  "plugins": []
+}
