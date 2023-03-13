@@ -15,10 +15,10 @@ import util.storage as storage
 webdomain = os.environ["WEBDOMAIN"]
 
 
-def generate(data, detail):
+def generate(data, detail, roadmap):
     template_loader = jinja2.FileSystemLoader(searchpath="./templates")
     template_env = jinja2.Environment(loader=template_loader)
-    template_file = "report.html"
+    template_file = "roadmap.html" if roadmap else "report.html"
     template = template_env.get_template(template_file)
     output_text = template.render(
         webdomain=webdomain, data=data, detail=detail)
