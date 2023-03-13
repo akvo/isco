@@ -210,6 +210,8 @@ class RoadmapAnswer(Base):
                 answer = f"{answer} {unit}" if answer else None
         if q.type == RoadmapQuestionType.option:
             answer = self.options[0] if self.options else None
+        if q.type == RoadmapQuestionType.table:
+            answer = self.table
         if q.type in [
             RoadmapQuestionType.option,
             RoadmapQuestionType.multiple_option,

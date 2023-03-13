@@ -136,6 +136,8 @@ class RoadmapData(Base):
             "submitted":
             self.created.strftime("%B %d, %Y") if self.created else None,
             "answer": [a.to_report for a in self.answer],
+            "language": self.language if self.language
+            else None,
         }
 
 
