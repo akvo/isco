@@ -93,6 +93,108 @@
           </p>
         </div>
       </div>
+
+      <!-- {{data.form.description}}  -->
+      {% for dt in detail %}
+      <div
+        class="row"
+        style="
+          margin-bottom: 10px;
+          margin-top: 10px;
+          width: 100%;
+          margin-left: 0px;
+          margin-right: 0px;
+        "
+      >
+        <div
+          class="col"
+          style="width: 100%; padding-left: 0px; padding-right: 0px"
+        >
+          <div style="page-break-inside: avoid">
+            <h3
+              style="
+                padding: 10px;
+                margin: 0px;
+                font-size: 20px;
+                color: #f3c0b4;
+              "
+            >
+              {{dt.name}}
+            </h3>
+            {% if dt.description %}
+            <div
+              style="
+                padding: 20px;
+                background: #e1e9d4;
+                border-left: 1.5px solid #789922;
+                border-right: 1.5px solid #789922;
+                margin: 0px;
+                font-style: italic;
+                font-size: 14px;
+              "
+            >
+              {{dt.description}}
+            </div>
+            {% endif %}
+          </div>
+          {% for r in dt.data %}
+          <table
+            class="table"
+            style="
+              margin-bottom: 0px;
+              background-color: #e1e9d4;
+              border-left: 1.5px solid #789922;
+              border-right: 1.5px solid #789922;
+            "
+          >
+            <tbody>
+              {% for a in r.answers %} {% if a.value %}
+              <tr>
+                <td style="page-break-inside: avoid; word-break: break-word">
+                  <div style="font-weight: 500">
+                    {{a.question}} {% if a.tooltip %}
+                    <div
+                      style="
+                        display: block;
+                        font-size: 14px;
+                        font-style: italic;
+                        font-weight: normal;
+                      "
+                    >
+                      Tooltip: {{a.tooltip}}
+                    </div>
+                    {% endif %}
+                    <div
+                      style="
+                        display: block;
+                        font-size: 14px;
+                        font-style: italic;
+                        font-weight: normal;
+                      "
+                    >
+                      Answer:
+                    </div>
+                  </div>
+                  <div style="padding: 10px">
+                    {% if a.value_type == "list" and a.value %}
+                    <ul style="margin-bottom: 0px">
+                      {% for v in a.value %}
+                      <li>{{v}}</li>
+                      {% endfor %}
+                    </ul>
+                    {% else %}
+                    <div style="margin-left: 20px">{{ a.value }}</div>
+                    {% endif %}
+                  </div>
+                </td>
+              </tr>
+              {% endif %} {% endfor %}
+            </tbody>
+          </table>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
     </div>
   </body>
 </html>
