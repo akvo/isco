@@ -1,28 +1,58 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Test</title>
-    <meta charset="UTF-8" />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
-      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-      crossorigin="anonymous"
-    />
-    <style>
-      .header {
-        margin-bottom: 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding-bottom: 12px;
-        border-bottom: 1.5px sollid #777777;
+
+<head>
+  <title>Test</title>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+  <style>
+    .header {
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1.5px sollid #777777;
+    }
+
+    .page-footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      border-top: 1px solid black;
+      left: 50%;
+      transform: translate(-50%);
+      padding-bottom: 5px;
+    }
+
+    @page {
+      margin: 20mm;
+    }
+
+    @media print {
+      thead {
+        display: table-header-group;
       }
-    </style>
-  </head>
-  <body>
-    <!-- Header -->
-    <!-- <div class="container header">
+
+      tfoot {
+        display: table-footer-group;
+      }
+
+      button {
+        display: none;
+      }
+
+      body {
+        margin: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <!-- <div class="container header">
       <img
         style="height: 30px"
         alt="{{ webdomain }}/images/beyond.jpg"
@@ -39,91 +69,89 @@
         src="{{ webdomain }}/images/disco.png"
       />
     </div> -->
-    <!-- End of Header -->
-    <div class="container">
-      <div style="background-color: #e1e9d4">
-        <h2
-          style="
+  <!-- End of Header -->
+  <!-- Footer -->
+  <div class="container page-footer">
+    <p style="font-style: italic;font-size: 14px;"> An antitrust review on the question of whether and how to report on
+      income and price
+      issues at the individual
+      level within the framework of the individual roadmaps will be carried out in 2023. Once the anti-trust review is
+      available, a new draft resolution on individual roadmaps with regards to Living Income will be submitted to the
+      General Assembly (2023). Until then, commitments and milestones on the topic of Living Income can be integrated
+      into the individual roadmap on a voluntary basis.</p>
+    <h2 style="color: #789922;font-weight: 700;font-size: 18px;">GISCO Secretariat / Forum Nachhaltiger Kakao e.V.</h2>
+    <p style="font-size: 14px;">c/o Repräsentanz der Deutschen Gesellschaft für Internationale Zusammenarbeit (GIZ) GmbH
+      I Reichpietschufer 20 I
+      10785 Berlin
+      Geschäftsführerin Beate Weiskopf I Tel.: +49 6196 79-1462 I Mobil: +49 151 64907842 I E-Mail: info@kakaoforum.de I
+      www.kakaoforum.de
+    </p>
+  </div>
+
+  <!-- End of footer -->
+
+  <div class="container">
+    <div style="background-color: #e1e9d4">
+      <h2 style="
             text-align: left;
             padding: 10px;
             margin: 0px;
             font-size: 20px;
             color: #673017;
-          "
-        >
-          Background
-        </h2>
-        <div style="padding: 10px">
-          <p>
-            At the 2022 General Meeting of the German Initiative on Sustainable
-            Cocoa (GISCO), it was decided that the preparation of individual
-            roadmaps by each GISCO member and annual public reporting on
-            commitments and milestones included in these roadmaps is a valuable
-            and mandatory contribution to achieve
-            <a
-              href="https://www.kakaoforum.de/fileadmin/Redaktion/Downloads/Oeffentliche_Downloads/Verein/GISCO_Objectives.pdf"
-              target="_blank"
-              style="color: #7c9d2c"
-              >GISCO’s objectives.</a
-            >
-          </p>
-          <p>
-            In addition to the monitoring and based on the
-            <a
-              href="https://www.kakaoforum.de/fileadmin/Redaktion/Workshops_und_Veranstaltungen/Mitgliederversammlungen/Mitgliederversammlung_2022/ROADMAPS/EN_GISCO_Roadmap.pdf"
-              target="_blank"
-              style="color: #7c9d2c"
-              >GISCO roadmap
-            </a>
-            which lists the goals, targeted indicators and recommendations for
-            action of the German Initiative on Sustainable Cocoa on the focus
-            topics of certified/independently verified cocoa, traceability,
-            deforestation/agroforestry, child labor and living income, the
-            members of GISCO draw up individual roadmaps on these focus topics,
-            which are published on the GISCO website.
-          </p>
-          <p>
-            More information on the individual roadmaps can be found in the
-            <a
-              href="hthttps://www.kakaoforum.de/fileadmin/Redaktion/Downloads/Oeffentliche_Downloads/News_verbunden_ab-7-2020/Background_Information_Roadmaps.pdf"
-              target="_blank"
-              style="color: #7c9d2c"
-              >background document.</a
-            >
-          </p>
-        </div>
+          ">
+        Background
+      </h2>
+      <div style="padding: 10px">
+        <p>
+          At the 2022 General Meeting of the German Initiative on Sustainable
+          Cocoa (GISCO), it was decided that the preparation of individual
+          roadmaps by each GISCO member and annual public reporting on
+          commitments and milestones included in these roadmaps is a valuable
+          and mandatory contribution to achieve
+          <a href="https://www.kakaoforum.de/fileadmin/Redaktion/Downloads/Oeffentliche_Downloads/Verein/GISCO_Objectives.pdf"
+            target="_blank" style="color: #7c9d2c">GISCO’s objectives.</a>
+        </p>
+        <p>
+          In addition to the monitoring and based on the
+          <a href="https://www.kakaoforum.de/fileadmin/Redaktion/Workshops_und_Veranstaltungen/Mitgliederversammlungen/Mitgliederversammlung_2022/ROADMAPS/EN_GISCO_Roadmap.pdf"
+            target="_blank" style="color: #7c9d2c">GISCO roadmap
+          </a>
+          which lists the goals, targeted indicators and recommendations for
+          action of the German Initiative on Sustainable Cocoa on the focus
+          topics of certified/independently verified cocoa, traceability,
+          deforestation/agroforestry, child labor and living income, the
+          members of GISCO draw up individual roadmaps on these focus topics,
+          which are published on the GISCO website.
+        </p>
+        <p>
+          More information on the individual roadmaps can be found in the
+          <a href="hthttps://www.kakaoforum.de/fileadmin/Redaktion/Downloads/Oeffentliche_Downloads/News_verbunden_ab-7-2020/Background_Information_Roadmaps.pdf"
+            target="_blank" style="color: #7c9d2c">background document.</a>
+        </p>
       </div>
+    </div>
 
-      <!-- {{data.form.description}}  -->
-      {% for dt in detail %}
-      <div
-        class="row"
-        style="
+    <!-- {{data.form.description}}  -->
+    {% for dt in detail %}
+    <div class="row" style="
           margin-bottom: 10px;
           margin-top: 10px;
           width: 100%;
           margin-left: 0px;
           margin-right: 0px;
-        "
-      >
-        <div
-          class="col"
-          style="width: 100%; padding-left: 0px; padding-right: 0px"
-        >
-          <div style="page-break-inside: avoid">
-            <h3
-              style="
+        ">
+      <div class="col" style="width: 100%; padding-left: 0px; padding-right: 0px">
+        <div style="page-break-inside: avoid">
+          <h3 style="
                 padding: 10px;
                 margin: 0px;
                 font-size: 20px;
                 color: #f3c0b4;
-              "
-            >
-              {{dt.name}}
-            </h3>
-            {% if dt.description %}
-            <div
-              style="
+              ">
+            {{dt.name}}
+          </h3>
+          {% if dt.description %}
+          <div style="
                 padding: 20px;
                 background: #e1e9d4;
                 border-left: 1.5px solid #789922;
@@ -131,70 +159,71 @@
                 margin: 0px;
                 font-style: italic;
                 font-size: 14px;
-              "
-            >
-              {{dt.description}}
-            </div>
-            {% endif %}
+              ">
+            {{dt.description}}
           </div>
-          {% for r in dt.data %}
-          <table
-            class="table"
-            style="
+          {% endif %}
+        </div>
+        {% for r in dt.data %}
+        <table class="table" style="
               margin-bottom: 0px;
               background-color: #e1e9d4;
               border-left: 1.5px solid #789922;
               border-right: 1.5px solid #789922;
-            "
-          >
-            <tbody>
-              {% for a in r.answers %} {% if a.value %}
-              <tr>
-                <td style="page-break-inside: avoid; word-break: break-word">
-                  <div style="font-weight: 500">
-                    {{a.question}} {% if a.tooltip %}
-                    <div
-                      style="
+            ">
+          <tbody>
+            {% for a in r.answers %} {% if a.value %}
+            <tr>
+              <td style="page-break-inside: avoid; word-break: break-word">
+                <div style="font-weight: 500">
+                  {{a.question}} {% if a.tooltip %}
+                  <div style="
                         display: block;
                         font-size: 14px;
                         font-style: italic;
                         font-weight: normal;
-                      "
-                    >
-                      Tooltip: {{a.tooltip}}
-                    </div>
-                    {% endif %}
-                    <div
-                      style="
+                      ">
+                    Tooltip: {{a.tooltip}}
+                  </div>
+                  {% endif %}
+                  <div style="
                         display: block;
                         font-size: 14px;
                         font-style: italic;
                         font-weight: normal;
-                      "
-                    >
-                      Answer:
-                    </div>
+                      ">
+                    Answer:
                   </div>
-                  <div style="padding: 10px">
-                    {% if a.value_type == "list" and a.value %}
-                    <ul style="margin-bottom: 0px">
-                      {% for v in a.value %}
-                      <li>{{v}}</li>
-                      {% endfor %}
-                    </ul>
-                    {% else %}
-                    <div style="margin-left: 20px">{{ a.value }}</div>
-                    {% endif %}
-                  </div>
-                </td>
-              </tr>
-              {% endif %} {% endfor %}
-            </tbody>
-          </table>
-          {% endfor %}
-        </div>
+                </div>
+                <div style="padding: 10px">
+                  {% if a.value_type == "list" and a.value %}
+                  <ul style="margin-bottom: 0px">
+                    {% for v in a.value %}
+                    <li>{{v}}</li>
+                    {% endfor %}
+                  </ul>
+                  {% else %}
+                  <div style="margin-left: 20px">{{ a.value }}</div>
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+            {% endif %} {% endfor %}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td>
+                <!--place holder for the fixed-position footer-->
+                <div class="page-footer-space"></div>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+        {% endfor %}
       </div>
-      {% endfor %}
     </div>
-  </body>
+    {% endfor %}
+  </div>
+</body>
+
 </html>
