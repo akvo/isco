@@ -212,6 +212,7 @@ class RoadmapAnswer(Base):
             answer = self.options[0] if self.options else None
         if q.type == RoadmapQuestionType.table:
             answer = self.table
+            value_type = "list"
         if q.type in [
             RoadmapQuestionType.option,
             RoadmapQuestionType.multiple_option,
