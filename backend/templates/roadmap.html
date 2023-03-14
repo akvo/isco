@@ -225,7 +225,8 @@
                     style="margin-bottom: 0px; padding-bottom: 5px"
                   >
                     <tbody>
-                      {% for a in r.answers %} {% if a.value %}
+                      {% for a in r.answers %} {% if a.value and a.value_type !=
+                      "list" %}
                       <tr>
                         <td
                           style="
@@ -276,7 +277,47 @@
                           </div>
                         </td>
                       </tr>
-                      {% endif %} {% endfor %}
+                      {% else %} {% for v in a.value %}
+                      <tr>
+                        <td
+                          style="
+                            page-break-inside: avoid;
+                            word-break: break-word;
+                            background-color: #e1e9d4;
+                            border: 2px solid #789922;
+                            padding: 10px;
+                          "
+                        >
+                          <div style="font-weight: 500">
+                            <span style="text-decoration: underline"
+                              >{{a.question}} :</span
+                            >
+                            {% if a.tooltip %}
+                            <div
+                              style="
+                                display: block;
+                                font-size: 14px;
+                                font-style: italic;
+                                font-weight: normal;
+                              "
+                            >
+                              Tooltip: {{a.tooltip}}
+                            </div>
+                            {% endif %}
+                            <div
+                              style="
+                                display: block;
+                                font-size: 14px;
+                                font-style: italic;
+                                font-weight: normal;
+                              "
+                            >
+                              {{v.milestone}}
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                      {% endfor %} {% endif %} {% endfor %}
                     </tbody>
                   </table>
                   {% endfor %}
