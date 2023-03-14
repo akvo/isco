@@ -325,7 +325,7 @@ def request_new_download(
     detail = report.transform_data(
         answers=data["answer"],
         session=session,
-        questionGroupModel=False)
+        questionGroupModel=False, language=data['language'])
     file = report.generate(data=data, detail=detail, roadmap=True)
     location = storage.download(url=file)
     return FileResponse(location)
