@@ -233,6 +233,7 @@ class RoadmapAnswer(Base):
             "value_type": value_type,
             "repeat": self.repeat_index,
             "tooltip": q.tooltip,
+            "translations": q.translations,
         }
 
 

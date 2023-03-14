@@ -317,6 +317,11 @@ def request_new_download(
         authenticated=req.state.authenticated)
     data = crud_roadmap.get_data_by_id(session=session, id=id)
     data = data.to_report
+    if data['language'] != 'en':
+        for a in data['answer']:
+            for q in a['translations']:
+                if q['language'] == data['language']:
+                    a['name'] = q['name']
     detail = report.transform_data(
         answers=data["answer"],
         session=session,

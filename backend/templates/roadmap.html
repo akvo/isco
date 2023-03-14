@@ -226,7 +226,7 @@
                             {% if a.value_type == "list" and a.value %}
                             <ul style="margin-bottom: 0px">
                               {% for v in a.value %}
-                              <li>{{v}}</li>
+                              <li>{{v.milestone}}</li>
                               {% endfor %}
                             </ul>
                             {% else %}
