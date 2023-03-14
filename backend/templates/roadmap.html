@@ -93,6 +93,7 @@
         Background
       </h2>
       <div style="padding: 10px">
+        {% if data.language == "en" %}
         <p>
           At the 2022 General Meeting of the German Initiative on Sustainable
           Cocoa (GISCO), it was decided that the preparation of individual
@@ -130,6 +131,20 @@
             >background document.</a
           >
         </p>
+        {% else %}
+        <p>
+          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Architecto
+          minima explicabo ab temporibus neque incidunt cum eum, odio
+          repudiandae error omnis eligendi aperiam quos quisquam, quis nihil
+          cupiditate eius enim.
+          <a
+            href="https://www.kakaoforum.de/fileadmin/Redaktion/Downloads/Oeffentliche_Downloads/Verein/GISCO_Objectives.pdf"
+            target="_blank"
+            style="color: #7c9d2c"
+            >GISCO’s objectives.</a
+          >
+        </p>
+        {% endif %}
       </div>
     </div>
     <table>
