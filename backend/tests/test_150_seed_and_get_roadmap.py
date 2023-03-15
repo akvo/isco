@@ -39,7 +39,7 @@ form_def = {
             "type": "text",
             "order": 1,
             "translations": [{
-                "name": "Commitment translated",
+                "name": "Commitment",
                 "language": "de"
             }],
         }, {
@@ -56,7 +56,7 @@ form_def = {
                 "label": "Milestone",
             }],
             "translations": [{
-                "name": "Milestones translated",
+                "name": "Meilenstein",
                 "language": "de"
             }],
         }, {
@@ -67,7 +67,7 @@ form_def = {
             "type": "text",
             "order": 3,
             "translations": [{
-                "name": "Challenge translated",
+                "name": "Herausforderung",
                 "language": "de"
             }],
         }],
@@ -75,7 +75,7 @@ form_def = {
         "repeatText": "Add another Commitment",
         "translations": [{
             "language": "de",
-            "name": "Traceability translated"
+            "name": "Rückverfolgbarkeit"
         }],
     }, {
         "name": "Certified and Independently Verified Cocoa",
@@ -90,7 +90,7 @@ form_def = {
             "type": "input",
             "order": 1,
             "translations": [{
-                "name": "Commitment translated",
+                "name": "Commitment",
                 "language": "de"
             }],
         }, {
@@ -107,7 +107,7 @@ form_def = {
                 "label": "Milestone",
             }],
             "translations": [{
-                "name": "Milestones translated",
+                "name": "Meilenstein",
                 "language": "de"
             }],
         }, {
@@ -118,7 +118,7 @@ form_def = {
             "type": "text",
             "order": 3,
             "translations": [{
-                "name": "Challenge translated",
+                "name": "Herausforderung",
                 "language": "de"
             }],
         }],
@@ -126,7 +126,7 @@ form_def = {
         "repeatText": "Add another Commitment",
         "translations": [{
             "language": "de",
-            "name": "Certified and Independently Verified Cocoa translated",
+            "name": "Zertifizierter und unabhängig verifizierter Kakao",
         }],
     }, {
         "name": "Deforestation / Agroforestry",
@@ -141,7 +141,7 @@ form_def = {
             "type": "input",
             "order": 1,
             "translations": [{
-                "name": "Commitment translated",
+                "name": "Commitment",
                 "language": "de"
             }],
         }, {
@@ -158,7 +158,7 @@ form_def = {
                 "label": "Milestone",
             }],
             "translations": [{
-                "name": "Milestones translated",
+                "name": "Meilenstein",
                 "language": "de"
             }],
         }, {
@@ -169,7 +169,7 @@ form_def = {
             "type": "text",
             "order": 3,
             "translations": [{
-                "name": "Challenge translated",
+                "name": "Herausforderung",
                 "language": "de"
             }],
         }],
@@ -177,7 +177,7 @@ form_def = {
         "repeatText": "Add another Commitment",
         "translations": [{
             "language": "de",
-            "name": "Deforestation / Agroforestry translated"
+            "name": "Entwaldung/Agroforstwirtschaft"
         }],
     }, {
         "name": "Child Labor",
@@ -192,7 +192,7 @@ form_def = {
             "type": "input",
             "order": 1,
             "translations": [{
-                "name": "Commitment translated",
+                "name": "Commitment",
                 "language": "de"
             }],
         }, {
@@ -209,7 +209,7 @@ form_def = {
                 "label": "Milestone",
             }],
             "translations": [{
-                "name": "Milestones translated",
+                "name": "Meilenstein",
                 "language": "de"
             }],
         }, {
@@ -220,13 +220,13 @@ form_def = {
             "type": "text",
             "order": 3,
             "translations": [{
-                "name": "Challenge translated",
+                "name": "Herausforderung",
                 "language": "de"
             }],
         }],
         "repeatButtonPlacement": "bottom",
         "repeatText": "Add another Commitment",
-        "translations": [{"language": "de", "name": "Child Labor translated"}],
+        "translations": [{"language": "de", "name": "Kinderarbeit"}],
     }],
     "tree": None,
     "initial_value": None,

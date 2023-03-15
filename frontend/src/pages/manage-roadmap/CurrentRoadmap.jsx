@@ -83,7 +83,7 @@ const CurrentRoadmap = ({ setCurrentTab, setEditDatapoint }) => {
       });
   };
 
-  const handleDownloadButton = ({ id, form }) => {
+  const handleDownloadButton = ({ id, datapoint_name }) => {
     setDownloadLoading(id);
     api
       .get(`/roadmap-download/${id}`)
@@ -94,7 +94,7 @@ const CurrentRoadmap = ({ setCurrentTab, setEditDatapoint }) => {
           const print = document.getElementById("print-iframe");
           if (print) {
             const today = moment().format("MMMM Do YYYY");
-            const title = `${form}_${today}`;
+            const title = `${datapoint_name}_${today}`;
             // for firefox
             print.contentDocument.title = title;
             // hack for chrome
