@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      /* Styles go here */
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      .page-footer,
+      .page-footer-space {
+        height: 150px;
+      }
+      .page-footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        border-top: 1px solid black;
+      }
+
+      .page-header {
+        position: fixed;
+        top: 0mm;
+        width: 100%;
+        border-bottom: 1px solid black;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 15px;
+      }
+
+      @page {
+        margin: 20mm;
+      }
+
+      @media print {
+        thead {
+          display: table-header-group;
+        }
+
+        tfoot {
+          display: table-footer-group;
+        }
+
+        button {
+          display: none;
+        }
+
+        body {
+          margin: 0;
+          font-family: Arial, Helvetica, sans-serif;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="page-footer">
+      <p style="font-style: italic; font-size: 12px">
+        An antitrust review on the question of whether and how to report on
+        income and price issues at the individual level within the framework of
+        the individual roadmaps will be carried out in 2023. Once the anti-trust
+        review is available, a new draft resolution on individual roadmaps with
+        regards to Living Income will be submitted to the General Assembly
+        (2023). Until then, commitments and milestones on the topic of Living
+        Income can be integrated into the individual roadmap on a voluntary
+        basis.
+      </p>
+      <h2
+        style="
+          color: #789922;
+          font-weight: 700;
+          font-size: 18px;
+          margin-bottom: 5px;
+          margin-top: 5px;
+        "
+      >
+        GISCO Secretariat / Forum Nachhaltiger Kakao e.V.
+      </h2>
+      <p style="font-size: 12px; margin-top: 0px">
+        c/o Repräsentanz der Deutschen Gesellschaft für Internationale
+        Zusammenarbeit (GIZ) GmbH I Reichpietschufer 20 I 10785 Berlin
+        Geschäftsführerin Beate Weiskopf I Tel.: +49 6196 79-1462 I Mobil: +49
+        151 64907842 I E-Mail: info@kakaoforum.de I www.kakaoforum.de
+      </p>
+    </div>
+    <div class="container header">
+      <img
+        style="height: 60px"
+        alt="{{ webdomain }}/images/gisco.jpg"
+        src="{{ webdomain }}/images/gisco.jpg"
+      />
+    </div>
+    <div
+      style="
+        text-align: center;
+        font-size: 18px;
+        font-weight: 900;
+        color: #673017;
+        margin-bottom: 10px;
+        margin-top: 10px;
+      "
+    >
+      ROADMAP : <span style="color: #789922">{{data.organisation.name}}</span>
+    </div>
+    <div style="background-color: #e1e9d4; border: 1.5px solid #789922">
+      <h2
+        style="
+          text-align: left;
+          padding: 10px;
+          margin: 0px;
+          font-size: 20px;
+          color: #673017;
+        "
+      >
+        Background
+      </h2>
+      <div style="padding: 10px">
+        {% if data.language == "en" %}
+        <p>
+          At the 2022 General Meeting of the German Initiative on Sustainable
+          Cocoa (GISCO), it was decided that the preparation of individual
+          roadmaps by each GISCO member and annual public reporting on
+          commitments and milestones included in these roadmaps is a valuable
+          and mandatory contribution to achieve
+          <a
+            href="https://www.kakaoforum.de/fileadmin/Redaktion/Downloads/Oeffentliche_Downloads/Verein/GISCO_Objectives.pdf"
+            target="_blank"
+            style="color: #7c9d2c"
+            >GISCO’s objectives.</a
+          >
+        </p>
+        <p>
+          In addition to the monitoring and based on the
+          <a
+            href="https://www.kakaoforum.de/fileadmin/Redaktion/Workshops_und_Veranstaltungen/Mitgliederversammlungen/Mitgliederversammlung_2022/ROADMAPS/EN_GISCO_Roadmap.pdf"
+            target="_blank"
+            style="color: #7c9d2c"
+            >GISCO roadmap
+          </a>
+          which lists the goals, targeted indicators and recommendations for
+          action of the German Initiative on Sustainable Cocoa on the focus
+          topics of certified/independently verified cocoa, traceability,
+          deforestation/agroforestry, child labor and living income, the members
+          of GISCO draw up individual roadmaps on these focus topics, which are
+          published on the GISCO website.
+        </p>
+        <p>
+          More information on the individual roadmaps can be found in the
+          <a
+            href="hthttps://www.kakaoforum.de/fileadmin/Redaktion/Downloads/Oeffentliche_Downloads/News_verbunden_ab-7-2020/Background_Information_Roadmaps.pdf"
+            target="_blank"
+            style="color: #7c9d2c"
+            >background document.</a
+          >
+        </p>
+        {% else %}
+        <p>
+          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Architecto
+          minima explicabo ab temporibus neque incidunt cum eum, odio
+          repudiandae error omnis eligendi aperiam quos quisquam, quis nihil
+          cupiditate eius enim.
+          <a
+            href="https://www.kakaoforum.de/fileadmin/Redaktion/Downloads/Oeffentliche_Downloads/Verein/GISCO_Objectives.pdf"
+            target="_blank"
+            style="color: #7c9d2c"
+            >GISCO’s objectives.</a
+          >
+        </p>
+        {% endif %}
+      </div>
+    </div>
+    <table>
+      <tbody>
+        <tr>
+          <td>
+            <!--*** CONTENT GOES HERE ***-->
+            <div class="page">
+              {% for dt in detail %}
+              <div
+                class="row"
+                style="
+                  margin-bottom: 10px;
+                  margin-top: 10px;
+                  width: 100%;
+                  margin-left: 0px;
+                  margin-right: 0px;
+                "
+              >
+                <div
+                  class="col"
+                  style="width: 100%; padding-left: 0px; padding-right: 0px"
+                >
+                  <div style="page-break-inside: avoid">
+                    <h3
+                      style="
+                        padding-bottom: 10px;
+                        margin: 0px;
+                        font-size: 20px;
+                        color: #673017;
+                      "
+                    >
+                      {{dt.name}}
+                    </h3>
+                    {% if dt.description %}
+                    <div
+                      style="
+                        padding: 20px;
+                        background: #e1e9d4;
+                        border-left: 1.5px solid #789922;
+                        border-right: 1.5px solid #789922;
+                        margin: 0px;
+                        font-style: italic;
+                        font-size: 14px;
+                      "
+                    >
+                      {{dt.description}}
+                    </div>
+                    {% endif %}
+                  </div>
+                  {% for r in dt.data %}
+                  <table
+                    class="table"
+                    style="margin-bottom: 0px; padding-bottom: 5px"
+                  >
+                    <tbody>
+                      {% for a in r.answers %} {% if a.value and a.value_type !=
+                      "list" %}
+                      <tr>
+                        <td
+                          style="
+                            page-break-inside: avoid;
+                            word-break: break-word;
+                            background-color: #e1e9d4;
+                            border: 2px solid #789922;
+                            padding: 10px;
+                          "
+                        >
+                          <div style="font-weight: 500">
+                            <span style="text-decoration: underline"
+                              >{{a.question}} :</span
+                            >
+                            {% if a.tooltip %}
+                            <div
+                              style="
+                                display: block;
+                                font-size: 14px;
+                                font-style: italic;
+                                font-weight: normal;
+                              "
+                            >
+                              Tooltip: {{a.tooltip}}
+                            </div>
+                            {% endif %}
+                            <div
+                              style="
+                                display: block;
+                                font-size: 14px;
+                                font-style: italic;
+                                font-weight: normal;
+                              "
+                            >
+                              Answer:
+                            </div>
+                          </div>
+                          <div style="padding: 10px">
+                            {% if a.value_type == "list" and a.value %}
+                            <ul style="margin-bottom: 0px">
+                              {% for v in a.value %}
+                              <li>{{v.milestone}}</li>
+                              {% endfor %}
+                            </ul>
+                            {% else %}
+                            <div style="margin-left: 20px">{{ a.value }}</div>
+                            {% endif %}
+                          </div>
+                        </td>
+                      </tr>
+                      {% else %} {% for v in a.value %}
+                      <tr>
+                        <td
+                          style="
+                            page-break-inside: avoid;
+                            word-break: break-word;
+                            background-color: #e1e9d4;
+                            border: 2px solid #789922;
+                            padding: 10px;
+                          "
+                        >
+                          <div style="font-weight: 500">
+                            <span style="text-decoration: underline"
+                              >{{a.question}} :</span
+                            >
+                            {% if a.tooltip %}
+                            <div
+                              style="
+                                display: block;
+                                font-size: 14px;
+                                font-style: italic;
+                                font-weight: normal;
+                              "
+                            >
+                              Tooltip: {{a.tooltip}}
+                            </div>
+                            {% endif %}
+                            <div
+                              style="
+                                display: block;
+                                font-size: 14px;
+                                font-style: italic;
+                                font-weight: normal;
+                              "
+                            >
+                              {{v.milestone}}
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                      {% endfor %} {% endif %} {% endfor %}
+                    </tbody>
+                  </table>
+                  {% endfor %}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </td>
+        </tr>
+      </tbody>
+
+      <tfoot>
+        <tr>
+          <td>
+            <!--place holder for the fixed-position footer-->
+            <div class="page-footer-space"></div>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </body>
+</html>

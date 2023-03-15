@@ -15,10 +15,10 @@ import util.storage as storage
 webdomain = os.environ["WEBDOMAIN"]
 
 
-def generate(data, detail):
+def generate(data, detail, roadmap):
     template_loader = jinja2.FileSystemLoader(searchpath="./templates")
     template_env = jinja2.Environment(loader=template_loader)
-    template_file = "report.html"
+    template_file = "roadmap.html" if roadmap else "report.html"
     template = template_env.get_template(template_file)
     output_text = template.render(
         webdomain=webdomain, data=data, detail=detail)
@@ -40,7 +40,7 @@ def generate(data, detail):
 
 
 def transform_data(answers: list, session: Session, questionGroupModel:
-                   Optional[bool] = True):
+                   Optional[bool] = True, language: Optional[str] = "en"):
     model = QuestionGroup if questionGroupModel else RoadmapQuestionGroup
     answers = pd.DataFrame(answers)
     group = answers["group"].drop_duplicates().to_list()
@@ -51,8 +51,14 @@ def transform_data(answers: list, session: Session, questionGroupModel:
         "name": g.name,
         "order": g.order,
         "repeatable": g.repeat,
-        "description": g.description
+        "description": g.description,
+        "translations": g.translations,
     } for g in group]
+    if language != 'en':
+        for a in group:
+            for q in a['translations']:
+                if q['language'] == language:
+                    a['name'] = q['name']
     answers["group_order"] = answers["group"].apply(
         lambda x: list(filter(lambda g: g["id"] == x, group))[0]["order"])
     answers["group_name"] = answers["group"].apply(

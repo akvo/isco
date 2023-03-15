@@ -52,5 +52,5 @@ class TestReportUtil():
         data = data.to_report
         data = report.get_cascade_value(data=data, session=session)
         detail = report.transform_data(answers=data["answer"], session=session)
-        file = report.generate(data=data, detail=detail)
+        file = report.generate(data=data, detail=detail, roadmap=False)
         assert ".html" in file
