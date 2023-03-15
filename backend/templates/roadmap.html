@@ -98,7 +98,7 @@
         font-size: 18px;
         font-weight: 900;
         color: #673017;
-        margin-bottom: 10px;
+        margin-bottom: 20px;
         margin-top: 10px;
       "
     >
@@ -109,6 +109,7 @@
         style="
           text-align: left;
           padding: 10px;
+          padding-bottom: 0px;
           margin: 0px;
           font-size: 20px;
           color: #673017;
@@ -117,7 +118,20 @@
         Background
       </h2>
       <div style="padding: 10px">
-        {% if data.language == "en" %}
+        {% if data.language == "de" %}
+        <p>
+          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Architecto
+          minima explicabo ab temporibus neque incidunt cum eum, odio
+          repudiandae error omnis eligendi aperiam quos quisquam, quis nihil
+          cupiditate eius enim.
+          <a
+            href="https://www.kakaoforum.de/fileadmin/Redaktion/Downloads/Oeffentliche_Downloads/Verein/GISCO_Objectives.pdf"
+            target="_blank"
+            style="color: #7c9d2c"
+            >GISCO’s objectives.</a
+          >
+        </p>
+        {% else %}
         <p>
           At the 2022 General Meeting of the German Initiative on Sustainable
           Cocoa (GISCO), it was decided that the preparation of individual
@@ -149,23 +163,10 @@
         <p>
           More information on the individual roadmaps can be found in the
           <a
-            href="hthttps://www.kakaoforum.de/fileadmin/Redaktion/Downloads/Oeffentliche_Downloads/News_verbunden_ab-7-2020/Background_Information_Roadmaps.pdf"
+            href="https://www.kakaoforum.de/fileadmin/Redaktion/Downloads/Oeffentliche_Downloads/News_verbunden_ab-7-2020/Background_Information_Roadmaps.pdf"
             target="_blank"
             style="color: #7c9d2c"
             >background document.</a
-          >
-        </p>
-        {% else %}
-        <p>
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Architecto
-          minima explicabo ab temporibus neque incidunt cum eum, odio
-          repudiandae error omnis eligendi aperiam quos quisquam, quis nihil
-          cupiditate eius enim.
-          <a
-            href="https://www.kakaoforum.de/fileadmin/Redaktion/Downloads/Oeffentliche_Downloads/Verein/GISCO_Objectives.pdf"
-            target="_blank"
-            style="color: #7c9d2c"
-            >GISCO’s objectives.</a
           >
         </p>
         {% endif %}
