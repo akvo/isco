@@ -87,7 +87,7 @@
     }]
   }, {
     "id": "aef7c7a5-d280-4f21-804d-de9079e86a0e",
-    "name": "open_manage_survey_page",
+    "name": "00_open_manage_survey_page",
     "commands": [{
       "id": "2d4da232-2f69-4a12-b89c-60441b37d958",
       "comment": "login with verified super admin",
@@ -172,12 +172,12 @@
     }]
   }, {
     "id": "3a71c5db-05ac-4938-96b7-7c74881c5ed7",
-    "name": "add_new_survey",
+    "name": "01_add_new_survey",
     "commands": [{
-      "id": "13d0b821-96d1-4968-9811-2bae32199f5f",
+      "id": "c9cf05f8-9d75-4a44-8448-7c749e63f8a2",
       "comment": "",
       "command": "run",
-      "target": "open_manage_survey_page",
+      "target": "00_open_manage_survey_page",
       "targets": [],
       "value": ""
     }, {
@@ -367,15 +367,11 @@
       "targets": [],
       "value": "30000"
     }, {
-      "id": "e025744c-58d6-4d49-8efc-daf0d0019a2a",
-      "comment": "Notification success displayed.",
+      "id": "8d753f1d-5c16-4be2-87dd-05f772a3192d",
+      "comment": "Success notification dispalyed",
       "command": "assertText",
-      "target": "css=.ant-message-custom-content > span:nth-child(2)",
-      "targets": [
-        ["css=.ant-message-custom-content > span:nth-child(2)", "css:finder"],
-        ["xpath=//span[2]", "xpath:position"],
-        ["xpath=//span[contains(.,'Survey saved successfully.')]", "xpath:innerText"]
-      ],
+      "target": "css=.ant-message-notice-content",
+      "targets": [],
       "value": "Survey saved successfully."
     }]
   }],
