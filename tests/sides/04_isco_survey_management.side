@@ -374,14 +374,119 @@
       "targets": [],
       "value": "Survey saved successfully."
     }]
+  }, {
+    "id": "c110ca8f-869b-4cbf-9b83-1b5034ef4fd6",
+    "name": "02_edit_new_survey",
+    "commands": [{
+      "id": "2370c31e-f77b-4c8f-96ad-efa69858df99",
+      "comment": "",
+      "command": "run",
+      "target": "00_open_manage_survey_page",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "a430f1fd-922a-41c3-a839-e89778febb66",
+      "comment": "Wait for Manage Surveys table loaded",
+      "command": "waitForElementVisible",
+      "target": "xpath=//div[@id='manage-survey']/div/div/div/div/div/div/div/div/div/div/table/tbody/tr/td",
+      "targets": [
+        ["css=.ant-table-cell-row-hover:nth-child(1)", "css:finder"],
+        ["xpath=//div[@id='manage-survey']/div/div/div/div/div/div/div/div/div/div/table/tbody/tr/td", "xpath:idRelative"],
+        ["xpath=//td", "xpath:position"],
+        ["xpath=//td[contains(.,'Test Case Survey')]", "xpath:innerText"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "4c47d666-c8a3-430f-9838-1c8a3242946b",
+      "comment": "Assert Test Survey in table list",
+      "command": "assertText",
+      "target": "xpath=//div[@id='manage-survey']/div/div/div/div/div/div/div/div/div/div/table/tbody/tr/td",
+      "targets": [
+        ["css=.ant-table-cell-row-hover:nth-child(1)", "css:finder"],
+        ["xpath=//div[@id='manage-survey']/div/div/div/div/div/div/div/div/div/div/table/tbody/tr/td", "xpath:idRelative"],
+        ["xpath=//td", "xpath:position"],
+        ["xpath=//td[contains(.,'Test Case Survey')]", "xpath:innerText"]
+      ],
+      "value": "Test Case Survey"
+    }, {
+      "id": "1de0763d-fb74-4b6a-9f6a-ad4782976fad",
+      "comment": "Click edit button",
+      "command": "click",
+      "target": "xpath=//div[@id='manage-survey']/div/div/div/div/div/div/div/div/div/div/table/tbody/tr/td[6]/div/div/button",
+      "targets": [
+        ["css=.ant-table-cell-row-hover .ant-space-item:nth-child(1) > .ant-btn", "css:finder"],
+        ["xpath=(//button[@type='button'])[5]", "xpath:attributes"],
+        ["xpath=//div[@id='manage-survey']/div/div/div/div/div/div/div/div/div/div/table/tbody/tr/td[6]/div/div/button", "xpath:idRelative"],
+        ["xpath=//td[6]/div/div/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "5ba23de2-998d-4836-8a46-b91eb1d0213d",
+      "comment": "Wait for publish button visible",
+      "command": "waitForElementVisible",
+      "target": "xpath=//div[@id='main-form-editor']/div/div/div/div/div[2]/div/div/div/div/div[2]/button",
+      "targets": [
+        ["css=.float-right", "css:finder"],
+        ["xpath=(//button[@type='button'])[8]", "xpath:attributes"],
+        ["xpath=//div[@id='main-form-editor']/div/div/div/div/div[2]/div/div/div/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/div/div/div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Publish')]", "xpath:innerText"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "1316bada-c678-41cd-b988-fbb03fc04f84",
+      "comment": "Assert default question group available",
+      "command": "assertValue",
+      "target": "xpath=//input[@id='survey-detail_question_group-21-name']",
+      "targets": [
+        ["id=survey-detail_question_group-21-name", "id"],
+        ["css=#survey-detail_question_group-21-name", "css:finder"],
+        ["xpath=//input[@id='survey-detail_question_group-21-name']", "xpath:attributes"],
+        ["xpath=//form[@id='survey-detail']/div/div/div/div[2]/div/div/div/div/input", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/div/div/input", "xpath:position"]
+      ],
+      "value": "New section - please change name"
+    }, {
+      "id": "eb5c609e-128f-43b5-a49a-dab1f68612b7",
+      "comment": "Click show/hide section question button",
+      "command": "click",
+      "target": "xpath=//form[@id='survey-detail']/div/div/div/div[3]/div/div/button",
+      "targets": [
+        ["css=.ant-tooltip-open", "css:finder"],
+        ["xpath=(//button[@type='button'])[10]", "xpath:attributes"],
+        ["xpath=//form[@id='survey-detail']/div/div/div/div[3]/div/div/button", "xpath:idRelative"],
+        ["xpath=//div[3]/div/div/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "78a234f5-8928-417b-8ac9-ad6dbbd31bfc",
+      "comment": "Wait for Add new question button visible",
+      "command": "waitForElementVisible",
+      "target": "xpath=//form[@id='survey-detail']/div/div/div[2]/div/div/div/button",
+      "targets": [
+        ["css=.ant-row:nth-child(1) > .ant-space .ant-btn", "css:finder"],
+        ["xpath=(//button[@type='button'])[13]", "xpath:attributes"],
+        ["xpath=//form[@id='survey-detail']/div/div/div[2]/div/div/div/button", "xpath:idRelative"],
+        ["xpath=//form/div/div/div[2]/div/div/div/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Add new question')]", "xpath:innerText"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "a213c309-b905-4ce9-b128-899daa53995e",
+      "comment": "Assert default question available",
+      "command": "assertValue",
+      "target": "xpath=//form[@id='survey-detail']/div/div/div[2]/div[2]/div/div/div/div/div/div/div/div/div/div/div/div/input",
+      "targets": [],
+      "value": "New question - please change name"
+    }]
   }],
   "suites": [{
     "id": "9eecc3e3-ddb5-44db-a81d-e4a4935a4d48",
-    "name": "survey_management",
+    "name": "isco_survey_management",
     "persistSession": false,
     "parallel": false,
     "timeout": 300,
-    "tests": ["aef7c7a5-d280-4f21-804d-de9079e86a0e", "3a71c5db-05ac-4938-96b7-7c74881c5ed7"]
+    "tests": ["aef7c7a5-d280-4f21-804d-de9079e86a0e", "3a71c5db-05ac-4938-96b7-7c74881c5ed7", "c110ca8f-869b-4cbf-9b83-1b5034ef4fd6"]
   }],
   "urls": ["http://localhost:3000/"],
   "plugins": []
