@@ -24,7 +24,12 @@
     "validations": [
       {
         "group_id": 19,
-        "question_ids": [48, 49, 50, 51],
+        "question_ids": [48, 49],
+        "equal": 100
+      },
+      {
+        "group_id": 19,
+        "question_ids": [50, 51],
         "equal": 100
       }
     ]
