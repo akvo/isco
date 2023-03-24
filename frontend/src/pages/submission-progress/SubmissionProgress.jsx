@@ -20,68 +20,78 @@ const SubmissionProgress = () => {
   const [orgValue, setOrgValue] = useState(null);
   const [showNonSubmittedMember, setShowNonSubmittedMember] = useState(false);
 
+  const currentYear = new Date().getFullYear();
+
   const text = useMemo(() => {
     return uiText[activeLang];
   }, [activeLang]);
 
-  const columns = [
-    {
-      title: text.tbColOrganization,
-      dataIndex: "organisation",
-      key: "organisation",
-    },
-    {
-      title: text.tbColMemberQuestionnaire,
-      children: [
-        {
-          title: text.tbColSaved,
-          dataIndex: "memberSaved",
-          key: "member-saved-count",
-          align: "center",
-        },
-        {
-          title: text.tbColSubmitted,
-          dataIndex: "memberSubmitted",
-          key: "member-submitted-count",
-          align: "center",
-        },
-      ],
-    },
-    {
-      title: text.tbColProjectQuestionnaire,
-      children: [
-        {
-          title: text.tbColSaved,
-          dataIndex: "projectSaved",
-          key: "project-saved-count",
-          align: "center",
-        },
-        {
-          title: text.tbColSubmitted,
-          dataIndex: "projectSubmitted",
-          key: "project-submitted-count",
-          align: "center",
-        },
-      ],
-    },
-    {
-      title: text.tbColDISCOSharedMemberSurvey,
-      children: [
-        {
-          title: text.tbColSaved,
-          dataIndex: "limitedSaved",
-          key: "limited-saved-count",
-          align: "center",
-        },
-        {
-          title: text.tbColSubmitted,
-          dataIndex: "limitedSubmitted",
-          key: "limited-submitted-count",
-          align: "center",
-        },
-      ],
-    },
-  ];
+  const columns = () => {
+    const discoSubmissionCol = [
+      {
+        title: text.tbColDISCOSharedMemberSurvey,
+        children: [
+          {
+            title: text.tbColSaved,
+            dataIndex: "limitedSaved",
+            key: "limited-saved-count",
+            align: "center",
+          },
+          {
+            title: text.tbColSubmitted,
+            dataIndex: "limitedSubmitted",
+            key: "limited-submitted-count",
+            align: "center",
+          },
+        ],
+      },
+    ];
+    const cols = [
+      {
+        title: text.tbColOrganization,
+        dataIndex: "organisation",
+        key: "organisation",
+      },
+      {
+        title: text.tbColMemberQuestionnaire,
+        children: [
+          {
+            title: text.tbColSaved,
+            dataIndex: "memberSaved",
+            key: "member-saved-count",
+            align: "center",
+          },
+          {
+            title: text.tbColSubmitted,
+            dataIndex: "memberSubmitted",
+            key: "member-submitted-count",
+            align: "center",
+          },
+        ],
+      },
+      {
+        title: text.tbColProjectQuestionnaire,
+        children: [
+          {
+            title: text.tbColSaved,
+            dataIndex: "projectSaved",
+            key: "project-saved-count",
+            align: "center",
+          },
+          {
+            title: text.tbColSubmitted,
+            dataIndex: "projectSubmitted",
+            key: "project-submitted-count",
+            align: "center",
+          },
+        ],
+      },
+    ];
+    if (currentYear < 2023) {
+      return [...cols, ...discoSubmissionCol];
+    }
+    return cols;
+  };
 
   const handleOrganisationFilter = (org) => {
     setOrgValue(org);
@@ -245,7 +255,7 @@ const SubmissionProgress = () => {
                   `${record.organisation}-${record.form_type}`
                 }
                 className="table-wrapper"
-                columns={columns}
+                columns={columns()}
                 dataSource={data}
                 loading={isLoading}
               />
