@@ -8,7 +8,7 @@ from fastapi import Depends, Request, Response, APIRouter, HTTPException, Query
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
 from typing import List, Optional
-from sqlalchemy import func, and_
+from sqlalchemy import func, and_, extract
 from sqlalchemy.orm import Session
 import db.crud_data as crud
 from db import crud_answer, crud_form, crud_collaborator, crud_organisation
@@ -26,7 +26,7 @@ from middleware import find_member_admins
 from util.survey_config import MEMBER_SURVEY, PROJECT_SURVEY, LIMITED_SURVEY
 from util.mailer import Email, MailTypeEnum
 from routes.collaborator import send_collaborator_email
-from util.common import generate_datapoint_name
+from util.common import generate_datapoint_name, get_prev_year
 
 security = HTTPBearer()
 data_route = APIRouter()
@@ -633,11 +633,17 @@ def get_submission_progress(
                             detail="Forbidden access")
     if organisation:
         org_ids = organisation
+    # filter by monitoring round (current year)
+    current_year = get_prev_year(prev=0, year=True)
     data = session.query(
         Data.organisation, Data.form, Data.submitted,
         func.count(Data.id).label('count')
-    ).filter(Data.organisation.in_(org_ids)).group_by(
-        Data.organisation, Data.form, Data.submitted).all()
+    ).filter(and_(
+        Data.organisation.in_(org_ids),
+        extract('year', Data.created) == current_year
+    )).group_by(
+        Data.organisation, Data.form, Data.submitted
+    ).all()
     if not data:
         return []
     organisations = session.query(Organisation).filter(
