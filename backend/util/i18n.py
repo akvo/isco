@@ -30,7 +30,7 @@ class EmailText(enum.Enum):
             Dear reporting member / partner,
             <p>
             #user_name# (#user_email#) from your
-            organisation has signed up for the 2022 Monitoring
+            organisation has signed up for the 2023 Monitoring
             Round at cocoamonitoring.net
             </p>
             <p>
@@ -45,6 +45,9 @@ class EmailText(enum.Enum):
                 Mark de Waard (dewaard@idhtrade.org)</li>
                 <li>For GISCO:
                 Ulrike Joras (ulrike.joras@giz.de)</li>
+                <li>For SWISSCO:
+                Michaela Kuhn (michaela.kuhn@kakaoplattform.ch)
+                </li>
             </ul>
             ''',
         "message": None,
@@ -52,7 +55,7 @@ class EmailText(enum.Enum):
             Sehr geehrte/r Teilnehmer/in,
             <p>
             Herr/ Frau #user_name# (#user_email#) aus Ihrer
-            Organisation hat sich für die Monitoring-Runde 2022 auf
+            Organisation hat sich für die Monitoring-Runde 2023 auf
             cocoamonitoring.net
             registriert.
             </p>
@@ -68,6 +71,8 @@ class EmailText(enum.Enum):
                 Mark de Waard (dewaard@idhtrade.org)</li>
                 <li>Für GISCO:
                 Ulrike Joras (ulrike.joras@giz.de)</li>
+                <li>Für SWISSCO:
+                Michaela Kuhn (michaela.kuhn@kakaoplattform.ch)</li>
             </ul>
             ''',
         "image": None,
@@ -83,19 +88,19 @@ class EmailText(enum.Enum):
                 Dear reporting member,
                 <p>
                 Thank you for signing up to the online monitoring tool of
-                Beyond Chocolate, DISCO and GISCO. Your registration has been
-                approved. Please click following button to set your password
-                and finalize your registration.
+                Beyond Chocolate, DISCO, SWISSCO and GISCO. Your registration
+                has been approved. Please click following button to set your
+                password and finalize your registration.
                 </p>
                 </div>''',
         "body_translation": '''<div>
                 Sehr geehrtes meldendes Mitglied,
                 <p>
                 vielen Dank, dass Sie sich für das Online-Monitoring-Tool
-                von Beyond Chocolate, DISCO und GISCO angemeldet haben. Ihre
-                Registrierung wurde bestätigt. Bitte klicken Sie auf den
-                untenstehenden Link, um Ihr Passwort festzulegen und Ihre
-                Registrierung abzuschließen.
+                von Beyond Chocolate, DISCO, SWISSCO und GISCO angemeldet
+                haben. Ihre Registrierung wurde bestätigt. Bitte klicken
+                Sie auf den untenstehenden Link, um Ihr Passwort
+                festzulegen und Ihre Registrierung abzuschließen.
                 </p>
                 </div>''',
         "message": None,
@@ -116,16 +121,16 @@ class EmailText(enum.Enum):
                 Dear reporting member,
                 <p>
                 Thank you for signing up to the online monitoring tool of
-                Beyond Chocolate, DISCO and GISCO. Please click following
-                button to verify your email address. You will be notified
-                when as soon as your account has been approved.
+                Beyond Chocolate, DISCO, SWISSCO and GISCO. Please click
+                following button to verify your email address. You will be
+                notified when as soon as your account has been approved.
                 </p>
                 </div>''',
         "body_translation": '''<div>
                 „Liebes Mitglied,
                 <p>
                 vielen Dank, dass Sie sich für das Online-Monitoringtool von
-                Beyond Chocolate, DISCO und Forum Nachhaltiger Kakao
+                Beyond Chocolate, DISCO, SWISSCO und Forum Nachhaltiger Kakao
                 angemeldet haben. Bitte klicken Sie auf den unten stehenden
                 Link, um Ihre E-Mail-Adresse zu verifizieren. Sie werden
                 benachrichtigt, sobald Ihre Registrierung genehmigt wurde.
@@ -182,13 +187,13 @@ class EmailText(enum.Enum):
                 Dear reporting member,
                 <p>
                 Your password for the online monitoring tool of
-                Beyond Chocolate, DISCO and GISCO has been set and you will
-                now be able to start reporting on your 2021 data.
+                Beyond Chocolate, DISCO, SWISSCO and GISCO has been set and
+                you will now be able to start reporting on your 2022 data.
                 </p>
                 <p>
                 Once you have logged in, please click the “survey” tab at the
                 top left of the screen. You will then be able to open a new
-                questionnaire and start reporting on your 2021 data. Please do
+                questionnaire and start reporting on your 2022 data. Please do
                 not forget to save your questionnaire before you leave the
                 tool so you can continue working on it at a later time.
                 </p>
@@ -202,6 +207,8 @@ class EmailText(enum.Enum):
                     Mark de Waard (dewaard@idhtrade.org)</li>
                     <li>For GISCO:
                     Ulrike Joras (ulrike.joras@giz.de)</li>
+                    <li>For SWISSCO:
+                    Michaela Kuhn (michaela.kuhn@kakaoplattform.ch)</li>
                 </ul>
                 </p>
                 </div>''',
@@ -209,15 +216,15 @@ class EmailText(enum.Enum):
                 Sehr geehrtes meldendes Mitglied,
                 <p>
                 Ihr Passwort für das Online-Monitoring-Tool von Beyond
-                Chocolate, DISCO und GISCO wurde festgelegt und Sie können nun
-                mit der Berichterstattung über Ihre Daten
-                aus dem Jahr 2021 beginnen.
+                Chocolate, DISCO, SWISSCO und GISCO wurde festgelegt und Sie
+                können nun mit der Berichterstattung über Ihre Daten
+                aus dem Jahr 2022 beginnen.
                 </p>
                 <p>
                 Sobald Sie sich eingeloggt haben, klicken Sie bitte auf die
                 Registerkarte "Umfrage" oben links auf dem Bildschirm. Sie
                 können dann einen neuen Fragebogen öffnen und mit der
-                Berichterstattung über Ihre Daten für 2021 beginnen. Bitte
+                Berichterstattung über Ihre Daten für 2022 beginnen. Bitte
                 vergessen Sie nicht, Ihren Fragebogen zu speichern, bevor Sie
                 das Tool verlassen, damit Sie ihn zu einem späteren Zeitpunkt
                 weiterbearbeiten können.
@@ -233,6 +240,8 @@ class EmailText(enum.Enum):
                     Mark de Waard (dewaard@idhtrade.org)</li>
                     <li>Für GISCO:
                     Ulrike Joras (ulrike.joras@giz.de)</li>
+                    <li>Für SWISSCO:
+                    Michaela Kuhn (michaela.kuhn@kakaoplattform.ch)</li>
                 </ul>
                 </div>''',
         "message": None,
