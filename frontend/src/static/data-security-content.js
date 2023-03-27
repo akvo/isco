@@ -16,7 +16,8 @@ const dataSecurityContent = {
         access to data and / or functionalities in the system.
       </p>
       <p className="text-justify">
-        Considering the potential broadening of the system over time, we
+        Considering the potential broadening of the system over time, we (the
+        Belgian, Dutch, German and Swiss Initiatives on Sustainable Cocoa)
         envisage separate meetings to clarify roles and responsibilities across
         various stakeholders and clear guidelines and data procedures to
         administer and implement these roles and corresponding access to data
@@ -30,7 +31,12 @@ const dataSecurityContent = {
         frameworks, and procedures, as laid out further in the below text. Data
         is stored securely; we ensure data is safely encrypted, and your data is
         never shared with third parties. We comply with the European General
-        Data Protection Regulations (GDPR).
+        Data Protection Regulations (GDPR). Access to data before anonymization
+        is possible only for a very limited number of duly authorized persons
+        having signed non-disclosure commitments; this may solely be done to
+        check for and ensure consistency in data; getting back to the members to
+        correct for erroneous or contradicting data and/or for providing support
+        to gradual improvement of sustainability reporting by members.
       </p>
       <br />
 
@@ -71,11 +77,11 @@ const dataSecurityContent = {
 
       <h3>Data processing by Akvo</h3>
       <p className="text-justify">
-        The Processor entrusts only such persons (whether legal or natural) with
-        the data Processing under this Agreement who have given an undertaking
+        The processor entrusts only such persons (whether legal or natural) with
+        the data processing under this agreement who have given an undertaking
         to maintain confidentiality and have been informed of any special data
         protection requirements relevant to their work; Akvo acts as a data
-        processor on behalf of Beyond Chocolate and GISCO.
+        processor on behalf of Beyond Chocolate, DISCO, GISCO and SWISSCO.
       </p>
       <p className="text-justify">
         The data collected are subject to the GDPR which is a EU law that
@@ -89,18 +95,19 @@ const dataSecurityContent = {
 
       <h3>Roles and permissions</h3>
       <p className="text-justify">
-        The platform secretariats of Beyond Chocolate and GISCO will follow a
-        roles and permissions model, allowing for administrator level and also
-        granular access control to data. Access to questions and attendant
-        response data will be restricted to a user’s specific and defined role
-        and the permissions assigned to that role. A strict permissions model
-        ensures that sensitive data is not accessible nor visible to other users
-        of the platforms.
+        The platform secretariats of Beyond Chocolate, DISCO, GISCO and SWISSCO
+        will follow a roles and permissions model. allowing for administrator
+        level and also granular access control to data. They will grant where
+        relevant administrator level access to the tool and control granular
+        access to data. Access to questions and attendant response data will be
+        restricted to a user’s specifically and defined role and the permissions
+        assigned to that role. A strict permissions model ensures that sensitive
+        data is not accessible nor visible to other users of the platforms.
       </p>
       <p className="text-justify">
         Unless explicitly agreed upon otherwise by the owner of the data,
         collected data must be entirely anonymized and aggregated before they
-        may be shared with other Members of the platforms and/or rendered
+        may be shared with other members of the platforms and/or rendered
         public. Any data shared and/or displayed at a disaggregated level
         internally (e.g. to staff of the secretariats, the platform working
         groups that accompany the monitoring incl. data evaluation) will be
@@ -110,15 +117,7 @@ const dataSecurityContent = {
         Before publishing (anonymized and aggregated) findings or insights
         arising from the analysis of collected data, the platform secretariats
         will still ensure that this does not indirectly disclose sensitive
-        information with respect to a particular Member.
-      </p>
-      <p className="text-justify">
-        Access to data before anonymization is possible only for a very limited
-        number of duly authorized persons having signed non-disclosure
-        commitments; this may solely be done to check for and ensure consistency
-        in data; getting back to the members to correct for erroneous or
-        contradicting data and/or for providing support to gradual improvement
-        of sustainability reporting by Members.
+        information with respect to a particular member.
       </p>
       <p className="text-justify">
         The following persons will have such access to data before anonymization
@@ -149,15 +148,25 @@ const dataSecurityContent = {
       </p>
       <ul className="pl-5">
         <li>Mark de Waard</li>
+        <li>Marlene Hoekstra</li>
         <li>Patrick Stoop, C-Lever.org</li>
         <li>Hilde Geens, C-Lever.org</li>
+      </ul>
+
+      <p className="text-justify">
+        <u>For SWISSCO:</u>
+      </p>
+      <ul className="pl-5">
+        <li>Christian Robin</li>
+        <li>Michaela Kuhn</li>
+        <li>Sophie Tüllmann</li>
       </ul>
       <p className="text-justify">
         Each of the named persons above is required to sign a confidentiality
         agreement before getting access to the data of the corresponding
-        platform members. Any new personnel at the secretariats or at
-        C-Lever.org that needs to be granted access will have to have signed the
-        confidentiality agreement before getting such access.
+        platform members. Any new personnel at the secretariats, at C-Lever.org
+        or at Mainlevel that needs to be granted access will have to have signed
+        the confidentiality agreement before getting such access.
       </p>
       <br />
 
@@ -167,13 +176,14 @@ const dataSecurityContent = {
         Akvo.
       </p>
       <p className="text-justify">
-        During the data cleaning phase (executed by C-lever.org in consultation
-        with the Beyond Chocolate and GISCO secretariats), the data is accessed
-        directly in the data-storage tool made available by Akvo. Access to the
-        tool is password protected, only the authorised persons (see Annex 5)
-        have access to the data. In the storage tool each submitted data set is
-        linked to an instance ID. The authorised persons have access to the data
-        cleaning information linked to each instance ID.
+        During the data cleaning phase (executed by C-lever.org and Mainlevel in
+        consultation with the Beyond Chocolate, DISCO, GISCO and SWISSCO
+        secretariats), the data is accessed directly in the data-storage tool
+        made available by Akvo. Access to the tool is password protected, only
+        the authorised persons (see Annex 5) have access to the data. In the
+        storage tool each submitted data set is linked to an instance ID. The
+        authorised persons have access to the data cleaning information linked
+        to each instance ID.
       </p>
       <p className="text-justify">
         Storage of data during evaluation by C-Lever.org: After the data has
@@ -184,7 +194,9 @@ const dataSecurityContent = {
         from the tool and transferred to C-lever.org. These anonymized raw data
         are password protected with access limited to the designated persons
         listed above and stored locally on a password-secured server at
-        C-Lever.org.
+        C-Lever.org. When anonymized data is shared from C-Lever.org with the
+        ISCOs, data will also be stored on a password-secured server with access
+        limited to the designated persons.
       </p>
       <br />
 
@@ -207,11 +219,11 @@ const dataSecurityContent = {
         <li>
           Still be careful in sharing anonymised, but also aggregated and / or
           averaged data and check where any risk of sharing sensitive
-          information exists. In this case, the Members involved will be
+          information exists. In this case, the members involved will be
           contacted first.
         </li>
         <li>
-          Internal reporting to the Members, in a confidential setting, will
+          Internal reporting to the members, in a confidential setting, will
           always precede external reporting.
         </li>
       </ol>
@@ -242,11 +254,12 @@ const dataSecurityContent = {
       </p>
       <p className="text-justify">
         Angesichts der möglichen Erweiterung des Systems im Laufe der Zeit
-        planen wir separate Besprechungen, um die Rollen und
-        Verantwortlichkeiten verschiedener Interessengruppen zu klären und
-        Richtlinien und Datenverfahren für die Verwaltung und Implementierung
-        dieser Rollen, sowie den entsprechenden Zugriff auf Daten und / oder
-        Funktionen im System festzulegen.
+        planen wir (die belgische, deutsche, niederländische und schweizer
+        Platform) separate Besprechungen, um die Rollen und Verantwortlichkeiten
+        verschiedener Interessengruppen zu klären und Richtlinien und
+        Datenverfahren für die Verwaltung und Implementierung dieser Rollen,
+        sowie den entsprechenden Zugriff auf Daten und / oder Funktionen im
+        System festzulegen.
       </p>
       <br />
 
@@ -257,7 +270,13 @@ const dataSecurityContent = {
         werden sicher gespeichert. Wir stellen sicher, dass ihre Daten
         verschlüsselt sind und niemals an Dritte weitergegeben werden. Wir
         halten uns an die Europäischen Allgemeinen Datenschutzbestimmungen
-        (DSGVO).
+        (DSGVO). Der Zugriff auf die Daten vor der Anonymisierung ist nur einem
+        sehr begrenzten Kreis autorisierter Personen möglich, die eine
+        Verschwiegenheitserklärung unterzeichnet haben. Zugriff kann gewährt
+        werden, um die Konsistenz der Daten zu überprüfen, um in Rücksprache mit
+        den Mitgliedern fehlerhafte oder widersprüchliche Daten zu korrigieren
+        und / oder um die schrittweise Verbesserung der
+        Nachhaltigkeitsberichterstattung durch die Mitglieder zu unterstützen.
       </p>
       <br />
 
@@ -301,8 +320,8 @@ const dataSecurityContent = {
         (ob juristisch oder natürlich) mit der Datenverarbeitung, die der
         Wahrung der Datenvertraulichkeit zugestimmt haben und über besondere
         Datenschutzanforderungen in Bezug auf ihre Arbeit unterrichtet wurden.
-        Akvo fungiert als Datenverarbeiter im Auftrag von Beyond Chocolate und
-        dem Forum Nachhaltiger Kakao.
+        Akvo fungiert als Datenverarbeiter im Auftrag von Beyond Chocolate,
+        DISCO, SIWSSCO und dem Forum Nachhaltiger Kakao.
       </p>
       <p className="text-justify">
         Die gespeicherten Daten unterliegen der DSGVO, dem europäischen Gesetz
@@ -316,14 +335,15 @@ const dataSecurityContent = {
 
       <h3>Rollen und Berechtigungen</h3>
       <p className="text-justify">
-        Die Plattformsekretariate von Beyond Chocolate und dem Forum
-        Nachhaltiger Kakao folgen einem Rollen- und Berechtigungsmodell, welches
-        den Zugriff auf die Daten sowohl auf Administratorenebene als auch auf
-        granularer Ebene ermöglicht. Der Zugriff auf Fragen- und Antwortdaten
-        ist auf die spezifische und definierte Rolle des/der jeweiligen
-        Nutzer/in und die dieser Rolle zugewiesenen Berechtigungen beschränkt.
-        Ein striktes Berechtigungsmodell stellt sicher, dass vertrauliche Daten
-        für andere Benutzer der Plattformen weder zugänglich noch sichtbar sind.
+        Die Plattformsekretariate von Beyond Chocolate, DISCO, SWISSCO und dem
+        Forum Nachhaltiger Kakao folgen einem Rollen- und Berechtigungsmodell,
+        welches den Zugriff auf die Daten sowohl auf Administratorenebene als
+        auch auf granularer Ebene ermöglicht. Der Zugriff auf Fragen- und
+        Antwortdaten ist auf die spezifische und definierte Rolle des/der
+        jeweiligen Nutzer/in und die dieser Rolle zugewiesenen Berechtigungen
+        beschränkt. Ein striktes Berechtigungsmodell stellt sicher, dass
+        vertrauliche Daten für andere Benutzer der Plattformen weder zugänglich
+        noch sichtbar sind.
       </p>
       <p className="text-justify">
         Sofern mit dem/r Eigentümer/in der Daten nicht ausdrücklich anders
@@ -343,15 +363,6 @@ const dataSecurityContent = {
         zulässt.
       </p>
       <p className="text-justify">
-        Der Zugriff auf die Daten vor der Anonymisierung ist nur einem sehr
-        begrenzten Kreis autorisierter Personen möglich, die eine
-        Verschwiegenheitserklärung unterzeichnet haben. Zugriff kann gewährt
-        werden, um die Konsistenz der Daten zu überprüfen, um in Rücksprache mit
-        den Mitgliedern fehlerhafte oder widersprüchliche Daten zu korrigieren
-        und / oder um die schrittweise Verbesserung der
-        Nachhaltigkeitsberichterstattung durch die Mitglieder zu unterstützen.
-      </p>
-      <p className="text-justify">
         Die folgenden Personen haben aktuell (Stand: April 2022){" "}
         <u>
           (zusätzlich für die Weiterentwicklung und Betreuung des Tools
@@ -367,9 +378,11 @@ const dataSecurityContent = {
       <ul className="pl-5">
         <li>Beate Weiskopf</li>
         <li>Ulrike Joras</li>
-        <li>Weiterer Mitarbeitender der Geschäftsstelle, zu benennen</li>
         <li>Patrick Stoop, C-Lever.org</li>
         <li>Hilde Geens, C-Lever.org</li>
+        <li>Weitere zu benennende, externe Person</li>
+        <li>Lela Lindena, Mainlevel</li>
+        <li>Lukas Wirnitzer, Mainlevel</li>
         <li>Weitere zu benennende, externe Person</li>
       </ul>
 
@@ -388,17 +401,26 @@ const dataSecurityContent = {
       </p>
       <ul className="pl-5">
         <li>Mark de Waard</li>
+        <li>Marlene Hoekstra</li>
         <li>Patrick Stoop, C-Lever.org</li>
         <li>Hilde Geens, C-Lever.org</li>
       </ul>
 
       <p className="text-justify">
-        Jede der autorisierten Personen muss eine
-        Verschwiegenheitserklärungunterzeichnen, bevor sie auf Daten der
-        jeweiligen Plattformmitglieder zugreifen kann. Jede/r neue
-        Mitarbeiter/in in den Sekretariaten oder von C-Lever.org muss die
-        Verschwiegenheitserklärung unterzeichnet haben, bevor er/sie Zugriff
-        erhält.
+        <u>Für SWISSCO:</u>
+      </p>
+      <ul className="pl-5">
+        <li>Christian Robin</li>
+        <li>Michaela Kuhn</li>
+        <li>Sophie Tüllmann</li>
+      </ul>
+
+      <p className="text-justify">
+        Jede der autorisierten Personen muss eine Verschwiegenheitserklärung
+        unterzeichnen, bevor sie auf Daten der jeweiligen Plattformmitglieder
+        zugreifen kann. Jede/r neue Mitarbeiter/in in den Sekretariaten oder von
+        Mainlevel und C-Lever.org muss die Verschwiegenheitserklärung
+        unterzeichnet haben, bevor er/sie Zugriff erhält.
       </p>
       <br />
 
@@ -408,14 +430,15 @@ const dataSecurityContent = {
         ges-peichert, das von Akvo gehostet wird.
       </p>
       <p className="text-justify">
-        Während der Datenbereinigungsphase (durchgeführt von C-lever.org in
-        Absprache mit den Sekretariaten von Beyond Chocolate und dem Forum
-        Nachhaltiger Kakao) erfolgt der Zugriff auf die Daten direkt in dem von
-        Akvo zur Verfügung gestellten Datenspeicherungstool. Der Zugang zum Tool
-        ist passwortgeschützt und nur die autorisierten Personen haben Zugriff
-        auf die Daten. Im Speicher-Tool ist jeder eingereichte Datensatz mit
-        einer Instanz-ID verknüpft. Die autorisierten Personen haben Zugriff auf
-        die mit den Instanz-IDs verknüpften Datenbereinigungsinformationen.
+        Während der Datenbereinigungsphase (durchgeführt von C-lever.org und
+        Mainlevel in Absprache mit den Sekretariaten von Beyond Chocolate,
+        DISCO, SWISSCO und dem Forum Nachhaltiger Kakao) erfolgt der Zugriff auf
+        die Daten direkt in dem von Akvo zur Verfügung gestellten
+        Datenspeicherungstool. Der Zugang zum Tool ist passwortgeschützt und nur
+        die autorisierten Personen haben Zugriff auf die Daten. Im Speicher-Tool
+        ist jeder eingereichte Datensatz mit einer Instanz-ID verknüpft. Die
+        autorisierten Personen haben Zugriff auf die mit den Instanz-IDs
+        verknüpften Datenbereinigungsinformationen.
       </p>
       <p className="text-justify">
         Speicherung der Daten während der Auswertung durch C-Lever.org: Nachdem
@@ -427,7 +450,10 @@ const dataSecurityContent = {
         exportiert und an C-lever.org übertragen. Diese anonymisierten Rohdaten
         sind passwortgeschützt mit Zugriffsbeschränkung auf die autorisierten
         Personen und werden lokal auf einem passwortgesicherten Server bei
-        C-Lever.org gespeichert.
+        C-Lever.org gespeichert. Wenn anonymisierte Daten von C-Lever.org mit
+        den ISCOs geteilt werden, werde die Daten dann ebenfalls auf einem
+        passwortgeschützten und mit Zugriffsbeschränkung versehenem Server
+        gespeichert.
       </p>
       <br />
 
