@@ -19,7 +19,7 @@ const SubmissionProgress = () => {
   const showOrganisationFilter = user?.role === "secretariat_admin";
   const [orgValue, setOrgValue] = useState(null);
   const [showNonSubmittedMember, setShowNonSubmittedMember] = useState(false);
-  const [iscoValue, setIscoValue] = useState([]);
+  const [iscoValue, setIscoValue] = useState(null);
   const [iscoFilter, setIscoFilter] = useState(null);
 
   const currentYear = new Date().getFullYear();
@@ -101,8 +101,7 @@ const SubmissionProgress = () => {
 
   const handleIscoFilter = (isco) => {
     setIscoValue(isco);
-    setOrgValue([]);
-    let orgs = organisation;
+    let orgs = organisationInSameIsco;
     orgs = orgs.filter((o) => o.isco_type.includes(isco));
     orgs = orgs.length ? orgs : null;
     setIscoFilter(orgs);
@@ -180,23 +179,23 @@ const SubmissionProgress = () => {
   };
 
   useEffect(() => {
-    let endpoint = "/submission/progress";
-    if (orgValue) {
-      endpoint = `${endpoint}?organisation=${orgValue}`;
-    }
-    if (showNonSubmittedMember) {
-      const separator = orgValue ? "&" : "?";
-      endpoint = `${endpoint}${separator}member_not_submitted=${showNonSubmittedMember}`;
-    }
-    fetchData(endpoint);
-  }, [orgValue, showNonSubmittedMember, iscoFilter]);
-
-  useEffect(() => {
-    const endpoint = "/submission/progress";
     if (isLoggedIn) {
+      setIsLoading(true);
+      let endpoint = "/submission/progress";
+      if (orgValue) {
+        endpoint = `${endpoint}?organisation=${orgValue}`;
+      }
+      if (iscoValue) {
+        const separator = orgValue ? "&" : "?";
+        endpoint = `${endpoint}${separator}isco=${iscoValue}`;
+      }
+      if (showNonSubmittedMember) {
+        const separator = orgValue ? "&" : "?";
+        endpoint = `${endpoint}${separator}member_not_submitted=${showNonSubmittedMember}`;
+      }
       fetchData(endpoint);
     }
-  }, [isLoggedIn]);
+  }, [orgValue, showNonSubmittedMember, iscoValue]);
 
   return (
     <div id="submission-progress">
