@@ -11,7 +11,7 @@ const { Option } = Select;
 const SubmissionProgress = () => {
   const { isLoggedIn, language, user, optionValues } = store.useState((s) => s);
   const { active: activeLang } = language;
-  const { organisationInSameIsco } = optionValues;
+  const { organisationInSameIsco, isco_type } = optionValues;
 
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -19,6 +19,8 @@ const SubmissionProgress = () => {
   const showOrganisationFilter = user?.role === "secretariat_admin";
   const [orgValue, setOrgValue] = useState(null);
   const [showNonSubmittedMember, setShowNonSubmittedMember] = useState(false);
+  const [iscoValue, setIscoValue] = useState([]);
+  const [iscoFilter, setIscoFilter] = useState(null);
 
   const currentYear = new Date().getFullYear();
 
@@ -95,6 +97,15 @@ const SubmissionProgress = () => {
 
   const handleOrganisationFilter = (org) => {
     setOrgValue(org);
+  };
+
+  const handleIscoFilter = (isco) => {
+    setIscoValue(isco);
+    setOrgValue([]);
+    let orgs = organisation;
+    orgs = orgs.filter((o) => o.isco_type.includes(isco));
+    orgs = orgs.length ? orgs : null;
+    setIscoFilter(orgs);
   };
 
   const handleShowNonSubmittedQuestionnaireCheckbox = (e) => {
@@ -178,7 +189,7 @@ const SubmissionProgress = () => {
       endpoint = `${endpoint}${separator}member_not_submitted=${showNonSubmittedMember}`;
     }
     fetchData(endpoint);
-  }, [orgValue, showNonSubmittedMember]);
+  }, [orgValue, showNonSubmittedMember, iscoFilter]);
 
   useEffect(() => {
     const endpoint = "/submission/progress";
@@ -234,6 +245,28 @@ const SubmissionProgress = () => {
                       : []}
                   </Select>
                 )}
+                <Select
+                  style={{ width: "20rem" }}
+                  allowClear
+                  showSearch
+                  className="member-dropdown-wrapper"
+                  placeholder="ISCO"
+                  options={
+                    isco_type.length
+                      ? isco_type.map((o) => ({
+                          label: o.name,
+                          value: o.id,
+                        }))
+                      : []
+                  }
+                  onChange={handleIscoFilter}
+                  value={iscoValue}
+                  filterOption={(input, option) =>
+                    option?.label
+                      ?.toLowerCase()
+                      .indexOf(input?.toLowerCase()) >= 0
+                  }
+                />
               </Space>
             </Col>
             <Col align="end">
