@@ -204,7 +204,7 @@ const SubmissionProgress = () => {
       }
       fetchData(endpoint);
     }
-  }, [orgValue, showNonSubmittedMember, iscoFilter]);
+  }, [isLoggedIn, orgValue, showNonSubmittedMember, iscoFilter]);
 
   return (
     <div id="submission-progress">
