@@ -101,10 +101,17 @@ const SubmissionProgress = () => {
 
   const handleIscoFilter = (isco) => {
     setIscoValue(isco);
-    let orgs = organisationInSameIsco;
-    orgs = orgs.filter((o) => o.isco_type.includes(isco));
-    orgs = orgs.length ? orgs : null;
-    setIscoFilter(orgs);
+    setOrgValue(null);
+    let orgIds = organisationInSameIsco;
+    if (isco === 1) {
+      orgIds = orgIds.map((o) => o.id);
+    } else {
+      orgIds = orgIds
+        .filter((o) => o.isco_type.includes(isco))
+        .map((o) => o.id);
+    }
+    orgIds = orgIds.length ? orgIds : null;
+    setIscoFilter(orgIds);
   };
 
   const handleShowNonSubmittedQuestionnaireCheckbox = (e) => {
@@ -185,9 +192,11 @@ const SubmissionProgress = () => {
       if (orgValue) {
         endpoint = `${endpoint}?organisation=${orgValue}`;
       }
-      if (iscoValue) {
+      if (iscoFilter && !orgValue) {
         const separator = orgValue ? "&" : "?";
-        endpoint = `${endpoint}${separator}isco=${iscoValue}`;
+        endpoint = `${endpoint}${separator}${iscoFilter
+          .map((x, index) => `${index === 0 ? "" : "&"}organisation=${x}`)
+          .join("")}`;
       }
       if (showNonSubmittedMember) {
         const separator = orgValue ? "&" : "?";
@@ -195,7 +204,7 @@ const SubmissionProgress = () => {
       }
       fetchData(endpoint);
     }
-  }, [orgValue, showNonSubmittedMember, iscoValue]);
+  }, [orgValue, showNonSubmittedMember, iscoFilter]);
 
   return (
     <div id="submission-progress">
