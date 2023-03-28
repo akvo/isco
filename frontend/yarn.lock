@@ -2412,10 +2412,10 @@ ajv@^8.0.0, ajv@^8.6.0, ajv@^8.8.0:
     require-from-string "^2.0.2"
     uri-js "^4.2.2"
 
-akvo-react-form@^2.1.4:
-  version "2.1.4"
-  resolved "https://registry.yarnpkg.com/akvo-react-form/-/akvo-react-form-2.1.4.tgz#72eeab474138ed46eedae2129d93cb3066deac9e"
-  integrity sha512-cmk57XSUtGpbmziaO/BPUeu095O7QOhXO40oL4yR1cTV10qcFEnXejGcWQTaXYGOnKMxBhiw3kjslCYnPP34Kw==
+akvo-react-form@^2.1.5:
+  version "2.1.5"
+  resolved "https://registry.yarnpkg.com/akvo-react-form/-/akvo-react-form-2.1.5.tgz#0c094a4d71b64412a84a3307d07e46a5b4300b7c"
+  integrity sha512-P7Zb4BqPB7S/QS96BpaJenynnjrqmWgSnEHOJKFpybrr5VG4L2GfDsGZqeA3U3FCTqeqAh+TbATkZYZXcHRmYA==
   dependencies:
     "@react-leaflet/core" ">=1.0.0 <1.1.0 || ^1.1.1"
     antd "^4.20.0"
@@ -8019,10 +8019,10 @@ prettier-linter-helpers@^1.0.0:
   dependencies:
     fast-diff "^1.1.2"
 
-prettier@^2.5.1:
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.6.0.tgz#12f8f504c4d8ddb76475f441337542fa799207d4"
-  integrity sha512-m2FgJibYrBGGgQXNzfd0PuDGShJgRavjUoRCw1mZERIWVSXF0iLzLm+aOqTAbLnC3n6JzUhAA8uZnFVghHJ86A==
+prettier@^2.8.7:
+  version "2.8.7"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.8.7.tgz#bb79fc8729308549d28fe3a98fce73d2c0656450"
+  integrity sha512-yPngTo3aXUUmyuTjeTUT75txrf+aMh9FiD7q9ZE/i6r0bPb22g4FsE6Y338PQX1bmfy08i9QQCB7/rcUAVntfw==
 
 pretty-bytes@^5.3.0, pretty-bytes@^5.4.1:
   version "5.6.0"
