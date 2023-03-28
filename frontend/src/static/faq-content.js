@@ -15,22 +15,21 @@ const faqEn = [
             access and edit data of the questionnaire.
           </li>
           <li>
-            For project questionnaires (not applicable for DISCO), colleagues
+            For project questionnaires (only applicable to GISCO), colleagues
             from selected project partner organisations, that are also Members
-            of GISCO or Beyond Chocolate, with authorized access to project
-            questionnaires, will have the same access to data of the
-            questionnaire for the project in which their own organisation is
-            participating as a partner.
+            of GISCO with authorized access to project questionnaires, will have
+            the same access to data of the questionnaire for the project in
+            which their own organisation is participating as a partner.
           </li>
           <li>
             Once the questionnaire is submitted, a limited number of staff
-            designated by the GISCO, DISCO and/or Beyond Chocolate Secretariats,
-            as well as C-Lever.org listed in the Data Security Provisions and
-            having signed corresponding nondisclosure declarations, will have
-            access to individual questionnaire data as needed to check the
-            validity and consistency of data and/or check whether the
-            conclusions from analysis on anonymized and/or aggregated data makes
-            sense.
+            designated by the GISCO, DISCO, SWISSCO and/or Beyond Chocolate
+            Secretariats, as well as C-Lever.org and Mainlevel listed in the
+            Data Security Provisions and having signed corresponding
+            nondisclosure declarations, will have access to individual
+            questionnaire data as needed to check the validity and consistency
+            of data and/or check whether the conclusions from analysis on
+            anonymized and/or aggregated data makes sense.
           </li>
           <li>
             Authorized staff of AKVO, being the contracted IT service
@@ -63,39 +62,6 @@ const faqEn = [
     ),
   },
   {
-    h: "Double counting – How is double counting of project data and other data being avoided?",
-    c: (
-      <Fragment>
-        <p>
-          Members / partners can report on all their cocoa sustainability
-          projects/ programmes, without requiring a link to a specific market.
-          However, each such project/ programme shall be reported only once.
-          Projects/ programmes implemented jointly by several GISCO and / or
-          Beyond Chocolate members / partners will be reported on only once.
-        </p>
-        <p>
-          The transition towards a joint reporting tool for the European
-          platforms ensures that companies and other organisations, that are a
-          member of multiple (or all) European platforms, will have to report on
-          the same data only once. This single reporting contributes to avoiding
-          double counting.
-        </p>
-        <p>
-          Cocoa sustainability project/ programme managers are encouraged to
-          avoid double counting within their own reporting to GISCO and Beyond
-          Chocolate.
-        </p>
-        <p>
-          However, at this stage it may for example not be excluded that a same
-          farming household is reported as reached by more than one project
-          /programme. Further analyses will show whether such double counting
-          occurs to a significant extent and, if so, what approach should be
-          taken to correct it.
-        </p>
-      </Fragment>
-    ),
-  },
-  {
     h: "Issues - How do I report an issue/ request support?",
     c: (
       <Fragment>
@@ -104,33 +70,6 @@ const faqEn = [
           go to that form, please select Feedback in the top menu. Once you
           submit an issue/request, the portal administrators will contact you as
           soon as possible.
-        </p>
-      </Fragment>
-    ),
-  },
-  {
-    h: "Mandatory questions - Can I submit a questionnaire without completing all the mandatory questions?",
-    c: (
-      <Fragment>
-        <p>
-          It is highly appreciated that all mandatory questions are answered
-          (completed) before submitting the questionnaire.
-        </p>
-        <p>
-          However, if you are not able to fill in all the mandatory questions
-          for various reasons you can still submit the data by clicking on the
-          submit button and confirming the acknowledgement checkboxes:
-          <ul>
-            <li>
-              I have checked and tried to complete all mandatory questions that
-              are marked as still to be completed.
-            </li>
-            <li>
-              I have used the comments boxes in the corresponding question
-              groups to explain why I cannot complete the still uncompleted
-              mandatory questions.
-            </li>
-          </ul>
         </p>
       </Fragment>
     ),
@@ -182,9 +121,7 @@ const faqEn = [
         <ol type="1">
           <li>
             The reporting year is normally the previous calendar year – e.g.
-            reporting on 2020 to be done in April-May 2021; reporting on 2021 to
-            be done in April-May 2022. Except for DISCO in which reporting on
-            2020 and 2021 will be done both in April-May 2022.
+            reporting on 2022 to be done in April 2023.
           </li>
           <li>
             If the member organisation is using a reporting cycle and an
@@ -192,18 +129,22 @@ const faqEn = [
             reporting per calendar year would significantly enhance the
             reporting burden, then that member can choose to systematically
             report for its last accounting year for which data is available in
-            the April-May period.
+            the Apri period
           </li>
           <li>
             Generally, the time frame for all data is the reporting year.
-            However, for some questions (e.g. household income data), data might
-            be collected only every few years. The corresponding questions
-            specifically cater for this by asking when the last survey/study was
-            conducted.
+            However, for some questions in the project questionnaire (e.g.
+            household income data), data might be collected only every few
+            years. The corresponding questions specifically cater for this by
+            asking when the last survey/study was conducted.
           </li>
           <li>
             If for some questions, only older data are available, please provide
             such older data and indicate this in the comment box.
+          </li>
+          <li>
+            For the section on Child Labour you can choose if you want to report
+            for the Calendar Year or the Cocoa Year (ICI’s timeframe)
           </li>
         </ol>
       </Fragment>
@@ -223,34 +164,19 @@ const faqEn = [
     ),
   },
   {
-    h: "Shall standard setters report on sourcing data?",
-    c: (
-      <Fragment>
-        <p>
-          No, because standard setters are not sourcing and supplying the
-          market. The companies for which they are certifying are already
-          expected to provide these sourcing data. Exception: However, the
-          standard setting members of GISCO or partners of Beyond Chocolate are
-          expected to provide certified volume under the corresponding platform
-          scope questions.
-        </p>
-      </Fragment>
-    ),
-  },
-  {
     h: "Who should report on Premiums?",
     c: (
       <Fragment>
         <p>
           Premium related questions are to be completed only by supply chain
-          actors that are member of GISCO or partner of Beyond Chocolate. Please
-          report if premiums were paid for any volume of cocoa sourced by or on
-          behalf of your organisation / company.
+          actors that are member of GISCO. Please report if premiums were paid
+          for any volume of cocoa sourced by or on behalf of your organisation /
+          company.
         </p>
         <p>
           You are only expected to report on premiums paid on your behalf, if
           your supplier (who managed the premium payments on your behalf), is
-          not reporting such payments as part of the ISCO reporting. In other
+          not reporting such payments as part of the GISCO reporting. In other
           words, if a company is reporting on this question block, the client
           companies are not expected to report again on the already reported
           premium payments. The same premiums should be reported only once.
@@ -275,10 +201,59 @@ const faqEn = [
     c: (
       <Fragment>
         <p>
-          Destination market specific data are provided under the scope section
-          particular to each platform. For the sourcing sections, respondents
-          may opt between providing destination specific data or global average
-          data.
+          Destination market specific data are provided under the
+          &quot;transparency & traceability&quot; section. Market specific data
+          will be asked for sourcing (processing & selling on the national
+          market) and certification.
+        </p>
+      </Fragment>
+    ),
+  },
+  {
+    h: "What if I get an error message when trying to submit?",
+    c: (
+      <Fragment>
+        <p>
+          If you receive an error message when submitting, this is probably
+          because:
+          <ul>
+            <li>
+              You have not replied to a mandatory question. These questions are
+              indicated with an asterisk. For example, reporting on sourcing
+              volumes is mandatory.
+            </li>
+            <li>
+              You have reported on a wrong numeric value. For example, you have
+              reported on a percentage that is over 100%.
+            </li>
+          </ul>
+        </p>
+        <p>
+          When you receive this error, please go back to the questionnaire and
+          ensure your reporting is complete and correct. If you are not able to
+          report on a certain mandatory question, please explain why in the
+          comment section, click on submit and then clicl on the acknowledgement
+          checkboxes. The relevant ISCO secretariats will take up contact for
+          further follow-up.
+        </p>
+      </Fragment>
+    ),
+  },
+  {
+    h: "What happens if I don't report? Is reporting obligatory? ",
+    c: (
+      <Fragment>
+        <p>
+          Reporting is obligatory for members of Beyond Chocolate, DISCO and
+          GISCO. If a member does not report within the given timeframe (by
+          April 30th), next steps will be taken by the ISCOs in accordance with
+          the agreed processes and procedures. If a member fails to report,
+          exclusion from the ISCO in question is a possibility.
+        </p>
+        <p>
+          Please note that for SWISSCO this concerns a voluntary pilot. SWISSCO
+          members are not obligated to report in the tool in 2023 but are
+          encouraged to do so.
         </p>
       </Fragment>
     ),
@@ -304,24 +279,24 @@ const faqDe = [
             Fragebogens zugreifen und diese bearbeiten.
           </li>
           <li>
-            Bei Projektfragebögen haben Kolleginnen und Kollegen der als
-            Projektpartner angegebenen Organisationen, die ebenfalls Mitglieder
-            des Kakaoforums oder von Beyond Chocolate sind und über
-            autorisierten Zugriff auf das Monitoringsystem verfügen, denselben
-            Zugriff auf die Daten des Fragebogens für das Projekt, an dem Ihre
-            eigene Organisation als Partner teilnimmt.
+            ei Projektfragebögen (nur relevant für das Forum Nachhaltiger Kakao)
+            haben Kolleginnen und Kollegen der als Projektpartner angegebenen
+            Organisationen, die ebenfalls Mitglieder des Kakaoforums sind und
+            über autorisierten Zugriff auf das Monitoringsystem verfügen,
+            denselben Zugriff auf die Daten des Fragebogens für das Projekt, an
+            dem Ihre eigene Organisation als Partner teilnimmt.
           </li>
           <li>
             Sobald der Fragebogen eingereicht wurde, hat eine begrenzte Anzahl
             von autorisierten Personen der Geschäftsstelle des Kakaoforums und
-            von C-Lever, die in den Datenschutzbestimmungen aufgeführt sind und
-            entsprechende Vertraulichkeitserklärungen unterzeichnet haben,
-            Zugriff auf einzelne Fragebogendaten, um die Gültigkeit und die
-            Konsistenz der Daten zu überprüfen und/oder um zu überprüfen, ob die
-            Schlussfolgerungen aus der Analyse anonymisierter und/oder
-            aggregierter Daten schlüssig sind. Für Mitglieder mehrerer
+            von C-Lever.org und Mainlevel, die in den Datenschutzbestimmungen
+            aufgeführt sind und entsprechende Vertraulichkeitserklärungen
+            unterzeichnet haben, Zugriff auf einzelne Fragebogendaten, um die
+            Gültigkeit und die Konsistenz der Daten zu überprüfen und/oder um zu
+            überprüfen, ob die Schlussfolgerungen aus der Analyse anonymisierter
+            und/oder aggregierter Daten schlüssig sind. Für Mitglieder mehrerer
             Plattformen gilt, dass außerdem ausgewählte Personen von Beyond
-            Chocolate und/oder DISCO Zugriff haben.
+            Chocolate, DISCO und/oder SWISSCO Zugriff haben.
           </li>
           <li>
             Autorisierte Mitarbeitende von AKVO als beauftragter
@@ -354,43 +329,6 @@ const faqDe = [
     ),
   },
   {
-    en: "Double counting – How is double counting of project data and other data being avoided?",
-    h: "Doppelzählung - Wie wird eine Doppelzählung von Projektdaten und anderen Daten vermieden?",
-    c: (
-      <Fragment>
-        <p>
-          Mitglieder / Partner können über alle ihre
-          Kakao-Nachhaltigkeitsprojekte/-programme berichten, ohne eine
-          Verbindung zum jeweiligen Markt zu benötigen. Jedes dieser
-          Projekte/Programme wird jedoch nur einmal gemeldet. Projekte /
-          Programme, die von mehreren Mitgliedern /Partnern des Kakaoforums und
-          / oder Beyond Chocolate gemeinsam durchgeführt werden, werden nur
-          einmal erfasst.
-        </p>
-        <p>
-          Der Übergang zu einem gemeinsamen Berichtstool für die europäischen
-          Plattformen stellt sicher, dass Unternehmen und andere Organisationen,
-          die Mitglied mehrerer (oder aller) europäischer Plattformen sind, nur
-          einmal über dieselben Daten berichten müssen. Dies trägt zur
-          Vermeidung von Doppelzählungen bei.
-        </p>
-        <p>
-          Kakao-Nachhaltigkeitsprojekt-/ Programmmanager*innen werden
-          aufgefordert, Doppelzählungen innerhalb ihrer eigenen
-          Berichterstattung zu vermeiden.
-        </p>
-        <p>
-          Zum jetzigen Zeitpunkt kann jedoch beispielsweise nicht ausgeschlossen
-          werden, dass ein bäuerlicher Haushalt von mehr als einem Projekt /
-          Programm als „erreicht“ gemeldet wird. Weitere Analysen werden zeigen,
-          ob eine solche Doppelzählung mit einer signifikanten Rate auftritt und
-          wenn ja, welcher Ansatz zur Korrektur dieser Doppelzählung verwendet
-          werden sollte.
-        </p>
-      </Fragment>
-    ),
-  },
-  {
     en: "Issues - How do I report an issue/ request support?",
     h: "Probleme - Wie melde ich ein Problem / fordere ich Unterstützung an?",
     c: (
@@ -401,35 +339,6 @@ const faqDe = [
           im Menü oben links/in der Mitte des Bildschirms. Sobald Sie ein
           Problem/eine Anfrage eingereicht haben, wird sich jemand so schnell
           wie möglich mit Ihnen in Verbindung setzen.
-        </p>
-      </Fragment>
-    ),
-  },
-  {
-    en: "Mandatory questions - Can I submit a questionnaire without completing all the mandatory questions?",
-    h: "Obligatorische Fragen - Kann ich einen Fragebogen einreichen, ohne alle obligatorischen Fragen auszufüllen?",
-    c: (
-      <Fragment>
-        <p>
-          Bitte beatworten Sie alle obligatorischen Fragen vor dem Absenden des
-          Fragebogens.
-        </p>
-        <p>
-          Falls Sie jedoch aus verschiedenen Gründen nicht alle obligatorischen
-          Fragen ausfüllen können, können Sie die Daten dennoch übermitteln.
-          Klicken Sie dazu auf die Schaltfläche &quot;Senden&quot; und
-          bestätigen Sie die Kontrollkästchen:
-          <ul>
-            <li>
-              Ich habe alle Pflichtfragen überprüft und versucht, die als nicht
-              ausgefüllt markierten Felder zu beantworten.
-            </li>
-            <li>
-              Ich habe die Kommentarfelder in den entsprechenden Fragengruppen
-              verwendet, um zu erklären, warum ich die nicht ausgefüllten
-              Pflichtfragen nicht ausfüllen kann.
-            </li>
-          </ul>
         </p>
       </Fragment>
     ),
@@ -488,27 +397,29 @@ const faqDe = [
         <ol type="1">
           <li>
             Das Berichtsjahr ist normalerweise das vorherige Kalenderjahr - z.B.
-            Berichterstattung über 2020 im Mai 2021; Berichterstattung über 2021
-            von im Mai 2022. (Ausnahme: DISCO Mitglieder)
+            Berichterstattung über 2022 im April 2023.
           </li>
           <li>
             Wenn die Mitgliedsorganisation einen vom Kalenderjahr abweichenden
-            Berichtszyklus und ein Rechnungsjahr verwendetund die
+            Berichtszyklus und ein Rechnungsjahr verwendet und die
             Berichterstattung pro Kalenderjahr die Berichtslast erheblich
             erhöhen würde, kann dieses Mitglied systematisch über das letzte
-            Rechnungsjahr berichten, für das Daten im Zeitraum April bis Mai
-            vorliegen.
+            Rechnungsjahr berichten, für das Daten im April vorliegen.
           </li>
           <li>
             Im Allgemeinen ist der Zeitrahmen für alle Daten das Berichtsjahr.
-            Bei einigen Fragen (z. B. Daten zum Haushaltseinkommen) werden Daten
-            möglicherweise nicht jährlich erhoben. Die entsprechenden Fragen
-            berücksichtigen dies, indem sie fragen, wann die letzte Umfrage
-            /Studie durchgeführt wurde.
+            Bei einigen Fragen (z. B. Daten zum Haushaltseinkommen im
+            Projektfragebogen) werden Daten möglicherweise nicht jährlich
+            erhoben. Die entsprechenden Fragen berücksichtigen dies, indem sie
+            fragen, wann die letzte Umfrage /Studie durchgeführt wurde.
           </li>
           <li>
             Wenn für einige Fragen nur ältere Daten verfügbar sind, geben Sie
             diese bitte an und erklären Sie dies im Kommentarfeld.
+          </li>
+          <li>
+            Für den Abschnitt zu Kinderarbeit können Sie wählen, ob Sie für das
+            Kalenderjahr oder das Kakaojahr (ICI-Zeitrahmen) berichten möchten.
           </li>
         </ol>
       </Fragment>
@@ -529,41 +440,24 @@ const faqDe = [
     ),
   },
   {
-    en: "Shall standard setters report on sourcing data?",
-    h: "Sollen die Standardsetzer über die Beschaffungsdaten berichten?",
-    c: (
-      <Fragment>
-        <p>
-          Nein, denn die standardsetzenden Organisationen beschaffen und
-          beliefern den Markt nicht. Von den Unternehmen, für die sie
-          zertifizieren, wird bereits erwartet, dass sie diese Beschaffungsdaten
-          bereitstellen. Ausnahme: Von den standardsetzenden Mitgliedern von
-          GISCO oder Partnern von Beyond Chocolate wird jedoch erwartet, dass
-          sie über von ihnen zertifizierte Mengen berichten.
-        </p>
-      </Fragment>
-    ),
-  },
-  {
     en: "Who should report on Premiums?",
     h: "Wer sollte über Prämien berichten?",
     c: (
       <Fragment>
         <p>
           Die Fragen zu Prämienzahlungen sind nur von Akteuren der Lieferkette
-          auszufüllen, die Mitglied von GISCO oder Partner von Beyond Chocolate
-          sind. Bitte geben Sie an, ob Prämien für Kakao gezahlt wurden, der von
-          oder im Namen Ihrer Organisation/Ihrem Unternehmen bezogen wurde.
+          auszufüllen, die Mitglied von GISCO sind. Bitte geben Sie an, ob
+          Prämien für Kakao gezahlt wurden, der von oder im Namen Ihrer
+          Organisation/Ihrem Unternehmen bezogen wurde.
         </p>
         <p>
           Sie müssen nur dann über die in Ihrem Namen gezahlten Prämien
           berichten, wenn Ihr Lieferant (der die Prämienzahlungen in Ihrem Namen
-          verwaltet hat) solche Zahlungen nicht im Rahmen der
-          ISCO-Berichterstattung selbst angibt. Mit anderen Worten: Wenn ein
-          Unternehmen diesen Fragenblock ausfüllt, wird von den
-          Kundenunternehmen nicht erwartet, dass sie die bereits gemeldeten
-          Prämienzahlungen erneut melden. Die gleichen Prämien sollten nur
-          einmal gemeldet werden.
+          verwaltet hat) solche Zahlungen nicht im Rahmen der Berichterstattung
+          des Forums selbst angibt. Mit anderen Worten: Wenn ein Unternehmen
+          diesen Fragenblock ausfüllt, wird von den Kundenunternehmen nicht
+          erwartet, dass sie die bereits gemeldeten Prämienzahlungen erneut
+          melden. Die gleichen Prämien sollten nur einmal gemeldet werden.
         </p>
         <p>
           Bitte beachten Sie, dass es verpflichtend ist, über die Beschaffung in
@@ -587,11 +481,65 @@ const faqDe = [
     c: (
       <Fragment>
         <p>
-          Zielmarktspezifische Daten werden im Abschnitt über den
-          Geltungsbereich der einzelnen Plattformen angegeben. In den
-          Abschnitten über die Beschaffung können die Befragten wählen, ob sie
-          zielgebietsspezifische Daten oder globale Durchschnittsdaten
-          bereitstellen.
+          Bestimmungsmarktspezifische Daten werden unter dem Abschnitt
+          &quot;Transparenz und Rückverfolgbarkeit&quot; angegeben.
+          Marktspezifische Daten werden für die Beschaffung (Verarbeitung und
+          Verkauf auf dem nationalen Markt) und Zertifizierung abgefragt.
+        </p>
+      </Fragment>
+    ),
+  },
+  {
+    en: "What if I get an error message when trying to submit?",
+    h: "Was ist, wenn ich eine Fehlermeldung erhalte, wenn ich versuche, das Formular abzuschicken?",
+    c: (
+      <Fragment>
+        <p>
+          Wenn Sie beim Absenden eine Fehlermeldung erhalten, liegt das
+          wahrscheinlich daran, dass:
+          <ul>
+            <li>
+              Sie eine Pflichtfrage nicht beantwortet haben. Diese Fragen sind
+              mit einem Sternchen gekennzeichnet. Zum Beispiel ist die Angabe
+              des Beschaffungsvolumens obligatorisch.
+            </li>
+            <li>
+              Sie haben einen falschen numerischen Wert angegeben. Sie haben z.
+              B. einen Prozentsatz angegeben, der über 100 % liegt.
+            </li>
+          </ul>
+        </p>
+        <p>
+          Wenn Sie diese Fehlermeldung erhalten, gehen Sie bitte zum Fragebogen
+          zurück und stellen Sie sicher, dass Ihre Angaben vollständig und
+          korrekt sind. Wenn Sie eine bestimmte obligatorische Frage nicht
+          beantworten können, erläutern Sie bitte den Grund dafür im
+          Kommentarfeld, klicken Sie auf &quot;Absenden&quot;und dann auf die
+          Kontrollkästchen für die Bestätigung. Die zuständigen
+          ISCO-Sekretariate werden sich mit Ihnen in Verbindung setzen, um
+          weitere Schritte zu besprechen.
+        </p>
+      </Fragment>
+    ),
+  },
+  {
+    en: "What happens if I don't report? Is reporting obligatory?",
+    h: "Was passiert, wenn ich mich nicht melde? Ist eine Berichterstattung obligatorisch?",
+    c: (
+      <Fragment>
+        <p>
+          Die Berichterstattung ist für Mitglieder von Beyond Chocolate, DISCO
+          und dem Forum Nachhaltiger Kakao obligatorisch. Berichtet ein Mitglied
+          nicht innerhalb des vorgegebenen Zeitrahmens (bis zum 30. April),
+          werden die nächsten Schritte in Übereinstimmung mit den vereinbarten
+          Prozessen und Verfahren von denn ISCOs eingeleitet. Berichtet ein
+          Mitglied nicht, ist ein Ausschluss aus dem jeweiligen ISCO möglich.
+        </p>
+        <p>
+          Bitte beachten Sie, dass es sich für SWISSCO um ein freiwilliges
+          Pilotprojekt handelt. Die SWISSCO-Mitglieder sind nicht verpflichtet,
+          im Jahr 2023 über das Tool zu berichten, sind aber ermutigt, dies zu
+          tun.
         </p>
       </Fragment>
     ),
