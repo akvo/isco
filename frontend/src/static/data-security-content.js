@@ -131,6 +131,8 @@ const dataSecurityContent = {
         <li>Ulrike Joras, GISCO</li>
         <li>Patrick Stoop, C-Lever.org</li>
         <li>Hilde Geens, C-Lever.org</li>
+        <li>Lela Lindena, Mainlevel</li>
+        <li>Lukas Wirnitzer, Mainlevel</li>
       </ul>
 
       <p className="text-justify">
@@ -321,7 +323,7 @@ const dataSecurityContent = {
         Wahrung der Datenvertraulichkeit zugestimmt haben und über besondere
         Datenschutzanforderungen in Bezug auf ihre Arbeit unterrichtet wurden.
         Akvo fungiert als Datenverarbeiter im Auftrag von Beyond Chocolate,
-        DISCO, SIWSSCO und dem Forum Nachhaltiger Kakao.
+        DISCO, SWISSCO und dem Forum Nachhaltiger Kakao.
       </p>
       <p className="text-justify">
         Die gespeicherten Daten unterliegen der DSGVO, dem europäischen Gesetz
@@ -380,7 +382,6 @@ const dataSecurityContent = {
         <li>Ulrike Joras</li>
         <li>Patrick Stoop, C-Lever.org</li>
         <li>Hilde Geens, C-Lever.org</li>
-        <li>Weitere zu benennende, externe Person</li>
         <li>Lela Lindena, Mainlevel</li>
         <li>Lukas Wirnitzer, Mainlevel</li>
         <li>Weitere zu benennende, externe Person</li>
