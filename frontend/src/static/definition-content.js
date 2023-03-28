@@ -261,19 +261,17 @@ const definitionContent = {
       d: (
         <Fragment>
           <div>
-            Deforestation is loss of natural forest coverage in cocoa producing
-            areas – to be disaggregated per type of forest: National parks and
-            reserves; Forest reserves/classified forests; High Conservation
-            Value (HCV) and High Carbon Stock (HCS) forests - when identified;
-            other forests - as per national definition.
+            The conversion of forest to other land use independently whether
+            human-induced or not.{" "}
+            <a
+              href="https://www.fao.org/3/I8661EN/i8661en.pdf"
+              target="_blank"
+              rel="noreferrer"
+              style={{ fontSize: "14px" }}
+            >
+              (FAO)
+            </a>
             <br />
-            <i>
-              This definition is aligned to the Accountability Framework’s
-              definition of deforestation, counting “gross deforestation” of
-              natural forest, where “gross” is used in the sense of “total;
-              aggregate; without deduction for reforestation or other offset.”
-              (Accountability Framework)
-            </i>
           </div>
         </Fragment>
       ),
@@ -479,9 +477,9 @@ const definitionContent = {
       ),
     },
     {
-      i: "Premiums granted to the farmer",
-      t: "Premiums granted to the farmer",
-      d: "A premium granted to a farmer is an additional amount of money paid in addition to the regular market price paid to the producers or producer organizations. The amount of 'premiums granted' does not necessarily correspond to the amount of 'premiums paid in cash'. Part of the premiums granted could be deducted for payment as 'withholding' for reimbursement of (a) loan(s) to the farmer or as 'payment for services' requested by and provided to the farmer.",
+      i: "Premiums granted to the farmer and / or coopertaive",
+      t: "Premiums granted to the farmer and / or coopertaive",
+      d: "A premium granted to a farmer and/or cooperative is an additional amount of money paid in addition to the regular market price paid to the producers or producer organizations. The amount of 'premiums granted' does not necessarily correspond to the amount of 'premiums paid in cash'. Part of the premiums granted could be deducted for payment as 'withholding' for reimbursement of (a) loan(s) to the farmer or as 'payment for services' requested by and provided to the farmer.",
     },
     {
       i: "Agroforestry System for Cocoa Production (Description)",
@@ -1247,18 +1245,16 @@ const definitionContent = {
       d: (
         <Fragment>
           <div>
-            Entwaldung ist der Verlust natürlicher Waldflächen in
-            Kakaoanbaugebieten – aufgeschlüsselt nach Waldtypen: Nationalparks
-            und Reservate; Waldreservate / Klassifizierte Wälder; Wälder mit
-            hohem Naturschutzwert und Kohlenstoffbestand; Andere Wälder – gemäß
-            nationaler Definition. <br />
-            <i>
-              Diese Definition entspricht der Definition von Entwaldung des
-              Accountability Frameworks und bezieht sich auf die
-              „Bruttoentwaldung“ natürlicher Wälder, im Sinne der gesamten /
-              aggregierten Entwaldung, ohne die Anrechnung von Wiederaufforstung
-              oder anderen Ausgleichsmaßnahmen.
-            </i>
+            Die Umwandlung von Wäldern in landwirtschaftlich genutzte Flächen,
+            unabhängig davon, ob sie vom Menschen herbeigeführt wird oder nicht.
+            <a
+              href="https://www.fao.org/3/I8661EN/i8661en.pdf"
+              target="_blank"
+              rel="noreferrer"
+              style={{ fontSize: "14px" }}
+            >
+              (FAO)
+            </a>
           </div>
         </Fragment>
       ),
@@ -1467,9 +1463,9 @@ const definitionContent = {
       ),
     },
     {
-      i: "Premiums granted to the farmer",
-      t: "Gewährte Prämien an die Bäuerinnen und Bauern",
-      d: "Eine Prämie für Bäuerinnen und Bauern ist ein Geldbetrag, der zusätzlich zum regulären Marktpreis an Erzeugerinnen / Erzeuger oder Erzeugerorganisationen gezahlt wird. Die Höhe der gewährten Prämie entspricht nicht notwendigerweise dem Betrag der in bar bezahlten Prämie. Ein Teil der Prämien könnte z.B. als Rückzahlung für ein Darlehen oder zur Begleichung einer von der Bäuerin oder dem Bauern nachgefragte und erhaltene Dienstleistungen einbehalten werden.",
+      i: "Premiums granted to the farmer and / or coopertaive",
+      t: "Gewährte Prämien an die Bäuerinnen und Bauern und / oder Kooperativen",
+      d: "Eine Prämie für Kooperativen und /oder Bäuerinnen und Bauern ist ein Geldbetrag, der zusätzlich zum regulären Marktpreis an Erzeugerinnen / Erzeuger oder Erzeugerorganisationen gezahlt wird. Die Höhe der gewährten Prämie entspricht nicht notwendigerweise dem Betrag der in bar bezahlten Prämie. Ein Teil der Prämien könnte z.B. als Rückzahlung für ein Darlehen oder zur Begleichung einer von der Bäuerin oder dem Bauern nachgefragte und erhaltene Dienstleistungen einbehalten werden.",
     },
     {
       i: "Agroforestry System for Cocoa Production (Description)",
