@@ -277,6 +277,22 @@ const definitionContent = {
       ),
     },
     {
+      i: "Deforestation-free cocoa",
+      t: "Deforestation-free cocoa",
+      d: (
+        <Fragment>
+          <div>
+            Having point coordinates for plots less than 4ha and polygon
+            boundaries of the plots bigger than 4ha and verified as not in a
+            protected forest and as not comprising land that was deforested or
+            degraded since 31.12.2018 for GISCO and 31.12.2020 for the other
+            ISCOs
+            <br />
+          </div>
+        </Fragment>
+      ),
+    },
+    {
       i: "Degraded lands",
       t: "Degraded lands",
       d: (
@@ -450,6 +466,71 @@ const definitionContent = {
               Any Living Income Benchmarks should be based on publications by or
               for the Living Income Community of Practice.{" "}
             </i>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Living income benchmarks",
+      t: "Living income benchmarks",
+      d: (
+        <Fragment>
+          <div>
+            Please refer to the LICOP website for an overview of living income
+            benchmarks and studies. If there is no benchmark available for the
+            region you are working in, please consult the LICOP FAQ living
+            income benchmarks which provides guidance for using alternatives
+            when there is no benchmark available.
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Living income reference price (LIRP)",
+      t: "Living income reference price (LIRP)",
+      d: (
+        <Fragment>
+          <div>
+            A Living Income Reference Price indicates the price needed for an
+            average farmer household with a viable farm size and an adequate
+            productivity level to make a living income from the sales of their
+            crop. It can be calculated with the formula: Living Income Reference
+            Price (LIRP) = Cost of decent living + cost of sustainable
+            production / viable land area * sustainable yields For Fairtade the
+            current LIRP (2022) at farmgate is:
+            <ul style={{ marginLeft: "25px" }}>
+              <li>Ghana: 16.50 GHC / 2.12 USD per kg</li>
+              <li>Côte d’Ivoire: 1.602 CFA / 2.39 USD per kg</li>
+            </ul>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Living Income strategy",
+      t: "Living Income strategy",
+      d: (
+        <Fragment>
+          <div>
+            A living income strategy is a strategy with the explicit goal to
+            enable cocoa farming households to earn a living income. A living
+            income strategy includes a monitoring and learning component. A
+            living income strategy uses a combination, or “smart-mix” of
+            strategies that target multiple income drivers. Multiple income
+            drivers* are being assessed strategically for the purpose of closing
+            the living income gap**. The interventions for each driver depend on
+            the current situation of those drivers and to what extent addressing
+            these drivers can help close the living income gap among different
+            segments and profiles of farmers. Strategies that can improve income
+            drivers go beyond addressing changes in the farm system and
+            household behaviour. These strategies include improved procurement
+            practices. They range from service delivery for improved production
+            and processing, to brand and consumer engagement, and to improving
+            the enabling environment. A living income strategy goes beyond
+            income generating activities (IGAs) that do not have the explicit
+            aim of closing living income gaps. *land size, yield, price, cost of
+            production, diversified incomes **the difference between the actual
+            household income and the existing living income benchmark
           </div>
         </Fragment>
       ),
@@ -1260,6 +1341,15 @@ const definitionContent = {
       ),
     },
     {
+      i: "Deforestation-free cocoa",
+      t: "Entwaldungsfreier Kakao",
+      d: (
+        <Fragment>
+          <div></div>
+        </Fragment>
+      ),
+    },
+    {
       i: "Degraded lands",
       t: "Degradierte Böden",
       d: (
@@ -1438,6 +1528,96 @@ const definitionContent = {
               auf Publikationen von oder für die Living Income Community of
               Practice beruhen.
             </i>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Living income benchmarks",
+      t: "Benchmarks / Richtwerte für existenzsichernde Einkommen",
+      d: (
+        <Fragment>
+          <div>
+            Auf der{" "}
+            <a
+              href="https://www.living-income.com/living-income-benchmarks"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ fontSize: "14px" }}
+            >
+              LICOP-Website
+            </a>{" "}
+            finden Sie einen Überblick über Benchmarks und Studien zum
+            existenzsichernden Einkommen. Wenn für die Region, in der Sie
+            arbeiten, keine Benchmark verfügbar ist, konsultieren Sie bitte die
+            <a
+              href="https://c69aa8ac-6965-42b2-abb7-0f0b86c23d2e.filesusr.com/ugd/0c5ab3_4a0b8a8f12d74abc86b2260984a967ae.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ fontSize: "14px" }}
+            >
+              Living Income Community of Practice,
+            </a>{" "}
+            die Anleitungen für die Verwendung von Alternativen enthalten, wenn
+            keine Benchmark verfügbar ist.
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Living income reference price (LIRP)",
+      t: "Referenzpreis für existenzsicherndes Einkommen",
+      d: (
+        <Fragment>
+          <div>
+            Ein Referenzpreis für existenzsicherndes Einkommen gibt den Preis
+            an, den ein durchschnittlicher Bauernhaushalt mit einer rentablen
+            Betriebsgröße und einem angemessenen Produktivitätsniveau benötigt,
+            um ein existenzsicherndes Einkommen aus dem Verkauf seiner Ernte zu
+            erzielen. Es kann mit der Formel berechnet werden: Referenzpreis für
+            existenzsicherndes Einkommen (LIRP) = Kosten für menschenwürdiges
+            Leben + Kosten für nachhaltige Produktion / lebensfähige Landfläche
+            * nachhaltige Erträge Für Fairtrade lautet der aktuelle LIRP (2022)
+            bei farmgate:
+            <ul style={{ marginLeft: "25px" }}>
+              <li>Ghana: 16,50 GHC / 2,12 USD pro kg;</li>
+              <li>Elfenbeinküste: 1.602 CFA / 2.39 USD pro kg</li>
+            </ul>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Living Income strategy",
+      t: "Living Income Strategie (Strategie zur Erreichung eines Living Income)",
+      d: (
+        <Fragment>
+          <div>
+            Eine Living Income Strategie ist eine Strategie mit dem expliziten
+            Ziel, Kakaobauernhaushalten ein existenzsicherndes Einkommen zu
+            ermöglichen. Eine Strategie für existenzsicherndes Einkommen
+            beinhaltet eine Monitoring- und Lernkomponente. Eine Living
+            Income-Strategie verwendet eine Kombination oder einen
+            &quot;Smart-Mix&quot; von Strategien, die auf mehrere
+            einkommensfördernde Faktoren abzielen. Faktoren, die das Einkommens
+            erhöhen können* werden strategisch bewertet, um die Einkommenslücken
+            zwischen tatsächlichen und existenzsichernden Einkommen zu
+            schließen**. Die Interventionen für jeden dieser Faktoren hängen von
+            der aktuellen Situation ab und davon, inwieweit diese Faktoren die
+            Einkommenslücke verschiedenen Typen von Bauern und Bäuerinnen
+            adressieren. Einkommensfördernde Strategien gehen über Veränderungen
+            in bäuerlichen Systemen und Haushalten hinaus und schließen
+            Verbesserungen in unternehmerischen Beschaffungspraktiken ein. Sie
+            reichen von der Erbringung von Dienstleistungen für eine verbesserte
+            Produktion und Verarbeitung über die Marken- und Verbraucherbindung
+            bis hin zur Verbesserung des‚ enabling environments. Eine Living
+            Income Strategy geht über generelle einkommensschaffende Aktivitäten
+            (IGAs) hinaus, die nicht explizit das Ziel haben, die
+            Einkommenslücken zwischen tatsächlichen und existenzsichernden
+            Einkommen zu schließen. *Fläche, Ertrag, Preis, Produktionskosten,
+            diversifizierte Einkommen **die Differenz zwischen dem tatsächlichen
+            Haushaltseinkommen und der bestehenden Benchmark für das
+            existenzsichernde Einkommen
           </div>
         </Fragment>
       ),
