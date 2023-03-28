@@ -298,6 +298,47 @@ class EmailText(enum.Enum):
         "info": None,
         "signature": True,
     }
+    ongoing_data_download_approved = {
+        "title": None,
+        "title_translation": None,
+        "subject": '''Data Download Approved
+                    | Antrag auf Datendownload genehmigt''',
+        "body": '''<div>
+                Dear reporting member,
+                <p>
+                Your request to download your data you have reported thus far
+                has been approved. You can now enter the tool and download the
+                data. Please note that if you make changes to your reporting,
+                these are not automatically updated in the download. You will
+                need to request another download to update these changes.
+                </p>
+                <p>
+                For security reasons, the approved data access will expire
+                after 5 days. Then you will have to make a new request.
+                </p>
+                </div>''',
+        "body_translation": '''<div>
+                Sehr geehrtes Mitglied,
+                <p>
+                Ihr Antrag zum Herunterladen Ihrer bis zum jetzigen Zeitpunkt
+                ausgefüllten Daten wurde genehmigt. Sie können sich nun in das
+                Online-Tool einloggen und Ihre Daten herunterladen. Bitte
+                beachten Sie, dass Veränderungen der Daten, die Sie jetzt
+                vornehmen nicht automatisch im Download aktualisiert werden.
+                Sie müssen einen weiteren Download anfordern, um diese
+                Änderungen zu aktualisieren.
+                </p>
+                <p>
+                Aus Sicherheitsgründen läuft der genehmigte Datenzugang nach 5
+                Tagen ab. Dann müssen Sie einen neuen Antrag stellen.
+                </p>
+                </div>''',
+        "message": None,
+        "image": None,
+        "button": None,
+        "info": None,
+        "signature": True,
+    }
     add_collaborator = {
         "title": None,
         "title_translation": None,
