@@ -235,7 +235,7 @@ def verify_email(req: Request,
             Dear reporting member / partner,
             <p>
             {user['name']} ({user['email']}) from your
-            organisation has signed up for the 2022 Monitoring
+            organisation has signed up for the 2023 Monitoring
             Round at cocoamonitoring.net
             </p>
             <p>
@@ -250,13 +250,16 @@ def verify_email(req: Request,
                 Mark de Waard (dewaard@idhtrade.org)</li>
                 <li>For GISCO:
                 Ulrike Joras (ulrike.joras@giz.de)</li>
+                <li>For SWISSCO:
+                Michaela Kuhn (michaela.kuhn@kakaoplattform.ch)
+                </li>
             </ul>
             '''
         body_member_translation = f'''
             Sehr geehrte/r Teilnehmer/in,
             <p>
             Herr/ Frau {user['name']} ({user['email']}) aus Ihrer
-            Organisation hat sich für die Monitoring-Runde 2022 auf
+            Organisation hat sich für die Monitoring-Runde 2023 auf
             cocoamonitoring.net
             registriert.
             </p>
@@ -272,6 +275,8 @@ def verify_email(req: Request,
                 Mark de Waard (dewaard@idhtrade.org)</li>
                 <li>Für GISCO:
                 Ulrike Joras (ulrike.joras@giz.de)</li>
+                <li>Für SWISSCO:
+                Michaela Kuhn (michaela.kuhn@kakaoplattform.ch)</li>
             </ul>
         '''
         email_member = Email(

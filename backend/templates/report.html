@@ -38,6 +38,11 @@
         alt="{{ webdomain }}/images/disco.png"
         src="{{ webdomain }}/images/disco.png"
       />
+      <img
+        style="height: 30px"
+        alt="{{ webdomain }}/images/swissco.svg"
+        src="{{ webdomain }}/images/swissco.svg"
+      />
     </div>
     <!-- End of Header -->
     <div class="container">
@@ -78,11 +83,11 @@
           float: right;
         "
       >
-      {% if data.submitted == None %}
+        {% if data.submitted == None %}
         <li>Status : Draft</li>
-      {% endif %}
-      <li>Requested by : {{ data.request_by }}</li>
-      <li>Requested date : {{ data.request_date }}</li>
+        {% endif %}
+        <li>Requested by : {{ data.request_by }}</li>
+        <li>Requested date : {{ data.request_date }}</li>
       </ul>
       <!-- {{data.form.description}}  -->
       {% for dt in detail %}

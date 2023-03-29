@@ -451,9 +451,14 @@ const Preview = () => {
                     marginBottom: "24px",
                   }}
                 >
-                  <img height={30} src="/images/beyond.jpg" alt="logo" />
-                  <img height={30} src="/images/gisco.jpg" alt="logo" />
-                  <img height={30} src="/images/disco.png" alt="logo" />
+                  <img height={30} src="/images/beyond.jpg" alt="bc_logo" />
+                  <img height={30} src="/images/gisco.jpg" alt="gisco_logo" />
+                  <img height={30} src="/images/disco.png" alt="disco_logo" />
+                  <img
+                    height={30}
+                    src="/images/swissco.svg"
+                    alt="swissco_logo"
+                  />
                 </div>
               ),
             }}

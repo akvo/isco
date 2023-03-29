@@ -260,9 +260,14 @@ def update_download_status(req: Request,
                                   approved_by=admin.id,
                                   approved=approved)
     # TODO:: Send rejected email
+    # send different email for approved ongoing submission (saved)
+    datapoint = crud_data.get_data_by_id(session=session, id=data.data)
+    is_submitted = datapoint.submitted and datapoint.submitted_by
     user = crud_user.get_user_by_id(session=session, id=data.request_by)
     if user and approved:
-        email = Email(recipients=[user.recipient],
-                      type=MailTypeEnum.data_download_approved)
+        email = Email(
+            recipients=[user.recipient],
+            type=MailTypeEnum.data_download_approved
+            if is_submitted else MailTypeEnum.ongoing_data_download_approved)
         email.send
     return update.list_of_download_request

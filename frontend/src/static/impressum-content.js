@@ -35,9 +35,9 @@ const icEn = (handleShow) => {
             <br />
             <h3>Beyond Chocolate</h3> <hr />
             <p>
-              Fosbury & Sons, Albert <br />
-              Koning Albert II Laan 7 <br />
-              1210 Brussels <br />
+              Spaces Manhattan Brussels <br />
+              Avenue du Boulevard 21/5th Floor <br />
+              1210 Brussel <br />
             </p>
             <p>
               Contact: Charles Snoeck <br />
@@ -58,6 +58,22 @@ const icEn = (handleShow) => {
               Email:{" "}
               <a href="mailto:deWaard@idhtrade.org">
                 deWaard@idhtrade.org
+              </a>{" "}
+              <br />
+            </p>
+            <br />
+            <br />
+            <h3>SWISSCO</h3> <hr />
+            <p>
+              Swiss platform for sustainable cocoa <br />
+              Münzgraben 6 <br />
+              3011 Bern <br />
+            </p>
+            <p>
+              Contact: Christian Robin <br />
+              Email:{" "}
+              <a href="mailto:christian.robin@kakaoplattform.ch">
+                christian.robin@kakaoplattform.ch
               </a>{" "}
               <br />
             </p>
@@ -166,9 +182,9 @@ const icDe = (handleShow) => {
             <br />
             <h3>Beyond Chocolate</h3> <hr />
             <p>
-              Fosbury & Sons, Albert <br />
-              Koning Albert II Laan 7 <br />
-              1210 Brussels <br />
+              Spaces Manhattan Brussels <br />
+              Avenue du Boulevard 21/5th Floor <br />
+              1210 Brussel <br />
             </p>
             <p>
               Kontakt: Charles Snoeck <br />
@@ -189,6 +205,22 @@ const icDe = (handleShow) => {
               Email:{" "}
               <a href="mailto:deWaard@idhtrade.org">
                 deWaard@idhtrade.org
+              </a>{" "}
+              <br />
+            </p>{" "}
+            <br />
+            <br />
+            <h3>SWISSCO</h3> <hr />
+            <p>
+              Swiss platform for sustainable cocoa <br />
+              Münzgraben 6 <br />
+              3011 Bern <br />
+            </p>
+            <p>
+              Contact: Christian Robin <br />
+              Email:{" "}
+              <a href="mailto:christian.robin@kakaoplattform.ch">
+                christian.robin@kakaoplattform.ch
               </a>{" "}
               <br />
             </p>

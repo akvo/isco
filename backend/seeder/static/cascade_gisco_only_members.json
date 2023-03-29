@@ -1,0 +1,422 @@
+{
+  "name": "GISCO Members",
+  "type": "cascade",
+  "cascades": [
+    { "name": "staff Akvo", "level": 1, "action": "new", "childrens": [] },
+    {
+      "name": "staff GISCO secretariat",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    { "name": "staff C-Lever", "level": 1, "action": "new", "childrens": [] },
+    { "name": "Mars", "level": 1, "action": "new", "childrens": [] },
+    { "name": "Mondelez", "level": 1, "action": "new", "childrens": [] },
+    { "name": "Fairtrade", "level": 1, "action": "new", "childrens": [] },
+    {
+      "name": "Ludwig Weinrich GmbH & Co. KG",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "INKOTA-Netzwerk e.V.",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    { "name": "ALDI", "level": 1, "action": "new", "childrens": [] },
+    {
+      "name": "ALDI SÜD Group, HOFER KG",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Alfred Ritter GmbH & Co. KG",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "August Storck KG",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    { "name": "Barry Callebaut", "level": 1, "action": "new", "childrens": [] },
+    {
+      "name": "Baumgartner Schokoladen GMBH",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Bayer Crop Science ",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Bundesministerium für wirtschaftliche Zusammenarbeit und Entwicklung (BMZ)",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    { "name": "BMZ/ GIZ", "level": 1, "action": "new", "childrens": [] },
+    {
+      "name": "Brandt Zwieback - Schokoladen GmbH + Co. KG",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Bundesministerium für Ernährung und Landwirtschaft (BMEL)",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Bundesverband der Deutschen Süßwarenindustrie e.V. (BDSI)",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Bundesverband des Deutschen Lebensmittelhandels e.V. (BVLH)",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    { "name": "Cargill", "level": 1, "action": "new", "childrens": [] },
+    {
+      "name": "Chocoladefabriken Lindt & Sprüngli GmbH",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Chr. Storz GmbH & Co. KG",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Continental Bakeries B.V.",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    { "name": "COOKO GmbH", "level": 1, "action": "new", "childrens": [] },
+    {
+      "name": "Dr. Bronner's Europe",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Dr. Harnish Verlag GmbH",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "EDEKA ZENTRALE AG & Co. KG",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    { "name": "Eisbär Eis GmbH", "level": 1, "action": "new", "childrens": [] },
+    {
+      "name": "Exposure- und Dialogprogramme e.V",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "FERRERO DEUTSCHLAND GmbH",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Förderverein der Maria Montessori Gesamtschule, Düsseldorf",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "FORUM FAIRER HANDEL e.V.",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Frankonia Schokoladenwerke GmbH",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Fuchs & Hoffmann Kakaoprodukte GmbH",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "German Institute for Global and Area Studies (GIGA)",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Gewerkschaft Nahrung-Genuss-Gaststätten (NGG)",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Griesson-de Beukelaer GmbH & Co. KG",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Gut Springenheide GmbH",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "H.C.C.O Hamburg Cocoa & Commodity Office GmbH",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "H.D.Cotterell GmbH & Co. KG",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Hachez Chocoversum GmbH",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Hamburger Stiftung für Wirtschaftsethik",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Hans Riegelein & Sohn GmbH & Co. KG",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Hanseatisches Chocoladen Kontor GmbH & Co. KG",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Henry Lambertz GmbH & Co. KG (Aachener Printen und Schokoladenfabrik)",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Infozentrum Schokolade",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "ISCC System GmbH",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "J.G. Niederegger GmbH & Co. KG",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "LIDL Stiftung & Co. KG",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Lübecker Marzipan-Fabrik v. Minden & Bruhns GmbH & Co. KG (Lubeca)",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Ludwig Schokolade GmbH & Co. KG",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Ministeriumm für Energiewende, landwirtschaft, Umwelt und ländliche Entwicklung des Landes Schleswig-Holstein",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    { "name": "Myclimate", "level": 1, "action": "new", "childrens": [] },
+    { "name": "Nestlé", "level": 1, "action": "new", "childrens": [] },
+    {
+      "name": "Nexus Management",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    { "name": "Olam", "level": 1, "action": "new", "childrens": [] },
+    {
+      "name": "Piasten GmbH / Treets GmbH",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Plant-for-the-Planet",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Rainforest Alliance",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    { "name": "REWE Group", "level": 1, "action": "new", "childrens": [] },
+    {
+      "name": "Rübezahl Schokoladen GmbH",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    { "name": "Schöki GmbH", "level": 1, "action": "new", "childrens": [] },
+    {
+      "name": "SCHOKINAG-Schokolade-Industrie GmbH",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Schokoladenmuseum Köln GmbH",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    { "name": "Solidaridad", "level": 1, "action": "new", "childrens": [] },
+    {
+      "name": "Stiftung der Deutschen Kakao- und Schokoladenwirtschaft",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Stollwerck / Baronie",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "SÜDWIND e.V. - Institut für Ökonomie und Ökumene",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "tegut… gute Lebensmittel GmbH & Co. KG",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Ulmer Schokoladen GmbH & Co. KG",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "United-Agro-Alliance GmbH",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Verdener Keks- und Waffelfabrik Hans Freitag GmbH & Co.KG",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Verein der am Rohkakaohandel beteiligten Firmen e. V.",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Vollers Hamburg GmbH",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "WETZEL Karlsbader Oblaten- und Waffelfabrik GmbH",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "World Wide Fund for Nature (WWF)",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    { "name": "ZDS Solingen", "level": 1, "action": "new", "childrens": [] },
+    {
+      "name": "ZNU – Zentrum für Nachhaltige Unternehmensführung der Universität Witten/Herdecke",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    { "name": "ALISOS", "level": 1, "action": "new", "childrens": [] },
+    {
+      "name": "German Institute of Global and Area Studies (GIGA)",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Fng MAGAZIN Dr. Harnisch Verlagsgesellschaft mbH",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "International Cocoa Initiative (ICI)",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    {
+      "name": "Moog Impact Economy Consulting",
+      "level": 1,
+      "action": "new",
+      "childrens": []
+    },
+    { "name": "Elucid GmbH", "level": 1, "action": "new", "childrens": [] }
+  ]
+}
