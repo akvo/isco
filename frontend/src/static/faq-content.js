@@ -51,12 +51,20 @@ const faqEn = [
     ),
   },
   {
-    h: "Decimals - Why cannot I enter numbers with decimals (,)?",
+    h: "What happens if I don't report? Is reporting obligatory? ",
     c: (
       <Fragment>
         <p>
-          Please use a dot (.), instead of a comma (,)! The dot (.) is the only
-          decimal separator supported by the system.
+          Reporting is obligatory for members of Beyond Chocolate, DISCO and
+          GISCO. If a member does not report within the given timeframe (by
+          April 30th), next steps will be taken by the ISCOs in accordance with
+          the agreed processes and procedures. If a member fails to report,
+          exclusion from the ISCO in question is a possibility.
+        </p>
+        <p>
+          Please note that for SWISSCO this concerns a voluntary pilot. SWISSCO
+          members are not obligated to report in the tool in 2023 but are
+          encouraged to do so.
         </p>
       </Fragment>
     ),
@@ -75,42 +83,15 @@ const faqEn = [
     ),
   },
   {
-    h: "Reporting by project managers - Can I delegate the reporting of our projects/ programs to project/program managers, inside or outside of my organisation?",
+    h: "Who needs to report what?",
     c: (
       <Fragment>
-        <ol type="1">
-          <li>
-            Colleagues from your own organisation who are added as users to the
-            portal with authorization to create/edit project questionnaires, can
-            view and edit data of your organisation’s project questionnaires.
-            You should agree among colleagues of the same organisation as to
-            whom will complete/review project data before submission of the
-            completed questionnaire.
-          </li>
-          <li>
-            For a cocoa sustainability project /programme that is jointly
-            implemented by different member organisations, only one
-            questionnaire should be created; this is to be done by the member
-            designated as the coordinating or lead partner for that project.
-          </li>
-          <li>
-            Access to the corresponding project questionnaire will be granted to
-            all colleagues from the selected project partner organisations who
-            are registered as users of the platform with authorised access to
-            project questionnaires. Please refer to the FAQ topic Adding
-            Collaborators for more explanations on how to grant access to a
-            specific project questionnaire for partner organisations. Please
-            note that you should agree among colleagues of the different project
-            partner organisations as to whom will complete/review project data
-            before submission of the completed questionnaire.
-          </li>
-          <li>
-            There is also the possibility to download the data of a
-            (fully/partially) completed questionnaire to allow for offline
-            review and/or contribution by a colleague before submitting the
-            questionnaire.
-          </li>
-        </ol>
+        <p>
+          In principle the questionnaire will only display the questions you
+          need to report on, based on the combination of your organisation’s /
+          company’s member type and the platform(s) your organisation is a
+          member of.
+        </p>
       </Fragment>
     ),
   },
@@ -151,48 +132,13 @@ const faqEn = [
     ),
   },
   {
-    h: "Who needs to report what?",
+    h: "Decimals - Why cannot I enter numbers with decimals (,)?",
     c: (
       <Fragment>
         <p>
-          In principle the questionnaire will only display the questions you
-          need to report on, based on the combination of your organisation’s /
-          company’s member type and the platform(s) your organisation is a
-          member of.
+          Please use a dot (.), instead of a comma (,)! The dot (.) is the only
+          decimal separator supported by the system.
         </p>
-      </Fragment>
-    ),
-  },
-  {
-    h: "Who should report on Premiums?",
-    c: (
-      <Fragment>
-        <p>
-          Premium related questions are to be completed only by supply chain
-          actors that are member of GISCO. Please report if premiums were paid
-          for any volume of cocoa sourced by or on behalf of your organisation /
-          company.
-        </p>
-        <p>
-          You are only expected to report on premiums paid on your behalf, if
-          your supplier (who managed the premium payments on your behalf), is
-          not reporting such payments as part of the GISCO reporting. In other
-          words, if a company is reporting on this question block, the client
-          companies are not expected to report again on the already reported
-          premium payments. The same premiums should be reported only once.
-        </p>
-        <p>
-          Note that it is mandatory to report on sourcing in Côte d&apos;Ivoire
-          and in Ghana separately, while for other countries you can choose to:
-          <ul>
-            <li>
-              (a) provide country-specific data per country where you sourced
-              cocoa with premiums;
-            </li>
-            <li>(b) provide only aggregated data.</li>
-          </ul>
-        </p>
-        <p>Premium data is not to be disaggregated per destination market.</p>
       </Fragment>
     ),
   },
@@ -240,21 +186,75 @@ const faqEn = [
     ),
   },
   {
-    h: "What happens if I don't report? Is reporting obligatory? ",
+    h: "Reporting by project managers - Can I delegate the reporting of our projects/ programs to project/program managers, inside or outside of my organisation?",
+    c: (
+      <Fragment>
+        <ol type="1">
+          <li>
+            Colleagues from your own organisation who are added as users to the
+            portal with authorization to create/edit project questionnaires, can
+            view and edit data of your organisation’s project questionnaires.
+            You should agree among colleagues of the same organisation as to
+            whom will complete/review project data before submission of the
+            completed questionnaire.
+          </li>
+          <li>
+            For a cocoa sustainability project /programme that is jointly
+            implemented by different member organisations, only one
+            questionnaire should be created; this is to be done by the member
+            designated as the coordinating or lead partner for that project.
+          </li>
+          <li>
+            Access to the corresponding project questionnaire will be granted to
+            all colleagues from the selected project partner organisations who
+            are registered as users of the platform with authorised access to
+            project questionnaires. Please refer to the FAQ topic Adding
+            Collaborators for more explanations on how to grant access to a
+            specific project questionnaire for partner organisations. Please
+            note that you should agree among colleagues of the different project
+            partner organisations as to whom will complete/review project data
+            before submission of the completed questionnaire.
+          </li>
+          <li>
+            There is also the possibility to download the data of a
+            (fully/partially) completed questionnaire to allow for offline
+            review and/or contribution by a colleague before submitting the
+            questionnaire.
+          </li>
+        </ol>
+      </Fragment>
+    ),
+  },
+  {
+    h: "Who should report on Premiums?",
     c: (
       <Fragment>
         <p>
-          Reporting is obligatory for members of Beyond Chocolate, DISCO and
-          GISCO. If a member does not report within the given timeframe (by
-          April 30th), next steps will be taken by the ISCOs in accordance with
-          the agreed processes and procedures. If a member fails to report,
-          exclusion from the ISCO in question is a possibility.
+          Premium related questions are to be completed only by supply chain
+          actors that are member of GISCO. Please report if premiums were paid
+          for any volume of cocoa sourced by or on behalf of your organisation /
+          company.
         </p>
         <p>
-          Please note that for SWISSCO this concerns a voluntary pilot. SWISSCO
-          members are not obligated to report in the tool in 2023 but are
-          encouraged to do so.
+          You are only expected to report on premiums paid on your behalf, if
+          your supplier (who managed the premium payments on your behalf), is
+          not reporting such payments as part of the GISCO reporting. In other
+          words, if a company is reporting on this question block, the client
+          companies are not expected to report again on the already reported
+          premium payments. The same premiums should be reported only once.
         </p>
+        <p>
+          Note that it is mandatory to report on sourcing in Côte d&apos;Ivoire
+          and in Ghana separately, while for other countries you can choose to:
+          <ul>
+            <li>
+              (a) provide country-specific data per country where you sourced
+              cocoa with premiums;
+            </li>
+            <li>(b) provide only aggregated data.</li>
+          </ul>
+        </p>
+        <p>Premium data is not to be disaggregated per destination market.</p>
       </Fragment>
     ),
   },
@@ -317,13 +317,23 @@ const faqDe = [
     ),
   },
   {
-    en: "Decimals - Why cannot I enter numbers with decimals (,)?",
-    h: "Dezimalstellen - Warum kann ich keine Zahlen mit Dezimalstellen eingeben?",
+    en: "What happens if I don't report? Is reporting obligatory?",
+    h: "Was passiert, wenn ich mich nicht melde? Ist eine Berichterstattung obligatorisch?",
     c: (
       <Fragment>
         <p>
-          Verwenden Sie bitte einen Punkt (.) anstelle eines Kommas (,)! Der
-          Punkt (.) ist das einzige vom System unterstützte Dezimaltrennzeichen.
+          Die Berichterstattung ist für Mitglieder von Beyond Chocolate, DISCO
+          und dem Forum Nachhaltiger Kakao obligatorisch. Berichtet ein Mitglied
+          nicht innerhalb des vorgegebenen Zeitrahmens (bis zum 30. April),
+          werden die nächsten Schritte in Übereinstimmung mit den vereinbarten
+          Prozessen und Verfahren von denn ISCOs eingeleitet. Berichtet ein
+          Mitglied nicht, ist ein Ausschluss aus dem jeweiligen ISCO möglich.
+        </p>
+        <p>
+          Bitte beachten Sie, dass es sich für SWISSCO um ein freiwilliges
+          Pilotprojekt handelt. Die SWISSCO-Mitglieder sind nicht verpflichtet,
+          im Jahr 2023 über das Tool zu berichten, sind aber ermutigt, dies zu
+          tun.
         </p>
       </Fragment>
     ),
@@ -344,48 +354,16 @@ const faqDe = [
     ),
   },
   {
-    en: "Reporting by project managers - Can I delegate the reporting of our projects/ programs to project/program managers, inside or outside of my organisation?",
-    h: "Berichterstattung durch Projektmanager und/oder Projektmanagerinnen - Kann ich die Berichterstattung über unsere Projekte/Programme an Projekt-/Programmmanager bzw. --managerinnen innerhalb oder außerhalb meiner Organisation delegieren?",
+    en: "Who needs to report what?",
+    h: "Wer muss über was berichten?",
     c: (
       <Fragment>
-        <ol type="1">
-          <li>
-            Kolleginnen und Kollegen aus Ihrer eigenen Organisation, die mit der
-            Berechtigung zum Erstellen/Bearbeiten von Projektfragebögen zum
-            Portal hinzugefügt werden, können Daten der Projektfragebögen Ihrer
-            Organisation einsehen und bearbeiten. Sie sollten sich unter
-            Kolleginnen und Kollegen derselben Organisation darauf einigen, wer
-            die Projektdaten ausfüllen/überprüfen wird, bevor Sie den
-            ausgefüllten Fragebogen einreichen.
-          </li>
-          <li>
-            Für ein Kakao-Nachhaltigkeitsprojekt/-programm, das von
-            verschiedenen Kakaoforums-Mitgliedsorganisationen gemeinsam
-            durchgeführt wird, sollte nur ein Fragebogen erstellt werden. Dies
-            muss von dem Kakaoforumsmitglied durchgeführt werden, das als
-            koordinierender oder federführender Partner für dieses Projekt
-            bestimmt ist.
-          </li>
-          <li>
-            Der Zugriff auf den entsprechenden Projektfragebogen wird allen
-            Kolleginnen und Kollegen der ausgewählten
-            organisationProjektpartnerorganisationen gewährt, die als Benutzer
-            der Plattform mit autorisiertem Zugriff auf Projektfragebögen
-            registriert sind. Weitere Erläuterungen zum Gewähren des Zugriffs
-            auf einen bestimmten Projektfragebogen für
-            organisationPartnerorganisationen finden Sie im FAQ-Thema Hinzufügen
-            von Mitarbeitern. Bitte beachten Sie, dass Sie unter den Kolleginnen
-            und Kollegen der verschiedenen Projektpartnerorganisationen
-            vereinbaren sollten, wer die Projektdaten ausfüllet/überprüft, bevor
-            Sie den ausgefüllten Fragebogen einreichen.
-          </li>
-          <li>
-            Es besteht auch die Möglichkeit, die Daten eines
-            (vollständig/teilweise) ausgefüllten Fragebogens herunterzuladen, um
-            eine Offline-Überprüfung durch einen Kollegen oder eine Kollegin zu
-            ermöglichen, bevor der Fragebogen eingereicht wird.
-          </li>
-        </ol>
+        <p>
+          Im Prinzip zeigt der Fragebogen nur die Fragen an, zu denen Sie
+          Bericht erstatten müssen, und zwar auf der Grundlage der Kombination
+          aus der Mitgliedsart Ihrer Organisation/Ihres Unternehmens und der
+          Plattform(en), bei der Ihre Organisation Mitglied ist.
+        </p>
       </Fragment>
     ),
   },
@@ -426,52 +404,14 @@ const faqDe = [
     ),
   },
   {
-    en: "Who needs to report what?",
-    h: "Wer muss über was berichten?",
+    en: "Decimals - Why cannot I enter numbers with decimals (,)?",
+    h: "Dezimalstellen - Warum kann ich keine Zahlen mit Dezimalstellen eingeben?",
     c: (
       <Fragment>
         <p>
-          Im Prinzip zeigt der Fragebogen nur die Fragen an, zu denen Sie
-          Bericht erstatten müssen, und zwar auf der Grundlage der Kombination
-          aus der Mitgliedsart Ihrer Organisation/Ihres Unternehmens und der
-          Plattform(en), bei der Ihre Organisation Mitglied ist.
+          Verwenden Sie bitte einen Punkt (.) anstelle eines Kommas (,)! Der
+          Punkt (.) ist das einzige vom System unterstützte Dezimaltrennzeichen.
         </p>
-      </Fragment>
-    ),
-  },
-  {
-    en: "Who should report on Premiums?",
-    h: "Wer sollte über Prämien berichten?",
-    c: (
-      <Fragment>
-        <p>
-          Die Fragen zu Prämienzahlungen sind nur von Akteuren der Lieferkette
-          auszufüllen, die Mitglied von GISCO sind. Bitte geben Sie an, ob
-          Prämien für Kakao gezahlt wurden, der von oder im Namen Ihrer
-          Organisation/Ihrem Unternehmen bezogen wurde.
-        </p>
-        <p>
-          Sie müssen nur dann über die in Ihrem Namen gezahlten Prämien
-          berichten, wenn Ihr Lieferant (der die Prämienzahlungen in Ihrem Namen
-          verwaltet hat) solche Zahlungen nicht im Rahmen der Berichterstattung
-          des Forums selbst angibt. Mit anderen Worten: Wenn ein Unternehmen
-          diesen Fragenblock ausfüllt, wird von den Kundenunternehmen nicht
-          erwartet, dass sie die bereits gemeldeten Prämienzahlungen erneut
-          melden. Die gleichen Prämien sollten nur einmal gemeldet werden.
-        </p>
-        <p>
-          Bitte beachten Sie, dass es verpflichtend ist, über die Beschaffung in
-          Côte d&apos;Ivoire und in Ghana separat zu berichten, während Sie für
-          andere Länder wählen können zwischen:
-          <ul>
-            <li>
-              (a) länderspezifische Daten für jedes Land, aus dem Sie Kakao mit
-              Prämien bezogen haben,
-            </li>
-            <li>(b) nur aggregierte Daten bereitstellen.</li>
-          </ul>
-        </p>
-        <p>Die Prämiendaten werden nicht nach Zielmärkten aufgeschlüsselt.</p>
       </Fragment>
     ),
   },
@@ -523,24 +463,84 @@ const faqDe = [
     ),
   },
   {
-    en: "What happens if I don't report? Is reporting obligatory?",
-    h: "Was passiert, wenn ich mich nicht melde? Ist eine Berichterstattung obligatorisch?",
+    en: "Reporting by project managers - Can I delegate the reporting of our projects/ programs to project/program managers, inside or outside of my organisation?",
+    h: "Berichterstattung durch Projektmanager und/oder Projektmanagerinnen - Kann ich die Berichterstattung über unsere Projekte/Programme an Projekt-/Programmmanager bzw. --managerinnen innerhalb oder außerhalb meiner Organisation delegieren?",
+    c: (
+      <Fragment>
+        <ol type="1">
+          <li>
+            Kolleginnen und Kollegen aus Ihrer eigenen Organisation, die mit der
+            Berechtigung zum Erstellen/Bearbeiten von Projektfragebögen zum
+            Portal hinzugefügt werden, können Daten der Projektfragebögen Ihrer
+            Organisation einsehen und bearbeiten. Sie sollten sich unter
+            Kolleginnen und Kollegen derselben Organisation darauf einigen, wer
+            die Projektdaten ausfüllen/überprüfen wird, bevor Sie den
+            ausgefüllten Fragebogen einreichen.
+          </li>
+          <li>
+            Für ein Kakao-Nachhaltigkeitsprojekt/-programm, das von
+            verschiedenen Kakaoforums-Mitgliedsorganisationen gemeinsam
+            durchgeführt wird, sollte nur ein Fragebogen erstellt werden. Dies
+            muss von dem Kakaoforumsmitglied durchgeführt werden, das als
+            koordinierender oder federführender Partner für dieses Projekt
+            bestimmt ist.
+          </li>
+          <li>
+            Der Zugriff auf den entsprechenden Projektfragebogen wird allen
+            Kolleginnen und Kollegen der ausgewählten
+            organisationProjektpartnerorganisationen gewährt, die als Benutzer
+            der Plattform mit autorisiertem Zugriff auf Projektfragebögen
+            registriert sind. Weitere Erläuterungen zum Gewähren des Zugriffs
+            auf einen bestimmten Projektfragebogen für
+            organisationPartnerorganisationen finden Sie im FAQ-Thema Hinzufügen
+            von Mitarbeitern. Bitte beachten Sie, dass Sie unter den Kolleginnen
+            und Kollegen der verschiedenen Projektpartnerorganisationen
+            vereinbaren sollten, wer die Projektdaten ausfüllet/überprüft, bevor
+            Sie den ausgefüllten Fragebogen einreichen.
+          </li>
+          <li>
+            Es besteht auch die Möglichkeit, die Daten eines
+            (vollständig/teilweise) ausgefüllten Fragebogens herunterzuladen, um
+            eine Offline-Überprüfung durch einen Kollegen oder eine Kollegin zu
+            ermöglichen, bevor der Fragebogen eingereicht wird.
+          </li>
+        </ol>
+      </Fragment>
+    ),
+  },
+  {
+    en: "Who should report on Premiums?",
+    h: "Wer sollte über Prämien berichten?",
     c: (
       <Fragment>
         <p>
-          Die Berichterstattung ist für Mitglieder von Beyond Chocolate, DISCO
-          und dem Forum Nachhaltiger Kakao obligatorisch. Berichtet ein Mitglied
-          nicht innerhalb des vorgegebenen Zeitrahmens (bis zum 30. April),
-          werden die nächsten Schritte in Übereinstimmung mit den vereinbarten
-          Prozessen und Verfahren von denn ISCOs eingeleitet. Berichtet ein
-          Mitglied nicht, ist ein Ausschluss aus dem jeweiligen ISCO möglich.
+          Die Fragen zu Prämienzahlungen sind nur von Akteuren der Lieferkette
+          auszufüllen, die Mitglied von GISCO sind. Bitte geben Sie an, ob
+          Prämien für Kakao gezahlt wurden, der von oder im Namen Ihrer
+          Organisation/Ihrem Unternehmen bezogen wurde.
         </p>
         <p>
-          Bitte beachten Sie, dass es sich für SWISSCO um ein freiwilliges
-          Pilotprojekt handelt. Die SWISSCO-Mitglieder sind nicht verpflichtet,
-          im Jahr 2023 über das Tool zu berichten, sind aber ermutigt, dies zu
-          tun.
+          Sie müssen nur dann über die in Ihrem Namen gezahlten Prämien
+          berichten, wenn Ihr Lieferant (der die Prämienzahlungen in Ihrem Namen
+          verwaltet hat) solche Zahlungen nicht im Rahmen der Berichterstattung
+          des Forums selbst angibt. Mit anderen Worten: Wenn ein Unternehmen
+          diesen Fragenblock ausfüllt, wird von den Kundenunternehmen nicht
+          erwartet, dass sie die bereits gemeldeten Prämienzahlungen erneut
+          melden. Die gleichen Prämien sollten nur einmal gemeldet werden.
         </p>
+        <p>
+          Bitte beachten Sie, dass es verpflichtend ist, über die Beschaffung in
+          Côte d&apos;Ivoire und in Ghana separat zu berichten, während Sie für
+          andere Länder wählen können zwischen:
+          <ul>
+            <li>
+              (a) länderspezifische Daten für jedes Land, aus dem Sie Kakao mit
+              Prämien bezogen haben,
+            </li>
+            <li>(b) nur aggregierte Daten bereitstellen.</li>
+          </ul>
+        </p>
+        <p>Die Prämiendaten werden nicht nach Zielmärkten aufgeschlüsselt.</p>
       </Fragment>
     ),
   },
