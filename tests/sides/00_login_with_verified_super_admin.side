@@ -81,9 +81,9 @@
         ["css=.intro-text > h1", "css:finder"],
         ["xpath=//div[@id='home']/div/div/h1", "xpath:idRelative"],
         ["xpath=//h1", "xpath:position"],
-        ["xpath=//h1[contains(.,'WELCOME TO THE COCOA MONITORING OF DISCO, BEYOND CHOCOLATE AND GISCO!')]", "xpath:innerText"]
+        ["xpath=//h1[contains(.,'WELCOME TO THE COCOA MONITORING OF DISCO, BEYOND CHOCOLATE, GISCO AND SWISSCO!')]", "xpath:innerText"]
       ],
-      "value": "WELCOME TO THE COCOA MONITORING OF DISCO, BEYOND CHOCOLATE AND GISCO!"
+      "value": "WELCOME TO THE COCOA MONITORING OF DISCO, BEYOND CHOCOLATE, GISCO AND SWISSCO!"
     }]
   }],
   "suites": [{
