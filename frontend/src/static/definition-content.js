@@ -528,9 +528,12 @@ const definitionContent = {
             and processing, to brand and consumer engagement, and to improving
             the enabling environment. A living income strategy goes beyond
             income generating activities (IGAs) that do not have the explicit
-            aim of closing living income gaps. *land size, yield, price, cost of
-            production, diversified incomes **the difference between the actual
-            household income and the existing living income benchmark
+            aim of closing living income gaps.
+            <br />
+            *land size, yield, price, cost of production, diversified incomes
+            <br />
+            **the difference between the actual household income and the
+            existing living income benchmark
           </div>
         </Fragment>
       ),
@@ -1614,10 +1617,11 @@ const definitionContent = {
             Income Strategy geht über generelle einkommensschaffende Aktivitäten
             (IGAs) hinaus, die nicht explizit das Ziel haben, die
             Einkommenslücken zwischen tatsächlichen und existenzsichernden
-            Einkommen zu schließen. *Fläche, Ertrag, Preis, Produktionskosten,
-            diversifizierte Einkommen **die Differenz zwischen dem tatsächlichen
-            Haushaltseinkommen und der bestehenden Benchmark für das
-            existenzsichernde Einkommen
+            Einkommen zu schließen. <br />
+            *Fläche, Ertrag, Preis, Produktionskosten, diversifizierte Einkommen{" "}
+            <br />
+            **die Differenz zwischen dem tatsächlichen Haushaltseinkommen und
+            der bestehenden Benchmark für das existenzsichernde Einkommen
           </div>
         </Fragment>
       ),
