@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const homeContent = (handleShow) => {
   return {
     en: {
-      h: "WELCOME TO THE COCOA MONITORING OF DISCO, BEYOND CHOCOLATE AND GISCO!",
+      h: "WELCOME TO THE COCOA MONITORING OF DISCO, BEYOND CHOCOLATE, GISCO AND SWISSCO!",
       p1: "Dear Participants,",
       p2: (
         <Fragment>
@@ -14,13 +14,14 @@ const homeContent = (handleShow) => {
           for the future. You can start your reporting by going to the survey
           tab at the top of the screen and/or by scrolling down. <br />
           Your feedback on the monitoring system is very valuable to us – you
-          can themprovide feedback in the feedback section (menu above) or in
-          the comment fields in the questionnaires.
+          can provide feedback in the feedback section (menu above) or in the
+          comment fields in the questionnaires.
           <br />
           Under this{" "}
           <Link onClick={handleShow} to="#">
-            link,
-          </Link>{" "}
+            link
+          </Link>
+          {", "}
           you find the data security and confidentiality measures taken.
           <br />
           <br />
@@ -46,17 +47,17 @@ const homeContent = (handleShow) => {
     },
 
     de: {
-      h: "Willkommen beim Monitoring des Forum Nachhaltiger Kakao, Beyond Chocolate, DISCO UND SWISSCO!",
+      h: "Willkommen beim Monitoring des Forum Nachhaltiger Kakao, Beyond Chocolate, DISCO und SWISSCO!",
       p1: "Liebe Teilnehmerinnen und Teilnehmer,",
       p2: (
         <Fragment>
           vielen Dank für Ihre Teilnahme an der Monitoringrunde 2023. Ihre
           Berichterstattung ist wichtig, damit wir die Fortschritte der ISCOs
           verfolgen und Aktionspunkte für die Zukunft festlegen können. Sie
-          können mit der Berichterstattung beginnen, gehenindem Sie an den
-          oberen Rand des Bildschirms gehen und/oder nach unten scrollen. <br />{" "}
-          Ihre Rückmeldungen zum Monitoringsystem sind für uns sehr wertvoll –
-          Sie können diese im Feedbackformular (im Menu oben) oder in den
+          können mit der Berichterstattung beginnen, indem Sie an den oberen
+          Rand des Bildschirms gehen und/oder nach unten scrollen. <br /> Ihre
+          Rückmeldungen zum Monitoringsystem sind für uns sehr wertvoll – Sie
+          können diese im Feedbackformular (im Menu oben) oder in den
           Kommentarfeldern der Fragebögen machen.
           <br />
           Unter diesem{" "}
