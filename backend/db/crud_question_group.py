@@ -170,7 +170,6 @@ def move_question_group(session: Session, id: int, selected_order: int,
                 status_code=501,
                 detail="MOVE GROUP C | question has negative order value")
 
-
     if (selected_order < target_order):
         group.order = target_order - 1
         groups = groups.filter(
