@@ -107,6 +107,12 @@ def update_question_group(session: Session, id: int,
 
 def move_question_group(session: Session, id: int, selected_order: int,
                         target_order: int, target_id: int):
+    # validate negative order value
+    if (selected_order <= 0 or target_order <= 0):
+        raise HTTPException(
+            status_code=501,
+            detail="MOVE GROUP A | question group has negative order value")
+
     group = session.query(QuestionGroup).filter(
         QuestionGroup.id == id).first()
     groups = session.query(QuestionGroup)
@@ -123,6 +129,7 @@ def move_question_group(session: Session, id: int, selected_order: int,
         between_group = session.query(
             QuestionGroup
         ).filter(and_(
+            QuestionGroup.form == group.form,
             QuestionGroup.order <= selected_order,
             QuestionGroup.order >= target_order
         )).all()
@@ -139,6 +146,12 @@ def move_question_group(session: Session, id: int, selected_order: int,
         selected_q_length = len(selected_q)
         for bq in between_question:
             bq.order = bq.order + selected_q_length
+        # validate negative order value
+        q_orders = any(q.order <= 0 for q in between_question)
+        if (q_orders):
+            raise HTTPException(
+                status_code=501,
+                detail="MOVE GROUP B | question has negative order value")
         # update question inside selected/moved group
         prev_order = session.query(
             Question).filter(
@@ -150,6 +163,12 @@ def move_question_group(session: Session, id: int, selected_order: int,
                 sq.order = index + 1
             else:
                 sq.order = index + prev_order + 1
+        # validate negative order value
+        q_orders = any(q.order <= 0 for q in selected_q)
+        if (q_orders):
+            raise HTTPException(
+                status_code=501,
+                detail="MOVE GROUP C | question has negative order value")
 
     if (selected_order < target_order):
         group.order = target_order - 1
@@ -163,6 +182,7 @@ def move_question_group(session: Session, id: int, selected_order: int,
         between_group = session.query(
             QuestionGroup
         ).filter(and_(
+            QuestionGroup.form == group.form,
             QuestionGroup.order < target_order,
             QuestionGroup.order >= selected_order
         )).all()
@@ -183,6 +203,7 @@ def move_question_group(session: Session, id: int, selected_order: int,
         moved_group = session.query(
             QuestionGroup
         ).filter(and_(
+            QuestionGroup.form == group.form,
             QuestionGroup.order >= selected_order,
             QuestionGroup.order < target_order
         )).all()
@@ -192,6 +213,12 @@ def move_question_group(session: Session, id: int, selected_order: int,
         moved_q_length = len(moved_q)
         for q in selected_q:
             q.order = q.order + moved_q_length
+        # validate negative order value
+        q_orders = any(q.order <= 0 for q in selected_q)
+        if (q_orders):
+            raise HTTPException(
+                status_code=501,
+                detail="MOVE GROUP D | question has negative order value")
 
     groups = groups.order_by(QuestionGroup.order).all()
     for qg in groups:
@@ -199,6 +226,12 @@ def move_question_group(session: Session, id: int, selected_order: int,
             qg.order = qg.order + 1
         if (selected_order < target_order):
             qg.order = qg.order - 1
+    # validate negative order value
+    qg_orders = any(qg.order <= 0 for qg in groups)
+    if (qg_orders):
+        raise HTTPException(
+            status_code=501,
+            detail="MOVE GROUP B | question has negative order value")
     session.commit()
     session.flush()
 

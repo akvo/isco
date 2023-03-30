@@ -163,6 +163,11 @@ def move_question(
     target_order: int,
     target_group: int
 ):
+    # validate negative order value
+    if (selected_order <= 0 or target_order <= 0):
+        raise HTTPException(
+            status_code=501,
+            detail="MOVE QUESTION A | question has negative order value")
     question = session.query(Question).filter(
         Question.id == id).first()
     # update question group id
@@ -195,6 +200,12 @@ def move_question(
             q.order = q.order + 1
         if (selected_order < target_order):
             q.order = q.order - 1
+    # validate negative order value
+    q_orders = any(q.order <= 0 for q in questions)
+    if (q_orders):
+        raise HTTPException(
+            status_code=501,
+            detail="MOVE QUESTION B | question has negative order value")
     session.commit()
     session.flush()
 
