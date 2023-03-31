@@ -31,12 +31,15 @@ const dataSecurityContent = {
         frameworks, and procedures, as laid out further in the below text. Data
         is stored securely; we ensure data is safely encrypted, and your data is
         never shared with third parties. We comply with the European General
-        Data Protection Regulations (GDPR). Access to data before anonymization
-        is possible only for a very limited number of duly authorized persons
-        having signed non-disclosure commitments; this may solely be done to
-        check for and ensure consistency in data; getting back to the members to
-        correct for erroneous or contradicting data and/or for providing support
-        to gradual improvement of sustainability reporting by members.
+        Data Protection Regulations (GDPR).
+      </p>
+      <p className="text-justify">
+        Access to data before anonymization is possible only for a very limited
+        number of duly authorized persons having signed non-disclosure
+        commitments; this may solely be done to check for and ensure consistency
+        in data; getting back to the members to correct for erroneous or
+        contradicting data and/or for providing support to gradual improvement
+        of sustainability reporting by members.
       </p>
       <br />
 
@@ -131,6 +134,7 @@ const dataSecurityContent = {
         <li>Ulrike Joras, GISCO</li>
         <li>Patrick Stoop, C-Lever.org</li>
         <li>Hilde Geens, C-Lever.org</li>
+        <li>Koen Sneyers, C-Lever.org</li>
         <li>Lela Lindena, Mainlevel</li>
         <li>Lukas Wirnitzer, Mainlevel</li>
       </ul>
@@ -162,6 +166,8 @@ const dataSecurityContent = {
         <li>Christian Robin</li>
         <li>Michaela Kuhn</li>
         <li>Sophie Tüllmann</li>
+        <li>Patrick Stoop, C-Lever.org</li>
+        <li>Hilde Geens, C-Lever.org</li>
       </ul>
       <p className="text-justify">
         Each of the named persons above is required to sign a confidentiality
@@ -380,8 +386,10 @@ const dataSecurityContent = {
       <ul className="pl-5">
         <li>Beate Weiskopf</li>
         <li>Ulrike Joras</li>
+        <li>Weiterer Mitarbeitender der Geschäftsstelle, zu benennen</li>
         <li>Patrick Stoop, C-Lever.org</li>
         <li>Hilde Geens, C-Lever.org</li>
+        <li>Koen Sneyers, C-Lever.org</li>
         <li>Lela Lindena, Mainlevel</li>
         <li>Lukas Wirnitzer, Mainlevel</li>
         <li>Weitere zu benennende, externe Person</li>
@@ -414,6 +422,8 @@ const dataSecurityContent = {
         <li>Christian Robin</li>
         <li>Michaela Kuhn</li>
         <li>Sophie Tüllmann</li>
+        <li>Patrick Stoop, C-Lever.org</li>
+        <li>Hilde Geens, C-Lever.org</li>
       </ul>
 
       <p className="text-justify">
