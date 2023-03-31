@@ -157,50 +157,43 @@ const definitionContent = {
       d: "Please refer to the definition of “Child Labour Monitoring and Remediation Systems (CLMRS)”",
     },
     {
-      i: "Cocoa origin transparency level",
-      t: "Cocoa origin transparency level",
+      i: "Cocoa traceability level",
+      t: "Cocoa traceability level",
       d: (
         <Fragment>
           <div>
-            The &quot;cocoa origin transparency level&quot; concerns the level
-            of information on the origin of cocoa being documented at the
-            initial stage of the cocoa sourcing process, with such information
-            remaining available at later stages of the value chain. <br />
-            Distinction is made between the following origin transparency
+            The cocoa traceability level concerns the level of information on
+            the origin of cocoa being documented at the initial stage of the
+            cocoa sourcing process, with such information remaining available at
+            later stages of the value chain. The cocoa traceability level does
+            not require segregation but can be applied also with a mass balance
+            mechanism. Distinction is made between the following traceability
             levels:
             <ul style={{ marginLeft: "25px" }}>
-              <li>Score 1: origin unknown or only country of origin known</li>
-              <li>Score 2: country and region of origin known</li>
               <li>
-                Score 3: country, region and municipality / cooperative of
-                origin known
+                Score 1: Origin unknown, expressed in % of the total volume
+                supplied/ processed.
               </li>
               <li>
-                Score 4: farm known, in addition to the country, region and
-                municipality / cooperative of origin
+                Score 2: Country known, expressed in % of the total volume
+                supplied/ processed.
               </li>
               <li>
-                Score 5: farm known and having point coordinates of the farm
-                household (farm mapping)
+                Score 3: Cooperative known, expressed in % of the total volume
+                supplied/ processed.
               </li>
               <li>
-                Score 5+: farm known and having polygon boundaries of the farm.
+                Score 4a: Farm known and having at least one coordination per
+                farm (farm mapping), expressed in % of the total volume
+                supplied/ processed.
               </li>
               <li>
-                Score 6: farm known, having polygon boundaries of the farm and
-                farm fields verified as not in a protected forest and as not
-                comprising land that was deforested since 2018.
+                Score 4b: Farm known, having point coordinates and /or polygons
+                for plots less than 4ha and polygon boundaries of the plots
+                bigger than 4ha, expressed in % of the total volume supplied/
+                processed.
               </li>
             </ul>
-            Having a high origin transparency score still allows for massing and
-            mixing of beans at later stages (during transport and / or
-            processing). <br />
-            It is generally accepted that the cocoa industry should at least
-            evolve to level 4 as a minimum requirement, implying that the first
-            mile of the cocoa value chain should be traceable. Cocoa batches
-            sourced should be linked to the farm where that cocoa was produced,
-            implying that the farms are at least identified. This principle
-            should apply to both “direct” and “indirect” cocoa sourcing.
           </div>
         </Fragment>
       ),
@@ -1226,8 +1219,8 @@ const definitionContent = {
       d: "Siehe Definition „Child Labour Monitoring and Remediation Systems (CLMRS)”",
     },
     {
-      i: "Cocoa origin transparency level",
-      t: "Cocoa origin transparency level",
+      i: "Cocoa traceability level",
+      t: "Rückverfolgbarkeitsniveau von Kakao",
       d: (
         <Fragment>
           <div>
@@ -1264,7 +1257,8 @@ const definitionContent = {
             </ul>
             Auch die hohen Rückverfolgbarkeits-Stufen erlauben das Vermischen
             der Bohnen in späteren Stadien der Wertschöpfungskette (Transport
-            und / oder Verarbeitung). <br />
+            und / oder Verarbeitung).
+            <br />
             Es ist allgemein anerkannt, dass die sich Kakaoindustrie mindestens
             in Richtung Stufe 4 als Mindestanforderung bewegen sollte, d.h.
             Kakao sollte – einschließlich der „ersten Meile“ – rückverfolgbar
