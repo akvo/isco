@@ -181,27 +181,33 @@ def get(req: Request,
     if total_page < page:
         raise HTTPException(status_code=404, detail="Not found")
     # transform cascade answer value
+    result = [d.serializeWithQuestionName for d in data["data"]]
     questions = session.query(Question).filter(and_(
         Question.form == form_id,
         Question.type == QuestionType.cascade.value
     )).all()
+    # generate all cascades value based on answers
+    cascade_qids = [q.id for q in questions]
+    cascade_answers = []
+    for res in result:
+        for a in res['answer']:
+            if not a.get('value') or a.get('question') not in cascade_qids:
+                continue
+            cascade_answers += [int(float(x)) for x in a.get('value')]
+    cascade_answers = set(cascade_answers)
+    cascade_list = session.query(CascadeList).filter(
+        CascadeList.id.in_(cascade_answers)).all()
     cascades = {}
-    for q in questions:
-        temp = {}
-        cascade_list = session.query(CascadeList).filter(
-            CascadeList.cascade == q.cascade).all()
-        for cl in cascade_list:
-            temp.update(({cl.id: cl.name}))
-        cascades.update({q.id: temp})
-    result = [d.serializeWithQuestionName for d in data["data"]]
+    for cl in cascade_list:
+        cascades.update(({cl.id: cl.name}))
+    # transform cascade answer value by cascade list
     for res in result:
         for a in res['answer']:
             qid = a['question']
             value = a['value']
-            if qid in cascades and cascades[qid] and value:
-                temp = cascades[qid]
-                new_value = [temp[int(float(x))] for x in value]
-                a['value'] = "|".join(new_value)
+            if qid in cascade_qids and value:
+                new_value = [cascades.get(int(float(x))) for x in value]
+                a['value'] = "|".join(new_value) if new_value else value
     return {
         'current': page,
         'data': result,
