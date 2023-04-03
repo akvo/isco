@@ -142,28 +142,31 @@ def generate_summary(session: Session,
         raise HTTPException(status_code=404, detail="No Data Available")
     summary = [s.serialize for s in summary]
 
-    # transform cascade answer value
+    # fetch cascade value by answer
     questions = questions.filter(
         Question.type == QuestionType.cascade.value).all()
+    cascade_qids = [q.id for q in questions]
+    cascade_answers = []
+    for s in summary:
+        if not s.get('answer') or s.get('qid') not in cascade_qids:
+            continue
+        cascade_answers += [int(float(x)) for x in s['answer'].split("|")]
+    cascade_answers = set(cascade_answers)
+    cascade_list = session.query(CascadeList).filter(
+        CascadeList.id.in_(cascade_answers)).all()
     q_cascades = {}
-    for q in questions:
-        temp = {}
-        cascade_list = session.query(CascadeList).filter(
-            CascadeList.cascade == q.cascade).all()
-        for cl in cascade_list:
-            temp.update({cl.id: cl.name})
-        q_cascades.update({q.id: temp})
+    for cl in cascade_list:
+        q_cascades.update({cl.id: cl.name})
 
+    # transform cascade answer value
     transform = []
     for s in summary:
-        if s['qid'] in q_cascades and q_cascades[s['qid']] \
-           and s['answer'] is not None:
+        if s['qid'] in cascade_qids and s['answer'] is not None:
             cascade_list_ids = [int(float(x)) for x in s['answer'].split("|")]
             cascade_answer = []
-            temp = q_cascades[s['qid']]
             for cl in cascade_list_ids:
-                if cl in temp and temp[cl]:
-                    cascade_answer.append(temp[cl])
+                if cl in q_cascades and q_cascades[cl]:
+                    cascade_answer.append(q_cascades[cl])
             s['answer'] = '|'.join(cascade_answer) \
                 if cascade_answer else s['answer']
         transform.append(s)

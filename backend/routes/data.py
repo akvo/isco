@@ -191,7 +191,7 @@ def get(req: Request,
     cascade_answers = []
     for res in result:
         for a in res['answer']:
-            if a.get('question') not in cascade_qids:
+            if not a.get('value') or a.get('question') not in cascade_qids:
                 continue
             cascade_answers += [int(float(x)) for x in a.get('value')]
     cascade_answers = set(cascade_answers)
@@ -206,8 +206,8 @@ def get(req: Request,
             qid = a['question']
             value = a['value']
             if qid in cascade_qids and value:
-                new_value = [cascades[int(float(x))] for x in value]
-                a['value'] = "|".join(new_value)
+                new_value = [cascades.get(int(float(x))) for x in value]
+                a['value'] = "|".join(new_value) if new_value else value
     return {
         'current': page,
         'data': result,
