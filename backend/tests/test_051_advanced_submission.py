@@ -59,7 +59,7 @@ class TestAdvancedSubmissionRoute():
         assert len(org_ids) == 1
         assert list(org_ids)[0] == filter_org_id
         # test filter with monitoring round
-        monitoring_round = datetime.now().year
+        monitoring_round = get_prev_year(prev=0, year=True)
         res = await client.get(
             app.url_path_for("data:get", form_id=1),
             params={
