@@ -25,7 +25,7 @@ const { Title } = Typography;
 
 const DataCleaning = () => {
   const { optionValues } = store.useState((s) => s);
-  const { organisationInSameIsco: organisation } = optionValues;
+  const { organisationInSameIsco } = optionValues;
   const { notify } = useNotification();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -349,8 +349,8 @@ const DataCleaning = () => {
                   className="custom-dropdown-wrapper"
                   placeholder="Organization"
                   options={
-                    organisation.length
-                      ? organisation.map((o) => ({
+                    organisationInSameIsco.length
+                      ? organisationInSameIsco.map((o) => ({
                           label: o.name,
                           value: o.id,
                         }))
