@@ -5,8 +5,50 @@
   "url": "http://localhost:3000",
   "tests": [{
     "id": "a0e95394-be27-418a-8159-581cacc9958b",
-    "name": "00_create_survey",
+    "name": "01_create_survey",
     "commands": [{
+      "id": "676f519e-dafe-471d-85eb-a37d457fe547",
+      "comment": "",
+      "command": "open",
+      "target": "/login",
+      "targets": [],
+      "value": "Open login page"
+    }, {
+      "id": "82ae07ca-469c-44b0-a98d-f499b17dc220",
+      "comment": "wait for email field show",
+      "command": "waitForElementPresent",
+      "target": "id=email",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "5dbf2b7f-3b7e-49a3-aff9-d388c4b3e28d",
+      "comment": "type email field",
+      "command": "type",
+      "target": "id=email",
+      "targets": [],
+      "value": "verified_user@test.com"
+    }, {
+      "id": "8a0a3a16-0c96-4a9b-8d5b-c5fe7fc36354",
+      "comment": "type password field",
+      "command": "type",
+      "target": "id=password",
+      "targets": [],
+      "value": "password"
+    }, {
+      "id": "7a5f42db-07f5-4946-9234-8f64d1764fe8",
+      "comment": "click login button",
+      "command": "click",
+      "target": "css=.ant-btn-primary",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "a39a5f41-ad09-4397-8806-24d06d659adb",
+      "comment": "check if Welcome Page shows",
+      "command": "assertText",
+      "target": "css=.intro-text > h1",
+      "targets": [],
+      "value": "WELCOME TO THE COCOA MONITORING OF DISCO, BEYOND CHOCOLATE AND GISCO!"
+    }, {
       "id": "0a832e2f-c7d3-48c1-b951-d29f0b7d1b6e",
       "comment": "open manage survey page",
       "command": "open",
@@ -106,6 +148,16 @@
       "targets": [
         ["css=.ant-select-item-option-active > .ant-select-item-option-content", "css:finder"],
         ["xpath=//div[2]/div/div/div/div[2]/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "210412cf-0b6f-402c-bebf-efcea1f90ad2",
+      "comment": "",
+      "command": "click",
+      "target": "css=.ant-modal-body",
+      "targets": [
+        ["css=.ant-modal-body", "css:finder"],
+        ["xpath=//div[2]/div/div[2]/div[2]", "xpath:position"]
       ],
       "value": ""
     }, {
@@ -243,6 +295,13 @@
         ["xpath=//form/div/div/div[3]/div/div/button", "xpath:position"],
         ["xpath=//button[contains(.,'Close')]", "xpath:innerText"]
       ],
+      "value": ""
+    }, {
+      "id": "8209cc47-d1e9-4c48-9f10-d266fc97d9ee",
+      "comment": "close window",
+      "command": "close",
+      "target": "",
+      "targets": [],
       "value": ""
     }]
   }],
