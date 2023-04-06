@@ -156,9 +156,13 @@ const WebformPage = ({
             }
             // remap questions
             const availableQids = findGroup?.question?.map((q) => q.id);
+            const remapQuestion = intersection(v.question_ids, availableQids);
+            if (!remapQuestion?.length) {
+              return false;
+            }
             return {
               ...v,
-              question_ids: intersection(v.question_ids, availableQids),
+              question_ids: remapQuestion,
             };
           })
           ?.filter((x) => x) || [];
