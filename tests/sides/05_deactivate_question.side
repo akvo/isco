@@ -13,6 +13,174 @@
       "target": "/manage-survey",
       "targets": [],
       "value": ""
+    }, {
+      "id": "79cc32b0-f13a-4804-bb29-743c26c4c828",
+      "comment": "Wait for new survey button to be visible",
+      "command": "waitForElementVisible",
+      "target": "xpath=//button[contains(.,'New Survey')]",
+      "targets": [
+        ["css=.button-add", "css:finder"],
+        ["xpath=(//button[@type='button'])[3]", "xpath:attributes"],
+        ["xpath=//div[@id='manage-survey']/div/div/div/div/button", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/div/div/div/button", "xpath:position"],
+        ["xpath=//button[contains(.,'New Survey')]", "xpath:innerText"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "19631317-4f85-4f21-8388-0c7932f98d61",
+      "comment": "Click new survey button",
+      "command": "click",
+      "target": "xpath=//button[contains(.,'New Survey')]",
+      "targets": [
+        ["css=.button-add", "css:finder"],
+        ["xpath=(//button[@type='button'])[3]", "xpath:attributes"],
+        ["xpath=//div[@id='manage-survey']/div/div/div/div/button", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/div/div/div/button", "xpath:position"],
+        ["xpath=//button[contains(.,'New Survey')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "a92fc8ef-610f-4f56-a9d0-81980f385550",
+      "comment": "Wait for create survey popup",
+      "command": "waitForElementVisible",
+      "target": "xpath=//button[contains(.,'Create Survey')]",
+      "targets": [
+        ["css=.ant-space-item > .ant-btn-primary", "css:finder"],
+        ["xpath=(//button[@type='button'])[11]", "xpath:attributes"],
+        ["xpath=//div[3]/div/div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Create Survey')]", "xpath:innerText"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "6b6e2735-c591-40b8-be62-41b6a4c8311b",
+      "comment": "Type survey name",
+      "command": "type",
+      "target": "id=survey-detail_form-name",
+      "targets": [
+        ["id=survey-detail_form-name", "id"],
+        ["css=#survey-detail_form-name", "css:finder"],
+        ["xpath=//input[@id='survey-detail_form-name']", "xpath:attributes"],
+        ["xpath=//form[@id='survey-detail']/div/div/div/div[2]/div/div/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "Test deactivate"
+    }, {
+      "id": "1f2136f7-eb93-492b-9068-de6aa816038f",
+      "comment": "Type Survey Description",
+      "command": "type",
+      "target": "id=survey-detail_form-description",
+      "targets": [
+        ["id=survey-detail_form-description", "id"],
+        ["css=#survey-detail_form-description", "css:finder"],
+        ["xpath=//textarea[@id='survey-detail_form-description']", "xpath:attributes"],
+        ["xpath=//form[@id='survey-detail']/div/div/div[2]/div[2]/div/div/div/textarea", "xpath:idRelative"],
+        ["xpath=//textarea", "xpath:position"]
+      ],
+      "value": "test survey description"
+    }, {
+      "id": "473530cd-ff7b-4229-8d01-21acd716993b",
+      "comment": "Click languages dropdown",
+      "command": "click",
+      "target": "css=.ant-select-selector",
+      "targets": [
+        ["css=.ant-select-selector", "css:finder"],
+        ["xpath=//form[@id='survey-detail']/div/div/div[3]/div[2]/div/div/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[3]/div[2]/div/div/div/div/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "a0fd297a-3cf3-409a-a6de-81bce0351992",
+      "comment": "Wait for dropdown to open",
+      "command": "waitForElementPresent",
+      "target": "css=.ant-select-dropdown",
+      "targets": [
+        ["css=.ant-select-dropdown", "css:finder"],
+        ["xpath=//div[7]/div/div", "xpath:position"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "7fc85e07-c1ed-4446-8bac-1166756e6380",
+      "comment": "Select any language",
+      "command": "click",
+      "target": "xpath=//*[text()='Afar']",
+      "targets": [
+        ["css=.ant-select-item-option-active > .ant-select-item-option-content", "css:finder"],
+        ["xpath=//div[2]/div/div/div/div[2]/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "83a2188b-b079-4e72-84fc-7598e14f8f09",
+      "comment": "Click on create new survey ",
+      "command": "click",
+      "target": "css=.ant-space-item > .ant-btn-primary",
+      "targets": [
+        ["css=.ant-space-item > .ant-btn-primary", "css:finder"],
+        ["xpath=(//button[@type='button'])[11]", "xpath:attributes"],
+        ["xpath=//div[3]/div/div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Create Survey')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "4c590f3f-1919-444f-8351-f0786e40b3c4",
+      "comment": "Check if survey created successfully",
+      "command": "assertText",
+      "target": "css=.ant-message-custom-content > span:nth-child(2)",
+      "targets": [],
+      "value": "Survey saved successfully."
+    }, {
+      "id": "a0e35436-6dca-454b-b406-08fb050c65fa",
+      "comment": "",
+      "command": "click",
+      "target": "css=.ant-space-item:nth-child(1) > .ant-btn-circle",
+      "targets": [
+        ["css=.ant-table-row:nth-child(2) .ant-space-item:nth-child(1) svg", "css:finder"]
+      ],
+      "value": ""
+    }, {
+      "id": "06909156-5650-4f91-926b-5df314c8804e",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.ant-space-align-middle > .ant-space-item:nth-child(2) > div",
+      "targets": [],
+      "value": "Mandatory Questions"
+    }, {
+      "id": "e50263c8-139a-4afc-864e-058406fef869",
+      "comment": "",
+      "command": "type",
+      "target": "xpath=//input[contains(@id, 'survey-detail_question_group-')]",
+      "targets": [
+        ["id=survey-detail_question_group-3-name", "id"],
+        ["css=#survey-detail_question_group-3-name", "css:finder"],
+        ["xpath=//input[@id='survey-detail_question_group-3-name']", "xpath:attributes"],
+        ["xpath=//form[@id='survey-detail']/div/div/div/div[2]/div/div/div/div/input", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/div/div/input", "xpath:position"]
+      ],
+      "value": "Test question"
+    }, {
+      "id": "0b593b72-4130-4d9e-83d9-0636823cb3c3",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//form[@id='survey-detail']/div/div/div/div[3]/div/div[2]/button",
+      "targets": [
+        ["css=.ant-tooltip-open", "css:finder"],
+        ["xpath=(//button[@type='button'])[10]", "xpath:attributes"],
+        ["xpath=//form[@id='survey-detail']/div/div/div/div[3]/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[3]/div/div[2]/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "662404c7-a9be-47e8-9017-1bfb34cb0518",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.ant-col-9 .field-label",
+      "targets": [
+        ["id=survey-detail_question_group-3-description", "id"],
+        ["css=#survey-detail_question_group-3-description", "css:finder"],
+        ["xpath=//textarea[@id='survey-detail_question_group-3-description']", "xpath:attributes"],
+        ["xpath=//div[@id='rc-tabs-7-panel-group-setting']/div/div/div/div[2]/div/div/div/textarea", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/div/div/div/div[2]/div/div/div/textarea", "xpath:position"]
+      ],
+      "value": "Section Description"
     }]
   }],
   "suites": [{
