@@ -41,6 +41,7 @@ const DataCleaning = () => {
   const [orgDetail, setOrgDetail] = useState({});
   // monitoring round selector
   const [selectedMonitoringRound, setSelectedMonitoringRound] = useState(null);
+  const [organisationValue, setOrganisationValue] = useState([]);
 
   // pagination
   const [pageSize, setPageSize] = useState(10);
@@ -118,6 +119,10 @@ const DataCleaning = () => {
     },
   ];
 
+  const handleOrganisationFilter = (org) => {
+    setOrganisationValue(org);
+  };
+
   useEffect(() => {
     if (!forms.length) {
       api
@@ -141,6 +146,9 @@ const DataCleaning = () => {
       if (selectedMonitoringRound) {
         url = `${url}&monitoring_round=${selectedMonitoringRound}`;
       }
+      if (organisationValue) {
+        url = `${url}&organisation=${organisationValue}`;
+      }
       api
         .get(url)
         .then((res) => {
@@ -159,7 +167,13 @@ const DataCleaning = () => {
           setIsLoading(false);
         });
     }
-  }, [formSelected, page, pageSize, selectedMonitoringRound]);
+  }, [
+    formSelected,
+    page,
+    pageSize,
+    selectedMonitoringRound,
+    organisationValue,
+  ]);
 
   useEffect(() => {
     fetchData();
@@ -342,8 +356,8 @@ const DataCleaning = () => {
                         }))
                       : []
                   }
-                  // onChange={handleOrganisationFilter}
-                  // value={organisationValue}
+                  onChange={handleOrganisationFilter}
+                  value={organisationValue}
                   filterOption={(input, option) =>
                     option?.label
                       ?.toLowerCase()
