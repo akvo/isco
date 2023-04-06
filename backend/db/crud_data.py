@@ -90,7 +90,7 @@ def get_data(
     if monitoring_round:
         # On selecting a year , increment it by 1 and
         # then fetch all records where createdAt is for that year
-        monitoring_round = monitoring_round + 1
+        monitoring_round = monitoring_round
         data = data.filter(
             extract('year', Data.created) == monitoring_round)
     count = data.count()

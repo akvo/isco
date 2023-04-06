@@ -159,6 +159,7 @@ def get(req: Request,
         submitted: Optional[bool] = False,
         filter_same_isco: Optional[bool] = False,
         monitoring_round: Optional[int] = Query(None),
+        organisation: Optional[List[int]] = Query(None),
         session: Session = Depends(get_session),
         credentials: credentials = Depends(security)):
     user = verify_user(
@@ -167,6 +168,9 @@ def get(req: Request,
     if filter_same_isco:
         org_ids = organisations_in_same_isco(
             session=session, organisation=user.organisation)
+    if organisation:
+        org_ids = organisation
+
     data = crud.get_data(
         session=session,
         form=form_id,

@@ -38,8 +38,28 @@ class TestAdvancedSubmissionRoute():
         assert "total" in res
         assert "total_page" in res
         assert "data" in res
+        # test filter with organisation
+        filter_org_id = 1
+        res = await client.get(
+            app.url_path_for("data:get", form_id=1),
+            params={"submitted": True,
+                    "filter_same_isco": True, "organisation": filter_org_id},
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 200
+        res = res.json()
+        assert "current" in res
+        assert "total" in res
+        assert "total_page" in res
+        assert "data" in res
+        assert len(res["data"]) > 0
+        org_ids = []
+        for d in res["data"]:
+            org_ids.append(d.get("organisation"))
+        org_ids = set(org_ids)
+        assert len(org_ids) == 1
+        assert list(org_ids)[0] == filter_org_id
         # test filter with monitoring round
-        monitoring_round = get_prev_year(year=True)
+        monitoring_round = get_prev_year(prev=0, year=True)
         res = await client.get(
             app.url_path_for("data:get", form_id=1),
             params={
