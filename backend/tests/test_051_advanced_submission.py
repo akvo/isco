@@ -38,6 +38,18 @@ class TestAdvancedSubmissionRoute():
         assert "total" in res
         assert "total_page" in res
         assert "data" in res
+        # test filter with organisation
+        res = await client.get(
+            app.url_path_for("data:get", form_id=1),
+            params={"submitted": True,
+                    "filter_same_isco": True, "organisation": 1},
+            headers={"Authorization": f"Bearer {account.token}"})
+        assert res.status_code == 200
+        res = res.json()
+        assert "current" in res
+        assert "total" in res
+        assert "total_page" in res
+        assert "data" in res
         # test filter with monitoring round
         monitoring_round = get_prev_year(year=True)
         res = await client.get(
