@@ -15,7 +15,7 @@ import {
   RightOutlined,
   MinusSquareOutlined,
 } from "@ant-design/icons";
-import { api } from "../../lib";
+import { api, store } from "../../lib";
 import DataCleaningWebform from "./DataCleaningWebform";
 import DataDetail from "./DataDetail";
 import { useNotification } from "../../util";
@@ -24,6 +24,8 @@ import { MonitoringRoundSelector } from "../../components";
 const { Title } = Typography;
 
 const DataCleaning = () => {
+  const { optionValues } = store.useState((s) => s);
+  const { organisationInSameIsco: organisation } = optionValues;
   const { notify } = useNotification();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -310,25 +312,49 @@ const DataCleaning = () => {
               </Title>
             </Col>
           </Row>
-          <Row className="filter-wrapper">
-            <Col span={24}>
-              <Select
-                showArrow
-                showSearch
-                className="custom-dropdown-wrapper"
-                placeholder="Select Questionnaire"
-                optionFilterProp="children"
-                filterOption={(input, option) =>
-                  option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
-                options={forms}
-                value={formSelected}
-                onChange={(val) => setFormSelected(val)}
-              />
-              <MonitoringRoundSelector
-                value={selectedMonitoringRound}
-                onChange={setSelectedMonitoringRound}
-              />
+          <Row className="filter-wrapper" gutter={[20, 20]}>
+            <Col flex={1}>
+              {" "}
+              <Space wrap>
+                <Select
+                  showArrow
+                  showSearch
+                  className="custom-dropdown-wrapper"
+                  placeholder="Select Questionnaire"
+                  optionFilterProp="children"
+                  filterOption={(input, option) =>
+                    option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
+                  options={forms}
+                  value={formSelected}
+                  onChange={(val) => setFormSelected(val)}
+                />
+                <Select
+                  allowClear
+                  showSearch
+                  className="custom-dropdown-wrapper"
+                  placeholder="Organization"
+                  options={
+                    organisation.length
+                      ? organisation.map((o) => ({
+                          label: o.name,
+                          value: o.id,
+                        }))
+                      : []
+                  }
+                  // onChange={handleOrganisationFilter}
+                  // value={organisationValue}
+                  filterOption={(input, option) =>
+                    option?.label
+                      ?.toLowerCase()
+                      .indexOf(input?.toLowerCase()) >= 0
+                  }
+                />
+                <MonitoringRoundSelector
+                  value={selectedMonitoringRound}
+                  onChange={setSelectedMonitoringRound}
+                />
+              </Space>
             </Col>
           </Row>
           <Row>
