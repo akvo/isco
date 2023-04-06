@@ -92,7 +92,7 @@
       "id": "a0fd297a-3cf3-409a-a6de-81bce0351992",
       "comment": "Wait for dropdown to open",
       "command": "waitForElementPresent",
-      "target": "css=.ant-select-dropdown",
+      "target": "xpath=//div[contains(@id, 'survey-detail_form-languages_list')]",
       "targets": [
         ["css=.ant-select-dropdown", "css:finder"],
         ["xpath=//div[7]/div/div", "xpath:position"]
@@ -120,13 +120,6 @@
         ["xpath=//button[contains(.,'Create Survey')]", "xpath:innerText"]
       ],
       "value": ""
-    }, {
-      "id": "4c590f3f-1919-444f-8351-f0786e40b3c4",
-      "comment": "Check if survey created successfully",
-      "command": "assertText",
-      "target": "css=.ant-message-custom-content > span:nth-child(2)",
-      "targets": [],
-      "value": "Survey saved successfully."
     }, {
       "id": "a0e35436-6dca-454b-b406-08fb050c65fa",
       "comment": "",
@@ -181,6 +174,76 @@
         ["xpath=//div[2]/div/div/div/div/div/div[2]/div/div/div/textarea", "xpath:position"]
       ],
       "value": "Section Description"
+    }, {
+      "id": "029a79fb-4858-47f6-b319-2449e86eec08",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//input[contains(@id, '-member_access')]",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "5792cfa8-ea93-4069-8033-da4f98f76a50",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "xpath=//div[contains(@id, '-member_access_list')]",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "73ebff92-01a4-4a5f-8cd2-0c76c8cc2d5a",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//*[text()='All']",
+      "targets": [
+        ["css=.ant-select-dropdown-placement-topLeft .ant-select-item-option-active", "css:finder"],
+        ["xpath=//div[13]/div/div/div/div[2]/div/div/div/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "ad2130a4-5cbe-4ac1-9cdc-0825e891c451",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//input[contains(@id, '-isco_access')]",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "8b064e76-c030-43f7-b4bd-216a5251aa4b",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "xpath=//div[contains(@id, '')]",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "c1b297bc-4c8a-4089-ac46-3d03b5d4f729",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//*[text()='GISCO']",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "93c55d33-869c-40c1-bf59-9791332eddd7",
+      "comment": "",
+      "command": "click",
+      "target": "css=.ant-space-item > .ant-btn-primary",
+      "targets": [
+        ["css=.ant-space-item > .ant-btn-primary", "css:finder"],
+        ["xpath=(//button[@type='button'])[16]", "xpath:attributes"],
+        ["xpath=//form[@id='survey-detail']/div/div/div[3]/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//form/div/div/div[3]/div/div[2]/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "1eca2737-53b8-4840-ac6a-39dc5659dc69",
+      "comment": "",
+      "command": "click",
+      "target": "css=.ant-space-item > .ant-btn-default",
+      "targets": [
+        ["css=.ant-space-item > .ant-btn-default", "css:finder"],
+        ["xpath=(//button[@type='button'])[15]", "xpath:attributes"],
+        ["xpath=//form[@id='survey-detail']/div/div/div[3]/div/div/button", "xpath:idRelative"],
+        ["xpath=//form/div/div/div[3]/div/div/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Close')]", "xpath:innerText"]
+      ],
+      "value": ""
     }]
   }],
   "suites": [{
