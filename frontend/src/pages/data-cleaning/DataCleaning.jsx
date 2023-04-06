@@ -41,7 +41,7 @@ const DataCleaning = () => {
   const [orgDetail, setOrgDetail] = useState({});
   // monitoring round selector
   const [selectedMonitoringRound, setSelectedMonitoringRound] = useState(null);
-  const [organisationValue, setOrganisationValue] = useState([]);
+  const [organisationValue, setOrganisationValue] = useState(null);
 
   // pagination
   const [pageSize, setPageSize] = useState(10);
