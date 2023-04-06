@@ -23,12 +23,16 @@ class TestWebformRoutes():
         assert res["id"] == 1
         assert "en" in res["languages"]
         assert len(res['question_group']) > 0
+        question_types = []
         for qg in res["question_group"]:
             assert len(qg["member_access"]) > 0
             assert len(qg["isco_access"]) > 0
             for q in qg["question"]:
+                question_types.append(q["type"])
                 assert len(q["member_access"]) > 0
                 assert len(q["isco_access"]) > 0
+        question_types = set(question_types)
+        assert "cascade" in question_types
 
     @pytest.mark.asyncio
     async def test_publish_form(

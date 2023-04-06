@@ -141,10 +141,27 @@ const WebformPage = ({
         group: String(av.repeat_index),
       }));
       answerValues = groupBy(answerValues, "group");
-      const computedValidation = computedValidations.find(
-        (cv) => cv.form_id === formId
-      );
-      const validations = computedValidation?.validations || [];
+      // Need to remap question_ids from computed validation config to form def
+      // because questions availability related to member/isco type
+      const validations =
+        computedValidations
+          .find((cv) => cv.form_id === formId)
+          ?.validations?.map((v) => {
+            // also remap the question group if not available for member/isco type
+            const findGroup = formValue?.question_group?.find(
+              (qg) => qg.id === v.group_id
+            );
+            if (!findGroup) {
+              return false;
+            }
+            // remap questions
+            const availableQids = findGroup?.question?.map((q) => q.id);
+            return {
+              ...v,
+              question_ids: intersection(v.question_ids, availableQids),
+            };
+          })
+          ?.filter((x) => x) || [];
       // if (!Object.keys(answerValues).length && !validations?.length) {
       //   return [];
       // }
@@ -225,6 +242,7 @@ const WebformPage = ({
       text.cvMaxValueText,
       text.cvMinValueText,
       text.cvEqualValueText,
+      formValue?.question_group,
     ]
   );
 

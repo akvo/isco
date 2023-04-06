@@ -33,33 +33,45 @@ const ValidationWarningModal = ({
     if (!questionGroups.length) {
       return [];
     }
-    const res = checkComputedValidation.map((cv) => {
-      const findGroup = questionGroups.find(
-        (qg) =>
-          qg?.id === cv.group_id ||
-          intersection(qg.question_ids, cv.question_ids)?.length
-      );
-      const questions = cv.questions.map((cvq) => {
-        const findQuestion = findGroup.question.find((q) => q.id === cvq.id);
+    const res = checkComputedValidation
+      .map((cv) => {
+        const findGroup = questionGroups.find(
+          (qg) =>
+            qg?.id === cv.group_id ||
+            intersection(qg.question_ids, cv.question_ids)?.length
+        );
+        if (!findGroup) {
+          return false;
+        }
+        const questions = cv.questions
+          .map((cvq) => {
+            const findQuestion = findGroup.question.find(
+              (q) => q.id === cvq.id
+            );
+            if (!findQuestion) {
+              return false;
+            }
+            return {
+              id: cvq.id,
+              question: `${findQuestion.order}. ${findQuestion.name}`,
+              answer: !isNaN(cvq.answer) ? cvq.answer : "-",
+              order: findQuestion.order,
+            };
+          })
+          .filter((x) => x);
+        let group = `${findGroup.order}. ${findGroup.name}`;
+        group = findGroup?.repeatable
+          ? `${group} - ${cv?.repeatIndex || 1}`
+          : group;
         return {
-          id: cvq.id,
-          question: `${findQuestion.order}. ${findQuestion.name}`,
-          answer: !isNaN(cvq.answer) ? cvq.answer : "-",
-          order: findQuestion.order,
+          ...cv,
+          total: !isNaN(cv.total) ? cv.total : "-",
+          group: group,
+          questions: orderBy(questions, ["order"]),
+          order: findGroup.order,
         };
-      });
-      let group = `${findGroup.order}. ${findGroup.name}`;
-      group = findGroup?.repeatable
-        ? `${group} - ${cv?.repeatIndex || 1}`
-        : group;
-      return {
-        ...cv,
-        total: !isNaN(cv.total) ? cv.total : "-",
-        group: group,
-        questions: orderBy(questions, ["order"]),
-        order: findGroup.order,
-      };
-    });
+      })
+      .filter((x) => x);
     return orderBy(res, ["order"]);
   }, [checkComputedValidation, questionGroups]);
 
