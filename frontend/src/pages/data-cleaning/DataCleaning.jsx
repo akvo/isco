@@ -15,7 +15,7 @@ import {
   RightOutlined,
   MinusSquareOutlined,
 } from "@ant-design/icons";
-import { api } from "../../lib";
+import { api, store } from "../../lib";
 import DataCleaningWebform from "./DataCleaningWebform";
 import DataDetail from "./DataDetail";
 import { useNotification } from "../../util";
@@ -24,6 +24,8 @@ import { MonitoringRoundSelector } from "../../components";
 const { Title } = Typography;
 
 const DataCleaning = () => {
+  const { optionValues } = store.useState((s) => s);
+  const { organisationInSameIsco } = optionValues;
   const { notify } = useNotification();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -39,6 +41,7 @@ const DataCleaning = () => {
   const [orgDetail, setOrgDetail] = useState({});
   // monitoring round selector
   const [selectedMonitoringRound, setSelectedMonitoringRound] = useState(null);
+  const [organisationValue, setOrganisationValue] = useState(null);
 
   // pagination
   const [pageSize, setPageSize] = useState(10);
@@ -116,6 +119,10 @@ const DataCleaning = () => {
     },
   ];
 
+  const handleOrganisationFilter = (org) => {
+    setOrganisationValue(org);
+  };
+
   useEffect(() => {
     if (!forms.length) {
       api
@@ -139,6 +146,9 @@ const DataCleaning = () => {
       if (selectedMonitoringRound) {
         url = `${url}&monitoring_round=${selectedMonitoringRound}`;
       }
+      if (organisationValue) {
+        url = `${url}&organisation=${organisationValue}`;
+      }
       api
         .get(url)
         .then((res) => {
@@ -157,7 +167,13 @@ const DataCleaning = () => {
           setIsLoading(false);
         });
     }
-  }, [formSelected, page, pageSize, selectedMonitoringRound]);
+  }, [
+    formSelected,
+    page,
+    pageSize,
+    selectedMonitoringRound,
+    organisationValue,
+  ]);
 
   useEffect(() => {
     fetchData();
@@ -310,25 +326,49 @@ const DataCleaning = () => {
               </Title>
             </Col>
           </Row>
-          <Row className="filter-wrapper">
-            <Col span={24}>
-              <Select
-                showArrow
-                showSearch
-                className="custom-dropdown-wrapper"
-                placeholder="Select Questionnaire"
-                optionFilterProp="children"
-                filterOption={(input, option) =>
-                  option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
-                options={forms}
-                value={formSelected}
-                onChange={(val) => setFormSelected(val)}
-              />
-              <MonitoringRoundSelector
-                value={selectedMonitoringRound}
-                onChange={setSelectedMonitoringRound}
-              />
+          <Row className="filter-wrapper" gutter={[20, 20]}>
+            <Col flex={1}>
+              {" "}
+              <Space wrap>
+                <Select
+                  showArrow
+                  showSearch
+                  className="custom-dropdown-wrapper"
+                  placeholder="Select Questionnaire"
+                  optionFilterProp="children"
+                  filterOption={(input, option) =>
+                    option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
+                  options={forms}
+                  value={formSelected}
+                  onChange={(val) => setFormSelected(val)}
+                />
+                <Select
+                  allowClear
+                  showSearch
+                  className="custom-dropdown-wrapper"
+                  placeholder="Organization"
+                  options={
+                    organisationInSameIsco.length
+                      ? organisationInSameIsco.map((o) => ({
+                          label: o.name,
+                          value: o.id,
+                        }))
+                      : []
+                  }
+                  onChange={handleOrganisationFilter}
+                  value={organisationValue}
+                  filterOption={(input, option) =>
+                    option?.label
+                      ?.toLowerCase()
+                      .indexOf(input?.toLowerCase()) >= 0
+                  }
+                />
+                <MonitoringRoundSelector
+                  value={selectedMonitoringRound}
+                  onChange={setSelectedMonitoringRound}
+                />
+              </Space>
             </Col>
           </Row>
           <Row>

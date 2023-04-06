@@ -6,10 +6,10 @@ const MonitoringRoundSelector = ({ options, value, onChange }) => {
 
   useEffect(() => {
     // generate monitoring round
-    let startYear = 2021;
+    let startYear = 2022;
     const currentYear = new Date().getFullYear();
     const roundTmp = [];
-    while (startYear <= currentYear - 1) {
+    while (startYear <= currentYear) {
       roundTmp.push(startYear++);
     }
     setRound(roundTmp.map((x) => ({ label: x, value: x })));
