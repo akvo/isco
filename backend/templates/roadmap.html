@@ -82,7 +82,8 @@
         c/o Repräsentanz der Deutschen Gesellschaft für Internationale
         Zusammenarbeit (GIZ) GmbH I Reichpietschufer 20 I 10785 Berlin
         Geschäftsführerin Beate Weiskopf I Tel.: +49 6196 79-1462 I Mobil: +49
-        151 64907842 I E-Mail: info@kakaoforum.de I www.kakaoforum.de
+        151 64907842 I E-Mail: info@kakaoforum.de I
+        <a href="www.kakaoforum.de" target="_blank">www.kakaoforum.de</a>
       </p>
     </div>
     <div class="container header">
@@ -120,16 +121,18 @@
       <div style="padding: 10px">
         {% if data.language == "de" %}
         <p>
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Architecto
-          minima explicabo ab temporibus neque incidunt cum eum, odio
-          repudiandae error omnis eligendi aperiam quos quisquam, quis nihil
-          cupiditate eius enim.
+          Im Rahmen der Mitgliederversammlung des Forum Nachhaltiger Kakao wurde
+          beschlossen, dass die Erstellung einer individuellen Roadmap durch
+          jedes Mitglied und die jährliche öffentliche Berichterstattung über
+          Commitments und Meilensteine, die in diesen Roadmaps festgehalten
+          sind, ein wertvoller und verpflichtender Beitrag zur Erreichung der
           <a
             href="https://www.kakaoforum.de/fileadmin/Redaktion/Downloads/Oeffentliche_Downloads/Verein/GISCO_Objectives.pdf"
             target="_blank"
             style="color: #7c9d2c"
-            >GISCO’s objectives.</a
+            >Ziele des Forums</a
           >
+          darstellen.
         </p>
         {% else %}
         <p>
@@ -143,30 +146,6 @@
             target="_blank"
             style="color: #7c9d2c"
             >GISCO’s objectives.</a
-          >
-        </p>
-        <p>
-          In addition to the monitoring and based on the
-          <a
-            href="https://www.kakaoforum.de/fileadmin/Redaktion/Workshops_und_Veranstaltungen/Mitgliederversammlungen/Mitgliederversammlung_2022/ROADMAPS/EN_GISCO_Roadmap.pdf"
-            target="_blank"
-            style="color: #7c9d2c"
-            >GISCO roadmap
-          </a>
-          which lists the goals, targeted indicators and recommendations for
-          action of the German Initiative on Sustainable Cocoa on the focus
-          topics of certified/independently verified cocoa, traceability,
-          deforestation/agroforestry, child labor and living income, the members
-          of GISCO draw up individual roadmaps on these focus topics, which are
-          published on the GISCO website.
-        </p>
-        <p>
-          More information on the individual roadmaps can be found in the
-          <a
-            href="https://www.kakaoforum.de/fileadmin/Redaktion/Downloads/Oeffentliche_Downloads/News_verbunden_ab-7-2020/Background_Information_Roadmaps.pdf"
-            target="_blank"
-            style="color: #7c9d2c"
-            >background document.</a
           >
         </p>
         {% endif %}
@@ -202,7 +181,10 @@
                         color: #673017;
                       "
                     >
-                      {{dt.name}}
+                      {% if dt.name == "Living Income" %}
+                      <sup>1</sup>{{dt.name}} {% elif dt.name ==
+                      "Existenzsichernde Einkommen" %} {{dt.name}}<sup>1</sup>
+                      {% else %} {{dt.name}} {% endif %}
                     </h3>
                     {% if dt.description %}
                     <div
