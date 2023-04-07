@@ -230,14 +230,18 @@
       "id": "029a79fb-4858-47f6-b319-2449e86eec08",
       "comment": "",
       "command": "click",
-      "target": "xpath=//input[contains(@id, '-member_access')]",
-      "targets": [],
+      "target": "xpath=//div/div[3]/div/div[2]/div/div/div/div/div/div",
+      "targets": [
+        ["css=.ant-select-open .ant-select-selection-overflow", "css:finder"],
+        ["xpath=//div[@id='rc-tabs-1-panel-group-setting']/div/div[3]/div/div[2]/div/div/div/div/div/div", "xpath:idRelative"],
+        ["xpath=//div/div[3]/div/div[2]/div/div/div/div/div/div", "xpath:position"]
+      ],
       "value": ""
     }, {
       "id": "5792cfa8-ea93-4069-8033-da4f98f76a50",
       "comment": "",
       "command": "waitForElementVisible",
-      "target": "xpath=//div[contains(@id, '-member_access_list')]",
+      "target": "css=.rc-virtual-list",
       "targets": [],
       "value": "30000"
     }, {
@@ -254,14 +258,18 @@
       "id": "ad2130a4-5cbe-4ac1-9cdc-0825e891c451",
       "comment": "",
       "command": "click",
-      "target": "xpath=//input[contains(@id, '-isco_access')]",
-      "targets": [],
+      "target": "xpath=//div[4]/div/div[2]/div/div/div/div/div/div",
+      "targets": [
+        ["css=.ant-select-open .ant-select-selection-overflow", "css:finder"],
+        ["xpath=//div[@id='rc-tabs-1-panel-group-setting']/div/div[4]/div/div[2]/div/div/div/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[4]/div/div[2]/div/div/div/div/div/div", "xpath:position"]
+      ],
       "value": ""
     }, {
       "id": "8b064e76-c030-43f7-b4bd-216a5251aa4b",
       "comment": "",
       "command": "waitForElementVisible",
-      "target": "xpath=//div[contains(@id, '')]",
+      "target": "css=.rc-virtual-list",
       "targets": [],
       "value": "30000"
     }, {
@@ -303,6 +311,52 @@
       "target": "",
       "targets": [],
       "value": ""
+    }]
+  }, {
+    "id": "58fd3c23-8e68-4d12-8779-1b44191988c1",
+    "name": "00_login_to_create_survey",
+    "commands": [{
+      "id": "2084bb48-8905-425b-aad0-a56c51a4e4f8",
+      "comment": "",
+      "command": "open",
+      "target": "/login",
+      "targets": [],
+      "value": "Open login page"
+    }, {
+      "id": "18d417b8-06c6-43e2-bf1e-905d5ee382eb",
+      "comment": "wait for email field show",
+      "command": "waitForElementPresent",
+      "target": "id=email",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "b643a0bd-a0f2-42bf-b9dd-8cd88032b9fd",
+      "comment": "type email field",
+      "command": "type",
+      "target": "id=email",
+      "targets": [],
+      "value": "verified_user@test.com"
+    }, {
+      "id": "d8e714d4-6b77-4f36-a9fb-cc6604d3cf28",
+      "comment": "type password field",
+      "command": "type",
+      "target": "id=password",
+      "targets": [],
+      "value": "password"
+    }, {
+      "id": "a865a235-e27e-4f08-8f31-5b91a8f7db79",
+      "comment": "click login button",
+      "command": "click",
+      "target": "css=.ant-btn-primary",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "0fffce2e-0097-4022-b24d-00e70fd33bc3",
+      "comment": "check if Welcome Page shows",
+      "command": "assertText",
+      "target": "css=.intro-text > h1",
+      "targets": [],
+      "value": "WELCOME TO THE COCOA MONITORING OF DISCO, BEYOND CHOCOLATE AND GISCO!"
     }]
   }],
   "suites": [{
