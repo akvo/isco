@@ -1,9 +1,11 @@
 {
-  "id": 1669095326959,
+  "id": 1681318760848,
   "name": "Roadmap",
-  "description": "At the 2022 General Meeting of the German Initiative on Sustainable Cocoa (GISCO), it was decided that the preparation of individual roadmaps by each GISCO member and annual public reporting on commitments and milestones included in these roadmaps is a valuable and mandatory contribution to achieve GISCO’s objectives. \n\nIn addition to the monitoring and based on the GISCO roadmap which lists the goals, targeted indicators and recommendations for action of the German Initiative on Sustainable Cocoa on the focus topics of certified/independently verified cocoa, traceability, deforestation/agroforestry, child labor and living income, the members of GISCO draw up individual roadmaps on these focus topics, which are published on the GISCO website. \n\nMore information on the individual roadmaps can be found in the background document.",
-  "languages": ["en", "de"],
-  "defaultLanguage": "en",
+  "description": "At the 2022 General Meeting of the German Initiative on Sustainable Cocoa (GISCO), it was decided that the preparation of individual roadmaps by each GISCO member and annual public reporting on commitments and milestones included in these roadmaps is a valuable and mandatory contribution to achieve GISCO’s objectives. \\n\\nIn addition to the monitoring and based on the GISCO roadmap which lists the goals, targeted indicators and recommendations for action of the German Initiative on Sustainable Cocoa on the focus topics of certified/independently verified cocoa, traceability, deforestation/agroforestry, child labor and living income, the members of GISCO draw up individual roadmaps on these focus topics, which are published on the GISCO website. \\n\\nMore information on the individual roadmaps can be found in the background document.",
+  "languages": [
+    "en",
+    "de"
+  ],
   "translations": [
     {
       "language": "de",
@@ -11,17 +13,48 @@
       "description": "Form description translated"
     }
   ],
+  "defaultLanguage": "en",
   "question_group": [
     {
-      "id": 1669095326961,
-      "name": "Traceability",
+      "id": 1681318760841,
+      "name": "Member’s comment",
       "order": 1,
+      "repeatable": false,
+      "question": [
+        {
+          "id": 1681318760851,
+          "order": 1,
+          "questionGroupId": 1681318760841,
+          "name": "Member’s comment on the roadmap",
+          "type": "text",
+          "required": false,
+          "meta": false,
+          "translations": [
+            {
+              "language": "de",
+              "name": "Kommentar des Mitglieds zur Roadmap"
+            }
+          ]
+        }
+      ],
+      "translations": [
+        {
+          "language": "de",
+          "name": "Kommentar des Mitglieds",
+          "repeatText": "Add another Commitment translated"
+        }
+      ]
+    },
+    {
+      "id": 1681318760849,
+      "name": "Traceability",
+      "order": 2,
       "repeatable": true,
       "question": [
         {
-          "id": 1669095326962,
+          "id": 1681318760850,
           "order": 1,
-          "questionGroupId": 1669095326961,
+          "questionGroupId": 1681318760849,
           "name": "Commitment",
           "type": "text",
           "required": false,
@@ -34,9 +67,9 @@
           ]
         },
         {
-          "id": 1669107420032,
+          "id": 1681319078754,
           "order": 2,
-          "questionGroupId": 1669095326961,
+          "questionGroupId": 1681318760849,
           "name": "Milestones",
           "type": "table",
           "required": false,
@@ -46,7 +79,7 @@
               "name": "milestone",
               "label": "Milestone",
               "type": "input",
-              "id": 1669107433881
+              "id": 1681319088057
             }
           ],
           "translations": [
@@ -57,9 +90,9 @@
           ]
         },
         {
-          "id": 1669107484181,
+          "id": 1681319133130,
           "order": 3,
-          "questionGroupId": 1669095326961,
+          "questionGroupId": 1681318760849,
           "name": "Challenge",
           "type": "text",
           "required": false,
@@ -82,15 +115,15 @@
       ]
     },
     {
-      "id": 1669107562768,
+      "id": 1681318935839,
       "name": "Certified and Independently Verified Cocoa",
-      "order": 2,
+      "order": 3,
       "repeatable": true,
       "question": [
         {
-          "id": 1669107562769,
+          "id": 1681318935840,
           "order": 1,
-          "questionGroupId": 1669107562768,
+          "questionGroupId": 1681318935839,
           "name": "Commitment",
           "type": "input",
           "required": false,
@@ -103,9 +136,9 @@
           ]
         },
         {
-          "id": 1674113183189,
+          "id": 1681319280488,
           "order": 2,
-          "questionGroupId": 1669107562768,
+          "questionGroupId": 1681318935839,
           "name": "Milestones",
           "type": "table",
           "required": false,
@@ -115,7 +148,7 @@
               "name": "milestone",
               "label": "Milestone",
               "type": "input",
-              "id": 1669107433881
+              "id": 1681319290820
             }
           ],
           "translations": [
@@ -126,9 +159,9 @@
           ]
         },
         {
-          "id": 1674113210618,
+          "id": 1681319304882,
           "order": 3,
-          "questionGroupId": 1669107562768,
+          "questionGroupId": 1681318935839,
           "name": "Challenge",
           "type": "text",
           "required": false,
@@ -151,15 +184,15 @@
       ]
     },
     {
-      "id": 1669107635128,
+      "id": 1681318949955,
       "name": "Deforestation / Agroforestry",
-      "order": 3,
+      "order": 4,
       "repeatable": true,
       "question": [
         {
-          "id": 1669107635129,
+          "id": 1681318949956,
           "order": 1,
-          "questionGroupId": 1669107635128,
+          "questionGroupId": 1681318949955,
           "name": "Commitment",
           "type": "input",
           "required": false,
@@ -172,9 +205,9 @@
           ]
         },
         {
-          "id": 1674113380992,
+          "id": 1681319348752,
           "order": 2,
-          "questionGroupId": 1669107635128,
+          "questionGroupId": 1681318949955,
           "name": "Milestones",
           "type": "table",
           "required": false,
@@ -184,7 +217,7 @@
               "name": "milestone",
               "label": "Milestone",
               "type": "input",
-              "id": 1669107433881
+              "id": 1681319359989
             }
           ],
           "translations": [
@@ -195,9 +228,9 @@
           ]
         },
         {
-          "id": 1674113384837,
+          "id": 1681319348753,
           "order": 3,
-          "questionGroupId": 1669107635128,
+          "questionGroupId": 1681318949954,
           "name": "Challenge",
           "type": "text",
           "required": false,
@@ -220,15 +253,15 @@
       ]
     },
     {
-      "id": 1674113955166,
+      "id": 1681318962431,
       "name": "Child Labor",
-      "order": 4,
+      "order": 5,
       "repeatable": true,
       "question": [
         {
-          "id": 1674113993933,
+          "id": 1681318962432,
           "order": 1,
-          "questionGroupId": 1674113955166,
+          "questionGroupId": 1681318962431,
           "name": "Commitment",
           "type": "input",
           "required": false,
@@ -241,9 +274,9 @@
           ]
         },
         {
-          "id": 1674114001466,
+          "id": 1681319382431,
           "order": 2,
-          "questionGroupId": 1674113955166,
+          "questionGroupId": 1681318962431,
           "name": "Milestones",
           "type": "table",
           "required": false,
@@ -253,7 +286,7 @@
               "name": "milestone",
               "label": "Milestone",
               "type": "input",
-              "id": 1669107433881
+              "id": 1681319390959
             }
           ],
           "translations": [
@@ -264,9 +297,9 @@
           ]
         },
         {
-          "id": 1674114011444,
+          "id": 1681319410548,
           "order": 3,
-          "questionGroupId": 1674113955166,
+          "questionGroupId": 1681318962431,
           "name": "Challenge",
           "type": "text",
           "required": false,
@@ -284,6 +317,75 @@
         {
           "language": "de",
           "name": "Kinderarbeit",
+          "repeatText": "Add another Commitment translated"
+        }
+      ]
+    },
+    {
+      "id": 1681318972281,
+      "name": "Living Income",
+      "order": 6,
+      "repeatable": true,
+      "question": [
+        {
+          "id": 1681318972282,
+          "order": 1,
+          "questionGroupId": 1681318972281,
+          "name": "Commitment",
+          "type": "input",
+          "required": false,
+          "meta": false,
+          "translations": [
+            {
+              "language": "de",
+              "name": "Commitment"
+            }
+          ]
+        },
+        {
+          "id": 1681319430446,
+          "order": 2,
+          "questionGroupId": 1681318972281,
+          "name": "Milestones",
+          "type": "table",
+          "required": false,
+          "meta": false,
+          "columns": [
+            {
+              "name": "milestone",
+              "label": "Milestone",
+              "type": "input",
+              "id": 1681319440394
+            }
+          ],
+          "translations": [
+            {
+              "language": "de",
+              "name": "Meilenstein"
+            }
+          ]
+        },
+        {
+          "id": 1681319446621,
+          "order": 3,
+          "questionGroupId": 1681318972281,
+          "name": "Challenge",
+          "type": "text",
+          "required": false,
+          "meta": false,
+          "translations": [
+            {
+              "language": "de",
+              "name": "Herausforderung"
+            }
+          ]
+        }
+      ],
+      "repeatText": "Add another Commitment",
+      "translations": [
+        {
+          "language": "de",
+          "name": "Existenzsichernde Einkommen",
           "repeatText": "Add another Commitment translated"
         }
       ]

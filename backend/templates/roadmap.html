@@ -8,7 +8,7 @@
       }
       .page-footer,
       .page-footer-space {
-        height: 150px;
+        height: 120px;
       }
       .page-footer {
         position: fixed;
@@ -58,16 +58,6 @@
   <body>
     {% if data.language == "de" %}
     <div class="page-footer">
-      <p style="font-style: italic; font-size: 11px">
-        <sup>1</sup>Eine kartellrechtliche Prüfung zur Frage, ob und wie im
-        Rahmen der individuellen Roadmaps auf individueller Ebene zu Einkommens-
-        und Preisfragen Bericht erstattet werden kann, wird bis Ende 2022
-        durchgeführt. Nach Vorliegen der kartellrechtlichen Prüfung erfolgt für
-        die Mitgliederversammlung (2023) eine neue Beschlussvorlage zu
-        individuellen Roadmaps zu existenzsichernden Einkommen. Bis dahin können
-        auf freiwilliger Basis Commitments und Meilensteine zum Thema
-        existenzsichernde Einkommen in die eigene Roadmap integriert werden.
-      </p>
       <h2
         style="
           color: #789922;
@@ -84,21 +74,13 @@
         Zusammenarbeit (GIZ) GmbH I Reichpietschufer 20 I 10785 Berlin
         Geschäftsführerin Beate Weiskopf I Tel.: +49 6196 79-1462 I Mobil: +49
         151 64907842 I E-Mail: info@kakaoforum.de I
-        <a href="www.kakaoforum.de" target="_blank">www.kakaoforum.de</a>
+        <a href="https://www.kakaoforum.de" target="_blank"
+          >www.kakaoforum.de</a
+        >
       </p>
     </div>
     {% else %}
     <div class="page-footer">
-      <p style="font-style: italic; font-size: 11px">
-        <sup>1</sup>An antitrust review on the question of whether and how to
-        report on income and price issues at the individual level within the
-        framework of the individual roadmaps will be carried out in 2023. Once
-        the anti-trust review is available, a new draft resolution on individual
-        roadmaps with regards to Living Income will be submitted to the General
-        Assembly (2023). Until then, commitments and milestones on the topic of
-        Living Income can be integrated into the individual roadmap on a
-        voluntary basis.
-      </p>
       <h2
         style="
           color: #789922;
@@ -115,7 +97,9 @@
         Zusammenarbeit (GIZ) GmbH I Reichpietschufer 20 I 10785 Berlin
         Geschäftsführerin Beate Weiskopf I Tel.: +49 6196 79-1462 I Mobil: +49
         151 64907842 I E-Mail: info@kakaoforum.de I
-        <a href="www.kakaoforum.de" target="_blank">www.kakaoforum.de</a>
+        <a href="https://www.kakaoforum.de" target="_blank"
+          >www.kakaoforum.de</a
+        >
       </p>
     </div>
     {% endif %}
@@ -215,12 +199,41 @@
                         color: #673017;
                       "
                     >
-                      {% if dt.name == "Living Income" %}
-                      <sup>1</sup>{{dt.name}} {% elif dt.name ==
-                      "Existenzsichernde Einkommen" %} {{dt.name}}<sup>1</sup>
-                      {% else %} {{dt.name}} {% endif %}
+                      {% if (dt.name == "Member’s comment" or dt.name ==
+                      "Kommentar des Mitglieds") %} {% else %} {{dt.name}} {%
+                      endif %}
                     </h3>
-                    {% if dt.description %}
+                    {% if (dt.name == "Living Income" or dt.name ==
+                    "Existenzsichernde Einkommen") %} {% if data.language ==
+                    "de" %}
+                    <p style="font-style: italic; font-size: 12px">
+                      <b style="display: block">Anmerkung:</b>
+                      Eine kartellrechtliche Prüfung zur Frage, ob und wie im
+                      Rahmen der individuellen Roadmaps auf individueller Ebene
+                      zu Einkommens- und Preisfragen Bericht erstattet werden
+                      kann, wird bis Mitte 2023 durchgeführt. Nach Vorliegen der
+                      kartellrechtlichen Prüfung erfolgt eine außerordentliche
+                      Mitgliederversammlung mit einer neuen Beschlussvorlage zu
+                      individuellen Roadmaps zu existenzsichernden Einkommen.
+                      Bis dahin können auf freiwilliger Basis Commitments und
+                      Meilensteine zum Thema existenzsichernde Einkommen in die
+                      eigene Roadmap integriert werden.
+                    </p>
+                    {% else %}
+                    <p style="font-style: italic; font-size: 12px">
+                      <b style="display: block">Note:</b>
+                      An antitrust review on the question of whether and how to
+                      report on income and price issues at the individual level
+                      within the framework of the individual roadmaps will be
+                      carried out by mid-2023. Once the antitrust review is
+                      available, a new draft resolution on individual roadmaps
+                      with regards Living Income will be submitted to an
+                      extraordinary General Assembly. Until then, commitments
+                      and milestones on the topic of Living Income can be
+                      integrated into the individual roadmaps on a voluntary
+                      basis.
+                    </p>
+                    {% endif %} {% endif %} {% if dt.description %}
                     <div
                       style="
                         padding: 20px;
@@ -254,7 +267,7 @@
                             padding: 10px;
                           "
                         >
-                          <div style="font-weight: 500">
+                          <div style="font-weight: bold">
                             <span style="text-decoration: underline"
                               >{{a.question}} :</span
                             >
@@ -295,7 +308,7 @@
                             padding: 10px;
                           "
                         >
-                          <div style="font-weight: 500">
+                          <div style="font-weight: bold">
                             <span style="text-decoration: underline"
                               >{{a.question}} :</span
                             >
