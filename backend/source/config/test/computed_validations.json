@@ -21,6 +21,11 @@
         "group_id": 85,
         "question_ids": [670, 671, 673, 660],
         "equal": 100
+      },
+      {
+        "group_id": 94,
+        "question_ids": [99, 700, 701],
+        "equal": 100
       }
     ]
   }
