@@ -3,12 +3,12 @@
     "form_id": 4,
     "validations": [
       {
-        "group_id": 2,
+        "group_id": 5,
         "question_ids": [14, 15],
         "equal": 100
       },
       {
-        "group_id": 2,
+        "group_id": 5,
         "question_ids": [14, 15],
         "min": 10
       }

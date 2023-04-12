@@ -27,6 +27,11 @@ from util.survey_config import MEMBER_SURVEY, PROJECT_SURVEY, LIMITED_SURVEY
 from util.mailer import Email, MailTypeEnum
 from routes.collaborator import send_collaborator_email
 from util.common import generate_datapoint_name, get_prev_year
+from models.user import User
+from models.organisation_member import OrganisationMember
+from models.organisation_isco import OrganisationIsco
+from models.member_type import MemberType
+from models.isco_type import IscoType
 
 security = HTTPBearer()
 data_route = APIRouter()
@@ -35,7 +40,24 @@ BUCKET_FOLDER = os.environ.get("BUCKET_FOLDER")
 CONFIG_SOURCE_PATH = "./source/config"
 
 
-def get_questions_from_published_form(session: Session, form_id: int):
+def get_questions_from_published_form(
+    session: Session, form_id: int, user: User
+):
+    # get user member access
+    member_ids = session.query(OrganisationMember).filter(
+        OrganisationMember.organisation == user.organisation).all()
+    member_ids = [m.member_type for m in member_ids]
+    member_access = session.query(MemberType).filter(
+        MemberType.id.in_(member_ids)).all()
+    member_access = [ma.name for ma in member_access] + ["All"]
+    # get user isco access
+    isco_ids = session.query(OrganisationIsco).filter(
+        OrganisationIsco.organisation == user.organisation).all()
+    isco_ids = [i.isco_type for i in isco_ids]
+    isco_access = session.query(IscoType).filter(
+        IscoType.id.in_(isco_ids)).all()
+    isco_access = [ia.name for ia in isco_access] + ["All"]
+    # forms
     form = crud_form.get_form_by_id(session=session, id=form_id)
     TESTING = os.environ.get("TESTING")
     if TESTING:
@@ -46,21 +68,34 @@ def get_questions_from_published_form(session: Session, form_id: int):
     question_groups = []
     questions = {}
     core_mandatory_questions = []
+    # question available for computed val check
+    computed_validation_questions = {}
     for qg in webform['question_group']:
         qids = []
+        computed_validation_tmp = []
         for q in qg['question']:
             qid = q['id']
             questions.update({qid: q})
             qids.append(qid)
-            if q.get('core_mandatory') or q.get('coreMandatory'):
+            # user question filtered by qmember/isco
+            user_question = \
+                set(member_access).intersection(set(q['member_access'])) and \
+                set(isco_access).intersection(set(q['isco_access']))
+            if user_question and (
+                    q.get('core_mandatory') or q.get('coreMandatory')):
                 core_mandatory_questions.append(qid)
+            if user_question:
+                computed_validation_tmp.append(qid)
         qg['question'] = qids
         question_groups.append(qg)
+        computed_validation_questions.update({
+            qg['id']: computed_validation_tmp})
     return {
         "form_name": webform['name'],
         "question_groups": question_groups,
         "questions": questions,
         "core_mandatory_questions": core_mandatory_questions,
+        "computed_validation_questions": computed_validation_questions
     }
 
 
@@ -82,8 +117,11 @@ def check_core_mandatory_questions_answer(
 
 
 def check_computed_validation(
-    form_id: int, answers: List[AnswerDict], submitted: int
+    form_id: int, answers: List[AnswerDict], submitted: int,
+    published: dict
 ):
+    # available question for user
+    available_questions = published["computed_validation_questions"]
     TESTING = os.environ.get("TESTING")
     BUCKET = BUCKET_FOLDER
     if TESTING:
@@ -100,7 +138,16 @@ def check_computed_validation(
         errors = []
         computed_validation = computed_validation[0]
         for cv in computed_validation.get('validations'):
+            cv_group = cv.get('group_id')
+            # check if question available
+            available_question = available_questions.get(cv_group)
+            if not available_question:
+                continue
             cv_qids = cv.get('question_ids')
+            # intersection qids with available question
+            cv_qids = list(set(cv_qids).intersection(set(available_question)))
+            if not cv_qids:
+                continue
             cv_max = cv.get("max")
             cv_min = cv.get("min")
             cv_equal = cv.get("equal")
@@ -245,7 +292,7 @@ def add(req: Request,
             status_code=208, detail="Submission already reported")
     # get questions from published form
     published = get_questions_from_published_form(
-        session=session, form_id=form_id)
+        session=session, form_id=form_id, user=User)
     questions = published['questions']
     # end get questions published form
 
@@ -256,7 +303,8 @@ def add(req: Request,
     # end check core mandatory question answered
     # validate by computed validations
     check_computed_validation(
-        form_id=form_id, answers=answers, submitted=submitted)
+        form_id=form_id, answers=answers, submitted=submitted,
+        published=published)
     # end validate by computed validations
 
     # generating answers
@@ -503,7 +551,7 @@ def update_by_id(
 
     # get questions from published form
     published = get_questions_from_published_form(
-        session=session, form_id=data.form)
+        session=session, form_id=data.form, user=user)
     question_groups = published['question_groups']
     questions = published['questions']
     # end get questions published form
@@ -515,7 +563,8 @@ def update_by_id(
     # end check core mandatory question answered
     # validate by computed validations
     check_computed_validation(
-        form_id=data.form, answers=answers, submitted=submitted)
+        form_id=data.form, answers=answers, submitted=submitted,
+        published=published)
     # end validate by computed validations
 
     # get repeatable question ids

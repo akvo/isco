@@ -68,8 +68,8 @@ class TestFormWithComputedValidationRoutes():
                 "repeat": False,
                 "repeat_text": None,
                 "order": 1,
-                "member_access": None,
-                "isco_access": None,
+                "member_access": [1],
+                "isco_access": [1],
                 "question": None
             })
         assert res.status_code == 200
@@ -78,8 +78,8 @@ class TestFormWithComputedValidationRoutes():
             "description": "Description",
             "form": 4,
             "id": 5,
-            "isco_access": [],
-            "member_access": [],
+            "isco_access": [1],
+            "member_access": [1],
             "name": "Computed Validation Group 1",
             "order": 1,
             "repeat": False,
