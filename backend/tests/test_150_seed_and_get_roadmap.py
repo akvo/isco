@@ -295,7 +295,10 @@ form_def = {
         }],
         "repeatButtonPlacement": "bottom",
         "repeatText": "Add another Commitment",
-        "translations": [{"language": "de", "name": "Existenzsichernde Einkommen"}],
+        "translations": [{
+            "language": "de",
+            "name": "Existenzsichernde Einkommen",
+        }],
     }],
     "tree": None,
     "initial_value": None,
