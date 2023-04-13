@@ -25,18 +25,18 @@ class TestManageRoadmapDatapoint():
             "organisation_id": 1,
             "language": "en",
             "answers": {
-                "1681318760850": "This is first commitment",
-                "1681319078754": [{
+                "1669095326962": "This is first commitment",
+                "1669107420032": [{
                     "milestone": "First Milestone"
                 }],
-                "1681318760850-1": "This is second commitment",
-                "1681319078754-1": [{
+                "1669095326962-1": "This is second commitment",
+                "1669107420032-1": [{
                     "milestone": "Milestone 1"
                 }, {
                     "milestone": "Milestone 2"
                 }],
-                "1681318935840": "Example answer 1",
-                "1681318949956": "Example answer 2",
+                "1669107562769": "Example answer 1",
+                "1669107635129": "Example answer 2",
             }
         }
         # post roadmap datapoint
@@ -108,20 +108,20 @@ class TestManageRoadmapDatapoint():
             "organisation_id": 1,
             "language": "en",
             "answers": {
-                "1681318760850": "Updated first commitment",
-                "1681319078754": [{
+                "1669095326962": "Updated first commitment",
+                "1669107420032": [{
                     "milestone": "Updated First Milestone"
                 }],
-                "1681318760850-1": "Updated second commitment",
-                "1681319078754-1": [{
+                "1669095326962-1": "Updated second commitment",
+                "1669107420032-1": [{
                     "milestone": "Update Milestone 1"
                 }],
-                "1681318760850-2": "Third commitment",
-                "1681319078754-2": [{
+                "1669095326962-2": "Third commitment",
+                "1669107420032-2": [{
                     "milestone": "Milestone 1"
                 }],
-                "1681318935840": "Example answer 1",
-                "1681318949956": "Example answer 2",
+                "1669107562769": "Example answer 1",
+                "1669107635129": "Example answer 2",
             }
         }
         # post roadmap datapoint
@@ -136,56 +136,56 @@ class TestManageRoadmapDatapoint():
         assert answers == [
             {
                 "id": 1,
-                "question": 1681318760850,
+                "question": 1669095326962,
                 "type": "text",
                 "repeat_index": 0,
                 "value": "Updated first commitment",
             },
             {
                 "id": 2,
-                "question": 1681319078754,
+                "question": 1669107420032,
                 "type": "table",
                 "repeat_index": 0,
                 "value": [{"milestone": "Updated First Milestone"}],
             },
             {
                 "id": 3,
-                "question": 1681318760850,
+                "question": 1669095326962,
                 "type": "text",
                 "repeat_index": 1,
                 "value": "Updated second commitment",
             },
             {
                 "id": 4,
-                "question": 1681319078754,
+                "question": 1669107420032,
                 "type": "table",
                 "repeat_index": 1,
                 "value": [{"milestone": "Update Milestone 1"}],
             },
             {
                 "id": 7,
-                "question": 1681318760850,
+                "question": 1669095326962,
                 "type": "text",
                 "repeat_index": 2,
                 "value": "Third commitment",
             },
             {
                 "id": 8,
-                "question": 1681319078754,
+                "question": 1669107420032,
                 "type": "table",
                 "repeat_index": 2,
                 "value": [{"milestone": "Milestone 1"}],
             },
             {
                 "id": 5,
-                "question": 1681318935840,
+                "question": 1669107562769,
                 "type": "input",
                 "repeat_index": 0,
                 "value": "Example answer 1",
             },
             {
                 "id": 6,
-                "question": 1681318949956,
+                "question": 1669107635129,
                 "type": "input",
                 "repeat_index": 0,
                 "value": "Example answer 2",
@@ -207,39 +207,39 @@ class TestManageRoadmapDatapoint():
         form_def.update({
             "initial_value": [
                 {
-                    "question": 1681318760850,
+                    "question": 1669095326962,
                     "value": "Updated first commitment"
                 },
                 {
-                    "question": 1681319078754,
+                    "question": 1669107420032,
                     "value": [{"milestone": "Updated First Milestone"}],
                 },
                 {
-                    "question": 1681318760850,
+                    "question": 1669095326962,
                     "repeatIndex": 1,
                     "value": "Updated second commitment",
                 },
                 {
-                    "question": 1681319078754,
+                    "question": 1669107420032,
                     "repeatIndex": 1,
                     "value": [{"milestone": "Update Milestone 1"}],
                 },
                 {
-                    "question": 1681318760850,
+                    "question": 1669095326962,
                     "repeatIndex": 2,
                     "value": "Third commitment"
                 },
                 {
-                    "question": 1681319078754,
+                    "question": 1669107420032,
                     "repeatIndex": 2,
                     "value": [{"milestone": "Milestone 1"}],
                 },
                 {
-                    "question": 1681318935840,
+                    "question": 1669107562769,
                     "value": "Example answer 1"
                 },
                 {
-                    "question": 1681318949956,
+                    "question": 1669107635129,
                     "value": "Example answer 2"
                 },
             ],
