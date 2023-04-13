@@ -6,6 +6,7 @@ import { api, store } from "../../lib";
 import { useNotification } from "../../util";
 import { uiText, webformContent } from "../../static";
 import { FiRefreshCw, FiInfo } from "react-icons/fi";
+import orderBy from "lodash/orderBy";
 
 const Survey = () => {
   const { notify } = useNotification();
@@ -88,10 +89,18 @@ const Survey = () => {
           label: d.datapoint_name,
           value: d.id,
         }));
-        setPrevSubmissionOptions(values);
+        values.push({
+          label: text.formPreviousYearSubmissionEmptyOption,
+          value: 0,
+        });
+        setPrevSubmissionOptions(orderBy(values, ["value"]));
       });
     }
-  }, [selectedFormEnablePrefilledValue, selectedForm]);
+  }, [
+    selectedFormEnablePrefilledValue,
+    selectedForm,
+    text.formPreviousYearSubmissionEmptyOption,
+  ]);
 
   useEffect(() => {
     if ((user && reloadDropdownValue) || text?.infoSubmissionDropdown) {
