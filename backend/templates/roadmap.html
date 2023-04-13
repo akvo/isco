@@ -27,7 +27,6 @@
       table {
         width: 100%;
         border-collapse: separate;
-        border-spacing: 0 15px;
       }
 
       @page {
@@ -123,58 +122,66 @@
     >
       ROADMAP : <span style="color: #789922">{{data.organisation.name}}</span>
     </div>
-    <div style="background-color: #e1e9d4; border: 1.5px solid #789922">
-      <h2
-        style="
-          text-align: left;
-          padding: 10px;
-          padding-bottom: 0px;
-          margin: 0px;
-          font-size: 20px;
-          color: #673017;
-        "
-      >
-        Background
-      </h2>
-      <div style="padding: 10px">
-        {% if data.language == "de" %}
-        <p>
-          Im Rahmen der Mitgliederversammlung des Forum Nachhaltiger Kakao wurde
-          beschlossen, dass die Erstellung einer individuellen Roadmap durch
-          jedes Mitglied und die jährliche öffentliche Berichterstattung über
-          Commitments und Meilensteine, die in diesen Roadmaps festgehalten
-          sind, ein wertvoller und verpflichtender Beitrag zur Erreichung der
-          <a
-            href="https://www.kakaoforum.de/fileadmin/Redaktion/Downloads/Oeffentliche_Downloads/Verein/GISCO_Objectives.pdf"
-            target="_blank"
-            style="color: #7c9d2c"
-            >Ziele des Forums</a
-          >
-          darstellen.
-        </p>
-        {% else %}
-        <p>
-          At the 2022 General Meeting of the German Initiative on Sustainable
-          Cocoa (GISCO), it was decided that the preparation of individual
-          roadmaps by each GISCO member and annual public reporting on
-          commitments and milestones included in these roadmaps is a valuable
-          and mandatory contribution to achieve
-          <a
-            href="https://www.kakaoforum.de/fileadmin/Redaktion/Downloads/Oeffentliche_Downloads/Verein/GISCO_Objectives.pdf"
-            target="_blank"
-            style="color: #7c9d2c"
-            >GISCO’s objectives.</a
-          >
-        </p>
-        {% endif %}
-      </div>
-    </div>
     <table>
       <tbody>
         <tr>
           <td>
             <!--*** CONTENT GOES HERE ***-->
             <div class="page">
+              <div
+                style="
+                  background-color: #e1e9d4;
+                  border: 2px solid #789922;
+                  margin-bottom: -30px;
+                "
+              >
+                <h2
+                  style="
+                    text-align: left;
+                    padding: 10px;
+                    padding-bottom: 0px;
+                    margin: 0px;
+                    font-size: 20px;
+                    color: #673017;
+                  "
+                >
+                  Background
+                </h2>
+                <div style="padding: 10px">
+                  {% if data.language == "de" %}
+                  <p>
+                    Im Rahmen der Mitgliederversammlung des Forum Nachhaltiger
+                    Kakao wurde beschlossen, dass die Erstellung einer
+                    individuellen Roadmap durch jedes Mitglied und die jährliche
+                    öffentliche Berichterstattung über Commitments und
+                    Meilensteine, die in diesen Roadmaps festgehalten sind, ein
+                    wertvoller und verpflichtender Beitrag zur Erreichung der
+                    <a
+                      href="https://www.kakaoforum.de/fileadmin/Redaktion/Downloads/Oeffentliche_Downloads/Verein/GISCO_Objectives.pdf"
+                      target="_blank"
+                      style="color: #7c9d2c"
+                      >Ziele des Forums</a
+                    >
+                    darstellen.
+                  </p>
+                  {% else %}
+                  <p>
+                    At the 2022 General Meeting of the German Initiative on
+                    Sustainable Cocoa (GISCO), it was decided that the
+                    preparation of individual roadmaps by each GISCO member and
+                    annual public reporting on commitments and milestones
+                    included in these roadmaps is a valuable and mandatory
+                    contribution to achieve
+                    <a
+                      href="https://www.kakaoforum.de/fileadmin/Redaktion/Downloads/Oeffentliche_Downloads/Verein/GISCO_Objectives.pdf"
+                      target="_blank"
+                      style="color: #7c9d2c"
+                      >GISCO’s objectives.</a
+                    >
+                  </p>
+                  {% endif %}
+                </div>
+              </div>
               {% for dt in detail %}
               <div
                 class="row"
@@ -190,15 +197,8 @@
                   class="col"
                   style="width: 100%; padding-left: 0px; padding-right: 0px"
                 >
-                  <div style="page-break-inside: avoid">
-                    <h3
-                      style="
-                        padding-bottom: 10px;
-                        margin: 0px;
-                        font-size: 20px;
-                        color: #673017;
-                      "
-                    >
+                  <div style="page-break-inside: avoid; padding-top: 30px">
+                    <h3 style="margin: 0px; font-size: 20px; color: #673017">
                       {% if (dt.name == "Member’s comment" or dt.name ==
                       "Kommentar des Mitglieds") %} {% else %} {{dt.name}} {%
                       endif %}
@@ -257,6 +257,9 @@
                     <tbody>
                       {% for a in r.answers %} {% if a.value and a.value_type !=
                       "list" %}
+                      <tr class="spacer">
+                        <td colspan="2"><br /></td>
+                      </tr>
                       <tr>
                         <td
                           style="
@@ -297,8 +300,12 @@
                           </div>
                         </td>
                       </tr>
-                      {% else %} {% for v in a.value %}
-                      <tr>
+                      {% else %}
+                      <tr class="spacer">
+                        <td colspan="2"><br /></td>
+                      </tr>
+                      {% for v in a.value %}
+                      <tr style="padding-bottom: 15px">
                         <td
                           style="
                             page-break-inside: avoid;
