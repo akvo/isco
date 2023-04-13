@@ -114,6 +114,14 @@ const WebformPage = ({
     return uiText[activeLang];
   }, [activeLang]);
 
+  useEffect(() => {
+    if (selectedPrevSubmission === 0) {
+      setAnswer([]);
+      setInitialAnswers([]);
+      setComment({});
+    }
+  }, [selectedPrevSubmission]);
+
   // core mandatory questions
   const coreMandatoryQuestionIds = useMemo(() => {
     if (!formValue?.question_group) {
@@ -471,7 +479,7 @@ const WebformPage = ({
           if (a.question === deletedComment) {
             update = {
               ...update,
-              comment: null,
+              comment: "del",
             };
           }
           return update;
@@ -557,6 +565,7 @@ const WebformPage = ({
   };
 
   const onChange = ({ values }) => {
+    // TODO:: After set initial value to empty, onchange still have old answer value
     const transformedAnswerValues = transformValues(values);
     setDisableSubmit(transformValues.length === 0);
     setAnswer(transformedAnswerValues);

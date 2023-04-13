@@ -56,6 +56,7 @@ const uiText = {
     formStartFillingNewForm: "Start filling a new form",
     formPreviousYearSubmission:
       "Choose a submission from previous year to pre-fill",
+    formPreviousYearSubmissionEmptyOption: "Empty questionnaire",
     formLogin: "Login User",
     formRememberLogin: "Remember Login",
     formForgotPwd: "Forgot Password",
@@ -354,6 +355,7 @@ const uiText = {
     formPickPreviousSavedForms: "Auswahl eines zuvor gespeicherten Fragebogens",
     formStartFillingNewForm: "Beginn eines neuen Fragebogens",
     formPreviousYearSubmission: "Abgabe aus dem Vorjahr",
+    formPreviousYearSubmissionEmptyOption: "Empty questionnaire",
     formLogin: "Einloggen",
     formRememberLogin: "Login-Daten erinnern",
     formForgotPwd: "Passwort vergessen",
