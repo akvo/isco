@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "akvo-react-form": "^2.1.5",
+    "akvo-react-form": "^2.1.6",
     "antd": "^4.19.1",
     "axios": "^0.26.1",
     "html-react-parser": "^1.4.10",

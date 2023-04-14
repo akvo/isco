@@ -55,6 +55,7 @@ const reorderAnswersRepeatIndex = (formValue, answer) => {
 };
 
 const WebformPage = ({
+  webformRef,
   formId,
   setFormLoaded,
   selectedSavedSubmission,
@@ -66,6 +67,8 @@ const WebformPage = ({
   setSelectedCollaborators,
   setShowCollaboratorForm,
   resetSavedFormDropdown,
+  clearForm,
+  setClearForm,
 }) => {
   const { notify } = useNotification();
 
@@ -108,11 +111,26 @@ const WebformPage = ({
   const isSavedDataFromPrevSubmission =
     savedData?.id &&
     selectedPrevSubmission &&
+    selectedPrevSubmission !== "" &&
     savedData.id === selectedPrevSubmission;
 
   const text = useMemo(() => {
     return uiText[activeLang];
   }, [activeLang]);
+
+  const resetForm = () => {
+    if (
+      clearForm &&
+      (selectedPrevSubmission === "" || !selectedPrevSubmission)
+    ) {
+      setDisableSubmit(true);
+      setAnswer([]);
+      setInitialAnswers([]);
+      setComment({});
+      setClearForm(false);
+      webformRef?.current?.resetFields();
+    }
+  };
 
   // core mandatory questions
   const coreMandatoryQuestionIds = useMemo(() => {
@@ -263,6 +281,7 @@ const WebformPage = ({
       // handle load prefilled questionnaire with prev year value
       const isLoadPrevSubmissionVal =
         selectedPrevSubmission &&
+        selectedPrevSubmission !== "" &&
         selectedFormEnablePrefilledValue &&
         !savedDataId;
       if (isLoadPrevSubmissionVal) {
@@ -471,7 +490,7 @@ const WebformPage = ({
           if (a.question === deletedComment) {
             update = {
               ...update,
-              comment: null,
+              comment: "del",
             };
           }
           return update;
@@ -560,6 +579,10 @@ const WebformPage = ({
     const transformedAnswerValues = transformValues(values);
     setDisableSubmit(transformValues.length === 0);
     setAnswer(transformedAnswerValues);
+    // reset form for prev submisison value to empty
+    setTimeout(() => {
+      resetForm();
+    }, 100);
   };
 
   const onChangeComment = (qid, val) => {
@@ -583,6 +606,7 @@ const WebformPage = ({
     // send collaborators value when submit/save for first time
     if (
       selectedPrevSubmission &&
+      selectedPrevSubmission !== "" &&
       selectedFormEnablePrefilledValue &&
       selectedCollaborators?.length
     ) {
@@ -740,6 +764,7 @@ const WebformPage = ({
       <div id="webform">
         {!isEmpty(formValue) ? (
           <Webform
+            formRef={webformRef}
             forms={formValue}
             fieldIcons={false}
             onChange={onChange}

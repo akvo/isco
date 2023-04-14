@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import "./style.scss";
 import { Row, Col, Select, Button, Space, Alert, Tooltip } from "antd";
 import WebformPage from "./WebformPage";
@@ -6,9 +6,11 @@ import { api, store } from "../../lib";
 import { useNotification } from "../../util";
 import { uiText, webformContent } from "../../static";
 import { FiRefreshCw, FiInfo } from "react-icons/fi";
+import orderBy from "lodash/orderBy";
 
 const Survey = () => {
   const { notify } = useNotification();
+  const webformRef = useRef();
 
   const { user, optionValues, language } = store.useState((s) => s);
   const { organisation } = optionValues;
@@ -35,6 +37,7 @@ const Survey = () => {
   // previous submission
   const [prevSubmissionOptions, setPrevSubmissionOptions] = useState([]);
   const [selectedPrevSubmission, setSelectedPrevSubmission] = useState(null);
+  const [clearForm, setClearForm] = useState(false);
 
   const handleOnClickDataSecurity = () => {
     store.update((s) => {
@@ -88,10 +91,18 @@ const Survey = () => {
           label: d.datapoint_name,
           value: d.id,
         }));
-        setPrevSubmissionOptions(values);
+        values.push({
+          label: "",
+          value: "",
+        });
+        setPrevSubmissionOptions(orderBy(values, ["value"]));
       });
     }
-  }, [selectedFormEnablePrefilledValue, selectedForm]);
+  }, [
+    selectedFormEnablePrefilledValue,
+    selectedForm,
+    text.formPreviousYearSubmissionEmptyOption,
+  ]);
 
   useEffect(() => {
     if ((user && reloadDropdownValue) || text?.infoSubmissionDropdown) {
@@ -236,6 +247,9 @@ const Survey = () => {
 
   const handleOnClickOpenPrevSubmission = () => {
     resetSavedFormDropdown();
+    if (selectedPrevSubmission === "" || !selectedPrevSubmission) {
+      setClearForm(true);
+    }
     if (formLoaded) {
       // show modal
       store.update((s) => {
@@ -489,6 +503,7 @@ const Survey = () => {
         <Space direction="vertical" style={{ width: "100%" }}>
           <Alert type="warning" showIcon message={text.bannerSaveSurvey} />
           <WebformPage
+            webformRef={webformRef}
             formId={formLoaded}
             setFormLoaded={setFormLoaded}
             selectedSavedSubmission={selectedSavedSubmission}
@@ -502,6 +517,8 @@ const Survey = () => {
             // send resetSavedFormDropdown to reset the collaborator button
             // and dropdown list after submit/saved submission
             resetSavedFormDropdown={resetSavedFormDropdown}
+            clearForm={clearForm}
+            setClearForm={setClearForm}
           />
         </Space>
       )}
