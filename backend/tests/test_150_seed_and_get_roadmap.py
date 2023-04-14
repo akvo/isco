@@ -27,9 +27,30 @@ form_def = {
     'language': 'en',
     "version": 1.0,
     "question_group": [{
+        "name": "Member’s comment",
+        'description': None,
+        "order": 1,
+        "repeatable": False,
+        "question": [{
+            "id": 1681318760851,
+            "name": "Member’s comment on the roadmap",
+            "required": False,
+            "meta": False,
+            "type": "text",
+            "order": 1,
+            "translations": [{
+                "name": "Kommentar des Mitglieds zur Roadmap",
+                "language": "de"
+            }],
+        }],
+        "translations": [{
+            "language": "de",
+            "name": "Kommentar des Mitglieds"
+        }],
+    }, {
         "name": "Traceability",
         "description": None,
-        "order": 1,
+        "order": 2,
         "repeatable": True,
         "question": [{
             "id": 1669095326962,
@@ -80,7 +101,7 @@ form_def = {
     }, {
         "name": "Certified and Independently Verified Cocoa",
         "description": None,
-        "order": 2,
+        "order": 3,
         "repeatable": True,
         "question": [{
             "id": 1669107562769,
@@ -131,7 +152,7 @@ form_def = {
     }, {
         "name": "Deforestation / Agroforestry",
         "description": None,
-        "order": 3,
+        "order": 4,
         "repeatable": True,
         "question": [{
             "id": 1669107635129,
@@ -182,7 +203,7 @@ form_def = {
     }, {
         "name": "Child Labor",
         "description": None,
-        "order": 4,
+        "order": 5,
         "repeatable": True,
         "question": [{
             "id": 1674113993933,
@@ -227,6 +248,57 @@ form_def = {
         "repeatButtonPlacement": "bottom",
         "repeatText": "Add another Commitment",
         "translations": [{"language": "de", "name": "Kinderarbeit"}],
+    }, {
+        "name": "Living Income",
+        "description": None,
+        "order": 6,
+        "repeatable": True,
+        "question": [{
+            "id": 1681318972282,
+            "name": "Commitment",
+            "required": False,
+            "meta": False,
+            "type": "input",
+            "order": 1,
+            "translations": [{
+                "name": "Commitment",
+                "language": "de"
+            }],
+        }, {
+            "id": 1681319430446,
+            "name": "Milestones",
+            "required": False,
+            "meta": False,
+            "type": "table",
+            "order": 2,
+            "columns": [{
+                "id": 1681319440394,
+                "name": "milestone",
+                "type": "input",
+                "label": "Milestone",
+            }],
+            "translations": [{
+                "name": "Meilenstein",
+                "language": "de"
+            }],
+        }, {
+            "id": 1681319446621,
+            "name": "Challenge",
+            "required": False,
+            "meta": False,
+            "type": "text",
+            "order": 3,
+            "translations": [{
+                "name": "Herausforderung",
+                "language": "de"
+            }],
+        }],
+        "repeatButtonPlacement": "bottom",
+        "repeatText": "Add another Commitment",
+        "translations": [{
+            "language": "de",
+            "name": "Existenzsichernde Einkommen",
+        }],
     }],
     "tree": None,
     "initial_value": None,
