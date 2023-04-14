@@ -1,14 +1,12 @@
 import React, { useState } from "react";
 import "./style.scss";
 import { Row, Col, Typography, Tabs } from "antd";
-import Guidance from "./Guidance";
 import SetupRoadmap from "./SetupRoadmap";
 import CurrentRoadmap from "./CurrentRoadmap";
 
 const { Title } = Typography;
 
 const roadmapTabs = [
-  { key: "guidance", label: "Guidance" },
   { key: "setup-roadmap", label: "Setup Roadmap" },
   { key: "current-roadmap", label: "Current Roadmaps" },
 ];
@@ -36,12 +34,12 @@ const renderTabContent = ({
         />
       );
     default:
-      return <Guidance />;
+      return <SetupRoadmap />;
   }
 };
 
 const ManageRoadmap = () => {
-  const [currentTab, setCurrentTab] = useState("guidance");
+  const [currentTab, setCurrentTab] = useState("setup-roadmap");
   const [editDatapoint, setEditDatapoint] = useState(null);
 
   const handleTabClick = (key) => {
