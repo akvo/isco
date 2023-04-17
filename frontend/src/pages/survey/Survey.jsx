@@ -70,7 +70,8 @@ const Survey = () => {
 
   const showPrevSubmissionDropdown = useMemo(() => {
     return (
-      selectedFormEnablePrefilledValue && prevSubmissionOptions?.length > 0
+      selectedFormEnablePrefilledValue &&
+      prevSubmissionOptions?.filter((x) => x.value !== "")?.length > 0
     );
   }, [selectedFormEnablePrefilledValue, prevSubmissionOptions]);
 

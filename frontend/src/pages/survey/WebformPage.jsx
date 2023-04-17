@@ -784,7 +784,7 @@ const WebformPage = ({
                   }}
                   isSaving={isSaving}
                   text={text}
-                  disabled={!answer.length && !coreMandatoryQuestionIds?.length}
+                  disabled={!answer.length}
                 />
                 <LockedCheckbox
                   onChange={(val) => setIsLocked(val.target.checked)}
