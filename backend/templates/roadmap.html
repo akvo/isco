@@ -8,7 +8,7 @@
       }
       .page-footer,
       .page-footer-space {
-        height: 100px;
+        height: 90px;
       }
       .page-footer {
         position: fixed;
@@ -27,6 +27,10 @@
       table {
         width: 100%;
         border-collapse: separate;
+      }
+
+      p {
+        font-size: 14px;
       }
 
       @page {
@@ -61,14 +65,14 @@
         style="
           color: #789922;
           font-weight: 700;
-          font-size: 18px;
+          font-size: 14px;
           margin-bottom: 5px;
           margin-top: 5px;
         "
       >
         GISCO Secretariat / Forum Nachhaltiger Kakao e.V.
       </h2>
-      <p style="font-size: 11px; margin-top: 0px">
+      <p style="font-size: 10px; margin-top: 0px">
         c/o Repräsentanz der Deutschen Gesellschaft für Internationale
         Zusammenarbeit (GIZ) GmbH I Reichpietschufer 20 I 10785 Berlin
         Geschäftsführerin Beate Weiskopf I Tel.: +49 6196 79-1462 I Mobil: +49
@@ -113,7 +117,7 @@
     <div
       style="
         text-align: center;
-        font-size: 18px;
+        font-size: 24px;
         font-weight: 900;
         color: #673017;
         margin-bottom: 20px;
@@ -128,24 +132,19 @@
           <td>
             <!--*** CONTENT GOES HERE ***-->
             <div class="page">
-              <div
-                style="
-                  background-color: #e1e9d4;
-                  border: 2px solid #789922;
-                  margin-bottom: -30px;
-                "
-              >
+              <div style="background-color: #e1e9d4; border: 2px solid #789922">
                 <h2
                   style="
                     text-align: left;
                     padding: 10px;
                     padding-bottom: 0px;
                     margin: 0px;
-                    font-size: 20px;
+                    font-size: 19px;
                     color: #673017;
                   "
                 >
-                  Background
+                  {% if data.language == "de" %} Hintergrund {% else %}
+                  Background {% endif %}
                 </h2>
                 <div style="padding: 10px">
                   {% if data.language == "de" %}
@@ -164,6 +163,53 @@
                     >
                     darstellen.
                   </p>
+                  <p>
+                    Ergänzend zum Monitoring und ausgehend von der
+                    <a
+                      href="https://www.kakaoforum.de/index.php?eID=dumpFile&t=f&f=6112&token=23a808072571d74982ff0ea3e94b47ffa9cdc701"
+                      target="_blank"
+                      style="color: #7c9d2c"
+                      >GISCO-Roadmap</a
+                    >
+                    des Forum Nachhaltiger Kakao, in der die
+                    <a
+                      href="https://www.kakaoforum.de/ueber-uns/unsere-ziele/"
+                      target="_blank"
+                      style="color: #7c9d2c"
+                      >Ziele</a
+                    >,
+                    <a
+                      href="https://www.kakaoforum.de/fileadmin/Redaktion/Downloads/Oeffentliche_Downloads/Verein/Wertbestueckung_der_Indikatoren_fuer_Einzelziele_2022.pdf"
+                      target="_blank"
+                      style="color: #7c9d2c"
+                      >wertbestückten Indikatoren</a
+                    >
+                    und
+                    <a
+                      href="https://www.kakaoforum.de/fileadmin/Redaktion/Downloads/Oeffentliche_Downloads/Verein/Handlungsempfehlungen.pdf"
+                      target="_blank"
+                      style="color: #7c9d2c"
+                      >Handlungsempfehlungen</a
+                    >
+                    des Forum Nachhaltiger Kakao zu den Fokusthemen
+                    Rückverfolgbarkeit, zertifizierter/unabhängig verifizierter
+                    Kakao, Entwaldung/Agroforst, Kinderarbeit und
+                    Existenzsichernde Einkommen aufgeführt sind, sollen daher
+                    die Mitglieder des Forum Nachhaltiger Kakao individuelle
+                    Roadmaps zu diesen Fokusthemen ausarbeiten, die auf der
+                    Website des Forums veröffentlicht werden.
+                  </p>
+                  <p>
+                    Mehr Informationen zu den individuellen Roadmaps sind im
+                    <a
+                      href="https://www.kakaoforum.de/fileadmin/Redaktion/Downloads/Oeffentliche_Downloads/News_verbunden_ab-7-2020/Hintergrundinformation_Roadmaps.pdf"
+                      target="_blank"
+                      style="color: #7c9d2c"
+                    >
+                      Hintergrundpapier</a
+                    >
+                    zu finden.
+                  </p>
                   {% else %}
                   <p>
                     At the 2022 General Meeting of the German Initiative on
@@ -177,6 +223,32 @@
                       target="_blank"
                       style="color: #7c9d2c"
                       >GISCO’s objectives.</a
+                    >
+                  </p>
+                  <p>
+                    In addition to the monitoring and based on the
+                    <a
+                      href="https://www.kakaoforum.de/fileadmin/Redaktion/Workshops_und_Veranstaltungen/Mitgliederversammlungen/Mitgliederversammlung_2022/ROADMAPS/EN_GISCO_Roadmap.pdf"
+                      target="_blank"
+                      style="color: #7c9d2c"
+                      >GISCO roadmap</a
+                    >
+                    which lists the goals, targeted indicators and
+                    recommendations for action of the German Initiative on
+                    Sustainable Cocoa on the focus topics of
+                    certified/independently verified cocoa, traceability,
+                    deforestation/agroforestry, child labor and living income,
+                    the members of GISCO draw up individual roadmaps on these
+                    focus topics, which are published on the GISCO website.
+                  </p>
+                  <p>
+                    More information on the individual roadmaps can be found in
+                    the
+                    <a
+                      href="https://www.kakaoforum.de/fileadmin/Redaktion/Downloads/Oeffentliche_Downloads/News_verbunden_ab-7-2020/Background_Information_Roadmaps.pdf"
+                      target="_blank"
+                      style="color: #7c9d2c"
+                      >background document.</a
                     >
                   </p>
                   {% endif %}
@@ -198,7 +270,7 @@
                   style="width: 100%; padding-left: 0px; padding-right: 0px"
                 >
                   <div style="page-break-inside: avoid; padding-top: 30px">
-                    <h3 style="margin: 0px; font-size: 20px; color: #673017">
+                    <h3 style="margin: 0px; font-size: 19px; color: #673017">
                       {% if (dt.name == "Member’s comment" or dt.name ==
                       "Kommentar des Mitglieds") %} {% else %} {{dt.name}} {%
                       endif %}
@@ -271,7 +343,11 @@
                           "
                         >
                           <div style="font-weight: bold">
-                            <span style="text-decoration: underline"
+                            <span
+                              style="
+                                text-decoration: underline;
+                                font-size: 14px;
+                              "
                               >{{a.question}} :</span
                             >
                             {% if a.tooltip %}
@@ -316,7 +392,11 @@
                           "
                         >
                           <div style="font-weight: bold">
-                            <span style="text-decoration: underline"
+                            <span
+                              style="
+                                text-decoration: underline;
+                                font-size: 14px;
+                              "
                               >{{a.question}} :</span
                             >
                             {% if a.tooltip %}
@@ -335,7 +415,6 @@
                               style="
                                 display: block;
                                 font-size: 14px;
-                                font-style: italic;
                                 font-weight: normal;
                                 padding: 10px;
                               "
