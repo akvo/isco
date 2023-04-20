@@ -348,7 +348,7 @@
                                 text-decoration: underline;
                                 font-size: 14px;
                               "
-                              >{{a.question}} :</span
+                              >{{a.question}}:</span
                             >
                             {% if a.tooltip %}
                             <div
@@ -363,7 +363,7 @@
                             </div>
                             {% endif %}
                           </div>
-                          <div style="padding: 10px">
+                          <div style="padding: 10px; font-size: 14px">
                             {% if a.value_type == "list" and a.value %}
                             <ul style="margin-bottom: 0px">
                               {% for v in a.value %}
@@ -371,7 +371,7 @@
                               {% endfor %}
                             </ul>
                             {% else %}
-                            <div>{{ a.value }}</div>
+                            <div style="font-size: 14px">{{ a.value }}</div>
                             {% endif %}
                           </div>
                         </td>
@@ -397,7 +397,7 @@
                                 text-decoration: underline;
                                 font-size: 14px;
                               "
-                              >{{a.question}} :</span
+                              >{{a.question}}:</span
                             >
                             {% if a.tooltip %}
                             <div
