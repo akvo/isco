@@ -159,7 +159,9 @@ def check_computed_validation(
                 if a.get('type') == QuestionType.number.value:
                     value = int(value)
                 cv_answers.append(value)
-            total_cv_answers = sum(cv_answers)
+            # round float total value
+            cv_answers = [x * 100 for x in cv_answers]
+            total_cv_answers = sum(cv_answers) / 100
             if "max" in cv and total_cv_answers > cv_max:
                 errors.append(cv)
             if "min" in cv and total_cv_answers < cv_min:
