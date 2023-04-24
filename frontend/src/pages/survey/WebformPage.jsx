@@ -13,6 +13,7 @@ import {
   ValidationWarningModal,
 } from "../../components";
 import { uiText } from "../../static";
+// import test from "./test.json" // testing purpose
 
 const computedValidations = window?.computed_validations;
 
@@ -70,6 +71,7 @@ const WebformPage = ({
   clearForm,
   setClearForm,
 }) => {
+  // const formId = 7; testing purpose
   const { notify } = useNotification();
 
   const { user, language } = store.useState((s) => s);
@@ -147,6 +149,13 @@ const WebformPage = ({
   // check computed validations
   const checkComputedValidationFunction = useCallback(
     (onChangeEvent = true, values = []) => {
+      const allQuestions = formValue.question_group.flatMap((qg) =>
+        qg.question.map((q) => ({
+          id: q.id,
+          group: qg.id,
+          name: q.name,
+        }))
+      );
       /*
        * const answerValues
        * choose which answer values to be used as validation check
@@ -154,10 +163,20 @@ const WebformPage = ({
        * group by repeat_index to support repeatable question
        */
       let answerValues = values?.length ? values : answer;
-      answerValues = answerValues.map((av) => ({
-        ...av,
-        group: String(av.repeat_index),
-      }));
+      answerValues = answerValues.map((av) => {
+        /*
+         * Fix repeatable group index using group id,
+         * groupId_repeatableIndex
+         * prevent wrong grouping
+         */
+        const findGroup =
+          allQuestions.find((q) => q.id === av.question)?.group || "";
+        const repeatIndex = String(av.repeat_index);
+        return {
+          ...av,
+          group: `${findGroup}_${repeatIndex}`,
+        };
+      });
       answerValues = groupBy(answerValues, "group");
       // Need to remap question_ids from computed validation config to form def
       // because questions availability related to member/isco type
@@ -193,11 +212,25 @@ const WebformPage = ({
           const repeatIndex = resValues?.[0]?.repeat_index;
           return validations
             .map((v) => {
+              /*
+               *CHECK for repeateable group
+               * if repetable group contains validation group id do computed validation check
+               * else ignore it
+               */
+              if (!k.includes(String(v.group_id))) {
+                return {
+                  ...v,
+                  error: false,
+                };
+              }
+              /** EOL CHECK repeatable group */
+
               // check if all computed validation answered
               const checkAllAnswered = intersection(
                 v.question_ids,
                 resValues.map((a) => a.question)
               );
+
               // only do this when use on change event TRUE
               if (
                 onChangeEvent &&
@@ -209,6 +242,7 @@ const WebformPage = ({
                   error: false,
                 };
               }
+
               // all answered
               const questions = v.question_ids.map((id) => {
                 const a = resValues.find((a) => a.question === id);
@@ -297,6 +331,7 @@ const WebformPage = ({
         .get(url)
         .then((res) => {
           const { data, status } = res;
+          // const { form, initial_values, mismatch, collaborators } = test; // testing purpose
           const { form, initial_values, mismatch, collaborators } = data;
           // submission already submitted
           if (status === 208) {
