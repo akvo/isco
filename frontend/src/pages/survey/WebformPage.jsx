@@ -214,10 +214,12 @@ const WebformPage = ({
                 const a = resValues.find((a) => a.question === id);
                 return { id: id, answer: a?.value };
               });
-              const total = questions
+              let total = questions
                 .map((q) => q.answer)
                 .filter((q) => !isNaN(q))
                 .reduce((total, num) => total + num, 0);
+              // round total value
+              total = Math.round(total);
               let error = false;
               let errorDetail = "";
               let validationValue = 0;
