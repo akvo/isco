@@ -139,16 +139,24 @@ const WebformPage = ({
     if (!formValue?.question_group) {
       return [];
     }
-    return formValue.question_group.flatMap((qg) =>
-      qg.question
-        .filter((q) => q?.core_mandatory || q?.coreMandatory)
-        .map((q) => q.id)
-    );
+    return formValue.question_group
+      .map((qg) => {
+        const qIds = qg.question
+          .filter((q) => q?.core_mandatory || q?.coreMandatory)
+          .map((q) => q.id);
+        if (!qIds?.length) {
+          return false;
+        }
+        return {
+          group_id: qg.id,
+          question_ids: qIds,
+        };
+      })
+      .filter((x) => x);
   }, [formValue]);
 
-  // check computed validations
-  const checkComputedValidationFunction = useCallback(
-    (onChangeEvent = true, values = []) => {
+  const groupRepeatableAnswerValues = useCallback(
+    (answerValues) => {
       const allQuestions = formValue.question_group.flatMap((qg) =>
         qg.question.map((q) => ({
           id: q.id,
@@ -162,8 +170,7 @@ const WebformPage = ({
        * manage this for cascade/geo value not directly saved to answer state onChange form value
        * group by repeat_index to support repeatable question
        */
-      let answerValues = values?.length ? values : answer;
-      answerValues = answerValues.map((av) => {
+      const res = answerValues.map((av) => {
         /*
          * Fix repeatable group index using group id,
          * groupId_repeatableIndex
@@ -177,9 +184,18 @@ const WebformPage = ({
           group: `${findGroup}_${repeatIndex}`,
         };
       });
-      answerValues = groupBy(answerValues, "group");
+      return groupBy(res, "group");
+    },
+    [formValue.question_group]
+  );
+
+  // check computed validations
+  const checkComputedValidationFunction = useCallback(
+    (onChangeEvent = true, values = []) => {
       // Need to remap question_ids from computed validation config to form def
       // because questions availability related to member/isco type
+      let answerValues = values?.length ? values : answer;
+      answerValues = groupRepeatableAnswerValues(answerValues);
       const validations =
         computedValidations
           .find((cv) => cv.form_id === formId)
@@ -301,6 +317,7 @@ const WebformPage = ({
       text.cvMinValueText,
       text.cvEqualValueText,
       formValue?.question_group,
+      groupRepeatableAnswerValues,
     ]
   );
 
@@ -544,7 +561,7 @@ const WebformPage = ({
      * choose which answer values to be used as validation check
      * manage this for cascade/geo value not directly saved to answer state onChange form value
      */
-    const answerValues = values?.length ? values : answer;
+    let answerValues = values?.length ? values : answer;
     // check computed validation
     const checkComputedValidaitonOnSubmit = checkComputedValidationFunction(
       false,
@@ -554,14 +571,38 @@ const WebformPage = ({
     let checkCoreMandatoryQuestionFailed = false;
     if (coreMandatoryQuestionIds.length) {
       // check if core mandatory answered
-      const answerQids = answerValues.map((a) => a.question);
-      const coreMandatoryAnswers = intersection(
-        coreMandatoryQuestionIds,
-        answerQids
+      const allAnswers = answerValues;
+      answerValues = groupRepeatableAnswerValues(answerValues);
+      const checkError = Object.keys(answerValues)
+        .map((k) => {
+          const resValues = answerValues[k];
+          return coreMandatoryQuestionIds.map((v) => {
+            if (!k.includes(String(v.group_id))) {
+              return false;
+            }
+            const answerQids = resValues.map((a) => a.question);
+            const coreMandatoryAnswers = intersection(
+              v.question_ids,
+              answerQids
+            );
+            return v.question_ids.length !== coreMandatoryAnswers.length;
+          });
+        })
+        .flat()
+        .filter((x) => x);
+      // overall
+      const allMandatoryQids = coreMandatoryQuestionIds.flatMap(
+        (q) => q.question_ids
+      );
+      const allAnswerQids = allAnswers.map((a) => a.question);
+      const allCoreMandatoryAnswers = intersection(
+        allMandatoryQids,
+        allAnswerQids
       );
       // true if not all mandatory questions answered
       checkCoreMandatoryQuestionFailed =
-        coreMandatoryQuestionIds.length !== coreMandatoryAnswers.length;
+        checkError.length > 0 ||
+        allMandatoryQids.length !== allCoreMandatoryAnswers.length;
     }
     if (
       checkComputedValidaitonOnSubmit?.length ||

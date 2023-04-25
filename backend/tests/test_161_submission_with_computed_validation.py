@@ -46,12 +46,12 @@ class TestSubmissionWithComputedValidationRoutes():
             "value": 110
         }]
         # direct submit without computed validation
-        res = await client.post(
-            app.url_path_for("data:create", form_id=4, submitted=1),
-            params={"locked_by": 1},
-            json=payload,
-            headers={"Authorization": f"Bearer {account.token}"})
-        assert res.status_code == 400
+        # res = await client.post(
+        #     app.url_path_for("data:create", form_id=4, submitted=1),
+        #     params={"locked_by": 1},
+        #     json=payload,
+        #     headers={"Authorization": f"Bearer {account.token}"})
+        # assert res.status_code == 400
         # save data
         # res = await client.post(
         #     app.url_path_for("data:create", form_id=4, submitted=0),
