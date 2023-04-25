@@ -116,65 +116,68 @@ def check_core_mandatory_questions_answer(
             })
 
 
-def check_computed_validation(
-    form_id: int, answers: List[AnswerDict], submitted: int,
-    published: dict
-):
-    # available question for user
-    available_questions = published["computed_validation_questions"]
-    TESTING = os.environ.get("TESTING")
-    BUCKET = BUCKET_FOLDER
-    if TESTING:
-        BUCKET = "notset"
-    # read computed validation config
-    json_file_path = f"{CONFIG_SOURCE_PATH}/{BUCKET}"
-    json_file_path = f"{json_file_path}/computed_validations.json"
-    with open(json_file_path, 'r') as j:
-        computed_validations = json.loads(j.read())
-    computed_validation = [
-        x for x in computed_validations
-        if int(x.get('form_id')) == form_id]
-    if computed_validation and submitted:
-        errors = []
-        computed_validation = computed_validation[0]
-        for cv in computed_validation.get('validations'):
-            cv_group = cv.get('group_id')
-            # check if question available
-            available_question = available_questions.get(cv_group)
-            if not available_question:
-                continue
-            cv_qids = cv.get('question_ids')
-            # intersection qids with available question
-            cv_qids = list(set(cv_qids).intersection(set(available_question)))
-            if not cv_qids:
-                continue
-            cv_max = cv.get("max")
-            cv_min = cv.get("min")
-            cv_equal = cv.get("equal")
-            cv_answers = []
-            for a in answers:
-                if not a.get('question') in cv_qids:
-                    continue
-                value = a.get('value')
-                if a.get('type') == QuestionType.number.value:
-                    value = int(value)
-                cv_answers.append(value)
-            # round float total value
-            cv_answers = [x * 100 for x in cv_answers]
-            total_cv_answers = sum(cv_answers) / 100
-            if "max" in cv and total_cv_answers > cv_max:
-                errors.append(cv)
-            if "min" in cv and total_cv_answers < cv_min:
-                errors.append(cv)
-            if "equal" in cv and total_cv_answers != cv_equal:
-                errors.append(cv)
-        if errors:
-            raise HTTPException(
-                status_code=400,
-                detail={
-                    "type": "computed-validation-check",
-                    "message": errors
-                })
+# TODO:: Enable to check for repeatable group
+# def check_computed_validation(
+#     form_id: int, answers: List[AnswerDict], submitted: int,
+#     published: dict
+# ):
+#     # available question for user
+#     available_questions = published["computed_validation_questions"]
+#     TESTING = os.environ.get("TESTING")
+#     BUCKET = BUCKET_FOLDER
+#     if TESTING:
+#         BUCKET = "notset"
+#     # read computed validation config
+#     json_file_path = f"{CONFIG_SOURCE_PATH}/{BUCKET}"
+#     json_file_path = f"{json_file_path}/computed_validations.json"
+#     with open(json_file_path, 'r') as j:
+#         computed_validations = json.loads(j.read())
+#     computed_validation = [
+#         x for x in computed_validations
+#         if int(x.get('form_id')) == form_id]
+#     if computed_validation and submitted:
+#         errors = []
+#         computed_validation = computed_validation[0]
+#         for cv in computed_validation.get('validations'):
+#             cv_group = cv.get('group_id')
+#             # check if question available
+#             available_question = available_questions.get(cv_group)
+#             if not available_question:
+#                 continue
+#             cv_qids = cv.get('question_ids')
+#             # intersection qids with available question
+#             cv_qids = list(
+#                   set(cv_qids).intersection(set(available_question))
+#               )
+#             if not cv_qids:
+#                 continue
+#             cv_max = cv.get("max")
+#             cv_min = cv.get("min")
+#             cv_equal = cv.get("equal")
+#             cv_answers = []
+#             for a in answers:
+#                 if not a.get('question') in cv_qids:
+#                     continue
+#                 value = a.get('value')
+#                 if a.get('type') == QuestionType.number.value:
+#                     value = int(value)
+#                 cv_answers.append(value)
+#             # round float total value
+#             cv_answers = [x * 100 for x in cv_answers]
+#             total_cv_answers = sum(cv_answers) / 100
+#             if "max" in cv and total_cv_answers > cv_max:
+#                 errors.append(cv)
+#             if "min" in cv and total_cv_answers < cv_min:
+#                 errors.append(cv)
+#             if "equal" in cv and total_cv_answers != cv_equal:
+#                 errors.append(cv)
+#         if errors:
+#             raise HTTPException(
+#                 status_code=400,
+#                 detail={
+#                     "type": "computed-validation-check",
+#                     "message": errors
+#                 })
 
 
 def notify_secretariat_admin(session: Session, user, form_name: str):
@@ -304,9 +307,11 @@ def add(req: Request,
         published=published, answers=answers, submitted=submitted)
     # end check core mandatory question answered
     # validate by computed validations
-    check_computed_validation(
-        form_id=form_id, answers=answers, submitted=submitted,
-        published=published)
+    # TODO:: Enable this
+    # check_computed_validation(
+    #     form_id=form_id, answers=answers, submitted=submitted,
+    #     published=published)
+    ##
     # end validate by computed validations
 
     # generating answers
@@ -564,9 +569,11 @@ def update_by_id(
         published=published, answers=answers, submitted=submitted)
     # end check core mandatory question answered
     # validate by computed validations
-    check_computed_validation(
-        form_id=data.form, answers=answers, submitted=submitted,
-        published=published)
+    # TODO:: Enablel this
+    # check_computed_validation(
+    #     form_id=data.form, answers=answers, submitted=submitted,
+    #     published=published)
+    ##
     # end validate by computed validations
 
     # get repeatable question ids
