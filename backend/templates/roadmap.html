@@ -34,10 +34,17 @@
       }
 
       @page {
-        margin: 20mm;
+        margin: 0;
       }
 
       @media print {
+        @page :footer {
+          display: none;
+        }
+
+        @page :header {
+          display: none;
+        }
         thead {
           display: table-header-group;
         }
