@@ -164,12 +164,14 @@ def find_secretariat_admins(session: Session, organisation: int):
         session=session, organisation=organisation)
     admins = session.query(User).filter(
         User.organisation.in_(org_ids)).filter(
-            User.role == UserRole.secretariat_admin).all()
+            User.role == UserRole.secretariat_admin
+    ).distinct(User.email).all()
     return admins
 
 
 def find_member_admins(session: Session, organisation: int):
     admins = session.query(User).filter(
         User.organisation == organisation).filter(
-            User.role == UserRole.member_admin).all()
+            User.role == UserRole.member_admin
+    ).distinct(User.email).all()
     return admins
