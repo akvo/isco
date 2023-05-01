@@ -84,6 +84,7 @@ const WebformPage = ({
   const [answer, setAnswer] = useState([]);
 
   const [comment, setComment] = useState({});
+  const [commentDefValues, setCommentDefValues] = useState({});
   const [deletedComment, setDeletedComment] = useState(null);
 
   const [isSaving, setIsSaving] = useState(false);
@@ -133,6 +134,42 @@ const WebformPage = ({
       webformRef?.current?.resetFields();
     }
   };
+
+  // set comment def values
+  useEffect(() => {
+    if (!isEmpty(commentDefValues)) {
+      setTimeout(() => {
+        // get parent extra component node by name
+        const extraElName = `arf-extra-content`;
+        const els = document.getElementsByName(extraElName);
+        // iterate over extra component dom
+        els.forEach((el) => {
+          // get arf qid from extra component parent
+          const arfQid = el?.getAttribute("arf_qid");
+          const isComment = commentDefValues?.[arfQid];
+          // handle buttons
+          const buttons = el?.getElementsByTagName("button");
+          const delBtn = buttons?.[0];
+          const addBtn = buttons?.[1];
+          if (isComment && delBtn) {
+            delBtn.style.display = "initial";
+          }
+          if (isComment && addBtn) {
+            addBtn.style.display = "none";
+          }
+          // handle text area value
+          const textArea = el.getElementsByTagName("textarea");
+          if (isComment && textArea?.[0]) {
+            textArea[0].style.display = "initial";
+            textArea[0].value = commentDefValues?.[arfQid] || "";
+          }
+        });
+      }, 500);
+      setTimeout(() => {
+        setCommentDefValues({});
+      }, 100);
+    }
+  }, [commentDefValues]);
 
   // core mandatory questions
   const coreMandatoryQuestionIds = useMemo(() => {
@@ -362,9 +399,11 @@ const WebformPage = ({
               setSavedData(initial_values);
               const answers = initial_values.answer.map((a) => {
                 const { question, repeat_index, comment } = a;
+                const commentQid =
+                  repeat_index > 0 ? `${question}-${repeat_index}` : question;
                 commentValues = {
                   ...commentValues,
-                  [question]: comment,
+                  [commentQid]: comment,
                 };
                 return {
                   ...a,
@@ -373,18 +412,21 @@ const WebformPage = ({
               });
               setInitialAnswers(answers);
               setAnswer(answers);
-              setComment(commentValues);
+              setCommentDefValues(commentValues);
             }
             // load initial value when user change translations
             if (!isEmpty(answer)) {
               setInitialAnswers(answer);
               answer.forEach((a) => {
+                const { question, repeat_index, comment } = a;
+                const commentQid =
+                  repeat_index > 0 ? `${question}-${repeat_index}` : question;
                 commentValues = {
                   ...commentValues,
-                  [a.question]: a.comment,
+                  [commentQid]: comment,
                 };
               });
-              setComment(commentValues);
+              setCommentDefValues(commentValues);
             }
             // transform form definition
             let transformedQuestionGroup = form.question_group;
@@ -396,11 +438,8 @@ const WebformPage = ({
                     placement: "after",
                     content: (
                       <CommentField
-                        onChange={(val) => onChangeComment(q.id, val)}
-                        onDelete={() => onDeleteComment(q.id)}
-                        defaultValue={
-                          commentValues?.[q.id] ? commentValues?.[q.id] : null
-                        }
+                        onChange={onChangeComment}
+                        onDelete={onDeleteComment}
                       />
                     ),
                   },
@@ -472,6 +511,7 @@ const WebformPage = ({
               defaultLanguage: activeLang || "en",
               question_group: transformedQuestionGroup,
             });
+            // test
 
             // show prefilled value mismatch (pre-filled value)
             if (isLoadPrevSubmissionVal) {
@@ -513,45 +553,40 @@ const WebformPage = ({
   // set comment to answer value
   useEffect(() => {
     if (!isEmpty(comment) && answer.length) {
-      const qid = parseInt(Object.keys(comment)[0]);
-      const findAnswer = answer.find((x) => parseInt(x.question) === qid);
-      if (findAnswer) {
-        // update answer
-        const updatedAnswer = answer.map((a) => {
-          let update = a;
-          if (a.question === qid) {
-            update = {
-              ...update,
-              comment: comment?.[qid] || null,
-            };
-          }
-          return update;
-        });
-        setAnswer(updatedAnswer);
-        setComment({});
-      }
+      // update answer
+      const updatedAnswer = answer.map((a) => {
+        const qid =
+          a.repeat_index > 0 ? `${a.question}-${a.repeat_index}` : a.question;
+        if (comment?.[qid]) {
+          return {
+            ...a,
+            comment: comment[qid],
+          };
+        }
+        return a;
+      });
+      setAnswer(updatedAnswer);
+      setComment({});
     }
   }, [comment, answer]);
 
   // delete comment
   useEffect(() => {
     if (deletedComment && answer.length) {
-      const findAnswer = answer.find((x) => x.question === deletedComment);
-      if (findAnswer) {
-        // update answer
-        const updatedAnswer = answer.map((a) => {
-          let update = a;
-          if (a.question === deletedComment) {
-            update = {
-              ...update,
-              comment: "del",
-            };
-          }
-          return update;
-        });
-        setAnswer(updatedAnswer);
-        setDeletedComment(null);
-      }
+      // update answer
+      const updatedAnswer = answer.map((a) => {
+        const qid =
+          a.repeat_index > 0 ? `${a.question}-${a.repeat_index}` : a.question;
+        if (deletedComment === qid) {
+          return {
+            ...a,
+            comment: "del",
+          };
+        }
+        return a;
+      });
+      setAnswer(updatedAnswer);
+      setDeletedComment(null);
     }
   }, [deletedComment, answer]);
 
@@ -642,7 +677,10 @@ const WebformPage = ({
         }
         // find comment
         const qid = parseInt(question);
-        const findAnswer = answer.find((x) => x.question === qid);
+        // find answer by qid and repeatIndex
+        const findAnswer = answer.find(
+          (x) => x.question === qid && x.repeat_index === repeatIndex
+        );
         return {
           question: qid,
           value: values[key],
@@ -650,7 +688,7 @@ const WebformPage = ({
           comment: findAnswer ? findAnswer?.comment : null,
         };
       })
-      .filter((x) => x.value || x.value === 0);
+      .filter((x) => x.value || x.value === 0); // isNan
   };
 
   const onChange = ({ values }) => {
@@ -663,14 +701,22 @@ const WebformPage = ({
     }, 100);
   };
 
-  const onChangeComment = (qid, val) => {
+  const onChangeComment = (curr) => {
+    const value = curr.target.value;
+    const elParent = curr.currentTarget.parentNode.parentNode.parentNode;
+    const arfQid = elParent.getAttribute("arf_qid");
     setComment({
-      [qid]: val.target.value,
+      [arfQid]: value,
     });
   };
 
-  const onDeleteComment = (qid) => {
-    setDeletedComment(qid);
+  const onDeleteComment = (curr) => {
+    const elParent = curr.currentTarget.parentNode.parentNode.parentNode;
+    const arfQid = elParent.getAttribute("arf_qid");
+    // clear text area value
+    const textArea = elParent.getElementsByTagName("textarea");
+    textArea[0].value = "";
+    setDeletedComment(arfQid);
   };
 
   const generateEndpoint = ({ payload, submitted }) => {

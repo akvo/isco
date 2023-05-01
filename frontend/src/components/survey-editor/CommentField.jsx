@@ -4,9 +4,9 @@ import { PlusSquareFilled, DeleteFilled } from "@ant-design/icons";
 import { uiText } from "../../static";
 import { store } from "../../lib";
 
-const CommentField = ({ onChange, onDelete, defaultValue }) => {
+const CommentField = ({ onChange, onDelete }) => {
   const [showField, setShowField] = useState(false);
-  const isVisible = showField || defaultValue;
+  const isVisible = showField;
 
   const { language } = store.useState((s) => s);
   const { active: activeLang } = language;
@@ -18,31 +18,35 @@ const CommentField = ({ onChange, onDelete, defaultValue }) => {
   return (
     <Row className="comment-field-wrapper">
       <Col span={24} align="end" className="button-placement">
-        {isVisible ? (
-          <Button
-            size="small"
-            type="link"
-            onClick={() => {
-              setShowField(false);
-              onDelete();
-            }}
-          >
-            <DeleteFilled /> {text.btnDeleteComment}
-          </Button>
-        ) : (
-          <Button size="small" type="link" onClick={() => setShowField(true)}>
-            <PlusSquareFilled /> {text.btnAddComment}
-          </Button>
-        )}
+        <Button
+          style={{ display: isVisible ? "initial" : "none" }}
+          name="delete-button"
+          size="small"
+          type="link"
+          onClick={(curr) => {
+            setShowField(false);
+            onDelete(curr);
+          }}
+        >
+          <DeleteFilled /> {text.btnDeleteComment}
+        </Button>
+        <Button
+          style={{ display: isVisible ? "none" : "initial" }}
+          name="add-button"
+          size="small"
+          type="link"
+          onClick={() => setShowField(true)}
+        >
+          <PlusSquareFilled /> {text.btnAddComment}
+        </Button>
       </Col>
       <Col span="24">
-        {isVisible && (
-          <Input.TextArea
-            rows={3}
-            onChange={onChange}
-            defaultValue={defaultValue}
-          />
-        )}
+        <Input.TextArea
+          name="text-area"
+          style={{ display: isVisible ? "initial" : "none" }}
+          rows={3}
+          onChange={onChange}
+        />
       </Col>
     </Row>
   );
