@@ -1,13 +1,10 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo } from "react";
 import { Row, Col, Input, Button } from "antd";
 import { PlusSquareFilled, DeleteFilled } from "@ant-design/icons";
 import { uiText } from "../../static";
 import { store } from "../../lib";
 
-const CommentField = ({ onChange, onDelete }) => {
-  const [showField, setShowField] = useState(false);
-  const isVisible = showField;
-
+const CommentField = ({ onAdd, onChange, onDelete }) => {
   const { language } = store.useState((s) => s);
   const { active: activeLang } = language;
 
@@ -19,23 +16,22 @@ const CommentField = ({ onChange, onDelete }) => {
     <Row className="comment-field-wrapper">
       <Col span={24} align="end" className="button-placement">
         <Button
-          style={{ display: isVisible ? "initial" : "none" }}
+          style={{ display: "none" }}
           name="delete-button"
           size="small"
           type="link"
           onClick={(curr) => {
-            setShowField(false);
             onDelete(curr);
           }}
         >
           <DeleteFilled /> {text.btnDeleteComment}
         </Button>
         <Button
-          style={{ display: isVisible ? "none" : "initial" }}
+          style={{ display: "initial" }}
           name="add-button"
           size="small"
           type="link"
-          onClick={() => setShowField(true)}
+          onClick={(curr) => onAdd(curr)}
         >
           <PlusSquareFilled /> {text.btnAddComment}
         </Button>
@@ -43,7 +39,7 @@ const CommentField = ({ onChange, onDelete }) => {
       <Col span="24">
         <Input.TextArea
           name="text-area"
-          style={{ display: isVisible ? "initial" : "none" }}
+          style={{ display: "none" }}
           rows={3}
           onChange={onChange}
         />
