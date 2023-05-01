@@ -167,7 +167,7 @@ const WebformPage = ({
       }, 500);
       setTimeout(() => {
         setCommentDefValues({});
-      }, 100);
+      }, 1000);
     }
   }, [commentDefValues]);
 
@@ -557,10 +557,10 @@ const WebformPage = ({
       const updatedAnswer = answer.map((a) => {
         const qid =
           a.repeat_index > 0 ? `${a.question}-${a.repeat_index}` : a.question;
-        if (comment?.[qid]) {
+        if (comment?.[qid] || comment[qid] === "") {
           return {
             ...a,
-            comment: comment[qid],
+            comment: comment[qid] === "" ? null : comment[qid],
           };
         }
         return a;
@@ -577,10 +577,10 @@ const WebformPage = ({
       const updatedAnswer = answer.map((a) => {
         const qid =
           a.repeat_index > 0 ? `${a.question}-${a.repeat_index}` : a.question;
-        if (deletedComment === qid) {
+        if (String(deletedComment) === String(qid)) {
           return {
             ...a,
-            comment: "del",
+            comment: null,
           };
         }
         return a;
