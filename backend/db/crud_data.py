@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 from typing import List, Optional, Union
 from typing_extensions import TypedDict
@@ -167,6 +168,7 @@ def check_member_submission_exists(
     form: Optional[int] = None,
     saved: Optional[bool] = False
 ):
+    TESTING = os.environ.get("TESTING")
     current_year = get_prev_year(prev=0, year=True)
     # handle unlimited project questionnaire
     if form and form in PROJECT_SURVEY:
@@ -174,14 +176,16 @@ def check_member_submission_exists(
     # handle limited member questionnaire or limited survey
     form_config = []
     if form and form in MEMBER_SURVEY:
-        # handle unlimited member questionnaire
-        # for organisation ISCO contains DISCO
-        check_org = session.query(OrganisationIsco).filter(and_(
-            OrganisationIsco.organisation == organisation,
-            OrganisationIsco.isco_type.in_(
-                MEMBER_SURVEY_UNLIMITED_ISCO))).first()
-        if check_org:
-            return False
+        if TESTING:
+            # ## FOR 2022 MONITORING ROUND ## #
+            # handle unlimited member questionnaire
+            # for organisation ISCO contains DISCO
+            check_org = session.query(OrganisationIsco).filter(and_(
+                OrganisationIsco.organisation == organisation,
+                OrganisationIsco.isco_type.in_(
+                    MEMBER_SURVEY_UNLIMITED_ISCO))).first()
+            if check_org:
+                return False
         form_config = MEMBER_SURVEY
     if form and form in LIMITED_SURVEY:
         form_config = LIMITED_SURVEY
