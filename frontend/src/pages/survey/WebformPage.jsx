@@ -438,6 +438,7 @@ const WebformPage = ({
                     placement: "after",
                     content: (
                       <CommentField
+                        onAdd={onAddComment}
                         onChange={onChangeComment}
                         onDelete={onDeleteComment}
                       />
@@ -701,6 +702,23 @@ const WebformPage = ({
     }, 100);
   };
 
+  const onAddComment = (curr) => {
+    const elParent = curr.currentTarget.parentNode.parentNode.parentNode;
+    // handle buttons
+    const buttons = elParent?.getElementsByTagName("button");
+    const delBtn = buttons?.[0];
+    const addBtn = buttons?.[1];
+    if (delBtn) {
+      delBtn.style.display = "initial";
+    }
+    if (addBtn) {
+      addBtn.style.display = "none";
+    }
+    // handle text area
+    const textArea = elParent.getElementsByTagName("textarea");
+    textArea[0].style.display = "initial";
+  };
+
   const onChangeComment = (curr) => {
     const value = curr.target.value;
     const elParent = curr.currentTarget.parentNode.parentNode.parentNode;
@@ -716,6 +734,17 @@ const WebformPage = ({
     // clear text area value
     const textArea = elParent.getElementsByTagName("textarea");
     textArea[0].value = "";
+    // handle buttons
+    const buttons = elParent?.getElementsByTagName("button");
+    const delBtn = buttons?.[0];
+    const addBtn = buttons?.[1];
+    if (delBtn) {
+      delBtn.style.display = "none";
+    }
+    if (addBtn) {
+      addBtn.style.display = "initial";
+    }
+    textArea[0].style.display = "none";
     setDeletedComment(arfQid);
   };
 
