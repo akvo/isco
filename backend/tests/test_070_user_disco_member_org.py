@@ -12,7 +12,7 @@ sys.path.append("..")
 account = Acc(email="support@akvo.org", token=None)
 
 
-class TestUserDisco():
+class TestUserDisco:
     @pytest.mark.asyncio
     async def test_user_register(
         self, app: FastAPI, session: Session, client: AsyncClient
@@ -28,10 +28,15 @@ class TestUserDisco():
             "questionnaires": [1],
         }
         res = await client.post(
-            app.url_path_for("user:register"), data=user_payload)
+            app.url_path_for("user:register"), data=user_payload
+        )
         assert res.status_code == 200
-        invitation_link = session.query(User).filter(
-            User.email == user_payload["email"]).first().invitation
+        invitation_link = (
+            session.query(User)
+            .filter(User.email == user_payload["email"])
+            .first()
+            .invitation
+        )
         res = res.json()
         assert res == {
             "approved": False,
@@ -52,10 +57,11 @@ class TestUserDisco():
     ) -> None:
         res = await client.put(
             app.url_path_for("user:verify_email"),
-            params={"email": "galih@test.org"})
+            params={"email": "galih@test.org"},
+        )
         assert res.status_code == 200
         res = res.json()
-        assert res['email_verified'] is not None
+        assert res["email_verified"] is not None
 
     @pytest.mark.asyncio
     async def test_user_login(
@@ -70,14 +76,15 @@ class TestUserDisco():
                 "grant_type": "password",
                 "scopes": ["openid", "email"],
                 "client_id": os.environ["CLIENT_ID"],
-                "client_secret": os.environ["CLIENT_SECRET"]
-            })
+                "client_secret": os.environ["CLIENT_SECRET"],
+            },
+        )
         assert res.status_code == 200
         res = res.json()
-        assert res['access_token'] is not None
-        assert res['token_type'] == 'bearer'
-        account = Acc(email="galih@test.org", token=res['access_token'])
-        assert account.token == res['access_token']
+        assert res["access_token"] is not None
+        assert res["token_type"] == "bearer"
+        account = Acc(email="galih@test.org", token=res["access_token"])
+        assert account.token == res["access_token"]
 
     @pytest.mark.asyncio
     async def test_get_user_me(
@@ -86,10 +93,12 @@ class TestUserDisco():
         account = Acc(email="galih@test.org", token=None)
         res = await client.get(
             app.url_path_for("user:me"),
-            headers={"Authorization": f"Bearer {account.token}"})
+            headers={"Authorization": f"Bearer {account.token}"},
+        )
         assert res.status_code == 200
         res = res.json()
-        assert res['email'] == "galih@test.org"
+        assert res["email"] == "galih@test.org"
+        assert "expired" in res
 
     @pytest.mark.asyncio
     async def test_update_user_by_admin(
@@ -104,7 +113,8 @@ class TestUserDisco():
         res = await client.put(
             app.url_path_for("user:update_by_admin", id=user_id),
             headers={"Authorization": f"Bearer {account.token}"},
-            json=user_payload)
+            json=user_payload,
+        )
         assert res.status_code == 200
         res = res.json()
         assert res["email"] == "galih@test.org"
@@ -117,7 +127,8 @@ class TestUserDisco():
             app.url_path_for("user:update_by_admin", id=user_id),
             headers={"Authorization": f"Bearer {account.token}"},
             params={"approved": 1},
-            json=user_payload)
+            json=user_payload,
+        )
         assert res.status_code == 200
         res = res.json()
         assert res["approved"] is True
@@ -131,11 +142,13 @@ class TestUserDisco():
             app.url_path_for("user:update_password"),
             headers={
                 "Authorization": f"Bearer {account.token}",
-                "content-type": "application/x-www-form-urlencoded"},
+                "content-type": "application/x-www-form-urlencoded",
+            },
             data={
                 "old_password": "test",
                 "new_password": "test123",
-            })
+            },
+        )
         assert res.status_code == 200
         res = res.json()
         assert res["email"] == "galih@test.org"
@@ -149,14 +162,15 @@ class TestUserDisco():
                 "grant_type": "password",
                 "scopes": ["openid", "email"],
                 "client_id": os.environ["CLIENT_ID"],
-                "client_secret": os.environ["CLIENT_SECRET"]
-            })
+                "client_secret": os.environ["CLIENT_SECRET"],
+            },
+        )
         assert res.status_code == 200
         res = res.json()
-        assert res['access_token'] is not None
-        assert res['token_type'] == 'bearer'
-        account = Acc(email="galih@test.org", token=res['access_token'])
-        assert account.token == res['access_token']
+        assert res["access_token"] is not None
+        assert res["token_type"] == "bearer"
+        account = Acc(email="galih@test.org", token=res["access_token"])
+        assert account.token == res["access_token"]
 
     @pytest.mark.asyncio
     async def test_user_invitation(
@@ -176,28 +190,39 @@ class TestUserDisco():
         res = await client.post(
             app.url_path_for("user:register"),
             params={"invitation": 1},
-            data=user_payload)
+            data=user_payload,
+        )
         assert res.status_code == 403
         #
         res = await client.post(
             app.url_path_for("user:register"),
             headers={
                 "Authorization": f"Bearer {account.token}",
-                "content-type": "application/x-www-form-urlencoded"},
+                "content-type": "application/x-www-form-urlencoded",
+            },
             params={"invitation": 1},
-            data=user_payload)
+            data=user_payload,
+        )
         assert res.status_code == 200
-        invitation_link = session.query(User).filter(
-            User.email == user_payload["email"]).first().invitation
+        invitation_link = (
+            session.query(User)
+            .filter(User.email == user_payload["email"])
+            .first()
+            .invitation
+        )
         res = res.json()
         assert res["email"] == user_payload["email"]
         assert res["invitation"] == invitation_link
         assert res["questionnaires"] == []
         assert res["approved"] is True
-        user = session.query(User).filter(
-            User.email == user_payload["email"]).first()
+        user = (
+            session.query(User)
+            .filter(User.email == user_payload["email"])
+            .first()
+        )
         res = await client.get(
-            app.url_path_for("user:invitation", invitation=user.invitation))
+            app.url_path_for("user:invitation", invitation=user.invitation)
+        )
         assert res.status_code == 200
         res = res.json()
         assert res == {
@@ -209,17 +234,21 @@ class TestUserDisco():
         res = await client.post(
             app.url_path_for("user:invitation", invitation=user.invitation),
             headers={"content-type": "application/x-www-form-urlencoded"},
-            data={"password": "test"})
+            data={"password": "test"},
+        )
         res = res.json()
-        assert res['access_token'] is not None
-        assert res['token_type'] == 'bearer'
-        user = session.query(User).filter(
-            User.email == user_payload["email"]).first()
+        assert res["access_token"] is not None
+        assert res["token_type"] == "bearer"
+        user = (
+            session.query(User)
+            .filter(User.email == user_payload["email"])
+            .first()
+        )
         session.flush()
         session.refresh(user)
         assert user.invitation is None
-        assert res['user']["email"] == user_payload["email"]
-        assert res['user']["approved"] is True
+        assert res["user"]["email"] == user_payload["email"]
+        assert res["user"]["approved"] is True
 
     @pytest.mark.asyncio
     async def test_user_invitation_with_same_email(
@@ -239,5 +268,6 @@ class TestUserDisco():
         res = await client.post(
             app.url_path_for("user:register"),
             params={"invitation": 1},
-            data=user_payload)
+            data=user_payload,
+        )
         assert res.status_code == 409
