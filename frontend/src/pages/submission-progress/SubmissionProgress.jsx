@@ -11,7 +11,7 @@ const { Option } = Select;
 const SubmissionProgress = () => {
   const { isLoggedIn, language, user, optionValues } = store.useState((s) => s);
   const { active: activeLang } = language;
-  const { organisationInSameIsco } = optionValues;
+  const { organisationInSameIsco, isco_type } = optionValues;
 
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -19,6 +19,8 @@ const SubmissionProgress = () => {
   const showOrganisationFilter = user?.role === "secretariat_admin";
   const [orgValue, setOrgValue] = useState(null);
   const [showNonSubmittedMember, setShowNonSubmittedMember] = useState(false);
+  const [iscoValue, setIscoValue] = useState(null);
+  const [iscoFilter, setIscoFilter] = useState(null);
 
   const currentYear = new Date().getFullYear();
 
@@ -97,6 +99,21 @@ const SubmissionProgress = () => {
     setOrgValue(org);
   };
 
+  const handleIscoFilter = (isco) => {
+    setIscoValue(isco);
+    setOrgValue(null);
+    let orgIds = organisationInSameIsco;
+    if (isco === 1) {
+      orgIds = orgIds.map((o) => o.id);
+    } else {
+      orgIds = orgIds
+        .filter((o) => o.isco_type.includes(isco))
+        .map((o) => o.id);
+    }
+    orgIds = orgIds.length ? orgIds : null;
+    setIscoFilter(orgIds);
+  };
+
   const handleShowNonSubmittedQuestionnaireCheckbox = (e) => {
     setShowNonSubmittedMember(e.target.checked);
   };
@@ -169,23 +186,25 @@ const SubmissionProgress = () => {
   };
 
   useEffect(() => {
-    let endpoint = "/submission/progress";
-    if (orgValue) {
-      endpoint = `${endpoint}?organisation=${orgValue}`;
-    }
-    if (showNonSubmittedMember) {
-      const separator = orgValue ? "&" : "?";
-      endpoint = `${endpoint}${separator}member_not_submitted=${showNonSubmittedMember}`;
-    }
-    fetchData(endpoint);
-  }, [orgValue, showNonSubmittedMember]);
-
-  useEffect(() => {
-    const endpoint = "/submission/progress";
     if (isLoggedIn) {
+      setIsLoading(true);
+      let endpoint = "/submission/progress";
+      if (orgValue) {
+        endpoint = `${endpoint}?organisation=${orgValue}`;
+      }
+      if (iscoFilter && !orgValue) {
+        const separator = orgValue ? "&" : "?";
+        endpoint = `${endpoint}${separator}${iscoFilter
+          .map((x, index) => `${index === 0 ? "" : "&"}organisation=${x}`)
+          .join("")}`;
+      }
+      if (showNonSubmittedMember) {
+        const separator = orgValue ? "&" : "?";
+        endpoint = `${endpoint}${separator}member_not_submitted=${showNonSubmittedMember}`;
+      }
       fetchData(endpoint);
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, orgValue, showNonSubmittedMember, iscoFilter]);
 
   return (
     <div id="submission-progress">
@@ -234,6 +253,28 @@ const SubmissionProgress = () => {
                       : []}
                   </Select>
                 )}
+                <Select
+                  style={{ width: "20rem" }}
+                  allowClear
+                  showSearch
+                  className="member-dropdown-wrapper"
+                  placeholder="ISCO"
+                  options={
+                    isco_type.length
+                      ? isco_type.map((o) => ({
+                          label: o.name,
+                          value: o.id,
+                        }))
+                      : []
+                  }
+                  onChange={handleIscoFilter}
+                  value={iscoValue}
+                  filterOption={(input, option) =>
+                    option?.label
+                      ?.toLowerCase()
+                      .indexOf(input?.toLowerCase()) >= 0
+                  }
+                />
               </Space>
             </Col>
             <Col align="end">
