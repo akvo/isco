@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import "./style.scss";
-import { Row, Col, Select, Button, Space, Alert, Tooltip } from "antd";
+import { Row, Col, Select, Button, Space, Alert, Tooltip, Modal } from "antd";
 import WebformPage from "./WebformPage";
 import { api, store } from "../../lib";
-import { useNotification } from "../../util";
+import { useNotification, useIdle } from "../../util";
 import { uiText, webformContent } from "../../static";
 import { FiRefreshCw, FiInfo } from "react-icons/fi";
 import orderBy from "lodash/orderBy";
+import Countdown from "react-countdown";
+import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
 
 const Survey = () => {
   const { notify } = useNotification();
@@ -38,6 +41,11 @@ const Survey = () => {
   const [prevSubmissionOptions, setPrevSubmissionOptions] = useState([]);
   const [selectedPrevSubmission, setSelectedPrevSubmission] = useState(null);
   const [clearForm, setClearForm] = useState(false);
+
+  const [remainingTime, setRemainingTime] = useState(0);
+  const [showSessionModal, setShowSessionModal] = useState(false);
+  const navigate = useNavigate();
+  const [cookies, removeCookie] = useCookies(["AUTH_TOKEN"]);
 
   const handleOnClickDataSecurity = () => {
     store.update((s) => {
@@ -341,6 +349,46 @@ const Survey = () => {
     }
   };
 
+  // handle idle
+  const handleIdle = () => {
+    // check session/token expiration
+    api
+      .get("/user/me")
+      .then((res) => {
+        const { expired } = res.data;
+        const now = new Date();
+        const expiredDate = new Date(expired);
+        const timeDifference = expiredDate - now;
+        if (timeDifference > 0) {
+          setRemainingTime(expired);
+        }
+      })
+      .catch(() => {
+        setRemainingTime(false);
+      })
+      .finally(() => {
+        setShowSessionModal(true);
+      });
+  };
+
+  const { isIdle } = useIdle({ onIdle: handleIdle, idleTime: 0.08 });
+
+  const handleLogout = () => {
+    if (cookies?.AUTH_TOKEN) {
+      removeCookie("AUTH_TOKEN");
+      api.setToken(null);
+      store.update((s) => {
+        s.isLoggedIn = false;
+        s.user = null;
+      });
+      navigate("/login");
+    }
+  };
+
+  const handleStayLoggedIn = () => {
+    setShowSessionModal(false);
+  };
+
   return (
     <div id="survey" className="container">
       <Row>
@@ -523,6 +571,47 @@ const Survey = () => {
           />
         </Space>
       )}
+
+      {/* Session modal */}
+      <Modal
+        title="Inactivity Warning"
+        visible={isIdle && showSessionModal}
+        footer={null}
+        closable={false}
+      >
+        {remainingTime ? (
+          <Space direction="vertical" style={{ width: "100%" }}>
+            <div>Your session will expire in:</div>
+            <div style={{ fontSize: 20, fontWeight: 600 }}>
+              <Countdown date={remainingTime} daysInHours={true} />
+            </div>
+            <Space style={{ width: "100%", float: "right" }}>
+              <Button type="danger" block onClick={handleLogout}>
+                Re-Login
+              </Button>
+              <Button
+                type="primary"
+                block
+                style={{ border: "none", minHeight: 0, borderRadius: 0 }}
+                onClick={handleStayLoggedIn}
+              >
+                Stay Logged In
+              </Button>
+            </Space>
+          </Space>
+        ) : (
+          <Space direction="vertical" style={{ width: "100%" }}>
+            <div style={{ fontSize: 20, fontWeight: 600 }}>
+              Your session has expired, please log in again
+            </div>
+            <Space style={{ width: "100%", float: "right" }}>
+              <Button type="danger" block onClick={handleLogout}>
+                Re-Login
+              </Button>
+            </Space>
+          </Space>
+        )}
+      </Modal>
     </div>
   );
 };
