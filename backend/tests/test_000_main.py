@@ -16,8 +16,11 @@ class Acc:
     def __init__(self, email, token):
         self.email = email if email else "support@akvo.org"
         self.data = {"email": self.email}
-        self.token = token if token else create_access_token(
-            data=self.data)
+        if token:
+            self.token = token
+        else:
+            token = create_access_token(data=self.data)
+            self.token = token.get("token")
         self.decoded = decode_token(self.token)
 
 
@@ -28,7 +31,7 @@ def test_read_main():
 
 
 def test_read_credentials():
-    if 'GOOGLE_APPLICATION_CREDENTIALS' in os.environ:
+    if "GOOGLE_APPLICATION_CREDENTIALS" in os.environ:
         service_account = os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
         credentials = os.path.exists(service_account)
         assert credentials is True

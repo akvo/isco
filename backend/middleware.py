@@ -15,7 +15,7 @@ from db import crud_user
 
 # to get a string like this run:
 # openssl rand -hex 32
-SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = os.environ["SECRET_KEY"]
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_DAYS = 1
 TOKEN_TMP = "./tmp/token.txt"
@@ -28,6 +28,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 class Token(BaseModel):
     access_token: str
     token_type: str
+    expired: datetime
     user: UserDict
 
 
@@ -56,21 +57,23 @@ def create_access_token(data: dict):
     expire = datetime.utcnow() + timedelta(days=ACCESS_TOKEN_EXPIRE_DAYS)
     data.update({"exp": expire})
     encoded_jwt = jwt.encode(data, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
+    return {"token": encoded_jwt, "expired": expire}
 
 
 def decode_token(token: str = Depends(oauth2_scheme)):
     try:
         return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
     except exceptions.ExpiredSignatureError:
-        return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                             detail="Unauthorized")
+        return HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized"
+        )
 
 
 def verify_token(authenticated):
     if authenticated and datetime.now().timestamp() > authenticated.get("exp"):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                            detail="Unauthorized")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized"
+        )
     return authenticated
 
 
@@ -95,7 +98,8 @@ def verify_user(session: Session, authenticated):
     if not user.email_verified:
         raise HTTPException(
             status_code=403,
-            detail="Please check your email inbox to verify email account")
+            detail="Please check your email inbox to verify email account",
+        )
     if not user.approved:
         if TESTING:
             return user
@@ -113,7 +117,8 @@ def verify_admin(session: Session, authenticated):
     if role != secretariat_admin and role != member_admin:
         raise HTTPException(
             status_code=403,
-            detail="You don't have data access, please contact admin")
+            detail="You don't have data access, please contact admin",
+        )
     return user
 
 
@@ -122,18 +127,22 @@ def verify_super_admin(session: Session, authenticated):
     if user.role != UserRole.secretariat_admin:
         raise HTTPException(
             status_code=403,
-            detail="You don't have data access, super admin only")
+            detail="You don't have data access, super admin only",
+        )
     return user
 
 
 def verify_editor(session: Session, authenticated):
     user = verify_user(session=session, authenticated=authenticated)
-    if user.role not in [UserRole.secretariat_admin,
-                         UserRole.member_admin,
-                         UserRole.member_user]:
+    if user.role not in [
+        UserRole.secretariat_admin,
+        UserRole.member_admin,
+        UserRole.member_user,
+    ]:
         raise HTTPException(
             status_code=403,
-            detail="You don't have data access, please contact admin")
+            detail="You don't have data access, please contact admin",
+        )
     return user
 
 
@@ -150,28 +159,41 @@ def check_query(keywords):
 
 
 def organisations_in_same_isco(session: Session, organisation: int):
-    org_isco = session.query(OrganisationIsco).filter(
-        OrganisationIsco.organisation == organisation).all()
+    org_isco = (
+        session.query(OrganisationIsco)
+        .filter(OrganisationIsco.organisation == organisation)
+        .all()
+    )
     isco_ids = [i.isco_type for i in org_isco]
-    org_in_same_isco = session.query(OrganisationIsco).filter(
-        OrganisationIsco.isco_type.in_(isco_ids)).all()
+    org_in_same_isco = (
+        session.query(OrganisationIsco)
+        .filter(OrganisationIsco.isco_type.in_(isco_ids))
+        .all()
+    )
     org_ids = [o.organisation for o in org_in_same_isco]
     return org_ids
 
 
 def find_secretariat_admins(session: Session, organisation: int):
     org_ids = organisations_in_same_isco(
-        session=session, organisation=organisation)
-    admins = session.query(User).filter(
-        User.organisation.in_(org_ids)).filter(
-            User.role == UserRole.secretariat_admin
-    ).distinct(User.email).all()
+        session=session, organisation=organisation
+    )
+    admins = (
+        session.query(User)
+        .filter(User.organisation.in_(org_ids))
+        .filter(User.role == UserRole.secretariat_admin)
+        .distinct(User.email)
+        .all()
+    )
     return admins
 
 
 def find_member_admins(session: Session, organisation: int):
-    admins = session.query(User).filter(
-        User.organisation == organisation).filter(
-            User.role == UserRole.member_admin
-    ).distinct(User.email).all()
+    admins = (
+        session.query(User)
+        .filter(User.organisation == organisation)
+        .filter(User.role == UserRole.member_admin)
+        .distinct(User.email)
+        .all()
+    )
     return admins
