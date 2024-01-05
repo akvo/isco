@@ -93,7 +93,10 @@ const Login = () => {
       .then((res) => {
         const { data } = res;
         removeCookie("AUTH_TOKEN");
-        setCookie("AUTH_TOKEN", data?.access_token);
+        const options = data?.expired
+          ? { expires: new Date(data.expired) }
+          : {};
+        setCookie("AUTH_TOKEN", data?.access_token, options);
         api.setToken(cookies?.AUTH_TOKEN);
         store.update((s) => {
           s.isLoggedIn = true;
@@ -101,7 +104,8 @@ const Login = () => {
         });
         navigate("/home");
       })
-      .catch(() => {
+      .catch((e) => {
+        console.error(e);
         notify({
           type: "error",
           message: "Email password doesn't match.",

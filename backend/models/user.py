@@ -17,9 +17,9 @@ from fastapi import Form
 
 
 class UserRole(enum.Enum):
-    secretariat_admin = 'secretariat_admin'
-    member_admin = 'member_admin'
-    member_user = 'member_user'
+    secretariat_admin = "secretariat_admin"
+    member_admin = "member_admin"
+    member_user = "member_user"
 
 
 class UserInvitation(TypedDict):
@@ -59,6 +59,7 @@ class UserOrgDict(TypedDict):
     invitation: Optional[str] = None
     questionnaires: Optional[List[int]] = None
     approved: bool
+    expired: Optional[datetime] = None
 
 
 class UserSimple(TypedDict):
@@ -84,15 +85,23 @@ class User(Base):
     role = Column(Enum(UserRole))
     last_activity = Column(DateTime, nullable=True, default=datetime.utcnow)
     created = Column(DateTime, default=datetime.utcnow)
-    organisation = Column(Integer, ForeignKey('organisation.id'))
+    organisation = Column(Integer, ForeignKey("organisation.id"))
     invitation = Column(Text, nullable=True)
     questionnaires = Column(pg.ARRAY(Integer), nullable=True)
     approved = Column(Boolean, nullable=False, default=False)
 
-    def __init__(self, email: str, password: str, name: str, phone_number: str,
-                 role: UserRole, organisation: int, invitation: Optional[str],
-                 questionnaires: Optional[List[int]] = None,
-                 approved: Optional[bool] = None):
+    def __init__(
+        self,
+        email: str,
+        password: str,
+        name: str,
+        phone_number: str,
+        role: UserRole,
+        organisation: int,
+        invitation: Optional[str],
+        questionnaires: Optional[List[int]] = None,
+        approved: Optional[bool] = None,
+    ):
         self.email = email
         self.password = password
         self.name = name
@@ -119,7 +128,7 @@ class User(Base):
             "last_activity": self.last_activity,
             "invitation": self.invitation,
             "questionnaires": self.questionnaires,
-            "approved": self.approved
+            "approved": self.approved,
         }
 
     @property
@@ -151,7 +160,7 @@ class UserBase(BaseModel):
         role: UserRole = Form(UserRole.member_user),
         organisation: int = Form(...),
         # invitation: str = Form(None),
-        questionnaires: List[str] = Form(None)
+        questionnaires: List[str] = Form(None),
     ):
         # transform questionnaires value
         if questionnaires and questionnaires[0]:
@@ -161,11 +170,15 @@ class UserBase(BaseModel):
         else:
             questionnaires = []
         return cls(
-            name=name, email=email, password=password,
-            phone_number=phone_number, role=role,
+            name=name,
+            email=email,
+            password=password,
+            phone_number=phone_number,
+            role=role,
             organisation=organisation,
             # invitation=invitation,
-            questionnaires=questionnaires)
+            questionnaires=questionnaires,
+        )
 
 
 class UserResponse(BaseModel):
