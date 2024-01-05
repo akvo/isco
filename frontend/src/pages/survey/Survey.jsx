@@ -359,19 +359,20 @@ const Survey = () => {
         const now = new Date();
         const expiredDate = new Date(expired);
         const timeDifference = expiredDate - now;
-        if (timeDifference > 0) {
+        // Check if the remaining time is less than or equal to 30 minutes
+        if (timeDifference > 0 && timeDifference <= 30 * 60 * 1000) {
           setRemainingTime(expired);
+          setShowSessionModal(true);
         }
       })
       .catch(() => {
         setRemainingTime(false);
-      })
-      .finally(() => {
         setShowSessionModal(true);
       });
   };
 
-  const { isIdle } = useIdle({ onIdle: handleIdle, idleTime: 0.08 });
+  // check idle every 5 minutes
+  const { isIdle } = useIdle({ onIdle: handleIdle, idleTime: 5 });
 
   const handleLogout = () => {
     if (cookies?.AUTH_TOKEN) {
