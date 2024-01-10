@@ -35,7 +35,7 @@ const SubmitWarningModal = ({
   return (
     <Modal
       title=""
-      visible={visible}
+      open={visible}
       centered
       width="600px"
       onCancel={onCancel}

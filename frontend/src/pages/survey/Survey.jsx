@@ -576,7 +576,7 @@ const Survey = () => {
       {/* Session modal */}
       <Modal
         title="Inactivity Warning"
-        visible={isIdle && showSessionModal}
+        open={isIdle && showSessionModal}
         footer={null}
         closable={false}
       >
