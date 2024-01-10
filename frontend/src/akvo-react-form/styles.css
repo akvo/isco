@@ -18,7 +18,7 @@
   padding: 0px 20px;
   background: #fff;
 }
-.arf-form-header.sticky {
+.arf-form-header.arf-sticky {
   top: 0px;
   position: sticky;
   position: -webkit-sticky;
@@ -41,7 +41,7 @@
 
 .arf-form-header h1,
 .arf-field-group .arf-field-group-header,
-.arf-sidebar .arf-sidebar-list.active,
+.arf-sidebar .arf-sidebar-list.arf-active,
 .arf-sidebar .arf-sidebar-header {
   color: #6a6a6a;
 }
@@ -54,7 +54,7 @@
   border-top: 1px solid #f0f0f0;
 }
 
-.arf-sidebar.sticky {
+.arf-sidebar.arf-sticky {
   border: none;
   top: 60px;
   position: sticky;
@@ -73,12 +73,12 @@
   font-size: 14px;
 }
 
-.arf-sidebar .arf-sidebar-list.active {
+.arf-sidebar .arf-sidebar-list.arf-active {
   background: #f3f3f3;
   font-weight: bold;
 }
 
-.arf-sidebar .arf-sidebar-list.complete {
+.arf-sidebar .arf-sidebar-list.arf-complete {
   color: green;
 }
 
@@ -106,10 +106,10 @@
   padding: 0px 20px 10px;
 }
 
-.arf-field-group .arf-repeat-title.field-group-bottom-button {
+.arf-field-group .arf-repeat-title.arf-field-group-bottom-button {
   padding: 0;
 }
-.arf-field-group .arf-repeat-title.field-group-bottom-button button {
+.arf-field-group .arf-repeat-title.arf-field-group-bottom-button button {
   padding: 7px 25px;
   height: 46px;
 }
@@ -129,8 +129,8 @@
   margin-right: 5px;
 }
 
-.arf-field.field-geo,
-.arf-field.field-table {
+.arf-field.arf-field-geo,
+.arf-field.arf-field-table {
   display: none !important;
 }
 .arf-field-group .arf-field {
@@ -146,7 +146,7 @@
   font-family: "Assistant", sans-serif;
 }
 
-.arf-field.field-map,
+.arf-field.arf-field-map,
 .arf-table-data {
   padding: 0px;
 }
@@ -155,7 +155,7 @@
   margin-top: -55px;
 }
 
-.arf-field-group.hidden {
+.arf-field-group.arf-hidden {
   display: none;
 }
 
