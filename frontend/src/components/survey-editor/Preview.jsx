@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useCallback } from "react";
-import "akvo-react-form/dist/index.css"; /* REQUIRED */
-import { Webform } from "akvo-react-form";
+// import "akvo-react-form/dist/index.css"; /* REQUIRED */
+// import { Webform } from "akvo-react-form";
 import { api, store } from "../../lib";
 import { Space, Select } from "antd";
 import { orderBy, isEmpty, uniqBy, intersection } from "lodash";
 import CommentField from "./CommentField";
+import { Webform } from "../../akvo-react-form";
 
 const Preview = () => {
   const { surveyEditor, optionValues } = store.useState((s) => s);

@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import "akvo-react-form/dist/index.css"; /* REQUIRED */
+// import "akvo-react-form/dist/index.css"; /* REQUIRED */
+// import { Webform } from "akvo-react-form";
 import "./style.scss";
 import { Spin, Button, Checkbox } from "antd";
-import { Webform } from "akvo-react-form";
+import { Webform } from "../../akvo-react-form";
 import { api, store } from "../../lib";
 import { useNotification } from "../../util";
 import { intersection, isEmpty, orderBy, groupBy } from "lodash";
