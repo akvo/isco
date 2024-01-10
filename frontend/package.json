@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "akvo-react-form": "^2.1.9",
-    "antd": "^4.19.1",
+    "antd": "^4.20.0",
     "axios": "^0.26.1",
     "html-react-parser": "^1.4.10",
     "lodash": "^4.17.21",
