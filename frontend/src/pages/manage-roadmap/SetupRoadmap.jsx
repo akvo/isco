@@ -1,6 +1,4 @@
 import React, { useState, useEffect, useMemo } from "react";
-// import "akvo-react-form/dist/index.css"; /* REQUIRED */
-// import { Webform } from "akvo-react-form";
 import { Row, Col, Select, Spin, Space } from "antd";
 import { api, store } from "../../lib";
 import isEmpty from "lodash/isEmpty";

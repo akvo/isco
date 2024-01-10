@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import "./style.scss";
 import { Row, Col, Button, Space, Spin, Modal } from "antd";
 import { WarningOutlined } from "@ant-design/icons";
-// import { Webform } from "akvo-react-form";
 import { api, store } from "../../lib";
 import { useNotification } from "../../util";
 import { intersection, isEmpty, orderBy } from "lodash";
