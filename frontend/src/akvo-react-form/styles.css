@@ -1,0 +1,414 @@
+/* add css module styles here (optional) */
+
+@import url("https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Roboto+Condensed:wght@300;400&display=swap");
+
+.arf-leaflet {
+  margin-top: 20px;
+  height: 300px;
+  width: 100%;
+}
+
+.arf-container {
+  position: relative;
+  font-family: "Roboto Condensed", sans-serif;
+  background: #fff;
+}
+
+.arf-form-header {
+  padding: 0px 20px;
+  background: #fff;
+}
+.arf-form-header.sticky {
+  top: 0px;
+  position: sticky;
+  position: -webkit-sticky;
+  min-width: 100%;
+  z-index: 1001;
+  border-bottom: 1px solid #f0f0f0;
+}
+.arf-form-header h1 {
+  font-family: "Assistant", sans-serif;
+  line-height: 58px;
+  padding: 0px;
+  margin: 0px;
+  font-size: 18px;
+  font-weight: bold;
+}
+.arf-form-header p {
+  font-size: 14px;
+  margin-top: -10px;
+}
+
+.arf-form-header h1,
+.arf-field-group .arf-field-group-header,
+.arf-sidebar .arf-sidebar-list.active,
+.arf-sidebar .arf-sidebar-header {
+  color: #6a6a6a;
+}
+
+.arf-form-header button {
+  float: right;
+}
+
+.arf-sidebar {
+  border-top: 1px solid #f0f0f0;
+}
+
+.arf-sidebar.sticky {
+  border: none;
+  top: 60px;
+  position: sticky;
+  position: -webkit-sticky;
+  height: fit-content;
+}
+
+.arf-sidebar .arf-sidebar-header {
+  text-transform: uppercase;
+}
+
+.arf-sidebar .arf-sidebar-list {
+  cursor: pointer;
+  font-family: "Assistant", sans-serif;
+  padding: 10px 20px;
+  font-size: 14px;
+}
+
+.arf-sidebar .arf-sidebar-list.active {
+  background: #f3f3f3;
+  font-weight: bold;
+}
+
+.arf-sidebar .arf-sidebar-list.complete {
+  color: green;
+}
+
+.arf-sidebar .arf-sidebar-list .arf-icon {
+  margin-right: 10px;
+  padding: 0px;
+  margin-bottom: -2px;
+}
+
+.arf-field-group .arf-field-group-header,
+.arf-sidebar-header {
+  font-family: "Assistant", sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 0px 20px;
+}
+.arf-field-group .arf-description {
+  font-family: "Assistant", sans-serif;
+  font-size: 14px;
+  margin: 0px 20px 20px;
+}
+
+.arf-field-group .arf-field {
+  font-family: "Assistant", sans-serif;
+  padding: 0px 20px 10px;
+}
+
+.arf-field-group .arf-repeat-title.field-group-bottom-button {
+  padding: 0;
+}
+.arf-field-group .arf-repeat-title.field-group-bottom-button button {
+  padding: 7px 25px;
+  height: 46px;
+}
+
+.arf-field-label {
+  display: flex;
+}
+
+.arf-field-label-required-sign {
+  margin-right: 4px;
+  color: #ff4d4f;
+  font-size: 14px;
+  font-family: SimSun, sans-serif;
+}
+
+.arf-field-label-number {
+  margin-right: 5px;
+}
+
+.arf-field.field-geo,
+.arf-field.field-table {
+  display: none !important;
+}
+.arf-field-group .arf-field {
+  margin: 0px;
+}
+.arf-field-group .arf-field .arf-field-child {
+  padding: 0px 0px 10px;
+  margin: 0px;
+}
+
+.arf-field-table,
+.arf-field-geo {
+  font-family: "Assistant", sans-serif;
+}
+
+.arf-field.field-map,
+.arf-table-data {
+  padding: 0px;
+}
+
+.arf-table-data {
+  margin-top: -55px;
+}
+
+.arf-field-group.hidden {
+  display: none;
+}
+
+.arf-next {
+  border-left: 1px solid #f0f0f0;
+  padding: 20px 50px;
+}
+.arf-next button {
+  border: none;
+  background-color: #888;
+  color: #fff;
+}
+
+.arf-next button:hover {
+  background-color: #222;
+  color: #fff;
+}
+
+div.arf-repeat-title {
+  margin: 20px -25px;
+  padding: 7px 45px;
+  background-color: #f0f0f0;
+  height: 46px;
+  line-height: 30px;
+}
+
+button.arf-repeat-delete-btn {
+  color: #6a6a6a;
+  font-size: 20px;
+}
+button.arf-repeat-delete-btn:focus {
+  color: #6a6a6a;
+}
+button.arf-repeat-delete-btn:hover {
+  color: #222;
+}
+button.arf-repeat-delete-btn .arf-icon {
+  font-size: 18px;
+}
+
+.arf-repeat-input {
+  font-weight: normal;
+  display: inline-block;
+  margin-top: 8px;
+}
+
+.arf-repeat-input .arf-field-title,
+.arf-repeat-input .arf-field {
+  display: inline-block;
+  vertical-align: top;
+  border: 1px solid #6a6a6a;
+  width: unset;
+}
+
+.arf-repeat-input .arf-field-title {
+  padding: 4px 8px;
+  border-radius: 2px 0px 0px 2px;
+  font-weight: bold;
+  letter-spacing: 0.2px;
+}
+
+.arf-repeat-input .arf-field {
+  border-left: none;
+  border-radius: 0px 2px 2px 0px;
+}
+
+.arf-repeat-input .arf-field {
+  padding: 0px;
+}
+
+.arf-repeat-input .arf-field button {
+  padding: 5px;
+  border: none !important;
+  background: #6a6a6a;
+  color: #fff;
+  margin: 4px;
+  border-radius: 2px;
+  height: 22px;
+  width: 22px;
+  font-weight: bold;
+}
+
+.arf-repeat-input .arf-field button.disabled {
+  background: #d9d9d9;
+}
+
+.arf-field-group .arf-sticky {
+  background-color: #fff;
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+}
+.arf-field-cascade-api {
+  padding: 0px;
+}
+.arf-field-cascade-list:not(:first-child) {
+  margin-top: 10px;
+}
+.arf-field-cascade-list:nth-last-child(-n + 1):not(:nth-child(2)) {
+  margin-bottom: 20px;
+}
+.arf-cascade-api-select {
+  margin: 0px;
+  width: 100%;
+}
+.arf-extra-before {
+  margin-bottom: 10px;
+}
+.arf-extra-after {
+  margin-top: 10px;
+}
+.arf-tag-tree {
+  height: 24px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  line-height: 22px;
+  background: #f5f5f5;
+  border: 1px solid #f0f0f0;
+  border-radius: 2px;
+  margin-right: 3px;
+}
+
+/* Submission List Drawer */
+.arf-submissions-drawer-toggle,
+.arf-submissions-drawer-toggle-close {
+  width: 6px;
+  height: 50px;
+  border: 2px solid #6a6a6a;
+  cursor: pointer;
+  top: 50%;
+}
+.arf-submissions-drawer-toggle {
+  position: fixed;
+  left: 4px;
+  border-left: none;
+}
+.arf-submissions-drawer-toggle:hover {
+  border: 3px solid #222;
+  border-left: none;
+}
+.arf-submissions-drawer-toggle-close {
+  position: absolute;
+  right: 4px;
+  border-right: none;
+}
+.arf-submissions-drawer-toggle-close:hover {
+  border: 3px solid #222;
+  border-right: none;
+}
+.arf-submissions-drawer-container .ant-drawer-header {
+  padding: 16px 0;
+}
+.arf-submissions-drawer-container .ant-drawer-close:hover,
+.ant-drawer-close:focus {
+  background: none;
+}
+.arf-submissions-drawer-container .arf-submission-list-select {
+  width: 100%;
+}
+/* Submission List Drawer */
+.arf-draft-list {
+  border-bottom: 1px solid rgba(5, 5, 5, 0.06);
+  padding: 10px;
+}
+.arf-draft-list.current {
+  border-top: 1px solid #d0d0d0;
+  background-color: #e3e3e3;
+}
+.arf-draft-list .arf-draft-title {
+  padding-bottom: 10px;
+}
+.arf-draft-list .arf-draft-buttons {
+  margin-left: 18px;
+}
+
+/* MOBILE */
+.arf-mobile-header-wrapper {
+  padding: 10px 0;
+}
+.arf-mobile-header-wrapper > h1 {
+  font-size: 16px;
+  line-height: 24px;
+}
+.arf-mobile-header-wrapper > p {
+  font-size: 12px;
+}
+.arf-mobile-footer-container {
+  position: sticky;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  z-index: 1002;
+  padding: 20px;
+  border-top: 1px solid #d9d9d9;
+  background-color: #fff;
+}
+.arf-mobile-footer-container .arf-icon {
+  margin-bottom: -2px;
+  margin-right: 10px;
+  padding: 0;
+  color: #000;
+}
+.arf-mobile-footer-container .arf-next {
+  border-left: 1px solid #f0f0f0;
+  padding: 0 12px !important;
+}
+.arf-mobile-footer-container .arf-next button {
+  border: none;
+  background-color: #888;
+  color: #fff;
+}
+.arf-mobile-footer-container .arf-next button:hover {
+  background-color: #222;
+  color: #fff;
+}
+.arf-sidebar-header .arf-icon {
+  color: #000;
+}
+/* EOL MOBILE */
+
+/* PRINT CSS */
+#print {
+  padding-top: 24px;
+}
+
+#print .group-description {
+  word-break: break-word;
+  white-space: normal;
+  font-size: 14px;
+}
+
+#print .question-container {
+  line-height: 20px;
+}
+
+#print .question-dependency-wrapper {
+  margin-bottom: 10px;
+}
+
+#print .question-wrapper {
+  width: 100%;
+}
+
+#print .question-title,
+.question-tooltip {
+  word-break: break-word;
+  white-space: normal;
+}
+
+#print,
+.question-tooltip,
+.question-type,
+.question-option {
+  margin-top: 5px;
+}
+/* EOL PRINT CSS */
