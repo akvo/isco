@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import "./style.scss";
 import { Row, Col, Button, Space, Spin, Modal } from "antd";
 import { WarningOutlined } from "@ant-design/icons";
@@ -7,6 +7,7 @@ import { useNotification } from "../../util";
 import { intersection, isEmpty, orderBy } from "lodash";
 import { CommentField } from "../../components";
 import { Webform } from "../../akvo-react-form";
+import { uiText } from "../../static";
 
 const reorderAnswersRepeatIndex = (formValue, answer) => {
   // reordered repeat index answer
@@ -117,6 +118,10 @@ const DataCleaningWebform = ({ datapoint, orgDetail, handleBack }) => {
   // warning modal
   const [modalWarningVisible, setModalWarningVisible] = useState(false);
 
+  const text = useMemo(() => {
+    return uiText[activeLang];
+  }, [activeLang]);
+
   // transform & filter form definition
   useEffect(() => {
     if (datapoint?.form && orgDetail?.id) {
@@ -168,9 +173,10 @@ const DataCleaningWebform = ({ datapoint, orgDetail, handleBack }) => {
                     placement: "after",
                     content: (
                       <CommentField
+                        qid={q.id}
                         onChange={(val) => onChangeComment(q.id, val)}
                         onDelete={() => onDeleteComment(q.id)}
-                        defaultValue={
+                        value={
                           commentValues?.[q.id] ? commentValues?.[q.id] : null
                         }
                       />
@@ -277,7 +283,46 @@ const DataCleaningWebform = ({ datapoint, orgDetail, handleBack }) => {
   }, [deletedComment, answer]);
 
   const onChange = ({ /*current*/ values /*progress*/ }) => {
-    const transformValues = Object.keys(values)
+    // handle data unavailable checkbox - comment
+    Object.keys(values)
+      .filter((key) => key.includes("na"))
+      .map((key) => {
+        const elCheckUnavailable = document.getElementById(key);
+        const isChecked = elCheckUnavailable?.checked;
+        // handle comment field
+        const qid = key.split("-")[1];
+        const addCommentButton = document.getElementById(`add-comment-${qid}`);
+        const deleteCommentButton = document.getElementById(
+          `delete-comment-${qid}`
+        );
+        const commentField = document.getElementById(`comment-${qid}`);
+        if (isChecked) {
+          // show comment field
+          addCommentButton.style.display = "none";
+          deleteCommentButton.style.display = "initial";
+          commentField.style.display = "initial";
+          commentField.value = text.inputDataUnavailable;
+          setComment({
+            [qid]: text.inputDataUnavailable,
+          });
+        } else {
+          deleteCommentButton.style.display = "none";
+          commentField.style.display = "none";
+          addCommentButton.style.display = "initial";
+          commentField.value = null;
+          setComment({
+            [qid]: null,
+          });
+        }
+        // EOL handle comment field
+      });
+    // EOL handle data unavailable checkbox - comment
+
+    // handle form values
+    const filteredValues = Object.keys(values)
+      .filter((key) => !key.includes("na"))
+      .reduce((acc, curr) => ({ ...acc, [curr]: values[curr] }), {});
+    const transformValues = Object.keys(filteredValues)
       .map((key) => {
         let question = key;
         let repeatIndex = 0;
@@ -408,7 +453,7 @@ const DataCleaningWebform = ({ datapoint, orgDetail, handleBack }) => {
       {/* Modal */}
       <Modal
         title=""
-        visible={modalWarningVisible}
+        open={modalWarningVisible}
         centered
         onCancel={() => setModalWarningVisible(false)}
         width="600px"

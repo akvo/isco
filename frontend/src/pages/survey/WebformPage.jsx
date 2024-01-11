@@ -437,6 +437,7 @@ const WebformPage = ({
                     placement: "after",
                     content: (
                       <CommentField
+                        qid={q.id}
                         onAdd={onAddComment}
                         onChange={onChangeComment}
                         onDelete={onDeleteComment}
@@ -692,9 +693,49 @@ const WebformPage = ({
   };
 
   const onChange = ({ values }) => {
-    const transformedAnswerValues = transformValues(values);
+    // handle data unavailable checkbox - comment
+    Object.keys(values)
+      .filter((key) => key.includes("na"))
+      .map((key) => {
+        const elCheckUnavailable = document.getElementById(key);
+        const isChecked = elCheckUnavailable?.checked;
+        // handle comment field
+        const qid = key.split("-")[1];
+        const addCommentButton = document.getElementById(`add-comment-${qid}`);
+        const deleteCommentButton = document.getElementById(
+          `delete-comment-${qid}`
+        );
+        const commentField = document.getElementById(`comment-${qid}`);
+        if (isChecked) {
+          // show comment field
+          addCommentButton.style.display = "none";
+          deleteCommentButton.style.display = "initial";
+          commentField.style.display = "initial";
+          commentField.value = text.inputDataUnavailable;
+          setComment({
+            [qid]: text.inputDataUnavailable,
+          });
+        } else {
+          deleteCommentButton.style.display = "none";
+          commentField.style.display = "none";
+          addCommentButton.style.display = "initial";
+          commentField.value = null;
+          setComment({
+            [qid]: null,
+          });
+        }
+        // EOL handle comment field
+      });
+    // EOL handle data unavailable checkbox - comment
+
+    // handle form values
+    const filteredValues = Object.keys(values)
+      .filter((key) => !key.includes("na"))
+      .reduce((acc, curr) => ({ ...acc, [curr]: values[curr] }), {});
+    const transformedAnswerValues = transformValues(filteredValues);
     setDisableSubmit(transformValues.length === 0);
     setAnswer(transformedAnswerValues);
+
     // reset form for prev submisison value to empty
     setTimeout(() => {
       resetForm();

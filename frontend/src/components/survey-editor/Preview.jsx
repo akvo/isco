@@ -84,6 +84,7 @@ const Preview = () => {
                   placement: "after",
                   content: (
                     <CommentField
+                      qid={q.id}
                       onChange={() => console.info(q.id)}
                       onDelete={() => console.info(q.id)}
                     />

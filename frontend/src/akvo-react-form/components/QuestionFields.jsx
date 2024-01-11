@@ -22,6 +22,7 @@ const QuestionFields = ({
   field,
   initialValue,
   uiText,
+  formRef,
 }) => {
   switch (field.type) {
     case "option":
@@ -68,6 +69,7 @@ const QuestionFields = ({
           keyform={index}
           rules={rules}
           uiTextForm={uiText}
+          formRef={formRef}
           {...field}
         />
       );

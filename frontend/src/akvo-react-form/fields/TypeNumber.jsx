@@ -27,6 +27,7 @@ const TypeNumber = ({
   coreMandatory,
   fieldIcons = true,
   uiTextForm,
+  // formRef,
 }) => {
   const numberRef = useRef();
   const [isValid, setIsValid] = useState(true);
@@ -157,8 +158,9 @@ const TypeNumber = ({
 
       {/* inputDataUnavailable */}
       {!coreMandatory && (
-        <Form.Item noStyle>
+        <Form.Item key={`na-${keyform}`} name={`na-${id}`} noStyle>
           <Checkbox
+            id={`na-${id}`}
             checked={naChecked}
             onChange={(e) => {
               setNaChecked(e.target.checked);
