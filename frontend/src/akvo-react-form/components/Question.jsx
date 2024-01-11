@@ -43,15 +43,23 @@ const Question = ({
           const requiredErr = `${field.name.props.children[0]} ${uiText.errorIsRequired}`;
           if (field?.required) {
             if (field?.type === "number" && !field?.rule?.allowDecimal) {
-              return parseFloat(value) % 1 === 0
+              if (parseFloat(value) % 1 === 0) {
+                return Promise.resolve();
+              }
+              if (value) {
+                return Promise.reject(new Error(uiText.errorDecimal));
+              }
+              if (field?.coreMandatory) {
+                return Promise.reject(new Error(requiredErr));
+              }
+              return Promise.resolve();
+            }
+            if (field?.type !== "number" || field?.coreMandatory) {
+              return value || value === 0
                 ? Promise.resolve()
-                : value
-                ? Promise.reject(new Error(uiText.errorDecimal))
                 : Promise.reject(new Error(requiredErr));
             }
-            return value || value === 0
-              ? Promise.resolve()
-              : Promise.reject(new Error(requiredErr));
+            return Promise.resolve();
           }
           if (field?.type === "number" && !field?.rule?.allowDecimal) {
             return parseFloat(value) % 1 === 0 || !value

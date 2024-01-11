@@ -63,7 +63,14 @@ const QuestionFields = ({
         <TypeDate keyform={index} rules={rules} uiText={uiText} {...field} />
       );
     case "number":
-      return <TypeNumber keyform={index} rules={rules} {...field} />;
+      return (
+        <TypeNumber
+          keyform={index}
+          rules={rules}
+          uiTextForm={uiText}
+          {...field}
+        />
+      );
     case "geo":
       return (
         <TypeGeo

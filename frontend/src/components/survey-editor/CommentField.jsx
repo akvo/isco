@@ -31,7 +31,7 @@ const CommentField = ({ onAdd, onChange, onDelete }) => {
           name="add-button"
           size="small"
           type="link"
-          onClick={(curr) => onAdd(curr)}
+          onClick={(curr) => (onAdd ? onAdd(curr) : null)}
         >
           <PlusSquareFilled /> {text.btnAddComment}
         </Button>

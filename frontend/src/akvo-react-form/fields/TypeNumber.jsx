@@ -3,12 +3,14 @@ import React, {
   useCallback,
   useRef,
   useState,
-  Fragment,
+  useMemo,
 } from "react";
-import { Form, InputNumber } from "antd";
+import { Form, InputNumber, Checkbox } from "antd";
 import { Extra, FieldLabel } from "../support";
 import GlobalStore from "../lib/store";
 import { InputNumberIcon, InputNumberDecimalIcon } from "../lib/svgIcons";
+import uiText from "../../static/ui-text";
+import { store } from "../../lib";
 
 const TypeNumber = ({
   id,
@@ -22,12 +24,22 @@ const TypeNumber = ({
   addonBefore,
   extra,
   requiredSign,
+  coreMandatory,
   fieldIcons = true,
+  uiTextForm,
 }) => {
   const numberRef = useRef();
   const [isValid, setIsValid] = useState(true);
   const [error, setError] = useState("");
   const [showPrefix, setShowPrefix] = useState(true);
+  const [naChecked, setNaChecked] = useState(false);
+
+  const { language } = store.useState((s) => s);
+  const { active: activeLang } = language;
+
+  const text = useMemo(() => {
+    return uiText[activeLang];
+  }, [activeLang]);
 
   const form = Form.useFormInstance();
   const extraBefore = extra
@@ -93,9 +105,28 @@ const TypeNumber = ({
       <Form.Item
         key={keyform}
         name={id}
-        rules={rules}
+        rules={[
+          ...rules,
+          !coreMandatory
+            ? {
+                validator: (_, value) => {
+                  const requiredErr = `${name.props.children[0]} ${uiTextForm.errorIsRequired}`;
+                  if (naChecked) {
+                    return Promise.resolve();
+                  }
+                  if (value || value === 0) {
+                    return Promise.resolve();
+                  }
+                  if (!naChecked && required) {
+                    return Promise.reject(new Error(requiredErr));
+                  }
+                  return Promise.resolve();
+                },
+              }
+            : {},
+        ]}
         className="arf-field-child"
-        required={required}
+        required={!naChecked ? required : false}
       >
         <InputNumber
           onBlur={() => {
@@ -122,8 +153,24 @@ const TypeNumber = ({
             )
           }
           addonBefore={addonBefore}
+          disabled={naChecked}
         />
       </Form.Item>
+
+      {/* inputDataUnavailable */}
+      {!coreMandatory && (
+        <Form.Item noStyle>
+          <Checkbox
+            checked={naChecked}
+            onChange={(e) => {
+              setNaChecked(e.target.checked);
+            }}
+          >
+            {text.inputDataUnavailable}
+          </Checkbox>
+        </Form.Item>
+      )}
+
       {!isValid && (
         <div
           style={{ marginTop: "-10px" }}
