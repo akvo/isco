@@ -74,7 +74,9 @@ const IFrame = ({ children }) => {
         title={Math.random()}
         width={0}
         height={0}
-        frameBorder={0}
+        style={{
+          border: 0,
+        }}
         onLoad={handleLoad}
       >
         {iframeBody && ReactDOM.createPortal(children, iframeBody)}
@@ -89,7 +91,9 @@ const IFrame = ({ children }) => {
       title={Math.random()}
       width={0}
       height={0}
-      frameBorder={0}
+      style={{
+        border: 0,
+      }}
     >
       {body && ReactDOM.createPortal(children, body)}
     </iframe>

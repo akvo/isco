@@ -272,7 +272,6 @@ const Download = () => {
           id="print-iframe"
           title={Math.random()}
           srcDoc={downloadData}
-          frameBorder={0}
           height={0}
           width={0}
           style={{
@@ -280,6 +279,7 @@ const Download = () => {
             position: "absolute",
             top: 0,
             left: 0,
+            border: 0,
           }}
           onLoad={handleLoad}
         />
