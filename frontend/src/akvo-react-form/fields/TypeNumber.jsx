@@ -11,6 +11,7 @@ import GlobalStore from "../lib/store";
 import { InputNumberIcon, InputNumberDecimalIcon } from "../lib/svgIcons";
 import uiText from "../../static/ui-text";
 import { store } from "../../lib";
+import { circle } from "leaflet";
 
 const TypeNumber = ({
   id,
@@ -111,6 +112,11 @@ const TypeNumber = ({
             ? {
                 validator: (_, value) => {
                   const requiredErr = `${name.props.children[0]} ${uiTextForm.errorIsRequired}`;
+                  if (coreMandatory) {
+                    return value || value === 0
+                      ? Promise.resolve()
+                      : Promise.reject(new Error(requiredErr));
+                  }
                   if (naChecked) {
                     return Promise.resolve();
                   }
@@ -126,7 +132,7 @@ const TypeNumber = ({
             : {},
         ]}
         className="arf-field-child"
-        required={!naChecked ? required : false}
+        required={coreMandatory ? required : !naChecked ? required : false}
       >
         <InputNumber
           onBlur={() => {

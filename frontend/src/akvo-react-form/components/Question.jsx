@@ -54,7 +54,7 @@ const Question = ({
               }
               return Promise.resolve();
             }
-            if (field?.type !== "number" || field?.coreMandatory) {
+            if (field?.type !== "number") {
               return value || value === 0
                 ? Promise.resolve()
                 : Promise.reject(new Error(requiredErr));
