@@ -82,7 +82,7 @@ const ValidationWarningModal = ({
   return (
     <Modal
       title={text.cvModalTitleText}
-      visible={visible}
+      open={visible}
       width="600px"
       centered
       destroyOnClose
