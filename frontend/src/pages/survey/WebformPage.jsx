@@ -661,7 +661,7 @@ const WebformPage = ({
     setCheckComputedValidation([]);
   };
 
-  const transformValues = (values) => {
+  const transformValues = (values, dataUnavailable = {}) => {
     return Object.keys(values)
       .filter((key) => {
         // filter key !== datapoint object
@@ -684,17 +684,21 @@ const WebformPage = ({
         );
         return {
           question: qid,
-          value: values[key],
+          value: values?.[key] ? values[key] : null,
           repeat_index: repeatIndex,
-          comment: findAnswer ? findAnswer?.comment : null,
+          comment: dataUnavailable?.[qid]
+            ? dataUnavailable[qid]
+            : findAnswer
+            ? findAnswer?.comment
+            : null,
         };
       })
-      .filter((x) => x.value || x.value === 0); // isNan
+      .filter((x) => x.value || x.value === 0 || dataUnavailable?.[x.question]); // isNan, allow comment with no value to submit
   };
 
   const onChange = ({ values }) => {
     // handle data unavailable checkbox - comment
-    Object.keys(values)
+    const dataUnavailable = Object.keys(values)
       .filter((key) => key.includes("na"))
       .map((key) => {
         const elCheckUnavailable = document.getElementById(key);
@@ -725,14 +729,19 @@ const WebformPage = ({
           });
         }
         // EOL handle comment field
-      });
+        return { [qid]: isChecked ? text.inputDataUnavailable : null };
+      })
+      .reduce((acc, curr) => ({ ...acc, ...curr }), {});
     // EOL handle data unavailable checkbox - comment
 
     // handle form values
     const filteredValues = Object.keys(values)
       .filter((key) => !key.includes("na"))
       .reduce((acc, curr) => ({ ...acc, [curr]: values[curr] }), {});
-    const transformedAnswerValues = transformValues(filteredValues);
+    const transformedAnswerValues = transformValues(
+      filteredValues,
+      dataUnavailable
+    );
     setDisableSubmit(transformValues.length === 0);
     setAnswer(transformedAnswerValues);
 
