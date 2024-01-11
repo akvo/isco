@@ -284,7 +284,7 @@ const DataCleaningWebform = ({ datapoint, orgDetail, handleBack }) => {
 
   const onChange = ({ /*current*/ values /*progress*/ }) => {
     // handle data unavailable checkbox - comment
-    Object.keys(values)
+    const dataUnavailable = Object.keys(values)
       .filter((key) => key.includes("na"))
       .map((key) => {
         const elCheckUnavailable = document.getElementById(key);
@@ -315,7 +315,9 @@ const DataCleaningWebform = ({ datapoint, orgDetail, handleBack }) => {
           });
         }
         // EOL handle comment field
-      });
+        return { [qid]: isChecked ? text.inputDataUnavailable : null };
+      })
+      .reduce((acc, curr) => ({ ...acc, ...curr }), {});
     // EOL handle data unavailable checkbox - comment
 
     // handle form values
@@ -337,12 +339,16 @@ const DataCleaningWebform = ({ datapoint, orgDetail, handleBack }) => {
         const findAnswer = answer.find((x) => x.question === qid);
         return {
           question: qid,
-          value: values[key],
+          value: values?.[key] ? values[key] : null,
           repeat_index: repeatIndex,
-          comment: findAnswer ? findAnswer?.comment : null,
+          comment: dataUnavailable?.[qid]
+            ? dataUnavailable[qid]
+            : findAnswer
+            ? findAnswer?.comment
+            : null,
         };
       })
-      .filter((x) => x.value || x.value === 0);
+      .filter((x) => x.value || x.value === 0 || dataUnavailable?.[x.question]); // isNan, allow comment with no value to submit
     setDisableSubmit(transformValues.length === 0);
     setAnswer(transformValues);
   };
