@@ -3,18 +3,24 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "akvo-react-form": "^2.1.9",
-    "antd": "^4.19.1",
+    "@react-leaflet/core": ">=1.0.0 <1.1.0 || ^1.1.1",
+    "antd": "^4.20.0",
+    "antd-table-saveas-excel": "^2.2.1",
     "axios": "^0.26.1",
+    "dexie": "^3.2.2",
     "html-react-parser": "^1.4.10",
+    "leaflet": "^1.7.1",
+    "locale-codes": "^1.3.1",
     "lodash": "^4.17.21",
     "pullstate": "^1.23.0",
     "react": "^17.0.2",
     "react-cookie": "^4.1.1",
     "react-countdown": "^2.3.5",
     "react-dom": "^17.0.2",
+    "react-html-parser": "^2.0.2",
     "react-icons": "^4.7.1",
     "react-idle-timer": "^5.7.2",
+    "react-leaflet": "^4.0.2",
     "react-router-dom": "^6.2.2",
     "react-scripts": "5.0.0",
     "react-verification-code-input": "^1.2.9",
@@ -55,7 +61,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint --config .eslintrc.json src --ext .js,.jsx",
-    "prettier": "prettier --check src"
+    "prettier": "prettier --check src",
+    "prettier-write": "prettier --write src"
   },
   "eslintConfig": {
     "extends": [

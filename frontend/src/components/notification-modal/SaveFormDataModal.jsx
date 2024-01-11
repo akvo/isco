@@ -10,7 +10,7 @@ const SaveFormDataModal = ({ visible, onOk, onCancel, activeLang }) => {
   return (
     <Modal
       title={text.modalSaveForm}
-      visible={visible}
+      open={visible}
       onOk={onOk}
       okText={text.btnYes}
       onCancel={onCancel}

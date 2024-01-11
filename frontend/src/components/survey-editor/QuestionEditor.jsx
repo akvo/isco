@@ -311,58 +311,65 @@ const QuestionEditor = ({
                   key={panelKey}
                   showArrow={false}
                   header={
-                    <>
-                      <Tooltip title="Click to move question">
-                        <Button
-                          className={
-                            activePanel ? "btn-move active" : "btn-move"
-                          }
-                          type="text"
-                          icon={<RiDragMove2Fill />}
-                          onClick={() => {
-                            store.update((s) => {
-                              s.isMoveQuestion = question;
-                            });
-                          }}
-                        />
-                      </Tooltip>
-                      <Tooltip title="Show question details">
-                        <Button
-                          className={
-                            activePanel ? "btn-edit active" : "btn-edit"
-                          }
-                          type="text"
-                          icon={<RiEditFill />}
-                          onClick={() => {
-                            setActivePanel(panelKey);
-                            setActiveSetting("detail");
-                          }}
-                        />
-                      </Tooltip>
-                      <Tooltip title="Show question details">
-                        <Button
-                          className="question-number"
-                          type="text"
-                          size="small"
-                          onClick={() => {
-                            setActivePanel(panelKey);
-                            setActiveSetting("detail");
-                          }}
-                        >
-                          {`Q${index + 1}`}
-                        </Button>
-                      </Tooltip>
-                      {(activeSetting === "detail" ||
-                        activeSetting === "setting") && (
-                        <QuestionNameInput index={index} question={question} />
-                      )}
-                      {activeSetting === "translation" && (
-                        <TranslationTab
-                          activeLang={activeLang}
-                          setActiveLang={setActiveLang}
-                        />
-                      )}
-                    </>
+                    <Row align="center" justify="space-between" gutter={[8, 8]}>
+                      <Col span={3}>
+                        <Tooltip title="Click to move question">
+                          <Button
+                            className={
+                              activePanel ? "btn-move active" : "btn-move"
+                            }
+                            type="text"
+                            icon={<RiDragMove2Fill />}
+                            onClick={() => {
+                              store.update((s) => {
+                                s.isMoveQuestion = question;
+                              });
+                            }}
+                          />
+                        </Tooltip>
+                        <Tooltip title="Show question details">
+                          <Button
+                            className={
+                              activePanel ? "btn-edit active" : "btn-edit"
+                            }
+                            type="text"
+                            icon={<RiEditFill />}
+                            onClick={() => {
+                              setActivePanel(panelKey);
+                              setActiveSetting("detail");
+                            }}
+                          />
+                        </Tooltip>
+                        <Tooltip title="Show question details">
+                          <Button
+                            className="question-number"
+                            type="text"
+                            size="small"
+                            onClick={() => {
+                              setActivePanel(panelKey);
+                              setActiveSetting("detail");
+                            }}
+                          >
+                            {`Q${index + 1}`}
+                          </Button>
+                        </Tooltip>
+                      </Col>
+                      <Col span={21}>
+                        {(activeSetting === "detail" ||
+                          activeSetting === "setting") && (
+                          <QuestionNameInput
+                            index={index}
+                            question={question}
+                          />
+                        )}
+                        {activeSetting === "translation" && (
+                          <TranslationTab
+                            activeLang={activeLang}
+                            setActiveLang={setActiveLang}
+                          />
+                        )}
+                      </Col>
+                    </Row>
                   }
                 >
                   <Row className="panel-body-wrapper">

@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useMemo } from "react";
-import "akvo-react-form/dist/index.css"; /* REQUIRED */
 import { Row, Col, Select, Spin, Space } from "antd";
-import { Webform } from "akvo-react-form";
 import { api, store } from "../../lib";
 import isEmpty from "lodash/isEmpty";
 import { useNotification } from "../../util";
 import orderBy from "lodash/orderBy";
+import { Webform } from "../../akvo-react-form";
 
 const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
   const { notify } = useNotification();

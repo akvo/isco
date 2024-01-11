@@ -8,7 +8,7 @@ const DataSecurityModal = ({ visible, onCancel, activeLang }) => {
   return (
     <Modal
       title={<h3>{text.modalDataSecurity}</h3>}
-      visible={visible}
+      open={visible}
       onCancel={onCancel}
       centered
       destroyOnClose
