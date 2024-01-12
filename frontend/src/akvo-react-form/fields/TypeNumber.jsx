@@ -75,6 +75,18 @@ const TypeNumber = ({
     }
   }, [currentValue, updateDataPointName]);
 
+  useEffect(() => {
+    // handle preload data unavailable checkbox
+    if (!coreMandatory) {
+      setTimeout(() => {
+        const commentField = document.getElementById(`comment-${id}`);
+        if (commentField?.value && isNaN(currentValue)) {
+          setNaChecked(true);
+        }
+      }, 500);
+    }
+  }, [id, currentValue, coreMandatory]);
+
   const onChange = (value) => {
     setError("");
     setIsValid(true);

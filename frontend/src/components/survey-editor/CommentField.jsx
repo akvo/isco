@@ -4,7 +4,13 @@ import { PlusSquareFilled, DeleteFilled } from "@ant-design/icons";
 import { uiText } from "../../static";
 import { store } from "../../lib";
 
-const CommentField = ({ qid, onAdd, onChange, onDelete, value = null }) => {
+const CommentField = ({
+  qid,
+  onAdd,
+  onChange,
+  onDelete,
+  // value = null
+}) => {
   const { language } = store.useState((s) => s);
   const { active: activeLang } = language;
 
@@ -45,7 +51,7 @@ const CommentField = ({ qid, onAdd, onChange, onDelete, value = null }) => {
           style={{ display: "none" }}
           rows={3}
           onChange={onChange}
-          value={value}
+          // value={value}
         />
       </Col>
     </Row>

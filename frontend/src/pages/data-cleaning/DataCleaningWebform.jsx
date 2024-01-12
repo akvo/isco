@@ -176,9 +176,9 @@ const DataCleaningWebform = ({ datapoint, orgDetail, handleBack }) => {
                         qid={q.id}
                         onChange={(val) => onChangeComment(q.id, val)}
                         onDelete={() => onDeleteComment(q.id)}
-                        value={
-                          commentValues?.[q.id] ? commentValues?.[q.id] : null
-                        }
+                        // value={
+                        //   commentValues?.[q.id] ? commentValues?.[q.id] : null
+                        // }
                       />
                     ),
                   },
