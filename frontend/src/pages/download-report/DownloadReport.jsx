@@ -4,6 +4,7 @@ import { Row, Col, Typography, Select, Card, Space, Button, Modal } from "antd";
 import { api, store } from "../../lib";
 import { useNotification } from "../../util";
 import ReactCodeInput from "react-verification-code-input";
+import { MonitoringRoundSelector } from "../../components";
 
 const { Title } = Typography;
 
@@ -20,6 +21,7 @@ const DownloadReport = () => {
   const [allowDownload, setAllowDownload] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [otpValue, setOtpValue] = useState([]);
+  const [selectedMonitoringRound, setSelectedMonitoringRound] = useState(null);
 
   useEffect(() => {
     if (!forms.length) {
@@ -42,6 +44,9 @@ const DownloadReport = () => {
       let params = `form_id=${formSelected}`;
       if (memberSelected) {
         params += `&member_type=${memberSelected}`;
+      }
+      if (selectedMonitoringRound) {
+        params += `&monitoring_round=${selectedMonitoringRound}`;
       }
       api
         .post(`/download-summary/new?${params}`)
@@ -128,7 +133,7 @@ const DownloadReport = () => {
           <Row>
             <Col span={24}>
               <Card className="form-wrapper">
-                <Space size={24}>
+                <Space size={12}>
                   <Select
                     showArrow
                     showSearch
@@ -143,6 +148,7 @@ const DownloadReport = () => {
                     options={forms}
                     value={formSelected}
                     onChange={(val) => setFormSelected(val)}
+                    style={{ width: "8rem" }}
                   />
                   <Select
                     showArrow
@@ -170,6 +176,13 @@ const DownloadReport = () => {
                     }
                     value={memberSelected}
                     onChange={(val) => setMemberSelected(val)}
+                    style={{ width: "8rem" }}
+                  />
+                  <MonitoringRoundSelector
+                    value={selectedMonitoringRound}
+                    onChange={setSelectedMonitoringRound}
+                    className="bg-grey"
+                    style={{ minWidth: "100px", width: "175px" }}
                   />
                   <Button
                     ghost
