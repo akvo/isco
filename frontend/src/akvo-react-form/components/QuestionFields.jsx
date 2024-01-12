@@ -22,6 +22,7 @@ const QuestionFields = ({
   field,
   initialValue,
   uiText,
+  formRef,
 }) => {
   switch (field.type) {
     case "option":
@@ -63,7 +64,15 @@ const QuestionFields = ({
         <TypeDate keyform={index} rules={rules} uiText={uiText} {...field} />
       );
     case "number":
-      return <TypeNumber keyform={index} rules={rules} {...field} />;
+      return (
+        <TypeNumber
+          keyform={index}
+          rules={rules}
+          uiTextForm={uiText}
+          formRef={formRef}
+          {...field}
+        />
+      );
     case "geo":
       return (
         <TypeGeo

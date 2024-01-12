@@ -614,6 +614,7 @@ export const Webform = ({
                 initialValue={initialValue}
                 showGroup={showGroup}
                 uiText={uiText}
+                formRef={formRef}
               />
             );
           })}
