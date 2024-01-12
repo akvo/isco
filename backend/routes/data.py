@@ -44,18 +44,26 @@ def get_questions_from_published_form(
     session: Session, form_id: int, user: User
 ):
     # get user member access
-    member_ids = session.query(OrganisationMember).filter(
-        OrganisationMember.organisation == user.organisation).all()
+    member_ids = (
+        session.query(OrganisationMember)
+        .filter(OrganisationMember.organisation == user.organisation)
+        .all()
+    )
     member_ids = [m.member_type for m in member_ids]
-    member_access = session.query(MemberType).filter(
-        MemberType.id.in_(member_ids)).all()
+    member_access = (
+        session.query(MemberType).filter(MemberType.id.in_(member_ids)).all()
+    )
     member_access = [ma.name for ma in member_access] + ["All"]
     # get user isco access
-    isco_ids = session.query(OrganisationIsco).filter(
-        OrganisationIsco.organisation == user.organisation).all()
+    isco_ids = (
+        session.query(OrganisationIsco)
+        .filter(OrganisationIsco.organisation == user.organisation)
+        .all()
+    )
     isco_ids = [i.isco_type for i in isco_ids]
-    isco_access = session.query(IscoType).filter(
-        IscoType.id.in_(isco_ids)).all()
+    isco_access = (
+        session.query(IscoType).filter(IscoType.id.in_(isco_ids)).all()
+    )
     isco_access = [ia.name for ia in isco_access] + ["All"]
     # forms
     form = crud_form.get_form_by_id(session=session, id=form_id)
@@ -70,50 +78,56 @@ def get_questions_from_published_form(
     core_mandatory_questions = []
     # question available for computed val check
     computed_validation_questions = {}
-    for qg in webform['question_group']:
+    for qg in webform["question_group"]:
         qids = []
         computed_validation_tmp = []
-        for q in qg['question']:
-            qid = q['id']
+        for q in qg["question"]:
+            qid = q["id"]
             questions.update({qid: q})
             qids.append(qid)
             # user question filtered by qmember/isco
-            user_question = \
-                set(member_access).intersection(set(q['member_access'])) and \
-                set(isco_access).intersection(set(q['isco_access']))
+            user_question = set(member_access).intersection(
+                set(q["member_access"])
+            ) and set(isco_access).intersection(set(q["isco_access"]))
             if user_question and (
-                    q.get('core_mandatory') or q.get('coreMandatory')):
+                q.get("core_mandatory") or q.get("coreMandatory")
+            ):
                 core_mandatory_questions.append(qid)
             if user_question:
                 computed_validation_tmp.append(qid)
-        qg['question'] = qids
+        qg["question"] = qids
         question_groups.append(qg)
-        computed_validation_questions.update({
-            qg['id']: computed_validation_tmp})
+        computed_validation_questions.update(
+            {qg["id"]: computed_validation_tmp}
+        )
     return {
-        "form_name": webform['name'],
+        "form_name": webform["name"],
         "question_groups": question_groups,
         "questions": questions,
         "core_mandatory_questions": core_mandatory_questions,
-        "computed_validation_questions": computed_validation_questions
+        "computed_validation_questions": computed_validation_questions,
     }
 
 
 def check_core_mandatory_questions_answer(
     published: dict, answers: List[AnswerDict], submitted: int
 ):
-    core_mandatory_questions = published['core_mandatory_questions']
-    answer_qids = [a.get('question') for a in answers]
+    core_mandatory_questions = published["core_mandatory_questions"]
+    answer_qids = [a.get("question") for a in answers]
     # is core mandatory question answered
-    if submitted and core_mandatory_questions and \
-       not set(core_mandatory_questions).issubset(answer_qids):
+    if (
+        submitted
+        and core_mandatory_questions
+        and not set(core_mandatory_questions).issubset(answer_qids)
+    ):
         # not all core mandatory answered
         raise HTTPException(
             status_code=400,
             detail={
                 "type": "core-mandatory-check",
-                "message": "Please answer all core mandatory questions"
-            })
+                "message": "Please answer all core mandatory questions",
+            },
+        )
 
 
 # TODO:: Enable to check for repeatable group
@@ -182,19 +196,22 @@ def check_core_mandatory_questions_answer(
 
 def notify_secretariat_admin(session: Session, user, form_name: str):
     organisation = crud_organisation.get_organisation_by_id(
-        session=session, id=user.organisation)
+        session=session, id=user.organisation
+    )
     org_name = organisation.name
     # send to secretariat admin
     secretariat_admins = find_secretariat_admins(
-        session=session, organisation=user.organisation)
+        session=session, organisation=user.organisation
+    )
     if secretariat_admins:
-        body_secretariat = f'''{user.name} ({user.email}) from {org_name}
+        body_secretariat = f"""{user.name} ({user.email}) from {org_name}
                             successfully submitted data for {form_name}.
-                            '''
+                            """
         email_secretariat = Email(
             recipients=[a.recipient for a in secretariat_admins],
             type=MailTypeEnum.notify_submission_completed_to_secretariat_admin,
-            body=body_secretariat)
+            body=body_secretariat,
+        )
         email_secretariat.send
 
 
@@ -203,23 +220,26 @@ def notify_secretariat_admin(session: Session, user, form_name: str):
     response_model=DataResponseQuestionName,
     name="data:get",
     summary="get all datas",
-    tags=["Data"])
-def get(req: Request,
-        form_id: int,
-        page: int = 1,
-        perpage: int = 10,
-        submitted: Optional[bool] = False,
-        filter_same_isco: Optional[bool] = False,
-        monitoring_round: Optional[int] = Query(None),
-        organisation: Optional[List[int]] = Query(None),
-        session: Session = Depends(get_session),
-        credentials: credentials = Depends(security)):
-    user = verify_user(
-        session=session, authenticated=req.state.authenticated)
+    tags=["Data"],
+)
+def get(
+    req: Request,
+    form_id: int,
+    page: int = 1,
+    perpage: int = 10,
+    submitted: Optional[bool] = False,
+    filter_same_isco: Optional[bool] = False,
+    monitoring_round: Optional[int] = Query(None),
+    organisation: Optional[List[int]] = Query(None),
+    session: Session = Depends(get_session),
+    credentials: credentials = Depends(security),
+):
+    user = verify_user(session=session, authenticated=req.state.authenticated)
     org_ids = []
     if filter_same_isco:
         org_ids = organisations_in_same_isco(
-            session=session, organisation=user.organisation)
+            session=session, organisation=user.organisation
+        )
     if organisation:
         org_ids = organisation
 
@@ -230,7 +250,8 @@ def get(req: Request,
         perpage=perpage,
         submitted=submitted,
         org_ids=org_ids,
-        monitoring_round=monitoring_round)
+        monitoring_round=monitoring_round,
+    )
     if not data["count"]:
         raise HTTPException(status_code=404, detail="Not found")
     total_page = ceil(data["count"] / perpage) if data["count"] > 0 else 0
@@ -238,37 +259,46 @@ def get(req: Request,
         raise HTTPException(status_code=404, detail="Not found")
     # transform cascade answer value
     result = [d.serializeWithQuestionName for d in data["data"]]
-    questions = session.query(Question).filter(and_(
-        Question.form == form_id,
-        Question.type == QuestionType.cascade.value
-    )).all()
+    questions = (
+        session.query(Question)
+        .filter(
+            and_(
+                Question.form == form_id,
+                Question.type == QuestionType.cascade.value,
+            )
+        )
+        .all()
+    )
     # generate all cascades value based on answers
     cascade_qids = [q.id for q in questions]
     cascade_answers = []
     for res in result:
-        for a in res['answer']:
-            if not a.get('value') or a.get('question') not in cascade_qids:
+        for a in res["answer"]:
+            if not a.get("value") or a.get("question") not in cascade_qids:
                 continue
-            cascade_answers += [int(float(x)) for x in a.get('value')]
+            cascade_answers += [int(float(x)) for x in a.get("value")]
     cascade_answers = set(cascade_answers)
-    cascade_list = session.query(CascadeList).filter(
-        CascadeList.id.in_(cascade_answers)).all()
+    cascade_list = (
+        session.query(CascadeList)
+        .filter(CascadeList.id.in_(cascade_answers))
+        .all()
+    )
     cascades = {}
     for cl in cascade_list:
         cascades.update(({cl.id: cl.name}))
     # transform cascade answer value by cascade list
     for res in result:
-        for a in res['answer']:
-            qid = a['question']
-            value = a['value']
+        for a in res["answer"]:
+            qid = a["question"]
+            value = a["value"]
             if qid in cascade_qids and value:
                 new_value = [cascades.get(int(float(x))) for x in value]
-                a['value'] = "|".join(new_value) if new_value else value
+                a["value"] = "|".join(new_value) if new_value else value
     return {
-        'current': page,
-        'data': result,
-        'total': data["count"],
-        'total_page': total_page,
+        "current": page,
+        "data": result,
+        "total": data["count"],
+        "total_page": total_page,
     }
 
 
@@ -277,34 +307,41 @@ def get(req: Request,
     response_model=DataDict,
     summary="add new data, collaborators contain organization id",
     name="data:create",
-    tags=["Data"])
-def add(req: Request,
-        form_id: int,
-        submitted: int,
-        answers: List[AnswerDict],
-        locked_by: Optional[int] = Query(None),
-        collaborators: Optional[List[int]] = Query(None),
-        session: Session = Depends(get_session),
-        credentials: credentials = Depends(security)):
+    tags=["Data"],
+)
+def add(
+    req: Request,
+    form_id: int,
+    submitted: int,
+    answers: List[AnswerDict],
+    locked_by: Optional[int] = Query(None),
+    collaborators: Optional[List[int]] = Query(None),
+    session: Session = Depends(get_session),
+    credentials: credentials = Depends(security),
+):
     user = verify_editor(
-        session=session,
-        authenticated=req.state.authenticated)
+        session=session, authenticated=req.state.authenticated
+    )
     # check if submission exist
     exist = crud.check_member_submission_exists(
-        session=session, form=form_id, organisation=user.organisation)
+        session=session, form=form_id, organisation=user.organisation
+    )
     if exist:
         raise HTTPException(
-            status_code=208, detail="Submission already reported")
+            status_code=208, detail="Submission already reported"
+        )
     # get questions from published form
     published = get_questions_from_published_form(
-        session=session, form_id=form_id, user=User)
-    questions = published['questions']
+        session=session, form_id=form_id, user=User
+    )
+    questions = published["questions"]
     # end get questions published form
 
     # validate core mandatory & computed validation if submitted
     # check core mandatory question answered
     check_core_mandatory_questions_answer(
-        published=published, answers=answers, submitted=submitted)
+        published=published, answers=answers, submitted=submitted
+    )
     # end check core mandatory question answered
     # validate by computed validations
     # TODO:: Enable this
@@ -318,31 +355,33 @@ def add(req: Request,
     geo = None
     answerlist = []
     for a in answers:
-        q = questions[a['question']]
-        answer = Answer(question=q['id'],
-                        created=datetime.now(),
-                        repeat_index=a["repeat_index"],
-                        comment=a["comment"])
-        if q['type'] in [
-                QuestionType.input.value, QuestionType.text.value,
-                QuestionType.date.value
+        q = questions[a["question"]]
+        answer = Answer(
+            question=q["id"],
+            created=datetime.now(),
+            repeat_index=a["repeat_index"],
+            comment=a["comment"],
+        )
+        if q["type"] in [
+            QuestionType.input.value,
+            QuestionType.text.value,
+            QuestionType.date.value,
         ]:
             answer.text = a["value"]
-        if q['type'] == QuestionType.number.value:
+        if q["type"] == QuestionType.number.value:
             answer.value = a["value"]
-        if q['type'] == QuestionType.option.value:
+        if q["type"] == QuestionType.option.value:
             answer.options = [a["value"]]
-        if q['type'] == QuestionType.multiple_option.value:
+        if q["type"] == QuestionType.multiple_option.value:
             answer.options = a["value"]
-        if q['type'] == QuestionType.cascade.value:
+        if q["type"] == QuestionType.cascade.value:
             answer.options = a["value"]
-        if q['type'] == QuestionType.nested_list.value or q['type'] == "tree":
+        if q["type"] == QuestionType.nested_list.value or q["type"] == "tree":
             answer.options = a["value"]
         answerlist.append(answer)
     name = generate_datapoint_name(
-        session=session,
-        form=form_id,
-        answers=answers)
+        session=session, form=form_id, answers=answers
+    )
     data = crud.add_data(
         session=session,
         form=form_id,
@@ -352,7 +391,8 @@ def add(req: Request,
         created_by=user.id,
         organisation=user.organisation,
         answers=answerlist,
-        submitted=submitted)
+        submitted=submitted,
+    )
     # if collaborators added for the first time
     # handling this for prefilled project questionnaire
     # if prefilled project questionnaire,
@@ -360,82 +400,88 @@ def add(req: Request,
     if collaborators:
         for org_id in collaborators:
             crud_collaborator.add_collaborator(
-                session=session,
-                data=data.id,
-                payload={"organisation": org_id})
+                session=session, data=data.id, payload={"organisation": org_id}
+            )
         send_collaborator_email(
-            session=session,
-            user=user,
-            recipient_org_ids=collaborators)
+            session=session, user=user, recipient_org_ids=collaborators
+        )
     # if submitted send notification email to secretariat admin
     if submitted:
         notify_secretariat_admin(
-            session=session, user=user, form_name=published['form_name'])
+            session=session, user=user, form_name=published["form_name"]
+        )
     return data.serialize
 
 
-@data_route.get("/data/saved",
-                response_model=List[DataOptionDict],
-                summary="get saved data by login user organisation",
-                name="data:get_saved_data_by_organisation",
-                tags=["Data"])
+@data_route.get(
+    "/data/saved",
+    response_model=List[DataOptionDict],
+    summary="get saved data by login user organisation",
+    name="data:get_saved_data_by_organisation",
+    tags=["Data"],
+)
 def get_saved_data_by_organisation(
-        req: Request,
-        session: Session = Depends(get_session),
-        credentials: credentials = Depends(security)):
+    req: Request,
+    session: Session = Depends(get_session),
+    credentials: credentials = Depends(security),
+):
     user = verify_editor(
-        session=session,
-        authenticated=req.state.authenticated)
+        session=session, authenticated=req.state.authenticated
+    )
     # get saved data from logged user organisation
     data = crud.get_data_by_organisation(
-        session=session, organisation=user.organisation, submitted=False)
+        session=session, organisation=user.organisation, submitted=False
+    )
     # check for collaborator
     collabs = crud_collaborator.get_collaborator_by_organisation(
-        session=session, organisation=user.organisation)
+        session=session, organisation=user.organisation
+    )
     if collabs:
         collab_data = crud.get_data_by_ids(
-            session=session, ids=[c.only_data_id for c in collabs])
+            session=session, ids=[c.only_data_id for c in collabs]
+        )
         data = [*data, *collab_data]
     if not data:
         return []
     options_value = [d.to_options for d in data]
     for item in options_value:
-        if not item.get('is_name_configured'):
+        if not item.get("is_name_configured"):
             # check and regenerate datapoint/display name
             new_name = generate_datapoint_name(
-                session=session,
-                form=item.get('form'),
-                data=item.get('id'))
-            name = item.get('name')
+                session=session, form=item.get("form"), data=item.get("id")
+            )
+            name = item.get("name")
             if new_name:
-                created = item.get('created')
-                created_by = item.get('created_by')
+                created = item.get("created")
+                created_by = item.get("created_by")
                 name = f"{new_name} - {created_by} - {created}"
-            item.update({
-                "name": name
-            })
+            item.update({"name": name})
     return options_value
 
 
-@data_route.put("/data/unsubmit/{id}",
-                response_model=DataDict,
-                summary="undo data submission",
-                name="data:unsubmit",
-                tags=["Data"])
-def undo_submission(req: Request,
-                    id: int,
-                    session: Session = Depends(get_session),
-                    credentials: credentials = Depends(security)):
-    verify_super_admin(
-        session=session, authenticated=req.state.authenticated)
-    data = crud.get_data_by_id(
-        session=session, id=id, submitted=True)
+@data_route.put(
+    "/data/unsubmit/{id}",
+    response_model=DataDict,
+    summary="undo data submission",
+    name="data:unsubmit",
+    tags=["Data"],
+)
+def undo_submission(
+    req: Request,
+    id: int,
+    session: Session = Depends(get_session),
+    credentials: credentials = Depends(security),
+):
+    verify_super_admin(session=session, authenticated=req.state.authenticated)
+    data = crud.get_data_by_id(session=session, id=id, submitted=True)
     if not data:
-        raise HTTPException(status_code=404,
-                            detail="data {} is not found".format(id))
+        raise HTTPException(
+            status_code=404, detail="data {} is not found".format(id)
+        )
     if data.submitted and data.submitted.year != datetime.now().year:
-        raise HTTPException(status_code=401,
-                            detail="Undo submission is not allowed")
+        raise HTTPException(
+            status_code=401, detail="Undo submission is not allowed"
+        )
     data.submitted = None
     data.submitted_by = None
     data = crud.update_data(session=session, data=data)
@@ -444,7 +490,8 @@ def undo_submission(req: Request,
     # Only implement this after Joy have discussed it with the ISCO's]
     member_submitter = data.created_by_user.email
     member_admins = find_member_admins(
-        session=session, organisation=data.organisation)
+        session=session, organisation=data.organisation
+    )
     member_admin_email = [ma.email for ma in member_admins]
     if member_submitter in member_admin_email:
         # send only to member admin
@@ -460,18 +507,19 @@ def undo_submission(req: Request,
     response_model=DataDict,
     summary="get data by id",
     name="data:get_by_id",
-    tags=["Data"])
+    tags=["Data"],
+)
 def get_by_id(
     req: Request,
     id: int,
     session: Session = Depends(get_session),
-    credentials: credentials = Depends(security)
+    credentials: credentials = Depends(security),
 ):
     data = crud.get_data_by_id(session=session, id=id)
     if not data:
         raise HTTPException(
-            status_code=404,
-            detail="data {} is not found".format(id))
+            status_code=404, detail="data {} is not found".format(id)
+        )
     return data.serialize
 
 
@@ -481,12 +529,13 @@ def get_by_id(
     status_code=HTTPStatus.NO_CONTENT,
     summary="delete data",
     name="data:delete",
-    tags=["Data"])
+    tags=["Data"],
+)
 def delete(
     req: Request,
     id: int,
     session: Session = Depends(get_session),
-    credentials: credentials = Depends(security)
+    credentials: credentials = Depends(security),
 ):
     verify_super_admin(session=session, authenticated=req.state.authenticated)
     crud.delete_by_id(session=session, id=id)
@@ -499,12 +548,13 @@ def delete(
     status_code=HTTPStatus.NO_CONTENT,
     summary="bulk delete data",
     name="data:bulk-delete",
-    tags=["Data"])
+    tags=["Data"],
+)
 def bulk_delete(
     req: Request,
     id: Optional[List[int]] = Query(None),
     session: Session = Depends(get_session),
-    credentials: credentials = Depends(security)
+    credentials: credentials = Depends(security),
 ):
     verify_super_admin(session=session, authenticated=req.state.authenticated)
     crud.delete_bulk(session=session, ids=id)
@@ -516,7 +566,8 @@ def bulk_delete(
     response_model=DataDict,
     summary="update data",
     name="data:update",
-    tags=["Data"])
+    tags=["Data"],
+)
 def update_by_id(
     req: Request,
     id: int,
@@ -525,26 +576,26 @@ def update_by_id(
     locked_by: Optional[int] = None,
     data_cleaning: Optional[bool] = False,
     session: Session = Depends(get_session),
-    credentials: credentials = Depends(security)
+    credentials: credentials = Depends(security),
 ):
     # data cleaning verify super admin/secretariat admin
     if data_cleaning:
         user = verify_super_admin(
-            session=session,
-            authenticated=req.state.authenticated)
+            session=session, authenticated=req.state.authenticated
+        )
     if not data_cleaning:
         user = verify_editor(
-            session=session,
-            authenticated=req.state.authenticated)
+            session=session, authenticated=req.state.authenticated
+        )
     # check data status before update
     # to prevent update submitted data
     data = crud.get_data_by_id(
-        session=session, id=id,
-        submitted=True if data_cleaning else False)
+        session=session, id=id, submitted=True if data_cleaning else False
+    )
     if not data:
         raise HTTPException(
-            status_code=208,
-            detail="Submission already reported")
+            status_code=208, detail="Submission already reported"
+        )
     # if locked, allow update only by locked_by === user id
     # but open for data cleaning
     if data.locked_by and data.locked_by != user.id and not data_cleaning:
@@ -558,15 +609,17 @@ def update_by_id(
 
     # get questions from published form
     published = get_questions_from_published_form(
-        session=session, form_id=data.form, user=user)
-    question_groups = published['question_groups']
-    questions = published['questions']
+        session=session, form_id=data.form, user=user
+    )
+    question_groups = published["question_groups"]
+    questions = published["questions"]
     # end get questions published form
 
     # validate core mandatory & computed validation if submitted
     # check core mandatory question answered
     check_core_mandatory_questions_answer(
-        published=published, answers=answers, submitted=submitted)
+        published=published, answers=answers, submitted=submitted
+    )
     # end check core mandatory question answered
     # validate by computed validations
     # TODO:: Enablel this
@@ -579,8 +632,8 @@ def update_by_id(
     # get repeatable question ids
     repeat_qids = []
     for qg in question_groups:
-        if qg['repeatable'] is True:
-            for qid in qg['question']:
+        if qg["repeatable"] is True:
+            for qid in qg["question"]:
                 repeat_qids.append(qid)
     # questions = form.list_of_questions
     checked = {}
@@ -589,18 +642,22 @@ def update_by_id(
     answer_ids = []
     if data_cleaning:
         current_repeat = []
-        answers_to_delete = session.query(Answer).filter(
-            Answer.data == data.id).all()
+        answers_to_delete = (
+            session.query(Answer).filter(Answer.data == data.id).all()
+        )
         answer_ids = [a.id for a in answers_to_delete]
 
     if not data_cleaning:
         # get current repeat group answer
         current_repeat = crud_answer.get_answer_by_data_and_question(
-            session=session, data=data.id, questions=repeat_qids)
+            session=session, data=data.id, questions=repeat_qids
+        )
 
         current_answers = crud_answer.get_answer_by_data_and_question(
-            session=session, data=id,
-            questions=[a["question"] for a in answers])
+            session=session,
+            data=id,
+            questions=[a["question"] for a in answers],
+        )
 
         # dict key is pair of questionid_repeat_index
         [checked.update(a.to_dict) for a in current_answers]
@@ -613,8 +670,10 @@ def update_by_id(
             raise HTTPException(
                 status_code=401,
                 detail="question {} is not part of this form".format(
-                    a["question"]))
-        qtype = questions[a["question"]]['type']
+                    a["question"]
+                ),
+            )
+        qtype = questions[a["question"]]["type"]
         a.update({"type": qtype})
         last_answer = []
         if key in list(checked):
@@ -622,8 +681,10 @@ def update_by_id(
             last_answer = checked[key]
         else:
             execute = "new"
-        if execute == "update" and (a["value"] != last_answer["value"]
-                                    or a["comment"] != last_answer["comment"]):
+        if execute == "update" and (
+            a["value"] != last_answer["value"]
+            or a["comment"] != last_answer["comment"]
+        ):
             answer = last_answer["data"]
             a = crud_answer.update_answer(
                 session=session,
@@ -631,28 +692,26 @@ def update_by_id(
                 repeat_index=a["repeat_index"],
                 comment=a["comment"],
                 type=qtype,
-                value=a["value"])
+                value=a["value"],
+            )
         if execute == "new":
             answer = Answer(
                 question=a["question"],
                 data=data.id,
                 created=datetime.now(),
                 repeat_index=a["repeat_index"],
-                comment=a["comment"])
+                comment=a["comment"],
+            )
             a = crud_answer.add_answer(
-                session=session,
-                answer=answer,
-                type=qtype,
-                value=a["value"])
+                session=session, answer=answer, type=qtype, value=a["value"]
+            )
         if execute:
             name = generate_datapoint_name(
-                session=session,
-                form=data.form,
-                answers=answers)
+                session=session, form=data.form, answers=answers
+            )
             data.name = name or ""
             # don't update locked_by for data_cleaning
-            data.locked_by = locked_by \
-                if not data_cleaning else data.locked_by
+            data.locked_by = locked_by if not data_cleaning else data.locked_by
             data.updated = datetime.now()
             data.submitted = submitted_date
             data.submitted_by = submitted_by
@@ -664,17 +723,19 @@ def update_by_id(
     for c in current_repeat:
         c_key = f"{c['question']}_{c['repeat_index']}"
         if c_key not in checked_payload:
-            crud_answer.delete_answer_by_id(session=session, id=c['id'])
+            crud_answer.delete_answer_by_id(session=session, id=c["id"])
     # delete old answer after insert
     if data_cleaning and answer_ids:
-        session.query(Answer).filter(
-            Answer.id.in_(answer_ids)).delete(synchronize_session='fetch')
+        session.query(Answer).filter(Answer.id.in_(answer_ids)).delete(
+            synchronize_session="fetch"
+        )
         session.commit()
     # if submitted send and not
     # data_cleaning notification email to secretariat admin
     if submitted and not data_cleaning:
         notify_secretariat_admin(
-            session=session, user=user, form_name=published['form_name'])
+            session=session, user=user, form_name=published["form_name"]
+        )
     return data.serialize
 
 
@@ -683,39 +744,49 @@ def update_by_id(
     response_model=List[SubmissionProgressDict],
     name="submission:progress",
     summary="view submission progress",
-    tags=["Data"])
+    tags=["Data"],
+)
 def get_submission_progress(
     req: Request,
     organisation: Optional[List[int]] = Query(None),
     member_not_submitted: Optional[bool] = False,
     session: Session = Depends(get_session),
-    credentials: credentials = Depends(security)
+    credentials: credentials = Depends(security),
 ):
     admin = verify_super_admin(
-        session=session, authenticated=req.state.authenticated)
+        session=session, authenticated=req.state.authenticated
+    )
     org_ids = organisations_in_same_isco(
-        session=session, organisation=admin.organisation)
+        session=session, organisation=admin.organisation
+    )
     # validate if organisation param not in same isco
     if organisation and not list(set(org_ids) & set(organisation)):
-        raise HTTPException(status_code=403,
-                            detail="Forbidden access")
+        raise HTTPException(status_code=403, detail="Forbidden access")
     if organisation:
         org_ids = organisation
     # filter by monitoring round (current year)
     current_year = get_prev_year(prev=0, year=True)
-    data = session.query(
-        Data.organisation, Data.form, Data.submitted,
-        func.count(Data.id).label('count')
-    ).filter(and_(
-        Data.organisation.in_(org_ids),
-        extract('year', Data.created) == current_year
-    )).group_by(
-        Data.organisation, Data.form, Data.submitted
-    ).all()
+    data = (
+        session.query(
+            Data.organisation,
+            Data.form,
+            Data.submitted,
+            func.count(Data.id).label("count"),
+        )
+        .filter(
+            and_(
+                Data.organisation.in_(org_ids),
+                extract("year", Data.created) == current_year,
+            )
+        )
+        .group_by(Data.organisation, Data.form, Data.submitted)
+        .all()
+    )
     if not data:
         return []
-    organisations = session.query(Organisation).filter(
-        Organisation.id.in_(org_ids)).all()
+    organisations = (
+        session.query(Organisation).filter(Organisation.id.in_(org_ids)).all()
+    )
     orgs_dict = {}
     for o in organisations:
         orgs_dict.update({o.id: o.name})
@@ -728,35 +799,40 @@ def get_submission_progress(
             form_type = "project"
         if d.form in LIMITED_SURVEY:
             form_type = "limited"
-        res.append({
-            "organisation": orgs_dict[d.organisation],
-            "form": d.form,
-            "form_type": form_type,
-            "submitted": True if d.submitted else False,
-            "count": d.count
-        })
+        res.append(
+            {
+                "organisation": orgs_dict[d.organisation],
+                "form": d.form,
+                "form_type": form_type,
+                "submitted": True if d.submitted else False,
+                "count": d.count,
+            }
+        )
     # filters organisations that has not "submitted" any member questionnaire
     if member_not_submitted:
         # defined member = [org] and project = [org]
         # to show organisation if there's no submission for member yet
         temp = {}
         for x in res:
-            if x['form_type'] in temp:
-                temp[x['form_type']].append(x['organisation'])
+            if x["form_type"] in temp:
+                temp[x["form_type"]].append(x["organisation"])
             else:
-                temp.update({x['form_type']: [x['organisation']]})
+                temp.update({x["form_type"]: [x["organisation"]]})
         member_submitted = {}
         for x in res:
-            if x['form'] in MEMBER_SURVEY and x['submitted']:
-                member_submitted.update({x['organisation']: True})
+            if x["form"] in MEMBER_SURVEY and x["submitted"]:
+                member_submitted.update({x["organisation"]: True})
         filter_orgs = {}  # not submitted temp
         for x in res:
-            if x['form'] in MEMBER_SURVEY and not x['submitted'] \
-               and x['organisation'] not in member_submitted:
-                filter_orgs.update({x['organisation']: True})
+            if (
+                x["form"] in MEMBER_SURVEY
+                and not x["submitted"]
+                and x["organisation"] not in member_submitted
+            ):
+                filter_orgs.update({x["organisation"]: True})
         filtered = []
         for x in res:
-            org = x['organisation']
+            org = x["organisation"]
             if org in filter_orgs and filter_orgs[org]:
                 filtered.append(x)
             if "member" in temp and org not in temp["member"]:

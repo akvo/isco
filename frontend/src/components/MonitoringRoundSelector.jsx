@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Select } from "antd";
 
-const MonitoringRoundSelector = ({ options, value, onChange }) => {
+const MonitoringRoundSelector = ({
+  options,
+  value,
+  onChange,
+  className = null,
+  style = null,
+}) => {
   const [round, setRound] = useState([]);
 
   useEffect(() => {
@@ -20,8 +26,8 @@ const MonitoringRoundSelector = ({ options, value, onChange }) => {
       allowClear
       showArrow
       showSearch
-      className="custom-dropdown-wrapper monitoring-round-selector"
-      placeholder="Select Monitoring Round"
+      className={`custom-dropdown-wrapper ${className ? className : ""}`}
+      placeholder="Monitoring Round"
       optionFilterProp="children"
       filterOption={(input, option) =>
         option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -29,6 +35,7 @@ const MonitoringRoundSelector = ({ options, value, onChange }) => {
       options={options || round}
       value={value}
       onChange={onChange}
+      style={style ? style : { width: "11rem" }}
     />
   );
 };
