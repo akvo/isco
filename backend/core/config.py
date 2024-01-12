@@ -41,7 +41,7 @@ app = FastAPI(
 
 # use bucket folder as env cluster
 # bucket folder will be sed by cluster name when deploy
-BUCKET_FOLDER = os.environ['BUCKET_FOLDER']
+BUCKET_FOLDER = os.environ["BUCKET_FOLDER"]
 CONFIG_SOURCE_PATH = f"./source/config/{BUCKET_FOLDER}"
 JS_FILE = "./config.min.js"
 
@@ -83,28 +83,34 @@ def health_check():
     response_class=FileResponse,
     tags=["Config"],
     name="config.js",
-    description="static javascript config")
+    description="static javascript config",
+)
 async def main(res: Response):
     # we can separate computed_validations config by BUCKET_FOLDER
     computed_validation = f"{CONFIG_SOURCE_PATH}/computed_validations.json"
     # if not os.path.exists(JS_FILE):
     env_js = "var __ENV__={"
-    env_js += "client_id:\"{}\"".format(os.environ["CLIENT_ID"])
-    env_js += ", client_secret:\"{}\"".format(os.environ["CLIENT_SECRET"])
+    env_js += 'client_id:"{}"'.format(os.environ["CLIENT_ID"])
+    env_js += ', client_secret:"{}"'.format(os.environ["CLIENT_SECRET"])
     env_js += "};"
-    min_js = jsmin("".join([
-        env_js,
-        "var computed_validations=", open(computed_validation).read(),
-        ";"
-    ]))
-    open(JS_FILE, 'w').write(min_js)
+    min_js = jsmin(
+        "".join(
+            [
+                env_js,
+                "var computed_validations=",
+                open(computed_validation).read(),
+                ";",
+            ]
+        )
+    )
+    open(JS_FILE, "w").write(min_js)
     res.headers["Content-Type"] = "application/x-javascript; charset=utf-8"
     return JS_FILE
 
 
 @app.middleware("http")
 async def route_middleware(request: Request, call_next):
-    auth = request.headers.get('Authorization')
+    auth = request.headers.get("Authorization")
     if auth:
         auth = decode_token(auth.replace("Bearer ", ""))
         request.state.authenticated = auth
