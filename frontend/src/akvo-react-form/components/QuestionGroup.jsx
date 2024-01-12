@@ -41,6 +41,7 @@ const QuestionGroup = ({
   headStyle,
   showGroup,
   uiText,
+  formRef,
 }) => {
   const isGroupAppear = showGroup.includes(index);
   return (
@@ -88,6 +89,7 @@ const QuestionGroup = ({
             })}
             repeat={r}
             uiText={uiText}
+            formRef={formRef}
           />
         </div>
       ))}

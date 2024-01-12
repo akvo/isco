@@ -297,6 +297,7 @@ const uiText = {
         <b>Total Value</b>
       </>
     ),
+    inputDataUnavailable: "Data unavailable/NA",
   },
 
   de: {
@@ -592,6 +593,7 @@ const uiText = {
     cvMinValueText: "Validierung, Mindestwert",
     cvEqualValueText: "Validierung, Wert muss gleich sein",
     cvTotalValueText: "Gesamtwert",
+    inputDataUnavailable: "Daten nicht verfügbar/NV",
   },
 };
 

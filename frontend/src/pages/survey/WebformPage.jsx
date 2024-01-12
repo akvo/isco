@@ -437,6 +437,7 @@ const WebformPage = ({
                     placement: "after",
                     content: (
                       <CommentField
+                        qid={q.id}
                         onAdd={onAddComment}
                         onChange={onChangeComment}
                         onDelete={onDeleteComment}
@@ -660,7 +661,7 @@ const WebformPage = ({
     setCheckComputedValidation([]);
   };
 
-  const transformValues = (values) => {
+  const transformValues = (values, dataUnavailable = {}) => {
     return Object.keys(values)
       .filter((key) => {
         // filter key !== datapoint object
@@ -683,18 +684,67 @@ const WebformPage = ({
         );
         return {
           question: qid,
-          value: values[key],
+          value: values?.[key] ? values[key] : null,
           repeat_index: repeatIndex,
-          comment: findAnswer ? findAnswer?.comment : null,
+          comment: dataUnavailable?.[qid]
+            ? dataUnavailable[qid]
+            : findAnswer
+            ? findAnswer?.comment
+            : null,
         };
       })
-      .filter((x) => x.value || x.value === 0); // isNan
+      .filter((x) => x.value || x.value === 0 || dataUnavailable?.[x.question]); // isNan, allow comment with no value to submit
   };
 
   const onChange = ({ values }) => {
-    const transformedAnswerValues = transformValues(values);
+    // handle data unavailable checkbox - comment
+    const dataUnavailable = Object.keys(values)
+      .filter((key) => key.includes("na"))
+      .map((key) => {
+        const elCheckUnavailable = document.getElementById(key);
+        const isChecked = elCheckUnavailable?.checked;
+        // handle comment field
+        const qid = key.split("-")[1];
+        const addCommentButton = document.getElementById(`add-comment-${qid}`);
+        const deleteCommentButton = document.getElementById(
+          `delete-comment-${qid}`
+        );
+        const commentField = document.getElementById(`comment-${qid}`);
+        if (isChecked) {
+          // show comment field
+          addCommentButton.style.display = "none";
+          deleteCommentButton.style.display = "initial";
+          commentField.style.display = "initial";
+          commentField.value = text.inputDataUnavailable;
+          setComment({
+            [qid]: text.inputDataUnavailable,
+          });
+        } else {
+          deleteCommentButton.style.display = "none";
+          commentField.style.display = "none";
+          addCommentButton.style.display = "initial";
+          commentField.value = null;
+          setComment({
+            [qid]: null,
+          });
+        }
+        // EOL handle comment field
+        return { [qid]: isChecked ? text.inputDataUnavailable : null };
+      })
+      .reduce((acc, curr) => ({ ...acc, ...curr }), {});
+    // EOL handle data unavailable checkbox - comment
+
+    // handle form values
+    const filteredValues = Object.keys(values)
+      .filter((key) => !key.includes("na"))
+      .reduce((acc, curr) => ({ ...acc, [curr]: values[curr] }), {});
+    const transformedAnswerValues = transformValues(
+      filteredValues,
+      dataUnavailable
+    );
     setDisableSubmit(transformValues.length === 0);
     setAnswer(transformedAnswerValues);
+
     // reset form for prev submisison value to empty
     setTimeout(() => {
       resetForm();
