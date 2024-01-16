@@ -18,13 +18,31 @@ const SubmissionProgress = () => {
 
   const showOrganisationFilter = user?.role === "secretariat_admin";
   const [orgValue, setOrgValue] = useState(null);
-  const [showNonSubmittedMember, setShowNonSubmittedMember] = useState(false);
+  const [showNonSubmitted, setShowNonSubmitted] = useState(false);
+
+  const [forms, setForms] = useState([]);
+  const [formSelected, setFormSelected] = useState(null);
 
   const currentYear = new Date().getFullYear();
 
   const text = useMemo(() => {
     return uiText[activeLang];
   }, [activeLang]);
+
+  useEffect(() => {
+    if (!forms.length) {
+      api
+        .get("/form/published")
+        .then((res) => {
+          const data = res.data.map((x) => ({
+            label: x.label,
+            value: x.value,
+          }));
+          setForms(data);
+        })
+        .catch((e) => console.error(e));
+    }
+  }, [forms]);
 
   const columns = () => {
     const discoSubmissionCol = [
@@ -98,7 +116,7 @@ const SubmissionProgress = () => {
   };
 
   const handleShowNonSubmittedQuestionnaireCheckbox = (e) => {
-    setShowNonSubmittedMember(e.target.checked);
+    setShowNonSubmitted(e.target.checked);
   };
 
   const fetchData = (endpoint) => {
@@ -170,15 +188,20 @@ const SubmissionProgress = () => {
 
   useEffect(() => {
     let endpoint = "/submission/progress";
-    if (orgValue) {
-      endpoint = `${endpoint}?organisation=${orgValue}`;
+    if (formSelected) {
+      const separator = endpoint?.includes("?") ? "&" : "?";
+      endpoint = `${endpoint}${separator}form_id=${formSelected}`;
     }
-    if (showNonSubmittedMember) {
-      const separator = orgValue ? "&" : "?";
-      endpoint = `${endpoint}${separator}member_not_submitted=${showNonSubmittedMember}`;
+    if (orgValue) {
+      const separator = endpoint?.includes("?") ? "&" : "?";
+      endpoint = `${endpoint}${separator}organisation=${orgValue}`;
+    }
+    if (showNonSubmitted) {
+      const separator = endpoint?.includes("?") ? "&" : "?";
+      endpoint = `${endpoint}${separator}not_submitted=${showNonSubmitted}`;
     }
     fetchData(endpoint);
-  }, [orgValue, showNonSubmittedMember]);
+  }, [orgValue, formSelected, showNonSubmitted]);
 
   useEffect(() => {
     const endpoint = "/submission/progress";
@@ -209,10 +232,25 @@ const SubmissionProgress = () => {
             gutter={[20, 20]}
           >
             <Col flex={1} align="start">
-              <Space wrap>
+              <Space wrap align="center">
+                <Select
+                  style={{ width: "18rem" }}
+                  allowClear
+                  showSearch
+                  placeholder="Questionnaires"
+                  optionFilterProp="children"
+                  value={formSelected}
+                  onChange={setFormSelected}
+                  filterOption={(input, option) =>
+                    option.children
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                  }
+                  options={forms}
+                />
                 {showOrganisationFilter && (
                   <Select
-                    style={{ width: "20rem" }}
+                    style={{ width: "18rem" }}
                     allowClear
                     showSearch
                     placeholder="Organization"
@@ -239,10 +277,10 @@ const SubmissionProgress = () => {
             <Col align="end">
               <Space align="center">
                 <span>
-                  Show organisation which has no submitted member questionnaire
+                  Show as organisation which has no submitted questionnaire
                 </span>
                 <Checkbox
-                  checked={showNonSubmittedMember}
+                  checked={showNonSubmitted}
                   onChange={handleShowNonSubmittedQuestionnaireCheckbox}
                 />
               </Space>
