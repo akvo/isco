@@ -23,11 +23,27 @@ const SubmissionProgress = () => {
   const [forms, setForms] = useState([]);
   const [formSelected, setFormSelected] = useState(null);
 
-  const currentYear = new Date().getFullYear();
+  // const currentYear = new Date().getFullYear();
 
   const text = useMemo(() => {
     return uiText[activeLang];
   }, [activeLang]);
+
+  const formName = useMemo(() => {
+    if (!forms.length || !formSelected) {
+      return "questionnaire";
+    }
+    const form = forms.find((x) => x.value === formSelected);
+    return `${form.label} questionnaire`;
+  }, [forms, formSelected]);
+
+  const orgName = useMemo(() => {
+    if (!organisationInSameIsco.length || !orgValue) {
+      return "organisation";
+    }
+    const org = organisationInSameIsco.find((x) => x.id === orgValue);
+    return org.name;
+  }, [organisationInSameIsco, orgValue]);
 
   useEffect(() => {
     if (!forms.length) {
@@ -45,70 +61,91 @@ const SubmissionProgress = () => {
   }, [forms]);
 
   const columns = () => {
-    const discoSubmissionCol = [
-      {
-        title: text.tbColDISCOSharedMemberSurvey,
-        children: [
-          {
-            title: text.tbColSaved,
-            dataIndex: "limitedSaved",
-            key: "limited-saved-count",
-            align: "center",
-          },
-          {
-            title: text.tbColSubmitted,
-            dataIndex: "limitedSubmitted",
-            key: "limited-submitted-count",
-            align: "center",
-          },
-        ],
-      },
-    ];
-    const cols = [
+    return [
       {
         title: text.tbColOrganization,
         dataIndex: "organisation",
         key: "organisation",
       },
       {
-        title: text.tbColMemberQuestionnaire,
-        children: [
-          {
-            title: text.tbColSaved,
-            dataIndex: "memberSaved",
-            key: "member-saved-count",
-            align: "center",
-          },
-          {
-            title: text.tbColSubmitted,
-            dataIndex: "memberSubmitted",
-            key: "member-submitted-count",
-            align: "center",
-          },
-        ],
+        title: text.tbColSaved,
+        dataIndex: "saved",
+        key: "saved",
+        align: "center",
       },
       {
-        title: text.tbColProjectQuestionnaire,
-        children: [
-          {
-            title: text.tbColSaved,
-            dataIndex: "projectSaved",
-            key: "project-saved-count",
-            align: "center",
-          },
-          {
-            title: text.tbColSubmitted,
-            dataIndex: "projectSubmitted",
-            key: "project-submitted-count",
-            align: "center",
-          },
-        ],
+        title: text.tbColSubmitted,
+        dataIndex: "submitted",
+        key: "submitted",
+        align: "center",
       },
     ];
-    if (currentYear < 2023) {
-      return [...cols, ...discoSubmissionCol];
-    }
-    return cols;
+    // TODO :: Delete this, related to #466 issue
+    // const discoSubmissionCol = [
+    //   {
+    //     title: text.tbColDISCOSharedMemberSurvey,
+    //     children: [
+    //       {
+    //         title: text.tbColSaved,
+    //         dataIndex: "limitedSaved",
+    //         key: "limited-saved-count",
+    //         align: "center",
+    //       },
+    //       {
+    //         title: text.tbColSubmitted,
+    //         dataIndex: "limitedSubmitted",
+    //         key: "limited-submitted-count",
+    //         align: "center",
+    //       },
+    //     ],
+    //   },
+    // ];
+    // const cols = [
+    //   {
+    //     title: text.tbColOrganization,
+    //     dataIndex: "organisation",
+    //     key: "organisation",
+    //   },
+    //   {
+    //     title: text.tbColMemberQuestionnaire,
+    //     children: [
+    //       {
+    //         title: text.tbColSaved,
+    //         dataIndex: "memberSaved",
+    //         key: "member-saved-count",
+    //         align: "center",
+    //       },
+    //       {
+    //         title: text.tbColSubmitted,
+    //         dataIndex: "memberSubmitted",
+    //         key: "member-submitted-count",
+    //         align: "center",
+    //       },
+    //     ],
+    //   },
+    //   {
+    //     title: text.tbColProjectQuestionnaire,
+    //     children: [
+    //       {
+    //         title: text.tbColSaved,
+    //         dataIndex: "projectSaved",
+    //         key: "project-saved-count",
+    //         align: "center",
+    //       },
+    //       {
+    //         title: text.tbColSubmitted,
+    //         dataIndex: "projectSubmitted",
+    //         key: "project-submitted-count",
+    //         align: "center",
+    //       },
+    //     ],
+    //   },
+    // ];
+    // if (currentYear < 2023) {
+    //   return [...cols, ...discoSubmissionCol];
+    // }
+    // return cols;
+    // EOL delete
   };
 
   const handleOrganisationFilter = (org) => {
@@ -127,52 +164,67 @@ const SubmissionProgress = () => {
         const { data } = res;
         let transformData = data.map((d) => {
           const { organisation, form_type, submitted, count } = d;
-          let res = {
+          const res = {
             organisation: organisation,
             form_type: form_type,
-            memberSaved: 0,
-            memberSubmitted: 0,
-            projectSaved: 0,
-            projectSubmitted: 0,
-            limitedSaved: 0,
-            limitedSubmitted: 0,
+            saved: submitted ? 0 : count,
+            submitted: submitted ? count : 0,
           };
-          if (form_type === "member") {
-            res = {
-              ...res,
-              memberSaved: submitted ? 0 : count,
-              memberSubmitted: submitted ? count : 0,
-            };
-          }
-          if (form_type === "project") {
-            res = {
-              ...res,
-              projectSaved: submitted ? 0 : count,
-              projectSubmitted: submitted ? count : 0,
-            };
-          }
-          if (form_type === "limited") {
-            res = {
-              ...res,
-              limitedSaved: submitted ? 0 : count,
-              limitedSubmitted: submitted ? count : 0,
-            };
-          }
           return res;
+          // TODO :: Delete this, related to #466 issue
+          // let res = {
+          //   organisation: organisation,
+          //   form_type: form_type,
+          //   memberSaved: 0,
+          //   memberSubmitted: 0,
+          //   projectSaved: 0,
+          //   projectSubmitted: 0,
+          //   limitedSaved: 0,
+          //   limitedSubmitted: 0,
+          // };
+          // if (form_type === "member") {
+          //   res = {
+          //     ...res,
+          //     memberSaved: submitted ? 0 : count,
+          //     memberSubmitted: submitted ? count : 0,
+          //   };
+          // }
+          // if (form_type === "project") {
+          //   res = {
+          //     ...res,
+          //     projectSaved: submitted ? 0 : count,
+          //     projectSubmitted: submitted ? count : 0,
+          //   };
+          // }
+          // if (form_type === "limited") {
+          //   res = {
+          //     ...res,
+          //     limitedSaved: submitted ? 0 : count,
+          //     limitedSubmitted: submitted ? count : 0,
+          //   };
+          // }
+          // return res;
+          // EOL delete
         });
         transformData = _.chain(transformData)
           .groupBy("organisation")
           .flatMap((value) => {
             const reduce = _.reduce(value, (sum, n) => {
-              sum["projectSaved"] = sum.projectSaved + n.projectSaved;
-              sum["projectSubmitted"] =
-                sum.projectSubmitted + n.projectSubmitted;
-              sum["memberSaved"] = sum.memberSaved + n.memberSaved;
-              sum["memberSubmitted"] = sum.memberSubmitted + n.memberSubmitted;
-              sum["limitedSaved"] = sum.limitedSaved + n.limitedSaved;
-              sum["limitedSubmitted"] =
-                sum.limitedSubmitted + n.limitedSubmitted;
+              +n.projectSaved;
+              sum["saved"] = sum.saved + n.saved;
+              sum["submitted"] = sum.submitted + n.submitted;
               return sum;
+              // TODO :: Delete this, related to #466 issue
+              // sum["projectSaved"] = sum.projectSaved + n.projectSaved;
+              // sum["projectSubmitted"] =
+              //   sum.projectSubmitted + n.projectSubmitted;
+              // sum["memberSaved"] = sum.memberSaved + n.memberSaved;
+              // sum["memberSubmitted"] = sum.memberSubmitted + n.memberSubmitted;
+              // sum["limitedSaved"] = sum.limitedSaved + n.limitedSaved;
+              // sum["limitedSubmitted"] =
+              //   sum.limitedSubmitted + n.limitedSubmitted;
+              // return sum;
+              // EOL delete
             });
             return reduce;
           })
@@ -276,8 +328,8 @@ const SubmissionProgress = () => {
             </Col>
             <Col align="end">
               <Space align="center">
-                <span>
-                  Show as organisation which has no submitted questionnaire
+                <span style={{ fontSize: "14px" }}>
+                  Show as {orgName} which has no submitted {formName}
                 </span>
                 <Checkbox
                   checked={showNonSubmitted}
