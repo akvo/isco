@@ -8,7 +8,7 @@ from fastapi import Depends, Request, Response, APIRouter, HTTPException, Query
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
 from typing import List, Optional
-from sqlalchemy import func, and_, extract
+from sqlalchemy import func, and_, extract, null
 from sqlalchemy.orm import Session
 import db.crud_data as crud
 from db import crud_answer, crud_form, crud_collaborator, crud_organisation
@@ -748,8 +748,9 @@ def update_by_id(
 )
 def get_submission_progress(
     req: Request,
-    organisation: Optional[List[int]] = Query(None),
-    member_not_submitted: Optional[bool] = False,
+    not_submitted: Optional[bool] = False,
+    form_id: Optional[List[int]] = Query([]),
+    organisation: Optional[List[int]] = Query([]),
     session: Session = Depends(get_session),
     credentials: credentials = Depends(security),
 ):
@@ -766,22 +767,22 @@ def get_submission_progress(
         org_ids = organisation
     # filter by monitoring round (current year)
     current_year = get_prev_year(prev=0, year=True)
-    data = (
-        session.query(
-            Data.organisation,
-            Data.form,
-            Data.submitted,
-            func.count(Data.id).label("count"),
+    data = session.query(
+        Data.organisation,
+        Data.form,
+        Data.submitted,
+        func.count(Data.id).label("count"),
+    ).filter(
+        and_(
+            Data.organisation.in_(org_ids),
+            extract("year", Data.created) == current_year,
         )
-        .filter(
-            and_(
-                Data.organisation.in_(org_ids),
-                extract("year", Data.created) == current_year,
-            )
-        )
-        .group_by(Data.organisation, Data.form, Data.submitted)
-        .all()
     )
+    if form_id:
+        data = data.filter(Data.form.in_(form_id))
+    if not_submitted:
+        data = data.filter(Data.submitted == null())
+    data = data.group_by(Data.organisation, Data.form, Data.submitted).all()
     if not data:
         return []
     organisations = (
@@ -808,34 +809,36 @@ def get_submission_progress(
                 "count": d.count,
             }
         )
-    # filters organisations that has not "submitted" any member questionnaire
-    if member_not_submitted:
-        # defined member = [org] and project = [org]
-        # to show organisation if there's no submission for member yet
-        temp = {}
-        for x in res:
-            if x["form_type"] in temp:
-                temp[x["form_type"]].append(x["organisation"])
-            else:
-                temp.update({x["form_type"]: [x["organisation"]]})
-        member_submitted = {}
-        for x in res:
-            if x["form"] in MEMBER_SURVEY and x["submitted"]:
-                member_submitted.update({x["organisation"]: True})
-        filter_orgs = {}  # not submitted temp
-        for x in res:
-            if (
-                x["form"] in MEMBER_SURVEY
-                and not x["submitted"]
-                and x["organisation"] not in member_submitted
-            ):
-                filter_orgs.update({x["organisation"]: True})
-        filtered = []
-        for x in res:
-            org = x["organisation"]
-            if org in filter_orgs and filter_orgs[org]:
-                filtered.append(x)
-            if "member" in temp and org not in temp["member"]:
-                filtered.append(x)
-        return filtered
+    # TODO :: Delete this, related to issue #466
+    # filters organisations that has not "submitted" any questionnaire
+    # if not_submitted:
+    # # defined member = [org] and project = [org]
+    # # to show organisation if there's no submission for member yet
+    # temp = {}
+    # for x in res:
+    #     if x["form_type"] in temp:
+    #         temp[x["form_type"]].append(x["organisation"])
+    #     else:
+    #         temp.update({x["form_type"]: [x["organisation"]]})
+    # member_submitted = {}
+    # for x in res:
+    #     if x["form"] in MEMBER_SURVEY and x["submitted"]:
+    #         member_submitted.update({x["organisation"]: True})
+    # filter_orgs = {}  # not submitted temp
+    # for x in res:
+    #     if (
+    #         x["form"] in MEMBER_SURVEY
+    #         and not x["submitted"]
+    #         and x["organisation"] not in member_submitted
+    #     ):
+    #         filter_orgs.update({x["organisation"]: True})
+    # filtered = []
+    # for x in res:
+    #     org = x["organisation"]
+    #     if org in filter_orgs and filter_orgs[org]:
+    #         filtered.append(x)
+    #     if "member" in temp and org not in temp["member"]:
+    #         filtered.append(x)
+    # return filtered
+    # EOL delete
     return res
