@@ -48,6 +48,10 @@ export const defaultQuestionEditor = {
   member_access: [],
   isco_access: [],
   skip_logic: [],
+  autofield: {
+    multiline: false,
+    fnString: null,
+  },
 };
 
 export const defaultQuestionGroupEditor = {

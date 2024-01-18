@@ -52,6 +52,11 @@ const Question = ({
                 repeating_objects: [
                   { ...defaultRepeatingObject, id: generateID() },
                 ],
+                // add autofiield default
+                autofield: {
+                  multiline: false,
+                  fnString: null,
+                },
               },
             ];
           }

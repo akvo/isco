@@ -355,6 +355,13 @@ const QuestionDetail = ({
     handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
   };
 
+  const handleOnChangeAutofield = (val, field) => {
+    const fieldValue = { [field]: val };
+    console.log(fieldValue);
+    form.setFieldsValue(fieldValue);
+    handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
+  };
+
   return (
     <>
       {/* Cascade / Nested dropdown */}
@@ -412,6 +419,32 @@ const QuestionDetail = ({
             </Space>
           </div>
         </>
+      )}
+      {/* Autofield Question*/}
+      {type === "autofield" && (
+        <div className="question-setting-wrapper">
+          <div className="field-wrapper">
+            <div className="field-label">Add Function (String) Here</div>
+            <Form.Item
+              name={`question-${qId}-autofield-fnString`}
+              rules={[
+                { required: true, message: "Please add autofield function" },
+              ]}
+            >
+              <Input.TextArea
+                rows={5}
+                allowClear
+                placeholder="function () { return #question_id / #question_id } OR () => { return #1.includes('Test') ? #question_id / #question_id : 0 }"
+                onChange={(val) =>
+                  handleOnChangeAutofield(
+                    val?.target?.value,
+                    `question-${qId}-autofield-fnString`
+                  )
+                }
+              />
+            </Form.Item>
+          </div>
+        </div>
       )}
       {/* Repeating Objects */}
       <div className="question-setting-wrapper">
