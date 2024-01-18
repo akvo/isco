@@ -22,11 +22,74 @@ def upgrade():
         "question",
         sa.Column("autofield", pg.JSONB(), default=None, nullable=True),
     )
-    # Add the new enum value
-    op.execute("ALTER TYPE question_type ADD VALUE 'autofield'")
+
+    # Create a new enum type for autofield
+    op.execute(
+        """
+        CREATE TYPE question_type_new AS
+        ENUM (
+            'input',
+            'text',
+            'number',
+            'option',
+            'multiple_option',
+            'date',
+            'nested_list',
+            'cascade',
+            'autofield'
+        )
+        """
+    )
+
+    # Alter the column to use the new enum type
+    op.execute(
+        """
+        ALTER TABLE question ALTER COLUMN type TYPE question_type_new
+        USING type::text::question_type_new
+        """
+    )
+
+    # Drop the old enum type
+    op.execute("DROP TYPE question_type")
+
+    # Rename the new enum type to the original name
+    op.execute("ALTER TYPE question_type_new RENAME TO question_type")
 
 
 def downgrade():
-    # Remove the added enum value
-    op.execute("ALTER TYPE question_type DROP VALUE 'autofield'")
+    # Update question with autofield into input question type
+    op.execute("UPDATE question SET type = 'input' WHERE type = 'autofield'")
+
+    # Create a new enum type for autofield
+    op.execute(
+        """
+        CREATE TYPE question_type_new AS
+        ENUM (
+            'input',
+            'text',
+            'number',
+            'option',
+            'multiple_option',
+            'date',
+            'nested_list',
+            'cascade'
+        )
+        """
+    )
+
+    # Alter the column to use the new enum type
+    op.execute(
+        """
+        ALTER TABLE question ALTER COLUMN type TYPE question_type_new
+        USING type::text::question_type_new
+        """
+    )
+
+    # Drop the old enum type
+    op.execute("DROP TYPE question_type")
+
+    # Rename the new enum type to the original name
+    op.execute("ALTER TYPE question_type_new RENAME TO question_type")
+
+    # Drop the autofield column
     op.drop_column("question", "autofield")
