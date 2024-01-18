@@ -840,7 +840,6 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
                 [autofieldKey]: value,
               },
             };
-            console.log(findQuestion, "XXX");
           }
           if (field.includes("skip_logic")) {
             const skipKey = key.split("-")[3];

@@ -357,7 +357,6 @@ const QuestionDetail = ({
 
   const handleOnChangeAutofield = (val, field) => {
     const fieldValue = { [field]: val };
-    console.log(fieldValue);
     form.setFieldsValue(fieldValue);
     handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
   };
