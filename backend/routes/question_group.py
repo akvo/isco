@@ -22,10 +22,14 @@ question_group_route = APIRouter()
     response_model=QuestionGroupBase,
     summary="add new question group",
     name="question_group:create",
-    tags=["Question Group"])
-def add(req: Request, payload: QuestionGroupPayload,
-        session: Session = Depends(get_session),
-        credentials: credentials = Depends(security)):
+    tags=["Question Group"],
+)
+def add(
+    req: Request,
+    payload: QuestionGroupPayload,
+    session: Session = Depends(get_session),
+    credentials: credentials = Depends(security),
+):
     question_group = crud.add_question_group(session=session, payload=payload)
     return question_group.serialize
 
@@ -35,23 +39,38 @@ def add(req: Request, payload: QuestionGroupPayload,
     response_model=QuestionGroupBase,
     summary="add default question group",
     name="question_group:create_default",
-    tags=["Question Group"])
+    tags=["Question Group"],
+)
 def create_default(
-    req: Request, form_id: int, order: int,
+    req: Request,
+    form_id: int,
+    order: int,
     session: Session = Depends(get_session),
-    credentials: credentials = Depends(security)
+    credentials: credentials = Depends(security),
 ):
-    prev_group = session.query(QuestionGroup).filter(and_(
-        QuestionGroup.form == form_id,
-        QuestionGroup.order < order)).order_by(
-            QuestionGroup.order.desc()).first()
+    prev_group = (
+        session.query(QuestionGroup)
+        .filter(
+            and_(QuestionGroup.form == form_id, QuestionGroup.order < order)
+        )
+        .order_by(QuestionGroup.order.desc())
+        .first()
+    )
 
     question_order = 0
     if prev_group:
-        question_order = session.query(Question).filter(and_(
-            Question.form == form_id,
-            Question.question_group == prev_group.id)).order_by(
-                Question.order.desc()).first().order
+        question_order = (
+            session.query(Question)
+            .filter(
+                and_(
+                    Question.form == form_id,
+                    Question.question_group == prev_group.id,
+                )
+            )
+            .order_by(Question.order.desc())
+            .first()
+            .order
+        )
 
     default_question = {
         "form": form_id,
@@ -75,6 +94,7 @@ def create_default(
         "skip_logic": None,
         "core_mandatory": False,
         "deactivate": False,
+        "autofield": None,
     }
     payload = {
         "form": form_id,
@@ -86,30 +106,40 @@ def create_default(
         "order": order,
         "member_access": None,
         "isco_access": None,
-        "question": [default_question]
+        "question": [default_question],
     }
     # reorder questions
-    next_questions = session.query(Question).filter(
-        and_(
-            Question.form == form_id,
-            Question.order > question_order
-        )).all()
+    next_questions = (
+        session.query(Question)
+        .filter(
+            and_(Question.form == form_id, Question.order > question_order)
+        )
+        .all()
+    )
     if len(next_questions):
         next_questions_ids = [q.id for q in next_questions]
         crud_question.reorder_question(
-            session=session, form=form_id, only=next_questions_ids,
-            order=2 if question_order == 0 else question_order + 2)
+            session=session,
+            form=form_id,
+            only=next_questions_ids,
+            order=2 if question_order == 0 else question_order + 2,
+        )
     # reorder question groups
-    next_groups = session.query(QuestionGroup).filter(
-        and_(
-            QuestionGroup.form == form_id,
-            QuestionGroup.order >= order
-        )).all()
+    next_groups = (
+        session.query(QuestionGroup)
+        .filter(
+            and_(QuestionGroup.form == form_id, QuestionGroup.order >= order)
+        )
+        .all()
+    )
     if len(next_groups):
         next_groups_ids = [qg.id for qg in next_groups]
         crud.reorder_question_group(
-            session=session, form=form_id,
-            only=next_groups_ids, order=2 if order == 1 else order + 1)
+            session=session,
+            form=form_id,
+            only=next_groups_ids,
+            order=2 if order == 1 else order + 1,
+        )
     question_group = crud.add_question_group(session=session, payload=payload)
     return question_group.serialize
 
@@ -119,7 +149,8 @@ def create_default(
     response_model=List[QuestionGroupDict],
     summary="get all question groups",
     name="question_group:get_all",
-    tags=["Question Group"])
+    tags=["Question Group"],
+)
 def get(req: Request, session: Session = Depends(get_session)):
     question_group = crud.get_question_group(session=session)
     return [qg.serialize for qg in question_group]
@@ -130,7 +161,8 @@ def get(req: Request, session: Session = Depends(get_session)):
     response_model=QuestionGroupBase,
     summary="get question group by id",
     name="question_group:get_by_id",
-    tags=["Question Group"])
+    tags=["Question Group"],
+)
 def get_by_id(req: Request, id: int, session: Session = Depends(get_session)):
     question_group = crud.get_question_group_by_id(session=session, id=id)
     return question_group.serialize
@@ -141,14 +173,18 @@ def get_by_id(req: Request, id: int, session: Session = Depends(get_session)):
     response_model=QuestionGroupBase,
     summary="update question group",
     name="question_group:put",
-    tags=["Question Group"])
+    tags=["Question Group"],
+)
 def update(
-    req: Request, id: int, payload: QuestionGroupPayload,
+    req: Request,
+    id: int,
+    payload: QuestionGroupPayload,
     session: Session = Depends(get_session),
-    credentials: credentials = Depends(security)
+    credentials: credentials = Depends(security),
 ):
     question_group = crud.update_question_group(
-        session=session, id=id, payload=payload)
+        session=session, id=id, payload=payload
+    )
     return question_group.serialize
 
 
@@ -158,16 +194,24 @@ def update(
     status_code=HTTPStatus.NO_CONTENT,
     summary="move question group",
     name="question_group:move",
-    tags=["Move"])
+    tags=["Move"],
+)
 def move(
-    req: Request, id: int, selected_order: int,
-    target_order: int, target_id: int,
+    req: Request,
+    id: int,
+    selected_order: int,
+    target_order: int,
+    target_id: int,
     session: Session = Depends(get_session),
-    credentials: credentials = Depends(security)
+    credentials: credentials = Depends(security),
 ):
     crud.move_question_group(
-        session=session, id=id, selected_order=selected_order,
-        target_order=target_order, target_id=target_id)
+        session=session,
+        id=id,
+        selected_order=selected_order,
+        target_order=target_order,
+        target_id=target_id,
+    )
     return Response(status_code=HTTPStatus.NO_CONTENT.value)
 
 
@@ -177,23 +221,28 @@ def move(
     status_code=HTTPStatus.NO_CONTENT,
     summary="delete question group by id",
     name="question_group:delete",
-    tags=["Question Group"])
+    tags=["Question Group"],
+)
 def delete(
-    req: Request, id: int,
+    req: Request,
+    id: int,
     session: Session = Depends(get_session),
-    credentials: credentials = Depends(security)
+    credentials: credentials = Depends(security),
 ):
     # check if question inside group has answer
     has_answers = None
     questions = crud_question.get_question_by_group(
-        session=session, group=[id]).all()
+        session=session, group=[id]
+    ).all()
     if questions:
         qids = [q.id for q in questions]
         has_answers = crud_answer.get_answer_by_question(
-            session=session, question=qids)
+            session=session, question=qids
+        )
     if has_answers:
         return JSONResponse(
             status_code=HTTPStatus.BAD_REQUEST.value,
-            content={"message": "Questions inside this section has answers"})
+            content={"message": "Questions inside this section has answers"},
+        )
     crud.delete_question_group(session=session, id=id)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)

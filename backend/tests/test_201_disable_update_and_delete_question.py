@@ -12,14 +12,13 @@ sys.path.append("..")
 account = Acc(email=None, token=None)
 
 
-class TestDisableDeleteQuestion():
+class TestDisableDeleteQuestion:
     @pytest.mark.asyncio
     async def test_disable_update_question_type(
         self, app: FastAPI, session: Session, client: AsyncClient
     ) -> None:
         # change question type from number to input
-        question = crud_question.get_question_by_id(
-            session=session, id=14)
+        question = crud_question.get_question_by_id(session=session, id=14)
         assert question.type == QuestionType.number
         question_payload = {
             "form": question.form,
@@ -43,11 +42,13 @@ class TestDisableDeleteQuestion():
             "skip_logic": None,
             "core_mandatory": False,
             "deactivate": False,
+            "autofield": None,
         }
         res = await client.put(
             app.url_path_for("question:put", id=question.id),
             headers={"Authorization": f"Bearer {account.token}"},
-            json=question_payload)
+            json=question_payload,
+        )
         assert res.status_code == 400
 
     @pytest.mark.asyncio
@@ -57,7 +58,8 @@ class TestDisableDeleteQuestion():
         # delete question which has answers
         res = await client.delete(
             app.url_path_for("question:delete", id=14),
-            headers={"Authorization": f"Bearer {account.token}"})
+            headers={"Authorization": f"Bearer {account.token}"},
+        )
         assert res.status_code == 400
 
     @pytest.mark.asyncio
@@ -65,10 +67,10 @@ class TestDisableDeleteQuestion():
         self, app: FastAPI, session: Session, client: AsyncClient
     ) -> None:
         # delete question group which has answers
-        question = crud_question.get_question_by_id(
-            session=session, id=14)
+        question = crud_question.get_question_by_id(session=session, id=14)
         qgid = question.question_group
         res = await client.delete(
             app.url_path_for("question_group:delete", id=qgid),
-            headers={"Authorization": f"Bearer {account.token}"})
+            headers={"Authorization": f"Bearer {account.token}"},
+        )
         assert res.status_code == 400

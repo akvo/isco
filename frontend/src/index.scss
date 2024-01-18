@@ -72,7 +72,8 @@ body {
       }
 
       &::placeholder {
-        color: $black;
+        color: #777777;
+        font-style: italic;
       }
 
       &:hover,

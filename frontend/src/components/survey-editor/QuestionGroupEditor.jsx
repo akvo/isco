@@ -779,6 +779,7 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
               "repeating_objects_field",
               "repeating_objects_value",
               "rule",
+              "autofield",
               "skip_logic",
               "translations",
             ].includes(field)
@@ -826,6 +827,17 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
               rule: {
                 ...findQuestion?.rule,
                 [ruleType]: value,
+              },
+            };
+          }
+          if (field.includes("autofield")) {
+            const autofieldKey = key.split("-")[3];
+            findQuestion = {
+              ...findQuestion,
+              autofield: {
+                ...findQuestion?.autofield,
+                multiline: false,
+                [autofieldKey]: value,
               },
             };
           }

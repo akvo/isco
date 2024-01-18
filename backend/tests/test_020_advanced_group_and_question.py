@@ -13,7 +13,7 @@ sys.path.append("..")
 account = Acc(email=None, token=None)
 
 
-class TestAdvancedQuestionGroupAndQuestionRoutes():
+class TestAdvancedQuestionGroupAndQuestionRoutes:
     @pytest.mark.asyncio
     async def test_add_question_with_option_and_access(
         self, app: FastAPI, session: Session, client: AsyncClient
@@ -25,7 +25,8 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
         assert res["id"] == 1
         # get question group
         res = await client.get(
-            app.url_path_for("question_group:get_by_id", id=1))
+            app.url_path_for("question_group:get_by_id", id=1)
+        )
         assert res.status_code == 200
         res = res.json()
         assert res["id"] == 1
@@ -47,21 +48,22 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
             "order": 3,
             "core_mandatory": True,
             "deactivate": False,
+            "autofield": None,
             "option": [
                 {
                     "code": None,
                     "name": "Male",
                     "question": None,
                     "order": 1,
-                    "translations": None
+                    "translations": None,
                 },
                 {
                     "code": None,
                     "name": "Female",
                     "question": None,
                     "order": 2,
-                    "translations": None
-                }
+                    "translations": None,
+                },
             ],
             "member_access": [1, 2],
             "isco_access": [1],
@@ -71,14 +73,15 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "dependent_to": 1,
                     "operator": OperatorType.equal.value,
                     "value": "1",
-                    "type": QuestionType.option.value
+                    "type": QuestionType.option.value,
                 }
-            ]
+            ],
         }
         res = await client.post(
             app.url_path_for("question:create"),
             headers={"Authorization": f"Bearer {account.token}"},
-            json=question_payload)
+            json=question_payload,
+        )
         assert res.status_code == 200
         res = res.json()
         assert res == {
@@ -89,7 +92,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
             "isco_access": [1],
             "mandatory": True,
             "member_access": [1, 2],
-            "name": 'Gender',
+            "name": "Gender",
             "option": [
                 {
                     "code": None,
@@ -97,7 +100,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "name": "Male",
                     "order": 1,
                     "question": 3,
-                    "translations": []
+                    "translations": [],
                 },
                 {
                     "code": None,
@@ -105,8 +108,8 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "name": "Female",
                     "order": 2,
                     "question": 3,
-                    "translations": []
-                }
+                    "translations": [],
+                },
             ],
             "order": 3,
             "personal_data": False,
@@ -120,7 +123,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "operator": "equal",
                     "question": 3,
                     "type": "option",
-                    "value": "1"
+                    "value": "1",
                 }
             ],
             "tooltip": None,
@@ -131,6 +134,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
             "core_mandatory": True,
             "deactivate": False,
             "disableDelete": False,
+            "autofield": None,
         }
 
     @pytest.mark.asyncio
@@ -144,7 +148,8 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
         assert res["id"] == 1
         # get question group
         res = await client.get(
-            app.url_path_for("question_group:get_by_id", id=1))
+            app.url_path_for("question_group:get_by_id", id=1)
+        )
         assert res.status_code == 200
         res = res.json()
         assert res["id"] == 1
@@ -171,11 +176,13 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
             "skip_logic": [],
             "core_mandatory": True,
             "deactivate": False,
+            "autofield": None,
         }
         res = await client.put(
             app.url_path_for("question:put", id=3),
             headers={"Authorization": f"Bearer {account.token}"},
-            json=question_payload)
+            json=question_payload,
+        )
         assert res.status_code == 200
         res = res.json()
         assert res == {
@@ -186,7 +193,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
             "isco_access": [2],
             "mandatory": True,
             "member_access": [2],
-            "name": 'Gender',
+            "name": "Gender",
             "option": [
                 {
                     "code": None,
@@ -194,7 +201,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "name": "Male",
                     "order": 1,
                     "question": 3,
-                    "translations": []
+                    "translations": [],
                 },
                 {
                     "code": None,
@@ -202,8 +209,8 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "name": "Female",
                     "order": 2,
                     "question": 3,
-                    "translations": []
-                }
+                    "translations": [],
+                },
             ],
             "order": 3,
             "personal_data": False,
@@ -217,7 +224,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "operator": "equal",
                     "question": 3,
                     "type": "option",
-                    "value": "1"
+                    "value": "1",
                 }
             ],
             "tooltip": None,
@@ -228,6 +235,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
             "core_mandatory": True,
             "deactivate": False,
             "disableDelete": False,
+            "autofield": None,
         }
 
     @pytest.mark.asyncio
@@ -273,6 +281,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "skip_logic": None,
                     "core_mandatory": True,
                     "deactivate": False,
+                    "autofield": None,
                 },
                 {
                     "form": None,
@@ -288,10 +297,12 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "tooltip": None,
                     "tooltip_translations": None,
                     "cascade": None,
-                    "repeating_objects": [{
-                        "field": "unit",
-                        "value": "kilograms",
-                    }],
+                    "repeating_objects": [
+                        {
+                            "field": "unit",
+                            "value": "kilograms",
+                        }
+                    ],
                     "order": 2,
                     "option": None,
                     "member_access": None,
@@ -299,6 +310,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "skip_logic": None,
                     "core_mandatory": False,
                     "deactivate": False,
+                    "autofield": None,
                 },
                 {
                     "form": None,
@@ -322,6 +334,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "skip_logic": None,
                     "core_mandatory": False,
                     "deactivate": False,
+                    "autofield": None,
                 },
                 {
                     "form": None,
@@ -345,6 +358,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "skip_logic": None,
                     "core_mandatory": False,
                     "deactivate": False,
+                    "autofield": None,
                 },
                 {
                     "form": None,
@@ -368,6 +382,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "skip_logic": None,
                     "core_mandatory": False,
                     "deactivate": False,
+                    "autofield": None,
                 },
                 {
                     "form": None,
@@ -391,28 +406,30 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                             "name": "MO-1",
                             "question": None,
                             "order": 1,
-                            "translations": None
+                            "translations": None,
                         },
                         {
                             "code": None,
                             "name": "MO-2",
                             "question": None,
                             "order": 2,
-                            "translations": None
-                        }
+                            "translations": None,
+                        },
                     ],
                     "member_access": None,
                     "isco_access": None,
                     "skip_logic": None,
                     "core_mandatory": False,
                     "deactivate": False,
-                }
-            ]
+                    "autofield": None,
+                },
+            ],
         }
         res = await client.post(
             app.url_path_for("question_group:create"),
             headers={"Authorization": f"Bearer {account.token}"},
-            json=question_group_payload)
+            json=question_group_payload,
+        )
         assert res.status_code == 200
         res = res.json()
         assert res == {
@@ -435,7 +452,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "isco_access": [1],
                     "mandatory": True,
                     "member_access": [1],
-                    "name": 'Age',
+                    "name": "Age",
                     "option": [],
                     "order": 1,
                     "personal_data": False,
@@ -451,6 +468,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "core_mandatory": True,
                     "deactivate": False,
                     "disableDelete": False,
+                    "autofield": None,
                 },
                 {
                     "cascade": None,
@@ -460,15 +478,17 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "isco_access": [1],
                     "mandatory": True,
                     "member_access": [1],
-                    "name": 'Weight',
+                    "name": "Weight",
                     "option": [],
                     "order": 2,
                     "personal_data": False,
                     "question_group": 2,
-                    "repeating_objects": [{
-                        "field": "unit",
-                        "value": "kilograms",
-                    }],
+                    "repeating_objects": [
+                        {
+                            "field": "unit",
+                            "value": "kilograms",
+                        }
+                    ],
                     "rule": None,
                     "skip_logic": [],
                     "tooltip": None,
@@ -479,6 +499,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "core_mandatory": False,
                     "deactivate": False,
                     "disableDelete": False,
+                    "autofield": None,
                 },
                 {
                     "cascade": 1,
@@ -488,7 +509,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "isco_access": [1],
                     "mandatory": False,
                     "member_access": [1],
-                    "name": 'Cascade',
+                    "name": "Cascade",
                     "option": [],
                     "order": 3,
                     "personal_data": False,
@@ -504,6 +525,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "core_mandatory": False,
                     "deactivate": False,
                     "disableDelete": False,
+                    "autofield": None,
                 },
                 {
                     "cascade": 2,
@@ -513,7 +535,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "isco_access": [1],
                     "mandatory": False,
                     "member_access": [1],
-                    "name": 'Nested List',
+                    "name": "Nested List",
                     "option": [],
                     "order": 4,
                     "personal_data": False,
@@ -529,6 +551,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "core_mandatory": False,
                     "deactivate": False,
                     "disableDelete": False,
+                    "autofield": None,
                 },
                 {
                     "cascade": None,
@@ -538,7 +561,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "isco_access": [1],
                     "mandatory": False,
                     "member_access": [1],
-                    "name": 'Date',
+                    "name": "Date",
                     "option": [],
                     "order": 5,
                     "personal_data": False,
@@ -554,6 +577,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "core_mandatory": False,
                     "deactivate": False,
                     "disableDelete": False,
+                    "autofield": None,
                 },
                 {
                     "cascade": None,
@@ -563,22 +587,25 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "isco_access": [1],
                     "mandatory": False,
                     "member_access": [1],
-                    "name": 'Multiple Option',
-                    "option": [{
-                        'code': None,
-                        'id': 4,
-                        'name': 'MO-1',
-                        'order': 1,
-                        'question': 9,
-                        'translations': []
-                    }, {
-                        'code': None,
-                        'id': 5,
-                        'name': 'MO-2',
-                        'order': 2,
-                        'question': 9,
-                        'translations': []
-                    }],
+                    "name": "Multiple Option",
+                    "option": [
+                        {
+                            "code": None,
+                            "id": 4,
+                            "name": "MO-1",
+                            "order": 1,
+                            "question": 9,
+                            "translations": [],
+                        },
+                        {
+                            "code": None,
+                            "id": 5,
+                            "name": "MO-2",
+                            "order": 2,
+                            "question": 9,
+                            "translations": [],
+                        },
+                    ],
                     "order": 6,
                     "personal_data": False,
                     "question_group": 2,
@@ -593,6 +620,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes():
                     "core_mandatory": False,
                     "deactivate": False,
                     "disableDelete": False,
+                    "autofield": None,
                 },
             ],
         }

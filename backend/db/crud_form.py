@@ -19,10 +19,10 @@ webdomain = os.environ["WEBDOMAIN"]
 def add_form(session: Session, payload: FormPayload):
     form = Form(
         id=None,
-        name=payload['name'],
-        description=payload['description'],
-        languages=payload['languages'],
-        enable_prefilled_value=payload['enable_prefilled_value']
+        name=payload["name"],
+        description=payload["description"],
+        languages=payload["languages"],
+        enable_prefilled_value=payload["enable_prefilled_value"],
     )
     session.add(form)
     session.commit()
@@ -40,16 +40,17 @@ def get_form_by_id(session: Session, id: int) -> FormBase:
     if form is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"form {id} not found")
+            detail=f"form {id} not found",
+        )
     return form
 
 
 def update_form(session: Session, id: int, payload: FormPayload) -> FormDict:
     form = get_form_by_id(session=session, id=id)
-    form.name = payload['name']
-    form.description = payload['description']
-    form.languages = payload['languages']
-    form.enable_prefilled_value = payload['enable_prefilled_value']
+    form.name = payload["name"]
+    form.description = payload["description"]
+    form.languages = payload["languages"]
+    form.enable_prefilled_value = payload["enable_prefilled_value"]
     session.commit()
     session.flush()
     session.refresh(form)
@@ -58,14 +59,14 @@ def update_form(session: Session, id: int, payload: FormPayload) -> FormDict:
 
 def delete_form(session: Session, id: int):
     # delete question group
-    groups = session.query(QuestionGroup).filter(
-        QuestionGroup.form == id).all()
+    groups = (
+        session.query(QuestionGroup).filter(QuestionGroup.form == id).all()
+    )
     if groups:
         group_ids = [g.id for g in groups]
         delete_question_by_group(
-            session=session,
-            group=group_ids,
-            dependency=False)
+            session=session, group=group_ids, dependency=False
+        )
     form = get_form_by_id(session=session, id=id)
     session.delete(form)
     session.commit()
@@ -73,14 +74,16 @@ def delete_form(session: Session, id: int):
 
 
 def get_order(data):
-    return data['order']
+    return data["order"]
 
 
 def generate_webform_json(session: Session, id: int):
     form = get_form_by_id(session=session, id=id)
     form = form.serializeJson
-    options_type = [QuestionType.option.value,
-                    QuestionType.multiple_option.value]
+    options_type = [
+        QuestionType.option.value,
+        QuestionType.multiple_option.value,
+    ]
     cascade_ids = []
     # add default lang into form languages
     default_lang = ["en"]
@@ -88,100 +91,107 @@ def generate_webform_json(session: Session, id: int):
         if form["languages"]:
             for lang in form["languages"]:
                 default_lang.append(lang)
-        form['languages'] = default_lang
+        form["languages"] = default_lang
     # Sort question group by order
-    form['question_group'].sort(key=get_order)
-    for qg in form['question_group']:
+    form["question_group"].sort(key=get_order)
+    for qg in form["question_group"]:
         # filter by deactivate
-        qg['question'] = [d for d in qg['question'] if not d['deactivate']]
+        qg["question"] = [d for d in qg["question"] if not d["deactivate"]]
         # Sort question by order
-        qg['question'].sort(key=get_order)
+        qg["question"].sort(key=get_order)
         # repeat text
-        if qg['repeatable']:
-            qg['repeat_text'] = "Add another"
-        for q in qg['question']:
+        if qg["repeatable"]:
+            qg["repeat_text"] = "Add another"
+        for q in qg["question"]:
             # OPTION
-            if 'option' in q:
+            if "option" in q:
                 # Sort option by order
-                q['option'].sort(key=get_order)
+                q["option"].sort(key=get_order)
             # CASCADE
-            if q['type'] == QuestionType.cascade.value:
+            if q["type"] == QuestionType.cascade.value:
                 url = f"{webdomain}/api/cascade/list/{q['cascade']}"
-                q.update({
-                    "api": {
-                        "endpoint": url,
-                        "initial": 0,
-                        "list": False,
+                q.update(
+                    {
+                        "api": {
+                            "endpoint": url,
+                            "initial": 0,
+                            "list": False,
+                        }
                     }
-                })
+                )
                 del q["cascade"]
             # NESTED LIST
-            if q['type'] == QuestionType.nested_list.value:
+            if q["type"] == QuestionType.nested_list.value:
                 # get tree
-                cascade_ids.append(q['cascade'])
+                cascade_ids.append(q["cascade"])
                 name = f"tree_{q['cascade']}"
-                q['type'] = "tree"
-                q['option'] = name
-                q['checkStrategy'] = "children"
+                q["type"] = "tree"
+                q["option"] = name
+                q["checkStrategy"] = "children"
                 del q["cascade"]
             # REPEATING OBJECTS
-            if 'repeating_objects' in q and q['repeating_objects']:
-                for r in q['repeating_objects']:
-                    if r['field'] == RepeatingObjectType.unit.value:
-                        q['addonAfter'] = r['value']
-                    if r['field'] == RepeatingObjectType.indicator.value:
-                        values = r['value'].split("|")
+            if "repeating_objects" in q and q["repeating_objects"]:
+                for r in q["repeating_objects"]:
+                    if r["field"] == RepeatingObjectType.unit.value:
+                        q["addonAfter"] = r["value"]
+                    if r["field"] == RepeatingObjectType.indicator.value:
+                        values = r["value"].split("|")
                         prefix = "Indicator"
                         if len(values) > 1:
                             prefix = "Indicators"
                         content = ", ".join(values)
-                        q['extra'] = [{
-                            "placement": "before",
-                            "content": f"{prefix}: {content}"
-                        }]
-                del q['repeating_objects']
+                        q["extra"] = [
+                            {
+                                "placement": "before",
+                                "content": f"{prefix}: {content}",
+                            }
+                        ]
+                del q["repeating_objects"]
             # SKIP LOGIC
-            if 'dependency' in q:
-                for d in q['dependency']:
-                    d.update({"id": d['dependent_to']})
-                    if d['type'] in options_type:
-                        ids = d['value'].split('|')
+            if "dependency" in q:
+                for d in q["dependency"]:
+                    d.update({"id": d["dependent_to"]})
+                    if d["type"] in options_type:
+                        ids = d["value"].split("|")
                         option = crud_option.get_option_by_ids(
-                            session=session, ids=ids)
+                            session=session, ids=ids
+                        )
                         option = [opt.optionName for opt in option]
                         d.update({"options": option})
-                    if d['type'] == QuestionType.number.value:
+                    if d["type"] == QuestionType.number.value:
                         try:
-                            value = int(d['value'])
+                            value = int(d["value"])
                         except ValueError:
-                            value = float(d['value'])
-                        operator = d['operator']
-                        if d['operator'] == OperatorType.greater_than:
+                            value = float(d["value"])
+                        operator = d["operator"]
+                        if d["operator"] == OperatorType.greater_than:
                             operator = "min"
                             value = value + 1
-                        if d['operator'] == OperatorType.greater_than_or_equal:
+                        if d["operator"] == OperatorType.greater_than_or_equal:
                             operator = "min"
-                        if d['operator'] == OperatorType.less_than:
+                        if d["operator"] == OperatorType.less_than:
                             operator = "max"
                             value = value - 1
-                        if d['operator'] == OperatorType.less_than_or_equal:
+                        if d["operator"] == OperatorType.less_than_or_equal:
                             operator = "max"
-                        if d['operator'] == OperatorType.equal:
+                        if d["operator"] == OperatorType.equal:
                             operator = "equal"
-                        if d['operator'] == OperatorType.not_equal:
+                        if d["operator"] == OperatorType.not_equal:
                             operator = "notEqual"
                         d.update({operator: value})
-                    del d['dependent_to']
-                    del d['operator']
-                    del d['value']
-                    del d['type']
+                    del d["dependent_to"]
+                    del d["operator"]
+                    del d["value"]
+                    del d["type"]
     # filter group if doesn't have question
-    form['question_group'] = [
-        qg for qg in form['question_group'] if len(qg['question']) > 0]
+    form["question_group"] = [
+        qg for qg in form["question_group"] if len(qg["question"]) > 0
+    ]
     # fetch nested list / tree data
     if len(cascade_ids):
         tree_obj = get_cascade_list_by_cascade_id(
-            session=session, cascade_id=cascade_ids)
+            session=session, cascade_id=cascade_ids
+        )
         if tree_obj:
             form.update({"tree": tree_obj})
     return form
@@ -191,14 +201,14 @@ def generate_webform_json_file(
     session: Session, id: int, version: Optional[float] = None
 ):
     form = generate_webform_json(session=session, id=id)
-    form_name = form['name'].lower().split(" ")
+    form_name = form["name"].lower().split(" ")
     form_name = "_".join(form_name)
-    version_number = form['version']
+    version_number = form["version"]
     version_number = version_number if version_number else 0
     version_number = version_number + 1
     if version:
         version_number = version
-    form['version'] = version_number
+    form["version"] = version_number
     filename = f"{id}_{form_name}_v{version_number}.json"
     filepath = f"./tmp/{filename}"
     with open(filepath, "w") as outfile:
@@ -214,9 +224,9 @@ def publish_form(session: Session, id: int):
     version = version + 1
     # generate and upload file to bucket
     filepath = generate_webform_json_file(
-        session=session, id=id, version=version)
-    upload = storage.upload(
-        file=filepath, folder="forms", public=True)
+        session=session, id=id, version=version
+    )
+    upload = storage.upload(file=filepath, folder="forms", public=True)
     # update form version
     form.version = version
     form.url = upload
