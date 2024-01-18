@@ -17,14 +17,15 @@ from datetime import datetime
 
 
 class QuestionType(enum.Enum):
-    input = 'input'
-    text = 'text'
-    number = 'number'
-    option = 'option'
-    multiple_option = 'multiple_option'
-    date = 'date'
-    nested_list = 'nested_list'
-    cascade = 'cascade'
+    input = "input"
+    text = "text"
+    number = "number"
+    option = "option"
+    multiple_option = "multiple_option"
+    date = "date"
+    nested_list = "nested_list"
+    cascade = "cascade"
+    autofield = "autofield"
 
 
 class RuleDict(TypedDict):
@@ -36,8 +37,8 @@ class RuleDict(TypedDict):
 
 
 class RepeatingObjectType(enum.Enum):
-    unit = 'unit'
-    indicator = 'indicator'
+    unit = "unit"
+    indicator = "indicator"
 
 
 class RepeatingObjectDict(TypedDict):
@@ -72,6 +73,7 @@ class QuestionPayload(TypedDict):
     member_access: Optional[List[int]] = None
     isco_access: Optional[List[int]] = None
     skip_logic: Optional[List[SkipLogicPayload]] = None
+    autofield: Optional[dict] = None
 
 
 class QuestionDict(TypedDict):
@@ -91,13 +93,14 @@ class QuestionDict(TypedDict):
     cascade: Optional[int] = None
     repeating_objects: Optional[List] = []
     order: Optional[int] = None
+    autofield: Optional[dict] = None
 
 
 class Question(Base):
     __tablename__ = "question"
     id = Column(Integer, primary_key=True, index=True, nullable=True)
-    form = Column(Integer, ForeignKey('form.id'))
-    question_group = Column(Integer, ForeignKey('question_group.id'))
+    form = Column(Integer, ForeignKey("form.id"))
+    question_group = Column(Integer, ForeignKey("question_group.id"))
     name = Column(String)
     translations = Column(pg.ARRAY(pg.JSONB), nullable=True)
     mandatory = Column(Boolean, default=True)
@@ -110,47 +113,62 @@ class Question(Base):
     rule = Column(MutableDict.as_mutable(pg.JSONB), nullable=True)
     tooltip = Column(String, nullable=True)
     tooltip_translations = Column(pg.ARRAY(pg.JSONB), nullable=True)
-    cascade = Column(Integer, ForeignKey('cascade.id'), nullable=True)
+    cascade = Column(Integer, ForeignKey("cascade.id"), nullable=True)
     repeating_objects = Column(pg.ARRAY(pg.JSONB), nullable=True)
     created = Column(DateTime, default=datetime.utcnow)
     order = Column(Integer, nullable=True)
+    autofield = Column(MutableDict.as_mutable(pg.JSONB), nullable=True)
     member_access = relationship(
         "QuestionMemberAccess",
         primaryjoin="QuestionMemberAccess.question==Question.id",
         cascade="all, delete",
         passive_deletes=True,
-        backref="question_member_access")
+        backref="question_member_access",
+    )
     isco_access = relationship(
         "QuestionIscoAccess",
         primaryjoin="QuestionIscoAccess.question==Question.id",
         cascade="all, delete",
         passive_deletes=True,
-        backref="question_isco_access")
+        backref="question_isco_access",
+    )
     option = relationship(
         "Option",
         primaryjoin="Option.question==Question.id",
         cascade="all, delete",
         passive_deletes=True,
-        backref="question_option")
+        backref="question_option",
+    )
     skip_logic = relationship(
         "SkipLogic",
         primaryjoin="SkipLogic.question==Question.id",
-        backref="question_skip_logic")
+        backref="question_skip_logic",
+    )
     cascades = relationship(
-        "Cascade",
-        backref=backref("question", uselist=False))
+        "Cascade", backref=backref("question", uselist=False)
+    )
 
     def __init__(
-        self, id: Optional[int], name: str, form: int,
-        question_group: int, translations: Optional[List[dict]],
-        mandatory: Optional[bool], datapoint_name: Optional[bool],
-        variable_name: Optional[str], type: QuestionType,
-        personal_data: Optional[bool], rule: Optional[dict],
-        tooltip: Optional[str], cascade: Optional[int],
+        self,
+        id: Optional[int],
+        name: str,
+        form: int,
+        question_group: int,
+        translations: Optional[List[dict]],
+        mandatory: Optional[bool],
+        datapoint_name: Optional[bool],
+        variable_name: Optional[str],
+        type: QuestionType,
+        personal_data: Optional[bool],
+        rule: Optional[dict],
+        tooltip: Optional[str],
+        cascade: Optional[int],
         tooltip_translations: Optional[List[dict]],
         repeating_objects: Optional[List],
-        order: Optional[int], core_mandatory: Optional[bool],
-        deactivate: Optional[bool]
+        order: Optional[int],
+        core_mandatory: Optional[bool],
+        deactivate: Optional[bool],
+        autofield: Optional[dict],
     ):
         self.id = id
         self.form = form
@@ -170,6 +188,7 @@ class Question(Base):
         self.order = order
         self.core_mandatory = core_mandatory
         self.deactivate = deactivate
+        self.autofield = autofield
 
     def __repr__(self) -> int:
         return f"<Question {self.id}>"
@@ -214,7 +233,8 @@ class Question(Base):
             "skip_logic": [skip.serialize for skip in self.skip_logic],
             "order": self.order,
             "core_mandatory": self.core_mandatory,
-            "deactivate": self.deactivate
+            "deactivate": self.deactivate,
+            "autofield": self.autofield,
         }
 
     @property
@@ -224,10 +244,10 @@ class Question(Base):
         group_isco = [ia.iscoName for ia in group_detail.isco_access]
         # inherit group member/isco access if question member/isco []
         question_member = group_member
-        if (self.member_access):
+        if self.member_access:
             question_member = [ma.memberName for ma in self.member_access]
         question_isco = group_isco
-        if (self.isco_access):
+        if self.isco_access:
             question_isco = [ia.iscoName for ia in self.isco_access]
         question = {
             "id": self.id,
@@ -239,15 +259,15 @@ class Question(Base):
             "member_access": question_member,
             "isco_access": question_isco,
             "coreMandatory": self.core_mandatory,
-            "deactivate": self.deactivate
+            "deactivate": self.deactivate,
         }
         if self.rule:
             if "allow_other" not in self.rule:
                 question.update({"rule": self.rule})
             if "allow_decimal" in self.rule:
-                question.get('rule').update({"allowDecimal": True})
+                question.get("rule").update({"allowDecimal": True})
             if "allow_other" in self.rule:
-                question.update({"allowOther": self.rule['allow_other']})
+                question.update({"allowOther": self.rule["allow_other"]})
                 question.update({"allowOtherText": "Other"})
         if self.personal_data:
             question.update({"personal_data": self.personal_data})
@@ -258,8 +278,9 @@ class Question(Base):
         if self.translations:
             question.update({"translations": self.translations})
         if self.option:
-            question.update({
-                "option": [opt.serializeJson for opt in self.option]})
+            question.update(
+                {"option": [opt.serializeJson for opt in self.option]}
+            )
         if self.repeating_objects:
             question.update({"repeating_objects": self.repeating_objects})
         if self.tooltip:
@@ -267,16 +288,26 @@ class Question(Base):
             if self.tooltip_translations:
                 temp = []
                 for t in self.tooltip_translations:
-                    temp.append({
-                        "language": t['language'],
-                        "text": t['tooltip_translations']
-                    })
+                    temp.append(
+                        {
+                            "language": t["language"],
+                            "text": t["tooltip_translations"],
+                        }
+                    )
                 tooltip.update({"translations": temp})
             question.update({"tooltip": tooltip})
         if self.skip_logic:
-            question.update({
-                "dependency": [
-                    skip.serializeJson for skip in self.skip_logic]})
+            question.update(
+                {
+                    "dependency": [
+                        skip.serializeJson for skip in self.skip_logic
+                    ]
+                }
+            )
+        if self.autofield:
+            question.update(
+                {"fn": {"multiline": False, "fnString": self.autofield}}
+            )
         return question
 
 
@@ -304,6 +335,7 @@ class QuestionBase(BaseModel):
     skip_logic: Optional[List[SkipLogicBase]] = []
     order: Optional[int] = None
     disableDelete: Optional[bool] = False
+    autofield: Optional[dict] = None
 
     class Config:
         orm_mode = True
@@ -327,6 +359,7 @@ class QuestionJson(BaseModel):
     repeating_objects: Optional[List] = []
     option: Optional[List[OptionJson]] = []
     dependency: Optional[List[dict]] = []
+    fn: Optional[dict] = None
 
     class Config:
         orm_mode = True
