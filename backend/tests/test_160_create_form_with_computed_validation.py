@@ -19,7 +19,7 @@ def datenow():
     return now.strftime("%d-%m-%Y")
 
 
-class TestFormWithComputedValidationRoutes():
+class TestFormWithComputedValidationRoutes:
     @pytest.mark.asyncio
     async def test_add_computed_validation_form(
         self, app: FastAPI, session: Session, client: AsyncClient
@@ -32,8 +32,8 @@ class TestFormWithComputedValidationRoutes():
                 "name": "Form with computed validation",
                 "description": "Form Description",
                 "languages": None,
-                "enable_prefilled_value": True
-            }
+                "enable_prefilled_value": True,
+            },
         )
         assert res.status_code == 200
         res = res.json()
@@ -46,7 +46,7 @@ class TestFormWithComputedValidationRoutes():
             "published": None,
             "url": None,
             "version": 0.0,
-            "enable_prefilled_value": True
+            "enable_prefilled_value": True,
         }
 
     @pytest.mark.asyncio
@@ -70,8 +70,9 @@ class TestFormWithComputedValidationRoutes():
                 "order": 1,
                 "member_access": [1],
                 "isco_access": [1],
-                "question": None
-            })
+                "question": None,
+            },
+        )
         assert res.status_code == 200
         res = res.json()
         assert res == {
@@ -85,7 +86,7 @@ class TestFormWithComputedValidationRoutes():
             "repeat": False,
             "repeat_text": None,
             "translations": [],
-            "question": []
+            "question": [],
         }
 
     @pytest.mark.asyncio
@@ -97,7 +98,8 @@ class TestFormWithComputedValidationRoutes():
         assert res.status_code == 200
         # get question group
         res = await client.get(
-            app.url_path_for("question_group:get_by_id", id=5))
+            app.url_path_for("question_group:get_by_id", id=5)
+        )
         assert res.status_code == 200
         # add question type number
         question_payload = {
@@ -122,11 +124,13 @@ class TestFormWithComputedValidationRoutes():
             "skip_logic": None,
             "core_mandatory": False,
             "deactivate": False,
+            "autofield": None,
         }
         res = await client.post(
             app.url_path_for("question:create"),
             headers={"Authorization": f"Bearer {account.token}"},
-            json=question_payload)
+            json=question_payload,
+        )
         assert res.status_code == 200
         res = res.json()
         assert res == {
@@ -137,7 +141,7 @@ class TestFormWithComputedValidationRoutes():
             "isco_access": [],
             "mandatory": False,
             "member_access": [],
-            "name": 'Percentage 1',
+            "name": "Percentage 1",
             "option": [],
             "order": 1,
             "personal_data": False,
@@ -148,11 +152,12 @@ class TestFormWithComputedValidationRoutes():
             "tooltip": None,
             "tooltip_translations": [],
             "translations": [],
-            "type": 'number',
+            "type": "number",
             "variable_name": None,
             "core_mandatory": False,
             "deactivate": False,
             "disableDelete": False,
+            "autofield": None,
         }
         #
         # add question type number
@@ -178,11 +183,13 @@ class TestFormWithComputedValidationRoutes():
             "skip_logic": None,
             "core_mandatory": False,
             "deactivate": False,
+            "autofield": None,
         }
         res = await client.post(
             app.url_path_for("question:create"),
             headers={"Authorization": f"Bearer {account.token}"},
-            json=question_payload)
+            json=question_payload,
+        )
         assert res.status_code == 200
         res = res.json()
         assert res == {
@@ -193,7 +200,7 @@ class TestFormWithComputedValidationRoutes():
             "isco_access": [],
             "mandatory": False,
             "member_access": [],
-            "name": 'Percentage 2',
+            "name": "Percentage 2",
             "option": [],
             "order": 2,
             "personal_data": False,
@@ -204,11 +211,12 @@ class TestFormWithComputedValidationRoutes():
             "tooltip": None,
             "tooltip_translations": [],
             "translations": [],
-            "type": 'number',
+            "type": "number",
             "variable_name": None,
             "core_mandatory": False,
             "deactivate": False,
             "disableDelete": False,
+            "autofield": None,
         }
         #
         # add question type input
@@ -234,11 +242,13 @@ class TestFormWithComputedValidationRoutes():
             "skip_logic": None,
             "core_mandatory": False,
             "deactivate": False,
+            "autofield": None,
         }
         res = await client.post(
             app.url_path_for("question:create"),
             headers={"Authorization": f"Bearer {account.token}"},
-            json=question_payload)
+            json=question_payload,
+        )
         assert res.status_code == 200
         res = res.json()
         assert res == {
@@ -249,7 +259,7 @@ class TestFormWithComputedValidationRoutes():
             "isco_access": [],
             "mandatory": False,
             "member_access": [],
-            "name": 'Your Name',
+            "name": "Your Name",
             "option": [],
             "order": 3,
             "personal_data": False,
@@ -260,11 +270,12 @@ class TestFormWithComputedValidationRoutes():
             "tooltip": None,
             "tooltip_translations": [],
             "translations": [],
-            "type": 'input',
+            "type": "input",
             "variable_name": None,
             "core_mandatory": False,
             "deactivate": False,
             "disableDelete": False,
+            "autofield": None,
         }
 
     @pytest.mark.asyncio
@@ -275,12 +286,13 @@ class TestFormWithComputedValidationRoutes():
         form = await client.get(app.url_path_for("form:get_by_id", id=4))
         assert form.status_code == 200
         form = form.json()
-        assert form['enable_prefilled_value'] is True
+        assert form["enable_prefilled_value"] is True
         # publish form
         res = await client.post(
             app.url_path_for("form:publish"),
             headers={"Authorization": f"Bearer {account.token}"},
-            params={"form_id": 4})
+            params={"form_id": 4},
+        )
         assert res.status_code == 200
         res = res.json()
         assert res["version"] == form["version"] + 1
