@@ -50,7 +50,7 @@ def upgrade():
     )
 
     # Drop the old enum type
-    op.execute("DROP TYPE question_type")
+    op.execute("DROP TYPE IF EXISTS question_type")
 
     # Rename the new enum type to the original name
     op.execute("ALTER TYPE question_type_new RENAME TO question_type")
@@ -86,7 +86,7 @@ def downgrade():
     )
 
     # Drop the old enum type
-    op.execute("DROP TYPE question_type")
+    op.execute("DROP TYPE IF EXISTS question_type")
 
     # Rename the new enum type to the original name
     op.execute("ALTER TYPE question_type_new RENAME TO question_type")
