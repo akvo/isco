@@ -10,8 +10,11 @@ from db.connection import get_session
 import db.crud_question as crud
 from db import crud_answer
 from models.question import QuestionBase, QuestionDict
-from models.question import QuestionPayload, QuestionType, \
-    QuestionDeactivatePayload
+from models.question import (
+    QuestionPayload,
+    QuestionType,
+    QuestionDeactivatePayload,
+)
 from models.question import RepeatingObjectType, Question
 
 security = HTTPBearer()
@@ -23,10 +26,14 @@ question_route = APIRouter()
     response_model=QuestionBase,
     summary="add new question",
     name="question:create",
-    tags=["Question"])
-def add(req: Request, payload: QuestionPayload,
-        session: Session = Depends(get_session),
-        credentials: credentials = Depends(security)):
+    tags=["Question"],
+)
+def add(
+    req: Request,
+    payload: QuestionPayload,
+    session: Session = Depends(get_session),
+    credentials: credentials = Depends(security),
+):
     question = crud.add_question(session=session, payload=payload)
     return question.serialize
 
@@ -36,12 +43,15 @@ def add(req: Request, payload: QuestionPayload,
     response_model=QuestionBase,
     summary="add default question",
     name="question:create_default",
-    tags=["Question"])
+    tags=["Question"],
+)
 def create_default(
-    req: Request, form_id: int,
-    question_group_id: int, order: int,
+    req: Request,
+    form_id: int,
+    question_group_id: int,
+    order: int,
     session: Session = Depends(get_session),
-    credentials: credentials = Depends(security)
+    credentials: credentials = Depends(security),
 ):
     payload = {
         "form": form_id,
@@ -65,15 +75,21 @@ def create_default(
         "skip_logic": None,
         "core_mandatory": False,
         "deactivate": False,
+        "autofield": None,
     }
-    next_questions = session.query(Question).filter(
-        and_(Question.form == form_id, Question.order >= order)).all()
+    next_questions = (
+        session.query(Question)
+        .filter(and_(Question.form == form_id, Question.order >= order))
+        .all()
+    )
     if len(next_questions):
         next_questions_ids = [q.id for q in next_questions]
         crud.reorder_question(
-            session=session, form=form_id,
+            session=session,
+            form=form_id,
             only=next_questions_ids,
-            order=2 if order == 1 else order + 1)
+            order=2 if order == 1 else order + 1,
+        )
     question = crud.add_question(session=session, payload=payload)
     return question.serialize
 
@@ -83,7 +99,8 @@ def create_default(
     response_model=List[QuestionDict],
     summary="get all questions",
     name="question:get_all",
-    tags=["Question"])
+    tags=["Question"],
+)
 def get(req: Request, session: Session = Depends(get_session)):
     question = crud.get_question(session=session)
     return [q.serialize for q in question]
@@ -94,7 +111,8 @@ def get(req: Request, session: Session = Depends(get_session)):
     response_model=List[str],
     summary="get all question type",
     name="question:get_all_type",
-    tags=["Question"])
+    tags=["Question"],
+)
 def get_question_type(req: Request, session: Session = Depends(get_session)):
     return [q.value for q in QuestionType]
 
@@ -104,7 +122,8 @@ def get_question_type(req: Request, session: Session = Depends(get_session)):
     response_model=List[str],
     summary="get all question repeating object options",
     name="question:get_all_repeating_object",
-    tags=["Question"])
+    tags=["Question"],
+)
 def get_repeating_object(
     req: Request, session: Session = Depends(get_session)
 ):
@@ -127,11 +146,9 @@ def get_repeating_object(
     response_model=QuestionBase,
     summary="get question by id",
     name="question:get_by_id",
-    tags=["Question"])
-def get_by_id(
-    req: Request, id: int,
-    session: Session = Depends(get_session)
-):
+    tags=["Question"],
+)
+def get_by_id(req: Request, id: int, session: Session = Depends(get_session)):
     question = crud.get_question_by_id(session=session, id=id)
     return question.serialize
 
@@ -142,12 +159,13 @@ def get_by_id(
     status_code=HTTPStatus.NO_CONTENT,
     summary="bulk deactivate questions",
     name="question:bulk_deactivate",
-    tags=["Question"])
+    tags=["Question"],
+)
 def bulk_deactivate(
     req: Request,
     payload: List[QuestionDeactivatePayload],
     session: Session = Depends(get_session),
-    credentials: credentials = Depends(security)
+    credentials: credentials = Depends(security),
 ):
     crud.deactivate_bulk(session=session, payload=payload)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)
@@ -158,21 +176,26 @@ def bulk_deactivate(
     response_model=QuestionBase,
     summary="update question",
     name="question:put",
-    tags=["Question"])
+    tags=["Question"],
+)
 def update(
-    req: Request, id: int, payload: QuestionPayload,
+    req: Request,
+    id: int,
+    payload: QuestionPayload,
     session: Session = Depends(get_session),
-    credentials: credentials = Depends(security)
+    credentials: credentials = Depends(security),
 ):
     # Check if question has answers & change question type
     # don't allow to update, return 400 bad request
     current_question = crud.get_question_by_id(session=session, id=id)
     has_answers = crud_answer.get_answer_by_question(
-        session=session, question=[id])
-    if has_answers and current_question.type != payload.get('type'):
+        session=session, question=[id]
+    )
+    if has_answers and current_question.type != payload.get("type"):
         return JSONResponse(
             status_code=HTTPStatus.BAD_REQUEST.value,
-            content={"message": "This question has answers"})
+            content={"message": "This question has answers"},
+        )
     question = crud.update_question(session=session, id=id, payload=payload)
     return question.serialize
 
@@ -183,16 +206,24 @@ def update(
     status_code=HTTPStatus.NO_CONTENT,
     summary="move question",
     name="question:move",
-    tags=["Move"])
+    tags=["Move"],
+)
 def move(
-    req: Request, id: int, selected_order: int,
-    target_order: int, target_group: int,
+    req: Request,
+    id: int,
+    selected_order: int,
+    target_order: int,
+    target_group: int,
     session: Session = Depends(get_session),
-    credentials: credentials = Depends(security)
+    credentials: credentials = Depends(security),
 ):
     crud.move_question(
-        session=session, id=id, selected_order=selected_order,
-        target_order=target_order, target_group=target_group)
+        session=session,
+        id=id,
+        selected_order=selected_order,
+        target_order=target_order,
+        target_group=target_group,
+    )
     return Response(status_code=HTTPStatus.NO_CONTENT.value)
 
 
@@ -202,18 +233,22 @@ def move(
     status_code=HTTPStatus.NO_CONTENT,
     summary="delete question by id",
     name="question:delete",
-    tags=["Question"])
+    tags=["Question"],
+)
 def delete(
-    req: Request, id: int,
+    req: Request,
+    id: int,
     session: Session = Depends(get_session),
-    credentials: credentials = Depends(security)
+    credentials: credentials = Depends(security),
 ):
     # Check if question has answers & don't allow delete
     has_answers = crud_answer.get_answer_by_question(
-        session=session, question=[id])
+        session=session, question=[id]
+    )
     if has_answers:
         return JSONResponse(
             status_code=HTTPStatus.BAD_REQUEST.value,
-            content={"message": "This question has answers"})
+            content={"message": "This question has answers"},
+        )
     crud.delete_question(session=session, id=id)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)

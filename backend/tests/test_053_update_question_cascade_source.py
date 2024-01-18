@@ -12,14 +12,13 @@ account = Acc(email=None, token=None)
 
 
 # test to update question cascade source after a submission
-class TestUpdateQuestionCascade():
+class TestUpdateQuestionCascade:
     @pytest.mark.asyncio
     async def test_update_question(
         self, app: FastAPI, session: Session, client: AsyncClient
     ) -> None:
         # get question
-        res = await client.get(
-            app.url_path_for("question:get_by_id", id=1))
+        res = await client.get(app.url_path_for("question:get_by_id", id=1))
         assert res.status_code == 200
         res = res.json()
         assert res["id"] == 1
@@ -31,7 +30,7 @@ class TestUpdateQuestionCascade():
             "isco_access": [1],
             "mandatory": False,
             "member_access": [1],
-            "name": 'Cascade',
+            "name": "Cascade",
             "option": [],
             "order": 3,
             "personal_data": False,
@@ -47,11 +46,13 @@ class TestUpdateQuestionCascade():
             "core_mandatory": False,
             "deactivate": False,
             "disableDelete": False,
+            "autofield": None,
         }
         res = await client.put(
             app.url_path_for("question:put", id=6),
             headers={"Authorization": f"Bearer {account.token}"},
-            json=question_payload)
+            json=question_payload,
+        )
         assert res.status_code == 200
         res = res.json()
         assert res == {
@@ -62,7 +63,7 @@ class TestUpdateQuestionCascade():
             "isco_access": [1],
             "mandatory": False,
             "member_access": [1],
-            "name": 'Cascade',
+            "name": "Cascade",
             "option": [],
             "order": 3,
             "personal_data": False,
@@ -78,4 +79,5 @@ class TestUpdateQuestionCascade():
             "core_mandatory": False,
             "deactivate": False,
             "disableDelete": False,
+            "autofield": None,
         }

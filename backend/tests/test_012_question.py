@@ -12,10 +12,11 @@ sys.path.append("..")
 account = Acc(email=None, token=None)
 
 
-class TestQuestionRoutes():
+class TestQuestionRoutes:
     @pytest.mark.asyncio
-    async def test_add_question(self, app: FastAPI, session: Session,
-                                client: AsyncClient) -> None:
+    async def test_add_question(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         # get form
         res = await client.get(app.url_path_for("form:get_by_id", id=1))
         assert res.status_code == 200
@@ -23,7 +24,8 @@ class TestQuestionRoutes():
         assert res["id"] == 1
         # get question group
         res = await client.get(
-            app.url_path_for("question_group:get_by_id", id=1))
+            app.url_path_for("question_group:get_by_id", id=1)
+        )
         assert res.status_code == 200
         res = res.json()
         assert res["id"] == 1
@@ -50,11 +52,13 @@ class TestQuestionRoutes():
             "skip_logic": None,
             "core_mandatory": False,
             "deactivate": False,
+            "autofield": None,
         }
         res = await client.post(
             app.url_path_for("question:create"),
             headers={"Authorization": f"Bearer {account.token}"},
-            json=question_payload)
+            json=question_payload,
+        )
         assert res.status_code == 200
         res = res.json()
         assert res == {
@@ -65,7 +69,7 @@ class TestQuestionRoutes():
             "isco_access": [],
             "mandatory": True,
             "member_access": [],
-            "name": 'Question 1',
+            "name": "Question 1",
             "option": [],
             "order": 1,
             "personal_data": False,
@@ -73,14 +77,15 @@ class TestQuestionRoutes():
             "repeating_objects": [],
             "rule": None,
             "skip_logic": [],
-            "tooltip": 'Question 1 tooltip',
+            "tooltip": "Question 1 tooltip",
             "tooltip_translations": [],
             "translations": [],
-            "type": 'text',
+            "type": "text",
             "variable_name": None,
             "core_mandatory": False,
             "deactivate": False,
             "disableDelete": False,
+            "autofield": None,
         }
 
     @pytest.mark.asyncio
@@ -88,8 +93,7 @@ class TestQuestionRoutes():
         self, app: FastAPI, session: Session, client: AsyncClient
     ) -> None:
         # get question
-        res = await client.get(
-            app.url_path_for("question:get_by_id", id=1))
+        res = await client.get(app.url_path_for("question:get_by_id", id=1))
         assert res.status_code == 200
         res = res.json()
         assert res["id"] == 1
@@ -98,8 +102,7 @@ class TestQuestionRoutes():
             "form": 1,
             "question_group": 1,
             "name": "Question 1",
-            "translations": [
-                {"language": "id", "text": "Pertanyaan 1"}],
+            "translations": [{"language": "id", "text": "Pertanyaan 1"}],
             "mandatory": True,
             "datapoint_name": True,
             "variable_name": None,
@@ -107,9 +110,12 @@ class TestQuestionRoutes():
             "personal_data": False,
             "rule": None,
             "tooltip": "Question 1 tooltip",
-            "tooltip_translations": [{
-                "language": "id",
-                "tooltip_translations": "Keterangan Pertanyaan 1"}],
+            "tooltip_translations": [
+                {
+                    "language": "id",
+                    "tooltip_translations": "Keterangan Pertanyaan 1",
+                }
+            ],
             "cascade": None,
             "repeating_objects": None,
             "order": 1,
@@ -119,11 +125,13 @@ class TestQuestionRoutes():
             "skip_logic": None,
             "core_mandatory": True,
             "deactivate": False,
+            "autofield": None,
         }
         res = await client.put(
             app.url_path_for("question:put", id=1),
             headers={"Authorization": f"Bearer {account.token}"},
-            json=question_payload)
+            json=question_payload,
+        )
         assert res.status_code == 200
         res = res.json()
         assert res == {
@@ -134,7 +142,7 @@ class TestQuestionRoutes():
             "isco_access": [],
             "mandatory": True,
             "member_access": [],
-            "name": 'Question 1',
+            "name": "Question 1",
             "option": [],
             "order": 1,
             "personal_data": False,
@@ -142,15 +150,18 @@ class TestQuestionRoutes():
             "repeating_objects": [],
             "rule": None,
             "skip_logic": [],
-            "tooltip": 'Question 1 tooltip',
-            "tooltip_translations": [{
-                "language": "id",
-                "tooltip_translations": "Keterangan Pertanyaan 1"}],
-            "translations": [{
-                "language": "id", "text": "Pertanyaan 1"}],
+            "tooltip": "Question 1 tooltip",
+            "tooltip_translations": [
+                {
+                    "language": "id",
+                    "tooltip_translations": "Keterangan Pertanyaan 1",
+                }
+            ],
+            "translations": [{"language": "id", "text": "Pertanyaan 1"}],
             "type": "option",
             "variable_name": None,
             "core_mandatory": True,
             "deactivate": False,
             "disableDelete": False,
+            "autofield": None,
         }

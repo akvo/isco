@@ -13,7 +13,7 @@ sys.path.append("..")
 account = Acc(email=None, token=None)
 
 
-class TestSkipLogicRoutes():
+class TestSkipLogicRoutes:
     @pytest.mark.asyncio
     async def test_add_skip_logic(
         self, app: FastAPI, session: Session, client: AsyncClient
@@ -41,11 +41,13 @@ class TestSkipLogicRoutes():
             "skip_logic": None,
             "core_mandatory": False,
             "deactivate": False,
+            "autofield": None,
         }
         res = await client.post(
             app.url_path_for("question:create"),
             headers={"Authorization": f"Bearer {account.token}"},
-            json=question_payload)
+            json=question_payload,
+        )
         assert res.status_code == 200
         res = res.json()
         assert res == {
@@ -56,7 +58,7 @@ class TestSkipLogicRoutes():
             "isco_access": [],
             "mandatory": True,
             "member_access": [],
-            "name": 'Question 2',
+            "name": "Question 2",
             "order": 2,
             "option": [],
             "personal_data": False,
@@ -64,14 +66,15 @@ class TestSkipLogicRoutes():
             "repeating_objects": [],
             "rule": None,
             "skip_logic": [],
-            "tooltip": 'Question 2 tooltip',
+            "tooltip": "Question 2 tooltip",
             "tooltip_translations": [],
             "translations": [],
-            "type": 'text',
+            "type": "text",
             "variable_name": None,
             "core_mandatory": False,
             "deactivate": False,
             "disableDelete": False,
+            "autofield": None,
         }
         # get question
         res = await client.get(app.url_path_for("question:get_by_id", id=2))
@@ -84,12 +87,13 @@ class TestSkipLogicRoutes():
             "dependent_to": 1,
             "operator": OperatorType.equal.value,
             "value": "1",
-            "type": QuestionType.option.value
+            "type": QuestionType.option.value,
         }
         res = await client.post(
             app.url_path_for("skip_logic:create"),
             headers={"Authorization": f"Bearer {account.token}"},
-            json=skip_logic_payload)
+            json=skip_logic_payload,
+        )
         assert res.status_code == 200
         res = res.json()
         assert res == {

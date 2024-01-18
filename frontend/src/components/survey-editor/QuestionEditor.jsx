@@ -150,6 +150,14 @@ const QuestionEditor = ({
             }
           });
         }
+        // Load autofield value
+        if (key === "autofield" && value) {
+          Object.keys(value).forEach((key) => {
+            if (key === "fnString") {
+              form.setFieldsValue({ [`${field}-${key}`]: value?.[key] });
+            }
+          });
+        }
         // Load repeating objects value
         if (key === "repeating_objects" && value) {
           value?.forEach((val, vi) => {

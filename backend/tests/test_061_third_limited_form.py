@@ -17,7 +17,7 @@ def datenow():
     return now.strftime("%d-%m-%Y")
 
 
-class TestThirdFormRoutes():
+class TestThirdFormRoutes:
     @pytest.mark.asyncio
     async def test_add_form(
         self, app: FastAPI, session: Session, client: AsyncClient
@@ -30,8 +30,8 @@ class TestThirdFormRoutes():
                 "name": "Third limited survey",
                 "description": "Form Description",
                 "languages": [],
-                "enable_prefilled_value": False
-            }
+                "enable_prefilled_value": False,
+            },
         )
         assert res.status_code == 200
         res = res.json()
@@ -44,7 +44,7 @@ class TestThirdFormRoutes():
             "published": None,
             "url": None,
             "version": 0.0,
-            "enable_prefilled_value": False
+            "enable_prefilled_value": False,
         }
 
     @pytest.mark.asyncio
@@ -61,46 +61,51 @@ class TestThirdFormRoutes():
     ) -> None:
         res = await client.post(
             app.url_path_for(
-                "question_group:create_default", form_id=3, order=1),
-            headers={"Authorization": f"Bearer {account.token}"})
+                "question_group:create_default", form_id=3, order=1
+            ),
+            headers={"Authorization": f"Bearer {account.token}"},
+        )
         assert res.status_code == 200
         res = res.json()
         assert res == {
-            'description': None,
-            'form': 3,
-            'id': 4,
-            'isco_access': [],
-            'member_access': [],
-            'name': 'New section - please change name',
-            'order': 1,
-            'repeat': False,
-            'repeat_text': None,
-            'translations': [],
-            'question': [{
-                'cascade': None,
-                'datapoint_name': False,
-                'form': 3,
-                'id': 12,
-                'isco_access': [],
-                'mandatory': False,
-                'member_access': [],
-                'name': 'New question - please change name',
-                'option': [],
-                'order': 1,
-                'personal_data': False,
-                'question_group': 4,
-                'repeating_objects': [],
-                'rule': None,
-                'skip_logic': [],
-                'tooltip': None,
-                'tooltip_translations': [],
-                'translations': [],
-                'type': 'input',
-                'variable_name': None,
-                'core_mandatory': False,
-                'deactivate': False,
-                'disableDelete': False,
-            }],
+            "description": None,
+            "form": 3,
+            "id": 4,
+            "isco_access": [],
+            "member_access": [],
+            "name": "New section - please change name",
+            "order": 1,
+            "repeat": False,
+            "repeat_text": None,
+            "translations": [],
+            "question": [
+                {
+                    "cascade": None,
+                    "datapoint_name": False,
+                    "form": 3,
+                    "id": 12,
+                    "isco_access": [],
+                    "mandatory": False,
+                    "member_access": [],
+                    "name": "New question - please change name",
+                    "option": [],
+                    "order": 1,
+                    "personal_data": False,
+                    "question_group": 4,
+                    "repeating_objects": [],
+                    "rule": None,
+                    "skip_logic": [],
+                    "tooltip": None,
+                    "tooltip_translations": [],
+                    "translations": [],
+                    "type": "input",
+                    "variable_name": None,
+                    "core_mandatory": False,
+                    "deactivate": False,
+                    "disableDelete": False,
+                    "autofield": None,
+                }
+            ],
         }
 
     @pytest.mark.asyncio
@@ -110,34 +115,39 @@ class TestThirdFormRoutes():
         res = await client.post(
             app.url_path_for(
                 "question:create_default",
-                form_id=3, question_group_id=4, order=2),
-            headers={"Authorization": f"Bearer {account.token}"})
+                form_id=3,
+                question_group_id=4,
+                order=2,
+            ),
+            headers={"Authorization": f"Bearer {account.token}"},
+        )
         assert res.status_code == 200
         res = res.json()
         assert res == {
-            'cascade': None,
-            'datapoint_name': False,
-            'form': 3,
-            'id': 13,
-            'isco_access': [],
-            'mandatory': False,
-            'member_access': [],
-            'name': 'New question - please change name',
-            'option': [],
-            'order': 2,
-            'personal_data': False,
-            'question_group': 4,
-            'repeating_objects': [],
-            'rule': None,
-            'skip_logic': [],
-            'tooltip': None,
-            'tooltip_translations': [],
-            'translations': [],
-            'type': 'input',
-            'variable_name': None,
-            'core_mandatory': False,
-            'deactivate': False,
-            'disableDelete': False
+            "cascade": None,
+            "datapoint_name": False,
+            "form": 3,
+            "id": 13,
+            "isco_access": [],
+            "mandatory": False,
+            "member_access": [],
+            "name": "New question - please change name",
+            "option": [],
+            "order": 2,
+            "personal_data": False,
+            "question_group": 4,
+            "repeating_objects": [],
+            "rule": None,
+            "skip_logic": [],
+            "tooltip": None,
+            "tooltip_translations": [],
+            "translations": [],
+            "type": "input",
+            "variable_name": None,
+            "core_mandatory": False,
+            "deactivate": False,
+            "disableDelete": False,
+            "autofield": None,
         }
 
     @pytest.mark.asyncio
@@ -148,7 +158,8 @@ class TestThirdFormRoutes():
         res = await client.post(
             app.url_path_for("form:publish"),
             headers={"Authorization": f"Bearer {account.token}"},
-            params={"form_id": 3})
+            params={"form_id": 3},
+        )
         assert res.status_code == 200
         res = res.json()
         assert res["url"] is not None

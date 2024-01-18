@@ -17,7 +17,7 @@ def datenow():
     return now.strftime("%d-%m-%Y")
 
 
-class TestSecondFormRoutes():
+class TestSecondFormRoutes:
     @pytest.mark.asyncio
     async def test_add_form(
         self, app: FastAPI, session: Session, client: AsyncClient
@@ -30,8 +30,8 @@ class TestSecondFormRoutes():
                 "name": "Second survey",
                 "description": "Form Description",
                 "languages": None,
-                "enable_prefilled_value": False
-            }
+                "enable_prefilled_value": False,
+            },
         )
         assert res.status_code == 200
         res = res.json()
@@ -44,7 +44,7 @@ class TestSecondFormRoutes():
             "published": None,
             "url": None,
             "version": 0.0,
-            "enable_prefilled_value": False
+            "enable_prefilled_value": False,
         }
 
     @pytest.mark.asyncio
@@ -56,14 +56,14 @@ class TestSecondFormRoutes():
         assert res.status_code == 200
         res = res.json()
         assert res == {
-            'description': 'Form Description',
-            'id': 2,
-            'languages': None,
-            'name': 'Second survey',
-            'question_group': [],
-            'url': None,
-            'version': 0.0,
-            'enable_prefilled_value': False
+            "description": "Form Description",
+            "id": 2,
+            "languages": None,
+            "name": "Second survey",
+            "question_group": [],
+            "url": None,
+            "version": 0.0,
+            "enable_prefilled_value": False,
         }
 
     @pytest.mark.asyncio
@@ -72,46 +72,51 @@ class TestSecondFormRoutes():
     ) -> None:
         res = await client.post(
             app.url_path_for(
-                "question_group:create_default", form_id=2, order=1),
-            headers={"Authorization": f"Bearer {account.token}"})
+                "question_group:create_default", form_id=2, order=1
+            ),
+            headers={"Authorization": f"Bearer {account.token}"},
+        )
         assert res.status_code == 200
         res = res.json()
         assert res == {
-            'description': None,
-            'form': 2,
-            'id': 3,
-            'isco_access': [],
-            'member_access': [],
-            'name': 'New section - please change name',
-            'order': 1,
-            'repeat': False,
-            'repeat_text': None,
-            'translations': [],
-            'question': [{
-                'cascade': None,
-                'datapoint_name': False,
-                'form': 2,
-                'id': 10,
-                'isco_access': [],
-                'mandatory': False,
-                'member_access': [],
-                'name': 'New question - please change name',
-                'option': [],
-                'order': 1,
-                'personal_data': False,
-                'question_group': 3,
-                'repeating_objects': [],
-                'rule': None,
-                'skip_logic': [],
-                'tooltip': None,
-                'tooltip_translations': [],
-                'translations': [],
-                'type': 'input',
-                'variable_name': None,
-                'core_mandatory': False,
-                'deactivate': False,
-                'disableDelete': False,
-            }],
+            "description": None,
+            "form": 2,
+            "id": 3,
+            "isco_access": [],
+            "member_access": [],
+            "name": "New section - please change name",
+            "order": 1,
+            "repeat": False,
+            "repeat_text": None,
+            "translations": [],
+            "question": [
+                {
+                    "cascade": None,
+                    "datapoint_name": False,
+                    "form": 2,
+                    "id": 10,
+                    "isco_access": [],
+                    "mandatory": False,
+                    "member_access": [],
+                    "name": "New question - please change name",
+                    "option": [],
+                    "order": 1,
+                    "personal_data": False,
+                    "question_group": 3,
+                    "repeating_objects": [],
+                    "rule": None,
+                    "skip_logic": [],
+                    "tooltip": None,
+                    "tooltip_translations": [],
+                    "translations": [],
+                    "type": "input",
+                    "variable_name": None,
+                    "core_mandatory": False,
+                    "deactivate": False,
+                    "disableDelete": False,
+                    "autofield": None,
+                }
+            ],
         }
 
     @pytest.mark.asyncio
@@ -121,32 +126,37 @@ class TestSecondFormRoutes():
         res = await client.post(
             app.url_path_for(
                 "question:create_default",
-                form_id=2, question_group_id=3, order=1),
-            headers={"Authorization": f"Bearer {account.token}"})
+                form_id=2,
+                question_group_id=3,
+                order=1,
+            ),
+            headers={"Authorization": f"Bearer {account.token}"},
+        )
         assert res.status_code == 200
         res = res.json()
         assert res == {
-            'cascade': None,
-            'datapoint_name': False,
-            'form': 2,
-            'id': 11,
-            'isco_access': [],
-            'mandatory': False,
-            'member_access': [],
-            'name': 'New question - please change name',
-            'option': [],
-            'order': 1,
-            'personal_data': False,
-            'question_group': 3,
-            'repeating_objects': [],
-            'rule': None,
-            'skip_logic': [],
-            'tooltip': None,
-            'tooltip_translations': [],
-            'translations': [],
-            'type': 'input',
-            'variable_name': None,
-            'core_mandatory': False,
-            'deactivate': False,
-            'disableDelete': False
+            "cascade": None,
+            "datapoint_name": False,
+            "form": 2,
+            "id": 11,
+            "isco_access": [],
+            "mandatory": False,
+            "member_access": [],
+            "name": "New question - please change name",
+            "option": [],
+            "order": 1,
+            "personal_data": False,
+            "question_group": 3,
+            "repeating_objects": [],
+            "rule": None,
+            "skip_logic": [],
+            "tooltip": None,
+            "tooltip_translations": [],
+            "translations": [],
+            "type": "input",
+            "variable_name": None,
+            "core_mandatory": False,
+            "deactivate": False,
+            "disableDelete": False,
+            "autofield": None,
         }
