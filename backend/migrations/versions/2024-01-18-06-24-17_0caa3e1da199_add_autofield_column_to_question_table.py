@@ -22,7 +22,11 @@ def upgrade():
         "question",
         sa.Column("autofield", pg.JSONB(), default=None, nullable=True),
     )
+    # Add the new enum value
+    op.execute("ALTER TYPE question_type ADD VALUE 'autofield'")
 
 
 def downgrade():
+    # Remove the added enum value
+    op.execute("ALTER TYPE question_type DROP VALUE 'autofield'")
     op.drop_column("question", "autofield")

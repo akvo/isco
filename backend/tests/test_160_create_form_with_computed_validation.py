@@ -277,6 +277,71 @@ class TestFormWithComputedValidationRoutes:
             "disableDelete": False,
             "autofield": None,
         }
+        #
+        # add question type autofield
+        question_payload = {
+            "form": 4,
+            "question_group": 5,
+            "name": "Autofield Question",
+            "translations": None,
+            "mandatory": False,
+            "datapoint_name": False,
+            "variable_name": None,
+            "type": QuestionType.autofield.value,
+            "personal_data": False,
+            "rule": None,
+            "tooltip": None,
+            "tooltip_translations": None,
+            "cascade": None,
+            "repeating_objects": None,
+            "order": 4,
+            "option": None,
+            "member_access": None,
+            "isco_access": None,
+            "skip_logic": None,
+            "core_mandatory": False,
+            "deactivate": False,
+            "autofield": {
+                "multiline": False,
+                "fnString": "function () { return #15 }",
+            },
+        }
+        res = await client.post(
+            app.url_path_for("question:create"),
+            headers={"Authorization": f"Bearer {account.token}"},
+            json=question_payload,
+        )
+        assert res.status_code == 200
+        res = res.json()
+        assert res == {
+            "id": 17,
+            "cascade": None,
+            "datapoint_name": False,
+            "form": 4,
+            "isco_access": [],
+            "mandatory": False,
+            "member_access": [],
+            "name": "Autofield Question",
+            "option": [],
+            "order": 4,
+            "personal_data": False,
+            "question_group": 5,
+            "repeating_objects": [],
+            "rule": None,
+            "skip_logic": [],
+            "tooltip": None,
+            "tooltip_translations": [],
+            "translations": [],
+            "type": "autofield",
+            "variable_name": None,
+            "core_mandatory": False,
+            "deactivate": False,
+            "disableDelete": False,
+            "autofield": {
+                "multiline": False,
+                "fnString": "function () { return #15 }",
+            },
+        }
 
     @pytest.mark.asyncio
     async def test_publish_computed_validation_form(

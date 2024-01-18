@@ -305,9 +305,7 @@ class Question(Base):
                 }
             )
         if self.autofield:
-            question.update(
-                {"fn": {"multiline": False, "fnString": self.autofield}}
-            )
+            question.update({"fn": self.autofield})
         return question
 
 
