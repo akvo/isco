@@ -373,9 +373,6 @@ const QuestionDetail = ({
 
   return (
     <>
-      <div style={{ padding: "20px 20px 10px 20px" }}>
-        <Tag>Question ID: {qId}</Tag>
-      </div>
       {/* Cascade / Nested dropdown */}
       {(type === "cascade" || type === "nested_list") && (
         <div className="question-setting-wrapper">
@@ -435,6 +432,9 @@ const QuestionDetail = ({
       {/* Autofield Question*/}
       {type === "autofield" && (
         <div className="question-setting-wrapper">
+          <div style={{ padding: "0 0 15px 0" }}>
+            <Tag>Question ID: {qId}</Tag>
+          </div>
           <div className="field-wrapper">
             <div className="field-label">Add Function (String) Here</div>
             <Form.Item
