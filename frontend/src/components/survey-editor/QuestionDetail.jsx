@@ -1,5 +1,15 @@
 import React from "react";
-import { Row, Col, Form, Input, Checkbox, Button, Space, Select } from "antd";
+import {
+  Row,
+  Col,
+  Form,
+  Input,
+  Checkbox,
+  Button,
+  Space,
+  Select,
+  Tag,
+} from "antd";
 import { BiRadioCircle } from "react-icons/bi";
 import { HiPlus, HiMinus, HiArrowSmUp, HiArrowSmDown } from "react-icons/hi";
 import { store } from "../../lib";
@@ -422,6 +432,9 @@ const QuestionDetail = ({
       {/* Autofield Question*/}
       {type === "autofield" && (
         <div className="question-setting-wrapper">
+          <div style={{ padding: "0 0 15px 0" }}>
+            <Tag>Question ID: {qId}</Tag>
+          </div>
           <div className="field-wrapper">
             <div className="field-label">Add Function (String) Here</div>
             <Form.Item

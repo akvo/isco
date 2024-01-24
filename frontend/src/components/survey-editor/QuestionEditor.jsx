@@ -11,6 +11,7 @@ import {
   Collapse,
   Popconfirm,
   Tooltip,
+  Tag,
 } from "antd";
 import {
   RiSettings5Fill,
@@ -319,7 +320,7 @@ const QuestionEditor = ({
                   key={panelKey}
                   showArrow={false}
                   header={
-                    <Row align="center" justify="space-between" gutter={[8, 8]}>
+                    <Row align="middle" justify="space-between" gutter={[8, 8]}>
                       <Col span={3}>
                         <Tooltip title="Click to move question">
                           <Button
@@ -445,32 +446,39 @@ const QuestionEditor = ({
             </Col>
 
             <Col span={6} align="end" className="right">
-              <Space align="center">
-                <Form.Item
-                  name={`question-${qId}-type`}
-                  rules={[
-                    { required: true, message: "Please select question type" },
-                  ]}
-                >
-                  <Select
-                    showSearch={true}
-                    className="custom-dropdown-wrapper"
-                    placeholder="Question Type"
-                    options={question_type?.map((item) => ({
-                      label: item
-                        .split("_")
-                        .map((x) => capitalize(x))
-                        .join(" "),
-                      value: item,
-                    }))}
-                    filterOption={(input, option) =>
-                      option.label.toLowerCase().indexOf(input.toLowerCase()) >=
-                      0
-                    }
-                    onChange={() => setActivePanel(panelKey)}
-                    disabled={question?.disableDelete || false}
-                  />
-                </Form.Item>
+              <Space align="start">
+                <Space direction="vertical" align="start">
+                  <Form.Item
+                    name={`question-${qId}-type`}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please select question type",
+                      },
+                    ]}
+                  >
+                    <Select
+                      showSearch={true}
+                      className="custom-dropdown-wrapper"
+                      placeholder="Question Type"
+                      options={question_type?.map((item) => ({
+                        label: item
+                          .split("_")
+                          .map((x) => capitalize(x))
+                          .join(" "),
+                        value: item,
+                      }))}
+                      filterOption={(input, option) =>
+                        option.label
+                          .toLowerCase()
+                          .indexOf(input.toLowerCase()) >= 0
+                      }
+                      onChange={() => setActivePanel(panelKey)}
+                      disabled={question?.disableDelete || false}
+                    />
+                  </Form.Item>
+                  <Tag style={{ float: "left" }}>Question ID: {qId}</Tag>
+                </Space>
                 <Popconfirm
                   title="Delete question can't be undone."
                   okText="Delete"
