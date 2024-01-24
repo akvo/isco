@@ -1,5 +1,15 @@
 import React from "react";
-import { Row, Col, Form, Input, Checkbox, Button, Space, Select } from "antd";
+import {
+  Row,
+  Col,
+  Form,
+  Input,
+  Checkbox,
+  Button,
+  Space,
+  Select,
+  Tag,
+} from "antd";
 import { BiRadioCircle } from "react-icons/bi";
 import { HiPlus, HiMinus, HiArrowSmUp, HiArrowSmDown } from "react-icons/hi";
 import { store } from "../../lib";
@@ -363,6 +373,9 @@ const QuestionDetail = ({
 
   return (
     <>
+      <div style={{ padding: "20px 20px 10px 20px" }}>
+        <Tag>Question ID: {qId}</Tag>
+      </div>
       {/* Cascade / Nested dropdown */}
       {(type === "cascade" || type === "nested_list") && (
         <div className="question-setting-wrapper">

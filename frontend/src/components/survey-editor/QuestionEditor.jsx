@@ -319,7 +319,7 @@ const QuestionEditor = ({
                   key={panelKey}
                   showArrow={false}
                   header={
-                    <Row align="center" justify="space-between" gutter={[8, 8]}>
+                    <Row align="middle" justify="space-between" gutter={[8, 8]}>
                       <Col span={3}>
                         <Tooltip title="Click to move question">
                           <Button
