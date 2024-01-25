@@ -139,6 +139,13 @@ const Preview = () => {
                 rule: q.rule,
               };
             }
+            // autofield
+            if (!isEmpty(q?.autofield)) {
+              qVal = {
+                ...qVal,
+                fn: q.autofield,
+              };
+            }
             // allow decimal
             if (q.rule && q.rule?.allow_decimal) {
               qVal = {
