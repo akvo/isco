@@ -27,7 +27,7 @@ const sanitize = [
 
 const checkDirty = (fnString) => {
   return sanitize.reduce((prev, sn) => {
-    const dirty = prev.match(sn.re);
+    const dirty = prev?.match(sn.re);
     if (dirty) {
       return prev
         .replace(sn.prefix, "")
@@ -39,7 +39,7 @@ const checkDirty = (fnString) => {
 
 const getFnMetadata = (fnString) => {
   const fnMetadata = fnRegex.exec(fnString) || fnEcmaRegex.exec(fnString);
-  if (fnMetadata.length >= 3) {
+  if (fnMetadata?.length >= 3) {
     const fn = fnMetadata[2].split(" ");
     return fn[0] === "return" ? fnMetadata[2] : `return ${fnMetadata[2]}`;
   }
@@ -48,6 +48,7 @@ const getFnMetadata = (fnString) => {
 
 const generateFnBody = (fnMetadata, getFieldValue) => {
   if (!fnMetadata) {
+    console.error("Function must match the placeholder criteria.");
     return false;
   }
   const fnBody = fnMetadata
