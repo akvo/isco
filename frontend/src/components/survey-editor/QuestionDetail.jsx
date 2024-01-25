@@ -453,6 +453,7 @@ const QuestionDetail = ({
                     `question-${qId}-autofield-fnString`
                   )
                 }
+                className="bg-grey"
               />
             </Form.Item>
           </div>
