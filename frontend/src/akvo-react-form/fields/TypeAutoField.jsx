@@ -46,7 +46,7 @@ const getFnMetadata = (fnString) => {
   return false;
 };
 
-const generateFnBody = (fnMetadata, getFieldValue) => {
+const generateFnBody = (fnMetadata, getFieldValue, repeatIndex) => {
   if (!fnMetadata) {
     console.error("Function must match the placeholder criteria.");
     return false;
@@ -58,7 +58,13 @@ const generateFnBody = (fnMetadata, getFieldValue) => {
       f = f.trim();
       const meta = f.match(/#([0-9]*)/);
       if (meta) {
-        let val = getFieldValue([meta[1]]);
+        // get field value
+        let fieldName = meta[1];
+        if (repeatIndex) {
+          fieldName = `${fieldName}-${repeatIndex}`;
+        }
+        let val = getFieldValue([fieldName]);
+        // eol get field value
         if (!val) {
           return null;
         }
@@ -86,16 +92,16 @@ const generateFnBody = (fnMetadata, getFieldValue) => {
   return fnBody.join(" ");
 };
 
-const strToFunction = (fnString, getFieldValue) => {
+const strToFunction = (fnString, getFieldValue, repeatIndex) => {
   fnString = checkDirty(fnString);
   const fnMetadata = getFnMetadata(fnString);
-  const fnBody = generateFnBody(fnMetadata, getFieldValue);
+  const fnBody = generateFnBody(fnMetadata, getFieldValue, repeatIndex);
   return new Function(fnBody);
 };
 
-const strMultilineToFunction = (fnString, getFieldValue) => {
+const strMultilineToFunction = (fnString, getFieldValue, repeatIndex) => {
   fnString = checkDirty(fnString);
-  const fnBody = generateFnBody(fnString, getFieldValue);
+  const fnBody = generateFnBody(fnString, getFieldValue, repeatIndex);
   return new Function(fnBody)();
 };
 
@@ -114,11 +120,18 @@ const TypeAutoField = ({
 }) => {
   const form = Form.useFormInstance();
   const { getFieldValue, setFieldsValue } = form;
+
+  const repeatIndex = String(id).split("-")?.[1];
+
   let automateValue = null;
   if (fn?.multiline) {
-    automateValue = strMultilineToFunction(fn?.fnString, getFieldValue);
+    automateValue = strMultilineToFunction(
+      fn?.fnString,
+      getFieldValue,
+      repeatIndex
+    );
   } else {
-    automateValue = strToFunction(fn?.fnString, getFieldValue);
+    automateValue = strToFunction(fn?.fnString, getFieldValue, repeatIndex);
   }
 
   useEffect(() => {
