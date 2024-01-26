@@ -6,10 +6,14 @@ from models.answer import Answer, AnswerDict, AnswerBase
 from models.question import QuestionType
 
 
-def append_value(answer: Answer, value: Union[int, float, str, bool, List[str],
-                                              List[int], List[float]],
-                 type: QuestionType) -> Answer:
+def append_value(
+    answer: Answer,
+    value: Union[int, float, str, bool, List[str], List[int], List[float]],
+    type: QuestionType,
+) -> Answer:
     if type == QuestionType.input.value:
+        answer.text = value
+    if type == QuestionType.autofield.value:
         answer.text = value
     if type == QuestionType.number.value:
         answer.value = value
@@ -29,8 +33,10 @@ def append_value(answer: Answer, value: Union[int, float, str, bool, List[str],
 
 
 def add_answer(
-    session: Session, answer: Answer, type: QuestionType,
-    value: Union[int, float, str, bool, List[str], List[int], List[float]]
+    session: Session,
+    answer: Answer,
+    type: QuestionType,
+    value: Union[int, float, str, bool, List[str], List[int], List[float]],
 ) -> AnswerDict:
     answer = append_value(answer, value, type)
     session.add(answer)
@@ -41,11 +47,12 @@ def add_answer(
 
 
 def update_answer(
-    session: Session, answer: Answer, type: QuestionType,
+    session: Session,
+    answer: Answer,
+    type: QuestionType,
     repeat_index: int,
     comment: str,
-    value: Union[int, float, str, bool, List[str],
-                 List[int], List[float]]
+    value: Union[int, float, str, bool, List[str], List[int], List[float]],
 ) -> AnswerDict:
     answer.updated = datetime.now()
     answer.repeat_index = repeat_index
@@ -64,15 +71,17 @@ def get_answer(session: Session) -> List[AnswerDict]:
 def get_answer_by_question(
     session: Session, question: List[int]
 ) -> List[AnswerDict]:
-    return session.query(Answer).filter(
-        Answer.question.in_(question)).all()
+    return session.query(Answer).filter(Answer.question.in_(question)).all()
 
 
 def get_answer_by_data_and_question(
     session: Session, data: int, questions: List[int]
 ) -> List[AnswerBase]:
-    return session.query(Answer).filter(
-        and_(Answer.question.in_(questions), Answer.data == data)).all()
+    return (
+        session.query(Answer)
+        .filter(and_(Answer.question.in_(questions), Answer.data == data))
+        .all()
+    )
 
 
 def delete_answer_by_id(session: Session, id: int) -> None:

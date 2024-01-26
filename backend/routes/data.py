@@ -366,6 +366,7 @@ def add(
             QuestionType.input.value,
             QuestionType.text.value,
             QuestionType.date.value,
+            QuestionType.autofield.value,
         ]:
             answer.text = a["value"]
         if q["type"] == QuestionType.number.value:
