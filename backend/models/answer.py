@@ -18,16 +18,18 @@ class AnswerDictWithId(TypedDict):
     question: int
     repeat_index: Optional[int] = None
     comment: Optional[str] = None
-    value: Union[
-        float, int, str, bool, dict, List[float], List[int], List[str], None]
+    value: Optional[
+        Union[float, int, str, bool, dict, List[float], List[int], List[str]]
+    ] = None
 
 
 class AnswerDict(TypedDict):
     question: int
     repeat_index: Optional[int] = None
     comment: Optional[str] = None
-    value: Union[
-        float, int, str, bool, dict, List[float], List[int], List[str], None]
+    value: Optional[
+        Union[float, int, str, bool, dict, List[float], List[int], List[str]]
+    ] = None
 
 
 class AnswerDictWithQuestionName(TypedDict):
@@ -38,8 +40,9 @@ class AnswerDictWithQuestionName(TypedDict):
     question_order: int
     repeat_index: Optional[int] = None
     comment: Optional[str] = None
-    value: Union[
-        float, int, str, bool, dict, List[float], List[int], List[str], None]
+    value: Optional[
+        Union[float, int, str, bool, dict, List[float], List[int], List[str]]
+    ] = None
 
 
 class Answer(Base):
@@ -49,7 +52,7 @@ class Answer(Base):
         primary_key=True,
         index=True,
         nullable=True,
-        autoincrement=True
+        autoincrement=True,
     )
     question = Column(
         Integer,
@@ -119,7 +122,12 @@ class Answer(Base):
         }
         q = self.question_detail
         type = q.type
-        if type in [QuestionType.input, QuestionType.text, QuestionType.date]:
+        if type in [
+            QuestionType.input,
+            QuestionType.text,
+            QuestionType.date,
+            QuestionType.autofield,
+        ]:
             answer.update({"value": self.text})
         if type == QuestionType.number:
             val = self.value
@@ -272,7 +280,10 @@ class Answer(Base):
         q = self.question_detail
         qname = f"{self.question_detail.id}|{self.question_detail.name}"
         if q.type in [
-                QuestionType.input, QuestionType.text, QuestionType.date]:
+            QuestionType.input,
+            QuestionType.text,
+            QuestionType.date,
+        ]:
             answer = self.text
         if q.type == QuestionType.number:
             answer = self.value
@@ -297,7 +308,10 @@ class Answer(Base):
         q = self.question_detail
         value_type = "string"
         if q.type in [
-                QuestionType.input, QuestionType.text, QuestionType.date]:
+            QuestionType.input,
+            QuestionType.text,
+            QuestionType.date,
+        ]:
             answer = self.text
         if q.type == QuestionType.number:
             answer = self.value
@@ -307,8 +321,9 @@ class Answer(Base):
             else:
                 answer = int(answer) if answer else None
             if q.repeating_objects:
-                unit = list(filter(
-                    lambda x: x["field"] == "unit", q.repeating_objects))
+                unit = list(
+                    filter(lambda x: x["field"] == "unit", q.repeating_objects)
+                )
                 if unit:
                     unit = unit[0].get("value")
                 else:
