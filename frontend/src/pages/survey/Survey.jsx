@@ -582,14 +582,12 @@ const Survey = () => {
       >
         {remainingTime ? (
           <Space direction="vertical" style={{ width: "100%" }}>
+            <div>Your session is about to expire because of inactivity.</div>
             <div>Your session will expire in:</div>
             <div style={{ fontSize: 20, fontWeight: 600 }}>
               <Countdown date={remainingTime} daysInHours={true} />
             </div>
             <Space style={{ width: "100%", float: "right" }}>
-              <Button type="danger" block onClick={handleLogout}>
-                Re-Login
-              </Button>
               <Button
                 type="primary"
                 block
@@ -607,7 +605,7 @@ const Survey = () => {
             </div>
             <Space style={{ width: "100%", float: "right" }}>
               <Button type="danger" block onClick={handleLogout}>
-                Re-Login
+                Save and Logout
               </Button>
             </Space>
           </Space>
