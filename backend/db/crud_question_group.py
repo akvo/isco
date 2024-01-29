@@ -489,6 +489,7 @@ def copy_question_group(
         )
     session.commit()
     session.flush()
+    return group
 
 
 def get_member_access_by_question_group_id(

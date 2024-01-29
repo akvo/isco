@@ -55,7 +55,7 @@ class TestCopyGroupAndQuestion:
             ),
             headers={"Authorization": f"Bearer {account.token}"},
         )
-        assert res.status_code == 204
+        assert res.status_code == 200
         # print_check(session=session, status="AFTER #1")
         # second copy
         res = await client.post(
@@ -64,7 +64,7 @@ class TestCopyGroupAndQuestion:
             ),
             headers={"Authorization": f"Bearer {account.token}"},
         )
-        assert res.status_code == 204
+        assert res.status_code == 200
         # print_check(session=session, status="AFTER #2")
         # third copy
         res = await client.post(
@@ -73,7 +73,7 @@ class TestCopyGroupAndQuestion:
             ),
             headers={"Authorization": f"Bearer {account.token}"},
         )
-        assert res.status_code == 204
+        assert res.status_code == 200
         print_check(session=session, status="AFTER #3")
 
     @pytest.mark.asyncio
@@ -87,7 +87,7 @@ class TestCopyGroupAndQuestion:
             ),
             headers={"Authorization": f"Bearer {account.token}"},
         )
-        assert res.status_code == 204
+        assert res.status_code == 200
         print_check(session=session, status="BEFORE #1")
         # second copy
         res = await client.post(
@@ -96,5 +96,5 @@ class TestCopyGroupAndQuestion:
             ),
             headers={"Authorization": f"Bearer {account.token}"},
         )
-        assert res.status_code == 204
+        assert res.status_code == 200
         print_check(session=session, status="BEFORE #2")
