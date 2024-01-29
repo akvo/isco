@@ -215,6 +215,33 @@ def move(
     return Response(status_code=HTTPStatus.NO_CONTENT.value)
 
 
+@question_group_route.post(
+    "/copy-question-group/{id:path}/{selected_order:path}/{target_order:path}",
+    responses={204: {"model": None}},
+    status_code=HTTPStatus.NO_CONTENT,
+    summary="copy question group",
+    name="question_group:copy",
+    tags=["Copy"],
+)
+def copy(
+    req: Request,
+    id: int,  # current id
+    selected_order: int,  # current order
+    target_order: int,
+    # target_id: int,
+    session: Session = Depends(get_session),
+    credentials: credentials = Depends(security),
+):
+    crud.copy_question_group(
+        session=session,
+        id=id,
+        selected_order=selected_order,
+        target_order=target_order,
+        # target_id=target_id,
+    )
+    return Response(status_code=HTTPStatus.NO_CONTENT.value)
+
+
 @question_group_route.delete(
     "/question_group/{id:path}",
     responses={204: {"model": None}},
