@@ -290,6 +290,7 @@ def copy_question_group(
             detail="COPY GROUP A | question group has negative order value",
         )
 
+    # current group
     group = session.query(QuestionGroup).filter(QuestionGroup.id == id).first()
 
     new_group_order = group.order
@@ -339,186 +340,86 @@ def copy_question_group(
         .all()
     )
 
-    # groups
-    groups = session.query(QuestionGroup)
+    new_group.order = new_group_order
+    session.add(new_group)
+    session.commit()
 
-    # copy to location before current group position
-    if selected_order > target_order:
-        new_group.order = new_group_order
-        session.add(new_group)
+    # duplicate questions
+    new_q_orders = []
+    new_order = 0
+    for qi, q in enumerate(selected_q):
+        new_order = last_question_order + qi + 1
+        new_q = Question(
+            id=None,
+            form=q.form,
+            question_group=new_group.id,
+            name=q.name,
+            translations=q.translations,
+            mandatory=q.mandatory,
+            datapoint_name=q.datapoint_name,
+            variable_name=q.variable_name,
+            type=q.type,
+            personal_data=q.personal_data,
+            rule=q.rule,
+            tooltip=q.tooltip,
+            tooltip_translations=q.tooltip_translations,
+            cascade=q.cascade,
+            repeating_objects=q.repeating_objects,
+            order=new_order,
+            core_mandatory=q.core_mandatory,
+            deactivate=q.deactivate,
+            autofield=q.autofield,
+        )
+        new_q_orders.append(new_order)
+        # TODO:: need to copy options/multiple options
+        # and member/isco access
+        session.add(new_q)
         session.commit()
+    # validate negative order value
+    q_orders = any(order <= 0 for order in new_q_orders)
+    if q_orders:
+        raise HTTPException(
+            status_code=501,
+            detail="COPY GROUP B | question has negative order value",
+        )
 
-        # duplicate questions
-        new_q_orders = []
-        new_order = 0
-        for qi, q in enumerate(selected_q):
-            new_order = last_question_order + qi + 1
-            new_q = Question(
-                id=None,
-                form=q.form,
-                question_group=new_group.id,
-                name=q.name,
-                translations=q.translations,
-                mandatory=q.mandatory,
-                datapoint_name=q.datapoint_name,
-                variable_name=q.variable_name,
-                type=q.type,
-                personal_data=q.personal_data,
-                rule=q.rule,
-                tooltip=q.tooltip,
-                tooltip_translations=q.tooltip_translations,
-                cascade=q.cascade,
-                repeating_objects=q.repeating_objects,
-                order=new_order,
-                core_mandatory=q.core_mandatory,
-                deactivate=q.deactivate,
-                autofield=q.autofield,
-            )
-            new_q_orders.append(new_order)
-            # TODO:: need to copy options/multiple options
-            # and member/isco access
-            session.add(new_q)
-            session.commit()
-        # validate negative order value
-        q_orders = any(order <= 0 for order in new_q_orders)
-        if q_orders:
-            raise HTTPException(
-                status_code=501,
-                detail="COPY GROUP B1 | question has negative order value",
-            )
-
-        # query groups
-        groups = groups.filter(
+    # update after copied position
+    after_group = (
+        session.query(QuestionGroup)
+        .filter(
             and_(
                 QuestionGroup.form == group.form,
-                QuestionGroup.order >= target_order,
+                QuestionGroup.order >= new_group.order,
                 QuestionGroup.id != new_group.id,
             )
         )
-
-        # update after copied position
-        after_group = (
-            session.query(QuestionGroup)
-            .filter(
-                and_(
-                    QuestionGroup.form == group.form,
-                    QuestionGroup.order >= target_order,
-                    QuestionGroup.id != new_group.id,
-                )
-            )
-            .order_by(QuestionGroup.order)
-            .all()
-        )
-        after_group_ids = [bg.id for bg in after_group]
-        after_questions = (
-            session.query(Question)
-            .filter(Question.question_group.in_(after_group_ids))
-            .order_by(Question.order)
-            .all()
-        )
-        for aqi, aq in enumerate(after_questions):
-            aq.order = new_order + aqi + 1
-        # validate negative order value
-        q_orders = any(q.order <= 0 for q in after_questions)
-        if q_orders:
-            raise HTTPException(
-                status_code=501,
-                detail="COPY GROUP C1 | question has negative order value",
-            )
-
-    # copy to location after current group position
-    if selected_order < target_order:
-        new_group.order = new_group_order
-        session.add(new_group)
-        session.commit()
-
-        # duplicate questions
-        new_q_orders = []
-        new_order = 0
-        for qi, q in enumerate(selected_q):
-            new_order = last_question_order + qi + 1
-            new_q = Question(
-                id=None,
-                form=q.form,
-                question_group=new_group.id,
-                name=q.name,
-                translations=q.translations,
-                mandatory=q.mandatory,
-                datapoint_name=q.datapoint_name,
-                variable_name=q.variable_name,
-                type=q.type,
-                personal_data=q.personal_data,
-                rule=q.rule,
-                tooltip=q.tooltip,
-                tooltip_translations=q.tooltip_translations,
-                cascade=q.cascade,
-                repeating_objects=q.repeating_objects,
-                order=new_order,
-                core_mandatory=q.core_mandatory,
-                deactivate=q.deactivate,
-                autofield=q.autofield,
-            )
-            new_q_orders.append(new_order)
-            # TODO:: need to copy options/multiple options
-            # and member/isco access
-            session.add(new_q)
-            session.commit()
-        # validate negative order value
-        q_orders = any(order <= 0 for order in new_q_orders)
-        if q_orders:
-            raise HTTPException(
-                status_code=501,
-                detail="COPY GROUP B2 | question has negative order value",
-            )
-
-        # query groups
-        groups = groups.filter(
-            and_(
-                QuestionGroup.form == group.form,
-                QuestionGroup.order >= new_group_order,
-                QuestionGroup.id != new_group.id,
-            )
-        )
-
-        # update after copied position
-        after_group = (
-            session.query(QuestionGroup)
-            .filter(
-                and_(
-                    QuestionGroup.form == group.form,
-                    QuestionGroup.order >= new_group.order,
-                    QuestionGroup.id != new_group.id,
-                )
-            )
-            .order_by(QuestionGroup.order)
-            .all()
-        )
-        after_group_ids = [bg.id for bg in after_group]
-        after_questions = (
-            session.query(Question)
-            .filter(Question.question_group.in_(after_group_ids))
-            .order_by(Question.order)
-            .all()
-        )
-        for aqi, aq in enumerate(after_questions):
-            aq.order = new_order + aqi + 1
-        # validate negative order value
-        q_orders = any(q.order <= 0 for q in after_questions)
-        if q_orders:
-            raise HTTPException(
-                status_code=501,
-                detail="MOVE GROUP C2 | question has negative order value",
-            )
-
-    groups = groups.order_by(QuestionGroup.order).all()
-    for qgi, qg in enumerate(groups):
+        .order_by(QuestionGroup.order)
+        .all()
+    )
+    for qgi, qg in enumerate(after_group):
         qg.order = new_group.order + qgi + 1
     # validate negative order value
-    qg_orders = any(qg.order <= 0 for qg in groups)
+    qg_orders = any(qg.order <= 0 for qg in after_group)
     if qg_orders:
         raise HTTPException(
             status_code=501,
-            detail="MOVE GROUP D | question has negative order value",
+            detail="COPY GROUP C | question has negative order value",
+        )
+    after_group_ids = [bg.id for bg in after_group]
+    after_questions = (
+        session.query(Question)
+        .filter(Question.question_group.in_(after_group_ids))
+        .order_by(Question.order)
+        .all()
+    )
+    for aqi, aq in enumerate(after_questions):
+        aq.order = new_order + aqi + 1
+    # validate negative order value
+    q_orders = any(q.order <= 0 for q in after_questions)
+    if q_orders:
+        raise HTTPException(
+            status_code=501,
+            detail="COPY GROUP D | question has negative order value",
         )
     session.commit()
     session.flush()
