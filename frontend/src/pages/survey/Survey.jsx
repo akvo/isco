@@ -575,39 +575,51 @@ const Survey = () => {
 
       {/* Session modal */}
       <Modal
-        title="Inactivity Warning"
+        title={
+          remainingTime ? (
+            <b>Session about to expire</b>
+          ) : (
+            <b>Session expired</b>
+          )
+        }
         open={isIdle && showSessionModal}
         footer={null}
         closable={false}
       >
         {remainingTime ? (
           <Space direction="vertical" style={{ width: "100%" }}>
+            <div>User&apos;s can stay logged in for a maximum of 24 hours.</div>
+            <div>Your session is about to expire.</div>
             <div>Your session will expire in:</div>
             <div style={{ fontSize: 20, fontWeight: 600 }}>
               <Countdown date={remainingTime} daysInHours={true} />
             </div>
             <Space style={{ width: "100%", float: "right" }}>
-              <Button type="danger" block onClick={handleLogout}>
-                Re-Login
-              </Button>
               <Button
                 type="primary"
                 block
                 style={{ border: "none", minHeight: 0, borderRadius: 0 }}
                 onClick={handleStayLoggedIn}
               >
-                Stay Logged In
+                Extend Session by 24 hours
+              </Button>
+              {/* TODO:: Handle this button */}
+              <Button
+                type="danger"
+                block
+                style={{ border: "none", minHeight: 0, borderRadius: 0 }}
+                // onClick={handleStayLoggedIn}
+              >
+                Save and Logout
               </Button>
             </Space>
           </Space>
         ) : (
           <Space direction="vertical" style={{ width: "100%" }}>
-            <div style={{ fontSize: 20, fontWeight: 600 }}>
-              Your session has expired, please log in again
-            </div>
+            <div>Your session has expired, please log in again.</div>
             <Space style={{ width: "100%", float: "right" }}>
-              <Button type="danger" block onClick={handleLogout}>
-                Re-Login
+              <Button type="primary" block onClick={handleLogout}>
+                Login
               </Button>
             </Space>
           </Space>
