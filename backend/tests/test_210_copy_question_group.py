@@ -7,7 +7,7 @@ from datetime import datetime
 from tests.test_000_main import Acc
 
 from models.question_group import QuestionGroup
-from models.question import Question
+from models.question import Question, QuestionType
 
 pytestmark = pytest.mark.asyncio
 sys.path.append("..")
@@ -38,6 +38,8 @@ def print_check(session, status):
         )
         for q in questions:
             print("Q", q, q.order, q.member_access, q.isco_access)
+            if q.type in [QuestionType.option, QuestionType.multiple_option]:
+                print("Q OPT", q.option)
     print(f"END OF {status} ===============================\n\n")
 
 

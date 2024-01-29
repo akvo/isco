@@ -6,7 +6,7 @@ from models.question_group import QuestionGroupPayload, QuestionGroupDict
 from models.question_group import QuestionGroup, QuestionGroupBase
 from models.question_group_member_access import QuestionGroupMemberAccess
 from models.question_group_isco_access import QuestionGroupIscoAccess
-from models.question import Question
+from models.question import Question, QuestionType
 from models.question_member_access import QuestionMemberAccess
 from models.question_isco_access import QuestionIscoAccess
 from models.option import Option
@@ -423,7 +423,22 @@ def copy_question_group(
                 id=None, isco_type=qia.isco_type, question=None
             )
             new_q.isco_access.append(new_qia)
-        # TODO:: need to copy options/multiple options
+
+        # handle copy options/multiple options
+        if q.type in [QuestionType.option, QuestionType.multiple_option]:
+            options = (
+                session.query(Option).filter(Option.question == q.id).all()
+            )
+            for opt in options:
+                new_opt = Option(
+                    id=None,
+                    code=opt.code,
+                    name=opt.name,
+                    question=None,
+                    order=opt.order,
+                    translations=opt.translations,
+                )
+                new_q.option.append(new_opt)
         session.add(new_q)
         session.commit()
     # validate negative order value
