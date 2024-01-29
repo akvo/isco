@@ -29,7 +29,7 @@ def print_check(session, status):
         .all()
     )
     for g in groups:
-        print("G", g, g.order)
+        print("G", g, g.order, g.member_access, g.isco_access)
         questions = (
             session.query(Question)
             .filter(Question.question_group == g.id)
@@ -37,7 +37,7 @@ def print_check(session, status):
             .all()
         )
         for q in questions:
-            print("Q", q, q.order)
+            print("Q", q, q.order, q.member_access, q.isco_access)
     print(f"END OF {status} ===============================\n\n")
 
 

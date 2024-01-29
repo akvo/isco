@@ -7,6 +7,9 @@ from models.question_group import QuestionGroup, QuestionGroupBase
 from models.question_group_member_access import QuestionGroupMemberAccess
 from models.question_group_isco_access import QuestionGroupIscoAccess
 from models.question import Question
+from models.question_member_access import QuestionMemberAccess
+from models.question_isco_access import QuestionIscoAccess
+from models.option import Option
 from db.crud_question import add_question, delete_question_by_group
 from db.crud_question import reorder_question
 
@@ -293,6 +296,7 @@ def copy_question_group(
     # current group
     group = session.query(QuestionGroup).filter(QuestionGroup.id == id).first()
 
+    # handle copy to before/after position to determine new qg order
     new_group_order = group.order
     if selected_order > target_order:
         new_group_order = target_order
@@ -310,6 +314,30 @@ def copy_question_group(
         repeat=group.repeat,
         repeat_text=group.repeat_text,
     )
+
+    # handle question group member/isco access
+    # question_group_member_access
+    qgmas = (
+        session.query(QuestionGroupMemberAccess)
+        .filter(QuestionGroupMemberAccess.question_group == group.id)
+        .all()
+    )
+    for qgma in qgmas:
+        new_qgma = QuestionGroupMemberAccess(
+            id=None, member_type=qgma.member_type, question_group=None
+        )
+        new_group.member_access.append(new_qgma)
+    # question_group_isco_access
+    qgias = (
+        session.query(QuestionGroupIscoAccess)
+        .filter(QuestionGroupIscoAccess.question_group == group.id)
+        .all()
+    )
+    for qgia in qgias:
+        new_qgia = QuestionGroupIscoAccess(
+            id=None, isco_type=qgia.isco_type, question_group=new_group.id
+        )
+        new_group.isco_access.append(new_qgia)
 
     # last question order from new position
     prev_group = (
@@ -340,6 +368,7 @@ def copy_question_group(
         .all()
     )
 
+    # add new group (copy)
     new_group.order = new_group_order
     session.add(new_group)
     session.commit()
@@ -371,8 +400,30 @@ def copy_question_group(
             autofield=q.autofield,
         )
         new_q_orders.append(new_order)
+        # handle question member/isco access
+        # question_member_access
+        qmas = (
+            session.query(QuestionMemberAccess)
+            .filter(QuestionMemberAccess.question == q.id)
+            .all()
+        )
+        for qma in qmas:
+            new_qma = QuestionMemberAccess(
+                id=None, member_type=qma.member_type, question=None
+            )
+            new_q.member_access.append(new_qma)
+        # question_isco_access
+        qias = (
+            session.query(QuestionIscoAccess)
+            .filter(QuestionIscoAccess.question == q.id)
+            .all()
+        )
+        for qia in qias:
+            new_qia = QuestionIscoAccess(
+                id=None, isco_type=qia.isco_type, question=None
+            )
+            new_q.isco_access.append(new_qia)
         # TODO:: need to copy options/multiple options
-        # and member/isco access
         session.add(new_q)
         session.commit()
     # validate negative order value
