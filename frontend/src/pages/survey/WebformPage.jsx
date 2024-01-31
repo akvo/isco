@@ -843,7 +843,7 @@ const WebformPage = ({
           }
           notify({
             type: "success",
-            message: "Submission submitted successfully.",
+            message: "Submitted.",
           });
           setFormLoaded(null);
           setFormValue({});
@@ -882,7 +882,7 @@ const WebformPage = ({
           setSavedData(res.data);
           notify({
             type: "success",
-            message: "Submission saved successfully.",
+            message: "Saved.",
           });
         })
         .catch((e) => {
@@ -939,7 +939,7 @@ const WebformPage = ({
         }
         notify({
           type: "success",
-          message: "Submission submitted successfully.",
+          message: "Submitted.",
         });
         setFormLoaded(null);
         setFormValue({});

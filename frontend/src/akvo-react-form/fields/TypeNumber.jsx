@@ -168,6 +168,15 @@ const TypeNumber = ({
         />
       </Form.Item>
 
+      {!isValid && (
+        <div
+          style={{ marginTop: "-10px" }}
+          className="ant-form-item-explain-error"
+        >
+          {error}
+        </div>
+      )}
+
       {/* inputDataUnavailable */}
       {!coreMandatory && (
         <Form.Item key={`na-${keyform}`} name={`na-${id}`} noStyle>
@@ -177,20 +186,13 @@ const TypeNumber = ({
             onChange={(e) => {
               setNaChecked(e.target.checked);
             }}
+            style={{ marginTop: "8px" }}
           >
             {text.inputDataUnavailable}
           </Checkbox>
         </Form.Item>
       )}
 
-      {!isValid && (
-        <div
-          style={{ marginTop: "-10px" }}
-          className="ant-form-item-explain-error"
-        >
-          {error}
-        </div>
-      )}
       {!!extraAfter?.length &&
         extraAfter.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
     </Form.Item>
