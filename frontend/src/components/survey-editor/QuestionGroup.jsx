@@ -5,6 +5,10 @@ import { store, api } from "../../lib";
 import { minBy, orderBy, takeRight } from "lodash";
 import { defaultOption, defaultRepeatingObject } from "../../lib/store";
 import { generateID } from "../../lib/util";
+import { useNotification } from "../../util";
+
+const copyToastText =
+  "Only the question contents have been copied. Please re-configure the dependencies, if any for the new questions.";
 
 const QuestionGroup = ({ index, questionGroup }) => {
   const {
@@ -14,6 +18,7 @@ const QuestionGroup = ({ index, questionGroup }) => {
     isCopyQuestionGroup,
   } = store.useState((s) => s);
   const { id: formId, questionGroup: questionGroupState } = surveyEditor;
+  const { notify } = useNotification();
 
   const AddMoveButtonText = useMemo(() => {
     if (isMoveQuestionGroup && !isAddQuestionGroup) {
@@ -200,6 +205,10 @@ const QuestionGroup = ({ index, questionGroup }) => {
       )
       .then((res) => {
         const { data } = res;
+        notify({
+          type: "success",
+          message: copyToastText,
+        });
         // GET SURVEY EDITOR INIT VALUES
         store.update((s) => {
           s.surveyEditor = {
