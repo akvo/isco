@@ -306,7 +306,7 @@ def copy_question_group(
     # clone question group
     new_group = QuestionGroup(
         id=None,
-        name=group.name,
+        name=f"Copy of {group.name}",
         description=group.description,
         form=group.form,
         order=new_group_order,
@@ -369,7 +369,6 @@ def copy_question_group(
     )
 
     # add new group (copy)
-    new_group.order = new_group_order
     session.add(new_group)
     session.commit()
 

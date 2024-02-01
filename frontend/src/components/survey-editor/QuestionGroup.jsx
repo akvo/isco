@@ -14,7 +14,6 @@ const QuestionGroup = ({ index, questionGroup }) => {
     isCopyQuestionGroup,
   } = store.useState((s) => s);
   const { id: formId, questionGroup: questionGroupState } = surveyEditor;
-  console.log(isCopyQuestionGroup, "aaaa");
 
   const AddMoveButtonText = useMemo(() => {
     if (isMoveQuestionGroup && !isAddQuestionGroup) {
@@ -359,7 +358,11 @@ const QuestionGroup = ({ index, questionGroup }) => {
               ? handleAddQuestionGroupButton(questionGroup.order + 1)
               : isMoveQuestionGroup
               ? handleMove(questionGroup.order + 1, questionGroup.id)
-              : handleCopy(questionGroup.order + 1)
+              : handleCopy(
+                  questionGroup.order > isCopyQuestionGroup.selectedGroupOrder
+                    ? questionGroup.order + 2
+                    : questionGroup.order + 1
+                )
           }
         />
       )}
