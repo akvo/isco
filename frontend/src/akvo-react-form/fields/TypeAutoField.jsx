@@ -66,7 +66,7 @@ const generateFnBody = (fnMetadata, getFieldValue, repeatIndex) => {
         let val = getFieldValue([fieldName]);
         // eol get field value
         if (!val) {
-          return null;
+          return 0;
         }
         if (typeof val === "number") {
           val = Number(val);
@@ -86,7 +86,7 @@ const generateFnBody = (fnMetadata, getFieldValue, repeatIndex) => {
       }
       return f;
     });
-  if (fnBody.filter((x) => !x).length) {
+  if (fnBody.filter((x) => x === null && typeof x === "undefined").length) {
     return false;
   }
   return fnBody.join(" ");
