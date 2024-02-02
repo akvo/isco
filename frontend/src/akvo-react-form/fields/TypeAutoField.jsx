@@ -84,9 +84,7 @@ const generateFnBody = (fnMetadata, getFieldValue, repeatIndex) => {
       }
       const n = f.match(/(^[0-9]*$)/);
       if (n) {
-        const val = Number(n[1]);
-        answers.push(val);
-        return val;
+        return Number(n[1]);
       }
       return f;
     });
