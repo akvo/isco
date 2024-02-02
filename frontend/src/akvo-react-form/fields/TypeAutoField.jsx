@@ -67,6 +67,7 @@ const generateFnBody = (fnMetadata, getFieldValue, repeatIndex) => {
         let val = getFieldValue([fieldName]);
         // eol get field value
         if (!val) {
+          answers.push(val);
           return 0;
         }
         if (typeof val === "number") {
@@ -88,7 +89,7 @@ const generateFnBody = (fnMetadata, getFieldValue, repeatIndex) => {
       }
       return f;
     });
-  const isAllAnswersZero = answers.filter((x) => x > 0)?.length ? false : true;
+  const isAllAnswersZero = answers.filter((x) => x)?.length ? false : true;
   if (fnBody.filter((x) => x === null && typeof x === "undefined").length) {
     return {
       fnBody: false,
