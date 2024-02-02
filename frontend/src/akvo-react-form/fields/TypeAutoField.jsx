@@ -47,6 +47,7 @@ const getFnMetadata = (fnString) => {
 };
 
 const generateFnBody = (fnMetadata, getFieldValue, repeatIndex) => {
+  const answers = [];
   if (!fnMetadata) {
     console.error("Function must match the placeholder criteria.");
     return false;
@@ -78,31 +79,55 @@ const generateFnBody = (fnMetadata, getFieldValue, repeatIndex) => {
         if (fnMatch) {
           val = fnMatch[1] === meta[1] ? val : val + fnMatch[1];
         }
+        answers.push(val);
         return val;
       }
       const n = f.match(/(^[0-9]*$)/);
       if (n) {
-        return Number(n[1]);
+        const val = Number(n[1]);
+        answers.push(val);
+        return val;
       }
       return f;
     });
+  const isAllAnswersZero = answers.filter((x) => x > 0)?.length ? false : true;
   if (fnBody.filter((x) => x === null && typeof x === "undefined").length) {
-    return false;
+    return {
+      fnBody: false,
+      isAllAnswersZero: isAllAnswersZero,
+    };
   }
-  return fnBody.join(" ");
+  return {
+    fnBody: fnBody.join(" "),
+    isAllAnswersZero: isAllAnswersZero,
+  };
 };
 
 const strToFunction = (fnString, getFieldValue, repeatIndex) => {
   fnString = checkDirty(fnString);
   const fnMetadata = getFnMetadata(fnString);
-  const fnBody = generateFnBody(fnMetadata, getFieldValue, repeatIndex);
-  return new Function(fnBody);
+  const { fnBody, isAllAnswersZero } = generateFnBody(
+    fnMetadata,
+    getFieldValue,
+    repeatIndex
+  );
+  return {
+    fn: new Function(fnBody),
+    isAllAnswersZero: isAllAnswersZero,
+  };
 };
 
 const strMultilineToFunction = (fnString, getFieldValue, repeatIndex) => {
   fnString = checkDirty(fnString);
-  const fnBody = generateFnBody(fnString, getFieldValue, repeatIndex);
-  return new Function(fnBody)();
+  const { fnBody, isAllAnswersZero } = generateFnBody(
+    fnString,
+    getFieldValue,
+    repeatIndex
+  );
+  return {
+    fn: new Function(fnBody),
+    isAllAnswersZero: isAllAnswersZero,
+  };
 };
 
 const TypeAutoField = ({
@@ -136,10 +161,12 @@ const TypeAutoField = ({
 
   useEffect(() => {
     if (automateValue) {
-      if (checkIsPromise(automateValue())) {
-        automateValue().then((res) => setFieldsValue({ [id]: res }));
+      const { fn, isAllAnswersZero } = automateValue;
+      if (checkIsPromise(fn())) {
+        fn().then((res) => setFieldsValue({ [id]: res }));
       } else {
-        setFieldsValue({ [id]: automateValue() });
+        const value = isAllAnswersZero ? null : fn();
+        setFieldsValue({ [id]: value });
       }
     } else {
       setFieldsValue({ [id]: null });
