@@ -989,6 +989,11 @@ const WebformPage = ({
         const now = new Date();
         const expiredDate = new Date(expired);
         const timeDifference = expiredDate - now;
+        // Check if the remaining time is equal to 5 mins
+        if (timeDifference > 0 && timeDifference <= 5 * 60 * 1000) {
+          // handle save automatically
+          handleOnClickSaveButton();
+        }
         // Check if the remaining time is less than or equal to 30 minutes
         if (timeDifference > 0 && timeDifference <= 30 * 60 * 1000) {
           setRemainingTime(expired);
