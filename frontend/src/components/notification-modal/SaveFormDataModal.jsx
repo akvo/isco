@@ -12,16 +12,14 @@ const SaveFormDataModal = ({ visible, onOk, onCancel, activeLang }) => {
       title={text.modalSaveForm}
       open={visible}
       onOk={onOk}
-      okText={text.btnYes}
+      okText={text.btnSave}
       onCancel={onCancel}
-      cancelText={text.btnNo}
+      cancelText={text.btnDontSave}
       centered
       destroyOnClose
       maskClosable={false}
     >
       <p>{text.valClickSave}</p>
-      <p>{text.valClickYes}</p>
-      <p>{text.valClickNo}</p>
     </Modal>
   );
 };

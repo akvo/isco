@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import "./style.scss";
-import { Spin, Button, Checkbox, Modal, Space } from "antd";
+import { Spin, Button, Checkbox, Modal, Space, Alert } from "antd";
 import { Webform } from "../../akvo-react-form";
 import { api, store } from "../../lib";
 import { useNotification, useIdle } from "../../util";
@@ -19,11 +19,24 @@ import { useCookies } from "react-cookie";
 
 const computedValidations = window?.computed_validations;
 
-const SaveButton = ({ onClick, isSaving, text, disabled = false }) => (
-  <Button loading={isSaving} onClick={onClick} disabled={disabled}>
-    {text.btnSave}
-  </Button>
-);
+const SaveButton = ({
+  onClick,
+  isSaving,
+  text,
+  disabled = false,
+  saveButtonRef,
+}) => {
+  return (
+    <Button
+      loading={isSaving}
+      onClick={onClick}
+      disabled={disabled}
+      ref={saveButtonRef}
+    >
+      {text.btnSave}
+    </Button>
+  );
+};
 
 const LockedCheckbox = ({ onChange, isLocked, text }) => (
   <>
@@ -72,6 +85,7 @@ const WebformPage = ({
   resetSavedFormDropdown,
   clearForm,
   setClearForm,
+  saveButtonRef,
 }) => {
   // const formId = 7; testing purpose
   const { notify } = useNotification();
@@ -534,7 +548,7 @@ const WebformPage = ({
               setShowCollaboratorForm(collaborators?.length || false);
               setTimeout(() => {
                 setMismatch(mismatch || false);
-                setModalWarningVisible(mismatch || false);
+                // setModalWarningVisible(mismatch || false);
               }, 500);
             }
           }
@@ -559,6 +573,15 @@ const WebformPage = ({
       setFormValue({});
     }
   }, [activeLang]);
+
+  // handle automatically close mismatch alert
+  useEffect(() => {
+    if (mismatch) {
+      setTimeout(() => {
+        setMismatch(false);
+      }, 5000);
+    }
+  }, [mismatch]);
 
   // set comment to answer value
   useEffect(() => {
@@ -600,7 +623,10 @@ const WebformPage = ({
     }
   }, [deletedComment, answer]);
 
-  const onSubmitValidationOrShowSubmitWarning = (values = []) => {
+  const onSubmitValidationOrShowSubmitWarning = (
+    values = [],
+    showModalWarning = true
+  ) => {
     /*
      * const answerValues
      * choose which answer values to be used as validation check
@@ -660,7 +686,12 @@ const WebformPage = ({
       return;
     }
     // show warning before submit
-    setModalWarningVisible(true);
+    if (showModalWarning) {
+      setModalWarningVisible(true);
+    } else {
+      // submit directly
+      onFinish();
+    }
     onCloseValidationWarningModal();
   };
 
@@ -928,18 +959,20 @@ const WebformPage = ({
   };
 
   const onFinishShowWarning = (values) => {
+    // directly submit without showing warning modal
     setIsSubmitting(true);
     const transformedAnswerValues = transformValues(values);
     setAnswer(transformedAnswerValues);
     setIsForce(false);
     setIsSave(false);
     setTimeout(() => {
-      onSubmitValidationOrShowSubmitWarning(transformedAnswerValues);
+      onSubmitValidationOrShowSubmitWarning(transformedAnswerValues, false);
       setIsSubmitting(false);
     }, 1000);
   };
 
   const onCompleteFailed = ({ values }) => {
+    // submit with showing warning modal
     setIsSubmitting(true);
     const transformedAnswerValues = transformValues(values);
     setAnswer(transformedAnswerValues);
@@ -947,7 +980,7 @@ const WebformPage = ({
     setIsSave(false);
     setIsForce(true);
     setTimeout(() => {
-      onSubmitValidationOrShowSubmitWarning(transformedAnswerValues);
+      onSubmitValidationOrShowSubmitWarning(transformedAnswerValues, true);
       setIsSubmitting(false);
     }, 1000);
   };
@@ -1042,6 +1075,28 @@ const WebformPage = ({
 
   return (
     <>
+      {mismatch ? (
+        <Alert
+          type="info"
+          showIcon
+          message={text.prefilledMismatchWarming}
+          closable
+          afterClose={() => {
+            setMismatch(false);
+          }}
+        />
+      ) : null}
+      {isSave && isLocked ? (
+        <Alert
+          type="info"
+          showIcon
+          message={text.submitModalC4}
+          closable
+          afterClose={() => {
+            setIsSave(false);
+          }}
+        />
+      ) : null}
       <div id="webform">
         {!isEmpty(formValue) ? (
           <Webform
@@ -1061,11 +1116,13 @@ const WebformPage = ({
                   onClick={() => {
                     setIsForce(false);
                     setIsSave(true);
-                    setModalWarningVisible(true);
+                    handleOnClickSaveButton();
+                    // setModalWarningVisible(true);
                   }}
                   isSaving={isSaving}
                   text={text}
                   disabled={!answer.length}
+                  saveButtonRef={saveButtonRef}
                 />
                 <LockedCheckbox
                   onChange={(val) => setIsLocked(val.target.checked)}
@@ -1102,7 +1159,7 @@ const WebformPage = ({
         }
         onCancel={() => {
           setModalWarningVisible(false);
-          setMismatch(false);
+          // setMismatch(false);
         }}
         btnLoading={isSubmitting || isSaving}
         force={isForce}

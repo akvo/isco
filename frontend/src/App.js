@@ -279,17 +279,18 @@ const App = () => {
           visible={saveFormData.visible}
           activeLang={activeLang}
           onOk={saveFormData.onOk}
-          onCancel={() => {
-            store.update((s) => {
-              s.notificationModal = {
-                ...s.notificationModal,
-                saveFormData: {
-                  ...s.notificationModal.saveFormData,
-                  visible: false,
-                },
-              };
-            });
-          }}
+          onCancel={saveFormData.onCancel}
+          // onCancel={() => {
+          //   store.update((s) => {
+          //     s.notificationModal = {
+          //       ...s.notificationModal,
+          //       saveFormData: {
+          //         ...s.notificationModal.saveFormData,
+          //         visible: false,
+          //       },
+          //     };
+          //   });
+          // }}
         />
         <DataSecurityModal
           visible={dataSecurity.visible}
