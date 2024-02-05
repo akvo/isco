@@ -809,15 +809,21 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
             const roKey = field.split("_")[2];
             findQuestion = {
               ...findQuestion,
-              repeating_objects: findQuestion?.repeating_objects?.map((ro) => {
-                if (String(ro?.id) === String(roId)) {
-                  return {
-                    ...ro,
-                    [roKey]: value,
-                  };
+              repeating_objects: findQuestion?.repeating_objects?.map(
+                (ro, roi) => {
+                  if (
+                    String(ro?.id) === String(roId) ||
+                    String(roId) === String(roi)
+                  ) {
+                    return {
+                      ...ro,
+                      id: roId,
+                      [roKey]: value,
+                    };
+                  }
+                  return ro;
                 }
-                return ro;
-              }),
+              ),
             };
           }
           if (field.includes("rule")) {
