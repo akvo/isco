@@ -242,7 +242,7 @@ const Survey = () => {
           saveFormData: {
             ...s.notificationModal.saveFormData,
             visible: true,
-            onOk: () => onOkModal(),
+            onOk: () => onOkModal({ cancel: false }),
             onCancel: () => onOkModal({ cancel: true }),
           },
         };
@@ -268,7 +268,7 @@ const Survey = () => {
           saveFormData: {
             ...s.notificationModal.saveFormData,
             visible: true,
-            onOk: () => onOkModal(),
+            onOk: () => onOkModal({ cancel: false }),
             onCancel: () => onOkModal({ cancel: true }),
           },
         };
@@ -294,7 +294,7 @@ const Survey = () => {
           saveFormData: {
             ...s.notificationModal.saveFormData,
             visible: true,
-            onOk: () => onOkModal(),
+            onOk: () => onOkModal({ cancel: false }),
             onCancel: () => onOkModal({ cancel: true }),
           },
         };

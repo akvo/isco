@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import "./style.scss";
-import { Spin, Button, Checkbox, Modal, Space } from "antd";
+import { Spin, Button, Checkbox, Modal, Space, Alert } from "antd";
 import { Webform } from "../../akvo-react-form";
 import { api, store } from "../../lib";
 import { useNotification, useIdle } from "../../util";
@@ -1056,6 +1056,17 @@ const WebformPage = ({
 
   return (
     <>
+      {isSave && isLocked ? (
+        <Alert
+          type="info"
+          showIcon
+          message={text.submitModalC4}
+          closable
+          afterClose={() => {
+            setIsSave(false);
+          }}
+        />
+      ) : null}
       <div id="webform">
         {!isEmpty(formValue) ? (
           <Webform
@@ -1075,8 +1086,8 @@ const WebformPage = ({
                   onClick={() => {
                     setIsForce(false);
                     setIsSave(true);
-                    // setModalWarningVisible(true);
                     handleOnClickSaveButton();
+                    // setModalWarningVisible(true);
                   }}
                   isSaving={isSaving}
                   text={text}
