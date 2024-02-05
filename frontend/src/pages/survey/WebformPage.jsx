@@ -579,7 +579,7 @@ const WebformPage = ({
     if (mismatch) {
       setTimeout(() => {
         setMismatch(false);
-      }, 3000);
+      }, 5000);
     }
   }, [mismatch]);
 
@@ -623,7 +623,10 @@ const WebformPage = ({
     }
   }, [deletedComment, answer]);
 
-  const onSubmitValidationOrShowSubmitWarning = (values = []) => {
+  const onSubmitValidationOrShowSubmitWarning = (
+    values = [],
+    showModalWarning = true
+  ) => {
     /*
      * const answerValues
      * choose which answer values to be used as validation check
@@ -683,7 +686,12 @@ const WebformPage = ({
       return;
     }
     // show warning before submit
-    setModalWarningVisible(true);
+    if (showModalWarning) {
+      setModalWarningVisible(true);
+    } else {
+      // submit directly
+      onFinish();
+    }
     onCloseValidationWarningModal();
   };
 
@@ -951,18 +959,20 @@ const WebformPage = ({
   };
 
   const onFinishShowWarning = (values) => {
+    // directly submit without showing warning modal
     setIsSubmitting(true);
     const transformedAnswerValues = transformValues(values);
     setAnswer(transformedAnswerValues);
     setIsForce(false);
     setIsSave(false);
     setTimeout(() => {
-      onSubmitValidationOrShowSubmitWarning(transformedAnswerValues);
+      onSubmitValidationOrShowSubmitWarning(transformedAnswerValues, false);
       setIsSubmitting(false);
     }, 1000);
   };
 
   const onCompleteFailed = ({ values }) => {
+    // submit with showing warning modal
     setIsSubmitting(true);
     const transformedAnswerValues = transformValues(values);
     setAnswer(transformedAnswerValues);
@@ -970,7 +980,7 @@ const WebformPage = ({
     setIsSave(false);
     setIsForce(true);
     setTimeout(() => {
-      onSubmitValidationOrShowSubmitWarning(transformedAnswerValues);
+      onSubmitValidationOrShowSubmitWarning(transformedAnswerValues, true);
       setIsSubmitting(false);
     }, 1000);
   };

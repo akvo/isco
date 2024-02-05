@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from "react";
-import { Row, Col, Modal, Button, Checkbox, Space } from "antd";
+import React, { useMemo } from "react";
+import { Row, Col, Modal, Button, Space } from "antd";
 import { WarningOutlined } from "@ant-design/icons";
 import { uiText } from "../../static";
 import { store } from "../../lib";
@@ -13,9 +13,9 @@ const SubmitWarningModal = ({
   save = false,
   mismatch = false,
 }) => {
-  const [checkboxOne, setCheckboxOne] = useState(false);
-  const [checkboxTwo, setCheckboxTwo] = useState(false);
-  const [checkboxThree, setCheckboxThree] = useState(false);
+  const checkboxOne = true;
+  const checkboxTwo = true;
+  const checkboxThree = true;
   const checkboxFour = true;
 
   const { active: activeLang } = store.useState((s) => s.language);
@@ -67,6 +67,11 @@ const SubmitWarningModal = ({
           {force && (
             <>
               <Row align="top" justify="space-between" gutter={[24, 24]}>
+                <Col span={24} style={{ fontSize: "1rem" }}>
+                  {`${text.submitModalC1} ${text.submitModalC2}`}
+                </Col>
+              </Row>
+              {/* <Row align="top" justify="space-between" gutter={[24, 24]}>
                 <Col span={1}>
                   <Checkbox
                     checked={checkboxOne}
@@ -87,10 +92,10 @@ const SubmitWarningModal = ({
                 <Col span={23} style={{ fontSize: "1rem" }}>
                   {text.submitModalC2}
                 </Col>
-              </Row>
+              </Row> */}
             </>
           )}
-          {!save && !mismatch && (
+          {/* {!save && !mismatch && (
             <Row align="top" justify="space-between" gutter={[24, 24]}>
               <Col span={1}>
                 <Checkbox
@@ -102,7 +107,7 @@ const SubmitWarningModal = ({
                 {text.submitModalC3}
               </Col>
             </Row>
-          )}
+          )} */}
           {/* {save && (
             <Row align="top" justify="space-between" gutter={[24, 24]}>
               <Col span={24} style={{ fontSize: "1rem" }}>
