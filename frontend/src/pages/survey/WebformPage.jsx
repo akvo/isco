@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import "./style.scss";
-import { Spin, Button, Checkbox } from "antd";
+import { Spin, Button, Checkbox, Modal, Space } from "antd";
 import { Webform } from "../../akvo-react-form";
 import { api, store } from "../../lib";
-import { useNotification } from "../../util";
+import { useNotification, useIdle } from "../../util";
 import { intersection, isEmpty, orderBy, groupBy } from "lodash";
 import ErrorPage from "../error/ErrorPage";
 import {
@@ -12,6 +12,9 @@ import {
   ValidationWarningModal,
 } from "../../components";
 import { uiText } from "../../static";
+import Countdown from "react-countdown";
+import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
 // import test from "./test.json" // testing purpose
 
 const computedValidations = window?.computed_validations;
@@ -115,6 +118,12 @@ const WebformPage = ({
     selectedPrevSubmission &&
     selectedPrevSubmission !== "" &&
     savedData.id === selectedPrevSubmission;
+
+  // session expiration
+  const [remainingTime, setRemainingTime] = useState(0);
+  const [showSessionModal, setShowSessionModal] = useState(false);
+  const navigate = useNavigate();
+  const [cookies, removeCookie] = useCookies(["AUTH_TOKEN"]);
 
   const text = useMemo(() => {
     return uiText[activeLang];
@@ -844,6 +853,7 @@ const WebformPage = ({
           notify({
             type: "success",
             message: "Submitted.",
+            duration: 0,
           });
           setFormLoaded(null);
           setFormValue({});
@@ -853,6 +863,7 @@ const WebformPage = ({
           notify({
             type: "error",
             message: "Oops, something went wrong.",
+            duration: 0,
           });
         })
         .finally(() => {
@@ -862,7 +873,7 @@ const WebformPage = ({
     }
   };
 
-  const handleOnClickSaveButton = () => {
+  const handleOnClickSaveButton = (handleLogout = null) => {
     if (answer.length) {
       const payload = reorderAnswersRepeatIndex(formValue, answer);
       setIsSaving(true);
@@ -883,6 +894,7 @@ const WebformPage = ({
           notify({
             type: "success",
             message: "Saved.",
+            duration: 0,
           });
         })
         .catch((e) => {
@@ -890,13 +902,28 @@ const WebformPage = ({
           notify({
             type: "error",
             message: "Oops, something went wrong.",
+            duration: 0,
           });
         })
         .finally(() => {
           setModalWarningVisible(false);
           setIsSaving(false);
           setReloadDropdownValue(true);
+          if (handleLogout) {
+            setTimeout(() => {
+              handleLogout();
+            }, 500);
+          }
         });
+    } else if (handleLogout) {
+      notify({
+        type: "info",
+        message: "No answers to save.",
+        duration: 0,
+      });
+      setTimeout(() => {
+        handleLogout();
+      }, 500);
     }
   };
 
@@ -940,6 +967,7 @@ const WebformPage = ({
         notify({
           type: "success",
           message: "Submitted.",
+          duration: 0,
         });
         setFormLoaded(null);
         setFormValue({});
@@ -949,12 +977,63 @@ const WebformPage = ({
         notify({
           type: "error",
           message: "Oops, something went wrong.",
+          duration: 0,
         });
       })
       .finally(() => {
         setIsSubmitting(false);
         setReloadDropdownValue(true);
       });
+  };
+
+  // handle idle
+  const handleIdle = () => {
+    // check session/token expiration
+    api
+      .get("/user/me")
+      .then((res) => {
+        const { expired } = res.data;
+        const now = new Date();
+        const expiredDate = new Date(expired);
+        const timeDifference = expiredDate - now;
+        // Check if the remaining time is equal to 5 mins
+        if (timeDifference > 0 && timeDifference <= 5 * 60 * 1000) {
+          // handle save automatically
+          handleOnClickSaveButton();
+        }
+        // Check if the remaining time is less than or equal to 30 minutes
+        if (timeDifference > 0 && timeDifference <= 30 * 60 * 1000) {
+          setRemainingTime(expired);
+          setShowSessionModal(true);
+        }
+      })
+      .catch(() => {
+        setRemainingTime(false);
+        setShowSessionModal(true);
+      });
+  };
+
+  // check idle every 5 minutes
+  const { isIdle } = useIdle({ onIdle: handleIdle, idleTime: 5 });
+
+  const handleLogout = () => {
+    if (cookies?.AUTH_TOKEN) {
+      removeCookie("AUTH_TOKEN");
+      api.setToken(null);
+      store.update((s) => {
+        s.isLoggedIn = false;
+        s.user = null;
+      });
+      navigate("/login");
+    }
+  };
+
+  const handleStayLoggedIn = () => {
+    setShowSessionModal(false);
+  };
+
+  const handleSaveAndLogout = () => {
+    handleOnClickSaveButton(handleLogout);
   };
 
   if (errorPage) {
@@ -1038,6 +1117,57 @@ const WebformPage = ({
         formValue={formValue}
         checkCoreMandatoryQuestion={checkCoreMandatoryQuestion}
       />
+      {/* Session modal */}
+      <Modal
+        title={
+          remainingTime ? (
+            <b>Session about to expire</b>
+          ) : (
+            <b>Session expired</b>
+          )
+        }
+        open={isIdle && showSessionModal}
+        footer={null}
+        closable={false}
+      >
+        {remainingTime ? (
+          <Space direction="vertical" style={{ width: "100%" }}>
+            <div>User&apos;s can stay logged in for a maximum of 24 hours.</div>
+            <div>Your session is about to expire.</div>
+            <div>Your session will expire in:</div>
+            <div style={{ fontSize: 20, fontWeight: 600 }}>
+              <Countdown date={remainingTime} daysInHours={true} />
+            </div>
+            <Space style={{ width: "100%", float: "right" }}>
+              <Button
+                type="primary"
+                block
+                style={{ border: "none", minHeight: 0, borderRadius: 0 }}
+                onClick={handleStayLoggedIn}
+              >
+                Extend Session by 24 hours
+              </Button>
+              <Button
+                type="danger"
+                block
+                style={{ border: "none", minHeight: 0, borderRadius: 0 }}
+                onClick={handleSaveAndLogout}
+              >
+                Save and Logout
+              </Button>
+            </Space>
+          </Space>
+        ) : (
+          <Space direction="vertical" style={{ width: "100%" }}>
+            <div>Your session has expired, please log in again.</div>
+            <Space style={{ width: "100%", float: "right" }}>
+              <Button type="primary" block onClick={handleLogout}>
+                Login
+              </Button>
+            </Space>
+          </Space>
+        )}
+      </Modal>
     </>
   );
 };

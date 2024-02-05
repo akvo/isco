@@ -37,7 +37,9 @@ export const Webform = ({
   sidebar = true,
   sticky = false,
   initialValue: initialDataValue = [],
-  submitButtonSetting = {},
+  submitButtonSetting = {
+    position: "bottom",
+  },
   extraButton = "",
   printConfig = {
     showButton: false,
@@ -438,12 +440,25 @@ export const Webform = ({
   const firstGroup = take(showGroup);
   const lastGroup = takeRight(showGroup);
 
+  const SubmitButton = ({ ...props }) => (
+    <Button
+      key="submit"
+      type="primary"
+      htmlType="submit"
+      onClick={() => form.submit()}
+      {...submitButtonSetting}
+      {...props}
+    >
+      {uiText.submit}
+    </Button>
+  );
+
   const PrevNextButton = () => {
     return formsMemo?.question_group.map((_, key) => {
       return (
         activeGroup === key && (
-          <Col span={24} key={key} className="arf-next">
-            <Space>
+          <Row gutter={[18, 18]} key={key} className="arf-next">
+            <Col span={12} align="start" style={{ float: "left" }}>
               <Button
                 className="arf-btn-previous"
                 type="default"
@@ -455,6 +470,8 @@ export const Webform = ({
               >
                 {uiText.previous}
               </Button>
+            </Col>
+            <Col span={12} align="end" style={{ float: "right" }}>
               <Button
                 className="arf-btn-next"
                 type="default"
@@ -466,8 +483,8 @@ export const Webform = ({
               >
                 {uiText.next}
               </Button>
-            </Space>
-          </Col>
+            </Col>
+          </Row>
         )
       );
     });
@@ -521,15 +538,7 @@ export const Webform = ({
                       {autoSave?.buttonText || uiText.save}
                     </Button>
                   ),
-                  <Button
-                    key="submit"
-                    type="primary"
-                    htmlType="submit"
-                    onClick={() => form.submit()}
-                    {...submitButtonSetting}
-                  >
-                    {uiText.submit}
-                  </Button>,
+                  submitButtonSetting?.position === "top" && <SubmitButton />,
                   downloadSubmissionConfig?.visible && (
                     <Button key="download" type="primary" onClick={onDownload}>
                       {uiText.download}
@@ -558,7 +567,22 @@ export const Webform = ({
       {/* Sidebar */}
       {sidebar && !isMobile && (
         <Col span={6} className={`arf-sidebar ${sticky ? "arf-sticky" : ""}`}>
-          <Sidebar {...sidebarProps} />
+          <Sidebar
+            {...sidebarProps}
+            submitButton={
+              <div
+                style={{
+                  marginTop: "16px",
+                  borderTop: "2px solid #F0F0F0",
+                  paddingRight: "12px",
+                  paddingTop: "16px",
+                }}
+              >
+                <SubmitButton block />
+              </div>
+            }
+            submitButtonSetting={submitButtonSetting}
+          />
         </Col>
       )}
 
