@@ -73,6 +73,7 @@ const uiText = {
     btnUpdate: "Update",
     btnClose: "Close",
     btnSave: "Save",
+    btnDontSave: "Don't Save",
     lockedBy: "Locked",
     btnSaveChanges: "Save Changes",
     btnDeleteUser: "Delete User",
@@ -162,7 +163,7 @@ const uiText = {
         To save the data please click on the &quot;Save&quot; button in the
         questionnaire.
         <br />
-        Do you want to navigate away from the page?
+        Do you want to Save and navigate away from the page?
       </Fragment>
     ),
     valClickYes: 'Click "Yes" if you have already saved the data',
@@ -373,6 +374,7 @@ const uiText = {
     btnUpdate: "Update",
     btnClose: "Schließen",
     btnSave: "Speichern",
+    btnDontSave: "Nicht speichern",
     lockedBy: "Reserviert",
     btnSaveChanges: "Änderungen speichern",
     btnDeleteUser: "Nutzer löschen",
@@ -463,7 +465,7 @@ const uiText = {
         Um Ihre Eingaben zu speichern, drücken Sie bitte auf
         &quot;Speichern&quot;, unten links im Fragebogen.
         <br />
-        Wollen Sie diese Seite verlassen?
+        Möchten Sie die Seite speichern und verlassen?
       </Fragment>
     ),
     valClickYes:

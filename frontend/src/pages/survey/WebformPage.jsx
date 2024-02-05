@@ -19,11 +19,24 @@ import { useCookies } from "react-cookie";
 
 const computedValidations = window?.computed_validations;
 
-const SaveButton = ({ onClick, isSaving, text, disabled = false }) => (
-  <Button loading={isSaving} onClick={onClick} disabled={disabled}>
-    {text.btnSave}
-  </Button>
-);
+const SaveButton = ({
+  onClick,
+  isSaving,
+  text,
+  disabled = false,
+  saveButtonRef,
+}) => {
+  return (
+    <Button
+      loading={isSaving}
+      onClick={onClick}
+      disabled={disabled}
+      ref={saveButtonRef}
+    >
+      {text.btnSave}
+    </Button>
+  );
+};
 
 const LockedCheckbox = ({ onChange, isLocked, text }) => (
   <>
@@ -72,6 +85,7 @@ const WebformPage = ({
   resetSavedFormDropdown,
   clearForm,
   setClearForm,
+  saveButtonRef,
 }) => {
   // const formId = 7; testing purpose
   const { notify } = useNotification();
@@ -1061,11 +1075,13 @@ const WebformPage = ({
                   onClick={() => {
                     setIsForce(false);
                     setIsSave(true);
-                    setModalWarningVisible(true);
+                    // setModalWarningVisible(true);
+                    handleOnClickSaveButton();
                   }}
                   isSaving={isSaving}
                   text={text}
                   disabled={!answer.length}
+                  saveButtonRef={saveButtonRef}
                 />
                 <LockedCheckbox
                   onChange={(val) => setIsLocked(val.target.checked)}

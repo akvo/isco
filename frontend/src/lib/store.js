@@ -109,6 +109,7 @@ const defaultUIState = {
     saveFormData: {
       visible: false,
       onOk: () => {},
+      oncancel: () => {},
     },
     dataSecurity: {
       visible: false,
