@@ -11,6 +11,7 @@ import orderBy from "lodash/orderBy";
 const Survey = () => {
   const { notify } = useNotification();
   const webformRef = useRef();
+  const saveButtonRef = useRef(null);
 
   const { user, optionValues, language } = store.useState((s) => s);
   const { organisation } = optionValues;
@@ -201,17 +202,24 @@ const Survey = () => {
     setSelectedCollaborators(val);
   };
 
-  const onOkModal = () => {
-    setFormLoaded(null);
-    store.update((s) => {
-      s.notificationModal = {
-        ...s.notificationModal,
-        saveFormData: {
-          ...s.notificationModal.saveFormData,
-          visible: false,
-        },
-      };
-    });
+  const onOkModal = ({ cancel = false }) => {
+    // handle onOkModal to trigger save button
+    // SaveFormDataModal
+    if (saveButtonRef?.current && !cancel) {
+      saveButtonRef.current?.click();
+    }
+    setTimeout(() => {
+      setFormLoaded(null);
+      store.update((s) => {
+        s.notificationModal = {
+          ...s.notificationModal,
+          saveFormData: {
+            ...s.notificationModal.saveFormData,
+            visible: false,
+          },
+        };
+      });
+    }, 100);
     setTimeout(() => {
       if (selectedForm) {
         setFormLoaded(selectedForm);
@@ -234,7 +242,8 @@ const Survey = () => {
           saveFormData: {
             ...s.notificationModal.saveFormData,
             visible: true,
-            onOk: () => onOkModal(),
+            onOk: () => onOkModal({ cancel: false }),
+            onCancel: () => onOkModal({ cancel: true }),
           },
         };
       });
@@ -259,7 +268,8 @@ const Survey = () => {
           saveFormData: {
             ...s.notificationModal.saveFormData,
             visible: true,
-            onOk: () => onOkModal(),
+            onOk: () => onOkModal({ cancel: false }),
+            onCancel: () => onOkModal({ cancel: true }),
           },
         };
       });
@@ -284,7 +294,8 @@ const Survey = () => {
           saveFormData: {
             ...s.notificationModal.saveFormData,
             visible: true,
-            onOk: () => onOkModal(),
+            onOk: () => onOkModal({ cancel: false }),
+            onCancel: () => onOkModal({ cancel: true }),
           },
         };
       });
@@ -520,6 +531,7 @@ const Survey = () => {
             resetSavedFormDropdown={resetSavedFormDropdown}
             clearForm={clearForm}
             setClearForm={setClearForm}
+            saveButtonRef={saveButtonRef}
           />
         </Space>
       )}

@@ -1,6 +1,6 @@
-import React, { useState, useMemo } from "react";
-import { Row, Col, Modal, Button, Checkbox, Space } from "antd";
-import { WarningOutlined } from "@ant-design/icons";
+import React, { useMemo } from "react";
+import { Row, Col, Modal, Button, Space } from "antd";
+import { InfoCircleOutlined } from "@ant-design/icons";
 import { uiText } from "../../static";
 import { store } from "../../lib";
 
@@ -13,9 +13,9 @@ const SubmitWarningModal = ({
   save = false,
   mismatch = false,
 }) => {
-  const [checkboxOne, setCheckboxOne] = useState(false);
-  const [checkboxTwo, setCheckboxTwo] = useState(false);
-  const [checkboxThree, setCheckboxThree] = useState(false);
+  const checkboxOne = true;
+  const checkboxTwo = true;
+  const checkboxThree = true;
   const checkboxFour = true;
 
   const { active: activeLang } = store.useState((s) => s.language);
@@ -60,13 +60,18 @@ const SubmitWarningModal = ({
       maskClosable={false}
     >
       <Row align="middle" justify="center">
-        <WarningOutlined
+        <InfoCircleOutlined
           style={{ fontSize: "100px", color: "#F9CFA8", marginBottom: "24px" }}
         />
         <Space direction="vertical" size="large">
           {force && (
             <>
               <Row align="top" justify="space-between" gutter={[24, 24]}>
+                <Col span={24} style={{ fontSize: "1rem" }}>
+                  {`${text.submitModalC1} ${text.submitModalC2}`}
+                </Col>
+              </Row>
+              {/* <Row align="top" justify="space-between" gutter={[24, 24]}>
                 <Col span={1}>
                   <Checkbox
                     checked={checkboxOne}
@@ -87,10 +92,10 @@ const SubmitWarningModal = ({
                 <Col span={23} style={{ fontSize: "1rem" }}>
                   {text.submitModalC2}
                 </Col>
-              </Row>
+              </Row> */}
             </>
           )}
-          {!save && !mismatch && (
+          {/* {!save && !mismatch && (
             <Row align="top" justify="space-between" gutter={[24, 24]}>
               <Col span={1}>
                 <Checkbox
@@ -102,8 +107,8 @@ const SubmitWarningModal = ({
                 {text.submitModalC3}
               </Col>
             </Row>
-          )}
-          {save && (
+          )} */}
+          {/* {save && (
             <Row align="top" justify="space-between" gutter={[24, 24]}>
               <Col span={24} style={{ fontSize: "1rem" }}>
                 {text.submitModalC4}
@@ -116,7 +121,7 @@ const SubmitWarningModal = ({
                 {text.prefilledMismatchWarming}
               </Col>
             </Row>
-          )}
+          )} */}
         </Space>
       </Row>
     </Modal>
