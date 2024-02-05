@@ -103,7 +103,7 @@ const SubmitWarningModal = ({
               </Col>
             </Row>
           )}
-          {save && (
+          {/* {save && (
             <Row align="top" justify="space-between" gutter={[24, 24]}>
               <Col span={24} style={{ fontSize: "1rem" }}>
                 {text.submitModalC4}
@@ -116,7 +116,7 @@ const SubmitWarningModal = ({
                 {text.prefilledMismatchWarming}
               </Col>
             </Row>
-          )}
+          )} */}
         </Space>
       </Row>
     </Modal>

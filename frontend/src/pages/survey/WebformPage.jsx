@@ -548,7 +548,7 @@ const WebformPage = ({
               setShowCollaboratorForm(collaborators?.length || false);
               setTimeout(() => {
                 setMismatch(mismatch || false);
-                setModalWarningVisible(mismatch || false);
+                // setModalWarningVisible(mismatch || false);
               }, 500);
             }
           }
@@ -573,6 +573,15 @@ const WebformPage = ({
       setFormValue({});
     }
   }, [activeLang]);
+
+  // handle automatically close mismatch alert
+  useEffect(() => {
+    if (mismatch) {
+      setTimeout(() => {
+        setMismatch(false);
+      }, 3000);
+    }
+  }, [mismatch]);
 
   // set comment to answer value
   useEffect(() => {
@@ -1056,6 +1065,17 @@ const WebformPage = ({
 
   return (
     <>
+      {mismatch ? (
+        <Alert
+          type="info"
+          showIcon
+          message={text.prefilledMismatchWarming}
+          closable
+          afterClose={() => {
+            setMismatch(false);
+          }}
+        />
+      ) : null}
       {isSave && isLocked ? (
         <Alert
           type="info"
@@ -1129,7 +1149,7 @@ const WebformPage = ({
         }
         onCancel={() => {
           setModalWarningVisible(false);
-          setMismatch(false);
+          // setMismatch(false);
         }}
         btnLoading={isSubmitting || isSaving}
         force={isForce}
