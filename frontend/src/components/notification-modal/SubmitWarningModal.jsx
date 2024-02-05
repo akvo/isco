@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { Row, Col, Modal, Button, Space } from "antd";
-import { WarningOutlined } from "@ant-design/icons";
+import { InfoCircleOutlined } from "@ant-design/icons";
 import { uiText } from "../../static";
 import { store } from "../../lib";
 
@@ -60,7 +60,7 @@ const SubmitWarningModal = ({
       maskClosable={false}
     >
       <Row align="middle" justify="center">
-        <WarningOutlined
+        <InfoCircleOutlined
           style={{ fontSize: "100px", color: "#F9CFA8", marginBottom: "24px" }}
         />
         <Space direction="vertical" size="large">
