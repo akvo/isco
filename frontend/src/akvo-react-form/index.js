@@ -499,6 +499,10 @@ export const Webform = ({
     });
   };
 
+  const isLastGroup = useMemo(() => {
+    return activeGroup + 1 === formsMemo?.question_group?.length;
+  }, [activeGroup, formsMemo]);
+
   if (!formsMemo?.question_group) {
     return "Error Format";
   }
@@ -578,7 +582,10 @@ export const Webform = ({
                   paddingTop: "16px",
                 }}
               >
-                <SubmitButton block />
+                <SubmitButton
+                  block
+                  disabled={isLastGroup ? submitButtonSetting?.disabled : true}
+                />
               </div>
             }
             submitButtonSetting={submitButtonSetting}
