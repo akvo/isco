@@ -137,7 +137,10 @@ const WebformPage = ({
   const [remainingTime, setRemainingTime] = useState(0);
   const [showSessionModal, setShowSessionModal] = useState(false);
   const navigate = useNavigate();
-  const [cookies, removeCookie] = useCookies(["AUTH_TOKEN"]);
+  const [cookies, setCookie, removeCookie] = useCookies([
+    "AUTH_TOKEN",
+    "REFRESH_TOKEN",
+  ]);
 
   const text = useMemo(() => {
     return uiText[activeLang];
@@ -1019,7 +1022,6 @@ const WebformPage = ({
       });
   };
 
-  // handle idle
   const handleIdle = () => {
     // check session/token expiration
     api
@@ -1052,6 +1054,7 @@ const WebformPage = ({
   const handleLogout = () => {
     if (cookies?.AUTH_TOKEN) {
       removeCookie("AUTH_TOKEN");
+      removeCookie("REFRESH_TOKEN");
       api.setToken(null);
       store.update((s) => {
         s.isLoggedIn = false;
@@ -1062,7 +1065,30 @@ const WebformPage = ({
   };
 
   const handleStayLoggedIn = () => {
-    setShowSessionModal(false);
+    if (cookies?.REFRESH_TOKEN) {
+      api.setToken(cookies.REFRESH_TOKEN);
+      api
+        .post("/user/refresh_token")
+        .then((res) => {
+          const { data } = res;
+          const options = data?.expired
+            ? { expires: new Date(data.expired) }
+            : {};
+          setCookie("AUTH_TOKEN", data?.access_token, options);
+          setCookie("REFRESH_TOKEN", data?.refresh_token);
+          api.setToken(cookies?.AUTH_TOKEN);
+          setTimeout(() => {
+            setShowSessionModal(false);
+          }, 100);
+        })
+        .catch((e) => {
+          console.error(e);
+          notify({
+            type: "error",
+            message: "Can't extend your session, please contact your admin.",
+          });
+        });
+    }
   };
 
   const handleSaveAndLogout = () => {

@@ -1,7 +1,7 @@
 import os
 from math import ceil
 from middleware import Token, authenticate_user
-from middleware import create_access_token, verify_user
+from middleware import create_access_token, verify_user, create_refresh_token
 from middleware import get_password_hash, verify_super_admin
 from middleware import decode_token, verify_token, organisations_in_same_isco
 from middleware import find_secretariat_admins, find_member_admins
@@ -72,8 +72,36 @@ def login(
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token = create_access_token(data={"email": user.email})
+    refresh_token = create_refresh_token(data={"email": user.email})
     return {
         "access_token": access_token.get("token"),
+        "refresh_token": refresh_token.get("token"),
+        "token_type": "bearer",
+        "expired": access_token.get("expired"),
+        "user": user.serialize,
+    }
+
+
+@user_route.post(
+    "/user/refresh_token",
+    response_model=Token,
+    summary="user refresh token",
+    name="user:refresh_token",
+    tags=["User"],
+)
+def refresh_token(
+    req: Request,
+    refresh_token: str = Depends(oauth2_scheme),
+    session: Session = Depends(get_session),
+):
+    decode = verify_token(decode_token(token=refresh_token))
+    user_email = decode["email"]
+    access_token = create_access_token(data={"email": user_email})
+    refresh_token = create_refresh_token(data={"email": user_email})
+    user = crud_user.get_user_by_email(session=session, email=user_email)
+    return {
+        "access_token": access_token.get("token"),
+        "refresh_token": refresh_token.get("token"),
         "token_type": "bearer",
         "expired": access_token.get("expired"),
         "user": user.serialize,

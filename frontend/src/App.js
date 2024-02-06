@@ -96,6 +96,7 @@ const App = () => {
             console.error(status, statusText);
             if (status === 401 || status === 500) {
               removeCookie("AUTH_TOKEN");
+              removeCookie("REFRESH_TOKEN");
               api.setToken(null);
               store.update((s) => {
                 s.isLoggedIn = false;
