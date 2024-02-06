@@ -326,7 +326,7 @@ class TestUserAuthentication:
         assert res.status_code == 404
 
     @pytest.mark.asyncio
-    async def test_valid_user_login(
+    async def test_valid_user_login_and_refresh_token(
         self, app: FastAPI, session: Session, client: AsyncClient
     ) -> None:
         # valid login
@@ -346,8 +346,20 @@ class TestUserAuthentication:
         res = res.json()
         assert res["access_token"] is not None
         assert res["token_type"] == "bearer"
+        assert "refresh_token" in res
+        refresh_token = res["refresh_token"]
         account = Acc(email="support@akvo.org", token=res["access_token"])
         assert account.token == res["access_token"]
+        # refresh token
+        res = await client.post(
+            app.url_path_for("user:refresh_token"),
+            headers={"Authorization": f"Bearer {refresh_token}"},
+        )
+        assert res.status_code == 200
+        res = res.json()
+        assert res["access_token"] is not None
+        assert res["token_type"] == "bearer"
+        assert "refresh_token" in res
 
     @pytest.mark.asyncio
     async def test_user_forgot_password(
