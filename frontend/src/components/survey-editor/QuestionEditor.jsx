@@ -19,6 +19,7 @@ import {
   RiDragMove2Fill,
   RiEditFill,
   RiTranslate2,
+  RiFileCopyLine,
 } from "react-icons/ri";
 import { TbTrashOff } from "react-icons/tb";
 import QuestionTabContent from "./QuestionTabContent";
@@ -321,7 +322,7 @@ const QuestionEditor = ({
                   showArrow={false}
                   header={
                     <Row align="middle" justify="space-between" gutter={[8, 8]}>
-                      <Col span={3}>
+                      <Col span={4}>
                         <Tooltip title="Click to move question">
                           <Button
                             className={
@@ -332,6 +333,17 @@ const QuestionEditor = ({
                             onClick={() => {
                               store.update((s) => {
                                 s.isMoveQuestion = question;
+                              });
+                            }}
+                          />
+                        </Tooltip>
+                        <Tooltip title="Click to copy question">
+                          <Button
+                            type="text"
+                            icon={<RiFileCopyLine />}
+                            onClick={() => {
+                              store.update((s) => {
+                                s.isCopyQuestion = question;
                               });
                             }}
                           />
@@ -363,7 +375,7 @@ const QuestionEditor = ({
                           </Button>
                         </Tooltip>
                       </Col>
-                      <Col span={21}>
+                      <Col span={20}>
                         {(activeSetting === "detail" ||
                           activeSetting === "setting") && (
                           <QuestionNameInput

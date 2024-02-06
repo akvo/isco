@@ -351,7 +351,10 @@ const QuestionGroup = ({ index, questionGroup }) => {
       <QuestionGroupEditor
         index={index}
         questionGroup={questionGroup}
-        isMoving={isMoveQuestionGroup?.id === questionGroup?.id}
+        isMoving={
+          isMoveQuestionGroup?.id === questionGroup?.id ||
+          isCopyQuestionGroup?.id === questionGroup?.id
+        }
       />
       {(isAddQuestionGroup || isMoveQuestionGroup || isCopyQuestionGroup) && (
         <AddMoveButton

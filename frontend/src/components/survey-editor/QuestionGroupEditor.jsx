@@ -1025,7 +1025,7 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
                       }}
                     />
                   </Tooltip>
-                  <Tooltip title="Click to copy section, only the question contents have been copied. Please re-configure the dependencies and autofield, if any for the new questions">
+                  <Tooltip title="Click to copy section">
                     <Button
                       type="text"
                       icon={<RiFileCopyLine />}
