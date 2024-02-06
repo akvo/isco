@@ -93,10 +93,12 @@ const Login = () => {
       .then((res) => {
         const { data } = res;
         removeCookie("AUTH_TOKEN");
+        removeCookie("REFRESH_TOKEN");
         const options = data?.expired
           ? { expires: new Date(data.expired) }
           : {};
         setCookie("AUTH_TOKEN", data?.access_token, options);
+        setCookie("REFRESH_TOKEN", data?.refresh_token);
         api.setToken(cookies?.AUTH_TOKEN);
         store.update((s) => {
           s.isLoggedIn = true;
