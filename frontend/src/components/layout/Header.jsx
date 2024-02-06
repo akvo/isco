@@ -26,6 +26,7 @@ const Header = ({ className = "header", ...props }) => {
   const handleLogout = () => {
     if (cookies?.AUTH_TOKEN) {
       removeCookie("AUTH_TOKEN");
+      removeCookie("REFRESH_TOKEN");
       api.setToken(null);
       store.update((s) => {
         s.isLoggedIn = false;
