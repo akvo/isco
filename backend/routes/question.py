@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from db.connection import get_session
 import db.crud_question as crud
 from db import crud_answer
+from db.crud_form import get_form_by_id
 from models.question import QuestionBase, QuestionDict
 from models.question import (
     QuestionPayload,
@@ -16,6 +17,7 @@ from models.question import (
     QuestionDeactivatePayload,
 )
 from models.question import RepeatingObjectType, Question
+from models.form import FormBase
 
 security = HTTPBearer()
 question_route = APIRouter()
@@ -225,6 +227,40 @@ def move(
         target_group=target_group,
     )
     return Response(status_code=HTTPStatus.NO_CONTENT.value)
+
+
+@question_route.post(
+    "/copy-question/{id:path}/{target_group:path}/{target_order:path}",
+    response_model=FormBase,
+    summary="copy question",
+    name="question:copy",
+    tags=["Copy"],
+)
+def copy(
+    req: Request,
+    id: int,
+    target_group: int,
+    target_order: int,
+    session: Session = Depends(get_session),
+    credentials: credentials = Depends(security),
+):
+    question = crud.copy_question(
+        session=session,
+        id=id,
+        target_order=target_order,
+        target_group=target_group,
+    )
+    # get form
+    form_id = question.question_group_detail.form_detail.id
+    form = get_form_by_id(session=session, id=form_id)
+    form = form.serialize
+    for qg in form.get("question_group"):
+        for q in qg.get("question"):
+            check_answer = crud_answer.get_answer_by_question(
+                session=session, question=[q.get("id")]
+            )
+            q.update({"disableDelete": True if check_answer else False})
+    return form
 
 
 @question_route.delete(

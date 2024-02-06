@@ -100,3 +100,31 @@ class TestCopyGroupAndQuestion:
         )
         assert res.status_code == 200
         print_check(session=session, status="BEFORE #2")
+
+    @pytest.mark.asyncio
+    async def test_copy_question_after(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
+        # first copy
+        res = await client.post(
+            app.url_path_for(
+                "question:copy", id=2, target_group=10, target_order=10
+            ),
+            headers={"Authorization": f"Bearer {account.token}"},
+        )
+        assert res.status_code == 200
+        print_check(session=session, status="COPY QUESTION AFTER #1")
+
+    @pytest.mark.asyncio
+    async def test_copy_question_before(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
+        # first copy
+        res = await client.post(
+            app.url_path_for(
+                "question:copy", id=24, target_group=9, target_order=1
+            ),
+            headers={"Authorization": f"Bearer {account.token}"},
+        )
+        assert res.status_code == 200
+        print_check(session=session, status="COPY QUESTION AFTER #2")
