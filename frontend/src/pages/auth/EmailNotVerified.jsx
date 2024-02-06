@@ -21,6 +21,7 @@ const EmailNotVerified = () => {
         });
         if (cookies?.AUTH_TOKEN) {
           removeCookie("AUTH_TOKEN");
+          removeCookie("REFRESH_TOKEN");
         }
       })
       .catch(() => {

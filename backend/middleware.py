@@ -18,6 +18,7 @@ from db import crud_user
 SECRET_KEY = os.environ["SECRET_KEY"]
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_DAYS = 1
+REFRESH_TOKEN_EXPIRE_DAYS = 3
 TOKEN_TMP = "./tmp/token.txt"
 query_pattern = re.compile(r"[0-9]*\|(.*)")
 
@@ -27,6 +28,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 class Token(BaseModel):
     access_token: str
+    refresh_token: Optional[str]
     token_type: str
     expired: datetime
     user: UserDict
@@ -55,6 +57,13 @@ def authenticate_user(session: Session, email: str, password: str):
 
 def create_access_token(data: dict):
     expire = datetime.utcnow() + timedelta(days=ACCESS_TOKEN_EXPIRE_DAYS)
+    data.update({"exp": expire})
+    encoded_jwt = jwt.encode(data, SECRET_KEY, algorithm=ALGORITHM)
+    return {"token": encoded_jwt, "expired": expire}
+
+
+def create_refresh_token(data: dict):
+    expire = datetime.utcnow() + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
     data.update({"exp": expire})
     encoded_jwt = jwt.encode(data, SECRET_KEY, algorithm=ALGORITHM)
     return {"token": encoded_jwt, "expired": expire}

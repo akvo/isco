@@ -85,6 +85,7 @@ class TestUserDisco:
         assert res["token_type"] == "bearer"
         account = Acc(email="galih@test.org", token=res["access_token"])
         assert account.token == res["access_token"]
+        assert "refresh_token" in res
 
     @pytest.mark.asyncio
     async def test_get_user_me(
@@ -171,6 +172,7 @@ class TestUserDisco:
         assert res["token_type"] == "bearer"
         account = Acc(email="galih@test.org", token=res["access_token"])
         assert account.token == res["access_token"]
+        assert "refresh_token" in res
 
     @pytest.mark.asyncio
     async def test_user_invitation(

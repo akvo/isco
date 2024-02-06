@@ -59,6 +59,7 @@ const Setting = () => {
         });
         if (cookies?.AUTH_TOKEN) {
           removeCookie("AUTH_TOKEN");
+          removeCookie("REFRESH_TOKEN");
           api.setToken(null);
           store.update((s) => {
             s.isLoggedIn = false;
