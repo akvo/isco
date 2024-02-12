@@ -25,6 +25,8 @@ const QuestionTabContent = ({
   setQuestionToDeactivate,
   datapointName,
   setDatapointName,
+  sumAcrossRepeatable,
+  setSumAcrossRepeatable,
 }) => {
   switch (activeSetting) {
     case "translation":
@@ -66,6 +68,8 @@ const QuestionTabContent = ({
           handleFormOnValuesChange={handleFormOnValuesChange}
           allowOther={allowOther}
           setAllowOther={setAllowOther}
+          sumAcrossRepeatable={sumAcrossRepeatable}
+          setSumAcrossRepeatable={setSumAcrossRepeatable}
         />
       );
   }

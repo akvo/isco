@@ -119,6 +119,7 @@ const QuestionEditor = ({
   const [personalData, setPersonalData] = useState(false);
   const [datapointName, setDatapointName] = useState(false);
   const [activeLang, setActiveLang] = useState(null);
+  const [sumAcrossRepeatable, setSumAcrossRepeatable] = useState(false);
 
   // handle when form languages updated
   useEffect(() => {
@@ -154,8 +155,9 @@ const QuestionEditor = ({
         // Load autofield value
         if (key === "autofield" && value) {
           Object.keys(value).forEach((key) => {
-            if (key === "fnString") {
-              form.setFieldsValue({ [`${field}-${key}`]: value?.[key] });
+            form.setFieldsValue({ [`${field}-${key}`]: value?.[key] });
+            if (key === "sumAcrossRepeatable") {
+              setSumAcrossRepeatable(value?.[key]);
             }
           });
         }
@@ -411,6 +413,8 @@ const QuestionEditor = ({
                         questionToDeactivate={questionToDeactivate}
                         datapointName={datapointName}
                         setDatapointName={setDatapointName}
+                        sumAcrossRepeatable={sumAcrossRepeatable}
+                        setSumAcrossRepeatable={setSumAcrossRepeatable}
                       />
                       <div className="question-button-wrapper">
                         <Space align="center">
