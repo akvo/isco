@@ -175,10 +175,9 @@ const TypeAutoField = ({
     automateValue = strToFunction(fn?.fnString, getFieldValue, repeatIndex);
   }
 
-  let questionIds = [];
   let sumRepeatableAutomateValue = null;
   if (fn?.sumAcrossRepeatable && fn?.fnString && automateValue) {
-    questionIds = extractQuestionIds(fn.fnString);
+    const questionIds = extractQuestionIds(fn.fnString);
     const answers = getFieldsValue(true);
     const repeatIndexs = Object.keys(answers)
       .map((x) => {
