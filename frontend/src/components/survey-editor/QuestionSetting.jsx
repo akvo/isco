@@ -481,6 +481,7 @@ const QuestionSetting = ({
                   key={`question-${qid}-core_mandatory-switch`}
                   size="small"
                   checked={coreMandatory}
+                  disabled={allowNA}
                   onChange={(val) =>
                     handleCoreMandatoryChange(
                       val,
@@ -541,6 +542,7 @@ const QuestionSetting = ({
               <Checkbox
                 key={`question-${qid}-rule-allowNA-checkbox`}
                 checked={allowNA}
+                disabled={coreMandatory}
                 onChange={(val) =>
                   handleAllowNAChange(
                     val?.target?.checked,
