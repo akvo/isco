@@ -59,6 +59,7 @@ body {
     .ant-input-affix-wrapper,
     .ant-input-number,
     .ant-picker,
+    .ant-input-number-input,
     .ant-select:not(.ant-select-customize-input) .ant-select-selector {
       width: 100%;
       border: none;
@@ -135,6 +136,10 @@ body {
 
     .ant-checkbox-inner {
       border: 1px solid #000000;
+    }
+
+    .ant-input-number-affix-wrapper-disabled {
+      background-color: #ededed !important;
     }
 
     /* End of Form Style */
