@@ -46,6 +46,8 @@ const QuestionSetting = ({
   setQuestionToDeactivate,
   datapointName,
   setDatapointName,
+  allowNA,
+  setAllowNA,
 }) => {
   const [deactivatePopconfirmMessage, setDeactivatePopconfirmMessage] =
     useState("");
@@ -259,6 +261,13 @@ const QuestionSetting = ({
     handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
   };
 
+  const handleAllowNAChange = (val, field) => {
+    const fieldValue = { [field]: val };
+    form.setFieldsValue(fieldValue);
+    setAllowNA(val);
+    handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
+  };
+
   const handleOnDeleteSkipLogic = () => {
     const skipLogic = question?.skip_logic?.[0];
     const fields = ["dependent_to", "operator", "value"].map(
@@ -416,7 +425,7 @@ const QuestionSetting = ({
                 <Input className="bg-grey" placeholder="Enter tooltip" />
               </Form.Item>
             </div>
-            <Space size={100}>
+            <Space size={65}>
               <div>
                 <Popconfirm
                   placement="topRight"
@@ -524,6 +533,25 @@ const QuestionSetting = ({
                 </div>
               )
             }
+            {/* ALLOW NA SETTING */}
+            <div className="field-wrapper" style={{ marginTop: "20px" }}>
+              <Form.Item name={`question-${qid}-rule-allowNA`} hidden noStyle>
+                <Input />
+              </Form.Item>
+              <Checkbox
+                key={`question-${qid}-rule-allowNA-checkbox`}
+                checked={allowNA}
+                onChange={(val) =>
+                  handleAllowNAChange(
+                    val?.target?.checked,
+                    `question-${qid}-rule-allowNA`
+                  )
+                }
+              >
+                {" "}
+                Allow Data unavailable/NA
+              </Checkbox>
+            </div>
           </>
         </TabPane>
         {/* Skip Logic */}
