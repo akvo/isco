@@ -29,6 +29,7 @@ const { TabPane } = Tabs;
 
 const skipLogicQuestionType = ["option", "number", "multiple_option"];
 const datapointNameQuestionType = ["input", "option"];
+const allowNAQuestionType = ["number", "text", "input"];
 
 const QuestionSetting = ({
   form,
@@ -46,6 +47,8 @@ const QuestionSetting = ({
   setQuestionToDeactivate,
   datapointName,
   setDatapointName,
+  allowNA,
+  setAllowNA,
 }) => {
   const [deactivatePopconfirmMessage, setDeactivatePopconfirmMessage] =
     useState("");
@@ -259,6 +262,13 @@ const QuestionSetting = ({
     handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
   };
 
+  const handleAllowNAChange = (val, field) => {
+    const fieldValue = { [field]: val };
+    form.setFieldsValue(fieldValue);
+    setAllowNA(val);
+    handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
+  };
+
   const handleOnDeleteSkipLogic = () => {
     const skipLogic = question?.skip_logic?.[0];
     const fields = ["dependent_to", "operator", "value"].map(
@@ -416,7 +426,7 @@ const QuestionSetting = ({
                 <Input className="bg-grey" placeholder="Enter tooltip" />
               </Form.Item>
             </div>
-            <Space size={100}>
+            <Space size={65}>
               <div>
                 <Popconfirm
                   placement="topRight"
@@ -472,6 +482,7 @@ const QuestionSetting = ({
                   key={`question-${qid}-core_mandatory-switch`}
                   size="small"
                   checked={coreMandatory}
+                  disabled={allowNA}
                   onChange={(val) =>
                     handleCoreMandatoryChange(
                       val,
@@ -521,6 +532,34 @@ const QuestionSetting = ({
                       Use as data point / display name{" "}
                     </Checkbox>
                   </Form.Item>
+                </div>
+              )
+            }
+            {
+              /* ALLOW NA SETTING */
+              allowNAQuestionType.includes(currentQuestionType) && (
+                <div className="field-wrapper" style={{ marginTop: "20px" }}>
+                  <Form.Item
+                    name={`question-${qid}-rule-allowNA`}
+                    hidden
+                    noStyle
+                  >
+                    <Input />
+                  </Form.Item>
+                  <Checkbox
+                    key={`question-${qid}-rule-allowNA-checkbox`}
+                    checked={allowNA}
+                    disabled={coreMandatory}
+                    onChange={(val) =>
+                      handleAllowNAChange(
+                        val?.target?.checked,
+                        `question-${qid}-rule-allowNA`
+                      )
+                    }
+                  >
+                    {" "}
+                    Allow Data unavailable/NA
+                  </Checkbox>
                 </div>
               )
             }

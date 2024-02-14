@@ -68,7 +68,7 @@ const QuestionFields = ({
         <TypeNumber
           keyform={index}
           rules={rules}
-          uiTextForm={uiText}
+          uiText={uiText}
           formRef={formRef}
           {...field}
         />
