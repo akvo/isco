@@ -3,6 +3,7 @@ import { Form, Input } from "antd";
 import { Extra, FieldLabel } from "../support";
 import GlobalStore from "../lib/store";
 import { InputFieldIcon } from "../lib/svgIcons";
+import { DataUnavailableField } from "../components";
 
 const TypeInput = ({
   id,
@@ -17,6 +18,9 @@ const TypeInput = ({
   extra,
   requiredSign,
   fieldIcons = true,
+  coreMandatory,
+  uiText,
+  rule,
 }) => {
   const form = Form.useFormInstance();
   const [showPrefix, setShowPrefix] = useState(true);
@@ -27,6 +31,7 @@ const TypeInput = ({
     ? extra.filter((ex) => ex.placement === "after")
     : [];
   const currentValue = form.getFieldValue([id]);
+  const [naChecked, setNaChecked] = useState(false);
 
   const updateDataPointName = useCallback(
     (value) => {
@@ -71,8 +76,25 @@ const TypeInput = ({
         className="arf-field-child"
         key={keyform}
         name={id}
-        rules={rules}
-        required={required}
+        rules={[
+          ...rules,
+          {
+            validator: (_, value) => {
+              const requiredErr = `${name.props.children[0]} ${uiText.errorIsRequired}`;
+              if (value || value === 0) {
+                return Promise.resolve();
+              }
+              if (!coreMandatory && naChecked) {
+                return Promise.resolve();
+              }
+              if (!coreMandatory && !naChecked && required) {
+                return Promise.reject(new Error(requiredErr));
+              }
+              return Promise.resolve();
+            },
+          },
+        ]}
+        required={coreMandatory ? required : !naChecked ? required : false}
       >
         <Input
           sytle={{ width: "100%" }}
@@ -86,8 +108,20 @@ const TypeInput = ({
           prefix={
             fieldIcons && showPrefix && !currentValue && <InputFieldIcon />
           }
+          disabled={naChecked}
         />
       </Form.Item>
+
+      {/* inputDataUnavailable */}
+      <DataUnavailableField
+        allowNA={rule?.allowNA}
+        coreMandatory={coreMandatory}
+        keyform={keyform}
+        id={id}
+        naChecked={naChecked}
+        setNaChecked={setNaChecked}
+      />
+
       {!!extraAfter?.length &&
         extraAfter.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
     </Form.Item>
