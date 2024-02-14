@@ -29,6 +29,7 @@ const { TabPane } = Tabs;
 
 const skipLogicQuestionType = ["option", "number", "multiple_option"];
 const datapointNameQuestionType = ["input", "option"];
+const allowNAQuestionType = ["number", "text", "input"];
 
 const QuestionSetting = ({
   form,
@@ -534,26 +535,34 @@ const QuestionSetting = ({
                 </div>
               )
             }
-            {/* ALLOW NA SETTING */}
-            <div className="field-wrapper" style={{ marginTop: "20px" }}>
-              <Form.Item name={`question-${qid}-rule-allowNA`} hidden noStyle>
-                <Input />
-              </Form.Item>
-              <Checkbox
-                key={`question-${qid}-rule-allowNA-checkbox`}
-                checked={allowNA}
-                disabled={coreMandatory}
-                onChange={(val) =>
-                  handleAllowNAChange(
-                    val?.target?.checked,
-                    `question-${qid}-rule-allowNA`
-                  )
-                }
-              >
-                {" "}
-                Allow Data unavailable/NA
-              </Checkbox>
-            </div>
+            {
+              /* ALLOW NA SETTING */
+              allowNAQuestionType.includes(currentQuestionType) && (
+                <div className="field-wrapper" style={{ marginTop: "20px" }}>
+                  <Form.Item
+                    name={`question-${qid}-rule-allowNA`}
+                    hidden
+                    noStyle
+                  >
+                    <Input />
+                  </Form.Item>
+                  <Checkbox
+                    key={`question-${qid}-rule-allowNA-checkbox`}
+                    checked={allowNA}
+                    disabled={coreMandatory}
+                    onChange={(val) =>
+                      handleAllowNAChange(
+                        val?.target?.checked,
+                        `question-${qid}-rule-allowNA`
+                      )
+                    }
+                  >
+                    {" "}
+                    Allow Data unavailable/NA
+                  </Checkbox>
+                </div>
+              )
+            }
           </>
         </TabPane>
         {/* Skip Logic */}
