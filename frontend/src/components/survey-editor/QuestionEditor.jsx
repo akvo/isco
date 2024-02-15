@@ -120,6 +120,7 @@ const QuestionEditor = ({
   const [datapointName, setDatapointName] = useState(false);
   const [activeLang, setActiveLang] = useState(null);
   const [sumAcrossRepeatable, setSumAcrossRepeatable] = useState(false);
+  const [allowNA, setAllowNA] = useState(false);
 
   // handle when form languages updated
   useEffect(() => {
@@ -149,6 +150,9 @@ const QuestionEditor = ({
             }
             if (key === "allow_decimal") {
               setAllowDecimal(value?.[key]);
+            }
+            if (key === "allowNA") {
+              setAllowNA(value?.[key]);
             }
           });
         }
@@ -415,6 +419,8 @@ const QuestionEditor = ({
                         setDatapointName={setDatapointName}
                         sumAcrossRepeatable={sumAcrossRepeatable}
                         setSumAcrossRepeatable={setSumAcrossRepeatable}
+                        allowNA={allowNA}
+                        setAllowNA={setAllowNA}
                       />
                       <div className="question-button-wrapper">
                         <Space align="center">

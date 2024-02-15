@@ -1,16 +1,9 @@
-import React, {
-  useEffect,
-  useCallback,
-  useRef,
-  useState,
-  useMemo,
-} from "react";
-import { Form, InputNumber, Checkbox } from "antd";
+import React, { useEffect, useCallback, useRef, useState } from "react";
+import { Form, InputNumber } from "antd";
 import { Extra, FieldLabel } from "../support";
 import GlobalStore from "../lib/store";
 import { InputNumberIcon, InputNumberDecimalIcon } from "../lib/svgIcons";
-import uiText from "../../static/ui-text";
-import { store } from "../../lib";
+import { DataUnavailableField } from "../components";
 
 const TypeNumber = ({
   id,
@@ -26,7 +19,8 @@ const TypeNumber = ({
   requiredSign,
   coreMandatory,
   fieldIcons = true,
-  uiTextForm,
+  uiText,
+  rule,
   // formRef,
 }) => {
   const numberRef = useRef();
@@ -34,13 +28,6 @@ const TypeNumber = ({
   const [error, setError] = useState("");
   const [showPrefix, setShowPrefix] = useState(true);
   const [naChecked, setNaChecked] = useState(false);
-
-  const { language } = store.useState((s) => s);
-  const { active: activeLang } = language;
-
-  const text = useMemo(() => {
-    return uiText[activeLang];
-  }, [activeLang]);
 
   const form = Form.useFormInstance();
   const extraBefore = extra
@@ -122,7 +109,7 @@ const TypeNumber = ({
           ...rules,
           {
             validator: (_, value) => {
-              const requiredErr = `${name.props.children[0]} ${uiTextForm.errorIsRequired}`;
+              const requiredErr = `${name.props.children[0]} ${uiText.errorIsRequired}`;
               if (value || value === 0) {
                 return Promise.resolve();
               }
@@ -178,20 +165,14 @@ const TypeNumber = ({
       )}
 
       {/* inputDataUnavailable */}
-      {!coreMandatory && (
-        <Form.Item key={`na-${keyform}`} name={`na-${id}`} noStyle>
-          <Checkbox
-            id={`na-${id}`}
-            checked={naChecked}
-            onChange={(e) => {
-              setNaChecked(e.target.checked);
-            }}
-            style={{ marginTop: "8px" }}
-          >
-            {text.inputDataUnavailable}
-          </Checkbox>
-        </Form.Item>
-      )}
+      <DataUnavailableField
+        allowNA={rule?.allowNA}
+        coreMandatory={coreMandatory}
+        keyform={keyform}
+        id={id}
+        naChecked={naChecked}
+        setNaChecked={setNaChecked}
+      />
 
       {!!extraAfter?.length &&
         extraAfter.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}

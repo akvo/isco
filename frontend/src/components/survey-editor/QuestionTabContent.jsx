@@ -27,6 +27,8 @@ const QuestionTabContent = ({
   setDatapointName,
   sumAcrossRepeatable,
   setSumAcrossRepeatable,
+  allowNA,
+  setAllowNA,
 }) => {
   switch (activeSetting) {
     case "translation":
@@ -57,6 +59,8 @@ const QuestionTabContent = ({
           setQuestionToDeactivate={setQuestionToDeactivate}
           datapointName={datapointName}
           setDatapointName={setDatapointName}
+          allowNA={allowNA}
+          setAllowNA={setAllowNA}
         />
       );
     default:
