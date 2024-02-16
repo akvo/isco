@@ -120,6 +120,7 @@ const QuestionEditor = ({
   const [personalData, setPersonalData] = useState(false);
   const [datapointName, setDatapointName] = useState(false);
   const [activeLang, setActiveLang] = useState(null);
+  const [allowNA, setAllowNA] = useState(false);
 
   // handle when form languages updated
   useEffect(() => {
@@ -149,6 +150,9 @@ const QuestionEditor = ({
             }
             if (key === "allow_decimal") {
               setAllowDecimal(value?.[key]);
+            }
+            if (key === "allowNA") {
+              setAllowNA(value?.[key]);
             }
           });
         }
@@ -423,6 +427,8 @@ const QuestionEditor = ({
                         questionToDeactivate={questionToDeactivate}
                         datapointName={datapointName}
                         setDatapointName={setDatapointName}
+                        allowNA={allowNA}
+                        setAllowNA={setAllowNA}
                       />
                       <div className="question-button-wrapper">
                         <Space align="center">

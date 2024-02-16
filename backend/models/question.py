@@ -34,6 +34,7 @@ class RuleDict(TypedDict):
     allow_decimal: Optional[bool] = None
     min: Optional[int] = None
     max: Optional[int] = None
+    allowNA: Optional[bool] = None
 
 
 class RepeatingObjectType(enum.Enum):
