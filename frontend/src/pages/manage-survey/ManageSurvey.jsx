@@ -11,8 +11,10 @@ import {
   Modal,
   Form,
   Popconfirm,
+  Input,
 } from "antd";
 import { RiPencilFill, RiDeleteBinFill } from "react-icons/ri";
+import { FaSearch } from "react-icons/fa";
 import { TbTrashOff } from "react-icons/tb";
 import { FormEditor } from "../../components";
 import { api } from "../../lib";
@@ -26,6 +28,7 @@ const ManageSurvey = () => {
   const [isSurveyModalVisible, setIsSurveyModalVisible] = useState(false);
   const [dataSource, setDataSource] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [search, setSearch] = useState(null);
   const { notify } = useNotification();
 
   const handleEditButton = (record) => {
@@ -148,8 +151,12 @@ const ManageSurvey = () => {
 
   useEffect(() => {
     setIsLoading(true);
+    let url = "/form/";
+    if (search) {
+      url = `${url}?search=${search}`;
+    }
     api
-      .get("/form/")
+      .get(url)
       .then((res) => {
         const data = res?.data?.map((item) => ({
           ...item,
@@ -164,7 +171,7 @@ const ManageSurvey = () => {
       .finally(() => {
         setIsLoading(false);
       });
-  }, []);
+  }, [search]);
 
   const onSubmitForm = (values) => {
     let data = {};
@@ -225,11 +232,18 @@ const ManageSurvey = () => {
     <div id="manage-survey">
       <Row className="container bg-grey">
         <Col span={24}>
-          <Title className="page-title" level={3}>
-            Manage Surveys
-          </Title>
-          <Row>
-            <Col span={24}>
+          <Row
+            className="page-title-wrapper"
+            align="middle"
+            justify="space-between"
+            gutter={[20, 20]}
+          >
+            <Col span={12}>
+              <Title className="page-title" level={3}>
+                Manage Surveys
+              </Title>
+            </Col>
+            <Col span={12}>
               <Button
                 className="button-add"
                 type="primary"
@@ -240,6 +254,25 @@ const ManageSurvey = () => {
               >
                 New Survey
               </Button>
+            </Col>
+          </Row>
+          <Row
+            className="filter-wrapper"
+            align="middle"
+            justify="space-between"
+            gutter={[20, 20]}
+          >
+            <Col Col flex={1} align="start">
+              <Input
+                className="input-search"
+                placeholder="Search by survey name"
+                prefix={<FaSearch />}
+                onChange={(val) => setSearch(val.target.value)}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col span={24}>
               <Table
                 loading={isLoading}
                 rowKey={(record) => `${record?.key}-${record?.id}`}
@@ -256,7 +289,7 @@ const ManageSurvey = () => {
       <Modal
         forceRender={true}
         title={<Title level={4}>Survey Details</Title>}
-        visible={isSurveyModalVisible}
+        open={isSurveyModalVisible}
         footer={
           <Space>
             <Button onClick={() => setIsSurveyModalVisible(false)}>

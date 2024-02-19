@@ -26,7 +26,16 @@ const sanitize = [
   },
 ];
 
+const cleanString = (str) => {
+  // Replace multiple spaces with a single space
+  str = str.replace(/\s{2,}/g, " ");
+  // Trim extra spaces at the beginning and end of the string
+  str = str.trim();
+  return str;
+};
+
 const checkDirty = (fnString) => {
+  const cleanFnString = cleanString(fnString);
   return sanitize.reduce((prev, sn) => {
     const dirty = prev?.match(sn.re);
     if (dirty) {
@@ -35,7 +44,7 @@ const checkDirty = (fnString) => {
         .replace(dirty[1], `console.error("${sn.log}");`);
     }
     return prev;
-  }, fnString);
+  }, cleanFnString);
 };
 
 const getFnMetadata = (fnString) => {
