@@ -31,8 +31,14 @@ def add_form(session: Session, payload: FormPayload):
     return form
 
 
-def get_form(session: Session) -> List[FormDict]:
-    return session.query(Form).all()
+def get_form(session: Session, search: Optional[str] = None) -> List[FormDict]:
+    forms = session.query(Form)
+    if search:
+        forms = forms.filter(
+            Form.name.ilike("%{}%".format(search.lower().strip()))
+        )
+    forms = forms.all()
+    return forms
 
 
 def get_form_by_id(session: Session, id: int) -> FormBase:

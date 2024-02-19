@@ -12,14 +12,15 @@ account = Acc(email=None, token=None)
 today = datetime.today().strftime("%d-%m-%Y")
 
 
-class TestGetAllFormList():
+class TestGetAllFormList:
     @pytest.mark.asyncio
     async def test_get_all_form_list(
         self, app: FastAPI, session: Session, client: AsyncClient
     ) -> None:
         res = await client.get(
             app.url_path_for("form:get_all"),
-            headers={"Authorization": f"Bearer {account.token}"})
+            headers={"Authorization": f"Bearer {account.token}"},
+        )
         assert res.status_code == 200
         res = res.json()
         assert res[0] == {
@@ -32,5 +33,40 @@ class TestGetAllFormList():
             "created": today,
             "published": None,
             "has_question_group": True,
-            "disableDelete": False
+            "disableDelete": False,
+        }
+
+    @pytest.mark.asyncio
+    async def test_get_all_form_list_with_search_query(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
+        # no data
+        res = await client.get(
+            app.url_path_for("form:get_all"),
+            headers={"Authorization": f"Bearer {account.token}"},
+            params={"search": "Search Form"},
+        )
+        assert res.status_code == 200
+        res = res.json()
+        assert res == []
+        # with data
+        res = await client.get(
+            app.url_path_for("form:get_all"),
+            headers={"Authorization": f"Bearer {account.token}"},
+            params={"search": "Form Test"},
+        )
+        assert res.status_code == 200
+        res = res.json()
+        assert len(res) == 1
+        assert res[0] == {
+            "id": 1,
+            "name": "Form Test",
+            "description": "Form Description",
+            "languages": ["id"],
+            "version": 0.0,
+            "url": None,
+            "created": today,
+            "published": None,
+            "has_question_group": True,
+            "disableDelete": False,
         }
