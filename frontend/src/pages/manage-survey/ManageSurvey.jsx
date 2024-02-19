@@ -151,8 +151,12 @@ const ManageSurvey = () => {
 
   useEffect(() => {
     setIsLoading(true);
+    let url = "/form/";
+    if (search) {
+      url = `${url}?search=${search}`;
+    }
     api
-      .get("/form/")
+      .get(url)
       .then((res) => {
         const data = res?.data?.map((item) => ({
           ...item,
@@ -167,7 +171,7 @@ const ManageSurvey = () => {
       .finally(() => {
         setIsLoading(false);
       });
-  }, []);
+  }, [search]);
 
   const onSubmitForm = (values) => {
     let data = {};
@@ -285,7 +289,7 @@ const ManageSurvey = () => {
       <Modal
         forceRender={true}
         title={<Title level={4}>Survey Details</Title>}
-        visible={isSurveyModalVisible}
+        open={isSurveyModalVisible}
         footer={
           <Space>
             <Button onClick={() => setIsSurveyModalVisible(false)}>
