@@ -2,15 +2,37 @@
 
 #root {
   #manage-survey {
+    .page-title-wrapper {
+      border-bottom: 1px solid #777777;
+    }
+
     .page-title {
-      margin: 40px 0;
+      margin: 40px 0 20px 0;
     }
 
     button.button-add {
-      position: absolute;
-      top: -42px;
-      right: 0;
-      z-index: 2;
+      // position: absolute;
+      // top: -42px;
+      // right: 0;
+      // z-index: 2;
+      float: right;
+    }
+
+    .filter-wrapper {
+      padding: 24px 0;
+      font-size: 14px;
+
+      .input-search {
+        width: 24rem;
+
+        .ant-input {
+          border: none;
+        }
+
+        .ant-input-prefix {
+          margin-right: 14px;
+        }
+      }
     }
 
     // TABLE
