@@ -56,6 +56,7 @@ const reorderAnswersRepeatIndex = (formValue, answer) => {
   const repeatValues = answer.filter(
     (x) => intersection([x.question], repeatQuestions).length
   );
+  // TODO:: this reorder make Data NA feature not properly saved to the correct repeat index answer
   const reorderedRepeatIndex = repeatQuestions
     .map((id) => {
       return orderBy(repeatValues, ["repeat_index"])
@@ -725,18 +726,23 @@ const WebformPage = ({
         const findAnswer = answer.find(
           (x) => x.question === qid && x.repeat_index === repeatIndex
         );
-        return {
-          question: qid,
-          value: values?.[key] ? values[key] : null,
-          repeat_index: repeatIndex,
-          comment: dataUnavailable?.[qid]
-            ? dataUnavailable[qid]
-            : findAnswer
-            ? findAnswer?.comment
-            : null,
-        };
+        // value
+        const value = values?.[key] ? values[key] : null;
+        if (value || value === 0 || dataUnavailable?.[key]) {
+          return {
+            question: qid,
+            value: value,
+            repeat_index: repeatIndex,
+            comment: dataUnavailable?.[key]
+              ? dataUnavailable[key] // using key because key is questionId-with repeat index
+              : findAnswer
+              ? findAnswer?.comment
+              : null,
+          };
+        }
+        return false;
       })
-      .filter((x) => x.value || x.value === 0 || dataUnavailable?.[x.question]); // isNan, allow comment with no value to submit
+      .filter((x) => x); // isNan, allow comment with no value to submit
   };
 
   const onChange = ({ values }) => {
@@ -746,13 +752,21 @@ const WebformPage = ({
       .map((key) => {
         const elCheckUnavailable = document.getElementById(key);
         const isChecked = elCheckUnavailable?.checked;
-        // handle comment field
-        const qid = key.split("-")[1];
-        const addCommentButton = document.getElementById(`add-comment-${qid}`);
-        const deleteCommentButton = document.getElementById(
-          `delete-comment-${qid}`
+        // handle comment field - also handle repeat index
+        // find arf-extra-content
+        const keySplit = key.split("_");
+        const qidWithRepeatIndex = keySplit[1];
+        const qid = String(qidWithRepeatIndex).split("-")[0];
+        const extraContent = document.getElementById(
+          `arf-extra-content-${qidWithRepeatIndex}`
         );
-        const commentField = document.getElementById(`comment-${qid}`);
+        const addCommentButton = extraContent.querySelector(
+          `#add-comment-${qid}`
+        );
+        const deleteCommentButton = extraContent.querySelector(
+          `#delete-comment-${qid}`
+        );
+        const commentField = extraContent.querySelector(`#comment-${qid}`);
         if (isChecked) {
           // show comment field
           addCommentButton.style.display = "none";
@@ -760,7 +774,7 @@ const WebformPage = ({
           commentField.style.display = "initial";
           commentField.value = text.inputDataUnavailable;
           setComment({
-            [qid]: text.inputDataUnavailable,
+            [qidWithRepeatIndex]: text.inputDataUnavailable,
           });
         } else {
           deleteCommentButton.style.display = "none";
@@ -768,11 +782,13 @@ const WebformPage = ({
           addCommentButton.style.display = "initial";
           commentField.value = null;
           setComment({
-            [qid]: null,
+            [qidWithRepeatIndex]: null,
           });
         }
         // EOL handle comment field
-        return { [qid]: isChecked ? text.inputDataUnavailable : null };
+        return {
+          [qidWithRepeatIndex]: isChecked ? text.inputDataUnavailable : null,
+        };
       })
       .reduce((acc, curr) => ({ ...acc, ...curr }), {});
     // EOL handle data unavailable checkbox - comment
