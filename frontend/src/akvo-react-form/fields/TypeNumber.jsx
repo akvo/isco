@@ -77,7 +77,6 @@ const TypeNumber = ({
           const qid = id?.split("-")?.[0];
           if (String(arfQid) === String(id)) {
             const commentField = el.querySelector(`#comment-${qid}`);
-            console.log(commentField?.value, "vvv", currentValue, id);
             if (commentField?.value && isNaN(currentValue)) {
               setNaChecked(true);
             }
