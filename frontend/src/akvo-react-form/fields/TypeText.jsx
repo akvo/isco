@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { Extra, FieldLabel } from "../support";
@@ -17,6 +17,7 @@ const TypeText = ({
   uiText,
   rule,
 }) => {
+  const form = Form.useFormInstance();
   const extraBefore = extra
     ? extra.filter((ex) => ex.placement === "before")
     : [];
@@ -24,6 +25,28 @@ const TypeText = ({
     ? extra.filter((ex) => ex.placement === "after")
     : [];
   const [naChecked, setNaChecked] = useState(false);
+  const currentValue = form.getFieldValue([id]);
+
+  useEffect(() => {
+    // handle preload data unavailable checkbox
+    if (!coreMandatory) {
+      setTimeout(() => {
+        // get parent extra component node by name
+        const extraElName = `arf-extra-content-${id}`;
+        const extraContent = document.getElementById(extraElName);
+        // get arf qid from extra component parent
+        const arfQid = extraContent?.getAttribute("arf_qid");
+        // question id without repeat index
+        const qid = String(id).split("-")?.[0];
+        if (String(arfQid) === String(id)) {
+          const commentField = extraContent.querySelector(`#comment-${qid}`);
+          if (commentField?.value && !currentValue) {
+            setNaChecked(true);
+          }
+        }
+      }, 500);
+    }
+  }, [id, currentValue, coreMandatory]);
 
   return (
     <Form.Item
