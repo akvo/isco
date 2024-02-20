@@ -67,21 +67,18 @@ const TypeNumber = ({
     if (!coreMandatory) {
       setTimeout(() => {
         // get parent extra component node by name
-        const extraElName = `arf-extra-content`;
-        const els = document.getElementsByName(extraElName);
-        // iterate over extra component dom
-        els.forEach((el) => {
-          // get arf qid from extra component parent
-          const arfQid = el?.getAttribute("arf_qid");
-          // question id without repeat index
-          const qid = id?.split("-")?.[0];
-          if (String(arfQid) === String(id)) {
-            const commentField = el.querySelector(`#comment-${qid}`);
-            if (commentField?.value && isNaN(currentValue)) {
-              setNaChecked(true);
-            }
+        const extraElName = `arf-extra-content-${id}`;
+        const extraContent = document.getElementById(extraElName);
+        // get arf qid from extra component parent
+        const arfQid = extraContent?.getAttribute("arf_qid");
+        // question id without repeat index
+        const qid = String(id).split("-")?.[0];
+        if (String(arfQid) === String(id)) {
+          const commentField = extraContent.querySelector(`#comment-${qid}`);
+          if (commentField?.value && isNaN(currentValue)) {
+            setNaChecked(true);
           }
-        });
+        }
       }, 500);
     }
   }, [id, currentValue, coreMandatory]);
