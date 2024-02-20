@@ -163,6 +163,8 @@ const WebformPage = ({
   // set comment def values
   useEffect(() => {
     if (!isEmpty(commentDefValues)) {
+      console.log(commentDefValues, "aaa");
+
       setTimeout(() => {
         // get parent extra component node by name
         const extraElName = `arf-extra-content`;

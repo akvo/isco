@@ -66,10 +66,23 @@ const TypeNumber = ({
     // handle preload data unavailable checkbox
     if (!coreMandatory) {
       setTimeout(() => {
-        const commentField = document.getElementById(`comment-${id}`);
-        if (commentField?.value && isNaN(currentValue)) {
-          setNaChecked(true);
-        }
+        // get parent extra component node by name
+        const extraElName = `arf-extra-content`;
+        const els = document.getElementsByName(extraElName);
+        // iterate over extra component dom
+        els.forEach((el) => {
+          // get arf qid from extra component parent
+          const arfQid = el?.getAttribute("arf_qid");
+          // question id without repeat index
+          const qid = id?.split("-")?.[0];
+          if (String(arfQid) === String(id)) {
+            const commentField = el.querySelector(`#comment-${qid}`);
+            console.log(commentField?.value, "vvv", currentValue, id);
+            if (commentField?.value && isNaN(currentValue)) {
+              setNaChecked(true);
+            }
+          }
+        });
       }, 500);
     }
   }, [id, currentValue, coreMandatory]);
