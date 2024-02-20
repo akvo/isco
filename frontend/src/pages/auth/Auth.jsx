@@ -23,7 +23,7 @@ const Auth = ({ children }) => {
             <Title className="title" level={2}>
               {text.welcome2}
             </Title>
-            <Row align="middle" justify="space-between" gutter={[12, 32]}>
+            <Row align="middle" justify="space-between" gutter={[20, 20]} wrap>
               <Col>
                 <Image
                   width={193}
@@ -53,6 +53,14 @@ const Auth = ({ children }) => {
                   width={184}
                   height={50}
                   src="/images/swissco.svg"
+                  preview={false}
+                />
+              </Col>
+              <Col>
+                <Image
+                  width={175}
+                  // height={70}
+                  src="/images/frisco.png"
                   preview={false}
                 />
               </Col>

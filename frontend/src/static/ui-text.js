@@ -11,7 +11,7 @@ const uiText = {
         for 2021 data
       </Fragment>
     ),
-    welcome2: "2023 Monitoring Round",
+    welcome2: "2024 Monitoring Round",
     welcome3: (
       <Fragment>
         Welcome
@@ -310,7 +310,7 @@ const uiText = {
         für das Berichtsjahr 2021!
       </Fragment>
     ),
-    welcome2: "Monitoringrunde 2023",
+    welcome2: "Monitoringrunde 2024",
     welcome3: (
       <Fragment>
         Willkommen
