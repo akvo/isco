@@ -459,30 +459,34 @@ export const Webform = ({
         activeGroup === key && (
           <Row gutter={[18, 18]} key={key} className="arf-next">
             <Col span={12} align="start" style={{ float: "left" }}>
-              <Button
-                className="arf-btn-previous"
-                type="default"
-                disabled={firstGroup?.includes(key)}
-                onClick={() => {
-                  const prevIndex = showGroup.indexOf(key);
-                  setActiveGroup(showGroup[prevIndex - 1]);
-                }}
-              >
-                {uiText.previous}
-              </Button>
+              {!firstGroup?.includes(key) && (
+                <Button
+                  className="arf-btn-previous"
+                  type="default"
+                  disabled={firstGroup?.includes(key)}
+                  onClick={() => {
+                    const prevIndex = showGroup.indexOf(key);
+                    setActiveGroup(showGroup[prevIndex - 1]);
+                  }}
+                >
+                  {uiText.previous}
+                </Button>
+              )}
             </Col>
             <Col span={12} align="end" style={{ float: "right" }}>
-              <Button
-                className="arf-btn-next"
-                type="default"
-                disabled={lastGroup.includes(key)}
-                onClick={() => {
-                  const nextIndex = showGroup.indexOf(key);
-                  setActiveGroup(showGroup[nextIndex + 1]);
-                }}
-              >
-                {uiText.next}
-              </Button>
+              {!lastGroup.includes(key) && (
+                <Button
+                  className="arf-btn-next"
+                  type="default"
+                  disabled={lastGroup.includes(key)}
+                  onClick={() => {
+                    const nextIndex = showGroup.indexOf(key);
+                    setActiveGroup(showGroup[nextIndex + 1]);
+                  }}
+                >
+                  {uiText.next}
+                </Button>
+              )}
             </Col>
           </Row>
         )
