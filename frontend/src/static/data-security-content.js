@@ -17,14 +17,13 @@ const dataSecurityContent = {
       </p>
       <p className="text-justify">
         Considering the potential broadening of the system over time, we (the
-        Belgian, Dutch, German and Swiss Initiatives on Sustainable Cocoa)
-        envisage separate meetings to clarify roles and responsibilities across
-        various stakeholders and clear guidelines and data procedures to
+        Belgian, Dutch, French, German and Swiss Initiatives on Sustainable
+        Cocoa) envisage separate meetings to clarify roles and responsibilities
+        across various stakeholders and clear guidelines and data procedures to
         administer and implement these roles and corresponding access to data
         and / or functionalities in the system.
       </p>
       <br />
-
       <h3>Data security & privacy</h3>
       <p className="text-justify">
         Akvo maintains strong data security and privacy protection policies,
@@ -42,7 +41,6 @@ const dataSecurityContent = {
         of sustainability reporting by members.
       </p>
       <br />
-
       <h3>Secure database</h3>
       <p className="text-justify">
         Akvo software ensures that all data is properly secured when in transit
@@ -77,14 +75,14 @@ const dataSecurityContent = {
         .
       </p>
       <br />
-
       <h3>Data processing by Akvo</h3>
       <p className="text-justify">
         The processor entrusts only such persons (whether legal or natural) with
         the data processing under this agreement who have given an undertaking
         to maintain confidentiality and have been informed of any special data
         protection requirements relevant to their work; Akvo acts as a data
-        processor on behalf of Beyond Chocolate, DISCO, GISCO and SWISSCO.
+        processor on behalf of Beyond Chocolate, DISCO, FRISCO, GISCO and
+        SWISSCO.
       </p>
       <p className="text-justify">
         The data collected are subject to the GDPR which is a EU law that
@@ -95,17 +93,17 @@ const dataSecurityContent = {
         </a>
       </p>
       <br />
-
       <h3>Roles and permissions</h3>
       <p className="text-justify">
-        The platform secretariats of Beyond Chocolate, DISCO, GISCO and SWISSCO
-        will follow a roles and permissions model. allowing for administrator
-        level and also granular access control to data. They will grant where
-        relevant administrator level access to the tool and control granular
-        access to data. Access to questions and attendant response data will be
-        restricted to a user’s specifically and defined role and the permissions
-        assigned to that role. A strict permissions model ensures that sensitive
-        data is not accessible nor visible to other users of the platforms.
+        The platform secretariats of Beyond Chocolate, DISCO, FRISCO, GISCO and
+        SWISSCO will follow a roles and permissions model. allowing for
+        administrator level and also granular access control to data. They will
+        grant where relevant administrator level access to the tool and control
+        granular access to data. Access to questions and attendant response data
+        will be restricted to a user’s specifically and defined role and the
+        permissions assigned to that role. A strict permissions model ensures
+        that sensitive data is not accessible nor visible to other users of the
+        platforms.
       </p>
       <p className="text-justify">
         Unless explicitly agreed upon otherwise by the owner of the data,
@@ -130,17 +128,22 @@ const dataSecurityContent = {
         <u>For GISCO:</u>
       </p>
       <ul className="pl-5">
-        <li>Beate Weiskopf, GISCO</li>
+        <li>Martina Gaebler, GISCO</li>
         <li>Ulrike Joras, GISCO</li>
         <li>Patrick Stoop, C-Lever.org</li>
         <li>Hilde Geens, C-Lever.org</li>
-        <li>Koen Sneyers, C-Lever.org</li>
-        <li>Lela Lindena, Mainlevel</li>
-        <li>Lukas Wirnitzer, Mainlevel</li>
       </ul>
-
       <p className="text-justify">
-        <u>For Beyond chocolate:</u>
+        <u>For FRISCO:</u>
+      </p>
+      <ul className="pl-5">
+        <li>Maxime Ghafari</li>
+        <li>Kitty Grapperon</li>
+        <li>Patrick Stoop, C-Lever.org</li>
+        <li>Hilde Geens, C-Lever.org</li>
+      </ul>
+      <p className="text-justify">
+        <u>For Beyond Chocolate:</u>
       </p>
       <ul className="pl-5">
         <li>Charles Snoeck</li>
@@ -148,23 +151,21 @@ const dataSecurityContent = {
         <li>Patrick Stoop, C-Lever.org</li>
         <li>Hilde Geens, C-Lever.org</li>
       </ul>
-
       <p className="text-justify">
         <u>For DISCO:</u>
       </p>
       <ul className="pl-5">
         <li>Mark de Waard</li>
-        <li>Marlene Hoekstra</li>
+        <li>Lisa Graepel</li>
         <li>Patrick Stoop, C-Lever.org</li>
         <li>Hilde Geens, C-Lever.org</li>
       </ul>
-
       <p className="text-justify">
         <u>For SWISSCO:</u>
       </p>
       <ul className="pl-5">
         <li>Christian Robin</li>
-        <li>Michaela Kuhn</li>
+        <li>Fabienne Bauer</li>
         <li>Sophie Tüllmann</li>
         <li>Patrick Stoop, C-Lever.org</li>
         <li>Hilde Geens, C-Lever.org</li>
@@ -177,15 +178,14 @@ const dataSecurityContent = {
         the confidentiality agreement before getting such access.
       </p>
       <br />
-
       <h3>Data storage locations and access</h3>
       <p className="text-justify">
         During data collection, the data is stored in a secure system hosted by
         Akvo.
       </p>
       <p className="text-justify">
-        During the data cleaning phase (executed by C-lever.org and Mainlevel in
-        consultation with the Beyond Chocolate, DISCO, GISCO and SWISSCO
+        During the data cleaning phase (executed by C-lever.org in consultation
+        with the Beyond Chocolate, DISCO, FRISCO, GISCO and SWISSCO
         secretariats), the data is accessed directly in the data-storage tool
         made available by Akvo. Access to the tool is password protected, only
         the authorised persons (see Annex 5) have access to the data. In the
@@ -207,7 +207,6 @@ const dataSecurityContent = {
         limited to the designated persons.
       </p>
       <br />
-
       <h3>
         Handling of sensitive data after anonymization and aggregation of
         collected data
@@ -236,7 +235,6 @@ const dataSecurityContent = {
         </li>
       </ol>
       <br />
-
       <h3>Agreement to and visibility of these data security provisions</h3>
       <p className="text-justify">
         When registering, the users are asked to agree to their data being
@@ -262,12 +260,12 @@ const dataSecurityContent = {
       </p>
       <p className="text-justify">
         Angesichts der möglichen Erweiterung des Systems im Laufe der Zeit
-        planen wir (die belgische, deutsche, niederländische und schweizer
-        Platform) separate Besprechungen, um die Rollen und Verantwortlichkeiten
-        verschiedener Interessengruppen zu klären und Richtlinien und
-        Datenverfahren für die Verwaltung und Implementierung dieser Rollen,
-        sowie den entsprechenden Zugriff auf Daten und / oder Funktionen im
-        System festzulegen.
+        planen wir (die belgische, deutsche, franzsösche, niederländische und
+        schweizer Platform) separate Besprechungen, um die Rollen und
+        Verantwortlichkeiten verschiedener Interessengruppen zu klären und
+        Richtlinien und Datenverfahren für die Verwaltung und Implementierung
+        dieser Rollen, sowie den entsprechenden Zugriff auf Daten und / oder
+        Funktionen im System festzulegen.
       </p>
       <br />
 
@@ -329,7 +327,7 @@ const dataSecurityContent = {
         Wahrung der Datenvertraulichkeit zugestimmt haben und über besondere
         Datenschutzanforderungen in Bezug auf ihre Arbeit unterrichtet wurden.
         Akvo fungiert als Datenverarbeiter im Auftrag von Beyond Chocolate,
-        DISCO, SWISSCO und dem Forum Nachhaltiger Kakao.
+        DISCO, FRISCO, SWISSCO und dem Forum Nachhaltiger Kakao.
       </p>
       <p className="text-justify">
         Die gespeicherten Daten unterliegen der DSGVO, dem europäischen Gesetz
@@ -343,15 +341,15 @@ const dataSecurityContent = {
 
       <h3>Rollen und Berechtigungen</h3>
       <p className="text-justify">
-        Die Plattformsekretariate von Beyond Chocolate, DISCO, SWISSCO und dem
-        Forum Nachhaltiger Kakao folgen einem Rollen- und Berechtigungsmodell,
-        welches den Zugriff auf die Daten sowohl auf Administratorenebene als
-        auch auf granularer Ebene ermöglicht. Der Zugriff auf Fragen- und
-        Antwortdaten ist auf die spezifische und definierte Rolle des/der
-        jeweiligen Nutzer/in und die dieser Rolle zugewiesenen Berechtigungen
-        beschränkt. Ein striktes Berechtigungsmodell stellt sicher, dass
-        vertrauliche Daten für andere Benutzer der Plattformen weder zugänglich
-        noch sichtbar sind.
+        Die Plattformsekretariate von Beyond Chocolate, DISCO, FRISCO, SWISSCO
+        und dem Forum Nachhaltiger Kakao folgen einem Rollen- und
+        Berechtigungsmodell, welches den Zugriff auf die Daten sowohl auf
+        Administratorenebene als auch auf granularer Ebene ermöglicht. Der
+        Zugriff auf Fragen- und Antwortdaten ist auf die spezifische und
+        definierte Rolle des/der jeweiligen Nutzer/in und die dieser Rolle
+        zugewiesenen Berechtigungen beschränkt. Ein striktes Berechtigungsmodell
+        stellt sicher, dass vertrauliche Daten für andere Benutzer der
+        Plattformen weder zugänglich noch sichtbar sind.
       </p>
       <p className="text-justify">
         Sofern mit dem/r Eigentümer/in der Daten nicht ausdrücklich anders
@@ -371,7 +369,7 @@ const dataSecurityContent = {
         zulässt.
       </p>
       <p className="text-justify">
-        Die folgenden Personen haben aktuell (Stand: April 2022){" "}
+        Die folgenden Personen haben aktuell (Stand: Februar 2024){" "}
         <u>
           (zusätzlich für die Weiterentwicklung und Betreuung des Tools
           zuständigen Mitarbeitenden des Softwareentwicklungsunternehmens Akvo,
@@ -384,15 +382,13 @@ const dataSecurityContent = {
         <u>Für das Kakaoforum:</u>
       </p>
       <ul className="pl-5">
-        <li>Beate Weiskopf</li>
+        <li>Martina Gaebler</li>
         <li>Ulrike Joras</li>
+        <li>Julia Ditz</li>
         <li>Weiterer Mitarbeitender der Geschäftsstelle, zu benennen</li>
         <li>Patrick Stoop, C-Lever.org</li>
         <li>Hilde Geens, C-Lever.org</li>
         <li>Koen Sneyers, C-Lever.org</li>
-        <li>Lela Lindena, Mainlevel</li>
-        <li>Lukas Wirnitzer, Mainlevel</li>
-        <li>Weitere zu benennende, externe Person</li>
       </ul>
 
       <p className="text-justify">
@@ -410,7 +406,7 @@ const dataSecurityContent = {
       </p>
       <ul className="pl-5">
         <li>Mark de Waard</li>
-        <li>Marlene Hoekstra</li>
+        <li>Lisa Graepel</li>
         <li>Patrick Stoop, C-Lever.org</li>
         <li>Hilde Geens, C-Lever.org</li>
       </ul>
@@ -420,8 +416,18 @@ const dataSecurityContent = {
       </p>
       <ul className="pl-5">
         <li>Christian Robin</li>
-        <li>Michaela Kuhn</li>
+        <li>Fabienne Bauer</li>
         <li>Sophie Tüllmann</li>
+        <li>Patrick Stoop, C-Lever.org</li>
+        <li>Hilde Geens, C-Lever.org</li>
+      </ul>
+
+      <p className="text-justify">
+        <u>Für FRISCO:</u>
+      </p>
+      <ul className="pl-5">
+        <li>Maxime Ghafari</li>
+        <li>Kitty Grapperon</li>
         <li>Patrick Stoop, C-Lever.org</li>
         <li>Hilde Geens, C-Lever.org</li>
       </ul>
@@ -441,10 +447,10 @@ const dataSecurityContent = {
         ges-peichert, das von Akvo gehostet wird.
       </p>
       <p className="text-justify">
-        Während der Datenbereinigungsphase (durchgeführt von C-lever.org und
-        Mainlevel in Absprache mit den Sekretariaten von Beyond Chocolate,
-        DISCO, SWISSCO und dem Forum Nachhaltiger Kakao) erfolgt der Zugriff auf
-        die Daten direkt in dem von Akvo zur Verfügung gestellten
+        Während der Datenbereinigungsphase (durchgeführt von C-lever.org in
+        Absprache mit den Sekretariaten von Beyond Chocolate, DISCO, FRISCO,
+        SWISSCO und dem Forum Nachhaltiger Kakao) erfolgt der Zugriff auf die
+        Daten direkt in dem von Akvo zur Verfügung gestellten
         Datenspeicherungstool. Der Zugang zum Tool ist passwortgeschützt und nur
         die autorisierten Personen haben Zugriff auf die Daten. Im Speicher-Tool
         ist jeder eingereichte Datensatz mit einer Instanz-ID verknüpft. Die
