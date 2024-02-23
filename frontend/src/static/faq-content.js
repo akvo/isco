@@ -23,13 +23,13 @@ const faqEn = [
           </li>
           <li>
             Once the questionnaire is submitted, a limited number of staff
-            designated by the GISCO, DISCO, SWISSCO and/or Beyond Chocolate
-            Secretariats, as well as C-Lever.org and Mainlevel listed in the
-            Data Security Provisions and having signed corresponding
-            nondisclosure declarations, will have access to individual
-            questionnaire data as needed to check the validity and consistency
-            of data and/or check whether the conclusions from analysis on
-            anonymized and/or aggregated data makes sense.
+            designated by the GISCO, FRISCO, DISCO, SWISSCO and/or Beyond
+            Chocolate Secretariats, as well as C-Lever.org listed in the Data
+            Security Provisions and having signed corresponding nondisclosure
+            declarations, will have access to individual questionnaire data as
+            needed to check the validity and consistency of data and/or check
+            whether the conclusions from analysis on anonymized and/or
+            aggregated data makes sense.
           </li>
           <li>
             Authorized staff of AKVO, being the contracted IT service
@@ -55,16 +55,15 @@ const faqEn = [
     c: (
       <Fragment>
         <p>
-          Reporting is obligatory for members of Beyond Chocolate, DISCO and
-          GISCO. If a member does not report within the given timeframe (by
-          April 30th), next steps will be taken by the ISCOs in accordance with
-          the agreed processes and procedures. If a member fails to report,
+          Reporting is obligatory for members of Beyond Chocolate, DISCO, GISCO
+          and SWISSCO. If a member does not report within the given timeframe
+          (by April 15th), next steps will be taken by the ISCOs in accordance
+          with the agreed processes and procedures. If a member fails to report,
           exclusion from the ISCO in question is a possibility.
         </p>
         <p>
-          Please note that for SWISSCO this concerns a voluntary pilot. SWISSCO
-          members are not obligated to report in the tool in 2023 but are
-          encouraged to do so.
+          Please note that for FRISCO this monitoring round is a pilot. FRISCO
+          members have an extended deadline until June 2024.
         </p>
       </Fragment>
     ),
@@ -101,8 +100,8 @@ const faqEn = [
       <Fragment>
         <ol type="1">
           <li>
-            The reporting year is normally the previous calendar year – e.g.
-            reporting on 2022 to be done in April 2023.
+            The reporting year is normally the previous calendar year - e.g.
+            reporting on 2022 to be done in March/April 2024.
           </li>
           <li>
             If the member organisation is using a reporting cycle and an
@@ -110,7 +109,7 @@ const faqEn = [
             reporting per calendar year would significantly enhance the
             reporting burden, then that member can choose to systematically
             report for its last accounting year for which data is available in
-            the Apri period
+            the March/April period
           </li>
           <li>
             Generally, the time frame for all data is the reporting year.
@@ -322,18 +321,18 @@ const faqDe = [
     c: (
       <Fragment>
         <p>
-          Die Berichterstattung ist für Mitglieder von Beyond Chocolate, DISCO
-          und dem Forum Nachhaltiger Kakao obligatorisch. Berichtet ein Mitglied
-          nicht innerhalb des vorgegebenen Zeitrahmens (bis zum 30. April),
-          werden die nächsten Schritte in Übereinstimmung mit den vereinbarten
-          Prozessen und Verfahren von denn ISCOs eingeleitet. Berichtet ein
-          Mitglied nicht, ist ein Ausschluss aus dem jeweiligen ISCO möglich.
+          Die Berichterstattung ist für Mitglieder von Beyond Chocolate, DISCO,
+          SWISSCO und dem Forum Nachhaltiger Kakao obligatorisch. Berichtet ein
+          Mitglied nicht innerhalb des vorgegebenen Zeitrahmens (bis zum 15.
+          April), werden die nächsten Schritte in Übereinstimmung mit den
+          vereinbarten Prozessen und Verfahren von denn ISCOs eingeleitet.
+          Berichtet ein Mitglied nicht, ist ein Ausschluss aus dem jeweiligen
+          ISCO möglich.
         </p>
         <p>
-          Bitte beachten Sie, dass es sich für SWISSCO um ein freiwilliges
-          Pilotprojekt handelt. Die SWISSCO-Mitglieder sind nicht verpflichtet,
-          im Jahr 2023 über das Tool zu berichten, sind aber ermutigt, dies zu
-          tun.
+          Bitte beachten Sie, dass es sich für FRISCO um ein Pilotprojekt
+          handelt. FRISCO-Mitglieder haben bis Juni 2024 Zeit um die Daten
+          einzugeben.
         </p>
       </Fragment>
     ),
@@ -375,14 +374,14 @@ const faqDe = [
         <ol type="1">
           <li>
             Das Berichtsjahr ist normalerweise das vorherige Kalenderjahr - z.B.
-            Berichterstattung über 2022 im April 2023.
+            Berichterstattung über 2022 im March/April 2024.
           </li>
           <li>
             Wenn die Mitgliedsorganisation einen vom Kalenderjahr abweichenden
             Berichtszyklus und ein Rechnungsjahr verwendet und die
             Berichterstattung pro Kalenderjahr die Berichtslast erheblich
             erhöhen würde, kann dieses Mitglied systematisch über das letzte
-            Rechnungsjahr berichten, für das Daten im April vorliegen.
+            Rechnungsjahr berichten, für das Daten im March/April vorliegen.
           </li>
           <li>
             Im Allgemeinen ist der Zeitrahmen für alle Daten das Berichtsjahr.
