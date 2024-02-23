@@ -24,10 +24,10 @@ const icEn = (handleShow) => {
               Germany <br />
             </p>
             <p>
-              Contact: Beate Weiskopf <br />
+              Contact: Martina Gaebler <br />
               Email:{" "}
-              <a href="mailto:Beate.Weiskopf@giz.de">
-                Beate.Weiskopf@giz.de
+              <a href="mailto:Martina.Gaebler@giz.de">
+                Martina.Gaebler@giz.de
               </a>{" "}
               <br />
             </p>
@@ -58,6 +58,23 @@ const icEn = (handleShow) => {
               Email:{" "}
               <a href="mailto:deWaard@idhtrade.org">
                 deWaard@idhtrade.org
+              </a>{" "}
+              <br />
+            </p>
+            <br />
+            <br />
+            <h3>FRISCO</h3> <hr />
+            <p>
+              Tour Majunga <br />
+              6 Place de la Pyramide <br />
+              92800 Puteaux <br />
+              France <br />
+            </p>
+            <p>
+              Contact: Maxime Ghafari <br />
+              Email:{" "}
+              <a href="mailto:mghafari@deloitte.fr">
+                mghafari@deloitte.fr
               </a>{" "}
               <br />
             </p>
@@ -171,10 +188,10 @@ const icDe = (handleShow) => {
               65726 Eschborn <br />
             </p>
             <p>
-              Kontakt: Beate Weiskopf <br />
+              Kontakt: Martina Gaebler <br />
               Email:{" "}
-              <a href="mailto:Beate.Weiskopf@giz.de">
-                Beate.Weiskopf@giz.de
+              <a href="mailto:Martina.Gaebler@giz.de">
+                Martina.Gaebler@giz.de
               </a>{" "}
               <br />
             </p>
@@ -210,6 +227,23 @@ const icDe = (handleShow) => {
             </p>{" "}
             <br />
             <br />
+            <h3>FRISCO</h3> <hr />
+            <p>
+              Tour Majunga <br />
+              6 Place de la Pyramide <br />
+              92800 Puteaux <br />
+              France <br />
+            </p>
+            <p>
+              Kontakt: Maxime Ghafari <br />
+              Email:{" "}
+              <a href="mailto:mghafari@deloitte.fr">
+                mghafari@deloitte.fr
+              </a>{" "}
+              <br />
+            </p>
+            <br />
+            <br />
             <h3>SWISSCO</h3> <hr />
             <p>
               Swiss platform for sustainable cocoa <br />
@@ -217,7 +251,7 @@ const icDe = (handleShow) => {
               3011 Bern <br />
             </p>
             <p>
-              Contact: Christian Robin <br />
+              Kontakt: Christian Robin <br />
               Email:{" "}
               <a href="mailto:christian.robin@kakaoplattform.ch">
                 christian.robin@kakaoplattform.ch
