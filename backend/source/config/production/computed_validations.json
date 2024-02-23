@@ -26,6 +26,21 @@
         "group_id": 90,
         "question_ids": [100, 101, 102, 103, 104],
         "equal": 100
+      },
+      {
+        "group_id": 101,
+        "question_ids": [988, 992, 995, 1002],
+        "equal": 100
+      },
+      {
+        "group_id": 103,
+        "question_ids": [1017, 1020],
+        "equal": 100
+      },
+      {
+        "group_id": 104,
+        "question_ids": [1022, 1027, 1030, 1032],
+        "equal": 100
       }
     ]
   }
