@@ -4,6 +4,7 @@ import { Extra, FieldLabel } from "../support";
 import GlobalStore from "../lib/store";
 import { InputFieldIcon } from "../lib/svgIcons";
 import { DataUnavailableField } from "../components";
+import { renderQuestionLabelForErrorMessage } from "../lib";
 
 const TypeInput = ({
   id,
@@ -101,7 +102,10 @@ const TypeInput = ({
           ...rules,
           {
             validator: (_, value) => {
-              const requiredErr = `${name.props.children[0]} ${uiText.errorIsRequired}`;
+              const questionLabel = renderQuestionLabelForErrorMessage(
+                name.props.children
+              );
+              const requiredErr = `${questionLabel} ${uiText.errorIsRequired}`;
               if (value || value === 0) {
                 return Promise.resolve();
               }

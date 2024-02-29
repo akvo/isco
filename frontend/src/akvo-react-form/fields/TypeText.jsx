@@ -3,6 +3,7 @@ import { Form } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { Extra, FieldLabel } from "../support";
 import { DataUnavailableField } from "../components";
+import { renderQuestionLabelForErrorMessage } from "../lib";
 
 const TypeText = ({
   id,
@@ -71,7 +72,10 @@ const TypeText = ({
           ...rules,
           {
             validator: (_, value) => {
-              const requiredErr = `${name.props.children[0]} ${uiText.errorIsRequired}`;
+              const questionLabel = renderQuestionLabelForErrorMessage(
+                name.props.children
+              );
+              const requiredErr = `${questionLabel} ${uiText.errorIsRequired}`;
               if (value || value === 0) {
                 return Promise.resolve();
               }
