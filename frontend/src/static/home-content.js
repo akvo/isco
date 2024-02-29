@@ -4,15 +4,16 @@ import { Link } from "react-router-dom";
 const homeContent = (handleShow) => {
   return {
     en: {
-      h: "WELCOME TO THE COCOA MONITORING OF DISCO, BEYOND CHOCOLATE, GISCO AND SWISSCO!",
+      h: "WELCOME TO THE COCOA MONITORING OF BEYOND CHOCOLATE, DISCO, FRISCO, GISCO AND SWISSCO!",
       p1: "Dear Participants,",
       p2: (
         <Fragment>
-          Thank you for participating in the 2023 monitoring round of GISCO,
-          DISCO, SWISSCO and Beyond Chocolate. Your reporting is essential to
-          help us track the progress of the ISCOs and to define action points
-          for the future. You can start your reporting by going to the survey
-          tab at the top of the screen and/or by scrolling down. <br />
+          Thank you for participating in the 2024 monitoring round of Beyond
+          Chocolate, DISCO, FRISCO, GISCO and SWISSCO. Your reporting is
+          essential to help us track the progress of the ISCOs and to define
+          action points for the future. You can start your reporting by going to
+          the survey tab at the top of the screen and/or by scrolling down.
+          <br />
           Your feedback on the monitoring system is very valuable to us – you
           can provide feedback in the feedback section (menu above) or in the
           comment fields in the questionnaires.
@@ -47,17 +48,19 @@ const homeContent = (handleShow) => {
     },
 
     de: {
-      h: "Willkommen beim Monitoring des Forum Nachhaltiger Kakao, Beyond Chocolate, DISCO und SWISSCO!",
+      h: "WILLKOMMEN BEIM MONITORING DES FORUM NACHHALTIGER KAKAO, BEYOND CHOCOLATE, DISCO, FRISCO UND SWISSCO!",
       p1: "Liebe Teilnehmerinnen und Teilnehmer,",
       p2: (
         <Fragment>
-          vielen Dank für Ihre Teilnahme an der Monitoringrunde 2023. Ihre
-          Berichterstattung ist wichtig, damit wir die Fortschritte der ISCOs
-          verfolgen und Aktionspunkte für die Zukunft festlegen können. Sie
-          können mit der Berichterstattung beginnen, indem Sie an den oberen
-          Rand des Bildschirms gehen und/oder nach unten scrollen. <br /> Ihre
-          Rückmeldungen zum Monitoringsystem sind für uns sehr wertvoll – Sie
-          können diese im Feedbackformular (im Menu oben) oder in den
+          Liebe Teilnehmerinnen und Teilnehmer, vielen Dank für Ihre Teilnahme
+          an der Monitoringrunde 2024. Ihre Berichterstattung ist wichtig, damit
+          wir die Fortschritte der ISCOs verfolgen und Aktionspunkte für die
+          Zukunft festlegen können. Sie können mit der Berichterstattung
+          beginnen, indem Sie an den oberen Rand des Bildschirms gehen und/oder
+          nach unten scrollen.
+          <br />
+          Ihre Rückmeldungen zum Monitoringsystem sind für uns sehr wertvoll –
+          Sie können diese im Feedbackformular (im Menu oben) oder in den
           Kommentarfeldern der Fragebögen machen.
           <br />
           Unter diesem{" "}

@@ -36,31 +36,35 @@ const MobileFooter = ({
                 onClick={() => setIsMobileMenuVisible(!isMobileMenuVisible)}
               />
               <div style={{ marginRight: 5 }}>
-                <Button
-                  className="arf-btn-previous"
-                  type="link"
-                  disabled={firstGroup?.includes(activeGroup)}
-                  onClick={() => {
-                    const prevIndex = showGroup.indexOf(activeGroup);
-                    setActiveGroup(showGroup[prevIndex - 1]);
-                  }}
-                  icon={<GrLinkPrevious style={{ marginTop: 4 }} />}
-                  shape="circle"
-                  size="small"
-                />
-                <Button
-                  className="arf-btn-next"
-                  type="link"
-                  disabled={lastGroup?.includes(activeGroup)}
-                  onClick={() => {
-                    setIsMobileMenuVisible(false);
-                    const nextIndex = showGroup.indexOf(activeGroup);
-                    setActiveGroup(showGroup[nextIndex + 1]);
-                  }}
-                  icon={<GrLinkNext style={{ marginTop: 4 }} />}
-                  shape="circle"
-                  size="small"
-                />
+                {!firstGroup?.includes(activeGroup) && (
+                  <Button
+                    className="arf-btn-previous"
+                    type="link"
+                    disabled={firstGroup?.includes(activeGroup)}
+                    onClick={() => {
+                      const prevIndex = showGroup.indexOf(activeGroup);
+                      setActiveGroup(showGroup[prevIndex - 1]);
+                    }}
+                    icon={<GrLinkPrevious style={{ marginTop: 4 }} />}
+                    shape="circle"
+                    size="small"
+                  />
+                )}
+                {!lastGroup?.includes(activeGroup) && (
+                  <Button
+                    className="arf-btn-next"
+                    type="link"
+                    disabled={lastGroup?.includes(activeGroup)}
+                    onClick={() => {
+                      setIsMobileMenuVisible(false);
+                      const nextIndex = showGroup.indexOf(activeGroup);
+                      setActiveGroup(showGroup[nextIndex + 1]);
+                    }}
+                    icon={<GrLinkNext style={{ marginTop: 4 }} />}
+                    shape="circle"
+                    size="small"
+                  />
+                )}
               </div>
               <div>
                 {activeGroup + 1} / {showGroup.length}

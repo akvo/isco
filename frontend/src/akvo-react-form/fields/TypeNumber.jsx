@@ -4,6 +4,7 @@ import { Extra, FieldLabel } from "../support";
 import GlobalStore from "../lib/store";
 import { InputNumberIcon, InputNumberDecimalIcon } from "../lib/svgIcons";
 import { DataUnavailableField } from "../components";
+import { renderQuestionLabelForErrorMessage } from "../lib";
 
 const TypeNumber = ({
   id,
@@ -66,9 +67,18 @@ const TypeNumber = ({
     // handle preload data unavailable checkbox
     if (!coreMandatory) {
       setTimeout(() => {
-        const commentField = document.getElementById(`comment-${id}`);
-        if (commentField?.value && isNaN(currentValue)) {
-          setNaChecked(true);
+        // get parent extra component node by name
+        const extraElName = `arf-extra-content-${id}`;
+        const extraContent = document.getElementById(extraElName);
+        // get arf qid from extra component parent
+        const arfQid = extraContent?.getAttribute("arf_qid");
+        // question id without repeat index
+        const qid = String(id).split("-")?.[0];
+        if (String(arfQid) === String(id)) {
+          const commentField = extraContent.querySelector(`#comment-${qid}`);
+          if (commentField?.value && isNaN(currentValue)) {
+            setNaChecked(true);
+          }
         }
       }, 500);
     }
@@ -109,7 +119,10 @@ const TypeNumber = ({
           ...rules,
           {
             validator: (_, value) => {
-              const requiredErr = `${name.props.children[0]} ${uiText.errorIsRequired}`;
+              const questionLabel = renderQuestionLabelForErrorMessage(
+                name.props.children
+              );
+              const requiredErr = `${questionLabel} ${uiText.errorIsRequired}`;
               if (value || value === 0) {
                 return Promise.resolve();
               }
