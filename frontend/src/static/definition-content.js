@@ -219,31 +219,19 @@ const definitionContent = {
       d: (
         <Fragment>
           <div>
-            <i>Coverage</i> (with a CLMRS or similar system) implies that an
-            assessment of child labour risk has been conducted at household{" "}
-            <b>or community</b>
-            level. A household can be considered covered by a CLMRS for one of
-            two reasons:
+            A household can be considered “covered” by a CLMRS or comparable
+            system, if an assessment of child labour risk has been conducted at
+            household level, EITHER:
             <ol type="i" style={{ marginLeft: "25px" }}>
               <li>
-                they have received an in-person{" "}
-                <i>
-                  <u>monitoring visit</u>
-                </i>
-                , including an interview with the child; or
+                through an in-person monitoring visit, including child
+                interview, OR
               </li>
-              <li>
-                the household’s risk has been assessed through a systematic{" "}
-                <i>
-                  <u>analysis of reliable data about the household</u>
-                </i>
-                , using a transparent, documented method of risk assessment, and
-                an evidence-based decision has been made either to include or
-                exclude that household from in-person monitoring visits.
-              </li>
+              <li>through assessment using a household-level risk model.</li>
             </ol>
-            A child can be considered covered if they live in a household
-            meeting the definition above.
+            (ie. a systematic analysis of reliable data about the household to
+            predict child labour, using a transparent, documented method of
+            assessment)
           </div>
         </Fragment>
       ),
@@ -1290,24 +1278,21 @@ const definitionContent = {
       d: (
         <Fragment>
           <div>
-            Abdeckung (mit Blick auf CLMRS und vergleichbare Systeme) bedeutet,
-            dass eine Beurteilung des Risikos für Kinderarbeit auf Haushalts-
-            oder Gemeindeebene erfolgt ist. Ein Haushalt kann als von einem
-            CLMRS „abgedeckt“ betrachtet werden, wenn einer der folgenden
-            Bedingungen zutrifft:
+            Ein Haushalt kann als von einem System zur Überwachung und Abhilfe
+            von Kinderarbeit (CLMRS) oder einem vergleichbaren System abgedeckt
+            („covered“) betrachtet werden, wenn auf Haushaltsebene eine
+            Bewertung des Kinderarbeitsrisikos durchgeführt wurde, ENTWEDER:
             <ol type="i" style={{ marginLeft: "25px" }}>
               <li>
-                der Haushalt hat einen persönlichen <u>Überprüfungs-Besuch</u>{" "}
-                erhalten, inklusive eines Interviews mit dem Kind / den Kindern;
-                oder:
+                Durch einen persönlichen Kontrollbesuch, einschließlich einer
+                Befragung des Kindes, ODER
               </li>
               <li>
-                das Risiko des Haushalts wurde durch systematische{" "}
-                <u>Analyse verlässlicher Haushaltsdaten</u> mittels einer
-                transparenten und dokumentierten Methode zur Risikoeinschätzung
-                geprüft und die evidenzbasierte Entscheidung getroffen, den
-                Haushalt bei Überprüfungs-Besuchen aufgrund eines geringen
-                Risikos nicht zu berücksichtigen.
+                • Durch eine Bewertung anhand eines Risikomodells auf
+                Haushaltsebene (d.h. eine systematische Analyse zuverlässiger
+                Daten über den Haushalt zur Vorhersage von Kinderarbeit unter
+                Verwendung einer transparenten, dokumentierten
+                Bewertungsmethode)
               </li>
             </ol>
             Ein Kind kann als von einem CLMRS „abgedeckt“ betrachtet werden,
@@ -1342,7 +1327,12 @@ const definitionContent = {
       t: "Entwaldungsfreier Kakao",
       d: (
         <Fragment>
-          <div></div>
+          <div>
+            Polygone von landwirtschaftlichen Parzellen (&gt; 4 ha) und der
+            landwirtschaftlichen Parzellen (&lt; 4 ha) als nicht in einem
+            geschützten Wald liegend und als nicht entwaldetes Land seit dem
+            31.12.2018 für GISCO und 31.12. 2020 für die anderen ISCOs.
+          </div>
         </Fragment>
       ),
     },

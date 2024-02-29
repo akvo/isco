@@ -8,18 +8,18 @@ from jinja2 import Environment, FileSystemLoader
 import base64
 from util.i18n import EmailText
 
-mjkey = os.environ['MAILJET_APIKEY']
-mjsecret = os.environ['MAILJET_SECRET']
+mjkey = os.environ["MAILJET_APIKEY"]
+mjsecret = os.environ["MAILJET_SECRET"]
 webdomain = os.environ["WEBDOMAIN"]
 image_url = f"{webdomain}/email-icons"
 
 mailjet = Client(auth=(mjkey, mjsecret))
-loader = FileSystemLoader('.')
+loader = FileSystemLoader(".")
 env = Environment(loader=loader)
 
 html_template = env.get_template("./templates/main.html")
-ftype = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-ftype += ';base64'
+ftype = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+ftype += ";base64"
 
 
 def send(data):
@@ -37,13 +37,13 @@ def generate_icon(icon: str, color: Optional[str] = None):
     soup = BeautifulSoup(open(svg_path, "r"), "lxml")
     if color:
         for spath in soup.findAll("path"):
-            spath['style'] = f"fill: {color};"
+            spath["style"] = f"fill: {color};"
     return soup
 
 
 def html_to_text(html):
     soup = BeautifulSoup(html, "lxml")
-    body = soup.find('body')
+    body = soup.find("body")
     return "".join(body.get_text())
 
 
@@ -56,7 +56,7 @@ def format_attachment(file):
     return {
         "ContentType": ftype,
         "Filename": file.split("/")[2],
-        "content": base64.b64encode(open(file, "rb").read()).decode('UTF-8')
+        "content": base64.b64encode(open(file, "rb").read()).decode("UTF-8"),
     }
 
 
@@ -64,7 +64,7 @@ class MailTypeEnum(enum.Enum):
     register = "register"
     register_to_member = "register_to_member"
     invitation = "invitation"
-    inform_user = "inform_user"
+    # inform_user = "inform_user"
     verify_email = "verify_email"
     reset_password = "reset_password"
     user_approved = "user_approved"
@@ -72,24 +72,27 @@ class MailTypeEnum(enum.Enum):
     data_download_approved = "data_download_approved"
     ongoing_data_download_approved = "ongoing_data_download_approved"
     add_collaborator = "add_collaborator"
-    notify_submission_completed_to_secretariat_admin = \
+    notify_submission_completed_to_secretariat_admin = (
         "notify_submission_completed_to_secretariat_admin"
+    )
     otp_code = "otp_code"
     feedback = "feedback"
 
 
 class Email:
-    def __init__(self,
-                 recipients: List[UserRecipient],
-                 type: MailTypeEnum,
-                 bcc: Optional[List[UserRecipient]] = None,
-                 attachment: Optional[str] = None,
-                 context: Optional[str] = None,
-                 body: Optional[str] = None,
-                 body_translation: Optional[str] = None,
-                 button_url: Optional[str] = None,
-                 info: Optional[str] = None,
-                 signature: Optional[bool] = None):
+    def __init__(
+        self,
+        recipients: List[UserRecipient],
+        type: MailTypeEnum,
+        bcc: Optional[List[UserRecipient]] = None,
+        attachment: Optional[str] = None,
+        context: Optional[str] = None,
+        body: Optional[str] = None,
+        body_translation: Optional[str] = None,
+        button_url: Optional[str] = None,
+        info: Optional[str] = None,
+        signature: Optional[bool] = None,
+    ):
         self.type = EmailText[type.value]
         self.recipients = recipients
         self.bcc = bcc
@@ -126,7 +129,8 @@ class Email:
             context=self.context,
             button=button,
             info=type["info"],
-            signature=type["signature"])
+            signature=type["signature"],
+        )
         payload = {
             "FromEmail": "noreply@cocoamonitoring.net",
             "Subject": f"ISCO {type['subject']}",

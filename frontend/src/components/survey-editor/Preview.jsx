@@ -466,6 +466,7 @@ const Preview = () => {
                     src="/images/swissco.svg"
                     alt="swissco_logo"
                   />
+                  <img height={30} src="/images/frisco.png" alt="frisco_logo" />
                 </div>
               ),
             }}

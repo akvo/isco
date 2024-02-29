@@ -7,6 +7,7 @@ import {
   modifyRuleMessage,
   validateDependency,
   modifyDependency,
+  renderQuestionLabelForErrorMessage,
 } from "../lib";
 import QuestionFields from "./QuestionFields.jsx";
 import GlobalStore from "../lib/store";
@@ -41,8 +42,14 @@ const Question = ({
     let rules = [
       {
         validator: (_, value) => {
-          const requiredErr = `${field.name.props.children[0]} ${uiText.errorIsRequired}`;
+          const questionLabel = renderQuestionLabelForErrorMessage(
+            field.name.props.children
+          );
+          const requiredErr = `${questionLabel} ${uiText.errorIsRequired}`;
           if (field?.required) {
+            if (field?.type === "input" || field?.type === "text") {
+              return Promise.resolve();
+            }
             if (field?.type === "number" && !field?.rule?.allowDecimal) {
               if (parseFloat(value) % 1 === 0) {
                 return Promise.resolve();
@@ -55,7 +62,11 @@ const Question = ({
               }
               return Promise.resolve();
             }
-            if (field?.type !== "number") {
+            if (
+              field?.type !== "number" &&
+              field?.type !== "input" &&
+              field?.type !== "text"
+            ) {
               return value || value === 0
                 ? Promise.resolve()
                 : Promise.reject(new Error(requiredErr));

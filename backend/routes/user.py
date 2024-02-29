@@ -288,7 +288,7 @@ def verify_email(
             Dear reporting member / partner,
             <p>
             {user['name']} ({user['email']}) from your
-            organisation has signed up for the 2023 Monitoring
+            organisation has signed up for the 2024 Monitoring
             Round at cocoamonitoring.net
             </p>
             <p>
@@ -301,10 +301,12 @@ def verify_email(
                 Marloes Humbeeck (humbeeck@idhtrade.org)</li>
                 <li>For DISCO:
                 Mark de Waard (dewaard@idhtrade.org)</li>
+                <li>For FRISCO:
+                Kitty Grapperon (kgrapperon@deloitte.fr)</li>
                 <li>For GISCO:
                 Ulrike Joras (ulrike.joras@giz.de)</li>
                 <li>For SWISSCO:
-                Michaela Kuhn (michaela.kuhn@kakaoplattform.ch)
+                Fabienne Bauer (fabienne.bauer@kakaoplattform.ch)
                 </li>
             </ul>
             """
@@ -312,7 +314,7 @@ def verify_email(
             Sehr geehrte/r Teilnehmer/in,
             <p>
             Herr/ Frau {user['name']} ({user['email']}) aus Ihrer
-            Organisation hat sich für die Monitoring-Runde 2023 auf
+            Organisation hat sich für die Monitoring-Runde 2024 auf
             cocoamonitoring.net
             registriert.
             </p>
@@ -326,10 +328,12 @@ def verify_email(
                 Marloes Humbeeck (humbeeck@idhtrade.org)</li>
                 <li>Für DISCO:
                 Mark de Waard (dewaard@idhtrade.org)</li>
+                <li>Für FRISCO:
+                Kitty Grapperon (kgrapperon@deloitte.fr)</li>
                 <li>Für GISCO:
                 Ulrike Joras (ulrike.joras@giz.de)</li>
                 <li>Für SWISSCO:
-                Michaela Kuhn (michaela.kuhn@kakaoplattform.ch)</li>
+                Fabienne Bauer (fabienne.bauer@kakaoplattform.ch)</li>
             </ul>
         """
         email_member = Email(
