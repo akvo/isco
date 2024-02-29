@@ -156,6 +156,8 @@ const QuestionDetail = ({
   handleFormOnValuesChange,
   setAllowOther,
   allowOther,
+  sumAcrossRepeatable,
+  setSumAcrossRepeatable,
 }) => {
   const { notify } = useNotification();
   const surveyEditor = store.useState((s) => s?.surveyEditor);
@@ -368,6 +370,9 @@ const QuestionDetail = ({
   const handleOnChangeAutofield = (val, field) => {
     const fieldValue = { [field]: val };
     form.setFieldsValue(fieldValue);
+    if (field.includes("sumAcrossRepeatable")) {
+      setSumAcrossRepeatable(val);
+    }
     handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
   };
 
@@ -456,6 +461,27 @@ const QuestionDetail = ({
                 className="bg-grey"
               />
             </Form.Item>
+          </div>
+          <div className="question-setting-wrapper">
+            <Form.Item
+              name={`question-${qId}-autofield-sumAcrossRepeatable`}
+              hidden
+              noStyle
+            >
+              <Input />
+            </Form.Item>
+            <Space>
+              <Checkbox
+                checked={sumAcrossRepeatable}
+                onChange={(val) =>
+                  handleOnChangeAutofield(
+                    val?.target?.checked,
+                    `question-${qId}-autofield-sumAcrossRepeatable`
+                  )
+                }
+              />
+              <span>SUM repeatable groups</span>
+            </Space>
           </div>
         </div>
       )}

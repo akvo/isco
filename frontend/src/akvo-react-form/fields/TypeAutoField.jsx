@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Form, Input } from "antd";
 import { Extra, FieldLabel } from "../support";
+import { sortedUniq, sum } from "lodash";
 
 const checkIsPromise = (val) => {
   if (
@@ -138,6 +139,22 @@ const strMultilineToFunction = (fnString, getFieldValue, repeatIndex) => {
   };
 };
 
+const extractQuestionIds = (str) => {
+  // Define the regex pattern to match values containing the # character
+  const regex = /#(\d+)/g;
+  const matches = [];
+  let match;
+
+  // Perform regex matching on the string
+  while ((match = regex.exec(str)) !== null) {
+    // Get the matched value (value after the # character)
+    var value = parseInt(match[1]);
+    // Add the value to the matches array
+    matches.push(value);
+  }
+  return matches;
+};
+
 const TypeAutoField = ({
   id,
   name,
@@ -152,7 +169,7 @@ const TypeAutoField = ({
   requiredSign,
 }) => {
   const form = Form.useFormInstance();
-  const { getFieldValue, setFieldsValue } = form;
+  const { getFieldValue, setFieldsValue, getFieldsValue } = form;
 
   const repeatIndex = String(id).split("-")?.[1];
 
@@ -165,6 +182,30 @@ const TypeAutoField = ({
     );
   } else {
     automateValue = strToFunction(fn?.fnString, getFieldValue, repeatIndex);
+  }
+
+  let sumRepeatableAutomateValue = null;
+  if (fn?.sumAcrossRepeatable && fn?.fnString && automateValue) {
+    const questionIds = extractQuestionIds(fn.fnString);
+    const answers = getFieldsValue(true);
+    const repeatIndexs = Object.keys(answers)
+      .map((x) => {
+        const [qid, repeatIndex] = x.split("-");
+        if (questionIds.includes(parseInt(qid))) {
+          return parseInt(repeatIndex) || 0;
+        }
+        return false;
+      })
+      .filter((x) => x !== false);
+    sumRepeatableAutomateValue = sortedUniq(repeatIndexs).map((rIndex) => {
+      let value = null;
+      if (fn?.multiline) {
+        value = strMultilineToFunction(fn?.fnString, getFieldValue, rIndex);
+      } else {
+        value = strToFunction(fn?.fnString, getFieldValue, rIndex);
+      }
+      return value;
+    });
   }
 
   useEffect(() => {
@@ -180,6 +221,24 @@ const TypeAutoField = ({
       setFieldsValue({ [id]: null });
     }
   }, [automateValue, id, setFieldsValue]);
+
+  useEffect(() => {
+    if (sumRepeatableAutomateValue) {
+      const values = sumRepeatableAutomateValue.map((val) => {
+        const { fn, isAllAnswersZero } = val;
+        if (checkIsPromise(fn())) {
+          // can't handle fn function here
+          return 0;
+        }
+        const value = isAllAnswersZero ? null : fn();
+        return value;
+      });
+      const total = sum(values);
+      setFieldsValue({ [id]: total });
+    } else {
+      setFieldsValue({ [id]: null });
+    }
+  }, [sumRepeatableAutomateValue, id, setFieldsValue]);
 
   const extraBefore = extra
     ? extra.filter((ex) => ex.placement === "before")
