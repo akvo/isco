@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOMServer from "react-dom/server";
 import ReactHtmlParser from "react-html-parser";
 import { intersection, orderBy } from "lodash";
 import * as locale from "locale-codes";
@@ -290,4 +291,17 @@ export const filterFormValues = (values, formValue) => {
     .filter((x) => !x.id.includes("other-option"))
     .reduce((curr, next) => ({ ...curr, [next.id]: next.value }), {});
   return resValues;
+};
+
+export const renderQuestionLabelForErrorMessage = (arr) => {
+  if (!arr) {
+    return "";
+  }
+  return arr
+    .map((x) =>
+      React.isValidElement(x)
+        ? String(ReactDOMServer.renderToStaticMarkup(x)).replace(/<[^>]*>/g, "")
+        : x
+    )
+    .join("");
 };
