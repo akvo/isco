@@ -10,11 +10,11 @@ class EmailText(enum.Enum):
         "title": "Registration",
         "title_translation": None,
         "subject": "Registration",
-        "body": '''
+        "body": """
             #user_name# (#user_email#) from #organisation_name#
             has registered in the reporting tool. Now you can
             approve user in Manage User page.
-            ''',
+            """,
         "message": None,
         "body_translation": None,
         "image": None,
@@ -26,7 +26,7 @@ class EmailText(enum.Enum):
         "title": None,
         "title_translation": None,
         "subject": "Registration",
-        "body": '''
+        "body": """
             Dear reporting member / partner,
             <p>
             #user_name# (#user_email#) from your
@@ -49,9 +49,9 @@ class EmailText(enum.Enum):
                 Michaela Kuhn (michaela.kuhn@kakaoplattform.ch)
                 </li>
             </ul>
-            ''',
+            """,
         "message": None,
-        "body_translation": '''
+        "body_translation": """
             Sehr geehrte/r Teilnehmer/in,
             <p>
             Herr/ Frau #user_name# (#user_email#) aus Ihrer
@@ -74,7 +74,7 @@ class EmailText(enum.Enum):
                 <li>Für SWISSCO:
                 Michaela Kuhn (michaela.kuhn@kakaoplattform.ch)</li>
             </ul>
-            ''',
+            """,
         "image": None,
         "button": None,
         "info": None,
@@ -84,32 +84,32 @@ class EmailText(enum.Enum):
         "title": None,
         "title_translation": None,
         "subject": "Invitation | Einladungsschreiben",
-        "body": '''<div>
+        "body": """<div>
                 Dear reporting member,
                 <p>
                 Thank you for signing up to the online monitoring tool of
-                Beyond Chocolate, DISCO, SWISSCO and GISCO. Your registration
-                has been approved. Please click following button to set your
-                password and finalize your registration.
+                Beyond Chocolate, DISCO, FRISCO, SWISSCO and GISCO. Your
+                registration has been approved. Please click following button
+                to set your password and finalize your registration.
                 </p>
-                </div>''',
-        "body_translation": '''<div>
+                </div>""",
+        "body_translation": """<div>
                 Sehr geehrtes meldendes Mitglied,
                 <p>
                 vielen Dank, dass Sie sich für das Online-Monitoring-Tool
-                von Beyond Chocolate, DISCO, SWISSCO und GISCO angemeldet
-                haben. Ihre Registrierung wurde bestätigt. Bitte klicken
-                Sie auf den untenstehenden Link, um Ihr Passwort
+                von Beyond Chocolate, DISCO, FRISCO, SWISSCO und GISCO
+                angemeldet haben. Ihre Registrierung wurde bestätigt. Bitte
+                klicken Sie auf den untenstehenden Link, um Ihr Passwort
                 festzulegen und Ihre Registrierung abzuschließen.
                 </p>
-                </div>''',
+                </div>""",
         "message": None,
         "image": None,
-        "button": '''<a href="#button_url#" target="_blank" rel="noreferrer">
+        "button": """<a href="#button_url#" target="_blank" rel="noreferrer">
                         <button class="btn btn-reset-password block">
                             Set password | Passwort festlegen
                         </button>
-                    </a>''',
+                    </a>""",
         "info": None,
         "signature": True,
     }
@@ -117,32 +117,33 @@ class EmailText(enum.Enum):
         "title": None,
         "title_translation": None,
         "subject": "Email Verification | E-Mail-Verifizierung",
-        "body": '''<div>
+        "body": """<div>
                 Dear reporting member,
                 <p>
                 Thank you for signing up to the online monitoring tool of
-                Beyond Chocolate, DISCO, SWISSCO and GISCO. Please click
-                following button to verify your email address. You will be
-                notified when as soon as your account has been approved.
+                Beyond Chocolate, DISCO, FRISCO, SWISSCO and GISCO. Please
+                click following button to verify your email address. You will
+                be notified when as soon as your account has been approved.
                 </p>
-                </div>''',
-        "body_translation": '''<div>
+                </div>""",
+        "body_translation": """<div>
                 „Liebes Mitglied,
                 <p>
                 vielen Dank, dass Sie sich für das Online-Monitoringtool von
-                Beyond Chocolate, DISCO, SWISSCO und Forum Nachhaltiger Kakao
-                angemeldet haben. Bitte klicken Sie auf den unten stehenden
-                Link, um Ihre E-Mail-Adresse zu verifizieren. Sie werden
-                benachrichtigt, sobald Ihre Registrierung genehmigt wurde.
+                Beyond Chocolate, DISCO, FRISCO, SWISSCO und Forum
+                Nachhaltiger Kakao angemeldet haben. Bitte klicken Sie auf
+                untenstehenden Link, um Ihre E-Mail-Adresse zu verifizieren.
+                Sie werden benachrichtigt, sobald Ihre Registrierung genehmigt
+                wurde.
                 </p>
-                </div>''',
+                </div>""",
         "message": None,
         "image": None,
-        "button": '''<a href="#button_url#" target="_blank" rel="noreferrer">
+        "button": """<a href="#button_url#" target="_blank" rel="noreferrer">
                         <button class="btn btn-link block">
                             Verify Email | E-Mail-Verifizierung
                         </button>
-                    </a>''',
+                    </a>""",
         "info": None,
         "signature": True,
     }
@@ -150,7 +151,7 @@ class EmailText(enum.Enum):
         "title": None,
         "title_translation": None,
         "subject": "Password Reset | Passwort Zurücksetzen",
-        "body": '''<div>
+        "body": """<div>
                 Dear reporting member,
                 <p>
                 You have submitted a password change request. If it wasn't you
@@ -158,8 +159,8 @@ class EmailText(enum.Enum):
                 to your account. If it was you, then click the following
                 button:
                 </p>
-                </div>''',
-        "body_translation": '''<div>
+                </div>""",
+        "body_translation": """<div>
                 Sehr geehrtes meldendes Mitglied,
                 <p>
                 Sie haben eine Passwortänderung angefordert. Falls Sie dies
@@ -168,14 +169,14 @@ class EmailText(enum.Enum):
                 Wenn Sie ihr Passwort ändern möchten, klicken Sie auf die
                 folgende Schaltfläche:
                 </p>
-                </div>''',
+                </div>""",
         "message": None,
         "image": None,
-        "button": '''<a href="#button_url#" target="_blank" rel="noreferrer">
+        "button": """<a href="#button_url#" target="_blank" rel="noreferrer">
                         <button class="btn btn-reset-password block">
                             Password Reset | Passwort Zurücksetzen
                         </button>
-                    </a>''',
+                    </a>""",
         "info": None,
         "signature": True,
     }
@@ -183,12 +184,13 @@ class EmailText(enum.Enum):
         "title": None,
         "title_translation": None,
         "subject": "User Signup approved | Benutzeranmeldung Genehmigt",
-        "body": '''<div>
+        "body": """<div>
                 Dear reporting member,
                 <p>
                 Your password for the online monitoring tool of
-                Beyond Chocolate, DISCO, SWISSCO and GISCO has been set and
-                you will now be able to start reporting on your 2022 data.
+                Beyond Chocolate, DISCO, FRISCO, SWISSCO and GISCO has been
+                set and you will now be able to start reporting on your 2022
+                data.
                 </p>
                 <p>
                 Once you have logged in, please click the “survey” tab at the
@@ -205,19 +207,21 @@ class EmailText(enum.Enum):
                     Marloes Humbeeck (humbeeck@idhtrade.org)</li>
                     <li>For DISCO:
                     Mark de Waard (dewaard@idhtrade.org)</li>
+                    <li>For FRISCO:
+                    Kitty Grapperon (kgrapperon@deloitte.fr)</li>
                     <li>For GISCO:
                     Ulrike Joras (ulrike.joras@giz.de)</li>
                     <li>For SWISSCO:
-                    Michaela Kuhn (michaela.kuhn@kakaoplattform.ch)</li>
+                    Fabienne Bauer (fabienne.bauer@kakaoplattform.ch)</li>
                 </ul>
                 </p>
-                </div>''',
-        "body_translation": '''<div>
+                </div>""",
+        "body_translation": """<div>
                 Sehr geehrtes meldendes Mitglied,
                 <p>
                 Ihr Passwort für das Online-Monitoring-Tool von Beyond
-                Chocolate, DISCO, SWISSCO und GISCO wurde festgelegt und Sie
-                können nun mit der Berichterstattung über Ihre Daten
+                Chocolate, DISCO, FRISCO, SWISSCO und GISCO wurde festgelegt
+                und Sie können nun mit der Berichterstattung über Ihre Daten
                 aus dem Jahr 2022 beginnen.
                 </p>
                 <p>
@@ -238,12 +242,14 @@ class EmailText(enum.Enum):
                     Marloes Humbeeck (humbeeck@idhtrade.org)</li>
                     <li>Für DISCO:
                     Mark de Waard (dewaard@idhtrade.org)</li>
+                    <li>Für FRISCO:
+                    Kitty Grapperon (kgrapperon@deloitte.fr)</li>
                     <li>Für GISCO:
                     Ulrike Joras (ulrike.joras@giz.de)</li>
                     <li>Für SWISSCO:
-                    Michaela Kuhn (michaela.kuhn@kakaoplattform.ch)</li>
+                    Fabienne Bauer (fabienne.bauer@kakaoplattform.ch)</li>
                 </ul>
-                </div>''',
+                </div>""",
         "message": None,
         "image": None,
         "button": None,
@@ -253,8 +259,8 @@ class EmailText(enum.Enum):
     data_download_requested = {
         "title": None,
         "title_translation": None,
-        "subject": '''Data Download Request
-                    | Anfrage zum Herunterladen von Daten''',
+        "subject": """Data Download Request
+                    | Anfrage zum Herunterladen von Daten""",
         "body": None,
         "body_translation": None,
         "message": None,
@@ -266,9 +272,9 @@ class EmailText(enum.Enum):
     data_download_approved = {
         "title": None,
         "title_translation": None,
-        "subject": '''Data Download Approved
-                    | Antrag auf Datendownload genehmigt''',
-        "body": '''<div>
+        "subject": """Data Download Approved
+                    | Antrag auf Datendownload genehmigt""",
+        "body": """<div>
                 Dear reporting member,
                 <p>
                 Your request to download your reported data has been approved.
@@ -278,8 +284,8 @@ class EmailText(enum.Enum):
                 For security reasons, the approved data access will expire
                 after 5 days. Then you will have to make a new request.
                 </p>
-                </div>''',
-        "body_translation": '''<div>
+                </div>""",
+        "body_translation": """<div>
                 Sehr geehrtes Mitglied,
                 <p>
                 Ihr Antrag zum Herunterladen Ihrer Daten wurde genehmigt.
@@ -291,7 +297,7 @@ class EmailText(enum.Enum):
                 nach einer Frist von 5 Tagen. Danach müssten Sie erneut eine
                 Anfrage stellen.
                 </p>
-                </div>''',
+                </div>""",
         "message": None,
         "image": None,
         "button": None,
@@ -301,9 +307,9 @@ class EmailText(enum.Enum):
     ongoing_data_download_approved = {
         "title": None,
         "title_translation": None,
-        "subject": '''Data Download Approved
-                    | Antrag auf Datendownload genehmigt''',
-        "body": '''<div>
+        "subject": """Data Download Approved
+                    | Antrag auf Datendownload genehmigt""",
+        "body": """<div>
                 Dear reporting member,
                 <p>
                 Your request to download your data you have reported thus far
@@ -316,8 +322,8 @@ class EmailText(enum.Enum):
                 For security reasons, the approved data access will expire
                 after 5 days. Then you will have to make a new request.
                 </p>
-                </div>''',
-        "body_translation": '''<div>
+                </div>""",
+        "body_translation": """<div>
                 Sehr geehrtes Mitglied,
                 <p>
                 Ihr Antrag zum Herunterladen Ihrer bis zum jetzigen Zeitpunkt
@@ -332,7 +338,7 @@ class EmailText(enum.Enum):
                 Aus Sicherheitsgründen läuft der genehmigte Datenzugang nach 5
                 Tagen ab. Dann müssen Sie einen neuen Antrag stellen.
                 </p>
-                </div>''',
+                </div>""",
         "message": None,
         "image": None,
         "button": None,
@@ -343,7 +349,7 @@ class EmailText(enum.Enum):
         "title": None,
         "title_translation": None,
         "subject": "Organisation added as collaborator",
-        "body": '''<div>
+        "body": """<div>
                 Dear reporting member / partner,
                 <p>
                 #assigning_name# from #assigning_org_name# has added your
@@ -357,8 +363,8 @@ class EmailText(enum.Enum):
                 Please contact us via the feedback form in case you face any
                 issues.
                 </p>
-                </div>''',
-        "body_translation": '''<div>
+                </div>""",
+        "body_translation": """<div>
                 Sehr geehrte/r Teilnehmer/in,
                 <p>
                 #assigning_name# von #assigning_org_name# hat Ihre
@@ -374,7 +380,7 @@ class EmailText(enum.Enum):
                 Bitte kontaktieren Sie uns über das Feedback-Formular, falls
                 Sie Schwierigkeiten haben.
                 </p>
-                </div>''',
+                </div>""",
         "message": None,
         "image": None,
         "button": None,
@@ -385,10 +391,10 @@ class EmailText(enum.Enum):
         "title": "Submission Completed",
         "title_translation": None,
         "subject": "Submission Completed",
-        "body": '''
+        "body": """
             #user_name# (#user_email#) from #organisation_name#
             successfully submitted data for #questionnaire_name#.
-            ''',
+            """,
         "message": None,
         "body_translation": None,
         "image": None,
@@ -400,21 +406,21 @@ class EmailText(enum.Enum):
         "title": None,
         "title_translation": None,
         "subject": "OTP Code",
-        "body": '''<div>
+        "body": """<div>
             #user_name#, </br>
             Please enter this OTP to continue download:
             <h2>#OTP Code#</h2>
             <span>
             This code is valid for #expired time# minutes.
             </span>
-            </div>''',
-        "body_translation": '''<div>
+            </div>""",
+        "body_translation": """<div>
             #user_name#,</br>
             Bitte geben Sie dieses OTP ein,
             um mit dem Herunterladen fortzufahren:
             <h2>#OTP Code#</h2>
             <span>Dieser Code ist #expired time# Minuten lang gültig.</span>
-            </div>''',
+            </div>""",
         "message": None,
         "image": None,
         "button": None,
@@ -425,13 +431,13 @@ class EmailText(enum.Enum):
         "title": None,
         "title_translation": None,
         "subject": "New Feedback",
-        "body": '''<div>
+        "body": """<div>
             Name: #user_name#</br>
             Organisation: #organisation_name#</br>
             Title: #Title#</br>
             Category: #Category#</br>
             Feedback: #Content#
-            </div>''',
+            </div>""",
         "body_translation": None,
         "message": None,
         "image": None,
