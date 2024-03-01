@@ -1,4 +1,59 @@
 import React, { Fragment } from "react";
+import { Table } from "antd";
+
+const numberOfHHIndirectSupplyChainData = [
+  ["Côte d'Ivoire", 3.0, 1521.6, 507.2],
+  ["Ghana", 2.0, 1104.6, 552.3],
+  ["Nigeria", 2.3, 630.89, 274.3],
+  ["Cameroon", 3.3, 1592.58, 482.6],
+  ["Ecuador", 5.8, 3840.18, 662.1],
+  ["Venezuela", 3.5, 1228.85, 351.1],
+  ["Sierra Leone", 3.5, 1327.2, 379.2],
+  ["Dominican Republic", 3.5, 1883.35, 538.1],
+  ["Peru", 3.5, 3378.2, 965.2],
+  ["Brazil", 3.5, 1624.0, 464.0],
+  ["Columbia", 3.5, 1173.2, 335.2],
+  ["Democratic Republic of Congo", 3.5, 1867.95, 533.7],
+  ["Indonesia", 3.5, 1619.1, 462.6],
+  ["Liberia", 3.5, 576.45, 164.7],
+  ["Madagascar", 3.5, 3139.5, 897.0],
+  ["Togo", 3.5, 3945.9, 1127.4],
+  ["Uganda", 3.5, 1845.55, 527.3],
+  ["Vietnam", 3.5, 1648.5, 471.0],
+  ["Tanzania", 3.5, 2525.2, 721.2],
+];
+
+const numberOfHHIndirectSupplyChainColumns = [
+  {
+    title: <b>Country</b>,
+    dataIndex: "country",
+    key: "country",
+  },
+  {
+    title: <b>Average land size in ha (Cocoa Barometer)</b>,
+    dataIndex: "avg_land_size",
+    key: "avg_land_size",
+  },
+  {
+    title: <b>Average annual yield</b>,
+    dataIndex: "avg_annual_yield",
+    key: "avg_annual_yield",
+  },
+  {
+    title: <b>Average yield in kg/ha in 2022 (FAOSTAT)</b>,
+    dataIndex: "avg_yield",
+    key: "avg_yield",
+  },
+];
+
+const numberOfHHIndirectSupplyChainDataSource =
+  numberOfHHIndirectSupplyChainData.map((item, index) => ({
+    key: index,
+    country: item[0],
+    avg_land_size: item[1],
+    avg_annual_yield: item[2],
+    avg_yield: item[3],
+  }));
 
 const definitionContent = {
   en: [
@@ -1034,6 +1089,37 @@ const definitionContent = {
             skills development, business opportunities and participation in
             decision making. <br />
             (Fairtrade (n.d.))
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Methodology to calculate number of households in the indirect supply chain",
+      t: "Methodology to calculate number of households in the indirect supply chain",
+      d: (
+        <Fragment>
+          <div>
+            Please calculate the number of households in your indirect supply
+            chain by dividing the total volumes you sourced through the indirect
+            supply chain by the average annual yield of farmers in your indirect
+            supply chain. Please find the average annual yield for the largest
+            cocoa producing countries in the table below. <br />
+            <br />
+            Example: 20.000 MT-BE are sourced from Ghana and 2.000 MT-BE are
+            sourced from Ecuador
+            <ul>
+              <li>Ghana: (20.000/1104.6)*1.000 = 18.106 farmers</li>
+              <li>Ecuador: (2.000/3840.18)*1.000 = 520 farmers</li>
+              <li>Total: 18.626 farmers</li>
+            </ul>
+            <br />
+            <Table
+              columns={numberOfHHIndirectSupplyChainColumns}
+              dataSource={numberOfHHIndirectSupplyChainDataSource}
+              tableLayout="auto"
+              size="middle"
+              bordered
+            />
           </div>
         </Fragment>
       ),
@@ -2143,6 +2229,39 @@ const definitionContent = {
             Jugendliche, der Förderung ihrer Fähigkeiten und Kenntnisse, und der
             Beteiligung von Jugendlichen an Entscheidungsprozessen. <br />
             (Fairtrade (o.D.))
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Methodology to calculate number of households in the indirect supply chain",
+      t: "Methodik zur Berechnung der Anzahl von Haushalten in der indirekten Lieferkette",
+      d: (
+        <Fragment>
+          <div>
+            Bitte berechnen Sie die Anzahl der Haushalte in Ihrer indirekten
+            Lieferkette, indem Sie die Gesamtvolumina, die Sie über die
+            indirekte Lieferkette bezogen haben, durch den durchschnittlichen
+            jährlichen Ertrag der Bauern in Ihrer indirekten Lieferkette teilen.
+            Bitte finden Sie den durchschnittlichen jährlichen Ertrag für die
+            größten Kakaoproduzentenländer in der untenstehenden Tabelle.
+            <br />
+            <br />
+            Beispiel: 20.000 MT-BE werden aus Ghana bezogen und 2.000 MT-BE
+            werden aus Ecuador bezogen
+            <ul>
+              <li>Ghana: (20.000/1104,6)*1.000 = 18.106 Bauern</li>
+              <li>Ecuador: (2.000/3840,18)*1.000 = 520 Bauern</li>
+              <li>Gesamt: 18.626 Bauern</li>
+            </ul>
+            <br />
+            <Table
+              columns={numberOfHHIndirectSupplyChainColumns}
+              dataSource={numberOfHHIndirectSupplyChainDataSource}
+              tableLayout="auto"
+              size="middle"
+              bordered
+            />
           </div>
         </Fragment>
       ),
