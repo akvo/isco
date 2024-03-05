@@ -727,7 +727,7 @@ const WebformPage = ({
           (x) => x.question === qid && x.repeat_index === repeatIndex
         );
         // value
-        const value = values?.[key] ? values[key] : null;
+        const value = values?.[key] || values?.[key] === 0 ? values[key] : null;
         if (value || value === 0 || dataUnavailable?.[key]) {
           return {
             question: qid,
