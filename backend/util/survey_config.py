@@ -5,7 +5,7 @@ MEMBER_SURVEY = [1, 7]
 # list of project survey id
 PROJECT_SURVEY = [2, 4, 6, 8]
 # list of survey submitted only once
-LIMITED_SURVEY = [3, 5, 13]
+LIMITED_SURVEY = [3, 5, 13, 18]
 
 
 # MEMBER TYPE UNLIMITED MEMBER SURVEY

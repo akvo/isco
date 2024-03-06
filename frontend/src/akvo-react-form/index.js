@@ -3,7 +3,15 @@ import { Row, Col, Button, Form, Space, Select, message } from "antd";
 // import "antd/dist/antd.min.css";
 import "./styles.css";
 import moment from "moment";
-import { range, intersection, maxBy, isEmpty, takeRight, take } from "lodash";
+import {
+  range,
+  intersection,
+  maxBy,
+  isEmpty,
+  takeRight,
+  take,
+  last,
+} from "lodash";
 import {
   transformForm,
   translateForm,
@@ -504,8 +512,9 @@ export const Webform = ({
   };
 
   const isLastGroup = useMemo(() => {
-    return activeGroup + 1 === formsMemo?.question_group?.length;
-  }, [activeGroup, formsMemo]);
+    const lastShownGroup = last(showGroup);
+    return activeGroup === lastShownGroup;
+  }, [activeGroup, showGroup]);
 
   if (!formsMemo?.question_group) {
     return "Error Format";
