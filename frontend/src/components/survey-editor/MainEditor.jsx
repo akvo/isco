@@ -20,8 +20,12 @@ const CustomWrapper = ({ isNotSpace, children }) => {
 
 const MainEditor = () => {
   const [form] = Form.useForm();
-  const { surveyEditor, isAddQuestionGroup, isMoveQuestionGroup } =
-    store.useState((s) => s);
+  const {
+    surveyEditor,
+    isAddQuestionGroup,
+    isMoveQuestionGroup,
+    isCopyQuestionGroup,
+  } = store.useState((s) => s);
   const {
     id: formId,
     name,
@@ -135,7 +139,9 @@ const MainEditor = () => {
               </Tooltip>
             </div>
             <CustomWrapper
-              isNotSpace={isAddQuestionGroup || isMoveQuestionGroup}
+              isNotSpace={
+                isAddQuestionGroup || isMoveQuestionGroup || isCopyQuestionGroup
+              }
             >
               <Row align="middle" className="form-editor-wrapper">
                 {/* Button */}

@@ -104,6 +104,8 @@ const defaultUIState = {
   },
   isMoveQuestion: false,
   isMoveQuestionGroup: false,
+  isCopyQuestionGroup: false,
+  isCopyQuestion: false,
   isAddQuestionGroup: false,
   notificationModal: {
     saveFormData: {

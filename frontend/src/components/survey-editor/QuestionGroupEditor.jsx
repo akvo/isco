@@ -19,6 +19,7 @@ import {
   RiListOrdered,
   RiDragMove2Fill,
   RiTranslate2,
+  RiFileCopyLine,
 } from "react-icons/ri";
 import { TbTrashOff } from "react-icons/tb";
 import { store, api } from "../../lib";
@@ -1011,20 +1012,33 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
               align="middle"
               justify="space-between"
             >
-              <Col span={1} align="start">
-                <Tooltip title="Click to move section">
-                  <Button
-                    type="text"
-                    icon={<RiDragMove2Fill />}
-                    onClick={() => {
-                      store.update((s) => {
-                        s.isMoveQuestionGroup = questionGroup;
-                      });
-                    }}
-                  />
-                </Tooltip>
+              <Col span={2} align="start">
+                <Space>
+                  <Tooltip title="Click to move section">
+                    <Button
+                      type="text"
+                      icon={<RiDragMove2Fill />}
+                      onClick={() => {
+                        store.update((s) => {
+                          s.isMoveQuestionGroup = questionGroup;
+                        });
+                      }}
+                    />
+                  </Tooltip>
+                  <Tooltip title="Click to copy section">
+                    <Button
+                      type="text"
+                      icon={<RiFileCopyLine />}
+                      onClick={() => {
+                        store.update((s) => {
+                          s.isCopyQuestionGroup = questionGroup;
+                        });
+                      }}
+                    />
+                  </Tooltip>
+                </Space>
               </Col>
-              <Col span={17} align="start" className="left">
+              <Col span={16} align="start" className="left">
                 <Form.Item
                   name={`question_group-${id}-name`}
                   rules={[

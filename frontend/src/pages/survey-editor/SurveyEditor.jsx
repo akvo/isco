@@ -23,6 +23,7 @@ const SurveyEditor = () => {
       api
         .get(`/survey_editor/${formId}`)
         .then((res) => {
+          // GET SURVEY EDITOR INIT VALUES
           const { data } = res;
           store.update((s) => {
             s.surveyEditor = {

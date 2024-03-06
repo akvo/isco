@@ -8,10 +8,12 @@ from sqlalchemy.orm import Session
 from sqlalchemy import and_
 import db.crud_question_group as crud
 from db import crud_question, crud_answer
+from db.crud_form import get_form_by_id
 from db.connection import get_session
 from models.question_group import QuestionGroupBase, QuestionGroupDict
 from models.question_group import QuestionGroupPayload, QuestionGroup
 from models.question import QuestionType, Question
+from models.form import FormBase
 
 security = HTTPBearer()
 question_group_route = APIRouter()
@@ -213,6 +215,41 @@ def move(
         target_id=target_id,
     )
     return Response(status_code=HTTPStatus.NO_CONTENT.value)
+
+
+@question_group_route.post(
+    "/copy-question-group/{id:path}/{selected_order:path}/{target_order:path}",
+    response_model=FormBase,
+    summary="copy question group",
+    name="question_group:copy",
+    tags=["Copy"],
+)
+def copy(
+    req: Request,
+    id: int,  # current id
+    selected_order: int,  # current order
+    target_order: int,
+    # target_id: int,
+    session: Session = Depends(get_session),
+    credentials: credentials = Depends(security),
+):
+    group = crud.copy_question_group(
+        session=session,
+        id=id,
+        selected_order=selected_order,
+        target_order=target_order,
+        # target_id=target_id,
+    )
+    # get form
+    form = get_form_by_id(session=session, id=group.form)
+    form = form.serialize
+    for qg in form.get("question_group"):
+        for q in qg.get("question"):
+            check_answer = crud_answer.get_answer_by_question(
+                session=session, question=[q.get("id")]
+            )
+            q.update({"disableDelete": True if check_answer else False})
+    return form
 
 
 @question_group_route.delete(

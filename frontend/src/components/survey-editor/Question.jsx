@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useMemo } from "react";
 import QuestionEditor from "./QuestionEditor";
 import AddMoveButton from "./AddMoveButton";
 import { store, api } from "../../lib";
 import { defaultOption, defaultRepeatingObject } from "../../lib/store";
 import { generateID } from "../../lib/util";
+import { useNotification } from "../../util";
+
+const copyToastText =
+  "Only the question contents have been copied. Please re-configure the dependencies, if any for the new questions.";
 
 const Question = ({
   index,
@@ -16,13 +20,25 @@ const Question = ({
   questionToDeactivate,
   setQuestionToDeactivate,
 }) => {
-  const { surveyEditor, isMoveQuestion } = store.useState((s) => s);
+  const { surveyEditor, isMoveQuestion, isCopyQuestion } = store.useState(
+    (s) => s
+  );
   const { questionGroup: questionGroupState } = surveyEditor;
+  const { notify } = useNotification();
 
-  const AddMoveButtonText = !isMoveQuestion ? "Add new question" : "Move here";
+  const AddMoveButtonText = useMemo(() => {
+    if (isMoveQuestion) {
+      return "Move here";
+    }
+    if (isCopyQuestion) {
+      return "Paste here";
+    }
+    return "Add new question";
+  }, [isMoveQuestion, isCopyQuestion]);
 
   const handleOnCancelMove = () => {
     store.update((s) => {
+      s.isCopyQuestion = false;
       s.isMoveQuestion = false;
     });
   };
@@ -147,6 +163,59 @@ const Question = ({
       });
   };
 
+  const handleCopy = (targetOrder, targetQuestionGroup) => {
+    const { id: selectedQuestionId } = isCopyQuestion;
+    api
+      .post(
+        `/copy-question/${selectedQuestionId}/${targetQuestionGroup}/${targetOrder}`
+      )
+      .then((res) => {
+        const { data } = res;
+        notify({
+          type: "success",
+          message: copyToastText,
+        });
+        store.update((s) => {
+          s.surveyEditor = {
+            ...s.surveyEditor,
+            questionGroup: data?.question_group?.map((qg) => {
+              // check for disableDelete a group based on question disableDelete value
+              const questionDisableDelete = qg?.question?.filter(
+                (q) => q?.disableDelete
+              );
+              return {
+                ...qg,
+                disableDelete: questionDisableDelete?.length ? true : false,
+                question: qg?.question?.map((q) => {
+                  let option = q?.option;
+                  let repeating_objects = q?.repeating_objects;
+                  // add option default
+                  if (option?.length === 0) {
+                    option = [{ ...defaultOption, id: generateID() }];
+                  }
+                  // add repeating object default
+                  if (!repeating_objects || repeating_objects?.length === 0) {
+                    repeating_objects = [
+                      { ...defaultRepeatingObject, id: generateID() },
+                    ];
+                  }
+                  return {
+                    ...q,
+                    option: option,
+                    repeating_objects: repeating_objects,
+                  };
+                }),
+              };
+            }),
+          };
+          s.isCopyQuestion = false;
+        });
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  };
+
   const allQuestions = questionGroupState
     .map((x) => x.question)
     .flatMap((x) => x);
@@ -191,20 +260,22 @@ const Question = ({
         <AddMoveButton
           className="question"
           text={AddMoveButtonText}
-          cancelButton={isMoveQuestion}
+          cancelButton={isMoveQuestion || isCopyQuestion}
           onCancel={handleOnCancelMove}
           disabled={
             topButtonDependencies.length || isMoveQuestion?.id === question?.id
           }
           onClick={() =>
-            !isMoveQuestion
+            !isMoveQuestion && !isCopyQuestion
               ? handleAddQuestionButton(
                   question.order === 1 ? question.order : question.order - 1
                 )
-              : handleMove(
+              : !isCopyQuestion
+              ? handleMove(
                   question.order === 1 ? question.order : question.order - 1,
                   question.question_group
                 )
+              : handleCopy(question.order, question.question_group)
           }
         />
       )}
@@ -216,20 +287,22 @@ const Question = ({
         handleFormOnValuesChange={handleFormOnValuesChange}
         submitStatus={submitStatus}
         setSubmitStatus={setSubmitStatus}
-        toggleMove={isMoveQuestion?.id}
+        toggleMove={isMoveQuestion?.id || isCopyQuestion?.id}
         questionToDeactivate={questionToDeactivate}
         setQuestionToDeactivate={setQuestionToDeactivate}
       />
       <AddMoveButton
         className="question"
         text={AddMoveButtonText}
-        cancelButton={isMoveQuestion}
+        cancelButton={isMoveQuestion || isCopyQuestion}
         onCancel={handleOnCancelMove}
         disabled={disable.length || isMoveQuestion?.id === question?.id}
         onClick={() =>
-          !isMoveQuestion
+          !isMoveQuestion && !isCopyQuestion
             ? handleAddQuestionButton(question.order + 1)
-            : handleMove(question.order + 1, question.question_group)
+            : !isCopyQuestion
+            ? handleMove(question.order + 1, question.question_group)
+            : handleCopy(question.order + 1, question.question_group)
         }
       />
     </>

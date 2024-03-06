@@ -1,22 +1,38 @@
-import React from "react";
+import React, { useMemo } from "react";
 import QuestionGroupEditor from "./QuestionGroupEditor";
 import AddMoveButton from "./AddMoveButton";
 import { store, api } from "../../lib";
 import { minBy, orderBy, takeRight } from "lodash";
 import { defaultOption, defaultRepeatingObject } from "../../lib/store";
 import { generateID } from "../../lib/util";
+import { useNotification } from "../../util";
+
+const copyToastText =
+  "Only the question contents have been copied. Please re-configure the dependencies, if any for the new questions.";
 
 const QuestionGroup = ({ index, questionGroup }) => {
-  const { surveyEditor, isMoveQuestionGroup, isAddQuestionGroup } =
-    store.useState((s) => s);
+  const {
+    surveyEditor,
+    isMoveQuestionGroup,
+    isAddQuestionGroup,
+    isCopyQuestionGroup,
+  } = store.useState((s) => s);
   const { id: formId, questionGroup: questionGroupState } = surveyEditor;
+  const { notify } = useNotification();
 
-  const AddMoveButtonText = !isMoveQuestionGroup
-    ? "Add new section"
-    : "Move here";
+  const AddMoveButtonText = useMemo(() => {
+    if (isMoveQuestionGroup && !isAddQuestionGroup) {
+      return "Move here";
+    }
+    if (isCopyQuestionGroup && !isAddQuestionGroup) {
+      return "Paste here";
+    }
+    return "Add new section";
+  }, [isAddQuestionGroup, isMoveQuestionGroup, isCopyQuestionGroup]);
 
   const handleOnCancelMove = () => {
     store.update((s) => {
+      s.isCopyQuestionGroup = false;
       s.isMoveQuestionGroup = false;
       s.isAddQuestionGroup = false;
     });
@@ -179,6 +195,62 @@ const QuestionGroup = ({ index, questionGroup }) => {
         console.error(e);
       });
   };
+
+  const handleCopy = (targetGroupOrder) => {
+    const { id: selectedGroupId, order: selectedGroupOrder } =
+      isCopyQuestionGroup;
+    api
+      .post(
+        `/copy-question-group/${selectedGroupId}/${selectedGroupOrder}/${targetGroupOrder}`
+      )
+      .then((res) => {
+        const { data } = res;
+        notify({
+          type: "success",
+          message: copyToastText,
+        });
+        // GET SURVEY EDITOR INIT VALUES
+        store.update((s) => {
+          s.surveyEditor = {
+            ...s.surveyEditor,
+            questionGroup: data?.question_group?.map((qg) => {
+              // check for disableDelete a group based on question disableDelete value
+              const questionDisableDelete = qg?.question?.filter(
+                (q) => q?.disableDelete
+              );
+              return {
+                ...qg,
+                disableDelete: questionDisableDelete?.length ? true : false,
+                question: qg?.question?.map((q) => {
+                  let option = q?.option;
+                  let repeating_objects = q?.repeating_objects;
+                  // add option default
+                  if (option?.length === 0) {
+                    option = [{ ...defaultOption, id: generateID() }];
+                  }
+                  // add repeating object default
+                  if (!repeating_objects || repeating_objects?.length === 0) {
+                    repeating_objects = [
+                      { ...defaultRepeatingObject, id: generateID() },
+                    ];
+                  }
+                  return {
+                    ...q,
+                    option: option,
+                    repeating_objects: repeating_objects,
+                  };
+                }),
+              };
+            }),
+          };
+          s.isCopyQuestionGroup = false;
+        });
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  };
+
   /* get target dependencies */
   const allQuestions = questionGroupState
     .map((x) => x.question)
@@ -241,48 +313,68 @@ const QuestionGroup = ({ index, questionGroup }) => {
 
   return (
     <>
-      {!index && (isAddQuestionGroup || isMoveQuestionGroup) && (
-        <AddMoveButton
-          className="question-group"
-          text={AddMoveButtonText}
-          cancelButton={isMoveQuestionGroup || isAddQuestionGroup}
-          onCancel={handleOnCancelMove}
-          disabled={
-            prevDependencies.length ||
-            isMoveQuestionGroup?.id === questionGroup?.id
-          }
-          onClick={() =>
-            !isMoveQuestionGroup
-              ? handleAddQuestionGroupButton(
-                  questionGroup.order === 1
-                    ? questionGroup.order
-                    : questionGroup.order - 1
-                )
-              : handleMove(
-                  questionGroup.order === 1
-                    ? questionGroup.order
-                    : questionGroup.order - 1,
-                  questionGroup.id
-                )
-          }
-        />
-      )}
+      {!index &&
+        (isAddQuestionGroup || isMoveQuestionGroup || isCopyQuestionGroup) && (
+          <AddMoveButton
+            className="question-group"
+            text={AddMoveButtonText}
+            cancelButton={
+              isMoveQuestionGroup || isAddQuestionGroup || isCopyQuestionGroup
+            }
+            onCancel={handleOnCancelMove}
+            disabled={
+              prevDependencies.length ||
+              isMoveQuestionGroup?.id === questionGroup?.id
+            }
+            onClick={() =>
+              isAddQuestionGroup
+                ? handleAddQuestionGroupButton(
+                    questionGroup.order === 1
+                      ? questionGroup.order
+                      : questionGroup.order - 1
+                  )
+                : isMoveQuestionGroup
+                ? handleMove(
+                    questionGroup.order === 1
+                      ? questionGroup.order
+                      : questionGroup.order - 1,
+                    questionGroup.id
+                  )
+                : handleCopy(
+                    questionGroup.order === 1
+                      ? questionGroup.order
+                      : questionGroup.order - 1
+                  )
+            }
+          />
+        )}
       <QuestionGroupEditor
         index={index}
         questionGroup={questionGroup}
-        isMoving={isMoveQuestionGroup?.id === questionGroup?.id}
+        isMoving={
+          isMoveQuestionGroup?.id === questionGroup?.id ||
+          isCopyQuestionGroup?.id === questionGroup?.id
+        }
       />
-      {(isAddQuestionGroup || isMoveQuestionGroup) && (
+      {(isAddQuestionGroup || isMoveQuestionGroup || isCopyQuestionGroup) && (
         <AddMoveButton
           className="question-group"
           text={AddMoveButtonText}
-          cancelButton={isMoveQuestionGroup || isAddQuestionGroup}
+          cancelButton={
+            isMoveQuestionGroup || isAddQuestionGroup || isCopyQuestionGroup
+          }
           onCancel={handleOnCancelMove}
           disabled={disabled || isMoveQuestionGroup?.id === questionGroup.id}
           onClick={() =>
-            !isMoveQuestionGroup
+            isAddQuestionGroup
               ? handleAddQuestionGroupButton(questionGroup.order + 1)
-              : handleMove(questionGroup.order + 1, questionGroup.id)
+              : isMoveQuestionGroup
+              ? handleMove(questionGroup.order + 1, questionGroup.id)
+              : handleCopy(
+                  questionGroup.order > isCopyQuestionGroup.selectedGroupOrder
+                    ? questionGroup.order + 2
+                    : questionGroup.order + 1
+                )
           }
         />
       )}
