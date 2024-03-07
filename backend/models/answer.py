@@ -159,7 +159,12 @@ class Answer(Base):
             "comment": self.comment,
         }
         type = q.type
-        if type in [QuestionType.input, QuestionType.text, QuestionType.date]:
+        if type in [
+            QuestionType.input,
+            QuestionType.text,
+            QuestionType.date,
+            QuestionType.autofield,
+        ]:
             answer.update({"value": self.text})
         if type == QuestionType.number:
             val = self.value
@@ -187,7 +192,12 @@ class Answer(Base):
         }
         q = self.question_detail
         type = q.type
-        if type in [QuestionType.input, QuestionType.text, QuestionType.date]:
+        if type in [
+            QuestionType.input,
+            QuestionType.text,
+            QuestionType.date,
+            QuestionType.autofield,
+        ]:
             answer.update({"value": self.text})
         if type == QuestionType.number:
             val = self.value
@@ -206,7 +216,7 @@ class Answer(Base):
         return answer
 
     @property
-    def to_dict(self) -> TypedDict:
+    def to_dict(self):
         return {
             f"{self.question}_{self.repeat_index}": {
                 "value": self.text or self.value or self.options,
@@ -220,7 +230,12 @@ class Answer(Base):
     def only_value(self) -> List:
         q = self.question_detail
         type = q.type
-        if type in [QuestionType.input, QuestionType.text, QuestionType.date]:
+        if type in [
+            QuestionType.input,
+            QuestionType.text,
+            QuestionType.date,
+            QuestionType.autofield,
+        ]:
             return self.text
         if type == QuestionType.number:
             answer = self.value
@@ -243,12 +258,17 @@ class Answer(Base):
         return None
 
     @property
-    def simplified(self) -> TypedDict:
+    def simplified(self):
         q = self.question_detail
         date = self.updated or self.created
         type = q.type
         answer = None
-        if type in [QuestionType.input, QuestionType.text, QuestionType.date]:
+        if type in [
+            QuestionType.input,
+            QuestionType.text,
+            QuestionType.date,
+            QuestionType.autofield,
+        ]:
             answer = self.text
         if type == QuestionType.number:
             answer = self.value
@@ -283,6 +303,7 @@ class Answer(Base):
             QuestionType.input,
             QuestionType.text,
             QuestionType.date,
+            QuestionType.autofield,
         ]:
             answer = self.text
         if q.type == QuestionType.number:
@@ -311,6 +332,7 @@ class Answer(Base):
             QuestionType.input,
             QuestionType.text,
             QuestionType.date,
+            QuestionType.autofield,
         ]:
             answer = self.text
         if q.type == QuestionType.number:
