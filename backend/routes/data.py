@@ -637,8 +637,11 @@ def update_by_id(
             for qid in qg["question"]:
                 repeat_qids.append(qid)
     # questions = form.list_of_questions
+
     checked = {}
     checked_payload = {}
+    answer_payload_ids_with_repeat_index = []  # for DELETE answer
+
     # if data_cleaning, delete old answer and save payload
     answer_ids = []
     if data_cleaning:
@@ -665,6 +668,7 @@ def update_by_id(
 
     for a in answers:
         key = f"{a['question']}_{a['repeat_index']}"
+        answer_payload_ids_with_repeat_index.append(key)  # for DELETE answer
         checked_payload.update({key: a})
         execute = "update"
         if a["question"] not in list(questions):
@@ -731,6 +735,22 @@ def update_by_id(
             synchronize_session="fetch"
         )
         session.commit()
+
+    # HANDLE DELETE
+    # need to check if current answers in DB not available
+    # in answers payload (that mean DELETE)
+    if not data_cleaning:
+        all_answers = crud_answer.get_answer_by_data(session=session, data=id)
+        all_answers = [a.format_with_answer_id for a in all_answers]
+        for a in all_answers:
+            key = f"{a['question']}_{a['repeat_index']}"
+            if key in answer_payload_ids_with_repeat_index:
+                # ignore
+                continue
+            # delete answer
+            crud_answer.delete_answer_by_id(session=session, id=a["id"])
+    # EOL handle DELETE
+
     # if submitted send and not
     # data_cleaning notification email to secretariat admin
     if submitted and not data_cleaning:
