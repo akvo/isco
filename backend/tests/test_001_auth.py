@@ -215,6 +215,25 @@ class TestUserAuthentication:
         assert res.status_code == 409
 
     @pytest.mark.asyncio
+    async def test_user_register_with_same_email_case_insensitive(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
+        # create organisation
+        user_payload = {
+            "name": "Lorem Ipsum",
+            "email": "Support@akvo.org",
+            "phone_number": None,
+            "password": "pass",
+            "role": UserRole.member_user.value,
+            "organisation": 1,
+            "questionnaires": [1],
+        }
+        res = await client.post(
+            app.url_path_for("user:register"), data=user_payload
+        )
+        assert res.status_code == 409
+
+    @pytest.mark.asyncio
     async def test_verify_user_email(
         self, app: FastAPI, session: Session, client: AsyncClient
     ) -> None:
