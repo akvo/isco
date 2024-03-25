@@ -46,9 +46,9 @@ def write_sheet(df, writer, sheet_name, show_comment=False):
     if sheet_name != main_sheet_name:
         cols = [
             "data_id",
-            "repeat_index",
             "question_group_name",
             "question_name",
+            "repeat_index",  # ordering by question first, then index
             "member_type",
             "submitted",
         ]
@@ -79,9 +79,6 @@ def write_sheet(df, writer, sheet_name, show_comment=False):
     df = df.unstack(unstack_col)
     df.columns = df.columns.rename("", level=1)
     df.columns = df.columns.rename("", level=2)
-    # ordering columns
-    # will do later
-    # EOL ordering columns
     if len(sheet_name) > 20:
         sheet_name = sheet_name[:15] + "..."
     df = df[answer_col]
