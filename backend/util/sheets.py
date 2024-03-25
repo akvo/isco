@@ -79,6 +79,9 @@ def write_sheet(df, writer, sheet_name, show_comment=False):
     df = df.unstack(unstack_col)
     df.columns = df.columns.rename("", level=1)
     df.columns = df.columns.rename("", level=2)
+    # ordering columns
+    # will do later
+    # EOL ordering columns
     if len(sheet_name) > 20:
         sheet_name = sheet_name[:15] + "..."
     df = df[answer_col]
@@ -169,9 +172,10 @@ def generate_summary(
     if member_type:
         members = [1]  # add all member type
         members += [member_type]
-        summary = summary.filter(Summary.member_type.overlap(members)).all()
+        summary = summary.filter(Summary.member_type.overlap(members))
     else:
-        summary = summary.all()
+        summary = summary
+    summary = summary.order_by(Summary.go, Summary.qo).all()
     if not summary:
         raise HTTPException(status_code=404, detail="No Data Available")
     summary = [s.serialize for s in summary]
