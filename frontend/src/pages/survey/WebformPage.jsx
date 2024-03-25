@@ -887,9 +887,30 @@ const WebformPage = ({
     return endpoint;
   };
 
+  const updatedAnswer = () => {
+    // remap all answers with form getFieldsValue
+    const finalFormValues = webformRef?.current?.getFieldsValue();
+    let updatedAnswer = answer;
+    if (finalFormValues) {
+      updatedAnswer = Object.keys(finalFormValues)
+        .map((key) => {
+          const prevAnswer = answer.find((a) => a.question === parseInt(key));
+          if (prevAnswer) {
+            return {
+              ...prevAnswer,
+              value: finalFormValues[key],
+            };
+          }
+          return false;
+        })
+        .filter((x) => x);
+    }
+    return updatedAnswer;
+  };
+
   const onFinish = () => {
     if (answer.length) {
-      const payload = reorderAnswersRepeatIndex(formValue, answer);
+      const payload = reorderAnswersRepeatIndex(formValue, updatedAnswer());
       setIsSubmitting(true);
       const endpoint = generateEndpoint({ payload: payload, submitted: 1 });
       endpoint
@@ -925,7 +946,7 @@ const WebformPage = ({
 
   const handleOnClickSaveButton = (handleLogout = null) => {
     if (answer.length) {
-      const payload = reorderAnswersRepeatIndex(formValue, answer);
+      const payload = reorderAnswersRepeatIndex(formValue, updatedAnswer());
       setIsSaving(true);
       const endpoint = generateEndpoint({ payload: payload, submitted: 0 });
       endpoint
@@ -1005,7 +1026,7 @@ const WebformPage = ({
   };
 
   const handleOnForceSubmit = () => {
-    const payload = reorderAnswersRepeatIndex(formValue, answer);
+    const payload = reorderAnswersRepeatIndex(formValue, updatedAnswer());
     setIsSubmitting(true);
     const endpoint = generateEndpoint({ payload: payload, submitted: 1 });
     endpoint

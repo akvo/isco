@@ -378,11 +378,11 @@ const Preview = () => {
   };
 
   const onChange = ({ current, values, progress }) => {
-    console.info(current, values, progress);
+    console.info("onChange", current, values, progress);
   };
 
   const onFinish = (values) => {
-    console.info(values);
+    console.info("onFinish", values);
   };
 
   return (

@@ -46,9 +46,9 @@ def write_sheet(df, writer, sheet_name, show_comment=False):
     if sheet_name != main_sheet_name:
         cols = [
             "data_id",
-            "repeat_index",
             "question_group_name",
             "question_name",
+            "repeat_index",  # ordering by question first, then index
             "member_type",
             "submitted",
         ]
@@ -169,9 +169,10 @@ def generate_summary(
     if member_type:
         members = [1]  # add all member type
         members += [member_type]
-        summary = summary.filter(Summary.member_type.overlap(members)).all()
+        summary = summary.filter(Summary.member_type.overlap(members))
     else:
-        summary = summary.all()
+        summary = summary
+    summary = summary.order_by(Summary.go, Summary.qo).all()
     if not summary:
         raise HTTPException(status_code=404, detail="No Data Available")
     summary = [s.serialize for s in summary]
