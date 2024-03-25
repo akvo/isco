@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import "./style.scss";
 import {
   Row,
@@ -24,6 +24,7 @@ import { MonitoringRoundSelector } from "../../components";
 const { Title } = Typography;
 
 const DataCleaning = () => {
+  const webformRef = useRef();
   const { optionValues } = store.useState((s) => s);
   const { organisationInSameIsco } = optionValues;
   const { notify } = useNotification();
@@ -293,6 +294,7 @@ const DataCleaning = () => {
             </Row>
             <div className="webform-wrapper">
               <DataCleaningWebform
+                webformRef={webformRef}
                 datapoint={{
                   ...selectedDatapoint,
                   datapoint_name: editDatapointName,

@@ -95,7 +95,12 @@ const checkDependentValue = (formValue, answer) => {
   return answer;
 };
 
-const DataCleaningWebform = ({ datapoint, orgDetail, handleBack }) => {
+const DataCleaningWebform = ({
+  webformRef,
+  datapoint,
+  orgDetail,
+  handleBack,
+}) => {
   const { notify } = useNotification();
 
   const allAccess = "All";
@@ -282,6 +287,27 @@ const DataCleaningWebform = ({ datapoint, orgDetail, handleBack }) => {
     }
   }, [deletedComment, answer]);
 
+  const updatedAnswer = () => {
+    // remap all answers with form getFieldsValue
+    const finalFormValues = webformRef?.current?.getFieldsValue();
+    let updatedAnswer = answer;
+    if (finalFormValues) {
+      updatedAnswer = Object.keys(finalFormValues)
+        .map((key) => {
+          const prevAnswer = answer.find((a) => a.question === parseInt(key));
+          if (prevAnswer) {
+            return {
+              ...prevAnswer,
+              value: finalFormValues[key],
+            };
+          }
+          return false;
+        })
+        .filter((x) => x);
+    }
+    return updatedAnswer;
+  };
+
   const onChange = ({ /*current*/ values /*progress*/ }) => {
     // handle data unavailable checkbox - comment
     const dataUnavailable = Object.keys(values)
@@ -365,7 +391,7 @@ const DataCleaningWebform = ({ datapoint, orgDetail, handleBack }) => {
 
   const onFinish = (/*values*/) => {
     if (answer.length) {
-      const filteredAnswer = checkDependentValue(formValue, answer);
+      const filteredAnswer = checkDependentValue(formValue, updatedAnswer());
       const payload = reorderAnswersRepeatIndex(formValue, filteredAnswer);
       setIsSubmitting(true);
       const url = `/data/${savedData.id}/0?data_cleaning=1`;
@@ -404,8 +430,9 @@ const DataCleaningWebform = ({ datapoint, orgDetail, handleBack }) => {
     setIsForce(true);
     setModalWarningVisible(true);
   };
+
   const handleOnForceSubmit = () => {
-    const filteredAnswer = checkDependentValue(formValue, answer);
+    const filteredAnswer = checkDependentValue(formValue, updatedAnswer());
     const payload = reorderAnswersRepeatIndex(formValue, filteredAnswer);
     setIsSubmitting(true);
     const url = `/data/${savedData.id}/0?data_cleaning=1`;
@@ -440,6 +467,7 @@ const DataCleaningWebform = ({ datapoint, orgDetail, handleBack }) => {
       <div id="webform">
         {!isEmpty(formValue) ? (
           <Webform
+            formRef={webformRef}
             forms={formValue}
             onChange={onChange}
             onFinish={onFinishShowWarning}
