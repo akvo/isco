@@ -324,18 +324,30 @@ const DataCleaningWebform = ({
         const commentField = document.getElementById(`comment-${qid}`);
         if (isChecked) {
           // show comment field
-          addCommentButton.style.display = "none";
-          deleteCommentButton.style.display = "initial";
-          commentField.style.display = "initial";
-          commentField.value = text.inputDataUnavailable;
+          if (addCommentButton) {
+            addCommentButton.style.display = "none";
+          }
+          if (deleteCommentButton) {
+            deleteCommentButton.style.display = "initial";
+          }
+          if (commentField) {
+            commentField.style.display = "initial";
+            commentField.value = text.inputDataUnavailable;
+          }
           setComment({
             [qid]: text.inputDataUnavailable,
           });
         } else {
-          deleteCommentButton.style.display = "none";
-          commentField.style.display = "none";
-          addCommentButton.style.display = "initial";
-          commentField.value = null;
+          if (deleteCommentButton) {
+            deleteCommentButton.style.display = "none";
+          }
+          if (addCommentButton) {
+            addCommentButton.style.display = "initial";
+          }
+          if (commentField) {
+            commentField.style.display = "none";
+            commentField.value = null;
+          }
           setComment({
             [qid]: null,
           });
