@@ -898,7 +898,7 @@ const WebformPage = ({
           if (prevAnswer) {
             return {
               ...prevAnswer,
-              value: finalFormValues[key],
+              value: finalFormValues?.[key] || null,
             };
           }
           return false;

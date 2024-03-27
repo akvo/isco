@@ -298,7 +298,7 @@ const DataCleaningWebform = ({
           if (prevAnswer) {
             return {
               ...prevAnswer,
-              value: finalFormValues[key],
+              value: finalFormValues?.[key] || null,
             };
           }
           return false;
@@ -315,13 +315,21 @@ const DataCleaningWebform = ({
       .map((key) => {
         const elCheckUnavailable = document.getElementById(key);
         const isChecked = elCheckUnavailable?.checked;
-        // handle comment field
-        const qid = key.split("-")[1];
-        const addCommentButton = document.getElementById(`add-comment-${qid}`);
-        const deleteCommentButton = document.getElementById(
-          `delete-comment-${qid}`
+        // handle comment field - also handle repeat index
+        // find arf-extra-content
+        const keySplit = key.split("_");
+        const qidWithRepeatIndex = keySplit[1];
+        const qid = String(qidWithRepeatIndex).split("-")[0];
+        const extraContent = document.getElementById(
+          `arf-extra-content-${qidWithRepeatIndex}`
         );
-        const commentField = document.getElementById(`comment-${qid}`);
+        const addCommentButton = extraContent.querySelector(
+          `#add-comment-${qid}`
+        );
+        const deleteCommentButton = extraContent.querySelector(
+          `#delete-comment-${qid}`
+        );
+        const commentField = extraContent.querySelector(`#comment-${qid}`);
         if (isChecked) {
           // show comment field
           if (addCommentButton) {
