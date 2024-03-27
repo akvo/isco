@@ -156,8 +156,12 @@ const definitionContent = {
       d: (
         <Fragment>
           <div>
-            Child Labour Monitoring and Remediation Systems (CLMRS) must
-            implement the following core activities:
+            Child Labour Monitoring and Remediation Systems are a means of
+            targeting prevention, mitigation and remediation assistance to
+            children involved in or at-risk of child labour, as well as to their
+            families and communities. To meet the definition of a Child Labour
+            Monitoring and Remediation Systems (CLMRS) or equivalent, the system
+            must implement the following core activities:
             <ul style={{ marginLeft: "25px" }}>
               <li>
                 Raise awareness on child labour and resulting harm amongst
@@ -179,29 +183,6 @@ const definitionContent = {
                 alternatives
               </li>
             </ul>
-            CLMRS and equivalent systems are a means of targeting prevention,
-            mitigation and remediation assistance to children involved in or
-            at-risk of child labour, as well as to their families and
-            communities. These systems are currently implemented by governments,
-            civil society actors and businesses. Appropriately designed and
-            implemented, CLMRS can support the implementation of due diligence
-            expectations placed on companies under the UN Guiding Principles for
-            Business and Human Rights that are being increasingly transposed
-            into law. CLMRS alone cannot address all dimensions of child labour
-            as a complex structural challenge. Other complementary and mutually
-            reinforcing efforts are also required to tackle child labour
-            holistically and address the socio-economic pressures and other root
-            causes. <br />
-            <a
-              href="https://cocoainitiative.org/wp-content/uploads/2021/04/ICI_CLMRS_Benchmarking-study.pdf"
-              target="_blank"
-              rel="noreferrer"
-              style={{ fontSize: "14px" }}
-            >
-              <i>
-                https://cocoainitiative.org/wp-content/uploads/2021/04/ICI_CLMRS_Benchmarking-study.pdf{" "}
-              </i>
-            </a>
           </div>
         </Fragment>
       ),
@@ -582,15 +563,18 @@ const definitionContent = {
           <div>
             Cocoa produced in compliance with the requirements of accepted
             certification standards or independently verified company schemes on
-            sustainable cocoa. <br />
+            sustainable cocoa.
+            <br />
             The list of accepted certification standards and independently
             verified company schemes currently comprises the following:
             <ul style={{ marginLeft: "25px" }}>
               <li>Rainforest Alliance</li>
               <li>Fairtrade</li>
-              <li>Organic</li>
+              <li>Organic - Bio Suisse</li>
               <li>Naturland</li>
-              <li>Company schemes (to be specified)</li>
+              <li>
+                Company schemes (for example Cocoa Life; to be specified below)
+              </li>
             </ul>
           </div>
         </Fragment>
@@ -979,34 +963,7 @@ const definitionContent = {
             Assessment and validation of compliance, performance, and / or
             actions relative to a stated commitment, standard, or target.
             Verification processes typically utilize monitoring data but may
-            also include other sources of information and analysis. Related
-            definitions include the following:
-            <ul style={{ marginLeft: "25px" }}>
-              <li>
-                <i>
-                  <u>First-party verification</u>
-                </i>
-                : Verification conducted by the company itself but carried out
-                by personnel not involved in the design or implementation of the
-                operations being verified.
-              </li>
-              <li>
-                <i>
-                  <u>Second-party verification</u>
-                </i>
-                : Verification conducted by a related entity with an interest in
-                the company or operation being assessed, such as the business
-                customer of a production / processing operation or a contractor
-                that also provides services other than verification.
-              </li>
-              <li>
-                <i>
-                  <u>Third-party verification</u>
-                </i>
-                : Verification conducted by an independent entity that does not
-                provide other services to the company.
-              </li>
-            </ul>
+            also include other sources of information and analysis.
           </div>
         </Fragment>
       ),
@@ -1235,8 +1192,13 @@ const definitionContent = {
       d: (
         <Fragment>
           <div>
-            Child Labour Monitoring and Remediation Systems (CLMRS) müssen die
-            folgenden Kernaktivitäten beinhalten:
+            Systeme zur Überwachung und Abhilfe von Kinderarbeit (CLMRS) sind
+            ein Mittel, um Kindern, die von Kinderarbeit betroffen oder bedroht
+            sind, sowie ihren Familien und Gemeinschaften gezielt bei der
+            Prävention, Milderung und Abhilfe zu helfen. Um die Definition eines
+            Systems zur Überwachung und Abhilfe von Kinderarbeit (CLMRS) oder
+            eines gleichwertigen Systems zu erfüllen, muss das System die
+            folgenden Kernaktivitäten umsetzen:
             <ul style={{ marginLeft: "25px" }}>
               <li>
                 Stärkung des Bewusstseins bei Bäuerinnen und Bauern, Kindern und
@@ -1245,8 +1207,8 @@ const definitionContent = {
               </li>
               <li>
                 Identifizierung von Kindern in Kinderarbeit durch aktives und
-                regelmäßiges Monitoring mithilfe standardisierter Methoden zur
-                Datenerfassung.
+                regelmäßiges und wiederholtes Monitoring mithilfe
+                standardisierter Methoden zur Datenerfassung.
               </li>
               <li>
                 Unterstützung von Kindern in Kinderarbeit (Beendigung) und von
@@ -1255,34 +1217,10 @@ const definitionContent = {
               </li>
               <li>
                 Follow-ups mit identifizierten Kindern in Kinderarbeit und
-                regelmäßiges Überprüfen deren Status‘ bis sie sich nicht mehr in
+                regelmäßiges Überprüfen ihres Status, bis sie sich nicht mehr in
                 Kinderarbeit befinden und zur Schule gehen.
               </li>
             </ul>
-            CLMRS und vergleichbare Systeme sind Werkzeuge zur Unterstützung von
-            Kindern in Kinderarbeit oder mit erhöhtem Risiko, in Kinderarbeit zu
-            fallen, sowie deren Familien und Gemeinden in der Prävention,
-            Linderung und Beendigung von Kinderarbeit. Diese Systeme können von
-            Regierungen, zivilgesellschaftlichen Akteuren und Unternehmen
-            umgesetzt werden. Richtig konzipiert und umgesetzt, können CLMRS die
-            von Unternehmen im Rahmen der UN-Leitprinzipien für Wirtschaft und
-            Menschenrechte erwartete Erfüllung von Sorgfaltspflichten
-            unterstützen, die zunehmend in nationaler und supranationaler
-            Gesetzgebung verankert werden. CLMRS können aufgrund der Komplexität
-            der Thematik nicht alle Dimensionen der Kinderarbeit adressieren.
-            Daher sind weitere, komplementäre und sich gegenseitig verstärkende
-            Anstrengungen erforderlich, um Kinderarbeit und deren Grundursachen
-            ganzheitlich zu bekämpfen. <br />
-            <a
-              href="https://cocoainitiative.org/wp-content/uploads/2021/04/ICI_CLMRS_Benchmarking-study.pdf"
-              target="_blank"
-              rel="noreferrer"
-              style={{ fontSize: "14px" }}
-            >
-              <i>
-                https://cocoainitiative.org/wp-content/uploads/2021/04/ICI_CLMRS_Benchmarking-study.pdf{" "}
-              </i>
-            </a>
           </div>
         </Fragment>
       ),
@@ -1709,9 +1647,9 @@ const definitionContent = {
           <ul style={{ marginLeft: "25px" }}>
             <li>Rainforest Alliance</li>
             <li>Fairtrade</li>
-            <li>Bio</li>
+            <li>Bio - Bio Suisse</li>
             <li>Naturland</li>
-            <li>Unternehmensprogramme (zu spezifizieren)</li>
+            <li>Unternehmensprogramme (z.B. Cocoa Life, zu spezifizieren)</li>
           </ul>
         </Fragment>
       ),
@@ -2110,39 +2048,7 @@ const definitionContent = {
             der Umsetzung von Maßnahmen in Verbindung mit einer veröffentlichten
             Selbstverpflichtung, einem Standard oder einem erklärten Ziel.
             Verifizierungsprozesse nutzen in der Regel Monitoring-Daten, können
-            aber auch andere Informationsquellen nutzen. Verwandte Begriffe und
-            Definitionen:
-            <ul style={{ marginLeft: "25px" }}>
-              <li>
-                <i>
-                  <u>First-Party-Verifizierung</u>
-                </i>
-                : Verifizierung, die vom Unternehmen selbst durchgeführt wird,
-                allerdings von Mitarbeitenden, die selbst nicht in die Planung
-                und Umsetzung der zu verifizierenden Tätigkeiten involviert
-                sind.
-              </li>
-              <li>
-                <i>
-                  <u>Second-Party-Verifizierung</u>
-                </i>
-                : Verifizierung durch ein Unternehmen, das ein Interesse an dem
-                zu prüfenden Unternehmen oder Tätigkeitsfeld hat –
-                beispielsweise der Geschäftskunde eines Produktions- /
-                Verarbeitungsbetriebs oder ein Auftragnehmer, der neben der
-                Verifizierung auch andere Dienstleistungen für das zu
-                überprüfende Unternehmen erbringt.
-              </li>
-              <li>
-                <i>
-                  <u>Third-Party-Verifizierung</u>
-                </i>
-                : Verifizierung, die von einer unabhängigen Organisation
-                durchgeführt wird, welche keinerlei Verbindung mit dem zu
-                verifizierenden Unternehmen hat und keine weiteren
-                Dienstleistungen für das Unternehmen erbringt.
-              </li>
-            </ul>
+            aber auch andere Informationsquellen nutzen.
           </div>
         </Fragment>
       ),
