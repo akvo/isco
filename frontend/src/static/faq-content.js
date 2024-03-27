@@ -101,7 +101,7 @@ const faqEn = [
         <ol type="1">
           <li>
             The reporting year is normally the previous calendar year - e.g.
-            reporting on 2022 to be done in March/April 2024.
+            reporting on 2023 to be done in March/April 2024.
           </li>
           <li>
             If the member organisation is using a reporting cycle and an
@@ -374,7 +374,7 @@ const faqDe = [
         <ol type="1">
           <li>
             Das Berichtsjahr ist normalerweise das vorherige Kalenderjahr - z.B.
-            Berichterstattung über 2022 im March/April 2024.
+            Berichterstattung über 2023 im March/April 2024.
           </li>
           <li>
             Wenn die Mitgliedsorganisation einen vom Kalenderjahr abweichenden
