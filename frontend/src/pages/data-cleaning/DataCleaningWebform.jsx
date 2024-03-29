@@ -308,9 +308,21 @@ const DataCleaningWebform = ({
     return updatedAnswer;
   };
 
-  const onChange = ({ /*current*/ values /*progress*/ }) => {
+  const onChange = ({ current, values /*progress*/ }) => {
     // handle data unavailable checkbox - comment
-    const dataUnavailable = Object.keys(values)
+    const allKeyWithNA = Object.keys(values)
+      .filter((key) => key.includes("na"))
+      .map((key) => {
+        const elCheckUnavailable = document.getElementById(key);
+        const isChecked = elCheckUnavailable?.checked;
+        const keySplit = key.split("_");
+        const qidWithRepeatIndex = keySplit[1];
+        return {
+          [qidWithRepeatIndex]: isChecked ? text.inputDataUnavailable : null,
+        };
+      })
+      .reduce((acc, curr) => ({ ...acc, ...curr }), {});
+    const dataUnavailable = Object.keys(current)
       .filter((key) => key.includes("na"))
       .map((key) => {
         const elCheckUnavailable = document.getElementById(key);
@@ -364,6 +376,10 @@ const DataCleaningWebform = ({
         return { [qid]: isChecked ? text.inputDataUnavailable : null };
       })
       .reduce((acc, curr) => ({ ...acc, ...curr }), {});
+    const mergeDataUnavailable = {
+      ...allKeyWithNA,
+      ...dataUnavailable,
+    };
     // EOL handle data unavailable checkbox - comment
 
     // handle form values
@@ -382,19 +398,26 @@ const DataCleaningWebform = ({
         }
         // find comment
         const qid = parseInt(question);
-        const findAnswer = answer.find((x) => x.question === qid);
-        return {
-          question: qid,
-          value: values?.[key] ? values[key] : null,
-          repeat_index: repeatIndex,
-          comment: dataUnavailable?.[qid]
-            ? dataUnavailable[qid]
-            : findAnswer
-            ? findAnswer?.comment
-            : null,
-        };
+        const findAnswer = answer.find(
+          (x) => x.question === qid && x.repeat_index === repeatIndex
+        );
+        // value
+        const value = values?.[key] || values?.[key] === 0 ? values[key] : null;
+        if (value || value === 0 || mergeDataUnavailable?.[key]) {
+          return {
+            question: qid,
+            value: value,
+            repeat_index: repeatIndex,
+            comment: mergeDataUnavailable?.[key]
+              ? mergeDataUnavailable[key] // using key because key is questionId-with repeat index
+              : findAnswer
+              ? findAnswer?.comment
+              : null,
+          };
+        }
+        return false;
       })
-      .filter((x) => x.value || x.value === 0 || dataUnavailable?.[x.question]); // isNan, allow comment with no value to submit
+      .filter((x) => x); // isNan, allow comment with no value to submit
     setDisableSubmit(transformValues.length === 0);
     setAnswer(transformValues);
   };
