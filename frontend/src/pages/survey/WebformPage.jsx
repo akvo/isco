@@ -745,9 +745,21 @@ const WebformPage = ({
       .filter((x) => x); // isNan, allow comment with no value to submit
   };
 
-  const onChange = ({ values }) => {
+  const onChange = ({ current, values }) => {
     // handle data unavailable checkbox - comment
-    const dataUnavailable = Object.keys(values)
+    const allKeyWithNA = Object.keys(values)
+      .filter((key) => key.includes("na"))
+      .map((key) => {
+        const elCheckUnavailable = document.getElementById(key);
+        const isChecked = elCheckUnavailable?.checked;
+        const keySplit = key.split("_");
+        const qidWithRepeatIndex = keySplit[1];
+        return {
+          [qidWithRepeatIndex]: isChecked ? text.inputDataUnavailable : null,
+        };
+      })
+      .reduce((acc, curr) => ({ ...acc, ...curr }), {});
+    const dataUnavailable = Object.keys(current)
       .filter((key) => key.includes("na"))
       .map((key) => {
         const elCheckUnavailable = document.getElementById(key);
@@ -797,10 +809,10 @@ const WebformPage = ({
     const filteredValues = Object.keys(values)
       .filter((key) => !key.includes("na"))
       .reduce((acc, curr) => ({ ...acc, [curr]: values[curr] }), {});
-    const transformedAnswerValues = transformValues(
-      filteredValues,
-      dataUnavailable
-    );
+    const transformedAnswerValues = transformValues(filteredValues, {
+      ...allKeyWithNA,
+      ...dataUnavailable,
+    });
     setDisableSubmit(transformValues.length === 0);
     setAnswer(transformedAnswerValues);
 
