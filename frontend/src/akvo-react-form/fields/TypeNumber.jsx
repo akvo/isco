@@ -5,6 +5,12 @@ import GlobalStore from "../lib/store";
 import { InputNumberIcon, InputNumberDecimalIcon } from "../lib/svgIcons";
 import { DataUnavailableField } from "../components";
 import { renderQuestionLabelForErrorMessage } from "../lib";
+import { uiText as parentUIText } from "../../static";
+
+const dataNaTexts = [
+  parentUIText.en.inputDataUnavailable,
+  parentUIText.de.inputDataUnavailable,
+];
 
 const TypeNumber = ({
   id,
@@ -76,7 +82,11 @@ const TypeNumber = ({
         const qid = String(id).split("-")?.[0];
         if (String(arfQid) === String(id)) {
           const commentField = extraContent.querySelector(`#comment-${qid}`);
-          if (commentField?.value && isNaN(currentValue)) {
+          if (
+            commentField?.value &&
+            isNaN(currentValue) &&
+            dataNaTexts.includes(commentField?.value)
+          ) {
             setNaChecked(true);
           }
         }

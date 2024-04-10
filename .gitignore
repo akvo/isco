@@ -1,1 +1,4 @@
 /notify.team.sh
+.vscode/
+.DS_Store
+.env
