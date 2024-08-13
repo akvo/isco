@@ -25,6 +25,8 @@ const QuestionTabContent = ({
   setQuestionToDeactivate,
   datapointName,
   setDatapointName,
+  sumAcrossRepeatable,
+  setSumAcrossRepeatable,
   allowNA,
   setAllowNA,
 }) => {
@@ -70,6 +72,8 @@ const QuestionTabContent = ({
           handleFormOnValuesChange={handleFormOnValuesChange}
           allowOther={allowOther}
           setAllowOther={setAllowOther}
+          sumAcrossRepeatable={sumAcrossRepeatable}
+          setSumAcrossRepeatable={setSumAcrossRepeatable}
         />
       );
   }
