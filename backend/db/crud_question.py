@@ -7,6 +7,7 @@ from models.question import (
     QuestionDict,
     QuestionPayload,
     QuestionDeactivatePayload,
+    QuestionType,
 )
 from models.option import Option
 from models.question_member_access import QuestionMemberAccess
@@ -211,6 +212,109 @@ def move_question(
         )
     session.commit()
     session.flush()
+
+
+def copy_question(
+    session: Session,
+    id: int,
+    target_order: int,
+    target_group: int,
+):
+    # validate negative order value
+    if target_order <= 0:
+        raise HTTPException(
+            status_code=501,
+            detail="COPY QUESTION A | question has negative order value",
+        )
+    question = session.query(Question).filter(Question.id == id).first()
+
+    # clone question
+    new_q = Question(
+        id=None,
+        form=question.form,
+        question_group=target_group,
+        name=f"Copy of {question.name}",
+        translations=question.translations,
+        mandatory=question.mandatory,
+        datapoint_name=question.datapoint_name,
+        variable_name=question.variable_name,
+        type=question.type,
+        personal_data=question.personal_data,
+        rule=question.rule,
+        tooltip=question.tooltip,
+        tooltip_translations=question.tooltip_translations,
+        cascade=question.cascade,
+        repeating_objects=question.repeating_objects,
+        order=target_order,
+        core_mandatory=question.core_mandatory,
+        deactivate=question.deactivate,
+        autofield=question.autofield,
+    )
+    # handle question member/isco access
+    # question_member_access
+    qmas = (
+        session.query(QuestionMemberAccess)
+        .filter(QuestionMemberAccess.question == question.id)
+        .all()
+    )
+    for qma in qmas:
+        new_qma = QuestionMemberAccess(
+            id=None, member_type=qma.member_type, question=None
+        )
+        new_q.member_access.append(new_qma)
+    # question_isco_access
+    qias = (
+        session.query(QuestionIscoAccess)
+        .filter(QuestionIscoAccess.question == question.id)
+        .all()
+    )
+    for qia in qias:
+        new_qia = QuestionIscoAccess(
+            id=None, isco_type=qia.isco_type, question=None
+        )
+        new_q.isco_access.append(new_qia)
+    # handle copy options/multiple options
+    if question.type in [QuestionType.option, QuestionType.multiple_option]:
+        options = (
+            session.query(Option).filter(Option.question == question.id).all()
+        )
+        for opt in options:
+            new_opt = Option(
+                id=None,
+                code=opt.code,
+                name=opt.name,
+                question=None,
+                order=opt.order,
+                translations=opt.translations,
+            )
+            new_q.option.append(new_opt)
+
+    # update question order
+    questions = (
+        session.query(Question)
+        .filter(
+            and_(
+                Question.form == question.form,
+                Question.order >= target_order,
+            )
+        )
+        .order_by(Question.order)
+        .all()
+    )
+    for q in questions:
+        if q.order == target_order or q.order > target_order:
+            q.order = q.order + 1
+    # validate negative order value
+    q_orders = any(q.order <= 0 for q in questions)
+    if q_orders:
+        raise HTTPException(
+            status_code=501,
+            detail="COPY QUESTION B | question has negative order value",
+        )
+    session.add(new_q)
+    session.commit()
+    session.flush()
+    return new_q
 
 
 def get_member_access_by_question_id(session: Session, question: int) -> List:
