@@ -28,7 +28,7 @@ def add_data(
     organisation: int,
     answers: List[AnswerBase],
     submitted: Optional[int] = 0,
-    geo: Optional[List[float]] = None
+    geo: Optional[List[float]] = None,
 ) -> DataDict:
     submitted_by = None
     submitted_date = None
@@ -37,16 +37,18 @@ def add_data(
         submitted_by = created_by
         submitted_date = datetime.now()
         updated = datetime.now()
-    data = Data(name=name,
-                form=form,
-                geo=geo,
-                locked_by=locked_by,
-                created_by=created_by,
-                organisation=organisation,
-                submitted_by=submitted_by,
-                created=datetime.now(),
-                updated=updated,
-                submitted=submitted_date)
+    data = Data(
+        name=name,
+        form=form,
+        geo=geo,
+        locked_by=locked_by,
+        created_by=created_by,
+        organisation=organisation,
+        submitted_by=submitted_by,
+        created=datetime.now(),
+        updated=updated,
+        submitted=submitted_date,
+    )
     for answer in answers:
         data.answer.append(answer)
     session.add(data)
@@ -70,20 +72,28 @@ def delete_by_id(session: Session, id: int) -> None:
 
 
 def delete_bulk(session: Session, ids: List[int]) -> None:
-    session.query(Answer).filter(
-        Answer.data.in_(ids)).delete(synchronize_session='fetch')
-    session.query(Data).filter(
-        Data.id.in_(ids)).delete(synchronize_session='fetch')
+    session.query(Answer).filter(Answer.data.in_(ids)).delete(
+        synchronize_session="fetch"
+    )
+    session.query(Data).filter(Data.id.in_(ids)).delete(
+        synchronize_session="fetch"
+    )
     session.commit()
 
 
 def get_data(
-    session: Session, form: int, skip: int,
-    perpage: int, submitted: Optional[bool] = False,
+    session: Session,
+    form: int,
+    skip: int,
+    perpage: int,
+    submitted: Optional[bool] = False,
     org_ids: Optional[List[int]] = None,
-    monitoring_round: Optional[int] = None
+    monitoring_round: Optional[int] = None,
+    data_id: Optional[int] = None,
 ) -> PaginatedData:
     data = session.query(Data).filter(Data.form == form)
+    if data_id:
+        data = data.filter(Data.id == data_id)
     if submitted:
         data = data.filter(Data.submitted != null())
     if org_ids:
@@ -92,8 +102,7 @@ def get_data(
         # On selecting a year , increment it by 1 and
         # then fetch all records where createdAt is for that year
         monitoring_round = monitoring_round
-        data = data.filter(
-            extract('year', Data.created) == monitoring_round)
+        data = data.filter(extract("year", Data.created) == monitoring_round)
     count = data.count()
     data = data.order_by(desc(Data.id)).offset(skip).limit(perpage).all()
     return PaginatedData(data=data, count=count)
@@ -103,12 +112,11 @@ def get_data_by_id(
     session: Session,
     id: int,
     submitted: Optional[bool] = None,
-    prev_year: Optional[int] = None
+    prev_year: Optional[int] = None,
 ) -> DataDict:
     data = session.query(Data).filter(Data.id == id)
     if prev_year:
-        data = data.filter(
-            extract('year', Data.submitted) == prev_year)
+        data = data.filter(extract("year", Data.submitted) == prev_year)
     if submitted is None:
         return data.first()
     if submitted:
@@ -119,17 +127,21 @@ def get_data_by_id(
 
 
 def get_data_by_ids(session: Session, ids: List[int]) -> List[DataOptionDict]:
-    data = session.query(Data).filter(
-        and_(Data.id.in_(ids), Data.submitted == null())).all()
+    data = (
+        session.query(Data)
+        .filter(and_(Data.id.in_(ids), Data.submitted == null()))
+        .all()
+    )
     return data
 
 
 def get_data_by_organisation(
-        session: Session,
-        organisation: int,
-        submitted: Optional[bool] = None,
-        page: Union[int, bool] = False,
-        page_size: Union[int, bool] = False) -> List[DataOptionDict]:
+    session: Session,
+    organisation: int,
+    submitted: Optional[bool] = None,
+    page: Union[int, bool] = False,
+    page_size: Union[int, bool] = False,
+) -> List[DataOptionDict]:
     data = session.query(Data).filter((Data.organisation == organisation))
     if submitted:
         data = data.filter(Data.submitted.isnot(None))
@@ -146,19 +158,28 @@ def count(session: Session, form: int) -> int:
 
 
 def count_data_by_organisation(
-        session: Session,
-        organisation: int,
-        submitted: bool = False) -> int:
+    session: Session, organisation: int, submitted: bool = False
+) -> int:
     data = session.query(Data).filter(
         and_(
-            Data.organisation == organisation, Data.submitted == null()
-            if not submitted else Data.submitted.isnot(None)))
+            Data.organisation == organisation,
+            (
+                Data.submitted == null()
+                if not submitted
+                else Data.submitted.isnot(None)
+            ),
+        )
+    )
     return data.count()
 
 
 def download(session: Session, form: int):
-    data = session.query(Data).filter(Data.form == form).order_by(desc(
-        Data.id)).all()
+    data = (
+        session.query(Data)
+        .filter(Data.form == form)
+        .order_by(desc(Data.id))
+        .all()
+    )
     return [d.to_data_frame for d in data]
 
 
@@ -166,7 +187,7 @@ def check_member_submission_exists(
     session: Session,
     organisation: int,
     form: Optional[int] = None,
-    saved: Optional[bool] = False
+    saved: Optional[bool] = False,
 ):
     TESTING = os.environ.get("TESTING")
     current_year = get_prev_year(prev=0, year=True)
@@ -180,22 +201,35 @@ def check_member_submission_exists(
             # ## FOR 2022 MONITORING ROUND ## #
             # handle unlimited member questionnaire
             # for organisation ISCO contains DISCO
-            check_org = session.query(OrganisationIsco).filter(and_(
-                OrganisationIsco.organisation == organisation,
-                OrganisationIsco.isco_type.in_(
-                    MEMBER_SURVEY_UNLIMITED_ISCO))).first()
+            check_org = (
+                session.query(OrganisationIsco)
+                .filter(
+                    and_(
+                        OrganisationIsco.organisation == organisation,
+                        OrganisationIsco.isco_type.in_(
+                            MEMBER_SURVEY_UNLIMITED_ISCO
+                        ),
+                    )
+                )
+                .first()
+            )
             if check_org:
                 return False
         form_config = MEMBER_SURVEY
     if form and form in LIMITED_SURVEY:
         form_config = LIMITED_SURVEY
-    data = session.query(Data).filter(and_(
-        Data.form.in_(form_config),
-        Data.organisation == organisation
-    )).filter(or_(
-        extract('year', Data.created) == current_year,
-        extract('year', Data.submitted) == current_year,
-    ))
+    data = (
+        session.query(Data)
+        .filter(
+            and_(Data.form.in_(form_config), Data.organisation == organisation)
+        )
+        .filter(
+            or_(
+                extract("year", Data.created) == current_year,
+                extract("year", Data.submitted) == current_year,
+            )
+        )
+    )
     # filter by not submitted
     if saved:
         data = data.filter(Data.submitted == null())
@@ -207,6 +241,5 @@ def check_member_submission_exists(
 
 
 def get_data_by_form(session: Session, form: int):
-    data = session.query(Data).filter(
-        Data.form == form).all()
+    data = session.query(Data).filter(Data.form == form).all()
     return data

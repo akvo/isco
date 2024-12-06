@@ -96,6 +96,16 @@ body {
       }
     }
 
+    .ant-input-number-input {
+      border: none;
+      border-bottom: 0px;
+
+      &:hover {
+        border: none;
+        border-bottom: 0px;
+      }
+    }
+
     .ant-select-disabled {
       .ant-select-selector {
         color: #777777 !important;
@@ -103,9 +113,17 @@ body {
       }
     }
 
+    .ant-input {
+      &::placeholder {
+        color: $black;
+        font-style: normal;
+      }
+    }
+
     .ant-input-number-input {
       &::placeholder {
         color: $black;
+        font-style: normal;
       }
     }
 

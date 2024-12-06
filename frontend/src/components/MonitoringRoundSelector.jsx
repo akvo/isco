@@ -7,6 +7,7 @@ const MonitoringRoundSelector = ({
   onChange,
   className = null,
   style = null,
+  disabled = false,
 }) => {
   const [round, setRound] = useState([]);
 
@@ -36,6 +37,7 @@ const MonitoringRoundSelector = ({
       value={value}
       onChange={onChange}
       style={style ? style : { width: "11rem" }}
+      disabled={disabled}
     />
   );
 };

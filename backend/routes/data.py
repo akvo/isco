@@ -231,6 +231,7 @@ def get(
     filter_same_isco: Optional[bool] = False,
     monitoring_round: Optional[int] = Query(None),
     organisation: Optional[List[int]] = Query(None),
+    data_id: Optional[int] = Query(None),
     session: Session = Depends(get_session),
     credentials: credentials = Depends(security),
 ):
@@ -242,7 +243,6 @@ def get(
         )
     if organisation:
         org_ids = organisation
-
     data = crud.get_data(
         session=session,
         form=form_id,
@@ -251,6 +251,7 @@ def get(
         submitted=submitted,
         org_ids=org_ids,
         monitoring_round=monitoring_round,
+        data_id=data_id,
     )
     if not data["count"]:
         raise HTTPException(status_code=404, detail="Not found")
