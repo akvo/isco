@@ -19,7 +19,7 @@ const MonitoringRoundSelector = ({
     while (startYear <= currentYear) {
       roundTmp.push(startYear++);
     }
-    setRound(roundTmp.map((x) => ({ label: x, value: x })));
+    setRound(roundTmp.map((x) => ({ label: String(x), value: x })));
   }, []);
 
   return (

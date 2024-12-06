@@ -8,8 +8,13 @@ import { MonitoringRoundSelector } from "../../components";
 
 const { Title } = Typography;
 
+const handleSelectFilter = (input, option) =>
+  option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+
 const DownloadReport = () => {
-  const { member_type } = store.useState((s) => s.optionValues);
+  const { member_type, isco_type, organisation } = store.useState(
+    (s) => s.optionValues
+  );
   const { notify } = useNotification();
 
   const [forms, setForms] = useState([]);
@@ -22,6 +27,8 @@ const DownloadReport = () => {
   const [verifying, setVerifying] = useState(false);
   const [otpValue, setOtpValue] = useState([]);
   const [selectedMonitoringRound, setSelectedMonitoringRound] = useState(null);
+  const [iscoSelected, setIscoSelected] = useState(null);
+  const [organisationSelected, setOrganisationSelected] = useState(null);
 
   useEffect(() => {
     if (!forms.length) {
@@ -44,6 +51,12 @@ const DownloadReport = () => {
       let params = `form_id=${formSelected}`;
       if (memberSelected) {
         params += `&member_type=${memberSelected}`;
+      }
+      if (iscoSelected) {
+        params += `&isco_type=${iscoSelected}`;
+      }
+      if (organisationSelected) {
+        params += `&organisation_id=${organisationSelected}`;
       }
       if (selectedMonitoringRound) {
         params += `&monitoring_round=${selectedMonitoringRound}`;
@@ -133,67 +146,116 @@ const DownloadReport = () => {
           <Row>
             <Col span={24}>
               <Card className="form-wrapper">
-                <Space size={12}>
-                  <Select
-                    showArrow
-                    showSearch
-                    allowClear
-                    className="custom-dropdown-wrapper bg-grey"
-                    placeholder="Select Questionnaire"
-                    optionFilterProp="children"
-                    filterOption={(input, option) =>
-                      option.label.toLowerCase().indexOf(input.toLowerCase()) >=
-                      0
-                    }
-                    options={forms}
-                    value={formSelected}
-                    onChange={(val) => setFormSelected(val)}
-                    style={{ width: "8rem" }}
-                  />
-                  <Select
-                    showArrow
-                    showSearch
-                    allowClear
-                    className="custom-dropdown-wrapper bg-grey"
-                    placeholder="Select Member Type"
-                    optionFilterProp="children"
-                    filterOption={(input, option) =>
-                      option.label.toLowerCase().indexOf(input.toLowerCase()) >=
-                      0
-                    }
-                    options={
-                      member_type.length
-                        ? member_type
-                            .filter(
-                              (x) =>
-                                x.id !== 1 || x.name.toLowerCase() !== "all"
-                            ) // filter all member type
-                            .map((x) => ({
-                              label: x.name,
-                              value: x.id,
-                            }))
-                        : []
-                    }
-                    value={memberSelected}
-                    onChange={(val) => setMemberSelected(val)}
-                    style={{ width: "8rem" }}
-                  />
-                  <MonitoringRoundSelector
-                    value={selectedMonitoringRound}
-                    onChange={setSelectedMonitoringRound}
-                    className="bg-grey"
-                    style={{ minWidth: "100px", width: "175px" }}
-                  />
-                  <Button
-                    ghost
-                    type="primary"
-                    disabled={!formSelected}
-                    loading={isGenerating}
-                    onClick={handleGenerateReport}
-                  >
-                    Generate
-                  </Button>
-                </Space>
+                <Row gutter={[12, 12]}>
+                  <Col span={24}>
+                    <Space size={12}>
+                      <Select
+                        showArrow
+                        showSearch
+                        allowClear
+                        className="custom-dropdown-wrapper bg-grey"
+                        placeholder="Select Questionnaire"
+                        optionFilterProp="children"
+                        filterOption={handleSelectFilter}
+                        options={forms}
+                        value={formSelected}
+                        onChange={(val) => setFormSelected(val)}
+                        style={{ width: "8rem" }}
+                      />
+                      <MonitoringRoundSelector
+                        value={selectedMonitoringRound}
+                        onChange={setSelectedMonitoringRound}
+                        className="bg-grey"
+                        style={{ minWidth: "100px", width: "175px" }}
+                      />
+                    </Space>
+                  </Col>
+                  <Col span={24}>
+                    <Space size={12}>
+                      <Select
+                        showArrow
+                        showSearch
+                        allowClear
+                        className="custom-dropdown-wrapper bg-grey"
+                        placeholder="Select Member Type"
+                        optionFilterProp="children"
+                        filterOption={handleSelectFilter}
+                        options={
+                          member_type.length
+                            ? member_type
+                                .filter(
+                                  (x) =>
+                                    x.id !== 1 || x.name.toLowerCase() !== "all"
+                                ) // filter all member type
+                                .map((x) => ({
+                                  label: x.name,
+                                  value: x.id,
+                                }))
+                            : []
+                        }
+                        value={memberSelected}
+                        onChange={(val) => setMemberSelected(val)}
+                        style={{ width: "8rem" }}
+                      />
+                      <Select
+                        showArrow
+                        showSearch
+                        allowClear
+                        className="custom-dropdown-wrapper bg-grey"
+                        placeholder="Select ISCO Type"
+                        optionFilterProp="children"
+                        filterOption={handleSelectFilter}
+                        options={
+                          isco_type.length
+                            ? isco_type
+                                .filter(
+                                  (x) =>
+                                    x.id !== 1 || x.name.toLowerCase() !== "all"
+                                ) // filter all member type
+                                .map((x) => ({
+                                  label: x.name,
+                                  value: x.id,
+                                }))
+                            : []
+                        }
+                        value={iscoSelected}
+                        onChange={(val) => setIscoSelected(val)}
+                        style={{ width: "8rem" }}
+                      />
+                      <Select
+                        showArrow
+                        showSearch
+                        allowClear
+                        className="custom-dropdown-wrapper bg-grey"
+                        placeholder="Select Organisation"
+                        optionFilterProp="children"
+                        filterOption={handleSelectFilter}
+                        options={
+                          organisation.length
+                            ? organisation.map((x) => ({
+                                label: x.name,
+                                value: x.id,
+                              }))
+                            : []
+                        }
+                        value={organisationSelected}
+                        onChange={(val) => setOrganisationSelected(val)}
+                        style={{ width: "8rem" }}
+                      />
+                    </Space>
+                  </Col>
+                  <Col span={24}>
+                    <Button
+                      ghost
+                      type="primary"
+                      disabled={!formSelected}
+                      loading={isGenerating}
+                      onClick={handleGenerateReport}
+                    >
+                      Generate
+                    </Button>
+                  </Col>
+                </Row>
               </Card>
             </Col>
           </Row>
