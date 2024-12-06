@@ -9,6 +9,7 @@ import {
   Button,
   Select,
   Popconfirm,
+  InputNumber,
 } from "antd";
 import {
   PlusSquareOutlined,
@@ -43,6 +44,7 @@ const DataCleaning = () => {
   // monitoring round selector
   const [selectedMonitoringRound, setSelectedMonitoringRound] = useState(null);
   const [organisationValue, setOrganisationValue] = useState(null);
+  const [dataID, setDataID] = useState(null);
 
   // pagination
   const [pageSize, setPageSize] = useState(10);
@@ -124,6 +126,10 @@ const DataCleaning = () => {
     setOrganisationValue(org);
   };
 
+  const handleDataIDFilter = (value) => {
+    setDataID(value);
+  };
+
   useEffect(() => {
     if (!forms.length) {
       api
@@ -150,6 +156,9 @@ const DataCleaning = () => {
       if (organisationValue) {
         url = `${url}&organisation=${organisationValue}`;
       }
+      if (dataID) {
+        url = `${url}&data_id=${dataID}`;
+      }
       api
         .get(url)
         .then((res) => {
@@ -174,6 +183,7 @@ const DataCleaning = () => {
     pageSize,
     selectedMonitoringRound,
     organisationValue,
+    dataID,
   ]);
 
   useEffect(() => {
@@ -365,10 +375,19 @@ const DataCleaning = () => {
                       ?.toLowerCase()
                       .indexOf(input?.toLowerCase()) >= 0
                   }
+                  disabled={!formSelected}
                 />
                 <MonitoringRoundSelector
                   value={selectedMonitoringRound}
                   onChange={setSelectedMonitoringRound}
+                  disabled={!formSelected}
+                />
+                <InputNumber
+                  placeholder="Data ID"
+                  controls={false}
+                  onChange={handleDataIDFilter}
+                  value={dataID}
+                  disabled={!formSelected}
                 />
               </Space>
             </Col>

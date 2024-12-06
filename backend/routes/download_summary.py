@@ -68,6 +68,8 @@ async def new_summary_file(
     background_tasks: BackgroundTasks,
     form_id: int,
     member_type: Optional[int] = None,
+    isco_type: Optional[int] = None,
+    organisation_id: Optional[int] = None,
     monitoring_round: Optional[int] = None,
     session: Session = Depends(get_session),
     credentials: credentials = Depends(security),
@@ -85,6 +87,8 @@ async def new_summary_file(
         form_id=form_id,
         user_org=user.organisation,
         member_type=member_type,
+        isco_type=isco_type,
+        organisation_id=organisation_id,
         show_comment=True,
         monitoring_round=monitoring_round,
     )

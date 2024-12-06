@@ -37,6 +37,7 @@ def write_sheet(df, writer, sheet_name, show_comment=False):
     unstack_col = ["question_group_name", "question_name"]
     cols = [
         "data_id",
+        "member_id",
         "question_group_name",
         "question_name",
         "member_type",
@@ -46,6 +47,7 @@ def write_sheet(df, writer, sheet_name, show_comment=False):
     if sheet_name != main_sheet_name:
         cols = [
             "data_id",
+            "member_id",
             "question_group_name",
             "question_name",
             "repeat_index",  # ordering by question first, then index
@@ -100,16 +102,20 @@ def generate_summary(
     form_id: int,
     user_org: int,
     member_type: Optional[int] = None,
+    isco_type: Optional[int] = None,
+    organisation_id: Optional[int] = None,
     show_comment: Optional[bool] = False,
     monitoring_round: Optional[int] = None,
 ):
     tmp_file = f"./tmp/{filename}.xlsx"
     # find user organisation isco to filter the question
-    org_isco = (
-        session.query(OrganisationIsco)
-        .filter(OrganisationIsco.organisation == user_org)
-        .all()
+    org_isco = session.query(OrganisationIsco).filter(
+        OrganisationIsco.organisation == user_org
     )
+    # filter by isco_type
+    if isco_type:
+        org_isco = org_isco.filter(OrganisationIsco.isco_type == isco_type)
+    org_isco = org_isco.all()
     isco_ids = [i.isco_type for i in org_isco]
 
     # find organisation in same isco to filter datapoint
@@ -161,6 +167,9 @@ def generate_summary(
         )
     )
 
+    # filter by organisation_id
+    if organisation_id:
+        summary = summary.filter(Summary.organisation_id == organisation_id)
     # question - filter by user isco
     if isco_ids:
         isco_ids += [1]  # add all isco type

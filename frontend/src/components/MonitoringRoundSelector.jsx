@@ -7,6 +7,7 @@ const MonitoringRoundSelector = ({
   onChange,
   className = null,
   style = null,
+  disabled = false,
 }) => {
   const [round, setRound] = useState([]);
 
@@ -18,7 +19,7 @@ const MonitoringRoundSelector = ({
     while (startYear <= currentYear) {
       roundTmp.push(startYear++);
     }
-    setRound(roundTmp.map((x) => ({ label: x, value: x })));
+    setRound(roundTmp.map((x) => ({ label: String(x), value: x })));
   }, []);
 
   return (
@@ -36,6 +37,7 @@ const MonitoringRoundSelector = ({
       value={value}
       onChange={onChange}
       style={style ? style : { width: "11rem" }}
+      disabled={disabled}
     />
   );
 };
