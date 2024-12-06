@@ -37,6 +37,7 @@ def write_sheet(df, writer, sheet_name, show_comment=False):
     unstack_col = ["question_group_name", "question_name"]
     cols = [
         "data_id",
+        "member_id",
         "question_group_name",
         "question_name",
         "member_type",
@@ -46,6 +47,7 @@ def write_sheet(df, writer, sheet_name, show_comment=False):
     if sheet_name != main_sheet_name:
         cols = [
             "data_id",
+            "member_id",
             "question_group_name",
             "question_name",
             "repeat_index",  # ordering by question first, then index

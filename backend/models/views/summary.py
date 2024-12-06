@@ -22,6 +22,7 @@ class Summary(Base):
     member_type = Column(pg.ARRAY(Integer))
     isco_type = Column(pg.ARRAY(Integer))
     data_id = Column(Integer)
+    organisation_id = Column(Integer)
     organisation = Column(String)
     members = Column(String)
     submitted = Column(DateTime)
@@ -34,19 +35,20 @@ class Summary(Base):
     @property
     def serialize(self):
         return {
-            'fid': self.fid,
-            'gid': self.gid,
-            'qid': self.qid,
-            'go': self.go,
-            'qo': self.qo,
-            'repeat_index': self.repeat_index,
-            'question_group': self.question_group,
-            'repeat': self.repeat,
-            'question': self.question,
-            'data_id': self.data_id,
-            'organisation': self.organisation,
-            'member_type': self.members,
-            'submitted': self.submitted.strftime("%B %d, %Y"),
-            'answer': self.answer,
-            'comment': self.comment
+            "fid": self.fid,
+            "gid": self.gid,
+            "qid": self.qid,
+            "go": self.go,
+            "qo": self.qo,
+            "repeat_index": self.repeat_index,
+            "question_group": self.question_group,
+            "repeat": self.repeat,
+            "question": self.question,
+            "data_id": self.data_id,
+            "member_id": self.organisation_id,
+            "organisation": self.organisation,
+            "member_type": self.members,
+            "submitted": self.submitted.strftime("%B %d, %Y"),
+            "answer": self.answer,
+            "comment": self.comment,
         }
