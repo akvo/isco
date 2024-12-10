@@ -77,7 +77,9 @@ class QuestionGroup(Base):
         backref="question_group_detail",
     )
     repeat_leading_question = relationship(
-        "Question", foreign_keys=[leading_question], backref="leads_group"
+        "Question",
+        primaryjoin="Question.id==QuestionGroup.leading_question",
+        backref="leads_group",
     )
 
     def __init__(

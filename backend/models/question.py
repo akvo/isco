@@ -309,7 +309,9 @@ class Question(Base):
             question.update({"fn": self.autofield})
         # add question group id lead by the question
         if self.leads_group:
-            question.update({"lead_repeat_group": self.leads_group.id})
+            question.update(
+                {"lead_repeat_group": [lead.id for lead in self.leads_group]}
+            )
         return question
 
 
