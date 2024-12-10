@@ -63,6 +63,7 @@ export const transformForm = (forms) => {
     question_group: orderBy(forms?.question_group, "order")?.map((qg) => {
       let repeat = {};
       let repeats = {};
+      // handle leading_question
       if (qg?.repeatable) {
         repeat = { repeat: 1 };
         repeats = { repeats: [0] };

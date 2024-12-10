@@ -281,6 +281,16 @@ const Preview = () => {
                 dependency: dependency,
               };
             }
+            // handle lead_repeat_group to be add in question param
+            const leadsGroup = questionGroup.filter(
+              (qg) => qg.leading_question === q.id
+            );
+            if (leadsGroup?.length) {
+              qVal = {
+                ...qVal,
+                lead_repeat_group: leadsGroup.map((qg) => qg.id),
+              };
+            }
             return qVal;
           });
           /** Step 2 */

@@ -30,7 +30,7 @@ import { useNotification } from "../../util";
 import Question from "./Question";
 
 const { TabPane } = Tabs;
-const LEADING_QUESTION_TYPE = ["multiple_option", "cascade"];
+const LEADING_QUESTION_TYPE = ["multiple_option"];
 
 export const generateDisabledOptions = (dropdownValues, selectedValue) => {
   return dropdownValues?.map((item) => {

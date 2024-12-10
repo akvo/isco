@@ -157,6 +157,12 @@ export const Webform = ({
     });
   }, [autoSave]);
 
+  // handle leading_question
+  const leadingQuestions = useMemo(() => {
+    const questions = forms?.question_group?.flatMap((qg) => qg.question);
+    return questions.filter((q) => q?.lead_repeat_group?.length);
+  }, [forms]);
+
   useEffect(() => {
     const meta = forms.question_group
       .filter((qg) => !qg?.repeatable)
@@ -189,6 +195,33 @@ export const Webform = ({
       ds.disable();
     }
   }, [autoSave]);
+
+  // handle leading_question
+  useEffect(() => {
+    if (!leadingQuestions?.length) {
+      return;
+    }
+    leadingQuestions.forEach((q) => {
+      const leadingQuestionAnswer = current?.[q.id] || null;
+      if (!leadingQuestionAnswer) {
+        return;
+      }
+      // update repeat
+      const updated = formsMemo.question_group.map((x) => {
+        // if group id inside lead_repeat_group
+        if (q.lead_repeat_group.includes(x.id)) {
+          return {
+            ...x,
+            repeat: leadingQuestionAnswer.length,
+            repeats: leadingQuestionAnswer,
+          };
+        }
+        return x;
+      });
+      setUpdatedQuestionGroup(updated);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [current]);
 
   const handleBtnPrint = () => {
     setIsPrint(true);
@@ -300,9 +333,11 @@ export const Webform = ({
       );
       const completeQg = qg
         .map((x, ix) => {
+          const isLeadingQuestion = x.leading_question;
           let ids = x.question.map((q) => q.id);
           // handle repeat group question
           let ixs = [ix];
+          // handle leading_question
           if (x?.repeatable) {
             let iter = x?.repeat;
             const suffix = iter > 1 ? `-${iter - 1}` : "";
@@ -310,6 +345,18 @@ export const Webform = ({
               const rids = x.question.map((q) => `${q.id}${suffix}`);
               ids = [...ids, ...rids];
               ixs = [...ixs, `${ix}-${iter}`];
+              iter--;
+            } while (iter > 0);
+          }
+          // handle leading_question
+          if (x?.repeatable && isLeadingQuestion) {
+            let iter = x?.repeat;
+            const repeatIter = iter > 1 ? x.repeats[iter - 1] : "initial";
+            const suffix = iter > 1 ? `-${repeatIter}` : "";
+            do {
+              const rids = x.question.map((q) => `${q.id}${suffix}`);
+              ids = [...ids, ...rids];
+              ixs = [...ixs, `${x.id}-${ix}-${repeatIter}`];
               iter--;
             } while (iter > 0);
           }
@@ -626,10 +673,15 @@ export const Webform = ({
         >
           {formsMemo?.question_group?.map((g, key) => {
             const isRepeatable = g?.repeatable;
-            const repeats =
-              g?.repeats && g?.repeats?.length
-                ? g.repeats
-                : range(isRepeatable ? g.repeat : 1);
+            // handle leading_question
+            const isLeadingQuestion = g?.leading_question;
+            let repeats = g?.repeats?.length ? g.repeats : range(1);
+            if (isLeadingQuestion) {
+              repeats =
+                g?.repeats && g?.repeats?.length
+                  ? g.repeats
+                  : range(isRepeatable ? g.repeat : 1);
+            }
             const headStyle =
               sidebar && sticky && isRepeatable
                 ? {
