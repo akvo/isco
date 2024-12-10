@@ -197,31 +197,42 @@ export const Webform = ({
   }, [autoSave]);
 
   // handle leading_question
-  useEffect(() => {
-    if (!leadingQuestions?.length) {
-      return;
-    }
-    leadingQuestions.forEach((q) => {
-      const leadingQuestionAnswer = current?.[q.id] || null;
+  const updateRepeatByLeadingQuestionAnswer = useCallback(
+    ({ value, question_group }) => {
+      if (!leadingQuestions?.length) {
+        return question_group;
+      }
+      const answerId = Object.keys(value)[0];
+      const findLeadingQuestion = leadingQuestions.find(
+        (q) => q.id === parseInt(answerId)
+      );
+      if (
+        !findLeadingQuestion ||
+        !findLeadingQuestion?.lead_repeat_group?.length
+      ) {
+        return question_group;
+      }
+      const leadingQuestionAnswer = value?.[findLeadingQuestion.id] || null;
       if (!leadingQuestionAnswer) {
-        return;
+        return question_group;
       }
       // update repeat
-      const updated = formsMemo.question_group.map((x) => {
+      const updated = question_group.map((x) => {
         // if group id inside lead_repeat_group
-        if (q.lead_repeat_group.includes(x.id)) {
+        if (findLeadingQuestion.lead_repeat_group.includes(x.id)) {
           return {
             ...x,
-            repeat: leadingQuestionAnswer.length,
+            repeat: leadingQuestionAnswer?.length || 1,
             repeats: leadingQuestionAnswer,
           };
         }
         return x;
       });
       setUpdatedQuestionGroup(updated);
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [current]);
+      return updated;
+    },
+    [leadingQuestions]
+  );
 
   const handleBtnPrint = () => {
     setIsPrint(true);
@@ -313,6 +324,12 @@ export const Webform = ({
 
   const onValuesChange = useCallback(
     (qg, value /*, values */) => {
+      // TODO :: Try to handle the repeat leading question here, instead of using different useEffect
+      const updatedQuestionGroupByLeadingQuestion =
+        updateRepeatByLeadingQuestionAnswer({
+          value,
+          question_group: qg,
+        });
       // filter form values
       const values = filterFormValues(form.getFieldsValue(), forms);
       const errors = form.getFieldsError();
@@ -331,7 +348,7 @@ export const Webform = ({
           (x.value || x.value === 0) &&
           !incompleteWithMoreError.includes(parseInt(x.id))
       );
-      const completeQg = qg
+      const completeQg = updatedQuestionGroupByLeadingQuestion
         .map((x, ix) => {
           const isLeadingQuestion = x.leading_question;
           let ids = x.question.map((q) => q.id);
@@ -405,7 +422,7 @@ export const Webform = ({
         });
       }
     },
-    [autoSave, form, forms, onChange]
+    [autoSave, form, forms, onChange, updateRepeatByLeadingQuestionAnswer]
   );
 
   useEffect(() => {
