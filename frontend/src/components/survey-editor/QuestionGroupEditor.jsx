@@ -110,9 +110,7 @@ const QuestionGroupSetting = ({
         value: q.id,
       }));
     return questions;
-  }, [questionGroupState]);
-  // TODO :: handle leading question on change
-  console.log(leadingQuestionOption);
+  }, [questionGroupState, currentGroupOrder]);
 
   return (
     <div className="qge-setting-wrapper">

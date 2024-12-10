@@ -18,17 +18,17 @@ depends_on = None
 
 
 def upgrade():
-    # Add leading_question_id column to question_group table
+    # Add leading_question column to question_group table
     op.add_column(
         "question_group",
-        sa.Column("leading_question_id", sa.Integer, nullable=True),
+        sa.Column("leading_question", sa.Integer, nullable=True),
     )
-    # Create a foreign key constraint for leading_question_id
+    # Create a foreign key constraint for leading_question
     op.create_foreign_key(
-        "fk_question_group_leading_question_id",
+        "fk_question_group_leading_question",
         "question_group",
         "question",
-        ["leading_question_id"],
+        ["leading_question"],
         ["id"],
     )
 
@@ -36,9 +36,9 @@ def upgrade():
 def downgrade():
     # Drop the foreign key constraint
     op.drop_constraint(
-        "fk_question_group_leading_question_id",
+        "fk_question_group_leading_question",
         "question_group",
         type_="foreignkey",
     )
-    # Remove the leading_question_id column from question_group table
-    op.drop_column("question_group", "leading_question_id")
+    # Remove the leading_question column from question_group table
+    op.drop_column("question_group", "leading_question")

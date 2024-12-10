@@ -24,6 +24,7 @@ class QuestionGroupPayload(TypedDict):
     repeat_text: Optional[str] = None
     member_access: Optional[List[int]] = None
     isco_access: Optional[List[int]] = None
+    leading_question: Optional[int] = None
     question: Optional[List[QuestionPayload]] = None
 
 
@@ -36,13 +37,14 @@ class QuestionGroupDict(TypedDict):
     order: Optional[int] = None
     repeat: bool
     repeat_text: Optional[str] = None
+    leading_question: Optional[int] = None
 
 
 class QuestionGroup(Base):
     __tablename__ = "question_group"
     id = Column(Integer, primary_key=True, index=True, nullable=True)
     form = Column(Integer, ForeignKey("form.id"))
-    leading_question_id = Column(
+    leading_question = Column(
         Integer, ForeignKey("question.id"), nullable=True
     )
     name = Column(String)
@@ -74,8 +76,8 @@ class QuestionGroup(Base):
         passive_deletes=True,
         backref="question_group_detail",
     )
-    leading_question = relationship(
-        "Question", foreign_keys=[leading_question_id], backref="leads_group"
+    repeat_leading_question = relationship(
+        "Question", foreign_keys=[leading_question], backref="leads_group"
     )
 
     def __init__(
@@ -88,6 +90,7 @@ class QuestionGroup(Base):
         order: Optional[int],
         description: Optional[str],
         repeat_text: Optional[str],
+        leading_question: Optional[int],
     ):
         self.id = id
         self.form = form
@@ -97,6 +100,7 @@ class QuestionGroup(Base):
         self.order = order
         self.repeat = repeat
         self.repeat_text = repeat_text
+        self.leading_question = leading_question
 
     def __repr__(self) -> int:
         return f"<QuestionGroup {self.id}>"
@@ -116,6 +120,7 @@ class QuestionGroup(Base):
             "order": self.order,
             "repeat": self.repeat,
             "repeat_text": self.repeat_text,
+            "leading_question": self.leading_question,
             "member_access": [ma.member_type for ma in self.member_access],
             "isco_access": [ia.isco_type for ia in self.isco_access],
             "question": [q.serialize for q in self.question],
@@ -167,6 +172,7 @@ class QuestionGroupBase(BaseModel):
     repeat_text: Optional[str] = None
     member_access: Optional[List[int]] = []
     isco_access: Optional[List[int]] = []
+    leading_question: Optional[int] = None
     question: Optional[List[QuestionBase]] = []
 
     class Config:
