@@ -307,6 +307,9 @@ class Question(Base):
             )
         if self.autofield:
             question.update({"fn": self.autofield})
+        # add question group id lead by the question
+        if self.leads_group:
+            question.update({"lead_repeat_group": self.leads_group.id})
         return question
 
 
@@ -359,6 +362,7 @@ class QuestionJson(BaseModel):
     option: Optional[List[OptionJson]] = []
     dependency: Optional[List[dict]] = []
     fn: Optional[dict] = None
+    lead_repeat_group: Optional[int] = None
 
     class Config:
         orm_mode = True

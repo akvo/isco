@@ -23,7 +23,11 @@ def add_question_group(
         translations=payload["translations"],
         repeat=payload["repeat"],
         repeat_text=payload["repeat_text"],
-        leading_question=None,
+        leading_question=(
+            payload.get("leading_question", None)
+            if payload["repeat"]
+            else None
+        ),
     )
     if payload["member_access"]:
         for ma in payload["member_access"]:

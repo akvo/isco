@@ -138,6 +138,7 @@ class QuestionGroup(Base):
             "description": self.description,
             "order": self.order,
             "repeatable": self.repeat,
+            "leading_question": self.leading_question,
             "member_access": [ma.memberName for ma in self.member_access],
             "isco_access": [ia.iscoName for ia in self.isco_access],
             "question": [q.serializeJson for q in self.question],
@@ -187,6 +188,7 @@ class QuestionGroupJson(BaseModel):
     order: Optional[int] = None
     repeatable: bool
     repeatText: Optional[str] = None
+    leading_question: Optional[int] = (None,)
     member_access: Optional[List[str]] = []
     isco_access: Optional[List[str]] = []
     question: Optional[List[dict]] = []

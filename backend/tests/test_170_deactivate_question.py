@@ -79,6 +79,7 @@ class TestQuestionRoutes:
                         "description": "Description",
                         "order": 1,
                         "repeatable": False,
+                        "leading_question": None,
                         "member_access": ["All"],
                         "isco_access": ["All"],
                         "question": [
@@ -267,6 +268,7 @@ class TestQuestionRoutes:
                         "description": "Description",
                         "order": 1,
                         "repeatable": False,
+                        "leading_question": None,
                         "member_access": ["All"],
                         "isco_access": ["All"],
                         "question": [
