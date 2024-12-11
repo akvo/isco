@@ -64,9 +64,13 @@ export const transformForm = (forms) => {
       let repeat = {};
       let repeats = {};
       // handle leading_question
-      if (qg?.repeatable) {
+      if (qg?.repeatable && !qg?.leading_question) {
         repeat = { repeat: 1 };
         repeats = { repeats: [0] };
+      }
+      if (qg?.repeatable && qg?.leading_question) {
+        repeat = { repeat: 0 };
+        repeats = { repeats: [] };
       }
       return {
         ...qg,

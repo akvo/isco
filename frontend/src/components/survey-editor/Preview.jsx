@@ -283,7 +283,7 @@ const Preview = () => {
             }
             // handle lead_repeat_group to be add in question param
             const leadsGroup = questionGroup.filter(
-              (qg) => qg.leading_question === q.id
+              (qg) => qg?.leading_question === q.id
             );
             if (leadsGroup?.length) {
               qVal = {

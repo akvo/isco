@@ -324,7 +324,7 @@ export const Webform = ({
 
   const onValuesChange = useCallback(
     (qg, value /*, values */) => {
-      // TODO :: Try to handle the repeat leading question here, instead of using different useEffect
+      // TODO :: Handle save the repeat answer with leading question
       const updatedQuestionGroupByLeadingQuestion =
         updateRepeatByLeadingQuestionAnswer({
           value,
@@ -350,30 +350,27 @@ export const Webform = ({
       );
       const completeQg = updatedQuestionGroupByLeadingQuestion
         .map((x, ix) => {
-          const isLeadingQuestion = x.leading_question;
+          const isLeadingQuestion = x?.leading_question;
           let ids = x.question.map((q) => q.id);
           // handle repeat group question
           let ixs = [ix];
-          // handle leading_question
           if (x?.repeatable) {
             let iter = x?.repeat;
-            const suffix = iter > 1 ? `-${iter - 1}` : "";
+            let suffix = "";
+            // handle leading_question
+            if (isLeadingQuestion) {
+              // handle ids naming for leading_question
+              const repeatSuffix =
+                iter && x?.repeats?.length ? x.repeats[iter - 1] : "";
+              suffix = iter ? `-${repeatSuffix}` : "";
+            } else {
+              // normal repeat group
+              suffix = iter > 1 ? `-${iter - 1}` : "";
+            }
             do {
               const rids = x.question.map((q) => `${q.id}${suffix}`);
               ids = [...ids, ...rids];
               ixs = [...ixs, `${ix}-${iter}`];
-              iter--;
-            } while (iter > 0);
-          }
-          // handle leading_question
-          if (x?.repeatable && isLeadingQuestion) {
-            let iter = x?.repeat;
-            const repeatIter = iter > 1 ? x.repeats[iter - 1] : "initial";
-            const suffix = iter > 1 ? `-${repeatIter}` : "";
-            do {
-              const rids = x.question.map((q) => `${q.id}${suffix}`);
-              ids = [...ids, ...rids];
-              ixs = [...ixs, `${x.id}-${ix}-${repeatIter}`];
               iter--;
             } while (iter > 0);
           }
@@ -694,10 +691,7 @@ export const Webform = ({
             const isLeadingQuestion = g?.leading_question;
             let repeats = g?.repeats?.length ? g.repeats : range(1);
             if (isLeadingQuestion) {
-              repeats =
-                g?.repeats && g?.repeats?.length
-                  ? g.repeats
-                  : range(isRepeatable ? g.repeat : 1);
+              repeats = g?.repeats && g?.repeats?.length ? g.repeats : [];
             }
             const headStyle =
               sidebar && sticky && isRepeatable
