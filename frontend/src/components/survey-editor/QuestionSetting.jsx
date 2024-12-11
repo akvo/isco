@@ -49,6 +49,8 @@ const QuestionSetting = ({
   setDatapointName,
   allowNA,
   setAllowNA,
+  isRepeatIdentifierValue,
+  setIsRepeatIdentifierValue,
 }) => {
   const [deactivatePopconfirmMessage, setDeactivatePopconfirmMessage] =
     useState("");
@@ -57,7 +59,11 @@ const QuestionSetting = ({
   const { surveyEditor, tempStorage, optionValues } = store.useState((s) => s);
   const { questionGroup: questionGroupState } = surveyEditor;
   const { operator_type, member_type, isco_type } = optionValues;
-  const { id: qid, type: currentQuestionType } = question;
+  const {
+    id: qid,
+    type: currentQuestionType,
+    question_group: currentQuestionGroupId,
+  } = question;
 
   const memberAccessField = `question-${qid}-member_access`;
   const memberValue = form.getFieldValue(memberAccessField);
@@ -125,6 +131,17 @@ const QuestionSetting = ({
       ? operator_type?.filter((x) => x === "equal")
       : operator_type;
   }, [dependentQuestion, operator_type]);
+
+  // handle leading_question -> is_repeat_identifier
+  const isQuestionInsideRepeatGroup = useMemo(() => {
+    const findGroup = questionGroupState.find(
+      (qg) => qg.id === currentQuestionGroupId
+    );
+    if (findGroup && findGroup?.repeat && findGroup?.leading_question) {
+      return true;
+    }
+    return false;
+  }, [questionGroupState, currentQuestionGroupId]);
 
   const handleRequiredChange = (val, field) => {
     const fieldValue = { [field]: val };
@@ -266,6 +283,13 @@ const QuestionSetting = ({
     const fieldValue = { [field]: val };
     form.setFieldsValue(fieldValue);
     setAllowNA(val);
+    handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
+  };
+
+  const handleIsRepeatIdentifierChange = (val, field) => {
+    const fieldValue = { [field]: val };
+    form.setFieldsValue(fieldValue);
+    setIsRepeatIdentifierValue(val);
     handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
   };
 
@@ -559,6 +583,33 @@ const QuestionSetting = ({
                   >
                     {" "}
                     Allow Data unavailable/NA
+                  </Checkbox>
+                </div>
+              )
+            }
+            {
+              /* IS REPEAT IDENTIFIER SETTING */
+              isQuestionInsideRepeatGroup && (
+                <div className="field-wrapper" style={{ marginTop: "20px" }}>
+                  <Form.Item
+                    name={`question-${qid}-is_repeat_identifier`}
+                    hidden
+                    noStyle
+                  >
+                    <Input />
+                  </Form.Item>
+                  <Checkbox
+                    key={`question-${qid}-is_repeat_identifier-checkbox`}
+                    checked={isRepeatIdentifierValue}
+                    onChange={(val) =>
+                      handleIsRepeatIdentifierChange(
+                        val?.target?.checked,
+                        `question-${qid}-is_repeat_identifier`
+                      )
+                    }
+                  >
+                    {" "}
+                    Set this question as repeat group identifier/key
                   </Checkbox>
                 </div>
               )

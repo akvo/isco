@@ -52,6 +52,7 @@ export const defaultQuestionEditor = {
     multiline: false,
     fnString: null,
   },
+  is_repeat_identifier: false,
 };
 
 export const defaultQuestionGroupEditor = {

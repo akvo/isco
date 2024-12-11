@@ -27,6 +27,8 @@ const QuestionTabContent = ({
   setDatapointName,
   allowNA,
   setAllowNA,
+  isRepeatIdentifierValue,
+  setIsRepeatIdentifierValue,
 }) => {
   switch (activeSetting) {
     case "translation":
@@ -59,6 +61,8 @@ const QuestionTabContent = ({
           setDatapointName={setDatapointName}
           allowNA={allowNA}
           setAllowNA={setAllowNA}
+          isRepeatIdentifierValue={isRepeatIdentifierValue}
+          setIsRepeatIdentifierValue={setIsRepeatIdentifierValue}
         />
       );
     default:
