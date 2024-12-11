@@ -105,6 +105,7 @@ class TestThirdFormRoutes:
                     "deactivate": False,
                     "disableDelete": False,
                     "autofield": None,
+                    "is_repeat_identifier": False,
                 }
             ],
         }
@@ -149,6 +150,7 @@ class TestThirdFormRoutes:
             "deactivate": False,
             "disableDelete": False,
             "autofield": None,
+            "is_repeat_identifier": False,
         }
 
     @pytest.mark.asyncio

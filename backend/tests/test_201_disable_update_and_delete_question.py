@@ -43,6 +43,7 @@ class TestDisableDeleteQuestion:
             "core_mandatory": False,
             "deactivate": False,
             "autofield": None,
+            "is_repeat_identifier": False,
         }
         res = await client.put(
             app.url_path_for("question:put", id=question.id),

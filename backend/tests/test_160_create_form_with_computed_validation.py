@@ -127,6 +127,7 @@ class TestFormWithComputedValidationRoutes:
             "core_mandatory": False,
             "deactivate": False,
             "autofield": None,
+            "is_repeat_identifier": False,
         }
         res = await client.post(
             app.url_path_for("question:create"),
@@ -160,6 +161,7 @@ class TestFormWithComputedValidationRoutes:
             "deactivate": False,
             "disableDelete": False,
             "autofield": None,
+            "is_repeat_identifier": False,
         }
         #
         # add question type number
@@ -186,6 +188,7 @@ class TestFormWithComputedValidationRoutes:
             "core_mandatory": False,
             "deactivate": False,
             "autofield": None,
+            "is_repeat_identifier": False,
         }
         res = await client.post(
             app.url_path_for("question:create"),
@@ -219,6 +222,7 @@ class TestFormWithComputedValidationRoutes:
             "deactivate": False,
             "disableDelete": False,
             "autofield": None,
+            "is_repeat_identifier": False,
         }
         #
         # add question type input
@@ -245,6 +249,7 @@ class TestFormWithComputedValidationRoutes:
             "core_mandatory": False,
             "deactivate": False,
             "autofield": None,
+            "is_repeat_identifier": False,
         }
         res = await client.post(
             app.url_path_for("question:create"),
@@ -278,6 +283,7 @@ class TestFormWithComputedValidationRoutes:
             "deactivate": False,
             "disableDelete": False,
             "autofield": None,
+            "is_repeat_identifier": False,
         }
         #
         # add question type autofield
@@ -307,6 +313,7 @@ class TestFormWithComputedValidationRoutes:
                 "multiline": False,
                 "fnString": "function () { return #15 }",
             },
+            "is_repeat_identifier": False,
         }
         res = await client.post(
             app.url_path_for("question:create"),
@@ -343,6 +350,7 @@ class TestFormWithComputedValidationRoutes:
                 "multiline": False,
                 "fnString": "function () { return #15 }",
             },
+            "is_repeat_identifier": False,
         }
 
     @pytest.mark.asyncio

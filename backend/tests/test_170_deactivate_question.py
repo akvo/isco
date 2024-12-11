@@ -94,6 +94,7 @@ class TestQuestionRoutes:
                                 "isco_access": ["All"],
                                 "coreMandatory": False,
                                 "deactivate": False,
+                                "is_repeat_identifier": False,
                             },
                             {
                                 "id": 15,
@@ -106,6 +107,7 @@ class TestQuestionRoutes:
                                 "isco_access": ["All"],
                                 "coreMandatory": False,
                                 "deactivate": False,
+                                "is_repeat_identifier": False,
                             },
                             {
                                 "id": 16,
@@ -118,6 +120,7 @@ class TestQuestionRoutes:
                                 "isco_access": ["All"],
                                 "coreMandatory": False,
                                 "deactivate": False,
+                                "is_repeat_identifier": False,
                             },
                             {
                                 "id": 17,
@@ -134,6 +137,7 @@ class TestQuestionRoutes:
                                     "fnString": "function () { return #15 }",
                                     "multiline": False,
                                 },
+                                "is_repeat_identifier": False,
                             },
                         ],
                     }
@@ -283,6 +287,7 @@ class TestQuestionRoutes:
                                 "isco_access": ["All"],
                                 "coreMandatory": False,
                                 "deactivate": False,
+                                "is_repeat_identifier": False,
                             },
                             {
                                 "id": 15,
@@ -295,6 +300,7 @@ class TestQuestionRoutes:
                                 "isco_access": ["All"],
                                 "coreMandatory": False,
                                 "deactivate": False,
+                                "is_repeat_identifier": False,
                             },
                             {
                                 "id": 16,
@@ -307,6 +313,7 @@ class TestQuestionRoutes:
                                 "isco_access": ["All"],
                                 "coreMandatory": False,
                                 "deactivate": False,
+                                "is_repeat_identifier": False,
                             },
                         ],
                     }

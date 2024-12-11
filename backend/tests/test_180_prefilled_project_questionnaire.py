@@ -102,6 +102,7 @@ class TestPrefilledRoute:
             "core_mandatory": False,
             "deactivate": False,
             "autofield": None,
+            "is_repeat_identifier": False,
         }
         res = await client.put(
             app.url_path_for("question:put", id=question.id),
@@ -213,6 +214,7 @@ class TestPrefilledRoute:
                                 "isco_access": ["All"],
                                 "coreMandatory": False,
                                 "deactivate": False,
+                                "is_repeat_identifier": False,
                             },
                             {
                                 "id": 15,
@@ -225,6 +227,7 @@ class TestPrefilledRoute:
                                 "isco_access": ["All"],
                                 "coreMandatory": False,
                                 "deactivate": False,
+                                "is_repeat_identifier": False,
                             },
                             {
                                 "id": 16,
@@ -237,6 +240,7 @@ class TestPrefilledRoute:
                                 "isco_access": ["All"],
                                 "coreMandatory": False,
                                 "deactivate": False,
+                                "is_repeat_identifier": False,
                             },
                         ],
                     }

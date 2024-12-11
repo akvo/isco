@@ -54,14 +54,12 @@ class TestFormWithLeadingQuestionForRepeatGroup:
         )
         assert res.status_code == 200
         res = res.json()
-        cascade_endpoint = "http://localhost:3000/api/cascade/list/1"
         assert res == {
             "form": {
                 "id": 5,
                 "name": "Test form with leading question",
                 "description": "Lorem ipsum",
                 "languages": ["en"],
-                "version": 1,
                 "question_group": [
                     {
                         "id": 6,
@@ -84,24 +82,33 @@ class TestFormWithLeadingQuestionForRepeatGroup:
                                 "isco_access": ["All"],
                                 "coreMandatory": True,
                                 "deactivate": False,
+                                "is_repeat_identifier": False,
                             },
                             {
                                 "id": 19,
-                                "name": "Cascade Leading Question",
+                                "name": "Option Leading Question",
                                 "required": False,
                                 "datapoint_name": False,
-                                "type": "cascade",
+                                "type": "multiple_option",
                                 "order": 2,
                                 "member_access": ["All"],
                                 "isco_access": ["All"],
                                 "coreMandatory": False,
                                 "deactivate": False,
+                                "is_repeat_identifier": False,
+                                "option": [
+                                    {
+                                        "code": None,
+                                        "name": "Indonesia",
+                                        "order": 1,
+                                    },
+                                    {
+                                        "code": None,
+                                        "name": "Singapore",
+                                        "order": 2,
+                                    },
+                                ],
                                 "lead_repeat_group": [7],
-                                "api": {
-                                    "endpoint": cascade_endpoint,
-                                    "initial": 0,
-                                    "list": False,
-                                },
                             },
                         ],
                     },
@@ -117,32 +124,60 @@ class TestFormWithLeadingQuestionForRepeatGroup:
                         "question": [
                             {
                                 "id": 20,
-                                "name": "Weight",
-                                "required": True,
+                                "name": "Option Leading Question",
+                                "required": False,
                                 "datapoint_name": False,
-                                "type": "number",
+                                "type": "multiple_option",
                                 "order": 1,
                                 "member_access": ["All"],
                                 "isco_access": ["All"],
-                                "coreMandatory": True,
+                                "coreMandatory": False,
                                 "deactivate": False,
+                                "is_repeat_identifier": True,
+                                "option": [
+                                    {
+                                        "code": None,
+                                        "name": "Indonesia",
+                                        "order": 1,
+                                    },
+                                    {
+                                        "code": None,
+                                        "name": "Singapore",
+                                        "order": 2,
+                                    },
+                                ],
                             },
                             {
                                 "id": 21,
-                                "name": "Price",
-                                "required": False,
+                                "name": "Weight",
+                                "required": True,
                                 "datapoint_name": False,
                                 "type": "number",
                                 "order": 2,
                                 "member_access": ["All"],
                                 "isco_access": ["All"],
+                                "coreMandatory": True,
+                                "deactivate": False,
+                                "is_repeat_identifier": False,
+                            },
+                            {
+                                "id": 22,
+                                "name": "Price",
+                                "required": False,
+                                "datapoint_name": False,
+                                "type": "number",
+                                "order": 3,
+                                "member_access": ["All"],
+                                "isco_access": ["All"],
                                 "coreMandatory": False,
                                 "deactivate": False,
+                                "is_repeat_identifier": False,
                             },
                         ],
                         "repeatButtonPlacement": "bottom",
                         "repeat_text": "Add another",
                     },
                 ],
+                "version": 1,
             }
         }

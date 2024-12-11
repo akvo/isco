@@ -116,6 +116,7 @@ class TestSecondFormRoutes:
                     "deactivate": False,
                     "disableDelete": False,
                     "autofield": None,
+                    "is_repeat_identifier": False,
                 }
             ],
         }
@@ -160,4 +161,5 @@ class TestSecondFormRoutes:
             "deactivate": False,
             "disableDelete": False,
             "autofield": None,
+            "is_repeat_identifier": False,
         }
