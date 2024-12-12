@@ -219,7 +219,7 @@ def notify_secretariat_admin(session: Session, user, form_name: str):
     "/data/form/{form_id:path}",
     response_model=DataResponseQuestionName,
     name="data:get",
-    summary="get all datas",
+    summary="get all datas filtered by form id",
     tags=["Data"],
 )
 def get(

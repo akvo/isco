@@ -147,6 +147,7 @@ class TestAdvancedSubmissionRoute:
                     "question_order": 1,
                     "repeat_index": 0,
                     "value": "Option 1",
+                    "is_repeat_identifier": False,
                 },
                 {
                     "comment": "This is comment",
@@ -157,6 +158,7 @@ class TestAdvancedSubmissionRoute:
                     "question_order": 2,
                     "repeat_index": 0,
                     "value": "Depend to Q1 Option 1",
+                    "is_repeat_identifier": False,
                 },
                 {
                     "comment": "Q3 comment",
@@ -167,6 +169,7 @@ class TestAdvancedSubmissionRoute:
                     "question_order": 3,
                     "repeat_index": 0,
                     "value": "Male",
+                    "is_repeat_identifier": False,
                 },
                 {
                     "comment": "Q4 comment",
@@ -177,6 +180,7 @@ class TestAdvancedSubmissionRoute:
                     "question_order": 1,
                     "repeat_index": 0,
                     "value": 25.0,
+                    "is_repeat_identifier": False,
                 },
                 {
                     "comment": None,
@@ -187,6 +191,7 @@ class TestAdvancedSubmissionRoute:
                     "question_order": 1,
                     "repeat_index": 1,
                     "value": "Option 1",
+                    "is_repeat_identifier": False,
                 },
                 {
                     "comment": None,
@@ -197,6 +202,7 @@ class TestAdvancedSubmissionRoute:
                     "question_order": 2,
                     "repeat_index": 1,
                     "value": "Test repeat",
+                    "is_repeat_identifier": False,
                 },
                 {
                     "comment": "Q3 comment 1",
@@ -207,6 +213,7 @@ class TestAdvancedSubmissionRoute:
                     "question_order": 3,
                     "repeat_index": 1,
                     "value": "Female",
+                    "is_repeat_identifier": False,
                 },
                 {
                     "comment": "Test with zero value",
@@ -217,6 +224,7 @@ class TestAdvancedSubmissionRoute:
                     "question_order": 2,
                     "repeat_index": 0,
                     "value": 0.0,
+                    "is_repeat_identifier": False,
                 },
                 {
                     "comment": None,
@@ -227,6 +235,7 @@ class TestAdvancedSubmissionRoute:
                     "question_order": 3,
                     "repeat_index": 0,
                     "value": "Bali|Gianyar",
+                    "is_repeat_identifier": False,
                 },
                 {
                     "comment": None,
@@ -237,6 +246,7 @@ class TestAdvancedSubmissionRoute:
                     "question_order": 4,
                     "repeat_index": 0,
                     "value": ["Technology|Programming", "Sports|Football"],
+                    "is_repeat_identifier": False,
                 },
                 {
                     "comment": None,
@@ -247,6 +257,7 @@ class TestAdvancedSubmissionRoute:
                     "question_order": 5,
                     "repeat_index": 0,
                     "value": "2022-01-01",
+                    "is_repeat_identifier": False,
                 },
                 {
                     "comment": None,
@@ -257,6 +268,7 @@ class TestAdvancedSubmissionRoute:
                     "question_order": 6,
                     "repeat_index": 0,
                     "value": ["MO-1", "MO-2"],
+                    "is_repeat_identifier": False,
                 },
             ],
         }
