@@ -78,6 +78,7 @@ const Preview = () => {
               requiredSign: q.core_mandatory ? "**" : "*",
               member_access: qMemberAccess,
               isco_access: qIscoAccess,
+              is_repeat_identifier: q?.is_repeat_identifier || false,
               // add comment field
               extra: [
                 {

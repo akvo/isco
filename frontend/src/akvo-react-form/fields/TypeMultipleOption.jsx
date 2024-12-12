@@ -18,6 +18,7 @@ const TypeMultipleOption = ({
   meta,
   requiredSign,
   uiText,
+  is_repeat_identifier,
 }) => {
   const form = Form.useFormInstance();
   const [options, setOptions] = useState([]);
@@ -129,6 +130,7 @@ const TypeMultipleOption = ({
           }
           allowClear
           onChange={handleChange}
+          disabled={is_repeat_identifier} // handle leading_question -> is_repeat_identifier
         >
           {options.map((o, io) => (
             <Select.Option key={io} value={o.name}>

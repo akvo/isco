@@ -220,6 +220,15 @@ export const Webform = ({
       const updated = question_group.map((x) => {
         // if group id inside lead_repeat_group
         if (findLeadingQuestion.lead_repeat_group.includes(x.id)) {
+          // update is_repeat_identifier default value
+          x.question
+            .filter((q) => q?.is_repeat_identifier)
+            ?.forEach((q) => {
+              const repeatAnswer = last(leadingQuestionAnswer);
+              form.setFieldsValue({
+                [`${q.id}-${repeatAnswer}`]: repeatAnswer,
+              });
+            });
           return {
             ...x,
             repeat: leadingQuestionAnswer?.length || 1,
@@ -231,7 +240,7 @@ export const Webform = ({
       setUpdatedQuestionGroup(updated);
       return updated;
     },
-    [leadingQuestions]
+    [leadingQuestions, form]
   );
 
   const handleBtnPrint = () => {
