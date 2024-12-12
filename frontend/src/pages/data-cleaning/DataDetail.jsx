@@ -74,6 +74,15 @@ const DataDetail = ({ record }) => {
     const title = ReactHtmlParser(key);
 
     return values.map((v, vi) => {
+      // find repeat identifier
+      const findRepeatIdentifier = v.find((q) => q?.is_repeat_identifier);
+      let titleSuffix = length > 1 ? ` - ${vi + 1}` : "";
+      if (findRepeatIdentifier) {
+        titleSuffix = findRepeatIdentifier?.value?.length
+          ? ` - ${findRepeatIdentifier?.value?.join(" ")}`
+          : "";
+      }
+
       return (
         <Space
           key={`${key}-${ki}-${vi}`}
@@ -87,7 +96,7 @@ const DataDetail = ({ record }) => {
             dataSource={v}
             columns={[
               {
-                title: length > 1 ? `${title} - ${vi + 1}` : title,
+                title: `${title}${titleSuffix}`,
                 className: "group-header",
                 children: [...columns],
               },

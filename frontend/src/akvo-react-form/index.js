@@ -224,9 +224,13 @@ export const Webform = ({
           x.question
             .filter((q) => q?.is_repeat_identifier)
             ?.forEach((q) => {
-              const repeatAnswer = last(leadingQuestionAnswer);
+              const repeatKey = last(leadingQuestionAnswer);
+              let repeatAnswer = last(leadingQuestionAnswer);
+              if (q.type === "multiple_option") {
+                repeatAnswer = [repeatAnswer];
+              }
               form.setFieldsValue({
-                [`${q.id}-${repeatAnswer}`]: repeatAnswer,
+                [`${q.id}-${repeatKey}`]: repeatAnswer,
               });
             });
           return {
