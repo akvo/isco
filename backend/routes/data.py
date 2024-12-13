@@ -258,6 +258,20 @@ def get(
     total_page = ceil(data["count"] / perpage) if data["count"] > 0 else 0
     if total_page < page:
         raise HTTPException(status_code=404, detail="Not found")
+
+    # TODO :: Query history datapoint
+    history_data = {}
+    for d in data["data"]:
+        histories = crud.get_history_datapoint(
+            session=session,
+            form=d.form,
+            organisation_id=d.organisation,
+            last_year=d.submitted.year,
+        )
+        history_data[d.organisation] = [
+            h.serializeHistoryWithQuestionName for h in histories
+        ]
+
     # transform cascade answer value
     result = [d.serializeWithQuestionName for d in data["data"]]
     questions = (
@@ -295,6 +309,8 @@ def get(
             if qid in cascade_qids and value:
                 new_value = [cascades.get(int(float(x))) for x in value]
                 a["value"] = "|".join(new_value) if new_value else value
+        # Add history answer
+        res["history"] = history_data.get(res["organisation"], [])
     return {
         "current": page,
         "data": result,

@@ -243,3 +243,22 @@ def check_member_submission_exists(
 def get_data_by_form(session: Session, form: int):
     data = session.query(Data).filter(Data.form == form).all()
     return data
+
+
+def get_history_datapoint(
+    session: Session, form: int, organisation_id: int, last_year: int
+):
+    """Query the history data for submitted datapoint"""
+    data = (
+        session.query(Data)
+        .filter(
+            and_(
+                Data.form == form,
+                Data.organisation == organisation_id,
+                Data.submitted != null(),
+                extract("year", Data.submitted) != last_year,
+            )
+        )
+        .all()
+    )
+    return data
