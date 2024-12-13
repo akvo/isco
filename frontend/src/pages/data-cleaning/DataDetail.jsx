@@ -22,7 +22,7 @@ const DataDetail = ({ record }) => {
       title: "Question",
       dataIndex: "question_name",
       render: (val) => ReactHtmlParser(val),
-      width: "50%",
+      width: "30%",
     },
     {
       title: "Answer",
@@ -36,14 +36,37 @@ const DataDetail = ({ record }) => {
         }
         return val || val === 0 ? val : "-";
       },
-      width: "25%",
+      // width: "25%",
     },
     {
       title: "Comment",
       dataIndex: "comment",
       render: (val) => val || "-",
-      width: "25%",
+      // width: "25%",
     },
+  ];
+
+  const historyColumns = (year) => [
+    {
+      title: "Answer",
+      dataIndex: `value_${year}`,
+      render: (val) => {
+        if (val && typeof val === "object" && !Array.isArray(val)) {
+          return Object.values(val).length ? val.join(" | ") : "-";
+        }
+        if (val && Array.isArray(val)) {
+          return val.length ? val.join(" | ") : "-";
+        }
+        return val || val === 0 ? val : "-";
+      },
+      // width: "25%",
+    },
+    // {
+    //   title: "Comment",
+    //   dataIndex: `comment_${year}`,
+    //   render: (val) => val || "-",
+    //   // width: "25%",
+    // },
   ];
 
   if (_.isEmpty(answers)) {
@@ -73,6 +96,17 @@ const DataDetail = ({ record }) => {
     );
     const title = ReactHtmlParser(key);
 
+    // TODO :: Find history
+    const history = record?.history;
+    const histories = history.map((h) => {
+      return {
+        title: h.year,
+        className: "group-header data-history",
+        children: [...historyColumns(h.year)],
+      };
+    });
+
+    console.log(record);
     return values.map((v, vi) => {
       // find repeat identifier
       const findRepeatIdentifier = v.find((q) => q?.is_repeat_identifier);
@@ -82,6 +116,30 @@ const DataDetail = ({ record }) => {
           ? ` - ${findRepeatIdentifier?.value?.join(" ")}`
           : "";
       }
+
+      // TODO :: I think the easiest way to do history repeat is to save the Index of the repeatable in string for each lead question answer
+      let dataSource = [];
+      record?.history?.forEach((h) => {
+        const vHistory = v.map((curr) => {
+          let findAnswerHistory = null;
+          if (curr?.is_repeat_identifier) {
+            findAnswerHistory = h?.answer?.find(
+              (x) => x.question === curr.question && x.value === curr.value
+            );
+            console.log(findAnswerHistory, "==", curr);
+          } else {
+            findAnswerHistory = h?.answer?.find(
+              (x) => x.question === curr.question
+            );
+          }
+          return {
+            ...curr,
+            [`value_${h.year}`]: findAnswerHistory?.value || "",
+            [`comment_${h.year}`]: findAnswerHistory?.comment || "",
+          };
+        });
+        dataSource = [...dataSource, ...vHistory];
+      });
 
       return (
         <Space
@@ -93,13 +151,14 @@ const DataDetail = ({ record }) => {
             rowKey={(answer, ri) => `${record.id}-${answer.question}-${ri}`}
             size="small"
             pagination={false}
-            dataSource={v}
+            dataSource={dataSource}
             columns={[
               {
                 title: `${title}${titleSuffix}`,
                 className: "group-header",
                 children: [...columns],
               },
+              ...histories,
             ]}
           />
         </Space>

@@ -258,6 +258,7 @@ class Data(Base):
                 if self.submitted
                 else None
             ),
+            "year": self.submitted.year if self.submitted else None,
             "answer": [a.formattedWithQuestionName for a in self.answer],
         }
 

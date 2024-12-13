@@ -268,7 +268,7 @@ def get(
             organisation_id=d.organisation,
             last_year=d.submitted.year,
         )
-        history_data[d.organisation] = [
+        history_data[f"{d.organisation}-{d.submitted.year}"] = [
             h.serializeHistoryWithQuestionName for h in histories
         ]
 
@@ -310,7 +310,9 @@ def get(
                 new_value = [cascades.get(int(float(x))) for x in value]
                 a["value"] = "|".join(new_value) if new_value else value
         # Add history answer
-        res["history"] = history_data.get(res["organisation"], [])
+        res["history"] = history_data.get(
+            f"{res['organisation']}-{res['year']}", []
+        )
     return {
         "current": page,
         "data": result,
