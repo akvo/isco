@@ -259,19 +259,6 @@ def get(
     if total_page < page:
         raise HTTPException(status_code=404, detail="Not found")
 
-    # TODO :: Query history datapoint
-    history_data = {}
-    for d in data["data"]:
-        histories = crud.get_history_datapoint(
-            session=session,
-            form=d.form,
-            organisation_id=d.organisation,
-            last_year=d.submitted.year,
-        )
-        history_data[f"{d.organisation}-{d.submitted.year}"] = [
-            h.serializeHistoryWithQuestionName for h in histories
-        ]
-
     # transform cascade answer value
     result = [d.serializeWithQuestionName for d in data["data"]]
     questions = (
@@ -301,6 +288,29 @@ def get(
     cascades = {}
     for cl in cascade_list:
         cascades.update(({cl.id: cl.name}))
+
+    # Query history datapoint
+    history_data = {}
+    for d in data["data"]:
+        histories = crud.get_history_datapoint(
+            session=session,
+            form=d.form,
+            organisation_id=d.organisation,
+            last_year=d.created.year,
+        )
+        history_result = [
+            h.serializeHistoryWithQuestionName for h in histories
+        ]
+        # transform cascade answer history value by cascade list
+        for res in history_result:
+            for a in res["answer"]:
+                qid = a["question"]
+                value = a["value"]
+                if qid in cascade_qids and value:
+                    new_value = [cascades.get(int(float(x))) for x in value]
+                    a["value"] = "|".join(new_value) if new_value else value
+        history_data[f"{d.organisation}-{d.created.year}"] = history_result
+
     # transform cascade answer value by cascade list
     for res in result:
         for a in res["answer"]:

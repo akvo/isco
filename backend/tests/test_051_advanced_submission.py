@@ -132,12 +132,12 @@ class TestAdvancedSubmissionRoute:
                 "form_name": "Form Test",
                 "name": "Option 1 - Option 1",
                 "geo": None,
-                "created": "December 13, 2024",
+                "created": today,
                 "organisation": 1,
                 "organisation_name": "staff Akvo",
                 "member_type": "All",
-                "updated": "December 13, 2024",
-                "submitted": "December 13, 2024",
+                "updated": today,
+                "submitted": today,
                 "answer": [
                     {
                         "question_group": "Question Group 1",
