@@ -104,7 +104,10 @@ const QuestionGroupSetting = ({
     );
     const questions = questionGroupBefore
       .flatMap((qg) => qg.question)
-      .filter((q) => LEADING_QUESTION_TYPE.includes(q.type))
+      .filter(
+        (q) =>
+          LEADING_QUESTION_TYPE.includes(q.type) && !q?.is_repeat_identifier
+      )
       .map((q) => ({
         label: q.name,
         value: q.id,

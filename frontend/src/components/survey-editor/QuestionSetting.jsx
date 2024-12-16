@@ -30,6 +30,7 @@ const { TabPane } = Tabs;
 const skipLogicQuestionType = ["option", "number", "multiple_option"];
 const datapointNameQuestionType = ["input", "option"];
 const allowNAQuestionType = ["number", "text", "input"];
+const allowIsRepeatIdentifierSettingQuestionType = ["input", "multiple_option"];
 
 const QuestionSetting = ({
   form,
@@ -589,30 +590,33 @@ const QuestionSetting = ({
             }
             {
               /* IS REPEAT IDENTIFIER SETTING */
-              isQuestionInsideRepeatGroup && (
-                <div className="field-wrapper" style={{ marginTop: "20px" }}>
-                  <Form.Item
-                    name={`question-${qid}-is_repeat_identifier`}
-                    hidden
-                    noStyle
-                  >
-                    <Input />
-                  </Form.Item>
-                  <Checkbox
-                    key={`question-${qid}-is_repeat_identifier-checkbox`}
-                    checked={isRepeatIdentifierValue}
-                    onChange={(val) =>
-                      handleIsRepeatIdentifierChange(
-                        val?.target?.checked,
-                        `question-${qid}-is_repeat_identifier`
-                      )
-                    }
-                  >
-                    {" "}
-                    Set this question as repeat group identifier/key
-                  </Checkbox>
-                </div>
-              )
+              isQuestionInsideRepeatGroup &&
+                allowIsRepeatIdentifierSettingQuestionType.includes(
+                  currentQuestionType
+                ) && (
+                  <div className="field-wrapper" style={{ marginTop: "20px" }}>
+                    <Form.Item
+                      name={`question-${qid}-is_repeat_identifier`}
+                      hidden
+                      noStyle
+                    >
+                      <Input />
+                    </Form.Item>
+                    <Checkbox
+                      key={`question-${qid}-is_repeat_identifier-checkbox`}
+                      checked={isRepeatIdentifierValue}
+                      onChange={(val) =>
+                        handleIsRepeatIdentifierChange(
+                          val?.target?.checked,
+                          `question-${qid}-is_repeat_identifier`
+                        )
+                      }
+                    >
+                      {" "}
+                      Set this question as repeat group identifier/key
+                    </Checkbox>
+                  </div>
+                )
             }
           </>
         </TabPane>
