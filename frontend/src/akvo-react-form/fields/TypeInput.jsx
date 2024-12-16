@@ -22,6 +22,7 @@ const TypeInput = ({
   coreMandatory,
   uiText,
   rule,
+  is_repeat_identifier,
 }) => {
   const form = Form.useFormInstance();
   const [showPrefix, setShowPrefix] = useState(true);
@@ -133,7 +134,7 @@ const TypeInput = ({
           prefix={
             fieldIcons && showPrefix && !currentValue && <InputFieldIcon />
           }
-          disabled={naChecked}
+          disabled={naChecked || is_repeat_identifier} // handle leading_question -> is_repeat_identifier
         />
       </Form.Item>
 

@@ -24,6 +24,7 @@ class QuestionGroupPayload(TypedDict):
     repeat_text: Optional[str] = None
     member_access: Optional[List[int]] = None
     isco_access: Optional[List[int]] = None
+    leading_question: Optional[int] = None
     question: Optional[List[QuestionPayload]] = None
 
 
@@ -36,12 +37,16 @@ class QuestionGroupDict(TypedDict):
     order: Optional[int] = None
     repeat: bool
     repeat_text: Optional[str] = None
+    leading_question: Optional[int] = None
 
 
 class QuestionGroup(Base):
     __tablename__ = "question_group"
     id = Column(Integer, primary_key=True, index=True, nullable=True)
-    form = Column(Integer, ForeignKey('form.id'))
+    form = Column(Integer, ForeignKey("form.id"))
+    leading_question = Column(
+        Integer, ForeignKey("question.id"), nullable=True
+    )
     name = Column(String)
     description = Column(Text, nullable=True)
     translations = Column(pg.ARRAY(pg.JSONB), nullable=True)
@@ -55,24 +60,40 @@ class QuestionGroup(Base):
         QuestionGroup.id",
         cascade="all, delete",
         passive_deletes=True,
-        backref="question_group_member_access")
+        backref="question_group_member_access",
+    )
     isco_access = relationship(
         "QuestionGroupIscoAccess",
         primaryjoin="QuestionGroupIscoAccess.question_group==QuestionGroup.id",
         cascade="all, delete",
         passive_deletes=True,
-        backref="question_group_isco_access")
+        backref="question_group_isco_access",
+    )
     question = relationship(
         "Question",
         primaryjoin="Question.question_group==QuestionGroup.id",
         cascade="all, delete",
         passive_deletes=True,
-        backref="question_group_detail")
+        backref="question_group_detail",
+    )
+    repeat_leading_question = relationship(
+        "Question",
+        primaryjoin="Question.id==QuestionGroup.leading_question",
+        backref="leads_group",
+    )
 
-    def __init__(self, id: Optional[int], form: int, name: str,
-                 translations: Optional[List[dict]], repeat: Optional[bool],
-                 order: Optional[int], description: Optional[str],
-                 repeat_text: Optional[str]):
+    def __init__(
+        self,
+        id: Optional[int],
+        form: int,
+        name: str,
+        translations: Optional[List[dict]],
+        repeat: Optional[bool],
+        order: Optional[int],
+        description: Optional[str],
+        repeat_text: Optional[str],
+        leading_question: Optional[int],
+    ):
         self.id = id
         self.form = form
         self.name = name
@@ -81,6 +102,7 @@ class QuestionGroup(Base):
         self.order = order
         self.repeat = repeat
         self.repeat_text = repeat_text
+        self.leading_question = leading_question
 
     def __repr__(self) -> int:
         return f"<QuestionGroup {self.id}>"
@@ -100,9 +122,10 @@ class QuestionGroup(Base):
             "order": self.order,
             "repeat": self.repeat,
             "repeat_text": self.repeat_text,
+            "leading_question": self.leading_question,
             "member_access": [ma.member_type for ma in self.member_access],
             "isco_access": [ia.isco_type for ia in self.isco_access],
-            "question": [q.serialize for q in self.question]
+            "question": [q.serialize for q in self.question],
         }
 
     @property
@@ -117,9 +140,10 @@ class QuestionGroup(Base):
             "description": self.description,
             "order": self.order,
             "repeatable": self.repeat,
+            "leading_question": self.leading_question,
             "member_access": [ma.memberName for ma in self.member_access],
             "isco_access": [ia.iscoName for ia in self.isco_access],
-            "question": [q.serializeJson for q in self.question]
+            "question": [q.serializeJson for q in self.question],
         }
         if self.repeat:
             group.update({"repeatButtonPlacement": "bottom"})
@@ -128,13 +152,13 @@ class QuestionGroup(Base):
         if self.translations:
             translations = []
             for lang in self.translations:
-                tmp = {"language": lang['language']}
+                tmp = {"language": lang["language"]}
                 if "name" in lang:
-                    tmp.update({"name": lang['name']})
+                    tmp.update({"name": lang["name"]})
                 if "description" in lang:
-                    tmp.update({"description": lang['description']})
+                    tmp.update({"description": lang["description"]})
                 if self.repeat and self.repeat_text and "repeat_text" in lang:
-                    tmp.update({"repeatText": lang['repeat_text']})
+                    tmp.update({"repeatText": lang["repeat_text"]})
                 translations.append(tmp)
             group.update({"translations": translations})
         return group
@@ -151,6 +175,7 @@ class QuestionGroupBase(BaseModel):
     repeat_text: Optional[str] = None
     member_access: Optional[List[int]] = []
     isco_access: Optional[List[int]] = []
+    leading_question: Optional[int] = None
     question: Optional[List[QuestionBase]] = []
 
     class Config:
@@ -165,6 +190,7 @@ class QuestionGroupJson(BaseModel):
     order: Optional[int] = None
     repeatable: bool
     repeatText: Optional[str] = None
+    leading_question: Optional[int] = (None,)
     member_access: Optional[List[str]] = []
     isco_access: Optional[List[str]] = []
     question: Optional[List[dict]] = []

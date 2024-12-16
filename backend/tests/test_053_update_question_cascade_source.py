@@ -47,6 +47,7 @@ class TestUpdateQuestionCascade:
             "deactivate": False,
             "disableDelete": False,
             "autofield": None,
+            "is_repeat_identifier": False,
         }
         res = await client.put(
             app.url_path_for("question:put", id=6),
@@ -80,4 +81,5 @@ class TestUpdateQuestionCascade:
             "deactivate": False,
             "disableDelete": False,
             "autofield": None,
+            "is_repeat_identifier": False,
         }

@@ -53,6 +53,7 @@ class TestQuestionRoutes:
             "core_mandatory": False,
             "deactivate": False,
             "autofield": None,
+            "is_repeat_identifier": False,
         }
         res = await client.post(
             app.url_path_for("question:create"),
@@ -86,6 +87,7 @@ class TestQuestionRoutes:
             "deactivate": False,
             "disableDelete": False,
             "autofield": None,
+            "is_repeat_identifier": False,
         }
 
     @pytest.mark.asyncio
@@ -126,6 +128,7 @@ class TestQuestionRoutes:
             "core_mandatory": True,
             "deactivate": False,
             "autofield": None,
+            "is_repeat_identifier": False,
         }
         res = await client.put(
             app.url_path_for("question:put", id=1),
@@ -164,4 +167,5 @@ class TestQuestionRoutes:
             "deactivate": False,
             "disableDelete": False,
             "autofield": None,
+            "is_repeat_identifier": False,
         }

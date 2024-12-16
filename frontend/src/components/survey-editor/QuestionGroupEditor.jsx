@@ -30,6 +30,7 @@ import { useNotification } from "../../util";
 import Question from "./Question";
 
 const { TabPane } = Tabs;
+const LEADING_QUESTION_TYPE = ["multiple_option"];
 
 export const generateDisabledOptions = (dropdownValues, selectedValue) => {
   return dropdownValues?.map((item) => {
@@ -67,8 +68,14 @@ const QuestionGroupSetting = ({
   const { member_type, isco_type } = optionValues;
   const { languages } = surveyEditor;
   const qgId = questionGroup?.id;
-  const { name, description, repeat_text } = questionGroup;
+  const {
+    name,
+    description,
+    repeat_text,
+    order: currentGroupOrder,
+  } = questionGroup;
   const [groupTranslationVisible, setGroupTranslationVisible] = useState(false);
+  const { questionGroup: questionGroupState } = surveyEditor;
 
   const memberAccessField = `question_group-${qgId}-member_access`;
   const memberValue = form.getFieldValue(memberAccessField);
@@ -82,12 +89,31 @@ const QuestionGroupSetting = ({
     return generateDisabledOptions(isco_type, iscoValue);
   }, [iscoValue, isco_type]);
 
+  const leadingQuestionField = `question_group-${qgId}-leading_question`;
+
   // handle when form languages updated
   useEffect(() => {
     if (!languages?.length && groupTranslationVisible) {
       setGroupTranslationVisible(false);
     }
   }, [languages, groupTranslationVisible]);
+
+  const leadingQuestionOption = useMemo(() => {
+    const questionGroupBefore = questionGroupState.filter(
+      (qg) => qg.order < currentGroupOrder
+    );
+    const questions = questionGroupBefore
+      .flatMap((qg) => qg.question)
+      .filter(
+        (q) =>
+          LEADING_QUESTION_TYPE.includes(q.type) && !q?.is_repeat_identifier
+      )
+      .map((q) => ({
+        label: q.name,
+        value: q.id,
+      }));
+    return questions;
+  }, [questionGroupState, currentGroupOrder]);
 
   return (
     <div className="qge-setting-wrapper">
@@ -218,6 +244,38 @@ const QuestionGroupSetting = ({
                     </Form.Item>
                   </div>
                 </Col>
+                {/* leading question group */}
+                {repeat && (
+                  <Col span={24}>
+                    <div className="field-wrapper">
+                      <div className="field-label">Leading Question</div>
+                      <Form.Item
+                        name={leadingQuestionField}
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please select Leading Question",
+                          },
+                        ]}
+                      >
+                        <Select
+                          allowClear
+                          showSearch={true}
+                          className="custom-dropdown-wrapper"
+                          placeholder="Select leading question"
+                          options={leadingQuestionOption}
+                          filterOption={(input, option) =>
+                            option.label
+                              .toLowerCase()
+                              .indexOf(input.toLowerCase()) >= 0
+                          }
+                          style={{ width: "100%" }}
+                        />
+                      </Form.Item>
+                    </div>
+                  </Col>
+                )}
+                {/* eol leading question group */}
               </Row>
             </TabPane>
           </>

@@ -75,6 +75,7 @@ class QuestionPayload(TypedDict):
     isco_access: Optional[List[int]] = None
     skip_logic: Optional[List[SkipLogicPayload]] = None
     autofield: Optional[dict] = None
+    is_repeat_identifier: Optional[bool] = False
 
 
 class QuestionDict(TypedDict):
@@ -95,6 +96,7 @@ class QuestionDict(TypedDict):
     repeating_objects: Optional[List] = []
     order: Optional[int] = None
     autofield: Optional[dict] = None
+    is_repeat_identifier: Optional[bool] = False
 
 
 class Question(Base):
@@ -119,6 +121,7 @@ class Question(Base):
     created = Column(DateTime, default=datetime.utcnow)
     order = Column(Integer, nullable=True)
     autofield = Column(MutableDict.as_mutable(pg.JSONB), nullable=True)
+    is_repeat_identifier = Column(Boolean, default=False)
     member_access = relationship(
         "QuestionMemberAccess",
         primaryjoin="QuestionMemberAccess.question==Question.id",
@@ -170,6 +173,7 @@ class Question(Base):
         core_mandatory: Optional[bool],
         deactivate: Optional[bool],
         autofield: Optional[dict],
+        is_repeat_identifier: Optional[bool] = False,
     ):
         self.id = id
         self.form = form
@@ -190,6 +194,7 @@ class Question(Base):
         self.core_mandatory = core_mandatory
         self.deactivate = deactivate
         self.autofield = autofield
+        self.is_repeat_identifier = is_repeat_identifier
 
     def __repr__(self) -> int:
         return f"<Question {self.id}>"
@@ -236,6 +241,7 @@ class Question(Base):
             "core_mandatory": self.core_mandatory,
             "deactivate": self.deactivate,
             "autofield": self.autofield,
+            "is_repeat_identifier": self.is_repeat_identifier,
         }
 
     @property
@@ -261,6 +267,7 @@ class Question(Base):
             "isco_access": question_isco,
             "coreMandatory": self.core_mandatory,
             "deactivate": self.deactivate,
+            "is_repeat_identifier": self.is_repeat_identifier,
         }
         if self.rule:
             if "allow_other" not in self.rule:
@@ -307,6 +314,11 @@ class Question(Base):
             )
         if self.autofield:
             question.update({"fn": self.autofield})
+        # add question group id lead by the question
+        if self.leads_group:
+            question.update(
+                {"lead_repeat_group": [lead.id for lead in self.leads_group]}
+            )
         return question
 
 
@@ -335,6 +347,7 @@ class QuestionBase(BaseModel):
     order: Optional[int] = None
     disableDelete: Optional[bool] = False
     autofield: Optional[dict] = None
+    is_repeat_identifier: Optional[bool] = False
 
     class Config:
         orm_mode = True
@@ -359,6 +372,8 @@ class QuestionJson(BaseModel):
     option: Optional[List[OptionJson]] = []
     dependency: Optional[List[dict]] = []
     fn: Optional[dict] = None
+    lead_repeat_group: Optional[int] = None
+    is_repeat_identifier: Optional[bool] = False
 
     class Config:
         orm_mode = True

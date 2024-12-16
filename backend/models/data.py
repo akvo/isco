@@ -66,6 +66,15 @@ class DataDictQuestionName(TypedDict):
     updated: Optional[str] = None
     submitted: Optional[str] = None
     answer: List[AnswerDictWithQuestionName]
+    history: Optional[List] = []
+
+
+class HistoryDataDictQuestionName(TypedDict):
+    id: int
+    form: int
+    organisation: int
+    submitted: Optional[int] = None
+    answer: List[AnswerDictWithQuestionName]
 
 
 class DataOptionDict(TypedDict):
@@ -136,11 +145,13 @@ class PrevProjectSubmissionResponse(TypedDict):
 
 class Data(Base):
     __tablename__ = "data"
-    id = Column(Integer,
-                primary_key=True,
-                index=True,
-                nullable=True,
-                autoincrement=True)
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
+        nullable=True,
+        autoincrement=True,
+    )
     form = Column(Integer, ForeignKey(Form.id))
     name = Column(String)
     geo = Column(pg.ARRAY(Float), nullable=True)
@@ -156,22 +167,28 @@ class Data(Base):
         cascade="all, delete",
         passive_deletes=True,
         backref="answer",
-        order_by=Answer.id.asc())
-    created_by_user = relationship(
-        User, foreign_keys=[created_by])
+        order_by=Answer.id.asc(),
+    )
+    created_by_user = relationship(User, foreign_keys=[created_by])
     organisation_detail = relationship(
-        Organisation, foreign_keys=[organisation])
-    submitted_by_user = relationship(
-        User, foreign_keys=[submitted_by])
-    locked_by_user = relationship(
-        User, foreign_keys=[locked_by])
-    form_detail = relationship(
-        Form, foreign_keys=[form])
+        Organisation, foreign_keys=[organisation]
+    )
+    submitted_by_user = relationship(User, foreign_keys=[submitted_by])
+    locked_by_user = relationship(User, foreign_keys=[locked_by])
+    form_detail = relationship(Form, foreign_keys=[form])
 
     def __init__(
-        self, name: str, form: int, geo: List[float], locked_by: int,
-        created_by: int, organisation: int, submitted_by: int,
-        updated: datetime, created: datetime, submitted: datetime
+        self,
+        name: str,
+        form: int,
+        geo: List[float],
+        locked_by: int,
+        created_by: int,
+        organisation: int,
+        submitted_by: int,
+        updated: datetime,
+        created: datetime,
+        submitted: datetime,
     ):
         self.name = name
         self.form = form
@@ -194,21 +211,24 @@ class Data(Base):
             "name": self.name,
             "form": self.form,
             "form_name": self.form_detail.name,
-            "geo": {
-                "lat": self.geo[0],
-                "long": self.geo[1]
-            } if self.geo else None,
+            "geo": (
+                {"lat": self.geo[0], "long": self.geo[1]} if self.geo else None
+            ),
             "locked_by": self.locked_by,
             "created_by": self.created_by_user.name,
             "organisation": self.organisation_detail.name,
-            "submitted_by":
-            self.submitted_by_user.name if self.submitted_by else None,
-            "created":
-            self.created.strftime("%B %d, %Y"),
-            "updated":
-            self.updated.strftime("%B %d, %Y") if self.updated else None,
-            "submitted":
-            self.submitted.strftime("%B %d, %Y") if self.submitted else None,
+            "submitted_by": (
+                self.submitted_by_user.name if self.submitted_by else None
+            ),
+            "created": self.created.strftime("%B %d, %Y"),
+            "updated": (
+                self.updated.strftime("%B %d, %Y") if self.updated else None
+            ),
+            "submitted": (
+                self.submitted.strftime("%B %d, %Y")
+                if self.submitted
+                else None
+            ),
             "answer": [a.formatted for a in self.answer],
         }
 
@@ -223,45 +243,56 @@ class Data(Base):
             "name": self.name,
             "form": self.form,
             "form_name": self.form_detail.name,
-            "geo": {
-                "lat": self.geo[0],
-                "long": self.geo[1]
-            } if self.geo else None,
+            "geo": (
+                {"lat": self.geo[0], "long": self.geo[1]} if self.geo else None
+            ),
             "organisation": self.organisation,
             "organisation_name": self.organisation_detail.name,
             "member_type": member_type,
-            "created":
-            self.created.strftime("%B %d, %Y"),
-            "updated":
-            self.updated.strftime("%B %d, %Y") if self.updated else None,
-            "submitted":
-            self.submitted.strftime("%B %d, %Y") if self.submitted else None,
+            "created": self.created.strftime("%B %d, %Y"),
+            "updated": (
+                self.updated.strftime("%B %d, %Y") if self.updated else None
+            ),
+            "submitted": (
+                self.submitted.strftime("%B %d, %Y")
+                if self.submitted
+                else None
+            ),
+            "year": self.submitted.year if self.submitted else None,
+            "answer": [a.formattedWithQuestionName for a in self.answer],
+        }
+
+    @property
+    def serializeHistoryWithQuestionName(self) -> HistoryDataDictQuestionName:
+        return {
+            "id": self.id,
+            "form": self.form,
+            "organisation": self.organisation,
+            "year": (self.submitted.year if self.submitted else None),
             "answer": [a.formattedWithQuestionName for a in self.answer],
         }
 
     @property
     def to_data_frame(self):
         data = {
-            "id":
-            self.id,
-            "datapoint_name":
-            self.name,
-            "geolocation":
-            f"{self.geo[0], self.geo[1]}" if self.geo else None,
-            "locked_by":
-            self.locked_by,
-            "created_by":
-            self.created_by_user.name,
-            "organisation":
-            self.organisation_detail.name,
-            "submitted_by":
-            self.submitted_by_user.name if self.submitted_by else None,
-            "created_at":
-            self.created.strftime("%B %d, %Y"),
-            "updated_at":
-            self.updated.strftime("%B %d, %Y") if self.updated else None,
-            "submitted_at":
-            self.submitted.strftime("%B %d, %Y") if self.submitted else None,
+            "id": self.id,
+            "datapoint_name": self.name,
+            "geolocation": f"{self.geo[0], self.geo[1]}" if self.geo else None,
+            "locked_by": self.locked_by,
+            "created_by": self.created_by_user.name,
+            "organisation": self.organisation_detail.name,
+            "submitted_by": (
+                self.submitted_by_user.name if self.submitted_by else None
+            ),
+            "created_at": self.created.strftime("%B %d, %Y"),
+            "updated_at": (
+                self.updated.strftime("%B %d, %Y") if self.updated else None
+            ),
+            "submitted_at": (
+                self.submitted.strftime("%B %d, %Y")
+                if self.submitted
+                else None
+            ),
         }
         for a in self.answer:
             data.update(a.to_data_frame)
@@ -288,8 +319,9 @@ class Data(Base):
             "form": self.form,
             "form_type": form_type,
             "locked_by": self.locked_by,
-            "locked_by_user": self.locked_by_user.name
-            if self.locked_by_user else None,
+            "locked_by_user": (
+                self.locked_by_user.name if self.locked_by_user else None
+            ),
             "organisation": organisation,
             "created_by": created_by,
             "created": created,
@@ -311,10 +343,14 @@ class Data(Base):
             "organisation": self.organisation_detail.name,
             "created_by": self.created_by_user.name,
             "created": created,
-            "submitted_by":
-            self.submitted_by_user.name if self.submitted_by_user else None,
-            "submitted":
-            self.submitted.strftime("%B %d, %Y") if self.submitted else None,
+            "submitted_by": (
+                self.submitted_by_user.name if self.submitted_by_user else None
+            ),
+            "submitted": (
+                self.submitted.strftime("%B %d, %Y")
+                if self.submitted
+                else None
+            ),
         }
 
     @property
@@ -324,11 +360,16 @@ class Data(Base):
             "name": self.name,
             "form": self.form_detail.info,
             "organisation": self.organisation_detail.serialize,
-            "submitted_by":
-            self.submitted_by_user.serialize if self.submitted_by_user
-            else None,
-            "submitted":
-            self.submitted.strftime("%B %d, %Y") if self.submitted else None,
+            "submitted_by": (
+                self.submitted_by_user.serialize
+                if self.submitted_by_user
+                else None
+            ),
+            "submitted": (
+                self.submitted.strftime("%B %d, %Y")
+                if self.submitted
+                else None
+            ),
             "answer": [a.to_report for a in self.answer],
         }
 
@@ -347,7 +388,7 @@ class Data(Base):
             "datapoint_name": f"{name} - {submitted_by} - {submitted}",
             "is_name_configured": True if self.name else False,
             "submitted_by": submitted_by,
-            "submitted": submitted
+            "submitted": submitted,
         }
 
 

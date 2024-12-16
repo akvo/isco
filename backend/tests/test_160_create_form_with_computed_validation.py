@@ -70,6 +70,7 @@ class TestFormWithComputedValidationRoutes:
                 "order": 1,
                 "member_access": [1],
                 "isco_access": [1],
+                "leading_question": None,
                 "question": None,
             },
         )
@@ -85,6 +86,7 @@ class TestFormWithComputedValidationRoutes:
             "order": 1,
             "repeat": False,
             "repeat_text": None,
+            "leading_question": None,
             "translations": [],
             "question": [],
         }
@@ -125,6 +127,7 @@ class TestFormWithComputedValidationRoutes:
             "core_mandatory": False,
             "deactivate": False,
             "autofield": None,
+            "is_repeat_identifier": False,
         }
         res = await client.post(
             app.url_path_for("question:create"),
@@ -158,6 +161,7 @@ class TestFormWithComputedValidationRoutes:
             "deactivate": False,
             "disableDelete": False,
             "autofield": None,
+            "is_repeat_identifier": False,
         }
         #
         # add question type number
@@ -184,6 +188,7 @@ class TestFormWithComputedValidationRoutes:
             "core_mandatory": False,
             "deactivate": False,
             "autofield": None,
+            "is_repeat_identifier": False,
         }
         res = await client.post(
             app.url_path_for("question:create"),
@@ -217,6 +222,7 @@ class TestFormWithComputedValidationRoutes:
             "deactivate": False,
             "disableDelete": False,
             "autofield": None,
+            "is_repeat_identifier": False,
         }
         #
         # add question type input
@@ -243,6 +249,7 @@ class TestFormWithComputedValidationRoutes:
             "core_mandatory": False,
             "deactivate": False,
             "autofield": None,
+            "is_repeat_identifier": False,
         }
         res = await client.post(
             app.url_path_for("question:create"),
@@ -276,6 +283,7 @@ class TestFormWithComputedValidationRoutes:
             "deactivate": False,
             "disableDelete": False,
             "autofield": None,
+            "is_repeat_identifier": False,
         }
         #
         # add question type autofield
@@ -305,6 +313,7 @@ class TestFormWithComputedValidationRoutes:
                 "multiline": False,
                 "fnString": "function () { return #15 }",
             },
+            "is_repeat_identifier": False,
         }
         res = await client.post(
             app.url_path_for("question:create"),
@@ -341,6 +350,7 @@ class TestFormWithComputedValidationRoutes:
                 "multiline": False,
                 "fnString": "function () { return #15 }",
             },
+            "is_repeat_identifier": False,
         }
 
     @pytest.mark.asyncio
