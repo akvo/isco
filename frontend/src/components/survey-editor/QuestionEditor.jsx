@@ -120,6 +120,7 @@ const QuestionEditor = ({
   const [datapointName, setDatapointName] = useState(false);
   const [activeLang, setActiveLang] = useState(null);
   const [allowNA, setAllowNA] = useState(false);
+  const [isRepeatIdentifierValue, setIsRepeatIdentifierValue] = useState(false);
 
   // handle when form languages updated
   useEffect(() => {
@@ -246,6 +247,10 @@ const QuestionEditor = ({
               form.setFieldsValue({ [transField]: val?.[key] });
             });
           });
+        }
+        // Handle leading_question -> is_repeat_identifier
+        if (key === "is_repeat_identifier") {
+          setIsRepeatIdentifierValue(value);
         }
       });
     }
@@ -417,6 +422,8 @@ const QuestionEditor = ({
                         setDatapointName={setDatapointName}
                         allowNA={allowNA}
                         setAllowNA={setAllowNA}
+                        isRepeatIdentifierValue={isRepeatIdentifierValue}
+                        setIsRepeatIdentifierValue={setIsRepeatIdentifierValue}
                       />
                       <div className="question-button-wrapper">
                         <Space align="center">

@@ -40,6 +40,7 @@ class AnswerDictWithQuestionName(TypedDict):
     question_order: int
     repeat_index: Optional[int] = None
     comment: Optional[str] = None
+    is_repeat_identifier: Optional[bool] = False
     value: Optional[
         Union[float, int, str, bool, dict, List[float], List[int], List[str]]
     ] = None
@@ -156,6 +157,7 @@ class Answer(Base):
             "question_name": q.name,
             "question_order": q.order,
             "repeat_index": self.repeat_index,
+            "is_repeat_identifier": self.question_detail.is_repeat_identifier,
             "comment": self.comment,
         }
         type = q.type

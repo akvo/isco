@@ -157,6 +157,12 @@ export const Webform = ({
     });
   }, [autoSave]);
 
+  // handle leading_question
+  const leadingQuestions = useMemo(() => {
+    const questions = forms?.question_group?.flatMap((qg) => qg.question);
+    return questions.filter((q) => q?.lead_repeat_group?.length);
+  }, [forms]);
+
   useEffect(() => {
     const meta = forms.question_group
       .filter((qg) => !qg?.repeatable)
@@ -189,6 +195,57 @@ export const Webform = ({
       ds.disable();
     }
   }, [autoSave]);
+
+  // handle leading_question
+  const updateRepeatByLeadingQuestionAnswer = useCallback(
+    ({ value, question_group }) => {
+      if (!leadingQuestions?.length) {
+        return question_group;
+      }
+      const answerId = Object.keys(value)[0];
+      const findLeadingQuestion = leadingQuestions.find(
+        (q) => q.id === parseInt(answerId)
+      );
+      if (
+        !findLeadingQuestion ||
+        !findLeadingQuestion?.lead_repeat_group?.length
+      ) {
+        return question_group;
+      }
+      const leadingQuestionAnswer = value?.[findLeadingQuestion.id] || null;
+      if (!leadingQuestionAnswer) {
+        return question_group;
+      }
+      // update repeat
+      const updated = question_group.map((x) => {
+        // if group id inside lead_repeat_group
+        if (findLeadingQuestion.lead_repeat_group.includes(x.id)) {
+          // update is_repeat_identifier default value
+          x.question
+            .filter((q) => q?.is_repeat_identifier)
+            ?.forEach((q) => {
+              const repeatKey = last(leadingQuestionAnswer);
+              let repeatAnswer = last(leadingQuestionAnswer);
+              if (q.type === "multiple_option") {
+                repeatAnswer = [repeatAnswer];
+              }
+              form.setFieldsValue({
+                [`${q.id}-${repeatKey}`]: repeatAnswer,
+              });
+            });
+          return {
+            ...x,
+            repeat: leadingQuestionAnswer?.length || 1,
+            repeats: leadingQuestionAnswer,
+          };
+        }
+        return x;
+      });
+      setUpdatedQuestionGroup(updated);
+      return updated;
+    },
+    [leadingQuestions, form]
+  );
 
   const handleBtnPrint = () => {
     setIsPrint(true);
@@ -280,6 +337,12 @@ export const Webform = ({
 
   const onValuesChange = useCallback(
     (qg, value /*, values */) => {
+      // TODO :: Handle save the repeat answer with leading question
+      const updatedQuestionGroupByLeadingQuestion =
+        updateRepeatByLeadingQuestionAnswer({
+          value,
+          question_group: qg,
+        });
       // filter form values
       const values = filterFormValues(form.getFieldsValue(), forms);
       const errors = form.getFieldsError();
@@ -298,14 +361,25 @@ export const Webform = ({
           (x.value || x.value === 0) &&
           !incompleteWithMoreError.includes(parseInt(x.id))
       );
-      const completeQg = qg
+      const completeQg = updatedQuestionGroupByLeadingQuestion
         .map((x, ix) => {
+          const isLeadingQuestion = x?.leading_question;
           let ids = x.question.map((q) => q.id);
           // handle repeat group question
           let ixs = [ix];
           if (x?.repeatable) {
             let iter = x?.repeat;
-            const suffix = iter > 1 ? `-${iter - 1}` : "";
+            let suffix = "";
+            // handle leading_question
+            if (isLeadingQuestion) {
+              // handle ids naming for leading_question
+              const repeatSuffix =
+                iter && x?.repeats?.length ? x.repeats[iter - 1] : "";
+              suffix = iter ? `-${repeatSuffix}` : "";
+            } else {
+              // normal repeat group
+              suffix = iter > 1 ? `-${iter - 1}` : "";
+            }
             do {
               const rids = x.question.map((q) => `${q.id}${suffix}`);
               ids = [...ids, ...rids];
@@ -358,7 +432,7 @@ export const Webform = ({
         });
       }
     },
-    [autoSave, form, forms, onChange]
+    [autoSave, form, forms, onChange, updateRepeatByLeadingQuestionAnswer]
   );
 
   useEffect(() => {
@@ -626,10 +700,12 @@ export const Webform = ({
         >
           {formsMemo?.question_group?.map((g, key) => {
             const isRepeatable = g?.repeatable;
-            const repeats =
-              g?.repeats && g?.repeats?.length
-                ? g.repeats
-                : range(isRepeatable ? g.repeat : 1);
+            // handle leading_question
+            const isLeadingQuestion = g?.leading_question;
+            let repeats = g?.repeats?.length ? g.repeats : range(1);
+            if (isLeadingQuestion) {
+              repeats = g?.repeats && g?.repeats?.length ? g.repeats : [];
+            }
             const headStyle =
               sidebar && sticky && isRepeatable
                 ? {

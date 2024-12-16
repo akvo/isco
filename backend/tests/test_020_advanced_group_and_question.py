@@ -49,6 +49,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
             "core_mandatory": True,
             "deactivate": False,
             "autofield": None,
+            "is_repeat_identifier": False,
             "option": [
                 {
                     "code": None,
@@ -135,6 +136,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
             "deactivate": False,
             "disableDelete": False,
             "autofield": None,
+            "is_repeat_identifier": False,
         }
 
     @pytest.mark.asyncio
@@ -177,6 +179,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
             "core_mandatory": True,
             "deactivate": False,
             "autofield": None,
+            "is_repeat_identifier": False,
         }
         res = await client.put(
             app.url_path_for("question:put", id=3),
@@ -236,6 +239,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
             "deactivate": False,
             "disableDelete": False,
             "autofield": None,
+            "is_repeat_identifier": False,
         }
 
     @pytest.mark.asyncio
@@ -258,6 +262,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
             "order": 2,
             "member_access": [1],
             "isco_access": [1],
+            "leading_question": None,
             "question": [
                 {
                     "form": None,
@@ -282,6 +287,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
                     "core_mandatory": True,
                     "deactivate": False,
                     "autofield": None,
+                    "is_repeat_identifier": False,
                 },
                 {
                     "form": None,
@@ -311,6 +317,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
                     "core_mandatory": False,
                     "deactivate": False,
                     "autofield": None,
+                    "is_repeat_identifier": False,
                 },
                 {
                     "form": None,
@@ -335,6 +342,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
                     "core_mandatory": False,
                     "deactivate": False,
                     "autofield": None,
+                    "is_repeat_identifier": False,
                 },
                 {
                     "form": None,
@@ -359,6 +367,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
                     "core_mandatory": False,
                     "deactivate": False,
                     "autofield": None,
+                    "is_repeat_identifier": False,
                 },
                 {
                     "form": None,
@@ -383,6 +392,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
                     "core_mandatory": False,
                     "deactivate": False,
                     "autofield": None,
+                    "is_repeat_identifier": False,
                 },
                 {
                     "form": None,
@@ -422,6 +432,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
                     "core_mandatory": False,
                     "deactivate": False,
                     "autofield": None,
+                    "is_repeat_identifier": False,
                 },
             ],
         }
@@ -442,6 +453,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
             "order": 2,
             "repeat": False,
             "repeat_text": None,
+            "leading_question": None,
             "translations": [],
             "question": [
                 {
@@ -469,6 +481,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
                     "deactivate": False,
                     "disableDelete": False,
                     "autofield": None,
+                    "is_repeat_identifier": False,
                 },
                 {
                     "cascade": None,
@@ -500,6 +513,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
                     "deactivate": False,
                     "disableDelete": False,
                     "autofield": None,
+                    "is_repeat_identifier": False,
                 },
                 {
                     "cascade": 1,
@@ -526,6 +540,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
                     "deactivate": False,
                     "disableDelete": False,
                     "autofield": None,
+                    "is_repeat_identifier": False,
                 },
                 {
                     "cascade": 2,
@@ -552,6 +567,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
                     "deactivate": False,
                     "disableDelete": False,
                     "autofield": None,
+                    "is_repeat_identifier": False,
                 },
                 {
                     "cascade": None,
@@ -578,6 +594,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
                     "deactivate": False,
                     "disableDelete": False,
                     "autofield": None,
+                    "is_repeat_identifier": False,
                 },
                 {
                     "cascade": None,
@@ -621,6 +638,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
                     "deactivate": False,
                     "disableDelete": False,
                     "autofield": None,
+                    "is_repeat_identifier": False,
                 },
             ],
         }

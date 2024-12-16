@@ -79,6 +79,7 @@ class TestQuestionRoutes:
                         "description": "Description",
                         "order": 1,
                         "repeatable": False,
+                        "leading_question": None,
                         "member_access": ["All"],
                         "isco_access": ["All"],
                         "question": [
@@ -93,6 +94,7 @@ class TestQuestionRoutes:
                                 "isco_access": ["All"],
                                 "coreMandatory": False,
                                 "deactivate": False,
+                                "is_repeat_identifier": False,
                             },
                             {
                                 "id": 15,
@@ -105,6 +107,7 @@ class TestQuestionRoutes:
                                 "isco_access": ["All"],
                                 "coreMandatory": False,
                                 "deactivate": False,
+                                "is_repeat_identifier": False,
                             },
                             {
                                 "id": 16,
@@ -117,6 +120,7 @@ class TestQuestionRoutes:
                                 "isco_access": ["All"],
                                 "coreMandatory": False,
                                 "deactivate": False,
+                                "is_repeat_identifier": False,
                             },
                             {
                                 "id": 17,
@@ -133,6 +137,7 @@ class TestQuestionRoutes:
                                     "fnString": "function () { return #15 }",
                                     "multiline": False,
                                 },
+                                "is_repeat_identifier": False,
                             },
                         ],
                     }
@@ -267,6 +272,7 @@ class TestQuestionRoutes:
                         "description": "Description",
                         "order": 1,
                         "repeatable": False,
+                        "leading_question": None,
                         "member_access": ["All"],
                         "isco_access": ["All"],
                         "question": [
@@ -281,6 +287,7 @@ class TestQuestionRoutes:
                                 "isco_access": ["All"],
                                 "coreMandatory": False,
                                 "deactivate": False,
+                                "is_repeat_identifier": False,
                             },
                             {
                                 "id": 15,
@@ -293,6 +300,7 @@ class TestQuestionRoutes:
                                 "isco_access": ["All"],
                                 "coreMandatory": False,
                                 "deactivate": False,
+                                "is_repeat_identifier": False,
                             },
                             {
                                 "id": 16,
@@ -305,6 +313,7 @@ class TestQuestionRoutes:
                                 "isco_access": ["All"],
                                 "coreMandatory": False,
                                 "deactivate": False,
+                                "is_repeat_identifier": False,
                             },
                         ],
                     }

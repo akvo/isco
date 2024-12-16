@@ -77,6 +77,7 @@ class TestThirdFormRoutes:
             "order": 1,
             "repeat": False,
             "repeat_text": None,
+            "leading_question": None,
             "translations": [],
             "question": [
                 {
@@ -104,6 +105,7 @@ class TestThirdFormRoutes:
                     "deactivate": False,
                     "disableDelete": False,
                     "autofield": None,
+                    "is_repeat_identifier": False,
                 }
             ],
         }
@@ -148,6 +150,7 @@ class TestThirdFormRoutes:
             "deactivate": False,
             "disableDelete": False,
             "autofield": None,
+            "is_repeat_identifier": False,
         }
 
     @pytest.mark.asyncio

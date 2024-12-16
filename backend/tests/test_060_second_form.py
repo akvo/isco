@@ -88,6 +88,7 @@ class TestSecondFormRoutes:
             "order": 1,
             "repeat": False,
             "repeat_text": None,
+            "leading_question": None,
             "translations": [],
             "question": [
                 {
@@ -115,6 +116,7 @@ class TestSecondFormRoutes:
                     "deactivate": False,
                     "disableDelete": False,
                     "autofield": None,
+                    "is_repeat_identifier": False,
                 }
             ],
         }
@@ -159,4 +161,5 @@ class TestSecondFormRoutes:
             "deactivate": False,
             "disableDelete": False,
             "autofield": None,
+            "is_repeat_identifier": False,
         }

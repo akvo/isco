@@ -52,6 +52,7 @@ export const defaultQuestionEditor = {
     multiline: false,
     fnString: null,
   },
+  is_repeat_identifier: false,
 };
 
 export const defaultQuestionGroupEditor = {
@@ -62,6 +63,9 @@ export const defaultQuestionGroupEditor = {
   translations: [],
   order: 1,
   repeat: false,
+  leading_question: null,
+  isco_access: [],
+  member_access: [],
   question: [],
 };
 

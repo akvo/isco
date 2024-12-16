@@ -44,6 +44,8 @@ const QuestionGroup = ({
   formRef,
 }) => {
   const isGroupAppear = showGroup.includes(index);
+  const isLeadingQuestion = group?.leading_question;
+
   return (
     <Card
       key={index}
@@ -93,7 +95,7 @@ const QuestionGroup = ({
           />
         </div>
       ))}
-      {isGroupAppear && (
+      {isGroupAppear && !isLeadingQuestion && (
         <BottomGroupButton
           group={group}
           index={index}

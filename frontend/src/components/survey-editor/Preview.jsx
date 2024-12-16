@@ -78,6 +78,7 @@ const Preview = () => {
               requiredSign: q.core_mandatory ? "**" : "*",
               member_access: qMemberAccess,
               isco_access: qIscoAccess,
+              is_repeat_identifier: q?.is_repeat_identifier || false,
               // add comment field
               extra: [
                 {
@@ -279,6 +280,16 @@ const Preview = () => {
               qVal = {
                 ...qVal,
                 dependency: dependency,
+              };
+            }
+            // handle lead_repeat_group to be add in question param
+            const leadsGroup = questionGroup.filter(
+              (qg) => qg?.leading_question === q.id
+            );
+            if (leadsGroup?.length) {
+              qVal = {
+                ...qVal,
+                lead_repeat_group: leadsGroup.map((qg) => qg.id),
               };
             }
             return qVal;
