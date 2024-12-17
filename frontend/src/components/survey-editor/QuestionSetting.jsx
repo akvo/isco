@@ -30,7 +30,11 @@ const { TabPane } = Tabs;
 const skipLogicQuestionType = ["option", "number", "multiple_option"];
 const datapointNameQuestionType = ["input", "option"];
 const allowNAQuestionType = ["number", "text", "input"];
-const allowIsRepeatIdentifierSettingQuestionType = ["input", "multiple_option"];
+const allowIsRepeatIdentifierSettingQuestionType = [
+  "input",
+  "multiple_option",
+  "option",
+];
 
 const QuestionSetting = ({
   form,

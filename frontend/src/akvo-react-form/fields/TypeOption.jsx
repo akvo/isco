@@ -18,6 +18,7 @@ const TypeOption = ({
   meta,
   requiredSign,
   uiText,
+  is_repeat_identifier,
 }) => {
   const form = Form.useFormInstance();
   const [options, setOptions] = useState([]);
@@ -150,7 +151,9 @@ const TypeOption = ({
                       }
                       value={newOption}
                       onChange={onNewOptionChange}
-                      disabled={disableAllowOtherInputField}
+                      disabled={
+                        disableAllowOtherInputField || is_repeat_identifier
+                      } // handle leading_question -> is_repeat_identifier
                     />
                   </Form.Item>
                 </Radio>
