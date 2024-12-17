@@ -159,21 +159,25 @@ const DataDetail = ({ record }) => {
 
       // Map into the repeat group with repeat_identifier value
       let dataSource = [];
-      history?.forEach((h) => {
-        const vHistory = v.map((curr) => {
-          const findAnswerHistory = h?.answer?.find(
-            (x) =>
-              x.question === curr.question &&
-              x.repeat_identifier === curr.repeat_identifier
-          );
-          return {
-            ...curr,
-            [`value_${h.year}`]: findAnswerHistory?.value || "",
-            [`comment_${h.year}`]: findAnswerHistory?.comment || "",
-          };
+      if (history?.length) {
+        history?.forEach((h) => {
+          const vHistory = v.map((curr) => {
+            const findAnswerHistory = h?.answer?.find(
+              (x) =>
+                x.question === curr.question &&
+                x.repeat_identifier === curr.repeat_identifier
+            );
+            return {
+              ...curr,
+              [`value_${h.year}`]: findAnswerHistory?.value || "",
+              [`comment_${h.year}`]: findAnswerHistory?.comment || "",
+            };
+          });
+          dataSource = [...dataSource, ...vHistory];
         });
-        dataSource = [...dataSource, ...vHistory];
-      });
+      } else {
+        dataSource = [...v];
+      }
 
       return (
         <Space

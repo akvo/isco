@@ -253,7 +253,7 @@ const QuestionGroupSetting = ({
                         name={leadingQuestionField}
                         rules={[
                           {
-                            required: true,
+                            required: false,
                             message: "Please select Leading Question",
                           },
                         ]}
