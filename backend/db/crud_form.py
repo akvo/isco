@@ -37,7 +37,7 @@ def get_form(session: Session, search: Optional[str] = None) -> List[FormDict]:
         forms = forms.filter(
             Form.name.ilike("%{}%".format(search.lower().strip()))
         )
-    forms = forms.all()
+    forms = forms.order_by(Form.created.desc()).all()
     return forms
 
 
