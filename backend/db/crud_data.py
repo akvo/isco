@@ -83,15 +83,17 @@ def delete_bulk(session: Session, ids: List[int]) -> None:
 
 def get_data(
     session: Session,
-    form: int,
     skip: int,
     perpage: int,
+    form: Optional[Union[int, str]] = None,
     submitted: Optional[bool] = False,
     org_ids: Optional[List[int]] = None,
     monitoring_round: Optional[int] = None,
     data_id: Optional[int] = None,
 ) -> PaginatedData:
-    data = session.query(Data).filter(Data.form == form)
+    data = session.query(Data)
+    if form and form != "all":
+        data = data.filter(Data.form == form)
     if data_id:
         data = data.filter(Data.id == data_id)
     if submitted:
@@ -246,19 +248,20 @@ def get_data_by_form(session: Session, form: int):
 
 
 def get_history_datapoint(
-    session: Session, form: int, organisation_id: int, last_year: int
+    session: Session,
+    organisation_id: int,
+    last_year: int,
+    form: Optional[Union[int, str]] = None,
 ):
     """Query the history data for submitted datapoint"""
-    data = (
-        session.query(Data)
-        .filter(
-            and_(
-                Data.form == form,
-                Data.organisation == organisation_id,
-                Data.submitted != null(),
-                extract("year", Data.submitted) != last_year,
-            )
+    data = session.query(Data)
+    if form and form != "all":
+        data = data.filter(Data.form == form)
+    data = data.filter(
+        and_(
+            Data.organisation == organisation_id,
+            Data.submitted != null(),
+            extract("year", Data.submitted) != last_year,
         )
-        .all()
-    )
+    ).all()
     return data

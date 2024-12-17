@@ -7,7 +7,7 @@ from math import ceil
 from fastapi import Depends, Request, Response, APIRouter, HTTPException, Query
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
-from typing import List, Optional
+from typing import List, Optional, Union
 from sqlalchemy import func, and_, extract, null
 from sqlalchemy.orm import Session
 import db.crud_data as crud
@@ -224,9 +224,9 @@ def notify_secretariat_admin(session: Session, user, form_name: str):
 )
 def get(
     req: Request,
-    form_id: int,
     page: int = 1,
     perpage: int = 10,
+    form_id: Optional[Union[int, str]] = None,
     submitted: Optional[bool] = False,
     filter_same_isco: Optional[bool] = False,
     monitoring_round: Optional[int] = Query(None),
@@ -261,11 +261,16 @@ def get(
 
     # transform cascade answer value
     result = [d.serializeWithQuestionName for d in data["data"]]
+
+    question_forms = [form_id]
+    if form_id == "all":
+        question_forms = [int(d.form) for d in data["data"]]
+
     questions = (
         session.query(Question)
         .filter(
             and_(
-                Question.form == form_id,
+                Question.form.in_(question_forms),
                 Question.type == QuestionType.cascade.value,
             )
         )
@@ -308,7 +313,11 @@ def get(
                 value = a["value"]
                 if qid in cascade_qids and value:
                     new_value = [cascades.get(int(float(x))) for x in value]
-                    a["value"] = "|".join(new_value) if new_value else value
+                    a["value"] = (
+                        "|".join(str(v) for v in new_value if v is not None)
+                        if new_value
+                        else value
+                    )
         history_data[f"{d.organisation}-{d.created.year}"] = history_result
 
     # transform cascade answer value by cascade list
@@ -318,7 +327,11 @@ def get(
             value = a["value"]
             if qid in cascade_qids and value:
                 new_value = [cascades.get(int(float(x))) for x in value]
-                a["value"] = "|".join(new_value) if new_value else value
+                a["value"] = (
+                    "|".join(str(v) for v in new_value if v is not None)
+                    if new_value
+                    else value
+                )
         # Add history answer
         res["history"] = history_data.get(
             f"{res['organisation']}-{res['year']}", []

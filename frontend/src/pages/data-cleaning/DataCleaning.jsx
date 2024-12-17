@@ -146,9 +146,11 @@ const DataCleaning = () => {
   }, [forms]);
 
   const fetchData = useCallback(() => {
-    if (formSelected) {
+    if (formSelected || dataID) {
       setIsLoading(true);
-      let url = `/data/form/${formSelected}?page=${page}&perpage=${pageSize}`;
+      let url = `/data/form/${
+        formSelected || "all"
+      }?page=${page}&perpage=${pageSize}`;
       url = `${url}&submitted=1&filter_same_isco=1`;
       if (selectedMonitoringRound) {
         url = `${url}&monitoring_round=${selectedMonitoringRound}`;
@@ -342,6 +344,13 @@ const DataCleaning = () => {
             <Col flex={1}>
               {" "}
               <Space wrap>
+                <InputNumber
+                  placeholder="Data ID"
+                  controls={false}
+                  onChange={handleDataIDFilter}
+                  value={dataID}
+                  // disabled={!formSelected}
+                />
                 <Select
                   showArrow
                   showSearch
@@ -380,13 +389,6 @@ const DataCleaning = () => {
                 <MonitoringRoundSelector
                   value={selectedMonitoringRound}
                   onChange={setSelectedMonitoringRound}
-                  disabled={!formSelected}
-                />
-                <InputNumber
-                  placeholder="Data ID"
-                  controls={false}
-                  onChange={handleDataIDFilter}
-                  value={dataID}
                   disabled={!formSelected}
                 />
               </Space>
