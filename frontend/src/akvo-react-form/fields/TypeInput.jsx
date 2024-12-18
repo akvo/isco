@@ -1,24 +1,10 @@
 import React, { useCallback, useEffect, useState, useMemo } from "react";
-import { Form, Input, Table } from "antd";
-import { Extra, FieldLabel } from "../support";
+import { Form, Input } from "antd";
+import { Extra, FieldLabel, RepeatTableView } from "../support";
 import GlobalStore from "../lib/store";
 import { InputFieldIcon } from "../lib/svgIcons";
 import { DataUnavailableField } from "../components";
 import { renderQuestionLabelForErrorMessage } from "../lib";
-
-const repeatColumns = [
-  {
-    title: "Repeat",
-    dataIndex: "label",
-    key: "label",
-    width: "30%",
-  },
-  {
-    title: "Field",
-    dataIndex: "field",
-    key: "field",
-  },
-];
 
 const InputField = ({
   id,
@@ -37,7 +23,6 @@ const InputField = ({
   setShowPrefix,
   naChecked,
   currentValue,
-  style = {},
 }) => (
   <Form.Item
     className="arf-field-child"
@@ -67,15 +52,19 @@ const InputField = ({
     required={coreMandatory ? required : !naChecked ? required : false}
   >
     <Input
-      style={{ width: "100%", ...style }}
+      style={{ width: "100%" }}
       onBlur={() => {
-        setShowPrefix(true);
+        setShowPrefix((prev) => prev.filter((p) => p !== id));
       }}
-      onFocus={() => setShowPrefix(false)}
+      onFocus={() => setShowPrefix((prev) => [...prev, id])}
       onChange={onChange}
       addonAfter={addonAfter}
       addonBefore={addonBefore}
-      prefix={fieldIcons && showPrefix && !currentValue && <InputFieldIcon />}
+      prefix={
+        fieldIcons &&
+        !showPrefix?.includes(id) &&
+        !currentValue && <InputFieldIcon />
+      }
       disabled={naChecked || is_repeat_identifier} // handle leading_question -> is_repeat_identifier
     />
   </Form.Item>
@@ -102,7 +91,7 @@ const TypeInput = ({
   repeats,
 }) => {
   const form = Form.useFormInstance();
-  const [showPrefix, setShowPrefix] = useState(true);
+  const [showPrefix, setShowPrefix] = useState([]);
   const extraBefore = extra
     ? extra.filter((ex) => ex.placement === "before")
     : [];
@@ -159,6 +148,7 @@ const TypeInput = ({
     [updateDataPointName]
   );
 
+  // generate table view of repeat group question
   const repeatInputs = useMemo(() => {
     return repeats.map((r) => {
       return {
@@ -181,7 +171,6 @@ const TypeInput = ({
             setShowPrefix={setShowPrefix}
             naChecked={naChecked}
             currentValue={currentValue}
-            style={{ border: "1px solid" }}
           />
         ),
       };
@@ -206,73 +195,60 @@ const TypeInput = ({
   ]);
 
   return (
-    <div className="arf-field">
-      <Form.Item
-        // className="arf-field"
-        label={
-          <FieldLabel
-            keyform={keyform}
-            content={name}
-            requiredSign={required ? requiredSign : null}
-            fieldIcons={fieldIcons}
-          />
-        }
-        tooltip={tooltip?.text}
-        required={required}
-      >
-        {!!extraBefore?.length &&
-          extraBefore.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
-
-        {/* Show as repeat inputs or not */}
-        {show_repeat_as_table ? (
-          <Table
-            className="arf-field-child"
-            rowKey={(record) => {
-              return `${id}-${record?.label}`;
-            }}
-            size="small"
-            showHeader={false}
-            columns={repeatColumns}
-            dataSource={repeatInputs}
-            pagination={false}
-            bordered={false}
-          />
-        ) : (
-          <InputField
-            id={id}
-            name={name}
-            keyform={keyform}
-            required={required}
-            rules={rules}
-            addonAfter={addonAfter}
-            addonBefore={addonBefore}
-            fieldIcons={fieldIcons}
-            coreMandatory={coreMandatory}
-            uiText={uiText}
-            is_repeat_identifier={is_repeat_identifier}
-            onChange={onChange}
-            showPrefix={showPrefix}
-            setShowPrefix={setShowPrefix}
-            naChecked={naChecked}
-            currentValue={currentValue}
-          />
-        )}
-        {/* EOL Show as repeat inputs or not */}
-
-        {/* inputDataUnavailable */}
-        <DataUnavailableField
-          allowNA={rule?.allowNA}
-          coreMandatory={coreMandatory}
+    <Form.Item
+      className="arf-field"
+      label={
+        <FieldLabel
           keyform={keyform}
-          id={id}
-          naChecked={naChecked}
-          setNaChecked={setNaChecked}
+          content={name}
+          requiredSign={required ? requiredSign : null}
+          fieldIcons={fieldIcons}
         />
+      }
+      tooltip={tooltip?.text}
+      required={required}
+    >
+      {!!extraBefore?.length &&
+        extraBefore.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
 
-        {!!extraAfter?.length &&
-          extraAfter.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
-      </Form.Item>
-    </div>
+      {/* Show as repeat inputs or not */}
+      {show_repeat_as_table ? (
+        <RepeatTableView id={id} dataSource={repeatInputs} />
+      ) : (
+        <InputField
+          id={id}
+          name={name}
+          keyform={keyform}
+          required={required}
+          rules={rules}
+          addonAfter={addonAfter}
+          addonBefore={addonBefore}
+          fieldIcons={fieldIcons}
+          coreMandatory={coreMandatory}
+          uiText={uiText}
+          is_repeat_identifier={is_repeat_identifier}
+          onChange={onChange}
+          showPrefix={showPrefix}
+          setShowPrefix={setShowPrefix}
+          naChecked={naChecked}
+          currentValue={currentValue}
+        />
+      )}
+      {/* EOL Show as repeat inputs or not */}
+
+      {/* inputDataUnavailable */}
+      <DataUnavailableField
+        allowNA={rule?.allowNA}
+        coreMandatory={coreMandatory}
+        keyform={keyform}
+        id={id}
+        naChecked={naChecked}
+        setNaChecked={setNaChecked}
+      />
+
+      {!!extraAfter?.length &&
+        extraAfter.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
+    </Form.Item>
   );
 };
 export default TypeInput;
