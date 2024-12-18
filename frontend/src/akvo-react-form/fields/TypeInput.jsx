@@ -226,6 +226,7 @@ const TypeInput = ({
         {/* Show as repeat inputs or not */}
         {show_repeat_as_table ? (
           <Table
+            className="arf-field-child"
             rowKey={(record) => {
               return `${id}-${record?.label}`;
             }}
