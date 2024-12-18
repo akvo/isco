@@ -20,6 +20,67 @@ const repeatColumns = [
   },
 ];
 
+const InputField = ({
+  id,
+  name,
+  keyform,
+  required,
+  rules,
+  addonAfter,
+  addonBefore,
+  fieldIcons = true,
+  coreMandatory,
+  uiText,
+  is_repeat_identifier,
+  onChange,
+  showPrefix,
+  setShowPrefix,
+  naChecked,
+  currentValue,
+  style = {},
+}) => (
+  <Form.Item
+    className="arf-field-child"
+    key={keyform}
+    name={id}
+    rules={[
+      ...rules,
+      {
+        validator: (_, value) => {
+          const questionLabel = renderQuestionLabelForErrorMessage(
+            name.props.children
+          );
+          const requiredErr = `${questionLabel} ${uiText.errorIsRequired}`;
+          if (value || value === 0) {
+            return Promise.resolve();
+          }
+          if (!coreMandatory && naChecked) {
+            return Promise.resolve();
+          }
+          if (!coreMandatory && !naChecked && required) {
+            return Promise.reject(new Error(requiredErr));
+          }
+          return Promise.resolve();
+        },
+      },
+    ]}
+    required={coreMandatory ? required : !naChecked ? required : false}
+  >
+    <Input
+      style={{ width: "100%", ...style }}
+      onBlur={() => {
+        setShowPrefix(true);
+      }}
+      onFocus={() => setShowPrefix(false)}
+      onChange={onChange}
+      addonAfter={addonAfter}
+      addonBefore={addonBefore}
+      prefix={fieldIcons && showPrefix && !currentValue && <InputFieldIcon />}
+      disabled={naChecked || is_repeat_identifier} // handle leading_question -> is_repeat_identifier
+    />
+  </Form.Item>
+);
+
 const TypeInput = ({
   id,
   name,
@@ -91,62 +152,58 @@ const TypeInput = ({
     }
   }, [id, currentValue, coreMandatory]);
 
-  const onChange = (e) => {
-    console.log(e.target.value);
-    updateDataPointName(e.target.value);
-  };
-
-  const InputField = ({ fieldName }) => (
-    <Form.Item
-      className="arf-field-child"
-      key={keyform}
-      name={fieldName}
-      rules={[
-        ...rules,
-        {
-          validator: (_, value) => {
-            const questionLabel = renderQuestionLabelForErrorMessage(
-              name.props.children
-            );
-            const requiredErr = `${questionLabel} ${uiText.errorIsRequired}`;
-            if (value || value === 0) {
-              return Promise.resolve();
-            }
-            if (!coreMandatory && naChecked) {
-              return Promise.resolve();
-            }
-            if (!coreMandatory && !naChecked && required) {
-              return Promise.reject(new Error(requiredErr));
-            }
-            return Promise.resolve();
-          },
-        },
-      ]}
-      required={coreMandatory ? required : !naChecked ? required : false}
-    >
-      <Input
-        sytle={{ width: "100%" }}
-        onBlur={() => {
-          setShowPrefix(true);
-        }}
-        onFocus={() => setShowPrefix(false)}
-        onChange={onChange}
-        addonAfter={addonAfter}
-        addonBefore={addonBefore}
-        prefix={fieldIcons && showPrefix && !currentValue && <InputFieldIcon />}
-        disabled={naChecked || is_repeat_identifier} // handle leading_question -> is_repeat_identifier
-      />
-    </Form.Item>
+  const onChange = useCallback(
+    (e) => {
+      updateDataPointName(e.target.value);
+    },
+    [updateDataPointName]
   );
 
   const repeatInputs = useMemo(() => {
     return repeats.map((r) => {
       return {
         label: r,
-        field: <InputField fieldName={`${id}-${r}`} />,
+        field: (
+          <InputField
+            id={`${id}-${r}`}
+            name={name}
+            keyform={keyform}
+            required={required}
+            rules={rules}
+            addonAfter={addonAfter}
+            addonBefore={addonBefore}
+            fieldIcons={fieldIcons}
+            coreMandatory={coreMandatory}
+            uiText={uiText}
+            is_repeat_identifier={is_repeat_identifier}
+            onChange={onChange}
+            showPrefix={showPrefix}
+            setShowPrefix={setShowPrefix}
+            naChecked={naChecked}
+            currentValue={currentValue}
+            style={{ border: "1px solid" }}
+          />
+        ),
       };
     });
-  }, [repeats]);
+  }, [
+    repeats,
+    addonAfter,
+    addonBefore,
+    coreMandatory,
+    currentValue,
+    fieldIcons,
+    id,
+    is_repeat_identifier,
+    keyform,
+    naChecked,
+    name,
+    onChange,
+    required,
+    rules,
+    showPrefix,
+    uiText,
+  ]);
 
   return (
     <div className="arf-field">
@@ -169,7 +226,6 @@ const TypeInput = ({
         {/* Show as repeat inputs or not */}
         {show_repeat_as_table ? (
           <Table
-            className="arf-field-child"
             rowKey={(record) => {
               return `${id}-${record?.label}`;
             }}
@@ -178,50 +234,27 @@ const TypeInput = ({
             columns={repeatColumns}
             dataSource={repeatInputs}
             pagination={false}
+            bordered={false}
           />
         ) : (
-          <Form.Item
-            className="arf-field-child"
-            key={keyform}
-            name={id}
-            rules={[
-              ...rules,
-              {
-                validator: (_, value) => {
-                  const questionLabel = renderQuestionLabelForErrorMessage(
-                    name.props.children
-                  );
-                  const requiredErr = `${questionLabel} ${uiText.errorIsRequired}`;
-                  if (value || value === 0) {
-                    return Promise.resolve();
-                  }
-                  if (!coreMandatory && naChecked) {
-                    return Promise.resolve();
-                  }
-                  if (!coreMandatory && !naChecked && required) {
-                    return Promise.reject(new Error(requiredErr));
-                  }
-                  return Promise.resolve();
-                },
-              },
-            ]}
-            required={coreMandatory ? required : !naChecked ? required : false}
-          >
-            <Input
-              sytle={{ width: "100%" }}
-              onBlur={() => {
-                setShowPrefix(true);
-              }}
-              onFocus={() => setShowPrefix(false)}
-              onChange={onChange}
-              addonAfter={addonAfter}
-              addonBefore={addonBefore}
-              prefix={
-                fieldIcons && showPrefix && !currentValue && <InputFieldIcon />
-              }
-              disabled={naChecked || is_repeat_identifier} // handle leading_question -> is_repeat_identifier
-            />
-          </Form.Item>
+          <InputField
+            id={id}
+            name={name}
+            keyform={keyform}
+            required={required}
+            rules={rules}
+            addonAfter={addonAfter}
+            addonBefore={addonBefore}
+            fieldIcons={fieldIcons}
+            coreMandatory={coreMandatory}
+            uiText={uiText}
+            is_repeat_identifier={is_repeat_identifier}
+            onChange={onChange}
+            showPrefix={showPrefix}
+            setShowPrefix={setShowPrefix}
+            naChecked={naChecked}
+            currentValue={currentValue}
+          />
         )}
         {/* EOL Show as repeat inputs or not */}
 

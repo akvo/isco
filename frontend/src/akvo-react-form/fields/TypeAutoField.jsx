@@ -211,7 +211,7 @@ const TypeAutoField = ({
         required={required}
       >
         <Input
-          sytle={{ width: "100%" }}
+          style={{ width: "100%" }}
           addonAfter={addonAfter}
           addonBefore={addonBefore}
           disabled
