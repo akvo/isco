@@ -704,8 +704,22 @@ export const Webform = ({
             const isLeadingQuestion = g?.leading_question;
             let repeats = g?.repeats?.length ? g.repeats : range(1);
             if (isLeadingQuestion) {
-              repeats = g?.repeats && g?.repeats?.length ? g.repeats : [];
+              /**
+                // This is for the normal repeat group UI Style
+                repeats = g?.repeats && g?.repeats?.length ? g.repeats : [];
+              */
+              // This is for the repeat group inside each question
+              // TODO :: for this table view approach we need to save the leading question answer as repeat index
+              repeats = g?.repeats && g?.repeats?.length ? range(1) : [];
             }
+            // This is for the repeat group inside each question
+            // to show the repeat group as a table
+            g["question"] = g["question"].map((q) => ({
+              ...q,
+              show_repeat_as_table:
+                g?.repeats && g?.repeats?.length ? true : false,
+              repeats: g?.repeats && g?.repeats?.length ? g.repeats : [],
+            }));
             const headStyle =
               sidebar && sticky && isRepeatable
                 ? {
