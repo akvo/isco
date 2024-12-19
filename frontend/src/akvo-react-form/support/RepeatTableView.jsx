@@ -21,10 +21,10 @@ import {
 
 const RepeatTableView = ({ id, dataSource = [] }) => {
   // GridView
-  return dataSource.map((ds, dsi) => {
+  return dataSource.map((ds) => {
     return (
       <Row
-        key={`${id}-${dsi}`}
+        key={`${id}-${ds.label}`}
         gutter={[14, 14]}
         align="middle"
         style={{ paddingLeft: "20px" }}
