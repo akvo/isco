@@ -1,6 +1,12 @@
-import React, { useEffect, useCallback, useRef, useState } from "react";
+import React, {
+  useEffect,
+  useCallback,
+  useRef,
+  useState,
+  useMemo,
+} from "react";
 import { Form, InputNumber } from "antd";
-import { Extra, FieldLabel } from "../support";
+import { Extra, FieldLabel, RepeatTableView } from "../support";
 import GlobalStore from "../lib/store";
 import { InputNumberIcon, InputNumberDecimalIcon } from "../lib/svgIcons";
 import { DataUnavailableField } from "../components";
@@ -11,6 +17,94 @@ const dataNaTexts = [
   parentUIText.en.inputDataUnavailable,
   parentUIText.de.inputDataUnavailable,
 ];
+
+const NumberField = ({
+  id,
+  name,
+  keyform,
+  uiText,
+  required,
+  coreMandatory,
+  naChecked,
+  numberRef,
+  onChange,
+  validateNumber,
+  setShowPrefix,
+  showPrefix,
+  addonAfter,
+  fieldIcons,
+  currentValue,
+  addonBefore,
+  error,
+  rules,
+  isError,
+}) => (
+  <div>
+    <Form.Item
+      key={keyform}
+      name={id}
+      rules={[
+        ...rules,
+        {
+          validator: (_, value) => {
+            const questionLabel = renderQuestionLabelForErrorMessage(
+              name.props.children
+            );
+            const requiredErr = `${questionLabel} ${uiText.errorIsRequired}`;
+            if (value || value === 0) {
+              return Promise.resolve();
+            }
+            if (!coreMandatory && naChecked) {
+              return Promise.resolve();
+            }
+            if (!coreMandatory && !naChecked && required) {
+              return Promise.reject(new Error(requiredErr));
+            }
+            return Promise.resolve();
+          },
+        },
+      ]}
+      className="arf-field-child"
+      required={coreMandatory ? required : !naChecked ? required : false}
+    >
+      <InputNumber
+        onBlur={() => {
+          validateNumber(numberRef.current.value, id);
+          setShowPrefix((prev) => prev.filter((p) => p !== id));
+        }}
+        onFocus={() => setShowPrefix((prev) => [...prev, id])}
+        ref={numberRef}
+        inputMode="numeric"
+        style={{ width: "100%" }}
+        onChange={(e) => onChange(e, id)}
+        addonAfter={addonAfter}
+        prefix={
+          fieldIcons &&
+          !showPrefix.includes(id) &&
+          !currentValue && (
+            <>
+              {rules?.filter((item) => item.allowDecimal)?.length === 0 ? (
+                <InputNumberIcon />
+              ) : (
+                <InputNumberDecimalIcon />
+              )}
+            </>
+          )
+        }
+        addonBefore={addonBefore}
+        disabled={naChecked}
+      />
+    </Form.Item>
+    {isError?.[id] && (
+      <div
+        style={{ marginTop: "-10px" }}
+        className="ant-form-item-explain-error"
+      >
+        {error?.[id]}
+      </div>
+    )}
+  </div>
+);
 
 const TypeNumber = ({
   id,
@@ -28,12 +122,14 @@ const TypeNumber = ({
   fieldIcons = true,
   uiText,
   rule,
+  show_repeat_as_table,
+  repeats,
   // formRef,
 }) => {
   const numberRef = useRef();
-  const [isValid, setIsValid] = useState(true);
-  const [error, setError] = useState("");
-  const [showPrefix, setShowPrefix] = useState(true);
+  const [isError, setIsError] = useState({});
+  const [error, setError] = useState({});
+  const [showPrefix, setShowPrefix] = useState([]);
   const [naChecked, setNaChecked] = useState(false);
 
   const form = Form.useFormInstance();
@@ -94,18 +190,71 @@ const TypeNumber = ({
     }
   }, [id, currentValue, coreMandatory]);
 
-  const onChange = (value) => {
-    setError("");
-    setIsValid(true);
-    updateDataPointName(value);
-  };
+  const onChange = useCallback(
+    (value, fieldId) => {
+      setError((prev) => ({ ...prev, [fieldId]: "" }));
+      setIsError((prev) => ({ ...prev, [fieldId]: false }));
+      updateDataPointName(value);
+    },
+    [updateDataPointName, setError, setIsError]
+  );
 
-  const validateNumber = (v) => {
+  const validateNumber = (v, fieldId) => {
     if (v && isNaN(v) && (typeof v === "string" || v instanceof String)) {
-      setError("Only numbers are allowed");
-      setIsValid(false);
+      setError((prev) => ({ ...prev, [fieldId]: "Only numbers are allowed" }));
+      setIsError((prev) => ({ ...prev, [fieldId]: true }));
     }
   };
+
+  // generate table view of repeat group question
+  const repeatInputs = useMemo(() => {
+    return repeats.map((r) => {
+      return {
+        label: r,
+        field: (
+          <NumberField
+            id={`${id}-${r}`}
+            name={name}
+            keyform={keyform}
+            uiText={uiText}
+            required={required}
+            coreMandatory={coreMandatory}
+            naChecked={naChecked}
+            numberRef={numberRef}
+            onChange={onChange}
+            validateNumber={validateNumber}
+            setShowPrefix={setShowPrefix}
+            showPrefix={showPrefix}
+            addonAfter={addonAfter}
+            fieldIcons={fieldIcons}
+            currentValue={currentValue}
+            addonBefore={addonBefore}
+            error={error}
+            rules={rules}
+            isError={isError}
+          />
+        ),
+      };
+    });
+  }, [
+    repeats,
+    addonAfter,
+    addonBefore,
+    coreMandatory,
+    currentValue,
+    fieldIcons,
+    id,
+    keyform,
+    naChecked,
+    name,
+    onChange,
+    required,
+    rules,
+    showPrefix,
+    uiText,
+    error,
+    isError,
+  ]);
 
   return (
     <Form.Item
@@ -122,70 +271,34 @@ const TypeNumber = ({
     >
       {!!extraBefore?.length &&
         extraBefore.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
-      <Form.Item
-        key={keyform}
-        name={id}
-        rules={[
-          ...rules,
-          {
-            validator: (_, value) => {
-              const questionLabel = renderQuestionLabelForErrorMessage(
-                name.props.children
-              );
-              const requiredErr = `${questionLabel} ${uiText.errorIsRequired}`;
-              if (value || value === 0) {
-                return Promise.resolve();
-              }
-              if (!coreMandatory && naChecked) {
-                return Promise.resolve();
-              }
-              if (!coreMandatory && !naChecked && required) {
-                return Promise.reject(new Error(requiredErr));
-              }
-              return Promise.resolve();
-            },
-          },
-        ]}
-        className="arf-field-child"
-        required={coreMandatory ? required : !naChecked ? required : false}
-      >
-        <InputNumber
-          onBlur={() => {
-            validateNumber(numberRef.current.value);
-            setShowPrefix(true);
-          }}
-          onFocus={() => setShowPrefix(false)}
-          ref={numberRef}
-          inputMode="numeric"
-          style={{ width: "100%" }}
-          onChange={onChange}
-          addonAfter={addonAfter}
-          prefix={
-            fieldIcons &&
-            showPrefix &&
-            !currentValue && (
-              <>
-                {rules?.filter((item) => item.allowDecimal)?.length === 0 ? (
-                  <InputNumberIcon />
-                ) : (
-                  <InputNumberDecimalIcon />
-                )}
-              </>
-            )
-          }
-          addonBefore={addonBefore}
-          disabled={naChecked}
-        />
-      </Form.Item>
 
-      {!isValid && (
-        <div
-          style={{ marginTop: "-10px" }}
-          className="ant-form-item-explain-error"
-        >
-          {error}
-        </div>
+      {/* Show as repeat inputs or not */}
+      {show_repeat_as_table ? (
+        <RepeatTableView id={id} dataSource={repeatInputs} />
+      ) : (
+        <NumberField
+          id={id}
+          name={name}
+          keyform={keyform}
+          uiText={uiText}
+          required={required}
+          coreMandatory={coreMandatory}
+          naChecked={naChecked}
+          numberRef={numberRef}
+          onChange={onChange}
+          validateNumber={validateNumber}
+          setShowPrefix={setShowPrefix}
+          showPrefix={showPrefix}
+          addonAfter={addonAfter}
+          fieldIcons={fieldIcons}
+          currentValue={currentValue}
+          addonBefore={addonBefore}
+          error={error}
+          rules={rules}
+          isError={isError}
+        />
       )}
+      {/* EOL Show as repeat inputs or not */}
 
       {/* inputDataUnavailable */}
       <DataUnavailableField

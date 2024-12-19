@@ -8,3 +8,4 @@ export { default as FieldLabel } from "./FieldLabel";
 export { default as Sidebar } from "./Sidebar";
 export { default as MobileFooter } from "./MobileFooter";
 export { default as LeftDrawer } from "./LeftDrawer";
+export { default as RepeatTableView } from "./RepeatTableView";
