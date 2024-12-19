@@ -1,10 +1,74 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { Form, Input } from "antd";
-import { Extra, FieldLabel } from "../support";
+import { Extra, FieldLabel, RepeatTableView } from "../support";
 import GlobalStore from "../lib/store";
 import { InputFieldIcon } from "../lib/svgIcons";
 import { DataUnavailableField } from "../components";
 import { renderQuestionLabelForErrorMessage } from "../lib";
+
+const InputField = ({
+  id,
+  name,
+  keyform,
+  required,
+  rules,
+  addonAfter,
+  addonBefore,
+  fieldIcons = true,
+  coreMandatory,
+  uiText,
+  is_repeat_identifier,
+  onChange,
+  showPrefix,
+  setShowPrefix,
+  naChecked,
+  currentValue,
+}) => (
+  <Form.Item
+    className="arf-field-child"
+    key={keyform}
+    name={id}
+    rules={[
+      ...rules,
+      {
+        validator: (_, value) => {
+          const questionLabel = renderQuestionLabelForErrorMessage(
+            name.props.children
+          );
+          const requiredErr = `${questionLabel} ${uiText.errorIsRequired}`;
+          if (value || value === 0) {
+            return Promise.resolve();
+          }
+          if (!coreMandatory && naChecked) {
+            return Promise.resolve();
+          }
+          if (!coreMandatory && !naChecked && required) {
+            return Promise.reject(new Error(requiredErr));
+          }
+          return Promise.resolve();
+        },
+      },
+    ]}
+    required={coreMandatory ? required : !naChecked ? required : false}
+  >
+    <Input
+      style={{ width: "100%" }}
+      onBlur={() => {
+        setShowPrefix((prev) => prev.filter((p) => p !== id));
+      }}
+      onFocus={() => setShowPrefix((prev) => [...prev, id])}
+      onChange={onChange}
+      addonAfter={addonAfter}
+      addonBefore={addonBefore}
+      prefix={
+        fieldIcons &&
+        !showPrefix?.includes(id) &&
+        !currentValue && <InputFieldIcon />
+      }
+      disabled={naChecked || is_repeat_identifier} // handle leading_question -> is_repeat_identifier
+    />
+  </Form.Item>
+);
 
 const TypeInput = ({
   id,
@@ -23,9 +87,11 @@ const TypeInput = ({
   uiText,
   rule,
   is_repeat_identifier,
+  show_repeat_as_table,
+  repeats,
 }) => {
   const form = Form.useFormInstance();
-  const [showPrefix, setShowPrefix] = useState(true);
+  const [showPrefix, setShowPrefix] = useState([]);
   const extraBefore = extra
     ? extra.filter((ex) => ex.placement === "before")
     : [];
@@ -75,9 +141,58 @@ const TypeInput = ({
     }
   }, [id, currentValue, coreMandatory]);
 
-  const onChange = (e) => {
-    updateDataPointName(e.target.value);
-  };
+  const onChange = useCallback(
+    (e) => {
+      updateDataPointName(e.target.value);
+    },
+    [updateDataPointName]
+  );
+
+  // generate table view of repeat group question
+  const repeatInputs = useMemo(() => {
+    return repeats.map((r) => {
+      return {
+        label: r,
+        field: (
+          <InputField
+            id={`${id}-${r}`}
+            name={name}
+            keyform={keyform}
+            required={required}
+            rules={rules}
+            addonAfter={addonAfter}
+            addonBefore={addonBefore}
+            fieldIcons={fieldIcons}
+            coreMandatory={coreMandatory}
+            uiText={uiText}
+            is_repeat_identifier={is_repeat_identifier}
+            onChange={onChange}
+            showPrefix={showPrefix}
+            setShowPrefix={setShowPrefix}
+            naChecked={naChecked}
+            currentValue={currentValue}
+          />
+        ),
+      };
+    });
+  }, [
+    repeats,
+    addonAfter,
+    addonBefore,
+    coreMandatory,
+    currentValue,
+    fieldIcons,
+    id,
+    is_repeat_identifier,
+    keyform,
+    naChecked,
+    name,
+    onChange,
+    required,
+    rules,
+    showPrefix,
+    uiText,
+  ]);
 
   return (
     <Form.Item
@@ -95,48 +210,31 @@ const TypeInput = ({
     >
       {!!extraBefore?.length &&
         extraBefore.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
-      <Form.Item
-        className="arf-field-child"
-        key={keyform}
-        name={id}
-        rules={[
-          ...rules,
-          {
-            validator: (_, value) => {
-              const questionLabel = renderQuestionLabelForErrorMessage(
-                name.props.children
-              );
-              const requiredErr = `${questionLabel} ${uiText.errorIsRequired}`;
-              if (value || value === 0) {
-                return Promise.resolve();
-              }
-              if (!coreMandatory && naChecked) {
-                return Promise.resolve();
-              }
-              if (!coreMandatory && !naChecked && required) {
-                return Promise.reject(new Error(requiredErr));
-              }
-              return Promise.resolve();
-            },
-          },
-        ]}
-        required={coreMandatory ? required : !naChecked ? required : false}
-      >
-        <Input
-          sytle={{ width: "100%" }}
-          onBlur={() => {
-            setShowPrefix(true);
-          }}
-          onFocus={() => setShowPrefix(false)}
-          onChange={onChange}
+
+      {/* Show as repeat inputs or not */}
+      {show_repeat_as_table ? (
+        <RepeatTableView id={id} dataSource={repeatInputs} />
+      ) : (
+        <InputField
+          id={id}
+          name={name}
+          keyform={keyform}
+          required={required}
+          rules={rules}
           addonAfter={addonAfter}
           addonBefore={addonBefore}
-          prefix={
-            fieldIcons && showPrefix && !currentValue && <InputFieldIcon />
-          }
-          disabled={naChecked || is_repeat_identifier} // handle leading_question -> is_repeat_identifier
+          fieldIcons={fieldIcons}
+          coreMandatory={coreMandatory}
+          uiText={uiText}
+          is_repeat_identifier={is_repeat_identifier}
+          onChange={onChange}
+          showPrefix={showPrefix}
+          setShowPrefix={setShowPrefix}
+          naChecked={naChecked}
+          currentValue={currentValue}
         />
-      </Form.Item>
+      )}
+      {/* EOL Show as repeat inputs or not */}
 
       {/* inputDataUnavailable */}
       <DataUnavailableField

@@ -337,7 +337,7 @@ export const Webform = ({
 
   const onValuesChange = useCallback(
     (qg, value /*, values */) => {
-      // TODO :: Handle save the repeat answer with leading question
+      // handle leading question
       const updatedQuestionGroupByLeadingQuestion =
         updateRepeatByLeadingQuestionAnswer({
           value,
@@ -444,7 +444,11 @@ export const Webform = ({
       const allQuestions =
         forms?.question_group
           ?.map((qg, qgi) =>
-            qg.question.map((q) => ({ ...q, groupIndex: qgi }))
+            qg.question.map((q) => ({
+              ...q,
+              groupIndex: qgi,
+              group_leading_question: qg?.leading_question || null,
+            }))
           )
           ?.flatMap((q) => q) || [];
       const groupRepeats = transformForm(forms)?.question_group?.map((qg) => {
@@ -452,8 +456,20 @@ export const Webform = ({
           qg.question.map((q) => q.id).includes(i.question)
         );
         const rep = maxBy(q, "repeatIndex")?.repeatIndex;
-        if (rep) {
+        // handle not leading question when load initial value
+        if (!qg?.leading_question && rep) {
           return { ...qg, repeat: rep + 1, repeats: range(rep + 1) };
+        }
+        // handle leading question when load initial value
+        if (qg?.leading_question && rep) {
+          const findLeadingAnswer = initialValue?.find(
+            (v) => v.question === qg.leading_question
+          );
+          return {
+            ...qg,
+            repeat: rep + 1,
+            repeats: findLeadingAnswer?.value || range(rep + 1),
+          };
         }
         return qg;
       });
@@ -461,9 +477,24 @@ export const Webform = ({
 
       for (const val of initialValue) {
         const question = allQuestions.find((q) => q.id === val.question);
-        const objName = val?.repeatIndex
+        let objName = val?.repeatIndex
           ? `${val.question}-${val.repeatIndex}`
           : val.question;
+
+        // handle leading question when load initial value
+        if (question?.group_leading_question) {
+          const findLeadingAnswer = initialValue?.find(
+            (v) => v.question === question.group_leading_question
+          );
+          if (
+            findLeadingAnswer?.value &&
+            findLeadingAnswer?.value?.[val.repeatIndex]
+          ) {
+            objName = `${val.question}-${
+              findLeadingAnswer.value[val.repeatIndex]
+            }`;
+          }
+        }
         // handle to show also 0 init value from number
         values =
           val?.value || val?.value === 0
@@ -704,8 +735,22 @@ export const Webform = ({
             const isLeadingQuestion = g?.leading_question;
             let repeats = g?.repeats?.length ? g.repeats : range(1);
             if (isLeadingQuestion) {
-              repeats = g?.repeats && g?.repeats?.length ? g.repeats : [];
+              /**
+                // This is for the normal repeat group UI Style
+                repeats = g?.repeats && g?.repeats?.length ? g.repeats : [];
+              */
+              // This is for the repeat group inside each question
+              // TODO :: for this table view approach we need to save the leading question answer as repeat index
+              repeats = g?.repeats && g?.repeats?.length ? range(1) : [];
             }
+            // This is for the repeat group inside each question
+            // to show the repeat group as a table
+            g["question"] = g["question"].map((q) => ({
+              ...q,
+              show_repeat_as_table:
+                g?.repeats && g?.repeats?.length ? true : false,
+              repeats: g?.repeats && g?.repeats?.length ? g.repeats : [],
+            }));
             const headStyle =
               sidebar && sticky && isRepeatable
                 ? {

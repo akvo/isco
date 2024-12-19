@@ -1,8 +1,27 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useMemo } from "react";
 import { Form, DatePicker } from "antd";
-import { Extra, FieldLabel } from "../support";
+import { Extra, FieldLabel, RepeatTableView } from "../support";
 import GlobalStore from "../lib/store";
 import moment from "moment";
+
+const DateField = ({ id, keyform, required, rules, uiText, onChange }) => (
+  <Form.Item
+    className="arf-field-child"
+    key={keyform}
+    name={id}
+    rules={rules}
+    required={required}
+  >
+    <DatePicker
+      getPopupContainer={(trigger) => trigger.parentNode}
+      placeholder={uiText.selectDate}
+      format="YYYY-MM-DD"
+      onFocus={(e) => (e.target.readOnly = true)}
+      style={{ width: "100%" }}
+      onChange={onChange}
+    />
+  </Form.Item>
+);
 
 const TypeDate = ({
   id,
@@ -15,6 +34,8 @@ const TypeDate = ({
   meta,
   requiredSign,
   uiText,
+  show_repeat_as_table,
+  repeats,
 }) => {
   const form = Form.useFormInstance();
   const extraBefore = extra
@@ -49,9 +70,31 @@ const TypeDate = ({
     }
   }, [currentValue, updateDataPointName]);
 
-  const handleDatePickerChange = (val) => {
-    updateDataPointName(val);
-  };
+  const handleDatePickerChange = useCallback(
+    (val) => {
+      updateDataPointName(val);
+    },
+    [updateDataPointName]
+  );
+
+  // generate table view of repeat group question
+  const repeatInputs = useMemo(() => {
+    return repeats.map((r) => {
+      return {
+        label: r,
+        field: (
+          <DateField
+            id={`${id}-${r}`}
+            keyform={keyform}
+            required={required}
+            rules={rules}
+            uiText={uiText}
+            onChange={handleDatePickerChange}
+          />
+        ),
+      };
+    });
+  }, [handleDatePickerChange, id, keyform, repeats, required, rules, uiText]);
 
   return (
     <Form.Item
@@ -68,22 +111,21 @@ const TypeDate = ({
     >
       {!!extraBefore?.length &&
         extraBefore.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
-      <Form.Item
-        className="arf-field-child"
-        key={keyform}
-        name={id}
-        rules={rules}
-        required={required}
-      >
-        <DatePicker
-          getPopupContainer={(trigger) => trigger.parentNode}
-          placeholder={uiText.selectDate}
-          format="YYYY-MM-DD"
-          onFocus={(e) => (e.target.readOnly = true)}
-          style={{ width: "100%" }}
+
+      {/* Show as repeat inputs or not */}
+      {show_repeat_as_table ? (
+        <RepeatTableView id={id} dataSource={repeatInputs} />
+      ) : (
+        <DateField
+          id={id}
+          keyform={keyform}
+          required={required}
+          rules={rules}
+          uiText={uiText}
           onChange={handleDatePickerChange}
         />
-      </Form.Item>
+      )}
+
       {!!extraAfter?.length &&
         extraAfter.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
     </Form.Item>

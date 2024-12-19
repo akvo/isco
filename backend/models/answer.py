@@ -35,6 +35,7 @@ class AnswerDict(TypedDict):
 class AnswerDictWithQuestionName(TypedDict):
     question_group: str
     question_group_order: int
+    question_group_leading_question: Optional[int] = None
     question: int
     question_name: str
     question_order: int
@@ -153,6 +154,7 @@ class Answer(Base):
         answer = {
             "question_group": question_group.name,
             "question_group_order": question_group.order,
+            "question_group_leading_question": question_group.leading_question,
             "question": self.question,
             "question_name": q.name,
             "question_order": q.order,

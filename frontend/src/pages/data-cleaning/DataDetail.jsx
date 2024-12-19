@@ -56,6 +56,7 @@ const DataDetail = ({ record }) => {
     (a) => a?.is_repeat_identifier
   );
   const recordAnswer = record?.answer?.map((ra) => {
+    // handle repeat group index with is_repeat_identifier
     const findIdentifier = identifierAnswer.find(
       (x) =>
         x.question_group === ra.question_group &&
@@ -68,6 +69,13 @@ const DataDetail = ({ record }) => {
         repeat_identifier = findIdentifier?.value?.[0] || null;
       }
     }
+    // handle repeat group without is_repeat_identifier (table view)
+    const findLeadingAnswer = record?.answer?.find(
+      (a) => a.question === ra.question_group_leading_question
+    );
+    if (findLeadingAnswer && findLeadingAnswer?.value?.length) {
+      repeat_identifier = findLeadingAnswer.value?.[ra.repeat_index] || null;
+    }
     return {
       ...ra,
       repeat_identifier: repeat_identifier,
@@ -78,6 +86,7 @@ const DataDetail = ({ record }) => {
   const history = record?.history?.map((h) => {
     const identifierAnswer = h?.answer?.filter((a) => a?.is_repeat_identifier);
     const historyAnswer = h?.answer?.map((ha) => {
+      // handle repeat group index with is_repeat_identifier
       const findIdentifier = identifierAnswer.find(
         (x) =>
           x.question_group === ha.question_group &&
@@ -89,6 +98,13 @@ const DataDetail = ({ record }) => {
         if (Array.isArray(findIdentifier.value)) {
           repeat_identifier = findIdentifier?.value?.[0] || null;
         }
+      }
+      // handle repeat group without is_repeat_identifier (table view)
+      const findLeadingAnswer = h?.answer?.find(
+        (a) => a.question === ha.question_group_leading_question
+      );
+      if (findLeadingAnswer && findLeadingAnswer?.value?.length) {
+        repeat_identifier = findLeadingAnswer.value?.[ha.repeat_index] || null;
       }
       return {
         ...ha,
@@ -149,13 +165,21 @@ const DataDetail = ({ record }) => {
 
     return values.map((v, vi) => {
       // find repeat identifier
-      const findRepeatIdentifier = v.find((q) => q?.is_repeat_identifier);
+      const findRepeatIdentifier = v.find((q) => q?.repeat_identifier);
       let titleSuffix = length > 1 ? ` - ${vi + 1}` : "";
       if (findRepeatIdentifier) {
         titleSuffix = findRepeatIdentifier?.value?.length
-          ? ` - ${findRepeatIdentifier?.value?.join(" ")}`
+          ? ` - ${findRepeatIdentifier?.repeat_identifier}`
           : "";
       }
+      // TODO :: delete
+      // const findRepeatIdentifier = v.find((q) => q?.is_repeat_identifier);
+      // let titleSuffix = length > 1 ? ` - ${vi + 1}` : "";
+      // if (findRepeatIdentifier) {
+      //   titleSuffix = findRepeatIdentifier?.value?.length
+      //     ? ` - ${findRepeatIdentifier?.value?.join(" ")}`
+      //     : "";
+      // }
 
       // Map into the repeat group with repeat_identifier value
       let dataSource = [];
