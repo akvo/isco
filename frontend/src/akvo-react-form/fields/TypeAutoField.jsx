@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Form, Input } from "antd";
-import { Extra, FieldLabel } from "../support";
+import { Extra, FieldLabel, RepeatTableView } from "../support";
 
 const checkIsPromise = (val) => {
   if (
@@ -138,18 +138,14 @@ const strMultilineToFunction = (fnString, getFieldValue, repeatIndex) => {
   };
 };
 
-const TypeAutoField = ({
+const AutoField = ({
   id,
-  name,
   keyform,
   required,
   rules,
-  tooltip,
   addonAfter,
   addonBefore,
-  extra,
   fn,
-  requiredSign,
 }) => {
   const form = Form.useFormInstance();
   const { getFieldValue, setFieldsValue } = form;
@@ -181,12 +177,65 @@ const TypeAutoField = ({
     }
   }, [automateValue, id, setFieldsValue]);
 
+  return (
+    <Form.Item
+      className="arf-field-child"
+      key={keyform}
+      name={id}
+      rules={rules}
+      required={required}
+    >
+      <Input
+        style={{ width: "100%" }}
+        addonAfter={addonAfter}
+        addonBefore={addonBefore}
+        disabled
+      />
+    </Form.Item>
+  );
+};
+
+const TypeAutoField = ({
+  id,
+  name,
+  keyform,
+  required,
+  rules,
+  tooltip,
+  addonAfter,
+  addonBefore,
+  extra,
+  fn,
+  requiredSign,
+  show_repeat_as_table,
+  repeats,
+}) => {
   const extraBefore = extra
     ? extra.filter((ex) => ex.placement === "before")
     : [];
   const extraAfter = extra
     ? extra.filter((ex) => ex.placement === "after")
     : [];
+
+  // generate table view of repeat group question
+  const repeatInputs = useMemo(() => {
+    return repeats.map((r) => {
+      return {
+        label: r,
+        field: (
+          <AutoField
+            id={`${id}-${r}`}
+            keyform={keyform}
+            required={required}
+            rules={rules}
+            addonAfter={addonAfter}
+            addonBefore={addonBefore}
+            fn={fn}
+          />
+        ),
+      };
+    });
+  }, [addonAfter, addonBefore, id, keyform, required, rules, repeats, fn]);
 
   return (
     <Form.Item
@@ -203,23 +252,26 @@ const TypeAutoField = ({
     >
       {!!extraBefore?.length &&
         extraBefore.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
-      <Form.Item
-        className="arf-field-child"
-        key={keyform}
-        name={id}
-        rules={rules}
-        required={required}
-      >
-        <Input
-          style={{ width: "100%" }}
+
+      {/* Show as repeat inputs or not */}
+      {show_repeat_as_table ? (
+        <RepeatTableView id={id} dataSource={repeatInputs} />
+      ) : (
+        <AutoField
+          id={id}
+          keyform={keyform}
+          required={required}
+          rules={rules}
           addonAfter={addonAfter}
           addonBefore={addonBefore}
-          disabled
+          fn={fn}
         />
-      </Form.Item>
+      )}
+
       {!!extraAfter?.length &&
         extraAfter.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
     </Form.Item>
   );
 };
+
 export default TypeAutoField;
