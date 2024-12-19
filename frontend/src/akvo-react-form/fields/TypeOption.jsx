@@ -290,7 +290,7 @@ const TypeOption = ({
       {!!extraBefore?.length &&
         extraBefore.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
 
-      {/* TODO :: OptionField here */}
+      {/* Show as repeat inputs or not */}
       {show_repeat_as_table ? (
         <RepeatTableView id={id} dataSource={repeatInputs} />
       ) : (
