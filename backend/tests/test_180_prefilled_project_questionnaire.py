@@ -103,6 +103,7 @@ class TestPrefilledRoute:
             "deactivate": False,
             "autofield": None,
             "is_repeat_identifier": False,
+            "show_as_textarea": False,
         }
         res = await client.put(
             app.url_path_for("question:put", id=question.id),
@@ -241,6 +242,7 @@ class TestPrefilledRoute:
                                 "coreMandatory": False,
                                 "deactivate": False,
                                 "is_repeat_identifier": False,
+                                "show_as_textarea": False,
                             },
                         ],
                     }

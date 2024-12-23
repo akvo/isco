@@ -48,6 +48,7 @@ class TestUpdateQuestionCascade:
             "disableDelete": False,
             "autofield": None,
             "is_repeat_identifier": False,
+            "show_as_textarea": False,
         }
         res = await client.put(
             app.url_path_for("question:put", id=6),
@@ -82,4 +83,5 @@ class TestUpdateQuestionCascade:
             "disableDelete": False,
             "autofield": None,
             "is_repeat_identifier": False,
+            "show_as_textarea": False,
         }

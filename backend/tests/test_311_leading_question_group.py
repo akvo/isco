@@ -53,6 +53,7 @@ def leading_question_payload(order, is_repeat_identifier):
         "deactivate": False,
         "autofield": None,
         "is_repeat_identifier": is_repeat_identifier,
+        "show_as_textarea": False,
     }
 
 
@@ -138,6 +139,7 @@ class TestFormWithLeadingQuestionForRepeatGroup:
                     "deactivate": False,
                     "autofield": None,
                     "is_repeat_identifier": False,
+                    "show_as_textarea": False,
                 },
                 leading_question_payload(order=2, is_repeat_identifier=False),
             ],
@@ -188,6 +190,7 @@ class TestFormWithLeadingQuestionForRepeatGroup:
                     "disableDelete": False,
                     "autofield": None,
                     "is_repeat_identifier": False,
+                    "show_as_textarea": False,
                 },
                 {
                     "id": 19,
@@ -232,6 +235,7 @@ class TestFormWithLeadingQuestionForRepeatGroup:
                     "disableDelete": False,
                     "autofield": None,
                     "is_repeat_identifier": False,
+                    "show_as_textarea": False,
                 },
             ],
         }
@@ -284,6 +288,7 @@ class TestFormWithLeadingQuestionForRepeatGroup:
                     "deactivate": False,
                     "autofield": None,
                     "is_repeat_identifier": False,
+                    "show_as_textarea": False,
                 },
                 {
                     "form": None,
@@ -309,6 +314,7 @@ class TestFormWithLeadingQuestionForRepeatGroup:
                     "deactivate": False,
                     "autofield": None,
                     "is_repeat_identifier": False,
+                    "show_as_textarea": False,
                 },
             ],
         }
@@ -375,6 +381,7 @@ class TestFormWithLeadingQuestionForRepeatGroup:
                     "disableDelete": False,
                     "autofield": None,
                     "is_repeat_identifier": True,
+                    "show_as_textarea": False,
                 },
                 {
                     "id": 21,
@@ -402,6 +409,7 @@ class TestFormWithLeadingQuestionForRepeatGroup:
                     "disableDelete": False,
                     "autofield": None,
                     "is_repeat_identifier": False,
+                    "show_as_textarea": False,
                 },
                 {
                     "id": 22,
@@ -429,6 +437,7 @@ class TestFormWithLeadingQuestionForRepeatGroup:
                     "disableDelete": False,
                     "autofield": None,
                     "is_repeat_identifier": False,
+                    "show_as_textarea": False,
                 },
             ],
         }
