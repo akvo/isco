@@ -36,6 +36,7 @@ class TestQuestionGroupRoutes:
                 "member_access": None,
                 "isco_access": None,
                 "leading_question": None,
+                "show_repeat_in_question_level": False,
                 "question": None,
             },
         )
@@ -53,6 +54,7 @@ class TestQuestionGroupRoutes:
             "repeat_text": None,
             "translations": [],
             "leading_question": None,
+            "show_repeat_in_question_level": False,
             "question": [],
         }
 
@@ -79,6 +81,7 @@ class TestQuestionGroupRoutes:
             "repeat_text": None,
             "translations": [],
             "leading_question": None,
+            "show_repeat_in_question_level": False,
         }
 
     @pytest.mark.asyncio
@@ -107,6 +110,7 @@ class TestQuestionGroupRoutes:
                 "member_access": [1],
                 "isco_access": [1],
                 "leading_question": None,
+                "show_repeat_in_question_level": False,
                 "question": None,
             },
         )
@@ -123,6 +127,7 @@ class TestQuestionGroupRoutes:
             "repeat_text": "Add another answer",
             "order": 1,
             "leading_question": None,
+            "show_repeat_in_question_level": False,
             "question": [],
             "translations": [
                 {
