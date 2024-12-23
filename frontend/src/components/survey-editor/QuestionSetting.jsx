@@ -56,6 +56,8 @@ const QuestionSetting = ({
   setAllowNA,
   isRepeatIdentifierValue,
   setIsRepeatIdentifierValue,
+  showAsTextarea,
+  setShowAsTextarea,
 }) => {
   const [deactivatePopconfirmMessage, setDeactivatePopconfirmMessage] =
     useState("");
@@ -266,6 +268,14 @@ const QuestionSetting = ({
     const fieldValue = { [field]: val };
     form.setFieldsValue(fieldValue);
     setPersonalData(val);
+    handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
+  };
+
+  const handleShowAsTextareaChange = (val, field) => {
+    const { checked } = val.target;
+    const fieldValue = { [field]: checked };
+    form.setFieldsValue(fieldValue);
+    setShowAsTextarea(checked);
     handleFormOnValuesChange(fieldValue, form?.getFieldsValue());
   };
 
@@ -542,6 +552,28 @@ const QuestionSetting = ({
                 />
               </div>
             </Space>
+            {
+              // setting to show input question as text area
+              currentQuestionType === "input" && (
+                <div className="field-wrapper" style={{ marginTop: "20px" }}>
+                  <Form.Item name={`question-${qid}-show_as_textarea`}>
+                    <Checkbox
+                      key={`question-${qid}-show_as_textarea-checkbox`}
+                      checked={showAsTextarea}
+                      onChange={(val) =>
+                        handleShowAsTextareaChange(
+                          val,
+                          `question-${qid}-show_as_textarea`
+                        )
+                      }
+                    >
+                      {" "}
+                      Show as larger input field{" "}
+                    </Checkbox>
+                  </Form.Item>
+                </div>
+              )
+            }
             {
               // Set question as datapoint/display name
               datapointNameQuestionType.includes(currentQuestionType) && (

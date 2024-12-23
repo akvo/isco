@@ -29,6 +29,8 @@ const QuestionTabContent = ({
   setAllowNA,
   isRepeatIdentifierValue,
   setIsRepeatIdentifierValue,
+  showAsTextarea,
+  setShowAsTextarea,
 }) => {
   switch (activeSetting) {
     case "translation":
@@ -63,6 +65,8 @@ const QuestionTabContent = ({
           setAllowNA={setAllowNA}
           isRepeatIdentifierValue={isRepeatIdentifierValue}
           setIsRepeatIdentifierValue={setIsRepeatIdentifierValue}
+          showAsTextarea={showAsTextarea}
+          setShowAsTextarea={setShowAsTextarea}
         />
       );
     default:
