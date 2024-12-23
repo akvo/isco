@@ -43,6 +43,7 @@ class TestSkipLogicRoutes:
             "deactivate": False,
             "autofield": None,
             "is_repeat_identifier": False,
+            "show_as_textarea": False,
         }
         res = await client.post(
             app.url_path_for("question:create"),
@@ -77,6 +78,7 @@ class TestSkipLogicRoutes:
             "disableDelete": False,
             "autofield": None,
             "is_repeat_identifier": False,
+            "show_as_textarea": False,
         }
         # get question
         res = await client.get(app.url_path_for("question:get_by_id", id=2))

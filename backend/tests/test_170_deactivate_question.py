@@ -121,6 +121,7 @@ class TestQuestionRoutes:
                                 "coreMandatory": False,
                                 "deactivate": False,
                                 "is_repeat_identifier": False,
+                                "show_as_textarea": False,
                             },
                             {
                                 "id": 17,
@@ -314,6 +315,7 @@ class TestQuestionRoutes:
                                 "coreMandatory": False,
                                 "deactivate": False,
                                 "is_repeat_identifier": False,
+                                "show_as_textarea": False,
                             },
                         ],
                     }

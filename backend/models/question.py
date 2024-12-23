@@ -76,6 +76,7 @@ class QuestionPayload(TypedDict):
     skip_logic: Optional[List[SkipLogicPayload]] = None
     autofield: Optional[dict] = None
     is_repeat_identifier: Optional[bool] = False
+    show_as_textarea: Optional[bool] = False
 
 
 class QuestionDict(TypedDict):
@@ -97,6 +98,7 @@ class QuestionDict(TypedDict):
     order: Optional[int] = None
     autofield: Optional[dict] = None
     is_repeat_identifier: Optional[bool] = False
+    show_as_textarea: Optional[bool] = False
 
 
 class Question(Base):
@@ -122,6 +124,7 @@ class Question(Base):
     order = Column(Integer, nullable=True)
     autofield = Column(MutableDict.as_mutable(pg.JSONB), nullable=True)
     is_repeat_identifier = Column(Boolean, default=False)
+    show_as_textarea = Column(Boolean, default=False)
     member_access = relationship(
         "QuestionMemberAccess",
         primaryjoin="QuestionMemberAccess.question==Question.id",
@@ -174,6 +177,7 @@ class Question(Base):
         deactivate: Optional[bool],
         autofield: Optional[dict],
         is_repeat_identifier: Optional[bool] = False,
+        show_as_textarea: Optional[bool] = False,
     ):
         self.id = id
         self.form = form
@@ -195,6 +199,7 @@ class Question(Base):
         self.deactivate = deactivate
         self.autofield = autofield
         self.is_repeat_identifier = is_repeat_identifier
+        self.show_as_textarea = show_as_textarea
 
     def __repr__(self) -> int:
         return f"<Question {self.id}>"
@@ -242,6 +247,7 @@ class Question(Base):
             "deactivate": self.deactivate,
             "autofield": self.autofield,
             "is_repeat_identifier": self.is_repeat_identifier,
+            "show_as_textarea": self.show_as_textarea,
         }
 
     @property
@@ -319,6 +325,8 @@ class Question(Base):
             question.update(
                 {"lead_repeat_group": [lead.id for lead in self.leads_group]}
             )
+        if self.type == QuestionType.input:
+            question.update({"show_as_textarea": self.show_as_textarea})
         return question
 
 
@@ -348,6 +356,7 @@ class QuestionBase(BaseModel):
     disableDelete: Optional[bool] = False
     autofield: Optional[dict] = None
     is_repeat_identifier: Optional[bool] = False
+    show_as_textarea: Optional[bool] = False
 
     class Config:
         orm_mode = True
@@ -374,6 +383,7 @@ class QuestionJson(BaseModel):
     fn: Optional[dict] = None
     lead_repeat_group: Optional[int] = None
     is_repeat_identifier: Optional[bool] = False
+    show_as_textarea: Optional[bool] = False
 
     class Config:
         orm_mode = True

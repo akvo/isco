@@ -128,6 +128,7 @@ class TestFormWithComputedValidationRoutes:
             "deactivate": False,
             "autofield": None,
             "is_repeat_identifier": False,
+            "show_as_textarea": False,
         }
         res = await client.post(
             app.url_path_for("question:create"),
@@ -162,6 +163,7 @@ class TestFormWithComputedValidationRoutes:
             "disableDelete": False,
             "autofield": None,
             "is_repeat_identifier": False,
+            "show_as_textarea": False,
         }
         #
         # add question type number
@@ -189,6 +191,7 @@ class TestFormWithComputedValidationRoutes:
             "deactivate": False,
             "autofield": None,
             "is_repeat_identifier": False,
+            "show_as_textarea": False,
         }
         res = await client.post(
             app.url_path_for("question:create"),
@@ -223,6 +226,7 @@ class TestFormWithComputedValidationRoutes:
             "disableDelete": False,
             "autofield": None,
             "is_repeat_identifier": False,
+            "show_as_textarea": False,
         }
         #
         # add question type input
@@ -250,6 +254,7 @@ class TestFormWithComputedValidationRoutes:
             "deactivate": False,
             "autofield": None,
             "is_repeat_identifier": False,
+            "show_as_textarea": False,
         }
         res = await client.post(
             app.url_path_for("question:create"),
@@ -284,6 +289,7 @@ class TestFormWithComputedValidationRoutes:
             "disableDelete": False,
             "autofield": None,
             "is_repeat_identifier": False,
+            "show_as_textarea": False,
         }
         #
         # add question type autofield
@@ -314,6 +320,8 @@ class TestFormWithComputedValidationRoutes:
                 "fnString": "function () { return #15 }",
             },
             "is_repeat_identifier": False,
+            "show_as_textarea": False,
+            "show_as_textarea": False,
         }
         res = await client.post(
             app.url_path_for("question:create"),
@@ -351,6 +359,7 @@ class TestFormWithComputedValidationRoutes:
                 "fnString": "function () { return #15 }",
             },
             "is_repeat_identifier": False,
+            "show_as_textarea": False,
         }
 
     @pytest.mark.asyncio

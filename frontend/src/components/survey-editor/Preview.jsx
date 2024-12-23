@@ -79,6 +79,7 @@ const Preview = () => {
               member_access: qMemberAccess,
               isco_access: qIscoAccess,
               is_repeat_identifier: q?.is_repeat_identifier || false,
+              show_as_textarea: q?.show_as_textarea || false,
               // add comment field
               extra: [
                 {

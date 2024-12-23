@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { Form, Input } from "antd";
+import TextArea from "antd/lib/input/TextArea";
 import { Extra, FieldLabel, RepeatTableView } from "../support";
 import GlobalStore from "../lib/store";
 import { InputFieldIcon } from "../lib/svgIcons";
@@ -23,6 +24,7 @@ const InputField = ({
   setShowPrefix,
   naChecked,
   currentValue,
+  show_as_textarea,
 }) => (
   <Form.Item
     className="arf-field-child"
@@ -51,22 +53,26 @@ const InputField = ({
     ]}
     required={coreMandatory ? required : !naChecked ? required : false}
   >
-    <Input
-      style={{ width: "100%" }}
-      onBlur={() => {
-        setShowPrefix((prev) => prev.filter((p) => p !== id));
-      }}
-      onFocus={() => setShowPrefix((prev) => [...prev, id])}
-      onChange={onChange}
-      addonAfter={addonAfter}
-      addonBefore={addonBefore}
-      prefix={
-        fieldIcons &&
-        !showPrefix?.includes(id) &&
-        !currentValue && <InputFieldIcon />
-      }
-      disabled={naChecked || is_repeat_identifier} // handle leading_question -> is_repeat_identifier
-    />
+    {show_as_textarea ? (
+      <TextArea row={4} disabled={naChecked || is_repeat_identifier} />
+    ) : (
+      <Input
+        style={{ width: "100%" }}
+        onBlur={() => {
+          setShowPrefix((prev) => prev.filter((p) => p !== id));
+        }}
+        onFocus={() => setShowPrefix((prev) => [...prev, id])}
+        onChange={onChange}
+        addonAfter={addonAfter}
+        addonBefore={addonBefore}
+        prefix={
+          fieldIcons &&
+          !showPrefix?.includes(id) &&
+          !currentValue && <InputFieldIcon />
+        }
+        disabled={naChecked || is_repeat_identifier} // handle leading_question -> is_repeat_identifier
+      />
+    )}
   </Form.Item>
 );
 
@@ -89,6 +95,7 @@ const TypeInput = ({
   is_repeat_identifier,
   show_repeat_as_table,
   repeats,
+  show_as_textarea,
 }) => {
   const form = Form.useFormInstance();
   const [showPrefix, setShowPrefix] = useState([]);
@@ -171,6 +178,7 @@ const TypeInput = ({
             setShowPrefix={setShowPrefix}
             naChecked={naChecked}
             currentValue={currentValue}
+            show_as_textarea={show_as_textarea}
           />
         ),
       };
@@ -192,6 +200,7 @@ const TypeInput = ({
     rules,
     showPrefix,
     uiText,
+    show_as_textarea,
   ]);
 
   return (
@@ -232,6 +241,7 @@ const TypeInput = ({
           setShowPrefix={setShowPrefix}
           naChecked={naChecked}
           currentValue={currentValue}
+          show_as_textarea={show_as_textarea}
         />
       )}
       {/* EOL Show as repeat inputs or not */}

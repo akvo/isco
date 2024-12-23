@@ -121,6 +121,7 @@ const QuestionEditor = ({
   const [activeLang, setActiveLang] = useState(null);
   const [allowNA, setAllowNA] = useState(false);
   const [isRepeatIdentifierValue, setIsRepeatIdentifierValue] = useState(false);
+  const [showAsTextarea, setShowAsTextarea] = useState(false);
 
   // handle when form languages updated
   useEffect(() => {
@@ -251,6 +252,9 @@ const QuestionEditor = ({
         // Handle leading_question -> is_repeat_identifier
         if (key === "is_repeat_identifier") {
           setIsRepeatIdentifierValue(value);
+        }
+        if (key === "show_as_textarea") {
+          setShowAsTextarea(value);
         }
       });
     }
@@ -424,6 +428,8 @@ const QuestionEditor = ({
                         setAllowNA={setAllowNA}
                         isRepeatIdentifierValue={isRepeatIdentifierValue}
                         setIsRepeatIdentifierValue={setIsRepeatIdentifierValue}
+                        showAsTextarea={showAsTextarea}
+                        setShowAsTextarea={setShowAsTextarea}
                       />
                       <div className="question-button-wrapper">
                         <Space align="center">

@@ -43,6 +43,7 @@ def add_question(
         deactivate=payload["deactivate"],
         autofield=payload["autofield"],
         is_repeat_identifier=payload.get("is_repeat_identifier", False),
+        show_as_textarea=payload.get("show_as_textarea", False),
     )
     if payload["option"]:
         for o in payload["option"]:
@@ -138,6 +139,7 @@ def update_question(
     question.deactivate = payload["deactivate"]
     question.autofield = payload["autofield"]
     question.is_repeat_identifier = payload.get("is_repeat_identifier", False)
+    question.show_as_textarea = payload.get("show_as_textarea", False)
     # Add member access
     delete_member_access_by_question_id(session=session, question=[id])
     if payload["member_access"]:

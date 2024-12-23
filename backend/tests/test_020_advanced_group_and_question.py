@@ -50,6 +50,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
             "deactivate": False,
             "autofield": None,
             "is_repeat_identifier": False,
+            "show_as_textarea": False,
             "option": [
                 {
                     "code": None,
@@ -137,6 +138,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
             "disableDelete": False,
             "autofield": None,
             "is_repeat_identifier": False,
+            "show_as_textarea": False,
         }
 
     @pytest.mark.asyncio
@@ -180,6 +182,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
             "deactivate": False,
             "autofield": None,
             "is_repeat_identifier": False,
+            "show_as_textarea": False,
         }
         res = await client.put(
             app.url_path_for("question:put", id=3),
@@ -240,6 +243,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
             "disableDelete": False,
             "autofield": None,
             "is_repeat_identifier": False,
+            "show_as_textarea": False,
         }
 
     @pytest.mark.asyncio
@@ -288,6 +292,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
                     "deactivate": False,
                     "autofield": None,
                     "is_repeat_identifier": False,
+                    "show_as_textarea": False,
                 },
                 {
                     "form": None,
@@ -318,6 +323,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
                     "deactivate": False,
                     "autofield": None,
                     "is_repeat_identifier": False,
+                    "show_as_textarea": False,
                 },
                 {
                     "form": None,
@@ -343,6 +349,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
                     "deactivate": False,
                     "autofield": None,
                     "is_repeat_identifier": False,
+                    "show_as_textarea": False,
                 },
                 {
                     "form": None,
@@ -368,6 +375,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
                     "deactivate": False,
                     "autofield": None,
                     "is_repeat_identifier": False,
+                    "show_as_textarea": False,
                 },
                 {
                     "form": None,
@@ -393,6 +401,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
                     "deactivate": False,
                     "autofield": None,
                     "is_repeat_identifier": False,
+                    "show_as_textarea": False,
                 },
                 {
                     "form": None,
@@ -433,6 +442,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
                     "deactivate": False,
                     "autofield": None,
                     "is_repeat_identifier": False,
+                    "show_as_textarea": False,
                 },
             ],
         }
@@ -482,6 +492,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
                     "disableDelete": False,
                     "autofield": None,
                     "is_repeat_identifier": False,
+                    "show_as_textarea": False,
                 },
                 {
                     "cascade": None,
@@ -514,6 +525,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
                     "disableDelete": False,
                     "autofield": None,
                     "is_repeat_identifier": False,
+                    "show_as_textarea": False,
                 },
                 {
                     "cascade": 1,
@@ -541,6 +553,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
                     "disableDelete": False,
                     "autofield": None,
                     "is_repeat_identifier": False,
+                    "show_as_textarea": False,
                 },
                 {
                     "cascade": 2,
@@ -568,6 +581,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
                     "disableDelete": False,
                     "autofield": None,
                     "is_repeat_identifier": False,
+                    "show_as_textarea": False,
                 },
                 {
                     "cascade": None,
@@ -595,6 +609,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
                     "disableDelete": False,
                     "autofield": None,
                     "is_repeat_identifier": False,
+                    "show_as_textarea": False,
                 },
                 {
                     "cascade": None,
@@ -639,6 +654,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
                     "disableDelete": False,
                     "autofield": None,
                     "is_repeat_identifier": False,
+                    "show_as_textarea": False,
                 },
             ],
         }
