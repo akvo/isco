@@ -150,9 +150,17 @@ const AutoField = ({
   show_repeat_in_question_level,
   dependency,
   repeat,
+  extra,
 }) => {
   const form = Form.useFormInstance();
   const { getFieldValue, setFieldsValue } = form;
+
+  const extraBefore = extra
+    ? extra.filter((ex) => ex.placement === "before")
+    : [];
+  const extraAfter = extra
+    ? extra.filter((ex) => ex.placement === "after")
+    : [];
 
   const repeatIndex = String(id).split("-")?.[1];
 
@@ -191,20 +199,28 @@ const AutoField = ({
   }, [automateValue, id, setFieldsValue, disableFieldByDependency]);
 
   return (
-    <Form.Item
-      className="arf-field-child"
-      key={keyform}
-      name={id}
-      rules={rules}
-      required={required}
-    >
-      <Input
-        style={{ width: "100%" }}
-        addonAfter={addonAfter}
-        addonBefore={addonBefore}
-        disabled
-      />
-    </Form.Item>
+    <div>
+      {!!extraBefore?.length &&
+        extraBefore.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
+
+      <Form.Item
+        className="arf-field-child"
+        key={keyform}
+        name={id}
+        rules={rules}
+        required={required}
+      >
+        <Input
+          style={{ width: "100%" }}
+          addonAfter={addonAfter}
+          addonBefore={addonBefore}
+          disabled
+        />
+      </Form.Item>
+
+      {!!extraAfter?.length &&
+        extraAfter.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
+    </div>
   );
 };
 
@@ -224,13 +240,6 @@ const TypeAutoField = ({
   repeats,
   dependency,
 }) => {
-  const extraBefore = extra
-    ? extra.filter((ex) => ex.placement === "before")
-    : [];
-  const extraAfter = extra
-    ? extra.filter((ex) => ex.placement === "after")
-    : [];
-
   // generate table view of repeat group question
   const repeatInputs = useMemo(() => {
     if (!repeats || !show_repeat_in_question_level) {
@@ -251,6 +260,7 @@ const TypeAutoField = ({
             dependency={dependency}
             show_repeat_in_question_level={show_repeat_in_question_level}
             repeat={r}
+            extra={extra}
           />
         ),
       };
@@ -266,6 +276,7 @@ const TypeAutoField = ({
     fn,
     show_repeat_in_question_level,
     dependency,
+    extra,
   ]);
 
   return (
@@ -281,9 +292,6 @@ const TypeAutoField = ({
       tooltip={tooltip?.text}
       required={required}
     >
-      {!!extraBefore?.length &&
-        extraBefore.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
-
       {/* Show as repeat inputs or not */}
       {show_repeat_in_question_level ? (
         <RepeatTableView id={id} dataSource={repeatInputs} />
@@ -296,11 +304,9 @@ const TypeAutoField = ({
           addonAfter={addonAfter}
           addonBefore={addonBefore}
           fn={fn}
+          extra={extra}
         />
       )}
-
-      {!!extraAfter?.length &&
-        extraAfter.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
     </Form.Item>
   );
 };
