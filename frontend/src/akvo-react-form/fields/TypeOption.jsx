@@ -3,6 +3,7 @@ import { Space, Divider, Form, Radio, Select, Input, Button } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { Extra, FieldLabel, RepeatTableView } from "../support";
 import GlobalStore from "../lib/store";
+import { validateDisableDependencyQuestionInRepeatQuestionLevel } from "../lib";
 
 const OptionField = ({
   id,
@@ -21,91 +22,112 @@ const OptionField = ({
   addNewOption,
   onNewOptionChange,
   newOption,
-}) => (
-  <Form.Item
-    className="arf-field-child"
-    key={keyform}
-    name={id}
-    rules={disableAllowOtherInputField && required ? rules : () => {}}
-    required={disableAllowOtherInputField && required}
-  >
-    {isRadioGroup ? (
-      <Radio.Group onChange={onChange}>
-        <Space direction="vertical">
+  show_repeat_in_question_level,
+  dependency,
+  repeat,
+}) => {
+  const form = Form.useFormInstance();
+
+  const disableFieldByDependency = useMemo(() => {
+    // handle the dependency for show_repeat_in_question_level
+    const res = validateDisableDependencyQuestionInRepeatQuestionLevel({
+      formRef: form,
+      show_repeat_in_question_level,
+      dependency,
+      repeat,
+    });
+    return res;
+  }, [form, show_repeat_in_question_level, dependency, repeat]);
+
+  return (
+    <Form.Item
+      className="arf-field-child"
+      key={keyform}
+      name={id}
+      rules={disableAllowOtherInputField && required ? rules : () => {}}
+      required={disableAllowOtherInputField && required}
+    >
+      {isRadioGroup ? (
+        <Radio.Group onChange={onChange}>
+          <Space direction="vertical">
+            {options.map((o, io) => (
+              <Radio key={io} value={o.name}>
+                {o.label}
+              </Radio>
+            ))}
+            {allowOther ? (
+              <Radio value={newOption}>
+                <Form.Item
+                  name={otherOptionInputName}
+                  noStyle
+                  rules={
+                    !disableAllowOtherInputField && required ? rules : () => {}
+                  }
+                  required={!disableAllowOtherInputField && required}
+                >
+                  <Input
+                    placeholder={allowOtherText || uiText.pleaseTypeOtherOption}
+                    value={newOption}
+                    onChange={onNewOptionChange}
+                    disabled={
+                      disableAllowOtherInputField || is_repeat_identifier
+                    } // handle leading_question -> is_repeat_identifier
+                  />
+                </Form.Item>
+              </Radio>
+            ) : (
+              ""
+            )}
+          </Space>
+        </Radio.Group>
+      ) : (
+        <Select
+          style={{ width: "100%" }}
+          getPopupContainer={(trigger) => trigger.parentNode}
+          onFocus={(e) => (e.target.readOnly = true)}
+          placeholder={uiText.pleaseSelect}
+          dropdownRender={(menu) =>
+            allowOther ? (
+              <div>
+                {menu}
+                <Divider style={{ margin: "8px 0" }} />
+                <Input.Group compact>
+                  <Button
+                    type="primary"
+                    onClick={addNewOption}
+                    style={{ whiteSpace: "nowrap" }}
+                    icon={<PlusOutlined />}
+                    disabled={!newOption.length}
+                  />
+                  <Input
+                    style={{ width: "calc(100% - 40px)", textAlign: "left" }}
+                    placeholder={allowOtherText || uiText.pleaseEnterItem}
+                    value={newOption}
+                    onChange={onNewOptionChange}
+                  />
+                </Input.Group>
+              </div>
+            ) : (
+              menu
+            )
+          }
+          allowClear
+          showSearch
+          filterOption
+          optionFilterProp="children"
+          onChange={onChange}
+          disabled={is_repeat_identifier || disableFieldByDependency} // handle leading_question -> is_repeat_identifier
+        >
           {options.map((o, io) => (
-            <Radio key={io} value={o.name}>
+            <Select.Option key={io} value={o.name}>
               {o.label}
-            </Radio>
+            </Select.Option>
           ))}
-          {allowOther ? (
-            <Radio value={newOption}>
-              <Form.Item
-                name={otherOptionInputName}
-                noStyle
-                rules={
-                  !disableAllowOtherInputField && required ? rules : () => {}
-                }
-                required={!disableAllowOtherInputField && required}
-              >
-                <Input
-                  placeholder={allowOtherText || uiText.pleaseTypeOtherOption}
-                  value={newOption}
-                  onChange={onNewOptionChange}
-                  disabled={disableAllowOtherInputField || is_repeat_identifier} // handle leading_question -> is_repeat_identifier
-                />
-              </Form.Item>
-            </Radio>
-          ) : (
-            ""
-          )}
-        </Space>
-      </Radio.Group>
-    ) : (
-      <Select
-        style={{ width: "100%" }}
-        getPopupContainer={(trigger) => trigger.parentNode}
-        onFocus={(e) => (e.target.readOnly = true)}
-        placeholder={uiText.pleaseSelect}
-        dropdownRender={(menu) =>
-          allowOther ? (
-            <div>
-              {menu}
-              <Divider style={{ margin: "8px 0" }} />
-              <Input.Group compact>
-                <Button
-                  type="primary"
-                  onClick={addNewOption}
-                  style={{ whiteSpace: "nowrap" }}
-                  icon={<PlusOutlined />}
-                  disabled={!newOption.length}
-                />
-                <Input
-                  style={{ width: "calc(100% - 40px)", textAlign: "left" }}
-                  placeholder={allowOtherText || uiText.pleaseEnterItem}
-                  value={newOption}
-                  onChange={onNewOptionChange}
-                />
-              </Input.Group>
-            </div>
-          ) : (
-            menu
-          )
-        }
-        allowClear
-        showSearch
-        filterOption
-        optionFilterProp="children"
-        onChange={onChange}
-      >
-        {options.map((o, io) => (
-          <Select.Option key={io} value={o.name}>
-            {o.label}
-          </Select.Option>
-        ))}
-      </Select>
-    )}
-  </Form.Item>
-);
+        </Select>
+      )}
+    </Form.Item>
+  );
+};
 
 const TypeOption = ({
   option,
@@ -124,6 +146,7 @@ const TypeOption = ({
   is_repeat_identifier,
   show_repeat_in_question_level,
   repeats,
+  dependency,
 }) => {
   const form = Form.useFormInstance();
   const [options, setOptions] = useState([]);
@@ -255,6 +278,9 @@ const TypeOption = ({
             addNewOption={addNewOption}
             onNewOptionChange={onNewOptionChange}
             newOption={newOption}
+            dependency={dependency}
+            show_repeat_in_question_level={show_repeat_in_question_level}
+            repeat={r}
           />
         ),
       };
@@ -277,6 +303,7 @@ const TypeOption = ({
     otherOptionInputName,
     repeats,
     show_repeat_in_question_level,
+    dependency,
   ]);
 
   return (
