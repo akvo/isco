@@ -3,7 +3,10 @@ import { Form } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { Extra, FieldLabel, RepeatTableView } from "../support";
 import { DataUnavailableField } from "../components";
-import { renderQuestionLabelForErrorMessage } from "../lib";
+import {
+  renderQuestionLabelForErrorMessage,
+  validateDisableDependencyQuestionInRepeatQuestionLevel,
+} from "../lib";
 
 const TextField = ({
   id,
@@ -14,37 +17,55 @@ const TextField = ({
   uiText,
   coreMandatory,
   naChecked,
-}) => (
-  <Form.Item
-    className="arf-field-child"
-    key={keyform}
-    name={id}
-    rules={[
-      ...rules,
-      {
-        validator: (_, value) => {
-          const questionLabel = renderQuestionLabelForErrorMessage(
-            name.props.children
-          );
-          const requiredErr = `${questionLabel} ${uiText.errorIsRequired}`;
-          if (value || value === 0) {
+  dependency,
+  show_repeat_in_question_level,
+  repeat,
+}) => {
+  const form = Form.useFormInstance();
+
+  const disableFieldByDependency = useMemo(() => {
+    // handle the dependency for show_repeat_in_question_level
+    const res = validateDisableDependencyQuestionInRepeatQuestionLevel({
+      formRef: form,
+      show_repeat_in_question_level,
+      dependency,
+      repeat,
+    });
+    return res;
+  }, [form, show_repeat_in_question_level, dependency, repeat]);
+
+  return (
+    <Form.Item
+      className="arf-field-child"
+      key={keyform}
+      name={id}
+      rules={[
+        ...rules,
+        {
+          validator: (_, value) => {
+            const questionLabel = renderQuestionLabelForErrorMessage(
+              name.props.children
+            );
+            const requiredErr = `${questionLabel} ${uiText.errorIsRequired}`;
+            if (value || value === 0) {
+              return Promise.resolve();
+            }
+            if (!coreMandatory && naChecked) {
+              return Promise.resolve();
+            }
+            if (!coreMandatory && !naChecked && required) {
+              return Promise.reject(new Error(requiredErr));
+            }
             return Promise.resolve();
-          }
-          if (!coreMandatory && naChecked) {
-            return Promise.resolve();
-          }
-          if (!coreMandatory && !naChecked && required) {
-            return Promise.reject(new Error(requiredErr));
-          }
-          return Promise.resolve();
+          },
         },
-      },
-    ]}
-    required={coreMandatory ? required : !naChecked ? required : false}
-  >
-    <TextArea row={4} disabled={naChecked} />
-  </Form.Item>
-);
+      ]}
+      required={coreMandatory ? required : !naChecked ? required : false}
+    >
+      <TextArea row={4} disabled={naChecked || disableFieldByDependency} />
+    </Form.Item>
+  );
+};
 
 const TypeText = ({
   id,
@@ -60,6 +81,7 @@ const TypeText = ({
   rule,
   show_repeat_in_question_level,
   repeats,
+  dependency,
 }) => {
   const form = Form.useFormInstance();
   const extraBefore = extra
@@ -110,6 +132,9 @@ const TypeText = ({
             uiText={uiText}
             coreMandatory={coreMandatory}
             naChecked={naChecked}
+            show_repeat_in_question_level={show_repeat_in_question_level}
+            dependency={dependency}
+            repeat={r}
           />
         ),
       };
@@ -125,6 +150,7 @@ const TypeText = ({
     coreMandatory,
     naChecked,
     show_repeat_in_question_level,
+    dependency,
   ]);
 
   return (
