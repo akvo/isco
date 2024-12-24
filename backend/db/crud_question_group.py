@@ -28,6 +28,9 @@ def add_question_group(
             if payload["repeat"]
             else None
         ),
+        show_repeat_in_question_level=payload.get(
+            "show_repeat_in_question_level", False
+        ),
     )
     if payload["member_access"]:
         for ma in payload["member_access"]:
@@ -92,6 +95,9 @@ def update_question_group(
     # Handle save leading question if question group is repeatable
     question_group.leading_question = (
         payload["leading_question"] if payload["repeat"] else None
+    )
+    question_group.show_repeat_in_question_level = payload.get(
+        "show_repeat_in_question_level", False
     )
     # Add member access
     if payload["member_access"]:

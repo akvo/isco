@@ -208,8 +208,24 @@ export const validateDependency = (dependency, value) => {
   return valid;
 };
 
-export const modifyDependency = ({ question }, { dependency }, repeat) => {
+export const modifyDependency = (
+  { show_repeat_in_question_level, question },
+  { repeats, dependency },
+  repeat
+) => {
   const questions = question.map((q) => q.id);
+  // handle show repeat in question level
+  if (show_repeat_in_question_level) {
+    const modified = repeats.map((r) => {
+      return dependency.map((d) => {
+        if (questions.includes(d.id) && r) {
+          return { ...d, id: `${d.id}-${r}` };
+        }
+        return d;
+      });
+    });
+    return modified.flatMap((x) => x);
+  }
   return dependency.map((d) => {
     if (questions.includes(d.id) && repeat) {
       return { ...d, id: `${d.id}-${repeat}` };
@@ -313,4 +329,25 @@ export const renderQuestionLabelForErrorMessage = (arr) => {
         : x
     )
     .join("");
+};
+
+export const validateDisableDependencyQuestionInRepeatQuestionLevel = ({
+  formRef,
+  show_repeat_in_question_level,
+  dependency,
+  repeat,
+}) => {
+  if (show_repeat_in_question_level && dependency && dependency?.length) {
+    const modifiedDependency = dependency.map((d) => ({
+      ...d,
+      id: `${d.id}-${repeat}`,
+    }));
+    const unmatches = modifiedDependency
+      .map((x) => {
+        return validateDependency(x, formRef.getFieldValue(x.id));
+      })
+      .filter((x) => x === false);
+    return unmatches.length ? true : false;
+  }
+  return false;
 };

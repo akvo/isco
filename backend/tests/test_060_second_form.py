@@ -89,6 +89,7 @@ class TestSecondFormRoutes:
             "repeat": False,
             "repeat_text": None,
             "leading_question": None,
+            "show_repeat_in_question_level": False,
             "translations": [],
             "question": [
                 {

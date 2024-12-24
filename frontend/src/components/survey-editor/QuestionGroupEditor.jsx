@@ -12,6 +12,7 @@ import {
   Select,
   Tooltip,
   Popconfirm,
+  Checkbox,
 } from "antd";
 import {
   RiSettings5Fill,
@@ -63,6 +64,10 @@ const QuestionGroupSetting = ({
   questionGroup,
   repeat,
   onChangeRepeat,
+  showRepeatInQuestionLevel,
+  onChangeShowRepeatInQuestionLevel,
+  selectedLeadingQuestion,
+  setSelectedLeadingQuestion,
 }) => {
   const { surveyEditor, optionValues } = store.useState((s) => s);
   const { member_type, isco_type } = optionValues;
@@ -270,12 +275,38 @@ const QuestionGroupSetting = ({
                               .indexOf(input.toLowerCase()) >= 0
                           }
                           style={{ width: "100%" }}
+                          onChange={(val) => setSelectedLeadingQuestion(val)}
                         />
                       </Form.Item>
                     </div>
                   </Col>
                 )}
                 {/* eol leading question group */}
+                {/* show repeat group in question level */}
+                {repeat && selectedLeadingQuestion && (
+                  <Col span={24}>
+                    <div className="field-wrapper">
+                      <Form.Item
+                        name={`question_group-${qgId}-show_repeat_in_question_level`}
+                      >
+                        <Checkbox
+                          key={`question_group-${qgId}-show_repeat_in_question_level-checkbox`}
+                          checked={showRepeatInQuestionLevel}
+                          onChange={(val) =>
+                            onChangeShowRepeatInQuestionLevel(
+                              val,
+                              `question_group-${qgId}-show_repeat_in_question_level`
+                            )
+                          }
+                        >
+                          {" "}
+                          Show repeat group in question level{" "}
+                        </Checkbox>
+                      </Form.Item>
+                    </div>
+                  </Col>
+                )}
+                {/* eol show repeat group in question level */}
               </Row>
             </TabPane>
           </>
@@ -344,6 +375,9 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
   const [questionToDeactivate, setQuestionToDeactivate] = useState([]);
   const [repeat, setRepeat] = useState(false);
   const [saveBtnLoading, setSaveBtnLoading] = useState(false);
+  const [showRepeatInQuestionLevel, setShowRepeatInQuestionLevel] =
+    useState(false);
+  const [selectedLeadingQuestion, setSelectedLeadingQuestion] = useState(null);
   const { notify } = useNotification();
 
   const allQuestions = questionGroupState
@@ -371,6 +405,12 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
         if (key === "repeat") {
           setRepeat(value);
         }
+        if (key === "leading_question") {
+          setSelectedLeadingQuestion(value);
+        }
+        if (key === "show_repeat_in_question_level") {
+          setShowRepeatInQuestionLevel(value || false);
+        }
       });
     }
   }, [questionGroup, form, id]);
@@ -390,6 +430,17 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
     form.setFieldsValue(repeatFieldValue);
     setRepeat(val);
     handleFormOnValuesChange(repeatFieldValue, form?.getFieldsValue());
+  };
+
+  const onChangeShowRepeatInQuestionLevel = (val, fieldId) => {
+    const { checked } = val.target;
+    const showRepeatInQuestionLevelFieldValue = { [fieldId]: checked };
+    form.setFieldsValue(showRepeatInQuestionLevelFieldValue);
+    setShowRepeatInQuestionLevel(checked);
+    handleFormOnValuesChange(
+      showRepeatInQuestionLevelFieldValue,
+      form?.getFieldsValue()
+    );
   };
 
   const handleDeleteQuestionGroupButton = (questionGroup) => {
@@ -1141,6 +1192,12 @@ const QuestionGroupEditor = ({ index, questionGroup, isMoving }) => {
                   questionGroup={questionGroup}
                   repeat={repeat}
                   onChangeRepeat={onChangeRepeat}
+                  showRepeatInQuestionLevel={showRepeatInQuestionLevel}
+                  onChangeShowRepeatInQuestionLevel={
+                    onChangeShowRepeatInQuestionLevel
+                  }
+                  selectedLeadingQuestion={selectedLeadingQuestion}
+                  setSelectedLeadingQuestion={setSelectedLeadingQuestion}
                 />
                 <div className="qge-button-wrapper">
                   <Space align="center">

@@ -5,6 +5,7 @@ import take from "lodash/take";
 import { Extra, FieldLabel, RepeatTableView } from "../support";
 import ds from "../lib/db";
 import GlobalStore from "../lib/store";
+import { validateDisableDependencyQuestionInRepeatQuestionLevel } from "../lib";
 
 const CascadeApiField = ({
   id,
@@ -13,12 +14,13 @@ const CascadeApiField = ({
   required,
   meta,
   rules,
-  extraBefore,
-  extraAfter,
   initialValue,
   partialRequired,
   uiText,
-  showExtra,
+  dependency,
+  show_repeat_in_question_level,
+  repeat,
+  extra,
 }) => {
   const form = Form.useFormInstance();
   const formConfig = GlobalStore.useState((s) => s.formConfig);
@@ -26,6 +28,13 @@ const CascadeApiField = ({
   const [cascade, setCascade] = useState([]);
   const [selected, setSelected] = useState([]);
   const { endpoint, initial, list } = api;
+
+  const extraBefore = extra
+    ? extra.filter((ex) => ex.placement === "before")
+    : [];
+  const extraAfter = extra
+    ? extra.filter((ex) => ex.placement === "after")
+    : [];
 
   useEffect(() => {
     if (autoSave?.name && selected.length) {
@@ -138,6 +147,15 @@ const CascadeApiField = ({
     return status;
   }, [cascade]);
 
+  // handle the dependency for show_repeat_in_question_level
+  const disableFieldByDependency =
+    validateDisableDependencyQuestionInRepeatQuestionLevel({
+      formRef: form,
+      show_repeat_in_question_level,
+      dependency,
+      repeat,
+    });
+
   return (
     <div>
       <Form.Item
@@ -151,14 +169,16 @@ const CascadeApiField = ({
         <Select mode="multiple" options={[]} hidden />
       </Form.Item>
       <div className="arf-field-cascade-api">
-        {showExtra &&
-          !!extraBefore?.length &&
+        {!!extraBefore?.length &&
           extraBefore.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
+
         {cascade.map((c, ci) => {
           return (
             <Row
               key={`keyform-cascade-${ci}`}
-              className="arf-field-cascade-list"
+              className={
+                show_repeat_in_question_level ? "" : "arf-field-cascade-list"
+              }
             >
               <Form.Item
                 name={[id, ci]}
@@ -182,13 +202,14 @@ const CascadeApiField = ({
                   showSearch
                   filterOption
                   optionFilterProp="label"
+                  disabled={disableFieldByDependency}
                 />
               </Form.Item>
             </Row>
           );
         })}
-        {showExtra &&
-          !!extraAfter?.length &&
+
+        {!!extraAfter?.length &&
           extraAfter.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
       </div>
     </div>
@@ -204,17 +225,20 @@ const TypeCascadeApi = ({
   meta,
   rules,
   tooltip,
-  extraBefore,
-  extraAfter,
+  extra,
   initialValue = [],
   requiredSign,
   partialRequired = false,
   uiText,
-  show_repeat_as_table,
+  show_repeat_in_question_level,
   repeats,
+  dependency,
 }) => {
   // generate table view of repeat group question
   const repeatInputs = useMemo(() => {
+    if (!repeats || !show_repeat_in_question_level) {
+      return [];
+    }
     return repeats.map((r) => {
       return {
         label: r,
@@ -226,21 +250,22 @@ const TypeCascadeApi = ({
             required={required}
             meta={meta}
             rules={rules}
-            extraBefore={extraBefore}
-            extraAfter={extraAfter}
+            extra={extra}
             initialValue={initialValue}
             partialRequired={partialRequired}
             uiText={uiText}
-            showExtra={false}
+            show_repeat_in_question_level={show_repeat_in_question_level}
+            dependency={dependency}
+            repeat={r}
           />
         ),
       };
     });
   }, [
     repeats,
+    show_repeat_in_question_level,
     api,
-    extraAfter,
-    extraBefore,
+    extra,
     id,
     initialValue,
     keyform,
@@ -249,6 +274,7 @@ const TypeCascadeApi = ({
     required,
     rules,
     uiText,
+    dependency,
   ]);
 
   return (
@@ -266,7 +292,7 @@ const TypeCascadeApi = ({
         required={required}
       >
         {/* Show as repeat inputs or not */}
-        {show_repeat_as_table ? (
+        {show_repeat_in_question_level ? (
           <RepeatTableView id={id} dataSource={repeatInputs} />
         ) : (
           <CascadeApiField
@@ -276,12 +302,10 @@ const TypeCascadeApi = ({
             required={required}
             meta={meta}
             rules={rules}
-            extraBefore={extraBefore}
-            extraAfter={extraAfter}
+            extra={extra}
             initialValue={initialValue}
             partialRequired={partialRequired}
             uiText={uiText}
-            showExtra={true}
           />
         )}
       </Form.Item>
