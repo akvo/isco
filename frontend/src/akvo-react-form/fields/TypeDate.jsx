@@ -3,25 +3,52 @@ import { Form, DatePicker } from "antd";
 import { Extra, FieldLabel, RepeatTableView } from "../support";
 import GlobalStore from "../lib/store";
 import moment from "moment";
+import { validateDisableDependencyQuestionInRepeatQuestionLevel } from "../lib";
 
-const DateField = ({ id, keyform, required, rules, uiText, onChange }) => (
-  <Form.Item
-    className="arf-field-child"
-    key={keyform}
-    name={id}
-    rules={rules}
-    required={required}
-  >
-    <DatePicker
-      getPopupContainer={(trigger) => trigger.parentNode}
-      placeholder={uiText.selectDate}
-      format="YYYY-MM-DD"
-      onFocus={(e) => (e.target.readOnly = true)}
-      style={{ width: "100%" }}
-      onChange={onChange}
-    />
-  </Form.Item>
-);
+const DateField = ({
+  id,
+  keyform,
+  required,
+  rules,
+  uiText,
+  onChange,
+  show_repeat_in_question_level,
+  dependency,
+  repeat,
+}) => {
+  const form = Form.useFormInstance();
+
+  const disableFieldByDependency = useMemo(() => {
+    // handle the dependency for show_repeat_in_question_level
+    const res = validateDisableDependencyQuestionInRepeatQuestionLevel({
+      formRef: form,
+      show_repeat_in_question_level,
+      dependency,
+      repeat,
+    });
+    return res;
+  }, [form, show_repeat_in_question_level, dependency, repeat]);
+
+  return (
+    <Form.Item
+      className="arf-field-child"
+      key={keyform}
+      name={id}
+      rules={rules}
+      required={required}
+    >
+      <DatePicker
+        getPopupContainer={(trigger) => trigger.parentNode}
+        placeholder={uiText.selectDate}
+        format="YYYY-MM-DD"
+        onFocus={(e) => (e.target.readOnly = true)}
+        style={{ width: "100%" }}
+        onChange={onChange}
+        disabled={disableFieldByDependency}
+      />
+    </Form.Item>
+  );
+};
 
 const TypeDate = ({
   id,
@@ -36,6 +63,7 @@ const TypeDate = ({
   uiText,
   show_repeat_in_question_level,
   repeats,
+  dependency,
 }) => {
   const form = Form.useFormInstance();
   const extraBefore = extra
@@ -93,6 +121,9 @@ const TypeDate = ({
             rules={rules}
             uiText={uiText}
             onChange={handleDatePickerChange}
+            show_repeat_in_question_level={show_repeat_in_question_level}
+            dependency={dependency}
+            repeat={r}
           />
         ),
       };
@@ -106,6 +137,7 @@ const TypeDate = ({
     rules,
     uiText,
     show_repeat_in_question_level,
+    dependency,
   ]);
 
   return (

@@ -72,7 +72,12 @@ const InputField = ({
       required={coreMandatory ? required : !naChecked ? required : false}
     >
       {show_as_textarea ? (
-        <TextArea row={4} disabled={naChecked || is_repeat_identifier} />
+        <TextArea
+          row={4}
+          disabled={
+            naChecked || is_repeat_identifier || disableFieldByDependency
+          }
+        />
       ) : (
         <Input
           style={{ width: "100%" }}
