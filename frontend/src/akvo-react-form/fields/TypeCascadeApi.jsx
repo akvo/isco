@@ -14,15 +14,13 @@ const CascadeApiField = ({
   required,
   meta,
   rules,
-  extraBefore,
-  extraAfter,
   initialValue,
   partialRequired,
   uiText,
-  showExtra,
   dependency,
   show_repeat_in_question_level,
   repeat,
+  extra,
 }) => {
   const form = Form.useFormInstance();
   const formConfig = GlobalStore.useState((s) => s.formConfig);
@@ -30,6 +28,13 @@ const CascadeApiField = ({
   const [cascade, setCascade] = useState([]);
   const [selected, setSelected] = useState([]);
   const { endpoint, initial, list } = api;
+
+  const extraBefore = extra
+    ? extra.filter((ex) => ex.placement === "before")
+    : [];
+  const extraAfter = extra
+    ? extra.filter((ex) => ex.placement === "after")
+    : [];
 
   useEffect(() => {
     if (autoSave?.name && selected.length) {
@@ -164,9 +169,9 @@ const CascadeApiField = ({
         <Select mode="multiple" options={[]} hidden />
       </Form.Item>
       <div className="arf-field-cascade-api">
-        {showExtra &&
-          !!extraBefore?.length &&
+        {!!extraBefore?.length &&
           extraBefore.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
+
         {cascade.map((c, ci) => {
           return (
             <Row
@@ -203,8 +208,8 @@ const CascadeApiField = ({
             </Row>
           );
         })}
-        {showExtra &&
-          !!extraAfter?.length &&
+
+        {!!extraAfter?.length &&
           extraAfter.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
       </div>
     </div>
@@ -220,8 +225,7 @@ const TypeCascadeApi = ({
   meta,
   rules,
   tooltip,
-  extraBefore,
-  extraAfter,
+  extra,
   initialValue = [],
   requiredSign,
   partialRequired = false,
@@ -246,12 +250,10 @@ const TypeCascadeApi = ({
             required={required}
             meta={meta}
             rules={rules}
-            extraBefore={extraBefore}
-            extraAfter={extraAfter}
+            extra={extra}
             initialValue={initialValue}
             partialRequired={partialRequired}
             uiText={uiText}
-            showExtra={false}
             show_repeat_in_question_level={show_repeat_in_question_level}
             dependency={dependency}
             repeat={r}
@@ -263,8 +265,7 @@ const TypeCascadeApi = ({
     repeats,
     show_repeat_in_question_level,
     api,
-    extraAfter,
-    extraBefore,
+    extra,
     id,
     initialValue,
     keyform,
@@ -301,12 +302,10 @@ const TypeCascadeApi = ({
             required={required}
             meta={meta}
             rules={rules}
-            extraBefore={extraBefore}
-            extraAfter={extraAfter}
+            extra={extra}
             initialValue={initialValue}
             partialRequired={partialRequired}
             uiText={uiText}
-            showExtra={true}
           />
         )}
       </Form.Item>

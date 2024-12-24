@@ -14,71 +14,22 @@ const CascadeField = ({
   required,
   rules,
   uiText,
-  onChange,
   show_repeat_in_question_level,
   dependency,
   repeat,
-}) => {
-  const form = Form.useFormInstance();
-
-  // handle the dependency for show_repeat_in_question_level
-  const disableFieldByDependency =
-    validateDisableDependencyQuestionInRepeatQuestionLevel({
-      formRef: form,
-      show_repeat_in_question_level,
-      dependency,
-      repeat,
-    });
-
-  return (
-    <Form.Item
-      className="arf-field-child"
-      key={keyform}
-      name={id}
-      rules={rules}
-      required={required}
-    >
-      <Cascader
-        options={cascade}
-        getPopupContainer={(trigger) => trigger.parentNode}
-        onFocus={(e) => (e.target.readOnly = true)}
-        showSearch
-        placeholder={uiText.pleaseSelect}
-        onChange={onChange}
-        disabled={disableFieldByDependency}
-      />
-    </Form.Item>
-  );
-};
-
-const TypeCascade = ({
-  cascade,
-  id,
-  name,
-  form,
-  api,
-  keyform,
-  required,
-  meta,
-  rules,
-  tooltip,
   extra,
-  initialValue,
-  requiredSign,
-  partialRequired,
-  uiText,
-  show_repeat_in_question_level,
-  repeats,
-  dependency,
+  api,
+  meta,
 }) => {
   const formInstance = Form.useFormInstance();
+  const currentValue = formInstance.getFieldValue([id]);
+
   const extraBefore = extra
     ? extra.filter((ex) => ex.placement === "before")
     : [];
   const extraAfter = extra
     ? extra.filter((ex) => ex.placement === "after")
     : [];
-  const currentValue = formInstance.getFieldValue([id]);
 
   const combineLabelWithParent = useCallback((cascadeValue, parent) => {
     return cascadeValue?.map((c) => {
@@ -132,6 +83,64 @@ const TypeCascade = ({
     [updateDataPointName]
   );
 
+  // handle the dependency for show_repeat_in_question_level
+  const disableFieldByDependency =
+    validateDisableDependencyQuestionInRepeatQuestionLevel({
+      formRef: formInstance,
+      show_repeat_in_question_level,
+      dependency,
+      repeat,
+    });
+
+  return (
+    <div>
+      {!!extraBefore?.length &&
+        extraBefore.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
+
+      <Form.Item
+        className="arf-field-child"
+        key={keyform}
+        name={id}
+        rules={rules}
+        required={required}
+      >
+        <Cascader
+          options={cascade}
+          getPopupContainer={(trigger) => trigger.parentNode}
+          onFocus={(e) => (e.target.readOnly = true)}
+          showSearch
+          placeholder={uiText.pleaseSelect}
+          onChange={handleChangeCascader}
+          disabled={disableFieldByDependency}
+        />
+      </Form.Item>
+
+      {!!extraAfter?.length &&
+        extraAfter.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
+    </div>
+  );
+};
+
+const TypeCascade = ({
+  cascade,
+  id,
+  name,
+  form,
+  api,
+  keyform,
+  required,
+  meta,
+  rules,
+  tooltip,
+  extra,
+  initialValue,
+  requiredSign,
+  partialRequired,
+  uiText,
+  show_repeat_in_question_level,
+  repeats,
+  dependency,
+}) => {
   // generate table view of repeat group question
   const repeatInputs = useMemo(() => {
     if (!cascade && api) {
@@ -151,10 +160,12 @@ const TypeCascade = ({
             required={required}
             rules={rules}
             uiText={uiText}
-            onChange={handleChangeCascader}
             dependency={dependency}
             show_repeat_in_question_level={show_repeat_in_question_level}
             repeat={r}
+            extra={extra}
+            api={api}
+            meta={meta}
           />
         ),
       };
@@ -162,7 +173,6 @@ const TypeCascade = ({
   }, [
     api,
     cascade,
-    handleChangeCascader,
     id,
     keyform,
     repeats,
@@ -171,6 +181,8 @@ const TypeCascade = ({
     uiText,
     show_repeat_in_question_level,
     dependency,
+    extra,
+    meta,
   ]);
 
   if (!cascade && api) {
@@ -186,8 +198,7 @@ const TypeCascade = ({
         rules={rules}
         tooltip={tooltip}
         initialValue={initialValue}
-        extraBefore={extraBefore}
-        extraAfter={extraAfter}
+        extra={extra}
         requiredSign={required ? requiredSign : null}
         partialRequired={partialRequired}
         uiText={uiText}
@@ -210,9 +221,6 @@ const TypeCascade = ({
       }
       tooltip={tooltip?.text}
     >
-      {!!extraBefore?.length &&
-        extraBefore.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
-
       {/* Show as repeat inputs or not */}
       {show_repeat_in_question_level ? (
         <RepeatTableView id={id} dataSource={repeatInputs} />
@@ -224,12 +232,11 @@ const TypeCascade = ({
           required={required}
           rules={rules}
           uiText={uiText}
-          onChange={handleChangeCascader}
+          extra={extra}
+          api={api}
+          meta={meta}
         />
       )}
-
-      {!!extraAfter?.length &&
-        extraAfter.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
     </Form.Item>
   );
 };
