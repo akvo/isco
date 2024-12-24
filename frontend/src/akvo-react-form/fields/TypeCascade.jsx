@@ -51,7 +51,7 @@ const TypeCascade = ({
   requiredSign,
   partialRequired,
   uiText,
-  show_repeat_as_table,
+  show_repeat_in_question_level,
   repeats,
 }) => {
   const formInstance = Form.useFormInstance();
@@ -120,7 +120,7 @@ const TypeCascade = ({
     if (!cascade && api) {
       return [];
     }
-    if (!repeats || !show_repeat_as_table) {
+    if (!repeats || !show_repeat_in_question_level) {
       return [];
     }
     return repeats.map((r) => {
@@ -149,7 +149,7 @@ const TypeCascade = ({
     required,
     rules,
     uiText,
-    show_repeat_as_table,
+    show_repeat_in_question_level,
   ]);
 
   if (!cascade && api) {
@@ -170,7 +170,7 @@ const TypeCascade = ({
         requiredSign={required ? requiredSign : null}
         partialRequired={partialRequired}
         uiText={uiText}
-        show_repeat_as_table={show_repeat_as_table}
+        show_repeat_in_question_level={show_repeat_in_question_level}
         repeats={repeats}
       />
     );
@@ -192,7 +192,7 @@ const TypeCascade = ({
         extraBefore.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
 
       {/* Show as repeat inputs or not */}
-      {show_repeat_as_table ? (
+      {show_repeat_in_question_level ? (
         <RepeatTableView id={id} dataSource={repeatInputs} />
       ) : (
         <CascadeField

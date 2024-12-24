@@ -210,12 +210,12 @@ const TypeCascadeApi = ({
   requiredSign,
   partialRequired = false,
   uiText,
-  show_repeat_as_table,
+  show_repeat_in_question_level,
   repeats,
 }) => {
   // generate table view of repeat group question
   const repeatInputs = useMemo(() => {
-    if (!repeats || !show_repeat_as_table) {
+    if (!repeats || !show_repeat_in_question_level) {
       return [];
     }
     return repeats.map((r) => {
@@ -241,7 +241,7 @@ const TypeCascadeApi = ({
     });
   }, [
     repeats,
-    show_repeat_as_table,
+    show_repeat_in_question_level,
     api,
     extraAfter,
     extraBefore,
@@ -270,7 +270,7 @@ const TypeCascadeApi = ({
         required={required}
       >
         {/* Show as repeat inputs or not */}
-        {show_repeat_as_table ? (
+        {show_repeat_in_question_level ? (
           <RepeatTableView id={id} dataSource={repeatInputs} />
         ) : (
           <CascadeApiField

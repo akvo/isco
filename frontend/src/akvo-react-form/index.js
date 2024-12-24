@@ -746,7 +746,7 @@ export const Webform = ({
               repeats = g?.repeats && g?.repeats?.length ? range(1) : [];
               g["question"] = g["question"].map((q) => ({
                 ...q,
-                show_repeat_as_table:
+                show_repeat_in_question_level:
                   g?.repeats && g?.repeats?.length ? true : false,
                 repeats: g?.repeats && g?.repeats?.length ? g.repeats : [],
               }));

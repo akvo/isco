@@ -58,7 +58,7 @@ const TypeText = ({
   coreMandatory,
   uiText,
   rule,
-  show_repeat_as_table,
+  show_repeat_in_question_level,
   repeats,
 }) => {
   const form = Form.useFormInstance();
@@ -94,7 +94,7 @@ const TypeText = ({
 
   // generate table view of repeat group question
   const repeatInputs = useMemo(() => {
-    if (!repeats || !show_repeat_as_table) {
+    if (!repeats || !show_repeat_in_question_level) {
       return [];
     }
     return repeats.map((r) => {
@@ -124,7 +124,7 @@ const TypeText = ({
     uiText,
     coreMandatory,
     naChecked,
-    show_repeat_as_table,
+    show_repeat_in_question_level,
   ]);
 
   return (
@@ -144,7 +144,7 @@ const TypeText = ({
         extraBefore.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
 
       {/* Show as repeat inputs or not */}
-      {show_repeat_as_table ? (
+      {show_repeat_in_question_level ? (
         <RepeatTableView id={id} dataSource={repeatInputs} />
       ) : (
         <TextField

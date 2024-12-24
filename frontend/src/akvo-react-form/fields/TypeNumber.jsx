@@ -122,7 +122,7 @@ const TypeNumber = ({
   fieldIcons = true,
   uiText,
   rule,
-  show_repeat_as_table,
+  show_repeat_in_question_level,
   repeats,
   // formRef,
 }) => {
@@ -208,7 +208,7 @@ const TypeNumber = ({
 
   // generate table view of repeat group question
   const repeatInputs = useMemo(() => {
-    if (!repeats || !show_repeat_as_table) {
+    if (!repeats || !show_repeat_in_question_level) {
       return [];
     }
     return repeats.map((r) => {
@@ -241,7 +241,7 @@ const TypeNumber = ({
     });
   }, [
     repeats,
-    show_repeat_as_table,
+    show_repeat_in_question_level,
     addonAfter,
     addonBefore,
     coreMandatory,
@@ -277,7 +277,7 @@ const TypeNumber = ({
         extraBefore.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
 
       {/* Show as repeat inputs or not */}
-      {show_repeat_as_table ? (
+      {show_repeat_in_question_level ? (
         <RepeatTableView id={id} dataSource={repeatInputs} />
       ) : (
         <NumberField

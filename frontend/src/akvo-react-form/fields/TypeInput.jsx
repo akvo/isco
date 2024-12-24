@@ -93,7 +93,7 @@ const TypeInput = ({
   uiText,
   rule,
   is_repeat_identifier,
-  show_repeat_as_table,
+  show_repeat_in_question_level,
   repeats,
   show_as_textarea,
 }) => {
@@ -157,7 +157,7 @@ const TypeInput = ({
 
   // generate table view of repeat group question
   const repeatInputs = useMemo(() => {
-    if (!repeats || !show_repeat_as_table) {
+    if (!repeats || !show_repeat_in_question_level) {
       return [];
     }
     return repeats.map((r) => {
@@ -187,7 +187,7 @@ const TypeInput = ({
       };
     });
   }, [
-    show_repeat_as_table,
+    show_repeat_in_question_level,
     repeats,
     addonAfter,
     addonBefore,
@@ -225,7 +225,7 @@ const TypeInput = ({
         extraBefore.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
 
       {/* Show as repeat inputs or not */}
-      {show_repeat_as_table ? (
+      {show_repeat_in_question_level ? (
         <RepeatTableView id={id} dataSource={repeatInputs} />
       ) : (
         <InputField

@@ -45,7 +45,7 @@ const TypeTree = ({
   expandAll = false,
   requiredSign,
   uiText,
-  show_repeat_as_table,
+  show_repeat_in_question_level,
   repeats,
 }) => {
   const treeData = cloneDeep(tree)?.map((x) => restructureTree(false, x));
@@ -81,7 +81,7 @@ const TypeTree = ({
 
   // generate table view of repeat group question
   const repeatInputs = useMemo(() => {
-    if (!repeats || !show_repeat_as_table) {
+    if (!repeats || !show_repeat_in_question_level) {
       return [];
     }
     return repeats.map((r) => {
@@ -107,7 +107,7 @@ const TypeTree = ({
     rules,
     tProps,
     tooltip,
-    show_repeat_as_table,
+    show_repeat_in_question_level,
   ]);
 
   return (
@@ -127,7 +127,7 @@ const TypeTree = ({
         extraBefore.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
 
       {/* Show as repeat inputs or not */}
-      {show_repeat_as_table ? (
+      {show_repeat_in_question_level ? (
         <RepeatTableView id={id} dataSource={repeatInputs} />
       ) : (
         <TreeField
