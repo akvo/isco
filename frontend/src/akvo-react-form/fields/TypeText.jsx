@@ -16,72 +16,14 @@ const TextField = ({
   rules,
   uiText,
   coreMandatory,
-  naChecked,
   dependency,
   show_repeat_in_question_level,
   repeat,
-}) => {
-  const form = Form.useFormInstance();
-
-  // handle the dependency for show_repeat_in_question_level
-  const disableFieldByDependency =
-    validateDisableDependencyQuestionInRepeatQuestionLevel({
-      formRef: form,
-      show_repeat_in_question_level,
-      dependency,
-      repeat,
-    });
-
-  return (
-    <Form.Item
-      className="arf-field-child"
-      key={keyform}
-      name={id}
-      rules={[
-        ...rules,
-        {
-          validator: (_, value) => {
-            const questionLabel = renderQuestionLabelForErrorMessage(
-              name.props.children
-            );
-            const requiredErr = `${questionLabel} ${uiText.errorIsRequired}`;
-            if (value || value === 0) {
-              return Promise.resolve();
-            }
-            if (!coreMandatory && naChecked) {
-              return Promise.resolve();
-            }
-            if (!coreMandatory && !naChecked && required) {
-              return Promise.reject(new Error(requiredErr));
-            }
-            return Promise.resolve();
-          },
-        },
-      ]}
-      required={coreMandatory ? required : !naChecked ? required : false}
-    >
-      <TextArea row={4} disabled={naChecked || disableFieldByDependency} />
-    </Form.Item>
-  );
-};
-
-const TypeText = ({
-  id,
-  name,
-  keyform,
-  required,
-  rules,
-  tooltip,
-  extra,
-  requiredSign,
-  coreMandatory,
-  uiText,
   rule,
-  show_repeat_in_question_level,
-  repeats,
-  dependency,
+  extra,
 }) => {
   const form = Form.useFormInstance();
+
   const extraBefore = extra
     ? extra.filter((ex) => ex.placement === "before")
     : [];
@@ -112,6 +54,83 @@ const TypeText = ({
     }
   }, [id, currentValue, coreMandatory]);
 
+  // handle the dependency for show_repeat_in_question_level
+  const disableFieldByDependency =
+    validateDisableDependencyQuestionInRepeatQuestionLevel({
+      formRef: form,
+      show_repeat_in_question_level,
+      dependency,
+      repeat,
+    });
+
+  return (
+    <div>
+      {!!extraBefore?.length &&
+        extraBefore.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
+
+      <Form.Item
+        className="arf-field-child"
+        key={keyform}
+        name={id}
+        rules={[
+          ...rules,
+          {
+            validator: (_, value) => {
+              const questionLabel = renderQuestionLabelForErrorMessage(
+                name.props.children
+              );
+              const requiredErr = `${questionLabel} ${uiText.errorIsRequired}`;
+              if (value || value === 0) {
+                return Promise.resolve();
+              }
+              if (!coreMandatory && naChecked) {
+                return Promise.resolve();
+              }
+              if (!coreMandatory && !naChecked && required) {
+                return Promise.reject(new Error(requiredErr));
+              }
+              return Promise.resolve();
+            },
+          },
+        ]}
+        required={coreMandatory ? required : !naChecked ? required : false}
+      >
+        <TextArea row={4} disabled={naChecked || disableFieldByDependency} />
+      </Form.Item>
+
+      {/* inputDataUnavailable */}
+      <DataUnavailableField
+        allowNA={rule?.allowNA}
+        coreMandatory={coreMandatory}
+        keyform={keyform}
+        id={id}
+        naChecked={naChecked}
+        setNaChecked={setNaChecked}
+        show_repeat_in_question_level={show_repeat_in_question_level}
+      />
+
+      {!!extraAfter?.length &&
+        extraAfter.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
+    </div>
+  );
+};
+
+const TypeText = ({
+  id,
+  name,
+  keyform,
+  required,
+  rules,
+  tooltip,
+  extra,
+  requiredSign,
+  coreMandatory,
+  uiText,
+  rule,
+  show_repeat_in_question_level,
+  repeats,
+  dependency,
+}) => {
   // generate table view of repeat group question
   const repeatInputs = useMemo(() => {
     if (!repeats || !show_repeat_in_question_level) {
@@ -129,10 +148,11 @@ const TypeText = ({
             rules={rules}
             uiText={uiText}
             coreMandatory={coreMandatory}
-            naChecked={naChecked}
             show_repeat_in_question_level={show_repeat_in_question_level}
             dependency={dependency}
             repeat={r}
+            rule={rule}
+            extra={extra}
           />
         ),
       };
@@ -146,9 +166,10 @@ const TypeText = ({
     rules,
     uiText,
     coreMandatory,
-    naChecked,
     show_repeat_in_question_level,
     dependency,
+    rule,
+    extra,
   ]);
 
   return (
@@ -164,9 +185,6 @@ const TypeText = ({
       tooltip={tooltip?.text}
       required={required}
     >
-      {!!extraBefore?.length &&
-        extraBefore.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
-
       {/* Show as repeat inputs or not */}
       {show_repeat_in_question_level ? (
         <RepeatTableView id={id} dataSource={repeatInputs} />
@@ -179,23 +197,11 @@ const TypeText = ({
           rules={rules}
           uiText={uiText}
           coreMandatory={coreMandatory}
-          naChecked={naChecked}
+          rule={rule}
+          extra={extra}
         />
       )}
       {/* EOL Show as repeat inputs or not */}
-
-      {/* inputDataUnavailable */}
-      <DataUnavailableField
-        allowNA={rule?.allowNA}
-        coreMandatory={coreMandatory}
-        keyform={keyform}
-        id={id}
-        naChecked={naChecked}
-        setNaChecked={setNaChecked}
-      />
-
-      {!!extraAfter?.length &&
-        extraAfter.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
     </Form.Item>
   );
 };
