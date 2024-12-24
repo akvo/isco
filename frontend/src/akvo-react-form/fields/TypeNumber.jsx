@@ -28,131 +28,24 @@ const NumberField = ({
   uiText,
   required,
   coreMandatory,
-  naChecked,
-  numberRef,
-  onChange,
-  validateNumber,
-  setShowPrefix,
-  showPrefix,
   addonAfter,
   fieldIcons,
-  currentValue,
   addonBefore,
-  error,
   rules,
-  isError,
   show_repeat_in_question_level,
   dependency,
   repeat,
+  extra,
+  rule,
+  meta,
 }) => {
   const form = Form.useFormInstance();
-
-  // handle the dependency for show_repeat_in_question_level
-  const disableFieldByDependency =
-    validateDisableDependencyQuestionInRepeatQuestionLevel({
-      formRef: form,
-      show_repeat_in_question_level,
-      dependency,
-      repeat,
-    });
-
-  return (
-    <div>
-      <Form.Item
-        key={keyform}
-        name={id}
-        rules={[
-          ...rules,
-          {
-            validator: (_, value) => {
-              const questionLabel = renderQuestionLabelForErrorMessage(
-                name.props.children
-              );
-              const requiredErr = `${questionLabel} ${uiText.errorIsRequired}`;
-              if (value || value === 0) {
-                return Promise.resolve();
-              }
-              if (!coreMandatory && naChecked) {
-                return Promise.resolve();
-              }
-              if (!coreMandatory && !naChecked && required) {
-                return Promise.reject(new Error(requiredErr));
-              }
-              return Promise.resolve();
-            },
-          },
-        ]}
-        className="arf-field-child"
-        required={coreMandatory ? required : !naChecked ? required : false}
-      >
-        <InputNumber
-          onBlur={() => {
-            validateNumber(numberRef.current.value, id);
-            setShowPrefix((prev) => prev.filter((p) => p !== id));
-          }}
-          onFocus={() => setShowPrefix((prev) => [...prev, id])}
-          ref={numberRef}
-          inputMode="numeric"
-          style={{ width: "100%" }}
-          onChange={(e) => onChange(e, id)}
-          addonAfter={addonAfter}
-          prefix={
-            fieldIcons &&
-            !showPrefix.includes(id) &&
-            !currentValue && (
-              <>
-                {rules?.filter((item) => item.allowDecimal)?.length === 0 ? (
-                  <InputNumberIcon />
-                ) : (
-                  <InputNumberDecimalIcon />
-                )}
-              </>
-            )
-          }
-          addonBefore={addonBefore}
-          disabled={naChecked || disableFieldByDependency}
-        />
-      </Form.Item>
-      {isError?.[id] && (
-        <div
-          style={{ marginTop: "-10px" }}
-          className="ant-form-item-explain-error"
-        >
-          {error?.[id]}
-        </div>
-      )}
-    </div>
-  );
-};
-
-const TypeNumber = ({
-  id,
-  name,
-  keyform,
-  required,
-  rules,
-  meta,
-  tooltip,
-  addonAfter,
-  addonBefore,
-  extra,
-  requiredSign,
-  coreMandatory,
-  fieldIcons = true,
-  uiText,
-  rule,
-  show_repeat_in_question_level,
-  repeats,
-  dependency,
-  // formRef,
-}) => {
   const numberRef = useRef();
   const [isError, setIsError] = useState({});
   const [error, setError] = useState({});
   const [showPrefix, setShowPrefix] = useState([]);
   const [naChecked, setNaChecked] = useState(false);
 
-  const form = Form.useFormInstance();
   const extraBefore = extra
     ? extra.filter((ex) => ex.placement === "before")
     : [];
@@ -226,6 +119,122 @@ const TypeNumber = ({
     }
   };
 
+  // handle the dependency for show_repeat_in_question_level
+  const disableFieldByDependency =
+    validateDisableDependencyQuestionInRepeatQuestionLevel({
+      formRef: form,
+      show_repeat_in_question_level,
+      dependency,
+      repeat,
+    });
+
+  return (
+    <div>
+      {!!extraBefore?.length &&
+        extraBefore.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
+
+      <Form.Item
+        key={keyform}
+        name={id}
+        rules={[
+          ...rules,
+          {
+            validator: (_, value) => {
+              const questionLabel = renderQuestionLabelForErrorMessage(
+                name.props.children
+              );
+              const requiredErr = `${questionLabel} ${uiText.errorIsRequired}`;
+              if (value || value === 0) {
+                return Promise.resolve();
+              }
+              if (!coreMandatory && naChecked) {
+                return Promise.resolve();
+              }
+              if (!coreMandatory && !naChecked && required) {
+                return Promise.reject(new Error(requiredErr));
+              }
+              return Promise.resolve();
+            },
+          },
+        ]}
+        className="arf-field-child"
+        required={coreMandatory ? required : !naChecked ? required : false}
+      >
+        <InputNumber
+          onBlur={() => {
+            validateNumber(numberRef.current.value, id);
+            setShowPrefix((prev) => prev.filter((p) => p !== id));
+          }}
+          onFocus={() => setShowPrefix((prev) => [...prev, id])}
+          ref={numberRef}
+          inputMode="numeric"
+          style={{ width: "100%" }}
+          onChange={(e) => onChange(e, id)}
+          addonAfter={addonAfter}
+          prefix={
+            fieldIcons &&
+            !showPrefix.includes(id) &&
+            !currentValue && (
+              <>
+                {rules?.filter((item) => item.allowDecimal)?.length === 0 ? (
+                  <InputNumberIcon />
+                ) : (
+                  <InputNumberDecimalIcon />
+                )}
+              </>
+            )
+          }
+          addonBefore={addonBefore}
+          disabled={naChecked || disableFieldByDependency}
+        />
+      </Form.Item>
+      {isError?.[id] && (
+        <div
+          style={{ marginTop: "-10px" }}
+          className="ant-form-item-explain-error"
+        >
+          {error?.[id]}
+        </div>
+      )}
+
+      {/* inputDataUnavailable */}
+      <DataUnavailableField
+        allowNA={rule?.allowNA}
+        coreMandatory={coreMandatory}
+        keyform={keyform}
+        id={id}
+        naChecked={naChecked}
+        setNaChecked={setNaChecked}
+        show_repeat_in_question_level={show_repeat_in_question_level}
+      />
+
+      {!!extraAfter?.length &&
+        extraAfter.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
+    </div>
+  );
+};
+
+const TypeNumber = ({
+  id,
+  name,
+  keyform,
+  required,
+  rules,
+  meta,
+  tooltip,
+  addonAfter,
+  addonBefore,
+  extra,
+  requiredSign,
+  coreMandatory,
+  fieldIcons = true,
+  uiText,
+  rule,
+  show_repeat_in_question_level,
+  repeats,
+  dependency,
+  // formRef,
+}) => {
   // generate table view of repeat group question
   const repeatInputs = useMemo(() => {
     if (!repeats || !show_repeat_in_question_level) {
@@ -242,22 +251,16 @@ const TypeNumber = ({
             uiText={uiText}
             required={required}
             coreMandatory={coreMandatory}
-            naChecked={naChecked}
-            numberRef={numberRef}
-            onChange={onChange}
-            validateNumber={validateNumber}
-            setShowPrefix={setShowPrefix}
-            showPrefix={showPrefix}
             addonAfter={addonAfter}
             fieldIcons={fieldIcons}
-            currentValue={currentValue}
             addonBefore={addonBefore}
-            error={error}
             rules={rules}
-            isError={isError}
             show_repeat_in_question_level={show_repeat_in_question_level}
             dependency={dependency}
             repeat={r}
+            rule={rule}
+            extra={extra}
+            meta={meta}
           />
         ),
       };
@@ -268,20 +271,17 @@ const TypeNumber = ({
     addonAfter,
     addonBefore,
     coreMandatory,
-    currentValue,
     fieldIcons,
     id,
     keyform,
-    naChecked,
     name,
-    onChange,
     required,
     rules,
-    showPrefix,
     uiText,
-    error,
-    isError,
     dependency,
+    extra,
+    rule,
+    meta,
   ]);
 
   return (
@@ -297,9 +297,6 @@ const TypeNumber = ({
       tooltip={tooltip?.text}
       required={required}
     >
-      {!!extraBefore?.length &&
-        extraBefore.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
-
       {/* Show as repeat inputs or not */}
       {show_repeat_in_question_level ? (
         <RepeatTableView id={id} dataSource={repeatInputs} />
@@ -311,35 +308,16 @@ const TypeNumber = ({
           uiText={uiText}
           required={required}
           coreMandatory={coreMandatory}
-          naChecked={naChecked}
-          numberRef={numberRef}
-          onChange={onChange}
-          validateNumber={validateNumber}
-          setShowPrefix={setShowPrefix}
-          showPrefix={showPrefix}
           addonAfter={addonAfter}
           fieldIcons={fieldIcons}
-          currentValue={currentValue}
           addonBefore={addonBefore}
-          error={error}
           rules={rules}
-          isError={isError}
+          rule={rule}
+          extra={extra}
+          meta={meta}
         />
       )}
       {/* EOL Show as repeat inputs or not */}
-
-      {/* inputDataUnavailable */}
-      <DataUnavailableField
-        allowNA={rule?.allowNA}
-        coreMandatory={coreMandatory}
-        keyform={keyform}
-        id={id}
-        naChecked={naChecked}
-        setNaChecked={setNaChecked}
-      />
-
-      {!!extraAfter?.length &&
-        extraAfter.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
     </Form.Item>
   );
 };
