@@ -285,6 +285,7 @@ const TypeInput = ({
           show_as_textarea={show_as_textarea}
           extra={extra}
           meta={meta}
+          rule={rule}
         />
       )}
       {/* EOL Show as repeat inputs or not */}
