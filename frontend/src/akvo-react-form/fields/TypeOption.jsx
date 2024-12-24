@@ -28,16 +28,14 @@ const OptionField = ({
 }) => {
   const form = Form.useFormInstance();
 
-  const disableFieldByDependency = useMemo(() => {
-    // handle the dependency for show_repeat_in_question_level
-    const res = validateDisableDependencyQuestionInRepeatQuestionLevel({
+  // handle the dependency for show_repeat_in_question_level
+  const disableFieldByDependency =
+    validateDisableDependencyQuestionInRepeatQuestionLevel({
       formRef: form,
       show_repeat_in_question_level,
       dependency,
       repeat,
     });
-    return res;
-  }, [form, show_repeat_in_question_level, dependency, repeat]);
 
   return (
     <Form.Item

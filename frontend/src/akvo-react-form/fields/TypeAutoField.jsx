@@ -156,16 +156,14 @@ const AutoField = ({
 
   const repeatIndex = String(id).split("-")?.[1];
 
-  const disableFieldByDependency = useMemo(() => {
-    // handle the dependency for show_repeat_in_question_level
-    const res = validateDisableDependencyQuestionInRepeatQuestionLevel({
+  // handle the dependency for show_repeat_in_question_level
+  const disableFieldByDependency =
+    validateDisableDependencyQuestionInRepeatQuestionLevel({
       formRef: form,
       show_repeat_in_question_level,
       dependency,
       repeat,
     });
-    return res;
-  }, [form, show_repeat_in_question_level, dependency, repeat]);
 
   let automateValue = null;
   if (fn?.multiline) {
