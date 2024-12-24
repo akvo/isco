@@ -171,7 +171,9 @@ const CascadeApiField = ({
           return (
             <Row
               key={`keyform-cascade-${ci}`}
-              className="arf-field-cascade-list"
+              className={
+                show_repeat_in_question_level ? "" : "arf-field-cascade-list"
+              }
             >
               <Form.Item
                 name={[id, ci]}
