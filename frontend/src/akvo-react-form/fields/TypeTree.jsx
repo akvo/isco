@@ -22,58 +22,17 @@ const TreeField = ({
   required,
   rules,
   tooltip,
-  tProps,
   show_repeat_in_question_level,
   dependency,
   repeat,
+  tree,
+  extra,
+  checkStrategy,
+  uiText,
+  expandAll,
 }) => {
   const form = Form.useFormInstance();
 
-  // handle the dependency for show_repeat_in_question_level
-  const disableFieldByDependency =
-    validateDisableDependencyQuestionInRepeatQuestionLevel({
-      formRef: form,
-      show_repeat_in_question_level,
-      dependency,
-      repeat,
-    });
-
-  return (
-    <Form.Item
-      className="arf-field-child"
-      key={keyform}
-      name={id}
-      rules={rules}
-      required={required}
-      tooltip={tooltip?.text}
-    >
-      <TreeSelect
-        onFocus={(e) => (e.target.readOnly = true)}
-        getPopupContainer={(trigger) => trigger.parentNode}
-        {...tProps}
-        disabled={disableFieldByDependency}
-      />
-    </Form.Item>
-  );
-};
-
-const TypeTree = ({
-  tree,
-  id,
-  name,
-  keyform,
-  required,
-  rules,
-  tooltip,
-  extra,
-  checkStrategy = "parent",
-  expandAll = false,
-  requiredSign,
-  uiText,
-  show_repeat_in_question_level,
-  repeats,
-  dependency,
-}) => {
   const treeData = cloneDeep(tree)?.map((x) => restructureTree(false, x));
 
   const tProps = useMemo(() => {
@@ -105,6 +64,59 @@ const TypeTree = ({
     ? extra.filter((ex) => ex.placement === "after")
     : [];
 
+  // handle the dependency for show_repeat_in_question_level
+  const disableFieldByDependency =
+    validateDisableDependencyQuestionInRepeatQuestionLevel({
+      formRef: form,
+      show_repeat_in_question_level,
+      dependency,
+      repeat,
+    });
+
+  return (
+    <div>
+      {!!extraBefore?.length &&
+        extraBefore.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
+
+      <Form.Item
+        className="arf-field-child"
+        key={keyform}
+        name={id}
+        rules={rules}
+        required={required}
+        tooltip={tooltip?.text}
+      >
+        <TreeSelect
+          onFocus={(e) => (e.target.readOnly = true)}
+          getPopupContainer={(trigger) => trigger.parentNode}
+          {...tProps}
+          disabled={disableFieldByDependency}
+        />
+      </Form.Item>
+
+      {!!extraAfter?.length &&
+        extraAfter.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
+    </div>
+  );
+};
+
+const TypeTree = ({
+  tree,
+  id,
+  name,
+  keyform,
+  required,
+  rules,
+  tooltip,
+  extra,
+  checkStrategy = "parent",
+  expandAll = false,
+  requiredSign,
+  uiText,
+  show_repeat_in_question_level,
+  repeats,
+  dependency,
+}) => {
   // generate table view of repeat group question
   const repeatInputs = useMemo(() => {
     if (!repeats || !show_repeat_in_question_level) {
@@ -120,10 +132,14 @@ const TypeTree = ({
             required={required}
             rules={rules}
             tooltip={tooltip}
-            tProps={tProps}
             show_repeat_in_question_level={show_repeat_in_question_level}
             dependency={dependency}
             repeat={r}
+            tree={tree}
+            extra={extra}
+            checkStrategy={checkStrategy}
+            uiText={uiText}
+            expandAll={expandAll}
           />
         ),
       };
@@ -134,10 +150,14 @@ const TypeTree = ({
     repeats,
     required,
     rules,
-    tProps,
     tooltip,
     show_repeat_in_question_level,
     dependency,
+    tree,
+    extra,
+    checkStrategy,
+    uiText,
+    expandAll,
   ]);
 
   return (
@@ -153,9 +173,6 @@ const TypeTree = ({
       tooltip={tooltip?.text}
       required={required}
     >
-      {!!extraBefore?.length &&
-        extraBefore.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
-
       {/* Show as repeat inputs or not */}
       {show_repeat_in_question_level ? (
         <RepeatTableView id={id} dataSource={repeatInputs} />
@@ -166,12 +183,13 @@ const TypeTree = ({
           required={required}
           rules={rules}
           tooltip={tooltip}
-          tProps={tProps}
+          tree={tree}
+          extra={extra}
+          checkStrategy={checkStrategy}
+          uiText={uiText}
+          expandAll={expandAll}
         />
       )}
-
-      {!!extraAfter?.length &&
-        extraAfter.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
     </Form.Item>
   );
 };
