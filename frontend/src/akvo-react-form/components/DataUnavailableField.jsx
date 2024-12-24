@@ -10,6 +10,7 @@ const DataUnavailableField = ({
   id,
   naChecked,
   setNaChecked,
+  show_repeat_in_question_level,
 }) => {
   const { language } = store.useState((s) => s);
   const { active: activeLang } = language;
@@ -30,7 +31,7 @@ const DataUnavailableField = ({
         onChange={(e) => {
           setNaChecked(e.target.checked);
         }}
-        style={{ marginTop: "8px" }}
+        style={show_repeat_in_question_level ? {} : { marginTop: "8px" }}
       >
         {text.inputDataUnavailable}
       </Checkbox>
