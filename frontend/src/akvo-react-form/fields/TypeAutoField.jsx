@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo } from "react";
 import { Form, Input } from "antd";
 import { Extra, FieldLabel, RepeatTableView } from "../support";
+import { validateDisableDependencyQuestionInRepeatQuestionLevel } from "../lib";
 
 const checkIsPromise = (val) => {
   if (
@@ -146,11 +147,25 @@ const AutoField = ({
   addonAfter,
   addonBefore,
   fn,
+  show_repeat_in_question_level,
+  dependency,
+  repeat,
 }) => {
   const form = Form.useFormInstance();
   const { getFieldValue, setFieldsValue } = form;
 
   const repeatIndex = String(id).split("-")?.[1];
+
+  const disableFieldByDependency = useMemo(() => {
+    // handle the dependency for show_repeat_in_question_level
+    const res = validateDisableDependencyQuestionInRepeatQuestionLevel({
+      formRef: form,
+      show_repeat_in_question_level,
+      dependency,
+      repeat,
+    });
+    return res;
+  }, [form, show_repeat_in_question_level, dependency, repeat]);
 
   let automateValue = null;
   if (fn?.multiline) {
@@ -164,7 +179,7 @@ const AutoField = ({
   }
 
   useEffect(() => {
-    if (automateValue) {
+    if (automateValue && !disableFieldByDependency) {
       const { fn, isAllAnswersZero } = automateValue;
       if (checkIsPromise(fn())) {
         fn().then((res) => setFieldsValue({ [id]: res }));
@@ -175,7 +190,7 @@ const AutoField = ({
     } else {
       setFieldsValue({ [id]: null });
     }
-  }, [automateValue, id, setFieldsValue]);
+  }, [automateValue, id, setFieldsValue, disableFieldByDependency]);
 
   return (
     <Form.Item
@@ -209,6 +224,7 @@ const TypeAutoField = ({
   requiredSign,
   show_repeat_in_question_level,
   repeats,
+  dependency,
 }) => {
   const extraBefore = extra
     ? extra.filter((ex) => ex.placement === "before")
@@ -234,6 +250,9 @@ const TypeAutoField = ({
             addonAfter={addonAfter}
             addonBefore={addonBefore}
             fn={fn}
+            dependency={dependency}
+            show_repeat_in_question_level={show_repeat_in_question_level}
+            repeat={r}
           />
         ),
       };
@@ -248,6 +267,7 @@ const TypeAutoField = ({
     repeats,
     fn,
     show_repeat_in_question_level,
+    dependency,
   ]);
 
   return (
