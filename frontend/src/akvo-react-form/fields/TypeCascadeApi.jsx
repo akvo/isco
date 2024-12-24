@@ -5,6 +5,7 @@ import take from "lodash/take";
 import { Extra, FieldLabel, RepeatTableView } from "../support";
 import ds from "../lib/db";
 import GlobalStore from "../lib/store";
+import { validateDisableDependencyQuestionInRepeatQuestionLevel } from "../lib";
 
 const CascadeApiField = ({
   id,
@@ -19,6 +20,9 @@ const CascadeApiField = ({
   partialRequired,
   uiText,
   showExtra,
+  dependency,
+  show_repeat_in_question_level,
+  repeat,
 }) => {
   const form = Form.useFormInstance();
   const formConfig = GlobalStore.useState((s) => s.formConfig);
@@ -138,6 +142,17 @@ const CascadeApiField = ({
     return status;
   }, [cascade]);
 
+  const disableFieldByDependency = useMemo(() => {
+    // handle the dependency for show_repeat_in_question_level
+    const res = validateDisableDependencyQuestionInRepeatQuestionLevel({
+      formRef: form,
+      show_repeat_in_question_level,
+      dependency,
+      repeat,
+    });
+    return res;
+  }, [form, show_repeat_in_question_level, dependency, repeat]);
+
   return (
     <div>
       <Form.Item
@@ -182,6 +197,7 @@ const CascadeApiField = ({
                   showSearch
                   filterOption
                   optionFilterProp="label"
+                  disabled={disableFieldByDependency}
                 />
               </Form.Item>
             </Row>
@@ -212,6 +228,7 @@ const TypeCascadeApi = ({
   uiText,
   show_repeat_in_question_level,
   repeats,
+  dependency,
 }) => {
   // generate table view of repeat group question
   const repeatInputs = useMemo(() => {
@@ -235,6 +252,9 @@ const TypeCascadeApi = ({
             partialRequired={partialRequired}
             uiText={uiText}
             showExtra={false}
+            show_repeat_in_question_level={show_repeat_in_question_level}
+            dependency={dependency}
+            repeat={r}
           />
         ),
       };
@@ -253,6 +273,7 @@ const TypeCascadeApi = ({
     required,
     rules,
     uiText,
+    dependency,
   ]);
 
   return (

@@ -5,6 +5,7 @@ import flattenDeep from "lodash/flattenDeep";
 import { Extra, FieldLabel, RepeatTableView } from "../support";
 import GlobalStore from "../lib/store";
 import TypeCascadeApi from "./TypeCascadeApi";
+import { validateDisableDependencyQuestionInRepeatQuestionLevel } from "../lib";
 
 const CascadeField = ({
   cascade,
@@ -14,7 +15,23 @@ const CascadeField = ({
   rules,
   uiText,
   onChange,
+  show_repeat_in_question_level,
+  dependency,
+  repeat,
 }) => {
+  const form = Form.useFormInstance();
+
+  const disableFieldByDependency = useMemo(() => {
+    // handle the dependency for show_repeat_in_question_level
+    const res = validateDisableDependencyQuestionInRepeatQuestionLevel({
+      formRef: form,
+      show_repeat_in_question_level,
+      dependency,
+      repeat,
+    });
+    return res;
+  }, [form, show_repeat_in_question_level, dependency, repeat]);
+
   return (
     <Form.Item
       className="arf-field-child"
@@ -30,6 +47,7 @@ const CascadeField = ({
         showSearch
         placeholder={uiText.pleaseSelect}
         onChange={onChange}
+        disabled={disableFieldByDependency}
       />
     </Form.Item>
   );
@@ -53,6 +71,7 @@ const TypeCascade = ({
   uiText,
   show_repeat_in_question_level,
   repeats,
+  dependency,
 }) => {
   const formInstance = Form.useFormInstance();
   const extraBefore = extra
@@ -135,6 +154,9 @@ const TypeCascade = ({
             rules={rules}
             uiText={uiText}
             onChange={handleChangeCascader}
+            dependency={dependency}
+            show_repeat_in_question_level={show_repeat_in_question_level}
+            repeat={r}
           />
         ),
       };
@@ -150,6 +172,7 @@ const TypeCascade = ({
     rules,
     uiText,
     show_repeat_in_question_level,
+    dependency,
   ]);
 
   if (!cascade && api) {
@@ -172,6 +195,7 @@ const TypeCascade = ({
         uiText={uiText}
         show_repeat_in_question_level={show_repeat_in_question_level}
         repeats={repeats}
+        dependency={dependency}
       />
     );
   }
