@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { Form, Tag, TreeSelect } from "antd";
 import { cloneDeep } from "lodash";
 import { Extra, FieldLabel, RepeatTableView } from "../support";
+import { validateDisableDependencyQuestionInRepeatQuestionLevel } from "../lib";
 
 const { SHOW_PARENT, SHOW_CHILD } = TreeSelect;
 
@@ -15,22 +16,48 @@ const restructureTree = (parent, data) => {
   return data;
 };
 
-const TreeField = ({ id, keyform, required, rules, tooltip, tProps }) => (
-  <Form.Item
-    className="arf-field-child"
-    key={keyform}
-    name={id}
-    rules={rules}
-    required={required}
-    tooltip={tooltip?.text}
-  >
-    <TreeSelect
-      onFocus={(e) => (e.target.readOnly = true)}
-      getPopupContainer={(trigger) => trigger.parentNode}
-      {...tProps}
-    />
-  </Form.Item>
-);
+const TreeField = ({
+  id,
+  keyform,
+  required,
+  rules,
+  tooltip,
+  tProps,
+  show_repeat_in_question_level,
+  dependency,
+  repeat,
+}) => {
+  const form = Form.useFormInstance();
+
+  const disableFieldByDependency = useMemo(() => {
+    // handle the dependency for show_repeat_in_question_level
+    const res = validateDisableDependencyQuestionInRepeatQuestionLevel({
+      formRef: form,
+      show_repeat_in_question_level,
+      dependency,
+      repeat,
+    });
+    return res;
+  }, [form, show_repeat_in_question_level, dependency, repeat]);
+
+  return (
+    <Form.Item
+      className="arf-field-child"
+      key={keyform}
+      name={id}
+      rules={rules}
+      required={required}
+      tooltip={tooltip?.text}
+    >
+      <TreeSelect
+        onFocus={(e) => (e.target.readOnly = true)}
+        getPopupContainer={(trigger) => trigger.parentNode}
+        {...tProps}
+        disabled={disableFieldByDependency}
+      />
+    </Form.Item>
+  );
+};
 
 const TypeTree = ({
   tree,
@@ -47,6 +74,7 @@ const TypeTree = ({
   uiText,
   show_repeat_in_question_level,
   repeats,
+  dependency,
 }) => {
   const treeData = cloneDeep(tree)?.map((x) => restructureTree(false, x));
 
@@ -95,6 +123,9 @@ const TypeTree = ({
             rules={rules}
             tooltip={tooltip}
             tProps={tProps}
+            show_repeat_in_question_level={show_repeat_in_question_level}
+            dependency={dependency}
+            repeat={r}
           />
         ),
       };
@@ -108,6 +139,7 @@ const TypeTree = ({
     tProps,
     tooltip,
     show_repeat_in_question_level,
+    dependency,
   ]);
 
   return (
