@@ -201,7 +201,7 @@ const TypeOption = ({
   const handleChange = useCallback(
     (val) => {
       // handle other option input value
-      if (isRadioGroup) {
+      if (isRadioGroup && !show_repeat_in_question_level) {
         const value = val.target.value;
         // other option not selected
         setDisableAllowOtherInputField(true);
@@ -225,6 +225,7 @@ const TypeOption = ({
       newOption,
       otherOptionDefInputName,
       updateDataPointName,
+      show_repeat_in_question_level,
     ]
   );
 

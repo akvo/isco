@@ -6,6 +6,7 @@ import GlobalStore from "../lib/store";
 import { InputFieldIcon } from "../lib/svgIcons";
 import { DataUnavailableField } from "../components";
 import { renderQuestionLabelForErrorMessage } from "../lib";
+import { validateDisableDependencyQuestionInRepeatQuestionLevel } from "../lib";
 
 const InputField = ({
   id,
@@ -25,56 +26,76 @@ const InputField = ({
   naChecked,
   currentValue,
   show_as_textarea,
-}) => (
-  <Form.Item
-    className="arf-field-child"
-    key={keyform}
-    name={id}
-    rules={[
-      ...rules,
-      {
-        validator: (_, value) => {
-          const questionLabel = renderQuestionLabelForErrorMessage(
-            name.props.children
-          );
-          const requiredErr = `${questionLabel} ${uiText.errorIsRequired}`;
-          if (value || value === 0) {
+  dependency,
+  repeat,
+  show_repeat_in_question_level,
+}) => {
+  const form = Form.useFormInstance();
+
+  const disableFieldByDependency = useMemo(() => {
+    // handle the dependency for show_repeat_in_question_level
+    const res = validateDisableDependencyQuestionInRepeatQuestionLevel({
+      formRef: form,
+      show_repeat_in_question_level,
+      dependency,
+      repeat,
+    });
+    return res;
+  }, [form, show_repeat_in_question_level, dependency, repeat]);
+
+  return (
+    <Form.Item
+      className="arf-field-child"
+      key={keyform}
+      name={id}
+      rules={[
+        ...rules,
+        {
+          validator: (_, value) => {
+            const questionLabel = renderQuestionLabelForErrorMessage(
+              name.props.children
+            );
+            const requiredErr = `${questionLabel} ${uiText.errorIsRequired}`;
+            if (value || value === 0) {
+              return Promise.resolve();
+            }
+            if (!coreMandatory && naChecked) {
+              return Promise.resolve();
+            }
+            if (!coreMandatory && !naChecked && required) {
+              return Promise.reject(new Error(requiredErr));
+            }
             return Promise.resolve();
-          }
-          if (!coreMandatory && naChecked) {
-            return Promise.resolve();
-          }
-          if (!coreMandatory && !naChecked && required) {
-            return Promise.reject(new Error(requiredErr));
-          }
-          return Promise.resolve();
+          },
         },
-      },
-    ]}
-    required={coreMandatory ? required : !naChecked ? required : false}
-  >
-    {show_as_textarea ? (
-      <TextArea row={4} disabled={naChecked || is_repeat_identifier} />
-    ) : (
-      <Input
-        style={{ width: "100%" }}
-        onBlur={() => {
-          setShowPrefix((prev) => prev.filter((p) => p !== id));
-        }}
-        onFocus={() => setShowPrefix((prev) => [...prev, id])}
-        onChange={onChange}
-        addonAfter={addonAfter}
-        addonBefore={addonBefore}
-        prefix={
-          fieldIcons &&
-          !showPrefix?.includes(id) &&
-          !currentValue && <InputFieldIcon />
-        }
-        disabled={naChecked || is_repeat_identifier} // handle leading_question -> is_repeat_identifier
-      />
-    )}
-  </Form.Item>
-);
+      ]}
+      required={coreMandatory ? required : !naChecked ? required : false}
+    >
+      {show_as_textarea ? (
+        <TextArea row={4} disabled={naChecked || is_repeat_identifier} />
+      ) : (
+        <Input
+          style={{ width: "100%" }}
+          onBlur={() => {
+            setShowPrefix((prev) => prev.filter((p) => p !== id));
+          }}
+          onFocus={() => setShowPrefix((prev) => [...prev, id])}
+          onChange={onChange}
+          addonAfter={addonAfter}
+          addonBefore={addonBefore}
+          prefix={
+            fieldIcons &&
+            !showPrefix?.includes(id) &&
+            !currentValue && <InputFieldIcon />
+          }
+          disabled={
+            naChecked || is_repeat_identifier || disableFieldByDependency
+          } // handle leading_question -> is_repeat_identifier
+        />
+      )}
+    </Form.Item>
+  );
+};
 
 const TypeInput = ({
   id,
@@ -96,6 +117,7 @@ const TypeInput = ({
   show_repeat_in_question_level,
   repeats,
   show_as_textarea,
+  dependency,
 }) => {
   const form = Form.useFormInstance();
   const [showPrefix, setShowPrefix] = useState([]);
@@ -182,6 +204,9 @@ const TypeInput = ({
             naChecked={naChecked}
             currentValue={currentValue}
             show_as_textarea={show_as_textarea}
+            dependency={dependency}
+            repeat={r}
+            show_repeat_in_question_level={show_repeat_in_question_level}
           />
         ),
       };
@@ -205,6 +230,7 @@ const TypeInput = ({
     showPrefix,
     uiText,
     show_as_textarea,
+    dependency,
   ]);
 
   return (

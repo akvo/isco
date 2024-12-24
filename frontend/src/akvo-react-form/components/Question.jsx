@@ -141,10 +141,40 @@ const Question = ({
     }
     // eol of hint
     if (field?.dependency) {
+      // TODO :: refine this to handle the dependency
       const modifiedDependency = modifyDependency(group, field, repeat);
       return (
         <Form.Item noStyle key={key} shouldUpdate={current}>
           {(f) => {
+            // handle dependency for show repeat in question level
+            const show_repeat_in_question_level =
+              group?.show_repeat_in_question_level;
+            if (show_repeat_in_question_level) {
+              // dependecy for repeat in question level
+              const matches = modifiedDependency
+                .map((x) => {
+                  return validateDependency(x, f.getFieldValue(x.id));
+                })
+                .filter((x) => x === true);
+              return !matches.length ? null : (
+                <div key={`question-${field.id}`}>
+                  <QuestionFields
+                    rules={rules}
+                    index={key}
+                    cascade={cascade}
+                    tree={tree}
+                    field={field}
+                    initialValue={
+                      initialValue?.find((i) => i.question === field.id)?.value
+                    }
+                    uiText={uiText}
+                    formRef={formRef}
+                  />
+                  {hint}
+                </div>
+              );
+            }
+            // normal dependency
             const unmatches = modifiedDependency
               .map((x) => {
                 return validateDependency(x, f.getFieldValue(x.id));
