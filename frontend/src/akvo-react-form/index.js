@@ -734,23 +734,23 @@ export const Webform = ({
             // handle leading_question
             const isLeadingQuestion = g?.leading_question;
             let repeats = g?.repeats?.length ? g.repeats : range(1);
-            if (isLeadingQuestion) {
-              /**
-                // This is for the normal repeat group UI Style
-                repeats = g?.repeats && g?.repeats?.length ? g.repeats : [];
-              */
-              // This is for the repeat group inside each question
-              // TODO :: for this table view approach we need to save the leading question answer as repeat index
-              repeats = g?.repeats && g?.repeats?.length ? range(1) : [];
+            if (isLeadingQuestion && !g?.show_repeat_in_question_level) {
+              // This is for the normal repeat group UI Style
+              repeats = g?.repeats && g?.repeats?.length ? g.repeats : [];
             }
+            // Handle show repeat in question level setting
             // This is for the repeat group inside each question
             // to show the repeat group as a table
-            g["question"] = g["question"].map((q) => ({
-              ...q,
-              show_repeat_as_table:
-                g?.repeats && g?.repeats?.length ? true : false,
-              repeats: g?.repeats && g?.repeats?.length ? g.repeats : [],
-            }));
+            if (g?.show_repeat_in_question_level) {
+              // This is for the repeat group inside each question
+              repeats = g?.repeats && g?.repeats?.length ? range(1) : [];
+              g["question"] = g["question"].map((q) => ({
+                ...q,
+                show_repeat_as_table:
+                  g?.repeats && g?.repeats?.length ? true : false,
+                repeats: g?.repeats && g?.repeats?.length ? g.repeats : [],
+              }));
+            }
             const headStyle =
               sidebar && sticky && isRepeatable
                 ? {

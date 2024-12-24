@@ -79,6 +79,9 @@ const TypeDate = ({
 
   // generate table view of repeat group question
   const repeatInputs = useMemo(() => {
+    if (!repeats || !show_repeat_as_table) {
+      return [];
+    }
     return repeats.map((r) => {
       return {
         label: r,
@@ -94,7 +97,16 @@ const TypeDate = ({
         ),
       };
     });
-  }, [handleDatePickerChange, id, keyform, repeats, required, rules, uiText]);
+  }, [
+    handleDatePickerChange,
+    id,
+    keyform,
+    repeats,
+    required,
+    rules,
+    uiText,
+    show_repeat_as_table,
+  ]);
 
   return (
     <Form.Item

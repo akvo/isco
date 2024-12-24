@@ -120,6 +120,9 @@ const TypeCascade = ({
     if (!cascade && api) {
       return [];
     }
+    if (!repeats || !show_repeat_as_table) {
+      return [];
+    }
     return repeats.map((r) => {
       return {
         label: r,
@@ -146,6 +149,7 @@ const TypeCascade = ({
     required,
     rules,
     uiText,
+    show_repeat_as_table,
   ]);
 
   if (!cascade && api) {

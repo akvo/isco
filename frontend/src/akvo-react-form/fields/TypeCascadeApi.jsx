@@ -215,6 +215,9 @@ const TypeCascadeApi = ({
 }) => {
   // generate table view of repeat group question
   const repeatInputs = useMemo(() => {
+    if (!repeats || !show_repeat_as_table) {
+      return [];
+    }
     return repeats.map((r) => {
       return {
         label: r,
@@ -238,6 +241,7 @@ const TypeCascadeApi = ({
     });
   }, [
     repeats,
+    show_repeat_as_table,
     api,
     extraAfter,
     extraBefore,

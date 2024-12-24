@@ -81,6 +81,9 @@ const TypeTree = ({
 
   // generate table view of repeat group question
   const repeatInputs = useMemo(() => {
+    if (!repeats || !show_repeat_as_table) {
+      return [];
+    }
     return repeats.map((r) => {
       return {
         label: r,
@@ -96,7 +99,16 @@ const TypeTree = ({
         ),
       };
     });
-  }, [id, keyform, repeats, required, rules, tProps, tooltip]);
+  }, [
+    id,
+    keyform,
+    repeats,
+    required,
+    rules,
+    tProps,
+    tooltip,
+    show_repeat_as_table,
+  ]);
 
   return (
     <Form.Item

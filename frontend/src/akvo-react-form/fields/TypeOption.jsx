@@ -230,6 +230,9 @@ const TypeOption = ({
 
   // generate table view of repeat group question
   const repeatInputs = useMemo(() => {
+    if (!repeats || !show_repeat_as_table) {
+      return [];
+    }
     return repeats.map((r) => {
       return {
         label: r,
@@ -272,6 +275,7 @@ const TypeOption = ({
     onNewOptionChange,
     otherOptionInputName,
     repeats,
+    show_repeat_as_table,
   ]);
 
   return (

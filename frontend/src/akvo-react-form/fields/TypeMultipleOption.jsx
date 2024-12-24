@@ -157,6 +157,9 @@ const TypeMultipleOption = ({
 
   // generate table view of repeat group question
   const repeatInputs = useMemo(() => {
+    if (!repeats || !show_repeat_as_table) {
+      return [];
+    }
     return repeats.map((r) => {
       return {
         label: r,
@@ -194,6 +197,7 @@ const TypeMultipleOption = ({
     newOption,
     onNewOptionChange,
     repeats,
+    show_repeat_as_table,
   ]);
 
   return (

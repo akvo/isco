@@ -219,6 +219,9 @@ const TypeAutoField = ({
 
   // generate table view of repeat group question
   const repeatInputs = useMemo(() => {
+    if (!repeats || !show_repeat_as_table) {
+      return [];
+    }
     return repeats.map((r) => {
       return {
         label: r,
@@ -235,7 +238,17 @@ const TypeAutoField = ({
         ),
       };
     });
-  }, [addonAfter, addonBefore, id, keyform, required, rules, repeats, fn]);
+  }, [
+    addonAfter,
+    addonBefore,
+    id,
+    keyform,
+    required,
+    rules,
+    repeats,
+    fn,
+    show_repeat_as_table,
+  ]);
 
   return (
     <Form.Item

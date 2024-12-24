@@ -208,6 +208,9 @@ const TypeNumber = ({
 
   // generate table view of repeat group question
   const repeatInputs = useMemo(() => {
+    if (!repeats || !show_repeat_as_table) {
+      return [];
+    }
     return repeats.map((r) => {
       return {
         label: r,
@@ -238,6 +241,7 @@ const TypeNumber = ({
     });
   }, [
     repeats,
+    show_repeat_as_table,
     addonAfter,
     addonBefore,
     coreMandatory,
