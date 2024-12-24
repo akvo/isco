@@ -3,6 +3,7 @@ import { Divider, Form, Select, Input, Button } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { Extra, FieldLabel, RepeatTableView } from "../support";
 import GlobalStore from "../lib/store";
+import { validateDisableDependencyQuestionInRepeatQuestionLevel } from "../lib";
 
 const MultipleOptionField = ({
   id,
@@ -18,60 +19,78 @@ const MultipleOptionField = ({
   onNewOptionChange,
   onChange,
   options,
-}) => (
-  <Form.Item
-    className="arf-field-child"
-    key={keyform}
-    name={id}
-    rules={rules}
-    required={required}
-  >
-    <Select
-      style={{ width: "100%" }}
-      mode="multiple"
-      showArrow
-      getPopupContainer={(trigger) => trigger.parentNode}
-      onFocus={(e) => (e.target.readOnly = true)}
-      placeholder={uiText.pleaseSelect}
-      dropdownRender={(menu) =>
-        allowOther ? (
-          <div>
-            {menu}
-            <Divider style={{ margin: "8px 0" }} />
-            <div style={{ padding: "0 8px 4px", width: "100%" }}>
-              <Input.Group compact>
-                <Button
-                  type="primary"
-                  onClick={addNewOption}
-                  style={{ whiteSpace: "nowrap" }}
-                  icon={<PlusOutlined />}
-                  disabled={!newOption.length}
-                />
-                <Input
-                  style={{ width: "calc(100% - 40px)", textAlign: "left" }}
-                  placeholder={allowOtherText || uiText.pleaseEnterItem}
-                  value={newOption}
-                  onChange={onNewOptionChange}
-                />
-              </Input.Group>
-            </div>
-          </div>
-        ) : (
-          menu
-        )
-      }
-      allowClear
-      onChange={onChange}
-      disabled={is_repeat_identifier} // handle leading_question -> is_repeat_identifier
+  dependency,
+  show_repeat_in_question_level,
+  repeat,
+}) => {
+  const form = Form.useFormInstance();
+
+  const disableFieldByDependency = useMemo(() => {
+    // handle the dependency for show_repeat_in_question_level
+    const res = validateDisableDependencyQuestionInRepeatQuestionLevel({
+      formRef: form,
+      show_repeat_in_question_level,
+      dependency,
+      repeat,
+    });
+    return res;
+  }, [form, show_repeat_in_question_level, dependency, repeat]);
+
+  return (
+    <Form.Item
+      className="arf-field-child"
+      key={keyform}
+      name={id}
+      rules={rules}
+      required={required}
     >
-      {options.map((o, io) => (
-        <Select.Option key={io} value={o.name}>
-          {o.label}
-        </Select.Option>
-      ))}
-    </Select>
-  </Form.Item>
-);
+      <Select
+        style={{ width: "100%" }}
+        mode="multiple"
+        showArrow
+        getPopupContainer={(trigger) => trigger.parentNode}
+        onFocus={(e) => (e.target.readOnly = true)}
+        placeholder={uiText.pleaseSelect}
+        dropdownRender={(menu) =>
+          allowOther ? (
+            <div>
+              {menu}
+              <Divider style={{ margin: "8px 0" }} />
+              <div style={{ padding: "0 8px 4px", width: "100%" }}>
+                <Input.Group compact>
+                  <Button
+                    type="primary"
+                    onClick={addNewOption}
+                    style={{ whiteSpace: "nowrap" }}
+                    icon={<PlusOutlined />}
+                    disabled={!newOption.length}
+                  />
+                  <Input
+                    style={{ width: "calc(100% - 40px)", textAlign: "left" }}
+                    placeholder={allowOtherText || uiText.pleaseEnterItem}
+                    value={newOption}
+                    onChange={onNewOptionChange}
+                  />
+                </Input.Group>
+              </div>
+            </div>
+          ) : (
+            menu
+          )
+        }
+        allowClear
+        onChange={onChange}
+        disabled={is_repeat_identifier || disableFieldByDependency} // handle leading_question -> is_repeat_identifier
+      >
+        {options.map((o, io) => (
+          <Select.Option key={io} value={o.name}>
+            {o.label}
+          </Select.Option>
+        ))}
+      </Select>
+    </Form.Item>
+  );
+};
 
 const TypeMultipleOption = ({
   option,
@@ -90,6 +109,7 @@ const TypeMultipleOption = ({
   is_repeat_identifier,
   show_repeat_in_question_level,
   repeats,
+  dependency,
 }) => {
   const form = Form.useFormInstance();
   const [options, setOptions] = useState([]);
@@ -178,6 +198,9 @@ const TypeMultipleOption = ({
             onNewOptionChange={onNewOptionChange}
             onChange={handleChange}
             options={options}
+            show_repeat_in_question_level={show_repeat_in_question_level}
+            dependency={dependency}
+            repeat={r}
           />
         ),
       };
@@ -198,6 +221,7 @@ const TypeMultipleOption = ({
     onNewOptionChange,
     repeats,
     show_repeat_in_question_level,
+    dependency,
   ]);
 
   return (
