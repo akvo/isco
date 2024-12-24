@@ -11,57 +11,11 @@ const DateField = ({
   required,
   rules,
   uiText,
-  onChange,
   show_repeat_in_question_level,
   dependency,
   repeat,
-}) => {
-  const form = Form.useFormInstance();
-
-  // handle the dependency for show_repeat_in_question_level
-  const disableFieldByDependency =
-    validateDisableDependencyQuestionInRepeatQuestionLevel({
-      formRef: form,
-      show_repeat_in_question_level,
-      dependency,
-      repeat,
-    });
-
-  return (
-    <Form.Item
-      className="arf-field-child"
-      key={keyform}
-      name={id}
-      rules={rules}
-      required={required}
-    >
-      <DatePicker
-        getPopupContainer={(trigger) => trigger.parentNode}
-        placeholder={uiText.selectDate}
-        format="YYYY-MM-DD"
-        onFocus={(e) => (e.target.readOnly = true)}
-        style={{ width: "100%" }}
-        onChange={onChange}
-        disabled={disableFieldByDependency}
-      />
-    </Form.Item>
-  );
-};
-
-const TypeDate = ({
-  id,
-  name,
-  keyform,
-  required,
-  rules,
-  tooltip,
   extra,
   meta,
-  requiredSign,
-  uiText,
-  show_repeat_in_question_level,
-  repeats,
-  dependency,
 }) => {
   const form = Form.useFormInstance();
   const extraBefore = extra
@@ -96,13 +50,66 @@ const TypeDate = ({
     }
   }, [currentValue, updateDataPointName]);
 
-  const handleDatePickerChange = useCallback(
+  const onChange = useCallback(
     (val) => {
       updateDataPointName(val);
     },
     [updateDataPointName]
   );
 
+  // handle the dependency for show_repeat_in_question_level
+  const disableFieldByDependency =
+    validateDisableDependencyQuestionInRepeatQuestionLevel({
+      formRef: form,
+      show_repeat_in_question_level,
+      dependency,
+      repeat,
+    });
+
+  return (
+    <div>
+      {!!extraBefore?.length &&
+        extraBefore.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
+
+      <Form.Item
+        className="arf-field-child"
+        key={keyform}
+        name={id}
+        rules={rules}
+        required={required}
+      >
+        <DatePicker
+          getPopupContainer={(trigger) => trigger.parentNode}
+          placeholder={uiText.selectDate}
+          format="YYYY-MM-DD"
+          onFocus={(e) => (e.target.readOnly = true)}
+          style={{ width: "100%" }}
+          onChange={onChange}
+          disabled={disableFieldByDependency}
+        />
+      </Form.Item>
+
+      {!!extraAfter?.length &&
+        extraAfter.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
+    </div>
+  );
+};
+
+const TypeDate = ({
+  id,
+  name,
+  keyform,
+  required,
+  rules,
+  tooltip,
+  extra,
+  meta,
+  requiredSign,
+  uiText,
+  show_repeat_in_question_level,
+  repeats,
+  dependency,
+}) => {
   // generate table view of repeat group question
   const repeatInputs = useMemo(() => {
     if (!repeats || !show_repeat_in_question_level) {
@@ -118,16 +125,16 @@ const TypeDate = ({
             required={required}
             rules={rules}
             uiText={uiText}
-            onChange={handleDatePickerChange}
             show_repeat_in_question_level={show_repeat_in_question_level}
             dependency={dependency}
             repeat={r}
+            extra={extra}
+            meta={meta}
           />
         ),
       };
     });
   }, [
-    handleDatePickerChange,
     id,
     keyform,
     repeats,
@@ -136,6 +143,8 @@ const TypeDate = ({
     uiText,
     show_repeat_in_question_level,
     dependency,
+    extra,
+    meta,
   ]);
 
   return (
@@ -151,9 +160,6 @@ const TypeDate = ({
       tooltip={tooltip?.text}
       required={required}
     >
-      {!!extraBefore?.length &&
-        extraBefore.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
-
       {/* Show as repeat inputs or not */}
       {show_repeat_in_question_level ? (
         <RepeatTableView id={id} dataSource={repeatInputs} />
@@ -164,12 +170,10 @@ const TypeDate = ({
           required={required}
           rules={rules}
           uiText={uiText}
-          onChange={handleDatePickerChange}
+          extra={extra}
+          meta={meta}
         />
       )}
-
-      {!!extraAfter?.length &&
-        extraAfter.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
     </Form.Item>
   );
 };
