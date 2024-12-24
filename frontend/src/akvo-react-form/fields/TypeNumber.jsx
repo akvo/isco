@@ -10,7 +10,10 @@ import { Extra, FieldLabel, RepeatTableView } from "../support";
 import GlobalStore from "../lib/store";
 import { InputNumberIcon, InputNumberDecimalIcon } from "../lib/svgIcons";
 import { DataUnavailableField } from "../components";
-import { renderQuestionLabelForErrorMessage } from "../lib";
+import {
+  renderQuestionLabelForErrorMessage,
+  validateDisableDependencyQuestionInRepeatQuestionLevel,
+} from "../lib";
 import { uiText as parentUIText } from "../../static";
 
 const dataNaTexts = [
@@ -38,73 +41,91 @@ const NumberField = ({
   error,
   rules,
   isError,
-}) => (
-  <div>
-    <Form.Item
-      key={keyform}
-      name={id}
-      rules={[
-        ...rules,
-        {
-          validator: (_, value) => {
-            const questionLabel = renderQuestionLabelForErrorMessage(
-              name.props.children
-            );
-            const requiredErr = `${questionLabel} ${uiText.errorIsRequired}`;
-            if (value || value === 0) {
+  show_repeat_in_question_level,
+  dependency,
+  repeat,
+}) => {
+  const form = Form.useFormInstance();
+
+  const disableFieldByDependency = useMemo(() => {
+    // handle the dependency for show_repeat_in_question_level
+    const res = validateDisableDependencyQuestionInRepeatQuestionLevel({
+      formRef: form,
+      show_repeat_in_question_level,
+      dependency,
+      repeat,
+    });
+    return res;
+  }, [form, show_repeat_in_question_level, dependency, repeat]);
+
+  return (
+    <div>
+      <Form.Item
+        key={keyform}
+        name={id}
+        rules={[
+          ...rules,
+          {
+            validator: (_, value) => {
+              const questionLabel = renderQuestionLabelForErrorMessage(
+                name.props.children
+              );
+              const requiredErr = `${questionLabel} ${uiText.errorIsRequired}`;
+              if (value || value === 0) {
+                return Promise.resolve();
+              }
+              if (!coreMandatory && naChecked) {
+                return Promise.resolve();
+              }
+              if (!coreMandatory && !naChecked && required) {
+                return Promise.reject(new Error(requiredErr));
+              }
               return Promise.resolve();
-            }
-            if (!coreMandatory && naChecked) {
-              return Promise.resolve();
-            }
-            if (!coreMandatory && !naChecked && required) {
-              return Promise.reject(new Error(requiredErr));
-            }
-            return Promise.resolve();
+            },
           },
-        },
-      ]}
-      className="arf-field-child"
-      required={coreMandatory ? required : !naChecked ? required : false}
-    >
-      <InputNumber
-        onBlur={() => {
-          validateNumber(numberRef.current.value, id);
-          setShowPrefix((prev) => prev.filter((p) => p !== id));
-        }}
-        onFocus={() => setShowPrefix((prev) => [...prev, id])}
-        ref={numberRef}
-        inputMode="numeric"
-        style={{ width: "100%" }}
-        onChange={(e) => onChange(e, id)}
-        addonAfter={addonAfter}
-        prefix={
-          fieldIcons &&
-          !showPrefix.includes(id) &&
-          !currentValue && (
-            <>
-              {rules?.filter((item) => item.allowDecimal)?.length === 0 ? (
-                <InputNumberIcon />
-              ) : (
-                <InputNumberDecimalIcon />
-              )}
-            </>
-          )
-        }
-        addonBefore={addonBefore}
-        disabled={naChecked}
-      />
-    </Form.Item>
-    {isError?.[id] && (
-      <div
-        style={{ marginTop: "-10px" }}
-        className="ant-form-item-explain-error"
+        ]}
+        className="arf-field-child"
+        required={coreMandatory ? required : !naChecked ? required : false}
       >
-        {error?.[id]}
-      </div>
-    )}
-  </div>
-);
+        <InputNumber
+          onBlur={() => {
+            validateNumber(numberRef.current.value, id);
+            setShowPrefix((prev) => prev.filter((p) => p !== id));
+          }}
+          onFocus={() => setShowPrefix((prev) => [...prev, id])}
+          ref={numberRef}
+          inputMode="numeric"
+          style={{ width: "100%" }}
+          onChange={(e) => onChange(e, id)}
+          addonAfter={addonAfter}
+          prefix={
+            fieldIcons &&
+            !showPrefix.includes(id) &&
+            !currentValue && (
+              <>
+                {rules?.filter((item) => item.allowDecimal)?.length === 0 ? (
+                  <InputNumberIcon />
+                ) : (
+                  <InputNumberDecimalIcon />
+                )}
+              </>
+            )
+          }
+          addonBefore={addonBefore}
+          disabled={naChecked || disableFieldByDependency}
+        />
+      </Form.Item>
+      {isError?.[id] && (
+        <div
+          style={{ marginTop: "-10px" }}
+          className="ant-form-item-explain-error"
+        >
+          {error?.[id]}
+        </div>
+      )}
+    </div>
+  );
+};
 
 const TypeNumber = ({
   id,
@@ -124,6 +145,7 @@ const TypeNumber = ({
   rule,
   show_repeat_in_question_level,
   repeats,
+  dependency,
   // formRef,
 }) => {
   const numberRef = useRef();
@@ -235,6 +257,9 @@ const TypeNumber = ({
             error={error}
             rules={rules}
             isError={isError}
+            show_repeat_in_question_level={show_repeat_in_question_level}
+            dependency={dependency}
+            repeat={r}
           />
         ),
       };
@@ -258,6 +283,7 @@ const TypeNumber = ({
     uiText,
     error,
     isError,
+    dependency,
   ]);
 
   return (
