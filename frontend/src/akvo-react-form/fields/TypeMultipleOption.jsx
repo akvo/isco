@@ -181,6 +181,7 @@ const TypeMultipleOption = ({
     return repeats.map((r) => {
       return {
         label: r,
+        is_repeat_identifier: is_repeat_identifier,
         field: (
           <MultipleOptionField
             id={`${id}-${r}`}

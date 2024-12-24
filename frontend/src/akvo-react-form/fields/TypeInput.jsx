@@ -188,6 +188,7 @@ const TypeInput = ({
     return repeats.map((r) => {
       return {
         label: r,
+        is_repeat_identifier: is_repeat_identifier,
         field: (
           <InputField
             id={`${id}-${r}`}

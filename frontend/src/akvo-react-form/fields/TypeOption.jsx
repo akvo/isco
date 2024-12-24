@@ -258,6 +258,7 @@ const TypeOption = ({
     return repeats.map((r) => {
       return {
         label: r,
+        is_repeat_identifier: is_repeat_identifier,
         field: (
           <OptionField
             id={`${id}-${r}`}
