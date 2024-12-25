@@ -56,7 +56,6 @@ const reorderAnswersRepeatIndex = (formValue, answer) => {
   const repeatValues = answer.filter(
     (x) => intersection([x.question], repeatQuestions).length
   );
-  // TODO:: this reorder make Data NA feature not properly saved to the correct repeat index answer
   const reorderedRepeatIndex = repeatQuestions
     .map((id) => {
       return orderBy(repeatValues, ["repeat_index"])
@@ -593,7 +592,9 @@ const WebformPage = ({
       // update answer
       const updatedAnswer = answer.map((a) => {
         const qid =
-          a.repeat_index > 0 ? `${a.question}-${a.repeat_index}` : a.question;
+          a.repeat_index > 0 || a.repeat_index_string
+            ? `${a.question}-${a.repeat_index_string}`
+            : a.question;
         if (comment?.[qid] || comment[qid] === "") {
           return {
             ...a,
@@ -613,7 +614,9 @@ const WebformPage = ({
       // update answer
       const updatedAnswer = answer.map((a) => {
         const qid =
-          a.repeat_index > 0 ? `${a.question}-${a.repeat_index}` : a.question;
+          a.repeat_index > 0 || a.repeat_index_string
+            ? `${a.question}-${a.repeat_index_string}`
+            : a.question;
         if (String(deletedComment) === String(qid)) {
           return {
             ...a,
@@ -714,17 +717,22 @@ const WebformPage = ({
       .map((key) => {
         let question = key;
         let repeatIndex = 0;
+        let repeatIndexString = null;
         // manage repeat index
         if (key.includes("-")) {
           const split = key.split("-");
           question = split[0];
           repeatIndex = parseInt(split[1]);
+          repeatIndexString = split[1];
         }
         // find comment
         const qid = parseInt(question);
         // find answer by qid and repeatIndex
         const findAnswer = answer.find(
-          (x) => x.question === qid && x.repeat_index === repeatIndex
+          (x) =>
+            x.question === qid &&
+            (x.repeat_index === repeatIndex ||
+              x.repeat_index_string === repeatIndexString)
         );
         // value
         const value = values?.[key] || values?.[key] === 0 ? values[key] : null;
@@ -733,6 +741,7 @@ const WebformPage = ({
             question: qid,
             value: value,
             repeat_index: repeatIndex,
+            repeat_index_string: repeatIndexString,
             comment: dataUnavailable?.[key]
               ? dataUnavailable[key] // using key because key is questionId-with repeat index
               : findAnswer
@@ -906,7 +915,14 @@ const WebformPage = ({
     if (finalFormValues) {
       updatedAnswer = Object.keys(finalFormValues)
         .map((key) => {
-          const prevAnswer = answer.find((a) => a.question === parseInt(key));
+          const prevAnswer = answer.find((a) => {
+            // return prev value with correct key
+            const qid =
+              a.repeat_index > 0 || a.repeat_index_string
+                ? `${a.question}-${a.repeat_index_string}`
+                : String(a.question);
+            return qid === key;
+          });
           if (prevAnswer) {
             return {
               ...prevAnswer,
