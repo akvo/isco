@@ -83,7 +83,7 @@ const DataDetail = ({ record }) => {
   });
   record["answer"] = recordAnswer;
 
-  const history = record?.history?.map((h) => {
+  let history = record?.history?.map((h) => {
     const identifierAnswer = h?.answer?.filter((a) => a?.is_repeat_identifier);
     const historyAnswer = h?.answer?.map((ha) => {
       // handle repeat group index with is_repeat_identifier
@@ -113,6 +113,9 @@ const DataDetail = ({ record }) => {
     });
     return { ...h, answer: historyAnswer };
   });
+  // show only 1 history
+  history = _.orderBy(history, "year", "desc");
+  // history = history?.length ? [history[0]] : [];
   // EOL Remap answer and history to provide the repeat_identifier
 
   // generate history columns

@@ -114,6 +114,7 @@ class TestFormWithLeadingQuestionForRepeatGroup:
             "member_access": [1],
             "isco_access": [1],
             "leading_question": None,
+            "show_repeat_in_question_level": False,
             "question": [
                 {
                     "form": None,
@@ -163,6 +164,7 @@ class TestFormWithLeadingQuestionForRepeatGroup:
             "member_access": [1],
             "isco_access": [1],
             "leading_question": None,
+            "show_repeat_in_question_level": False,
             "question": [
                 {
                     "id": 18,
@@ -262,6 +264,7 @@ class TestFormWithLeadingQuestionForRepeatGroup:
             "member_access": [1],
             "isco_access": [1],
             "leading_question": 19,
+            "show_repeat_in_question_level": True,
             "question": [
                 leading_question_payload(order=1, is_repeat_identifier=True),
                 {
@@ -337,6 +340,7 @@ class TestFormWithLeadingQuestionForRepeatGroup:
             "member_access": [1],
             "isco_access": [1],
             "leading_question": 19,
+            "show_repeat_in_question_level": True,
             "question": [
                 {
                     "id": 20,
@@ -461,6 +465,7 @@ class TestFormWithLeadingQuestionForRepeatGroup:
                 "member_access": [1],
                 "isco_access": [1],
                 "leading_question": None,
+                "show_repeat_in_question_level": False,
                 "question": None,
             },
         )
@@ -478,6 +483,7 @@ class TestFormWithLeadingQuestionForRepeatGroup:
             "member_access": [1],
             "isco_access": [1],
             "leading_question": None,
+            "show_repeat_in_question_level": False,
             "question": res["question"],
         }
 
@@ -496,6 +502,7 @@ class TestFormWithLeadingQuestionForRepeatGroup:
                 "member_access": [1],
                 "isco_access": [1],
                 "leading_question": 19,
+                "show_repeat_in_question_level": False,
                 "question": None,
             },
         )
@@ -513,6 +520,7 @@ class TestFormWithLeadingQuestionForRepeatGroup:
             "member_access": [1],
             "isco_access": [1],
             "leading_question": None,
+            "show_repeat_in_question_level": False,
             "question": res["question"],
         }
 
@@ -531,6 +539,7 @@ class TestFormWithLeadingQuestionForRepeatGroup:
                 "member_access": [1],
                 "isco_access": [1],
                 "leading_question": 19,
+                "show_repeat_in_question_level": True,
                 "question": None,
             },
         )
@@ -548,5 +557,6 @@ class TestFormWithLeadingQuestionForRepeatGroup:
             "member_access": [1],
             "isco_access": [1],
             "leading_question": 19,
+            "show_repeat_in_question_level": True,
             "question": res["question"],
         }

@@ -267,6 +267,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
             "member_access": [1],
             "isco_access": [1],
             "leading_question": None,
+            "show_repeat_in_question_level": False,
             "question": [
                 {
                     "form": None,
@@ -464,6 +465,7 @@ class TestAdvancedQuestionGroupAndQuestionRoutes:
             "repeat": False,
             "repeat_text": None,
             "leading_question": None,
+            "show_repeat_in_question_level": False,
             "translations": [],
             "question": [
                 {

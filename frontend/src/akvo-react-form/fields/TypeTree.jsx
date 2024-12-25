@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { Form, Tag, TreeSelect } from "antd";
 import { cloneDeep } from "lodash";
 import { Extra, FieldLabel, RepeatTableView } from "../support";
+import { validateDisableDependencyQuestionInRepeatQuestionLevel } from "../lib";
 
 const { SHOW_PARENT, SHOW_CHILD } = TreeSelect;
 
@@ -15,39 +16,23 @@ const restructureTree = (parent, data) => {
   return data;
 };
 
-const TreeField = ({ id, keyform, required, rules, tooltip, tProps }) => (
-  <Form.Item
-    className="arf-field-child"
-    key={keyform}
-    name={id}
-    rules={rules}
-    required={required}
-    tooltip={tooltip?.text}
-  >
-    <TreeSelect
-      onFocus={(e) => (e.target.readOnly = true)}
-      getPopupContainer={(trigger) => trigger.parentNode}
-      {...tProps}
-    />
-  </Form.Item>
-);
-
-const TypeTree = ({
-  tree,
+const TreeField = ({
   id,
-  name,
   keyform,
   required,
   rules,
   tooltip,
+  show_repeat_in_question_level,
+  dependency,
+  repeat,
+  tree,
   extra,
-  checkStrategy = "parent",
-  expandAll = false,
-  requiredSign,
+  checkStrategy,
   uiText,
-  show_repeat_as_table,
-  repeats,
+  expandAll,
 }) => {
+  const form = Form.useFormInstance();
+
   const treeData = cloneDeep(tree)?.map((x) => restructureTree(false, x));
 
   const tProps = useMemo(() => {
@@ -79,8 +64,64 @@ const TypeTree = ({
     ? extra.filter((ex) => ex.placement === "after")
     : [];
 
+  // handle the dependency for show_repeat_in_question_level
+  const disableFieldByDependency =
+    validateDisableDependencyQuestionInRepeatQuestionLevel({
+      formRef: form,
+      show_repeat_in_question_level,
+      dependency,
+      repeat,
+    });
+
+  return (
+    <div>
+      {!!extraBefore?.length &&
+        extraBefore.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
+
+      <Form.Item
+        className="arf-field-child"
+        key={keyform}
+        name={id}
+        rules={rules}
+        required={required}
+        tooltip={tooltip?.text}
+      >
+        <TreeSelect
+          onFocus={(e) => (e.target.readOnly = true)}
+          getPopupContainer={(trigger) => trigger.parentNode}
+          {...tProps}
+          disabled={disableFieldByDependency}
+        />
+      </Form.Item>
+
+      {!!extraAfter?.length &&
+        extraAfter.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
+    </div>
+  );
+};
+
+const TypeTree = ({
+  tree,
+  id,
+  name,
+  keyform,
+  required,
+  rules,
+  tooltip,
+  extra,
+  checkStrategy = "parent",
+  expandAll = false,
+  requiredSign,
+  uiText,
+  show_repeat_in_question_level,
+  repeats,
+  dependency,
+}) => {
   // generate table view of repeat group question
   const repeatInputs = useMemo(() => {
+    if (!repeats || !show_repeat_in_question_level) {
+      return [];
+    }
     return repeats.map((r) => {
       return {
         label: r,
@@ -91,12 +132,33 @@ const TypeTree = ({
             required={required}
             rules={rules}
             tooltip={tooltip}
-            tProps={tProps}
+            show_repeat_in_question_level={show_repeat_in_question_level}
+            dependency={dependency}
+            repeat={r}
+            tree={tree}
+            extra={extra}
+            checkStrategy={checkStrategy}
+            uiText={uiText}
+            expandAll={expandAll}
           />
         ),
       };
     });
-  }, [id, keyform, repeats, required, rules, tProps, tooltip]);
+  }, [
+    id,
+    keyform,
+    repeats,
+    required,
+    rules,
+    tooltip,
+    show_repeat_in_question_level,
+    dependency,
+    tree,
+    extra,
+    checkStrategy,
+    uiText,
+    expandAll,
+  ]);
 
   return (
     <Form.Item
@@ -111,11 +173,8 @@ const TypeTree = ({
       tooltip={tooltip?.text}
       required={required}
     >
-      {!!extraBefore?.length &&
-        extraBefore.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
-
       {/* Show as repeat inputs or not */}
-      {show_repeat_as_table ? (
+      {show_repeat_in_question_level ? (
         <RepeatTableView id={id} dataSource={repeatInputs} />
       ) : (
         <TreeField
@@ -124,12 +183,13 @@ const TypeTree = ({
           required={required}
           rules={rules}
           tooltip={tooltip}
-          tProps={tProps}
+          tree={tree}
+          extra={extra}
+          checkStrategy={checkStrategy}
+          uiText={uiText}
+          expandAll={expandAll}
         />
       )}
-
-      {!!extraAfter?.length &&
-        extraAfter.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
     </Form.Item>
   );
 };

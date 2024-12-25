@@ -26,6 +26,7 @@ class QuestionGroupPayload(TypedDict):
     isco_access: Optional[List[int]] = None
     leading_question: Optional[int] = None
     question: Optional[List[QuestionPayload]] = None
+    show_repeat_in_question_level: Optional[bool] = False
 
 
 class QuestionGroupDict(TypedDict):
@@ -36,6 +37,7 @@ class QuestionGroupDict(TypedDict):
     translations: Optional[List[dict]] = []
     order: Optional[int] = None
     repeat: bool
+    show_repeat_in_question_level: bool
     repeat_text: Optional[str] = None
     leading_question: Optional[int] = None
 
@@ -53,6 +55,7 @@ class QuestionGroup(Base):
     repeat = Column(Boolean, default=False)
     repeat_text = Column(String, nullable=True)
     order = Column(Integer, nullable=True)
+    show_repeat_in_question_level = Column(Boolean, default=False)
     created = Column(DateTime, default=datetime.utcnow)
     member_access = relationship(
         "QuestionGroupMemberAccess",
@@ -93,6 +96,7 @@ class QuestionGroup(Base):
         description: Optional[str],
         repeat_text: Optional[str],
         leading_question: Optional[int],
+        show_repeat_in_question_level: Optional[bool],
     ):
         self.id = id
         self.form = form
@@ -103,6 +107,7 @@ class QuestionGroup(Base):
         self.repeat = repeat
         self.repeat_text = repeat_text
         self.leading_question = leading_question
+        self.show_repeat_in_question_level = show_repeat_in_question_level
 
     def __repr__(self) -> int:
         return f"<QuestionGroup {self.id}>"
@@ -125,6 +130,9 @@ class QuestionGroup(Base):
             "leading_question": self.leading_question,
             "member_access": [ma.member_type for ma in self.member_access],
             "isco_access": [ia.isco_type for ia in self.isco_access],
+            "show_repeat_in_question_level": (
+                self.show_repeat_in_question_level
+            ),
             "question": [q.serialize for q in self.question],
         }
 
@@ -146,7 +154,14 @@ class QuestionGroup(Base):
             "question": [q.serializeJson for q in self.question],
         }
         if self.repeat:
-            group.update({"repeatButtonPlacement": "bottom"})
+            group.update(
+                {
+                    "repeatButtonPlacement": "bottom",
+                    "show_repeat_in_question_level": (
+                        self.show_repeat_in_question_level
+                    ),
+                }
+            )
         if self.repeat and self.repeat_text:
             group.update({"repeatText": self.repeat_text})
         if self.translations:
@@ -172,6 +187,7 @@ class QuestionGroupBase(BaseModel):
     translations: Optional[List[dict]] = []
     order: Optional[int] = None
     repeat: bool
+    show_repeat_in_question_level: bool
     repeat_text: Optional[str] = None
     member_access: Optional[List[int]] = []
     isco_access: Optional[List[int]] = []
@@ -189,6 +205,7 @@ class QuestionGroupJson(BaseModel):
     translations: Optional[List[dict]] = []
     order: Optional[int] = None
     repeatable: bool
+    show_repeat_in_question_level: bool
     repeatText: Optional[str] = None
     leading_question: Optional[int] = (None,)
     member_access: Optional[List[str]] = []

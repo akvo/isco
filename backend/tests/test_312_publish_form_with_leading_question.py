@@ -176,6 +176,7 @@ class TestFormWithLeadingQuestionForRepeatGroup:
                         ],
                         "repeatButtonPlacement": "bottom",
                         "repeat_text": "Add another",
+                        "show_repeat_in_question_level": True,
                     },
                 ],
                 "version": 1,
