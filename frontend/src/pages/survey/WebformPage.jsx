@@ -412,6 +412,16 @@ const WebformPage = ({
           const { data, status } = res;
           // const { form, initial_values, mismatch, collaborators } = test; // testing purpose
           const { form, initial_values, mismatch, collaborators } = data;
+          // handle leading question
+          const questionWithLeadingQuestionGroup = form.question_group
+            .flatMap((qg) => {
+              const question = qg.question.map((q) => ({
+                ...q,
+                lead_by_question: qg?.leading_question,
+              }));
+              return question;
+            })
+            ?.filter((q) => q?.lead_by_question);
           // submission already submitted
           if (status === 208) {
             setErrorPage(true);
@@ -424,8 +434,24 @@ const WebformPage = ({
               setSavedData(initial_values);
               const answers = initial_values.answer.map((a) => {
                 const { question, repeat_index, comment } = a;
+                // handle leading question
+                let repeatIndexString =
+                  repeat_index > 0 ? String(repeat_index) : null;
+                const findQuestion = questionWithLeadingQuestionGroup.find(
+                  (q) => q.id === question
+                );
+                if (findQuestion?.lead_by_question) {
+                  const leadingAnswer = initial_values.answer.find(
+                    (a) => a.question === findQuestion.lead_by_question
+                  )?.value;
+                  repeatIndexString =
+                    leadingAnswer?.[repeat_index] || repeat_index;
+                }
+                // eol handle leading question
                 const commentQid =
-                  repeat_index > 0 ? `${question}-${repeat_index}` : question;
+                  repeat_index > 0 || repeatIndexString
+                    ? `${question}-${repeatIndexString}`
+                    : question;
                 commentValues = {
                   ...commentValues,
                   [commentQid]: comment,
@@ -433,6 +459,8 @@ const WebformPage = ({
                 return {
                   ...a,
                   repeatIndex: repeat_index,
+                  repeat_index: repeat_index,
+                  repeat_index_string: repeatIndexString,
                 };
               });
               setInitialAnswers(answers);
@@ -444,8 +472,24 @@ const WebformPage = ({
               setInitialAnswers(answer);
               answer.forEach((a) => {
                 const { question, repeat_index, comment } = a;
+                // handle leading question
+                let repeatIndexString =
+                  repeat_index > 0 ? String(repeat_index) : null;
+                const findQuestion = questionWithLeadingQuestionGroup.find(
+                  (q) => q.id === question
+                );
+                if (findQuestion?.lead_by_question) {
+                  const leadingAnswer = initial_values.answer.find(
+                    (a) => a.question === findQuestion.lead_by_question
+                  )?.value;
+                  repeatIndexString =
+                    leadingAnswer?.[repeat_index] || repeat_index;
+                }
+                // eol handle leading question
                 const commentQid =
-                  repeat_index > 0 ? `${question}-${repeat_index}` : question;
+                  repeat_index > 0 || repeatIndexString
+                    ? `${question}-${repeatIndexString}`
+                    : question;
                 commentValues = {
                   ...commentValues,
                   [commentQid]: comment,
