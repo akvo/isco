@@ -71,6 +71,7 @@ class TestFormWithComputedValidationRoutes:
                 "member_access": [1],
                 "isco_access": [1],
                 "leading_question": None,
+                "show_repeat_in_question_level": False,
                 "question": None,
             },
         )
@@ -87,6 +88,7 @@ class TestFormWithComputedValidationRoutes:
             "repeat": False,
             "repeat_text": None,
             "leading_question": None,
+            "show_repeat_in_question_level": False,
             "translations": [],
             "question": [],
         }

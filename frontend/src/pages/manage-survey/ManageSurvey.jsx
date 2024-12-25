@@ -19,6 +19,7 @@ import { TbTrashOff } from "react-icons/tb";
 import { FormEditor } from "../../components";
 import { api } from "../../lib";
 import { useNotification } from "../../util";
+import orderBy from "lodash/orderBy";
 
 const { Title } = Typography;
 
@@ -208,7 +209,7 @@ const ManageSurvey = () => {
           user: "John Doe",
           status: null,
         };
-        setDataSource([...dataSource, data]);
+        setDataSource(orderBy([...dataSource, data], "created", "desc"));
         notify({
           type: "success",
           message: "Survey saved successfully.",

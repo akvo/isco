@@ -7,7 +7,7 @@ import {
 
 // const repeatColumns = [
 //   {
-//     title: "Repeat",
+//     title: "Label",
 //     dataIndex: "label",
 //     key: "label",
 //     width: "30%",
@@ -26,11 +26,11 @@ const RepeatTableView = ({ id, dataSource = [] }) => {
       <Row
         key={`${id}-${ds.label}`}
         gutter={[14, 14]}
-        align="middle"
-        style={{ paddingLeft: "20px" }}
+        align="top"
+        style={{ paddingLeft: "20px", marginBottom: "10px" }}
       >
-        <Col span={8}>{ds.label}</Col>
-        <Col span={16}>{ds.field}</Col>
+        {!ds?.is_repeat_identifier && <Col span={6}>{ds.label}</Col>}
+        <Col span={ds?.is_repeat_identifier ? 24 : 18}>{ds.field}</Col>
       </Row>
     );
   });
