@@ -219,7 +219,8 @@ def check_member_submission_exists(
                 return False
         form_config = MEMBER_SURVEY
     if form and form in LIMITED_SURVEY:
-        form_config = LIMITED_SURVEY
+        # intersection between form and limited survey config
+        form_config = list(set([form]) & set(LIMITED_SURVEY))
     data = (
         session.query(Data)
         .filter(
