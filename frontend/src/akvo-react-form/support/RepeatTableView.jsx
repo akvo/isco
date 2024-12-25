@@ -27,7 +27,7 @@ const RepeatTableView = ({ id, dataSource = [] }) => {
         key={`${id}-${ds.label}`}
         gutter={[14, 14]}
         align="top"
-        style={{ paddingLeft: "20px" }}
+        style={{ paddingLeft: "20px", marginBottom: "10px" }}
       >
         {!ds?.is_repeat_identifier && <Col span={6}>{ds.label}</Col>}
         <Col span={ds?.is_repeat_identifier ? 24 : 18}>{ds.field}</Col>
