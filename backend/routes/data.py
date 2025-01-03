@@ -301,7 +301,8 @@ def get(
             session=session,
             form=d.form,
             organisation_id=d.organisation,
-            last_year=d.created.year,
+            submitted=d.submitted,
+            last_year=d.submitted.year,
         )
         history_result = [
             h.serializeHistoryWithQuestionName for h in histories

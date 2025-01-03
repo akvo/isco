@@ -190,14 +190,6 @@ const DataDetail = ({ record }) => {
           ? ` - ${findRepeatIdentifier?.repeat_identifier}`
           : "";
       }
-      // TODO :: delete
-      // const findRepeatIdentifier = v.find((q) => q?.is_repeat_identifier);
-      // let titleSuffix = length > 1 ? ` - ${vi + 1}` : "";
-      // if (findRepeatIdentifier) {
-      //   titleSuffix = findRepeatIdentifier?.value?.length
-      //     ? ` - ${findRepeatIdentifier?.value?.join(" ")}`
-      //     : "";
-      // }
 
       // Map into the repeat group with repeat_identifier value
       let dataSource = [];
@@ -237,10 +229,7 @@ const DataDetail = ({ record }) => {
               {
                 title: `${title}${titleSuffix}`,
                 className: "group-header",
-                children: [
-                  ...columns,
-                  // ...allHistoryColumns
-                ],
+                children: [...columns],
               },
               ...allHistoryColumns,
             ]}

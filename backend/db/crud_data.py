@@ -252,17 +252,26 @@ def get_history_datapoint(
     session: Session,
     organisation_id: int,
     last_year: int,
+    submitted: datetime,
     form: Optional[Union[int, str]] = None,
 ):
     """Query the history data for submitted datapoint"""
     data = session.query(Data)
     if form and form != "all":
         data = data.filter(Data.form == form)
-    data = data.filter(
-        and_(
-            Data.organisation == organisation_id,
-            Data.submitted != null(),
-            extract("year", Data.submitted) != last_year,
+    data = (
+        data.filter(
+            and_(
+                Data.organisation == organisation_id,
+                Data.submitted != null(),
+            )
         )
-    ).all()
+        .filter(
+            or_(
+                Data.submitted != submitted,
+                extract("year", Data.submitted) != last_year,
+            )
+        )
+        .all()
+    )
     return data
