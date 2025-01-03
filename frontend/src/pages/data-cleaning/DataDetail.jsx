@@ -50,6 +50,23 @@ const generateHistoryColumns = (year) => [
   },
 ];
 
+const mergeObjectsByQuestionName = (arr) => {
+  // Group the objects by `question_name`
+  const grouped = _.groupBy(arr, "question_name");
+  // Merge each group of objects
+  const merged = _.map(grouped, (group) => {
+    return _.mergeWith({}, ...group, (objValue, srcValue, key) => {
+      // Custom merge logic for year-specific properties
+      if (key.startsWith("value_") || key.startsWith("comment_")) {
+        return srcValue; // Use the source value
+      }
+      // Default merge behavior
+      return typeof objValue === "undefined" ? srcValue : objValue;
+    });
+  });
+  return merged;
+};
+
 const DataDetail = ({ record }) => {
   // Remap answer and history to provide the repeat_identifier
   const identifierAnswer = record?.answer?.filter(
@@ -113,13 +130,11 @@ const DataDetail = ({ record }) => {
     });
     return { ...h, answer: historyAnswer };
   });
-  // show only 1 history
   history = _.orderBy(history, "year", "desc");
-  // history = history?.length ? [history[0]] : [];
   // EOL Remap answer and history to provide the repeat_identifier
 
   // generate history columns
-  const allHistoryColumns = history.map((h) => {
+  const allHistoryColumns = history.flatMap((h) => {
     return {
       title: h.year,
       className: "group-header data-history",
@@ -175,14 +190,6 @@ const DataDetail = ({ record }) => {
           ? ` - ${findRepeatIdentifier?.repeat_identifier}`
           : "";
       }
-      // TODO :: delete
-      // const findRepeatIdentifier = v.find((q) => q?.is_repeat_identifier);
-      // let titleSuffix = length > 1 ? ` - ${vi + 1}` : "";
-      // if (findRepeatIdentifier) {
-      //   titleSuffix = findRepeatIdentifier?.value?.length
-      //     ? ` - ${findRepeatIdentifier?.value?.join(" ")}`
-      //     : "";
-      // }
 
       // Map into the repeat group with repeat_identifier value
       let dataSource = [];
@@ -205,6 +212,7 @@ const DataDetail = ({ record }) => {
       } else {
         dataSource = [...v];
       }
+      dataSource = mergeObjectsByQuestionName(dataSource);
 
       return (
         <Space
