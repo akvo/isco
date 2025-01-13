@@ -33,5 +33,25 @@
         "equal": 100
       }
     ]
+  },
+  {
+    "form_id": 6,
+    "validations": [
+      {
+        "group_id": 15,
+        "question_ids": [53, 54, 55, 56],
+        "equal": 100
+      },
+      {
+        "group_id": 16,
+        "question_ids": [57, 58],
+        "max": 25
+      },
+      {
+        "group_id": 17,
+        "question_ids": [59, 60],
+        "equal": 100
+      }
+    ]
   }
 ]
