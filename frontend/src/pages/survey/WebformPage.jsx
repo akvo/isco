@@ -271,7 +271,9 @@ const WebformPage = ({
               return false;
             }
             // remap questions
-            const availableQids = findGroup?.question?.map((q) => q.id);
+            const availableQids = findGroup?.question
+              ?.filter((q) => q.type === "number") // filter only for question number type
+              ?.map((q) => q.id);
             const remapQuestion = intersection(v.question_ids, availableQids);
             if (!remapQuestion?.length) {
               return false;
@@ -327,12 +329,15 @@ const WebformPage = ({
                 const a = resValues.find((a) => a.question === id);
                 return { id: id, answer: a?.value };
               });
-              const filterNumber = questions
+              const filterOnlyAnswerWithNumber = questions
                 .map((q) => q.answer)
                 .filter((q) => !isNaN(q));
               // round total value
               const total =
-                filterNumber.reduce((total, num) => total + num * 100, 0) / 100;
+                filterOnlyAnswerWithNumber.reduce(
+                  (total, num) => total + num * 100,
+                  0
+                ) / 100;
               let error = false;
               let errorDetail = "";
               let validationValue = 0;
@@ -353,7 +358,7 @@ const WebformPage = ({
               }
               return {
                 ...v,
-                questions: questions,
+                questions: questions.filter((q) => !isNaN(q.answer)),
                 error: error,
                 total: total,
                 errorDetail: errorDetail,
