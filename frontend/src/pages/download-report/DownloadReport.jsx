@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from "react";
 import "./style.scss";
-import { Row, Col, Typography, Select, Card, Space, Button, Modal } from "antd";
+import {
+  Row,
+  Col,
+  Typography,
+  Select,
+  Card,
+  Space,
+  Button,
+  Modal,
+  InputNumber,
+} from "antd";
 import { api, store } from "../../lib";
 import { useNotification } from "../../util";
 import ReactCodeInput from "react-verification-code-input";
@@ -12,9 +22,11 @@ const handleSelectFilter = (input, option) =>
   option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 
 const DownloadReport = () => {
-  const { member_type, isco_type, organisation } = store.useState(
-    (s) => s.optionValues
-  );
+  const {
+    member_type,
+    isco_type,
+    // organisation
+  } = store.useState((s) => s.optionValues);
   const { notify } = useNotification();
 
   const [forms, setForms] = useState([]);
@@ -222,6 +234,15 @@ const DownloadReport = () => {
                         onChange={(val) => setIscoSelected(val)}
                         style={{ width: "8rem" }}
                       />
+                      <InputNumber
+                        className="bg-grey"
+                        placeholder="Member ID"
+                        controls={false}
+                        onChange={(val) => setOrganisationSelected(val)}
+                        value={organisationSelected}
+                        style={{ background: "#eeeeee" }}
+                      />
+                      {/* OLD MEMBER SELECTOR
                       <Select
                         showArrow
                         showSearch
@@ -241,7 +262,7 @@ const DownloadReport = () => {
                         value={organisationSelected}
                         onChange={(val) => setOrganisationSelected(val)}
                         style={{ width: "8rem" }}
-                      />
+                      /> */}
                     </Space>
                   </Col>
                   <Col span={24}>

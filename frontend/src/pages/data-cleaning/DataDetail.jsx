@@ -23,13 +23,13 @@ const columns = [
       }
       return val || val === 0 ? val : "-";
     },
-    width: "10%",
+    width: "8%",
   },
   {
     title: "Comment",
     dataIndex: "comment",
     render: (val) => val || "-",
-    width: "10%",
+    width: "5%",
   },
 ];
 
@@ -46,7 +46,13 @@ const generateHistoryColumns = (year) => [
       }
       return val || val === 0 ? val : "-";
     },
-    width: "10%",
+    width: "8%",
+  },
+  {
+    title: "Comment",
+    dataIndex: `comment_${year}`,
+    render: (val) => val || "-",
+    width: "5%",
   },
 ];
 
