@@ -3,7 +3,10 @@ import { Form, DatePicker } from "antd";
 import { Extra, FieldLabel, RepeatTableView } from "../support";
 import GlobalStore from "../lib/store";
 import moment from "moment";
-import { validateDisableDependencyQuestionInRepeatQuestionLevel } from "../lib";
+import {
+  validateDisableDependencyQuestionInRepeatQuestionLevel,
+  checkHideFieldsForRepeatInQuestionLevel,
+} from "../lib";
 
 const DateField = ({
   id,
@@ -110,9 +113,20 @@ const TypeDate = ({
   repeats,
   dependency,
 }) => {
+  const form = Form.useFormInstance();
+
+  // handle to show/hide fields based on dependency of repeat inside question level
+  const hideFields = checkHideFieldsForRepeatInQuestionLevel({
+    formRef: form,
+    show_repeat_in_question_level,
+    dependency,
+    repeats,
+  });
+  // eol show/hide fields
+
   // generate table view of repeat group question
   const repeatInputs = useMemo(() => {
-    if (!repeats || !show_repeat_in_question_level) {
+    if (!repeats || !show_repeat_in_question_level || hideFields) {
       return [];
     }
     return repeats.map((r) => {
@@ -135,6 +149,7 @@ const TypeDate = ({
       };
     });
   }, [
+    hideFields,
     id,
     keyform,
     repeats,
@@ -146,6 +161,10 @@ const TypeDate = ({
     extra,
     meta,
   ]);
+
+  if (hideFields) {
+    return null;
+  }
 
   return (
     <Form.Item

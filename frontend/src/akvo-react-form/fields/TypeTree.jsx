@@ -2,7 +2,10 @@ import React, { useMemo } from "react";
 import { Form, Tag, TreeSelect } from "antd";
 import { cloneDeep } from "lodash";
 import { Extra, FieldLabel, RepeatTableView } from "../support";
-import { validateDisableDependencyQuestionInRepeatQuestionLevel } from "../lib";
+import {
+  validateDisableDependencyQuestionInRepeatQuestionLevel,
+  checkHideFieldsForRepeatInQuestionLevel,
+} from "../lib";
 
 const { SHOW_PARENT, SHOW_CHILD } = TreeSelect;
 
@@ -117,9 +120,20 @@ const TypeTree = ({
   repeats,
   dependency,
 }) => {
+  const form = Form.useFormInstance();
+
+  // handle to show/hide fields based on dependency of repeat inside question level
+  const hideFields = checkHideFieldsForRepeatInQuestionLevel({
+    formRef: form,
+    show_repeat_in_question_level,
+    dependency,
+    repeats,
+  });
+  // eol show/hide fields
+
   // generate table view of repeat group question
   const repeatInputs = useMemo(() => {
-    if (!repeats || !show_repeat_in_question_level) {
+    if (!repeats || !show_repeat_in_question_level || hideFields) {
       return [];
     }
     return repeats.map((r) => {
@@ -145,6 +159,7 @@ const TypeTree = ({
       };
     });
   }, [
+    hideFields,
     id,
     keyform,
     repeats,
@@ -159,6 +174,10 @@ const TypeTree = ({
     uiText,
     expandAll,
   ]);
+
+  if (hideFields) {
+    return null;
+  }
 
   return (
     <Form.Item
