@@ -3,7 +3,10 @@ import { Space, Divider, Form, Radio, Select, Input, Button } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { Extra, FieldLabel, RepeatTableView } from "../support";
 import GlobalStore from "../lib/store";
-import { validateDisableDependencyQuestionInRepeatQuestionLevel } from "../lib";
+import {
+  validateDisableDependencyQuestionInRepeatQuestionLevel,
+  checkHideFieldsForRepeatInQuestionLevel,
+} from "../lib";
 
 const OptionField = ({
   id,
@@ -260,9 +263,20 @@ const TypeOption = ({
   repeats,
   dependency,
 }) => {
+  const form = Form.useFormInstance();
+
+  // handle to show/hide fields based on dependency of repeat inside question level
+  const hideFields = checkHideFieldsForRepeatInQuestionLevel({
+    formRef: form,
+    show_repeat_in_question_level,
+    dependency,
+    repeats,
+  });
+  // eol show/hide fields
+
   // generate table view of repeat group question
   const repeatInputs = useMemo(() => {
-    if (!repeats || !show_repeat_in_question_level) {
+    if (!repeats || !show_repeat_in_question_level || hideFields) {
       return [];
     }
     return repeats.map((r) => {
@@ -290,6 +304,7 @@ const TypeOption = ({
       };
     });
   }, [
+    hideFields,
     id,
     keyform,
     required,
@@ -305,6 +320,10 @@ const TypeOption = ({
     meta,
     option,
   ]);
+
+  if (hideFields) {
+    return null;
+  }
 
   return (
     <Form.Item

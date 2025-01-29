@@ -6,7 +6,10 @@ import GlobalStore from "../lib/store";
 import { InputFieldIcon } from "../lib/svgIcons";
 import { DataUnavailableField } from "../components";
 import { renderQuestionLabelForErrorMessage } from "../lib";
-import { validateDisableDependencyQuestionInRepeatQuestionLevel } from "../lib";
+import {
+  validateDisableDependencyQuestionInRepeatQuestionLevel,
+  checkHideFieldsForRepeatInQuestionLevel,
+} from "../lib";
 
 const InputField = ({
   id,
@@ -198,9 +201,20 @@ const TypeInput = ({
   show_as_textarea,
   dependency,
 }) => {
+  const form = Form.useFormInstance();
+
+  // handle to show/hide fields based on dependency of repeat inside question level
+  const hideFields = checkHideFieldsForRepeatInQuestionLevel({
+    formRef: form,
+    show_repeat_in_question_level,
+    dependency,
+    repeats,
+  });
+  // eol show/hide fields
+
   // generate table view of repeat group question
   const repeatInputs = useMemo(() => {
-    if (!repeats || !show_repeat_in_question_level) {
+    if (!repeats || !show_repeat_in_question_level || hideFields) {
       return [];
     }
     return repeats.map((r) => {
@@ -232,6 +246,7 @@ const TypeInput = ({
       };
     });
   }, [
+    hideFields,
     show_repeat_in_question_level,
     repeats,
     addonAfter,
@@ -251,6 +266,10 @@ const TypeInput = ({
     extra,
     meta,
   ]);
+
+  if (hideFields) {
+    return null;
+  }
 
   return (
     <Form.Item

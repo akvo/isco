@@ -5,7 +5,10 @@ import flattenDeep from "lodash/flattenDeep";
 import { Extra, FieldLabel, RepeatTableView } from "../support";
 import GlobalStore from "../lib/store";
 import TypeCascadeApi from "./TypeCascadeApi";
-import { validateDisableDependencyQuestionInRepeatQuestionLevel } from "../lib";
+import {
+  validateDisableDependencyQuestionInRepeatQuestionLevel,
+  checkHideFieldsForRepeatInQuestionLevel,
+} from "../lib";
 
 const CascadeField = ({
   cascade,
@@ -141,12 +144,23 @@ const TypeCascade = ({
   repeats,
   dependency,
 }) => {
+  const formInstance = Form.useFormInstance();
+
+  // handle to show/hide fields based on dependency of repeat inside question level
+  const hideFields = checkHideFieldsForRepeatInQuestionLevel({
+    formRef: formInstance,
+    show_repeat_in_question_level,
+    dependency,
+    repeats,
+  });
+  // eol show/hide fields
+
   // generate table view of repeat group question
   const repeatInputs = useMemo(() => {
     if (!cascade && api) {
       return [];
     }
-    if (!repeats || !show_repeat_in_question_level) {
+    if (!repeats || !show_repeat_in_question_level || hideFields) {
       return [];
     }
     return repeats.map((r) => {
@@ -171,6 +185,7 @@ const TypeCascade = ({
       };
     });
   }, [
+    hideFields,
     api,
     cascade,
     id,
@@ -184,6 +199,10 @@ const TypeCascade = ({
     extra,
     meta,
   ]);
+
+  if (hideFields) {
+    return null;
+  }
 
   if (!cascade && api) {
     return (
