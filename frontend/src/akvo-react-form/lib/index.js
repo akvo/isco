@@ -351,3 +351,25 @@ export const validateDisableDependencyQuestionInRepeatQuestionLevel = ({
   }
   return false;
 };
+
+export const checkHideFieldsForRepeatInQuestionLevel = ({
+  show_repeat_in_question_level,
+  repeats,
+  formRef,
+  dependency,
+}) => {
+  if (show_repeat_in_question_level && repeats) {
+    const hideFields = repeats
+      .map((repeat) => {
+        return validateDisableDependencyQuestionInRepeatQuestionLevel({
+          formRef,
+          show_repeat_in_question_level,
+          dependency,
+          repeat,
+        });
+      })
+      .filter((x) => x);
+    return hideFields?.length === repeats?.length;
+  }
+  return false;
+};
