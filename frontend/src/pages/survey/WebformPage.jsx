@@ -1139,6 +1139,13 @@ const WebformPage = ({
 
   const handleIdle = () => {
     // check session/token expiration
+    /* README
+        - To debug this you can change the time difference value
+        - You can change the value to trigger the condition of:
+          - Check if the remaining time is less than or equal to 5 mins (5 * 60 * 1000)
+          - Check if the remaining time is less than or equal to 30 minutes (30 * 60 * 1000)
+    */
+    console.info("HandleIdle --> check session/token expiration", new Date());
     api
       .get("/user/me")
       .then((res) => {
@@ -1146,13 +1153,22 @@ const WebformPage = ({
         const now = new Date();
         const expiredDate = new Date(expired);
         const timeDifference = expiredDate - now;
-        // Check if the remaining time is equal to 5 mins
+        console.info(`Time Diff: ${timeDifference}`);
+
+        // Check if the remaining time is less than or equal to 5 mins (5 * 60 * 1000)
         if (timeDifference > 0 && timeDifference <= 5 * 60 * 1000) {
+          console.info(
+            "Remaining time is less than or equal to 5 mins --> Saving"
+          );
           // handle save automatically
           handleOnClickSaveButton();
         }
-        // Check if the remaining time is less than or equal to 30 minutes
+
+        // Check if the remaining time is less than or equal to 30 minutes (30 * 60 * 1000)
         if (timeDifference > 0 && timeDifference <= 30 * 60 * 1000) {
+          console.info(
+            "Remaining time is less than or equal to 30 minutes --> Show Modal"
+          );
           setRemainingTime(expired);
           setShowSessionModal(true);
         }
@@ -1163,7 +1179,7 @@ const WebformPage = ({
       });
   };
 
-  // check idle every 5 minutes
+  // check idle every 5 minutes (idleTime: 5)
   const { isIdle } = useIdle({ onIdle: handleIdle, idleTime: 5 });
 
   const handleLogout = () => {
