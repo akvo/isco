@@ -103,9 +103,9 @@ const icEn = (handleShow) => {
           <Fragment>
             <h3>Akvo Foundation</h3> <hr />
             <p>
-              &apos;s-Gravenhekje 1-A, <br />
-              1011 TG Amsterdam, <br />
-              The Netherlands <br />
+              Nieuwezijds Voorburgwal 162 <br />
+              1012 SJ Amsterdam <br />
+              Netherlands
             </p>
             <p>
               Phone: <br />
