@@ -14,25 +14,23 @@ org_name = "Organisation DISCO - Traders Member and DISCO isco"
 today = datetime.today().strftime("%B %d, %Y")
 
 
-class TestCreateUnlimitedMemberQuestionnaire():
+class TestCreateUnlimitedMemberQuestionnaire:
     @pytest.mark.asyncio
     async def test_get_webform_from_bucket(
         self, app: FastAPI, session: Session, client: AsyncClient
     ) -> None:
         # get form
         res = await client.get(
-            app.url_path_for(
-                "form:get_webform_from_bucket",
-                form_id=1
-            ),
-            headers={"Authorization": f"Bearer {account.token}"})
+            app.url_path_for("form:get_webform_from_bucket", form_id=1),
+            headers={"Authorization": f"Bearer {account.token}"},
+        )
         assert res.status_code == 200
         res = res.json()
         assert "form" in res
         form = res["form"]
         assert form["id"] == 1
         assert "en" in form["languages"]
-        assert len(form['question_group']) > 0
+        assert len(form["question_group"]) > 0
         for qg in form["question_group"]:
             assert len(qg["member_access"]) > 0
             assert len(qg["isco_access"]) > 0
@@ -44,17 +42,20 @@ class TestCreateUnlimitedMemberQuestionnaire():
     async def test_save_data(
         self, app: FastAPI, session: Session, client: AsyncClient
     ) -> None:
-        payload = [{
-            "question": 1,
-            "repeat_index": 0,
-            "comment": "Q1 comment",
-            "value": "Option 1"
-        }]
+        payload = [
+            {
+                "question": 1,
+                "repeat_index": "0",
+                "comment": "Q1 comment",
+                "value": "Option 1",
+            }
+        ]
         res = await client.post(
             app.url_path_for("data:create", form_id=1, submitted=0),
             params={"locked_by": 2},
             json=payload,
-            headers={"Authorization": f"Bearer {account.token}"})
+            headers={"Authorization": f"Bearer {account.token}"},
+        )
         assert res.status_code == 200
         res = res.json()
         assert res == {
@@ -70,20 +71,24 @@ class TestCreateUnlimitedMemberQuestionnaire():
             "submitted_by": None,
             "updated": None,
             "submitted": None,
-            "answer": [{
-                "comment": "Q1 comment",
-                "question": 1,
-                "repeat_index": 0,
-                "value": "Option 1"
-            }]
+            "answer": [
+                {
+                    "comment": "Q1 comment",
+                    "question": 1,
+                    "repeat_index": "0",
+                    "value": "Option 1",
+                }
+            ],
         }
 
     @pytest.mark.asyncio
-    async def test_get_saved_submission(self, app: FastAPI, session: Session,
-                                        client: AsyncClient) -> None:
+    async def test_get_saved_submission(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
         res = await client.get(
             app.url_path_for("data:get_saved_data_by_organisation"),
-            headers={"Authorization": f"Bearer {account.token}"})
+            headers={"Authorization": f"Bearer {account.token}"},
+        )
         assert res.status_code == 200
         res = res.json()
         assert len(res) > 0
@@ -94,26 +99,21 @@ class TestCreateUnlimitedMemberQuestionnaire():
             "form_type": "member",
             "id": 2,
             "locked_by": 2,
-            'locked_by_user': 'Galih',
+            "locked_by_user": "Galih",
             "name": f"Option 1 - Galih - {today}",
             "organisation": org_name,
-            "is_name_configured": True
+            "is_name_configured": True,
         }
 
     @pytest.mark.asyncio
     async def test_get_second_webform_from_bucket(
-        self,
-        app: FastAPI,
-        session: Session,
-        client: AsyncClient
+        self, app: FastAPI, session: Session, client: AsyncClient
     ) -> None:
         # get form
         res = await client.get(
-            app.url_path_for(
-                "form:get_webform_from_bucket",
-                form_id=1
-            ),
-            headers={"Authorization": f"Bearer {account.token}"})
+            app.url_path_for("form:get_webform_from_bucket", form_id=1),
+            headers={"Authorization": f"Bearer {account.token}"},
+        )
         assert res.status_code == 200
 
     @pytest.mark.asyncio
@@ -123,33 +123,40 @@ class TestCreateUnlimitedMemberQuestionnaire():
         res = await client.post(
             app.url_path_for("data:create", form_id=1, submitted=1),
             params={"locked_by": 2},
-            json=[{
-                "question": 1,
-                "repeat_index": 0,
-                "comment": None,
-                "value": "Option 1"
-            }, {
-                "question": 2,
-                "repeat_index": 0,
-                "comment": None,
-                "value": "Direct submit"
-            }, {
-                "question": 3,
-                "repeat_index": 0,
-                "comment": None,
-                "value": "Female"
-            }, {
-                "question": 4,
-                "repeat_index": 0,
-                "comment": None,
-                "value": 35
-            }, {
-                "question": 5,
-                "repeat_index": 0,
-                "comment": "Q5 comment",
-                "value": 55
-            }],
-            headers={"Authorization": f"Bearer {account.token}"})
+            json=[
+                {
+                    "question": 1,
+                    "repeat_index": "0",
+                    "comment": None,
+                    "value": "Option 1",
+                },
+                {
+                    "question": 2,
+                    "repeat_index": "0",
+                    "comment": None,
+                    "value": "Direct submit",
+                },
+                {
+                    "question": 3,
+                    "repeat_index": "0",
+                    "comment": None,
+                    "value": "Female",
+                },
+                {
+                    "question": 4,
+                    "repeat_index": "0",
+                    "comment": None,
+                    "value": 35,
+                },
+                {
+                    "question": 5,
+                    "repeat_index": "0",
+                    "comment": "Q5 comment",
+                    "value": 55,
+                },
+            ],
+            headers={"Authorization": f"Bearer {account.token}"},
+        )
         assert res.status_code == 200
         res = res.json()
         assert res == {
@@ -165,46 +172,47 @@ class TestCreateUnlimitedMemberQuestionnaire():
             "submitted_by": "Galih",
             "updated": today,
             "submitted": today,
-            "answer": [{
-                "comment": None,
-                "question": 1,
-                "repeat_index": 0,
-                "value": "Option 1"
-            }, {
-                "comment": None,
-                "question": 2,
-                "repeat_index": 0,
-                "value": "Direct submit"
-            }, {
-                "comment": None,
-                "question": 3,
-                "repeat_index": 0,
-                "value": "Female"
-            }, {
-                "comment": None,
-                "question": 4,
-                "repeat_index": 0,
-                "value": 35
-            }, {
-                "comment": "Q5 comment",
-                "question": 5,
-                "repeat_index": 0,
-                "value": 55
-            }]
+            "answer": [
+                {
+                    "comment": None,
+                    "question": 1,
+                    "repeat_index": "0",
+                    "value": "Option 1",
+                },
+                {
+                    "comment": None,
+                    "question": 2,
+                    "repeat_index": "0",
+                    "value": "Direct submit",
+                },
+                {
+                    "comment": None,
+                    "question": 3,
+                    "repeat_index": "0",
+                    "value": "Female",
+                },
+                {
+                    "comment": None,
+                    "question": 4,
+                    "repeat_index": "0",
+                    "value": 35,
+                },
+                {
+                    "comment": "Q5 comment",
+                    "question": 5,
+                    "repeat_index": "0",
+                    "value": 55,
+                },
+            ],
         }
 
     @pytest.mark.asyncio
     async def test_get_third_webform_from_bucket(
-        self,
-        app: FastAPI,
-        session: Session,
-        client: AsyncClient
+        self, app: FastAPI, session: Session, client: AsyncClient
     ) -> None:
         # get form
         res = await client.get(
-            app.url_path_for(
-                "form:get_webform_from_bucket",
-                form_id=1
-            ),
-            headers={"Authorization": f"Bearer {account.token}"})
+            app.url_path_for("form:get_webform_from_bucket", form_id=1),
+            headers={"Authorization": f"Bearer {account.token}"},
+        )
         assert res.status_code == 200
