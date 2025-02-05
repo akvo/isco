@@ -8,6 +8,7 @@ import { intersection, isEmpty, orderBy } from "lodash";
 import { CommentField } from "../../components";
 import { Webform } from "../../akvo-react-form";
 import { uiText } from "../../static";
+import { isNumeric } from "../../lib/util";
 
 const reorderAnswersRepeatIndex = (formValue, answer) => {
   // reordered repeat index answer
@@ -27,7 +28,10 @@ const reorderAnswersRepeatIndex = (formValue, answer) => {
         .filter((x) => x.question === id)
         .map((v, vi) => ({
           ...v,
-          repeat_index: vi,
+          repeat_index:
+            !isNumeric(v.repeat_index) && v?.repeat_index_string
+              ? v.repeat_index_string
+              : vi,
         }));
     })
     .flatMap((x) => x);
@@ -179,8 +183,32 @@ const DataCleaningWebform = ({
             // load initial form value from saved data
             if (initial_values && isEmpty(answer)) {
               setSavedData(initial_values);
+              // handle leading question
+              const questionWithLeadingQuestionGroup = form.question_group
+                .flatMap((qg) => {
+                  const question = qg.question.map((q) => ({
+                    ...q,
+                    lead_by_question: qg?.leading_question,
+                  }));
+                  return question;
+                })
+                ?.filter((q) => q?.lead_by_question);
               const answers = initial_values.answer.map((a) => {
                 const { question, repeat_index, comment } = a;
+                // handle leading question
+                let repeatIndexString =
+                  repeat_index > 0 ? String(repeat_index) : null;
+                const findQuestion = questionWithLeadingQuestionGroup.find(
+                  (q) => q.id === question
+                );
+                if (findQuestion?.lead_by_question) {
+                  const leadingAnswer = initial_values.answer.find(
+                    (a) => a.question === findQuestion.lead_by_question
+                  )?.value;
+                  repeatIndexString =
+                    leadingAnswer?.[repeat_index] || repeat_index;
+                }
+                // eol handle leading question
                 const commentQid =
                   repeat_index > 0 ? `${question}-${repeat_index}` : question;
                 commentValues = {
@@ -189,7 +217,13 @@ const DataCleaningWebform = ({
                 };
                 return {
                   ...a,
-                  repeatIndex: repeat_index,
+                  repeatIndex: isNumeric(repeat_index)
+                    ? parseInt(repeat_index)
+                    : repeat_index,
+                  repeat_index: isNumeric(repeat_index)
+                    ? parseInt(repeat_index)
+                    : repeat_index,
+                  repeat_index_string: repeatIndexString,
                 };
               });
               setInitialAnswers(answers);
@@ -293,14 +327,17 @@ const DataCleaningWebform = ({
       if (findAnswer) {
         // update answer
         const updatedAnswer = answer.map((a) => {
-          let update = a;
-          if (a.question === qid) {
-            update = {
-              ...update,
-              comment: comment?.[qid] || null,
+          const qid =
+            a.repeat_index > 0 || a.repeat_index_string
+              ? `${a.question}-${a.repeat_index_string}`
+              : a.question;
+          if (comment?.[qid] || comment[qid] === "") {
+            return {
+              ...a,
+              comment: comment[qid] === "" ? null : comment[qid],
             };
           }
-          return update;
+          return a;
         });
         setAnswer(updatedAnswer);
         setComment({});
@@ -315,14 +352,17 @@ const DataCleaningWebform = ({
       if (findAnswer) {
         // update answer
         const updatedAnswer = answer.map((a) => {
-          let update = a;
-          if (a.question === deletedComment) {
-            update = {
-              ...update,
+          const qid =
+            a.repeat_index > 0 || a.repeat_index_string
+              ? `${a.question}-${a.repeat_index_string}`
+              : a.question;
+          if (String(deletedComment) === String(qid)) {
+            return {
+              ...a,
               comment: null,
             };
           }
-          return update;
+          return a;
         });
         setAnswer(updatedAnswer);
         setDeletedComment(null);
@@ -337,7 +377,14 @@ const DataCleaningWebform = ({
     if (finalFormValues) {
       updatedAnswer = Object.keys(finalFormValues)
         .map((key) => {
-          const prevAnswer = answer.find((a) => a.question === parseInt(key));
+          const prevAnswer = answer.find((a) => {
+            // return prev value with correct key
+            const qid =
+              a.repeat_index > 0 || a.repeat_index_string
+                ? `${a.question}-${a.repeat_index_string}`
+                : String(a.question);
+            return qid === key;
+          });
           if (prevAnswer) {
             return {
               ...prevAnswer,
@@ -431,20 +478,27 @@ const DataCleaningWebform = ({
     const filteredValues = Object.keys(values)
       .filter((key) => !key.includes("na"))
       .reduce((acc, curr) => ({ ...acc, [curr]: values[curr] }), {});
+
     const transformValues = Object.keys(filteredValues)
       .map((key) => {
         let question = key;
         let repeatIndex = 0;
+        let repeatIndexString = null;
         // manage repeat index
         if (key.includes("-")) {
           const split = key.split("-");
           question = split[0];
           repeatIndex = parseInt(split[1]);
+          repeatIndexString = !isNumeric(split[1]) ? split[1] : null;
         }
         // find comment
         const qid = parseInt(question);
+        // find answer by qid and repeatIndex
         const findAnswer = answer.find(
-          (x) => x.question === qid && x.repeat_index === repeatIndex
+          (x) =>
+            x.question === qid &&
+            (x.repeat_index === repeatIndex ||
+              x.repeat_index_string === repeatIndexString)
         );
         // value
         const value = values?.[key] || values?.[key] === 0 ? values[key] : null;
@@ -453,6 +507,7 @@ const DataCleaningWebform = ({
             question: qid,
             value: value,
             repeat_index: repeatIndex,
+            repeat_index_string: repeatIndexString,
             comment: mergeDataUnavailable?.[key]
               ? mergeDataUnavailable[key] // using key because key is questionId-with repeat index
               : findAnswer
