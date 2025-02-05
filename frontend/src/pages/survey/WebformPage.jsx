@@ -16,6 +16,7 @@ import { uiText } from "../../static";
 import Countdown from "react-countdown";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
+import { isNumeric } from "../../lib/util";
 // import test from "./test.json" // testing purpose
 
 const computedValidations = window?.computed_validations;
@@ -63,7 +64,10 @@ const reorderAnswersRepeatIndex = (formValue, answer) => {
         .filter((x) => x.question === id)
         .map((v, vi) => ({
           ...v,
-          repeat_index: vi,
+          repeat_index:
+            !isNumeric(v.repeat_index) && v?.repeat_index_string
+              ? v.repeat_index_string
+              : vi,
         }));
     })
     .flatMap((x) => x);
@@ -464,8 +468,12 @@ const WebformPage = ({
                 };
                 return {
                   ...a,
-                  repeatIndex: repeat_index,
-                  repeat_index: repeat_index,
+                  repeatIndex: isNumeric(repeat_index)
+                    ? parseInt(repeat_index)
+                    : repeat_index,
+                  repeat_index: isNumeric(repeat_index)
+                    ? parseInt(repeat_index)
+                    : repeat_index,
                   repeat_index_string: repeatIndexString,
                 };
               });

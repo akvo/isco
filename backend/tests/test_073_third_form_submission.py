@@ -14,7 +14,7 @@ org_name = "Organisation DISCO - Traders Member and DISCO isco"
 today = datetime.today().strftime("%B %d, %Y")
 
 
-class TestThirdSubmissionRoutes():
+class TestThirdSubmissionRoutes:
     @pytest.mark.asyncio
     async def test_user_assigned(
         self, app: FastAPI, session: Session, client: AsyncClient
@@ -29,7 +29,8 @@ class TestThirdSubmissionRoutes():
             app.url_path_for("user:update_by_admin", id=user_id),
             headers={"Authorization": f"Bearer {account.token}"},
             params={"approved": 1},
-            json=user_payload)
+            json=user_payload,
+        )
         assert res.status_code == 200
         res = res.json()
         assert res["approved"] is True
@@ -41,18 +42,22 @@ class TestThirdSubmissionRoutes():
         res = await client.post(
             app.url_path_for("data:create", form_id=3, submitted=1),
             params={"locked_by": 1},
-            json=[{
-                "question": 12,
-                "repeat_index": 0,
-                "comment": None,
-                "value": "Testing 1"
-            }, {
-                "question": 13,
-                "repeat_index": 0,
-                "comment": "This is comment",
-                "value": "Testing 2"
-            }],
-            headers={"Authorization": f"Bearer {account.token}"})
+            json=[
+                {
+                    "question": 12,
+                    "repeat_index": "0",
+                    "comment": None,
+                    "value": "Testing 1",
+                },
+                {
+                    "question": 13,
+                    "repeat_index": "0",
+                    "comment": "This is comment",
+                    "value": "Testing 2",
+                },
+            ],
+            headers={"Authorization": f"Bearer {account.token}"},
+        )
         assert res.status_code == 200
         res = res.json()
         assert res == {
@@ -72,16 +77,16 @@ class TestThirdSubmissionRoutes():
                 {
                     "comment": None,
                     "question": 12,
-                    "repeat_index": 0,
-                    "value": "Testing 1"
+                    "repeat_index": "0",
+                    "value": "Testing 1",
                 },
                 {
                     "comment": "This is comment",
                     "question": 13,
-                    "repeat_index": 0,
-                    "value": "Testing 2"
-                }
-            ]
+                    "repeat_index": "0",
+                    "value": "Testing 2",
+                },
+            ],
         }
 
     @pytest.mark.asyncio
@@ -91,22 +96,26 @@ class TestThirdSubmissionRoutes():
         # get form
         res = await client.get(
             app.url_path_for("form:get_webform_options"),
-            headers={"Authorization": f"Bearer {account.token}"})
+            headers={"Authorization": f"Bearer {account.token}"},
+        )
         assert res.status_code == 200
         res = res.json()
-        assert res == [{
-            'label': 'Form Test',
-            'value': 1,
-            'disabled': False,
-            'form_type': 'member',
-            'enable_prefilled_value': False
-        }, {
-            'label': 'Third limited survey',
-            'value': 3,
-            'disabled': True,
-            'form_type': None,
-            'enable_prefilled_value': False
-        }]
+        assert res == [
+            {
+                "label": "Form Test",
+                "value": 1,
+                "disabled": False,
+                "form_type": "member",
+                "enable_prefilled_value": False,
+            },
+            {
+                "label": "Third limited survey",
+                "value": 3,
+                "disabled": True,
+                "form_type": None,
+                "enable_prefilled_value": False,
+            },
+        ]
 
     @pytest.mark.asyncio
     async def test_submit_third_survey_again(
@@ -115,16 +124,20 @@ class TestThirdSubmissionRoutes():
         res = await client.post(
             app.url_path_for("data:create", form_id=3, submitted=1),
             params={"locked_by": 1},
-            json=[{
-                "question": 8,
-                "repeat_index": 0,
-                "comment": None,
-                "value": "Testing 1"
-            }, {
-                "question": 9,
-                "repeat_index": 0,
-                "comment": "This is comment",
-                "value": "Testing 2"
-            }],
-            headers={"Authorization": f"Bearer {account.token}"})
+            json=[
+                {
+                    "question": 8,
+                    "repeat_index": "0",
+                    "comment": None,
+                    "value": "Testing 1",
+                },
+                {
+                    "question": 9,
+                    "repeat_index": "0",
+                    "comment": "This is comment",
+                    "value": "Testing 2",
+                },
+            ],
+            headers={"Authorization": f"Bearer {account.token}"},
+        )
         assert res.status_code == 208

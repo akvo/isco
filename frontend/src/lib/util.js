@@ -56,3 +56,7 @@ export const passwordCheckBoxOptions = (text) => {
     { name: eightCharText, re: /[^ ]{8}/ },
   ];
 };
+
+export const isNumeric = (value) => {
+  return !isNaN(value) && !isNaN(parseFloat(value));
+};

@@ -54,7 +54,15 @@ def write_sheet(df, writer, sheet_name, show_comment=False):
             "member_type",
             "submitted",
         ]
-        df["repeat_index"] = df["repeat_index"] + 1
+        # Increment only numeric values, keep strings unchanged
+        df["repeat_index"] = df["repeat_index"].apply(
+            lambda x: (
+                int(x) + 1
+                if isinstance(x, (int, float))
+                or (isinstance(x, str) and x.isdigit())
+                else x
+            )
+        )
 
     max_go = df["go"].max()
     max_qo = df["qo"].max()

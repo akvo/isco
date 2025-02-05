@@ -3,6 +3,7 @@ import ReactHtmlParser from "react-html-parser";
 import "./style.scss";
 import { Table, Space } from "antd";
 import _ from "lodash";
+import { isNumeric } from "../../lib/util";
 
 const columns = [
   {
@@ -79,6 +80,13 @@ const DataDetail = ({ record }) => {
     (a) => a?.is_repeat_identifier
   );
   const recordAnswer = record?.answer?.map((ra) => {
+    if (!isNumeric(ra.repeat_index)) {
+      // handle if repeat_index is String
+      return {
+        ...ra,
+        repeat_identifier: ra.repeat_index,
+      };
+    }
     // handle repeat group index with is_repeat_identifier
     const findIdentifier = identifierAnswer.find(
       (x) =>
@@ -109,6 +117,13 @@ const DataDetail = ({ record }) => {
   let history = record?.history?.map((h) => {
     const identifierAnswer = h?.answer?.filter((a) => a?.is_repeat_identifier);
     const historyAnswer = h?.answer?.map((ha) => {
+      if (!isNumeric(ha.repeat_index)) {
+        // handle if repeat_index is String
+        return {
+          ...ha,
+          repeat_identifier: ha.repeat_index,
+        };
+      }
       // handle repeat group index with is_repeat_identifier
       const findIdentifier = identifierAnswer.find(
         (x) =>
@@ -191,7 +206,10 @@ const DataDetail = ({ record }) => {
       // find repeat identifier
       const findRepeatIdentifier = v.find((q) => q?.repeat_identifier);
       let titleSuffix = length > 1 ? ` - ${vi + 1}` : "";
-      if (findRepeatIdentifier) {
+      if (
+        findRepeatIdentifier &&
+        !isNumeric(findRepeatIdentifier?.repeat_identifier)
+      ) {
         titleSuffix = findRepeatIdentifier?.value?.length
           ? ` - ${findRepeatIdentifier?.repeat_identifier}`
           : "";

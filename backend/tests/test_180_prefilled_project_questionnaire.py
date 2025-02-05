@@ -265,19 +265,19 @@ class TestPrefilledRoute:
                 "answer": [
                     {
                         "question": 14,
-                        "repeat_index": 0,
+                        "repeat_index": "0",
                         "comment": None,
                         "value": 40,
                     },
                     {
                         "question": 15,
-                        "repeat_index": 0,
+                        "repeat_index": "0",
                         "comment": None,
                         "value": 60,
                     },
                     {
                         "question": 16,
-                        "repeat_index": 0,
+                        "repeat_index": "0",
                         "comment": None,
                         "value": "My name is Lorem Ipsum",
                     },
@@ -295,8 +295,18 @@ class TestPrefilledRoute:
         self, app: FastAPI, session: Session, client: AsyncClient
     ) -> None:
         payload = [
-            {"question": 14, "repeat_index": 0, "comment": None, "value": 50},
-            {"question": 15, "repeat_index": 0, "comment": None, "value": 50},
+            {
+                "question": 14,
+                "repeat_index": "0",
+                "comment": None,
+                "value": 50,
+            },
+            {
+                "question": 15,
+                "repeat_index": "0",
+                "comment": None,
+                "value": 50,
+            },
         ]
         # save data
         collaborator_params = [2, 3]
@@ -321,13 +331,13 @@ class TestPrefilledRoute:
             json=[
                 {
                     "question": 14,
-                    "repeat_index": 0,
+                    "repeat_index": "0",
                     "comment": None,
                     "value": 50,
                 },
                 {
                     "question": 15,
-                    "repeat_index": 0,
+                    "repeat_index": "0",
                     "comment": None,
                     "value": 50,
                 },
@@ -341,8 +351,18 @@ class TestPrefilledRoute:
         self, app: FastAPI, session: Session, client: AsyncClient
     ) -> None:
         payload = [
-            {"question": 14, "repeat_index": 0, "comment": None, "value": 51},
-            {"question": 15, "repeat_index": 0, "comment": None, "value": 49},
+            {
+                "question": 14,
+                "repeat_index": "0",
+                "comment": None,
+                "value": 51,
+            },
+            {
+                "question": 15,
+                "repeat_index": "0",
+                "comment": None,
+                "value": 49,
+            },
         ]
         # direct submit data
         collaborator_params = [3]

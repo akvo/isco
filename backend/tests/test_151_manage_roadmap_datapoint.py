@@ -16,7 +16,7 @@ account = Acc(email=None, token=None)
 today = datetime.now().strftime("%B %d, %Y")
 
 
-class TestManageRoadmapDatapoint():
+class TestManageRoadmapDatapoint:
     @pytest.mark.asyncio
     async def test_post_roadmap_datapoint(
         self, app: FastAPI, session: Session, client: AsyncClient
@@ -26,24 +26,21 @@ class TestManageRoadmapDatapoint():
             "language": "en",
             "answers": {
                 "1669095326962": "This is first commitment",
-                "1669107420032": [{
-                    "milestone": "First Milestone"
-                }],
+                "1669107420032": [{"milestone": "First Milestone"}],
                 "1669095326962-1": "This is second commitment",
-                "1669107420032-1": [{
-                    "milestone": "Milestone 1"
-                }, {
-                    "milestone": "Milestone 2"
-                }],
+                "1669107420032-1": [
+                    {"milestone": "Milestone 1"},
+                    {"milestone": "Milestone 2"},
+                ],
                 "1669107562769": "Example answer 1",
                 "1669107635129": "Example answer 2",
-            }
+            },
         }
         # post roadmap datapoint
         res = await client.post(
             app.url_path_for("roadmap:post_datapoint"),
             headers={"Authorization": f"Bearer {account.token}"},
-            json=payload
+            json=payload,
         )
         assert res.status_code == 204
 
@@ -60,16 +57,18 @@ class TestManageRoadmapDatapoint():
         res = res.json()
         assert res == {
             "current": 1,
-            "data": [{
-                "id": 1,
-                "datapoint_name": "All | staff Akvo",
-                "language": "en",
-                "organisation": "staff Akvo",
-                "organisation_id": 1,
-                "submitted_date": today
-            }],
+            "data": [
+                {
+                    "id": 1,
+                    "datapoint_name": "All | staff Akvo",
+                    "language": "en",
+                    "organisation": "staff Akvo",
+                    "organisation_id": 1,
+                    "submitted_date": today,
+                }
+            ],
             "total": 1,
-            "total_page": 1
+            "total_page": 1,
         }
         # get roadmap datapoints filter by member 1
         res = await client.get(
@@ -81,16 +80,18 @@ class TestManageRoadmapDatapoint():
         res = res.json()
         assert res == {
             "current": 1,
-            "data": [{
-                "id": 1,
-                "datapoint_name": "All | staff Akvo",
-                "organisation": "staff Akvo",
-                "language": "en",
-                "organisation_id": 1,
-                "submitted_date": today
-            }],
+            "data": [
+                {
+                    "id": 1,
+                    "datapoint_name": "All | staff Akvo",
+                    "organisation": "staff Akvo",
+                    "language": "en",
+                    "organisation_id": 1,
+                    "submitted_date": today,
+                }
+            ],
             "total": 1,
-            "total_page": 1
+            "total_page": 1,
         }
         # get roadmap datapoints filter by member 1
         res = await client.get(
@@ -109,26 +110,20 @@ class TestManageRoadmapDatapoint():
             "language": "en",
             "answers": {
                 "1669095326962": "Updated first commitment",
-                "1669107420032": [{
-                    "milestone": "Updated First Milestone"
-                }],
+                "1669107420032": [{"milestone": "Updated First Milestone"}],
                 "1669095326962-1": "Updated second commitment",
-                "1669107420032-1": [{
-                    "milestone": "Update Milestone 1"
-                }],
+                "1669107420032-1": [{"milestone": "Update Milestone 1"}],
                 "1669095326962-2": "Third commitment",
-                "1669107420032-2": [{
-                    "milestone": "Milestone 1"
-                }],
+                "1669107420032-2": [{"milestone": "Milestone 1"}],
                 "1669107562769": "Example answer 1",
                 "1669107635129": "Example answer 2",
-            }
+            },
         }
         # post roadmap datapoint
         res = await client.put(
             app.url_path_for("roadmap:update_datapoint", data_id=1),
             headers={"Authorization": f"Bearer {account.token}"},
-            json=payload
+            json=payload,
         )
         assert res.status_code == 204
         answers = get_answer_by_data(session=session, data_id=1)
@@ -200,49 +195,45 @@ class TestManageRoadmapDatapoint():
         res = await client.get(
             app.url_path_for("roadmap:get_webform"),
             headers={"Authorization": f"Bearer {account.token}"},
-            params={'data_id': 1}
+            params={"data_id": 1},
         )
         assert res.status_code == 200
         res = res.json()
-        form_def.update({
-            "initial_value": [
-                {
-                    "question": 1669095326962,
-                    "value": "Updated first commitment"
-                },
-                {
-                    "question": 1669107420032,
-                    "value": [{"milestone": "Updated First Milestone"}],
-                },
-                {
-                    "question": 1669095326962,
-                    "repeatIndex": 1,
-                    "value": "Updated second commitment",
-                },
-                {
-                    "question": 1669107420032,
-                    "repeatIndex": 1,
-                    "value": [{"milestone": "Update Milestone 1"}],
-                },
-                {
-                    "question": 1669095326962,
-                    "repeatIndex": 2,
-                    "value": "Third commitment"
-                },
-                {
-                    "question": 1669107420032,
-                    "repeatIndex": 2,
-                    "value": [{"milestone": "Milestone 1"}],
-                },
-                {
-                    "question": 1669107562769,
-                    "value": "Example answer 1"
-                },
-                {
-                    "question": 1669107635129,
-                    "value": "Example answer 2"
-                },
-            ],
-            "organisation_ids": [1],
-        })
+        form_def.update(
+            {
+                "initial_value": [
+                    {
+                        "question": 1669095326962,
+                        "value": "Updated first commitment",
+                    },
+                    {
+                        "question": 1669107420032,
+                        "value": [{"milestone": "Updated First Milestone"}],
+                    },
+                    {
+                        "question": 1669095326962,
+                        "repeatIndex": 1,
+                        "value": "Updated second commitment",
+                    },
+                    {
+                        "question": 1669107420032,
+                        "repeatIndex": 1,
+                        "value": [{"milestone": "Update Milestone 1"}],
+                    },
+                    {
+                        "question": 1669095326962,
+                        "repeatIndex": 2,
+                        "value": "Third commitment",
+                    },
+                    {
+                        "question": 1669107420032,
+                        "repeatIndex": 2,
+                        "value": [{"milestone": "Milestone 1"}],
+                    },
+                    {"question": 1669107562769, "value": "Example answer 1"},
+                    {"question": 1669107635129, "value": "Example answer 2"},
+                ],
+                "organisation_ids": [1],
+            }
+        )
         assert res == form_def
