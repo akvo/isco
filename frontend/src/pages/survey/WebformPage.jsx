@@ -781,7 +781,7 @@ const WebformPage = ({
           const split = key.split("-");
           question = split[0];
           repeatIndex = parseInt(split[1]);
-          repeatIndexString = !isNumeric(split[1]) ? split[1] : null;
+          repeatIndexString = split[1];
         }
         // find comment
         const qid = parseInt(question);
