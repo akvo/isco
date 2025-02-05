@@ -148,7 +148,8 @@
             <thead>
               <tr>
                 <th style="page-break-inside: avoid" scope="col">
-                  {{dt.name}} - {{r.repeat + 1}}
+                  {{ dt.name }} - {{ r.repeat + 1 if r.repeat is integer else
+                  r.repeat }}
                 </th>
               </tr>
             </thead>

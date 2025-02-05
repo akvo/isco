@@ -16,7 +16,7 @@ from db.connection import Base
 class AnswerDictWithId(TypedDict):
     id: int
     question: int
-    repeat_index: Optional[int] = None
+    repeat_index: Optional[str] = None
     comment: Optional[str] = None
     value: Optional[
         Union[float, int, str, bool, dict, List[float], List[int], List[str]]
@@ -25,7 +25,7 @@ class AnswerDictWithId(TypedDict):
 
 class AnswerDict(TypedDict):
     question: int
-    repeat_index: Optional[int] = None
+    repeat_index: Optional[str] = None
     comment: Optional[str] = None
     value: Optional[
         Union[float, int, str, bool, dict, List[float], List[int], List[str]]
@@ -39,7 +39,7 @@ class AnswerDictWithQuestionName(TypedDict):
     question: int
     question_name: str
     question_order: int
-    repeat_index: Optional[int] = None
+    repeat_index: Optional[str] = None
     comment: Optional[str] = None
     is_repeat_identifier: Optional[bool] = False
     value: Optional[
@@ -70,7 +70,7 @@ class Answer(Base):
     value = Column(Float, nullable=True)
     options = Column(pg.ARRAY(String), nullable=True)
     comment = Column(Text, nullable=True)
-    repeat_index = Column(Integer, nullable=True, default=0)
+    repeat_index = Column(Text, nullable=True, default=0)
     created = Column(DateTime, nullable=True)
     updated = Column(DateTime, nullable=True)
     question_detail = relationship("Question", backref="answer")
@@ -84,7 +84,7 @@ class Answer(Base):
         value: Optional[float] = None,
         options: Optional[List[str]] = None,
         comment: Optional[str] = None,
-        repeat_index: Optional[int] = None,
+        repeat_index: Optional[str] = None,
         updated: Optional[datetime] = None,
     ):
         self.question = question
@@ -389,7 +389,7 @@ class AnswerBase(BaseModel):
     value: Optional[float] = None
     options: Optional[List[str]] = None
     comment: Optional[List[str]] = None
-    repeat_index: Optional[int] = None
+    repeat_index: Optional[str] = None
     created: Optional[datetime] = None
     updated: Optional[datetime] = None
 
