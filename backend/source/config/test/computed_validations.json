@@ -28,5 +28,15 @@
         "equal": 100
       }
     ]
+  },
+  {
+    "form_id": 31,
+    "validations": [
+      {
+        "group_id": 133,
+        "question_ids": [897, 898, 899, 900],
+        "equal": 100
+      }
+    ]
   }
 ]
