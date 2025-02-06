@@ -250,6 +250,7 @@ def get_data_by_form(session: Session, form: int):
 
 def get_history_datapoint(
     session: Session,
+    data_id: int,
     organisation_id: int,
     last_year: int,
     submitted: datetime,
@@ -257,8 +258,16 @@ def get_history_datapoint(
 ):
     """Query the history data for submitted datapoint"""
     data = session.query(Data)
+    data = data.filter(
+        and_(
+            Data.id != data_id,
+            ~Data.form.in_(PROJECT_SURVEY),
+        )
+    )
     if form and form != "all":
-        data = data.filter(Data.form == form)
+        data = data.filter(
+            Data.form == form,
+        )
     data = (
         data.filter(
             and_(
