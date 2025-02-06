@@ -482,8 +482,17 @@ const QuestionSetting = ({
                   <Form.Item name={`question-${qid}-deactivate`} hidden noStyle>
                     <Input />
                   </Form.Item>
-                  Deactivate{" "}
+                  <span
+                    style={
+                      question?.deactivate
+                        ? { zIndex: 3, color: "#000000", fontWeight: 900 }
+                        : {}
+                    }
+                  >
+                    Deactivate{" "}
+                  </span>
                   <Switch
+                    style={question?.deactivate ? { zIndex: 2 } : {}}
                     key={`question-${qid}-deactivate-switch`}
                     size="small"
                     checked={question?.deactivate}
