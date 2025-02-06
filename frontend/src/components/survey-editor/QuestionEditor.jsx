@@ -309,10 +309,7 @@ const QuestionEditor = ({
   };
 
   return (
-    <Row
-      key={`qe-${qId}`}
-      style={{ opacity: question?.deactivate ? "0.3" : "1" }}
-    >
+    <Row key={`qe-${qId}`}>
       <Col span={24}>
         <Card
           className={
@@ -321,6 +318,25 @@ const QuestionEditor = ({
               : "question-card-wrapper"
           }
         >
+          {question?.deactivate ? (
+            <div
+              id="deactivate-overlay-wrapper"
+              style={{
+                background: "rgba(255,255,255, 0.5)",
+                width: "100%",
+                height: "100%",
+                position: "absolute",
+                left: 0,
+                top: 0,
+                zIndex: 1,
+                pointerEvents: "none",
+              }}
+            >
+              &nbsp;
+            </div>
+          ) : (
+            ""
+          )}
           <Row
             align="top"
             justify="space-between"
@@ -453,6 +469,7 @@ const QuestionEditor = ({
                                 form.submit();
                               }, 100);
                             }}
+                            style={question?.deactivate ? { zIndex: 2 } : {}}
                           >
                             Save
                           </Button>
