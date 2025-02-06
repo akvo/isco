@@ -114,43 +114,48 @@ const DataDetail = ({ record }) => {
   });
   record["answer"] = recordAnswer;
 
-  let history = record?.history?.map((h) => {
-    const identifierAnswer = h?.answer?.filter((a) => a?.is_repeat_identifier);
-    const historyAnswer = h?.answer?.map((ha) => {
-      if (!isNumeric(ha.repeat_index)) {
-        // handle if repeat_index is String
+  let history = record?.history
+    ?.filter((h) => h.id !== record.id) // prevent same data id on history
+    ?.map((h) => {
+      const identifierAnswer = h?.answer?.filter(
+        (a) => a?.is_repeat_identifier
+      );
+      const historyAnswer = h?.answer?.map((ha) => {
+        if (!isNumeric(ha.repeat_index)) {
+          // handle if repeat_index is String
+          return {
+            ...ha,
+            repeat_identifier: ha.repeat_index,
+          };
+        }
+        // handle repeat group index with is_repeat_identifier
+        const findIdentifier = identifierAnswer.find(
+          (x) =>
+            x.question_group === ha.question_group &&
+            x.repeat_index === ha.repeat_index
+        );
+        let repeat_identifier = ha.repeat_index;
+        if (findIdentifier && findIdentifier?.value) {
+          repeat_identifier = findIdentifier.value;
+          if (Array.isArray(findIdentifier.value)) {
+            repeat_identifier = findIdentifier?.value?.[0] || null;
+          }
+        }
+        // handle repeat group without is_repeat_identifier (table view)
+        const findLeadingAnswer = h?.answer?.find(
+          (a) => a.question === ha.question_group_leading_question
+        );
+        if (findLeadingAnswer && findLeadingAnswer?.value?.length) {
+          repeat_identifier =
+            findLeadingAnswer.value?.[ha.repeat_index] || null;
+        }
         return {
           ...ha,
-          repeat_identifier: ha.repeat_index,
+          repeat_identifier: repeat_identifier,
         };
-      }
-      // handle repeat group index with is_repeat_identifier
-      const findIdentifier = identifierAnswer.find(
-        (x) =>
-          x.question_group === ha.question_group &&
-          x.repeat_index === ha.repeat_index
-      );
-      let repeat_identifier = ha.repeat_index;
-      if (findIdentifier && findIdentifier?.value) {
-        repeat_identifier = findIdentifier.value;
-        if (Array.isArray(findIdentifier.value)) {
-          repeat_identifier = findIdentifier?.value?.[0] || null;
-        }
-      }
-      // handle repeat group without is_repeat_identifier (table view)
-      const findLeadingAnswer = h?.answer?.find(
-        (a) => a.question === ha.question_group_leading_question
-      );
-      if (findLeadingAnswer && findLeadingAnswer?.value?.length) {
-        repeat_identifier = findLeadingAnswer.value?.[ha.repeat_index] || null;
-      }
-      return {
-        ...ha,
-        repeat_identifier: repeat_identifier,
-      };
+      });
+      return { ...h, answer: historyAnswer };
     });
-    return { ...h, answer: historyAnswer };
-  });
   history = _.orderBy(history, "year", "desc");
   // EOL Remap answer and history to provide the repeat_identifier
 

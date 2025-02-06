@@ -300,6 +300,7 @@ def get(
         histories = crud.get_history_datapoint(
             session=session,
             form=d.form,
+            data_id=d.id,
             organisation_id=d.organisation,
             submitted=d.submitted,
             last_year=d.submitted.year,
