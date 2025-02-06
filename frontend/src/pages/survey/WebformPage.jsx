@@ -815,7 +815,7 @@ const WebformPage = ({
   const onChange = ({ current, values }) => {
     // handle data unavailable checkbox - comment
     const allKeyWithNA = Object.keys(values)
-      .filter((key) => key.includes("na"))
+      .filter((key) => key.includes("dataNA_"))
       .map((key) => {
         const elCheckUnavailable = document.getElementById(key);
         const isChecked = elCheckUnavailable?.checked;
@@ -827,7 +827,7 @@ const WebformPage = ({
       })
       .reduce((acc, curr) => ({ ...acc, ...curr }), {});
     const dataUnavailable = Object.keys(current)
-      .filter((key) => key.includes("na"))
+      .filter((key) => key.includes("dataNA_"))
       .map((key) => {
         const elCheckUnavailable = document.getElementById(key);
         const isChecked = elCheckUnavailable?.checked;
@@ -874,7 +874,7 @@ const WebformPage = ({
 
     // handle form values
     const filteredValues = Object.keys(values)
-      .filter((key) => !key.includes("na"))
+      .filter((key) => !key.includes("dataNA_"))
       .reduce((acc, curr) => ({ ...acc, [curr]: values[curr] }), {});
     const transformedAnswerValues = transformValues(filteredValues, {
       ...allKeyWithNA,
