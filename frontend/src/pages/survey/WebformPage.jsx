@@ -1162,9 +1162,9 @@ const WebformPage = ({
         const expiredDate = new Date(expired);
         const timeDifference = expiredDate - now;
         console.info(`Time Diff: ${timeDifference}`);
-
-        // Check if the remaining time is less than or equal to 5 mins (5 * 60 * 1000)
-        if (timeDifference > 0 && timeDifference <= 5 * 60 * 1000) {
+        // TODO :: revert this
+        // Check if the remaining time is <= to 5 mins (5 * 60 * 1000)
+        if (timeDifference > 0 && timeDifference !== false) {
           console.info(
             "Remaining time is less than or equal to 5 mins --> Saving"
           );
@@ -1172,13 +1172,18 @@ const WebformPage = ({
           handleOnClickSaveButton();
         }
 
-        // Check if the remaining time is less than or equal to 30 minutes (30 * 60 * 1000)
-        if (timeDifference > 0 && timeDifference <= 30 * 60 * 1000) {
+        // Check if the remaining time is <= to 30 minutes (30 * 60 * 1000)
+        if (timeDifference > 0 && timeDifference !== false) {
           console.info(
             "Remaining time is less than or equal to 30 minutes --> Show Modal"
           );
-          setRemainingTime(expired);
-          setShowSessionModal(true);
+          // setRemainingTime(expired);
+          // setShowSessionModal(true);
+          setTimeout(() => {
+            // TODO :: delete the timeout
+            setRemainingTime(expired);
+            setShowSessionModal(true);
+          }, 5000);
         }
       })
       .catch(() => {
@@ -1187,8 +1192,9 @@ const WebformPage = ({
       });
   };
 
+  // TODO ::
   // check idle every 5 minutes (idleTime: 5)
-  const { isIdle } = useIdle({ onIdle: handleIdle, idleTime: 5 });
+  const { isIdle } = useIdle({ onIdle: handleIdle, idleTime: 2 });
 
   const handleLogout = () => {
     if (cookies?.AUTH_TOKEN) {
