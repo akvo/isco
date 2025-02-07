@@ -69,6 +69,35 @@ const Auth = ({ children }) => {
         </Col>
         <Col span={10}>{children}</Col>
       </Row>
+      <Row
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          boxShadow: "1px -2px 7px 0px rgba(207, 207, 207, 0.75)",
+          WebkitBoxShadow: "1px -2px 7px 0px rgba(207, 207, 207, 0.75)",
+          MozBoxShadow: "1px -2px 7px 0px rgba(207, 207, 207, 0.75)",
+          padding: "14px 24px",
+          fontSize: 13,
+          fontStyle: "italic",
+        }}
+      >
+        <Col span={24}>
+          For the best experience, we recommend using Google Chrome (Version 110
+          and above), Mozilla Firefox (Version 110 and above), Microsoft Edge
+          (Version 110 and above), or Safari (Version 16.4 and above). Our tool
+          is optimized for these browsers to ensure smooth performance and full
+          feature compatibility. To know your browser version{" "}
+          <a
+            href="https://www.whatsmybrowser.org"
+            target="_blank"
+            rel="noreferrer"
+          >
+            click here
+          </a>
+          .
+        </Col>
+      </Row>
     </div>
   );
 };

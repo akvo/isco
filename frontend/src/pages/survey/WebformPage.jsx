@@ -223,7 +223,7 @@ const WebformPage = ({
   }, [formValue]);
 
   const groupRepeatableAnswerValues = useCallback(
-    (answerValues) => {
+    (answerValues, allQidsAppearOnForm = []) => {
       const allQuestions = formValue.question_group.flatMap((qg) =>
         qg.question.map((q) => ({
           id: q.id,
@@ -249,6 +249,9 @@ const WebformPage = ({
         return {
           ...av,
           group: `${findGroup}_${repeatIndex}`,
+          isQuestionAppearInForm: allQidsAppearOnForm.includes(
+            String(av.question)
+          ),
         };
       });
       return groupBy(res, "group");
@@ -258,11 +261,15 @@ const WebformPage = ({
 
   // check computed validations
   const checkComputedValidationFunction = useCallback(
-    (onChangeEvent = true, values = []) => {
+    (onChangeEvent = true, values = [], allValues = {}) => {
       // Need to remap question_ids from computed validation config to form def
       // because questions availability related to member/isco type
       let answerValues = values?.length ? values : answer;
-      answerValues = groupRepeatableAnswerValues(answerValues);
+      const allQidsAppearOnForm = Object.keys(allValues).map((key) => key);
+      answerValues = groupRepeatableAnswerValues(
+        answerValues,
+        allQidsAppearOnForm
+      );
       const validations =
         computedValidations
           .find((cv) => cv.form_id === formId)
@@ -310,6 +317,15 @@ const WebformPage = ({
               }
               /** EOL CHECK repeatable group */
 
+              const isValidationQuestionAppearInForm = v.question_ids
+                .map((qid) => {
+                  if (allQidsAppearOnForm.includes(String(qid))) {
+                    return qid;
+                  }
+                  return false;
+                })
+                .filter((x) => x);
+
               // check if all computed validation answered
               const checkAllAnswered = intersection(
                 v.question_ids,
@@ -318,8 +334,9 @@ const WebformPage = ({
 
               // only do this when use on change event TRUE
               if (
-                onChangeEvent &&
-                checkAllAnswered.length !== v.question_ids.length
+                // onChangeEvent &&
+                checkAllAnswered.length !== v.question_ids.length &&
+                !isValidationQuestionAppearInForm?.length
               ) {
                 // not all answered
                 return {
@@ -328,11 +345,18 @@ const WebformPage = ({
                 };
               }
 
-              // all answered
+              // is all question answered?
               const questions = v.question_ids.map((id) => {
                 const a = resValues.find((a) => a.question === id);
-                return { id: id, answer: a?.value };
+                return {
+                  id: id,
+                  answer: a?.value,
+                  isQuestionAppearInForm: !isNaN(a?.isQuestionAppearInForm)
+                    ? a?.isQuestionAppearInForm
+                    : isValidationQuestionAppearInForm.includes(id),
+                };
               });
+
               const filterOnlyAnswerWithNumber = questions
                 .map((q) => q.answer)
                 .filter((q) => !isNaN(q));
@@ -362,7 +386,9 @@ const WebformPage = ({
               }
               return {
                 ...v,
-                questions: questions.filter((q) => !isNaN(q.answer)),
+                questions: questions.filter(
+                  (q) => !isNaN(q.answer) || q.isQuestionAppearInForm
+                ),
                 error: error,
                 total: total,
                 errorDetail: errorDetail,
@@ -701,7 +727,8 @@ const WebformPage = ({
     // check computed validation
     const checkComputedValidaitonOnSubmit = checkComputedValidationFunction(
       false,
-      values
+      values,
+      webformRef?.current?.getFieldsValue()
     );
     // begin check core mandatory answered
     let checkCoreMandatoryQuestionFailed = false;
