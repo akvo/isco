@@ -1190,8 +1190,8 @@ const WebformPage = ({
         const timeDifference = expiredDate - now;
         console.info(`Time Diff: ${timeDifference}`);
         // TODO :: revert this
-        // Check if the remaining time is <= to 5 mins (5 * 60 * 1000)
-        if (timeDifference > 0 && timeDifference !== false) {
+        // Check if the remaining time is <= 5 * 60 * 1000 (5 mins)
+        if (timeDifference > 0 && timeDifference <= 5 * 60 * 1000) {
           console.info(
             "Remaining time is less than or equal to 5 mins --> Saving"
           );
@@ -1199,8 +1199,8 @@ const WebformPage = ({
           handleOnClickSaveButton();
         }
 
-        // Check if the remaining time is <= to 30 minutes (30 * 60 * 1000)
-        if (timeDifference > 0 && timeDifference !== false) {
+        // Check if the remaining time is <=  30 * 60 * 1000 (30 mins)
+        if (timeDifference > 0 && timeDifference <= 30 * 60 * 1000) {
           console.info(
             "Remaining time is less than or equal to 30 minutes --> Show Modal"
           );
@@ -1221,7 +1221,7 @@ const WebformPage = ({
 
   // TODO ::
   // check idle every 5 minutes (idleTime: 5)
-  const { isIdle } = useIdle({ onIdle: handleIdle, idleTime: 2 });
+  const { isIdle } = useIdle({ onIdle: handleIdle, idleTime: 5 });
 
   const handleLogout = () => {
     if (cookies?.AUTH_TOKEN) {
