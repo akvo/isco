@@ -110,6 +110,13 @@
       "action": "new",
       "update": "Other",
       "childrens": []
+    },
+    {
+      "name": "None",
+      "level": 1,
+      "action": "new",
+      "update": "None",
+      "childrens": []
     }
   ]
 }
