@@ -1,0 +1,115 @@
+{
+  "name": "Income Strategies List",
+  "type": "cascade",
+  "cascades": [
+    {
+      "name": "Price related income strategies",
+      "level": 1,
+      "action": "new",
+      "update": "Price related income strategies",
+      "childrens": [
+        {
+          "name": "Payment of a Living Income Reference Price  (LIRP)",
+          "level": 2,
+          "action": "new",
+          "update": "Payment of a Living Income Reference Price  (LIRP)"
+        },
+        {
+          "name": "Volume based Premiums (except the LIRP)",
+          "level": 2,
+          "action": "new",
+          "update": "Volume based Premiums (except the LIRP)"
+        },
+        {
+          "name": "Other conditional and unconditional cash payments",
+          "level": 2,
+          "action": "new",
+          "update": "Other conditional and unconditional cash payments"
+        }
+      ]
+    },
+    {
+      "name": "Farming practices related income strategies",
+      "level": 1,
+      "action": "new",
+      "update": "Farming practices related income strategies",
+      "childrens": [
+        {
+          "name": "Cocoa productivity",
+          "level": 2,
+          "action": "new",
+          "update": "Cocoa productivity"
+        },
+        {
+          "name": "Crop diversification",
+          "level": 2,
+          "action": "new",
+          "update": "Crop diversification"
+        },
+        {
+          "name": "Reduction of production costs",
+          "level": 2,
+          "action": "new",
+          "update": "Reduction of production costs"
+        },
+        {
+          "name": "Adaptation to climate change",
+          "level": 2,
+          "action": "new",
+          "update": "Adaptation to climate change"
+        }
+      ]
+    },
+    {
+      "name": "Other income strategies",
+      "level": 1,
+      "action": "new",
+      "update": "Other income strategies",
+      "childrens": [
+        {
+          "name": "Women's economic empowerment",
+          "level": 2,
+          "action": "new",
+          "update": "Women's economic empowerment"
+        },
+        {
+          "name": "Responsible procurement practices",
+          "level": 2,
+          "action": "new",
+          "update": "Responsible procurement practices"
+        },
+        {
+          "name": "Community and landscape approaches",
+          "level": 2,
+          "action": "new",
+          "update": "Community and landscape approaches"
+        },
+        {
+          "name": "Payment for environmental services",
+          "level": 2,
+          "action": "new",
+          "update": "Payment for environmental services"
+        },
+        {
+          "name": "Off-farm income diversification",
+          "level": 2,
+          "action": "new",
+          "update": "Off-farm income diversification"
+        },
+        {
+          "name": "Access to finance",
+          "level": 2,
+          "action": "new",
+          "update": "Access to finance"
+        }
+      ]
+    },
+    {
+      "name": "Other",
+      "level": 1,
+      "action": "new",
+      "update": "Other",
+      "childrens": []
+    }
+  ]
+}
