@@ -2,7 +2,7 @@
 
 #root {
   #auth {
-    min-height: calc(100vh - 10rem);
+    // min-height: calc(100vh - 10rem);
 
     .ant-space.ant-space-vertical {
       width: 100%;
@@ -10,7 +10,7 @@
     }
 
     .auth-landing {
-      position: relative;
+      // position: relative;
       height: 30vh;
       background-image: url("../../../public/images/cacao-seeds.jpg");
       background-size: cover;
@@ -19,13 +19,18 @@
 
     .auth-form-container {
       margin: auto;
-      padding: 0px 85px;
-      position: absolute;
-      top: 47%;
+      padding: 0;
+      padding-top: 6rem;
       width: 100%;
+      // position: absolute;
+      // top: 47%;
 
       .brand-wrapper {
-        padding-top: 6rem;
+        padding-left: 85px;
+      }
+
+      .children-wrapper {
+        padding-right: 85px;
       }
 
       .title {

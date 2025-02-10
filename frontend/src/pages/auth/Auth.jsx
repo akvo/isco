@@ -67,18 +67,20 @@ const Auth = ({ children }) => {
             </Row>
           </Space>
         </Col>
-        <Col span={10}>{children}</Col>
+        <Col span={10} className="children-wrapper">
+          {children}
+        </Col>
       </Row>
       <Row
         style={{
-          position: "absolute",
-          bottom: 0,
-          left: 0,
+          marginTop: "6rem",
+          width: "100%",
+          background: "#fff",
           boxShadow: "1px -2px 7px 0px rgba(207, 207, 207, 0.75)",
           WebkitBoxShadow: "1px -2px 7px 0px rgba(207, 207, 207, 0.75)",
           MozBoxShadow: "1px -2px 7px 0px rgba(207, 207, 207, 0.75)",
-          padding: "14px 24px",
-          fontSize: 13,
+          padding: "16px 32px",
+          fontSize: 14,
           fontStyle: "italic",
         }}
       >
