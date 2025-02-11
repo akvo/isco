@@ -121,7 +121,14 @@ const DataDetail = ({ record }) => {
         (a) => a?.is_repeat_identifier
       );
       const historyAnswer = h?.answer?.map((ha) => {
-        if (!isNumeric(ha.repeat_index)) {
+        const findRecordLeadingAnswer = record?.answer?.find(
+          (a) => a.question === ha.question_group_leading_question
+        );
+        const findHistoryLeadingAnswer = h?.answer?.find(
+          (a) => a.question === ha.question_group_leading_question
+        );
+        //
+        if (!isNumeric(ha.repeat_index) && findRecordLeadingAnswer) {
           // handle if repeat_index is String
           return {
             ...ha,
@@ -142,16 +149,35 @@ const DataDetail = ({ record }) => {
           }
         }
         // handle repeat group without is_repeat_identifier (table view)
-        const findLeadingAnswer = h?.answer?.find(
-          (a) => a.question === ha.question_group_leading_question
-        );
-        if (findLeadingAnswer && findLeadingAnswer?.value?.length) {
+        if (
+          findHistoryLeadingAnswer &&
+          findHistoryLeadingAnswer?.value?.length &&
+          isNumeric(ha.repeat_index)
+        ) {
           repeat_identifier =
-            findLeadingAnswer.value?.[ha.repeat_index] || null;
+            findHistoryLeadingAnswer.value?.[ha.repeat_index] || null;
+        }
+        if (
+          findRecordLeadingAnswer &&
+          findRecordLeadingAnswer?.value?.length &&
+          isNumeric(ha.repeat_index)
+        ) {
+          repeat_identifier =
+            findRecordLeadingAnswer.value?.[ha.repeat_index] || null;
+        }
+        if (
+          !findRecordLeadingAnswer &&
+          findHistoryLeadingAnswer &&
+          findHistoryLeadingAnswer?.value?.length &&
+          !isNumeric(ha.repeat_index)
+        ) {
+          repeat_identifier = findHistoryLeadingAnswer.value.indexOf(
+            ha.repeat_index
+          );
         }
         return {
           ...ha,
-          repeat_identifier: repeat_identifier,
+          repeat_identifier: String(repeat_identifier),
         };
       });
       return { ...h, answer: historyAnswer };
@@ -218,6 +244,9 @@ const DataDetail = ({ record }) => {
         titleSuffix = findRepeatIdentifier?.value?.length
           ? ` - ${findRepeatIdentifier?.repeat_identifier}`
           : "";
+      }
+      if (!isNumeric(v?.[0]?.repeat_identifier)) {
+        titleSuffix = ` - ${v[0].repeat_identifier}`;
       }
 
       // Map into the repeat group with repeat_identifier value
