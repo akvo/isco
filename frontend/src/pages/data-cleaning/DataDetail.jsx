@@ -5,6 +5,16 @@ import { Table, Space } from "antd";
 import _ from "lodash";
 import { isNumeric } from "../../lib/util";
 
+const formatAnswerValue = (val) => {
+  if (_.isObject(val) && !Array.isArray(val)) {
+    return Object.values(val).length ? val.join(" | ") : "-";
+  }
+  if (Array.isArray(val)) {
+    return val.length ? val.join(" | ") : "-";
+  }
+  return val || val === 0 ? val : "-";
+};
+
 const columns = [
   {
     title: "Question",
@@ -15,15 +25,7 @@ const columns = [
   {
     title: "Answer",
     dataIndex: "value",
-    render: (val) => {
-      if (val && typeof val === "object" && !Array.isArray(val)) {
-        return Object.values(val).length ? val.join(" | ") : "-";
-      }
-      if (val && Array.isArray(val)) {
-        return val.length ? val.join(" | ") : "-";
-      }
-      return val || val === 0 ? val : "-";
-    },
+    render: (val) => formatAnswerValue(val),
     width: "8%",
   },
   {
@@ -38,15 +40,7 @@ const generateHistoryColumns = (year) => [
   {
     title: "Answer",
     dataIndex: `value_${year}`,
-    render: (val) => {
-      if (val && typeof val === "object" && !Array.isArray(val)) {
-        return Object.values(val).length ? val.join(" | ") : "-";
-      }
-      if (val && Array.isArray(val)) {
-        return val.length ? val.join(" | ") : "-";
-      }
-      return val || val === 0 ? val : "-";
-    },
+    render: (val) => formatAnswerValue(val),
     width: "8%",
   },
   {
@@ -165,6 +159,7 @@ const DataDetail = ({ record }) => {
           repeat_identifier =
             findRecordLeadingAnswer.value?.[ha.repeat_index] || null;
         }
+        // handle backward compatibility
         if (
           !findRecordLeadingAnswer &&
           findHistoryLeadingAnswer &&
