@@ -120,6 +120,9 @@ const CascadeApiField = ({
 
   const handleChange = (value, index) => {
     if (!index) {
+      // reset cascade to remove extra cascade field (> first level)
+      setCascade((prev) => [prev[index]]);
+      // eol
       setSelected([value]);
       form.setFieldsValue({ [id]: [value] });
     } else {
