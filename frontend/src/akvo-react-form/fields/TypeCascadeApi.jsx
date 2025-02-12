@@ -119,7 +119,20 @@ const CascadeApiField = ({
   }, [initialValue, endpoint, initial, list]);
 
   const handleChange = (value, index) => {
+    // handle on clear the dropdown
+    if (typeof value === "undefined") {
+      if (!index) {
+        // first level
+        setCascade((prev) => [prev[index]]);
+        setSelected([]);
+        form.setFieldsValue({ [id]: null });
+      }
+      return;
+    }
     if (!index) {
+      // reset cascade to remove extra cascade field (> first level)
+      setCascade((prev) => [prev[index]]);
+      // eol
       setSelected([value]);
       form.setFieldsValue({ [id]: [value] });
     } else {
