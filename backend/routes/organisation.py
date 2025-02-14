@@ -16,51 +16,62 @@ security = HTTPBearer()
 organisation_route = APIRouter()
 
 
-@organisation_route.post("/organisation",
-                         response_model=OrganisationBase,
-                         summary="add new organisation",
-                         name="organisation:create",
-                         tags=["Organisation"])
-def add(req: Request, organisation: OrganisationPayload,
-        session: Session = Depends(get_session),
-        credentials: credentials = Depends(security)):
+@organisation_route.post(
+    "/organisation",
+    response_model=OrganisationBase,
+    summary="add new organisation",
+    name="organisation:create",
+    tags=["Organisation"],
+)
+def add(
+    req: Request,
+    organisation: OrganisationPayload,
+    session: Session = Depends(get_session),
+    credentials: credentials = Depends(security),
+):
     verify_super_admin(session=session, authenticated=req.state.authenticated)
-    organisation = crud.add_organisation(session=session,
-                                         payload=organisation)
+    organisation = crud.add_organisation(session=session, payload=organisation)
     return organisation.serialize
 
 
-@organisation_route.get("/organisation/",
-                        response_model=List[OrganisationDict],
-                        summary="get all organisations",
-                        name="organisation:get_all",
-                        tags=["Organisation"])
+@organisation_route.get(
+    "/organisation/",
+    response_model=List[OrganisationDict],
+    summary="get all organisations",
+    name="organisation:get_all",
+    tags=["Organisation"],
+)
 def get(req: Request, session: Session = Depends(get_session)):
     organisation = crud.get_organisation(session=session)
     return [o.serialize for o in organisation]
 
 
-@organisation_route.get("/organisation/paginated",
-                        response_model=OrganisationResponse,
-                        summary="get organisations with pagination",
-                        name="organisation:get_paginated",
-                        tags=["Organisation"])
-def get_paginated(req: Request,
-                  page: int = 1,
-                  page_size: int = 10,
-                  organisation: Optional[List[int]] = Query(None),
-                  member: Optional[List[int]] = Query(None),
-                  isco: Optional[List[int]] = Query(None),
-                  session: Session = Depends(get_session)):
+@organisation_route.get(
+    "/organisation/paginated",
+    response_model=OrganisationResponse,
+    summary="get organisations with pagination",
+    name="organisation:get_paginated",
+    tags=["Organisation"],
+)
+def get_paginated(
+    req: Request,
+    page: int = 1,
+    page_size: int = 10,
+    organisation: Optional[List[int]] = Query(None),
+    member: Optional[List[int]] = Query(None),
+    isco: Optional[List[int]] = Query(None),
+    session: Session = Depends(get_session),
+):
     organisation = crud.filter_organisation(
         session=session,
         page=page,
         page_size=page_size,
         organisation=organisation,
         member=member,
-        isco=isco)
-    total_data = organisation['count']
-    data = organisation['downloads']
+        isco=isco,
+    )
+    total_data = organisation["count"]
+    data = organisation["downloads"]
     if not data:
         return []
     total_page = ceil(total_data / page_size) if total_data > 0 else 0
@@ -68,64 +79,84 @@ def get_paginated(req: Request,
         raise HTTPException(status_code=404, detail="Not found")
     data = [d.serialize for d in data]
     return {
-        'current': page,
-        'data': data,
-        'total': total_data,
-        'total_page': total_page,
+        "current": page,
+        "data": data,
+        "total": total_data,
+        "total_page": total_page,
     }
 
 
-@organisation_route.get("/organisation/isco",
-                        response_model=List[OrganisationDict],
-                        summary="get organisations in same isco",
-                        name="organisation:get_organisation_in_same_isco",
-                        tags=["Organisation"])
+@organisation_route.get(
+    "/organisation/isco",
+    response_model=List[OrganisationDict],
+    summary="get organisations in same isco",
+    name="organisation:get_organisation_in_same_isco",
+    tags=["Organisation"],
+)
 def get_organisation_in_same_isco(
     req: Request,
     session: Session = Depends(get_session),
-    credentials: credentials = Depends(security)
+    credentials: credentials = Depends(security),
 ):
-    admin = verify_super_admin(session=session,
-                               authenticated=req.state.authenticated)
+    admin = verify_super_admin(
+        session=session, authenticated=req.state.authenticated
+    )
     org_ids = organisations_in_same_isco(
-        session=session, organisation=admin.organisation)
-    organisation = session.query(Organisation).filter(
-        Organisation.id.in_(org_ids)).all()
+        session=session, organisation=admin.organisation
+    )
+    organisation = (
+        session.query(Organisation).filter(Organisation.id.in_(org_ids)).all()
+    )
     return [o.serialize for o in organisation]
 
 
-@organisation_route.get("/organisation/{id:path}",
-                        response_model=OrganisationDict,
-                        summary="get organisation by id",
-                        name="organisation:get_by_id",
-                        tags=["Organisation"])
+@organisation_route.get(
+    "/organisation/{id:path}",
+    response_model=OrganisationDict,
+    summary="get organisation by id",
+    name="organisation:get_by_id",
+    tags=["Organisation"],
+)
 def get_by_id(req: Request, id: int, session: Session = Depends(get_session)):
     organisation = crud.get_organisation_by_id(session=session, id=id)
     return organisation.serialize
 
 
-@organisation_route.put("/organisation/{id:path}",
-                        response_model=OrganisationDict,
-                        summary="update organisation",
-                        name="organisation:put",
-                        tags=["Organisation"])
-def update(req: Request, id: int, payload: OrganisationPayload,
-           session: Session = Depends(get_session),
-           credentials: credentials = Depends(security)):
+@organisation_route.put(
+    "/organisation/{id:path}",
+    response_model=OrganisationDict,
+    summary="update organisation",
+    name="organisation:put",
+    tags=["Organisation"],
+)
+def update(
+    req: Request,
+    id: int,
+    payload: OrganisationPayload,
+    session: Session = Depends(get_session),
+    credentials: credentials = Depends(security),
+):
     verify_super_admin(session=session, authenticated=req.state.authenticated)
-    organisation = crud.update_organisation(session=session,
-                                            id=id, payload=payload)
+    organisation = crud.update_organisation(
+        session=session, id=id, payload=payload
+    )
     return organisation.serialize
 
 
-@organisation_route.delete("/organisation/{id:path}",
-                           responses={204: {"model": None}},
-                           status_code=HTTPStatus.NO_CONTENT,
-                           summary="delete organisation by id",
-                           name="organisation:delete",
-                           tags=["Organisation"])
-def delete(req: Request, id: int, session: Session = Depends(get_session),
-           credentials: credentials = Depends(security)):
+@organisation_route.delete(
+    "/organisation/{id:path}",
+    responses={204: {"model": None}},
+    status_code=HTTPStatus.NO_CONTENT,
+    summary="delete organisation by id",
+    name="organisation:delete",
+    tags=["Organisation"],
+)
+def delete(
+    req: Request,
+    id: int,
+    session: Session = Depends(get_session),
+    credentials: credentials = Depends(security),
+):
     verify_super_admin(session=session, authenticated=req.state.authenticated)
     crud.delete_organisation(session=session, id=id)
     return Response(status_code=HTTPStatus.NO_CONTENT.value)

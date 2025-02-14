@@ -8,7 +8,7 @@
 
   .container {
     padding: $padding-container-y $padding-container-x;
-    min-height: calc(100vh - 10rem);
+    min-height: 100vh;
   }
 
   .assignment-notification-panel {

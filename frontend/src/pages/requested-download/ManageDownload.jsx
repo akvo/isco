@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "./style.scss";
 import {
   Row,
@@ -9,8 +9,9 @@ import {
   Button,
   Popconfirm,
   Modal,
+  Select,
 } from "antd";
-import { api } from "../../lib";
+import { api, store } from "../../lib";
 import { useNotification } from "../../util";
 
 const { Title } = Typography;
@@ -62,6 +63,14 @@ const ButtonApproveReject = ({
   );
 };
 
+const pageSize = 10;
+const defaultData = {
+  current: 1,
+  data: [],
+  total: 0,
+  total_page: 0,
+};
+
 const ManageDownload = () => {
   const { notify } = useNotification();
   const [isLoading, setIsLoading] = useState(false);
@@ -71,15 +80,14 @@ const ManageDownload = () => {
   const [viewData, setViewData] = useState(null);
   const [modalViewVisible, setModalViewVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [organisationFilter, setOrganisationFilter] = useState(null);
 
-  const pageSize = 10;
+  const { optionValues } = store.useState((s) => s);
+  const { organisationInSameIsco } = optionValues;
+
   const [page, setPage] = useState(1);
-  const [data, setData] = useState({
-    current: 1,
-    data: [],
-    total: 0,
-    total_page: 0,
-  });
+  const [data, setData] = useState(defaultData);
 
   const handleApproveRejectRequest = (record, approve) => {
     const approved = approve ? 1 : 0;
@@ -133,6 +141,33 @@ const ManageDownload = () => {
         setIsView(null);
       });
   };
+
+  const filterButtons = [
+    {
+      key: "all",
+      label: "All",
+      onClick: () => {
+        setStatusFilter("all");
+        getData({ page, organisation: organisationFilter, status: null });
+      },
+    },
+    {
+      key: "pending",
+      label: "Pending Approval",
+      onClick: () => {
+        setStatusFilter("pending");
+        getData({ page, organisation: organisationFilter, status: "pending" });
+      },
+    },
+    {
+      key: "approved",
+      label: "Approved",
+      onClick: () => {
+        setStatusFilter("approved");
+        getData({ page, organisation: organisationFilter, status: "approved" });
+      },
+    },
+  ];
 
   const columns = [
     {
@@ -190,20 +225,43 @@ const ManageDownload = () => {
     },
   ];
 
+  const getData = useCallback(
+    ({ page, organisation = null, status = null }) => {
+      setIsLoading(true);
+      let url = `/download/requested?page=${page}&page_size=${pageSize}`;
+      if (organisation) {
+        url += `&organisation=${organisation}`;
+      }
+      if (status && status !== "all") {
+        url += `&status=${status}`;
+      }
+      api
+        .get(url)
+        .then((res) => {
+          setData(res.data);
+        })
+        .catch((e) => {
+          const { status, statusText } = e.response;
+          if (status === 404) {
+            setData(defaultData);
+          }
+          console.error(status, statusText);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    },
+    []
+  );
+
   useEffect(() => {
-    setIsLoading(true);
-    api
-      .get(`/download/requested?page=${page}&page_size=${pageSize}`)
-      .then((res) => {
-        setData(res.data);
-      })
-      .catch((e) => {
-        console.error(e);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }, [page, pageSize]);
+    getData({ page });
+  }, [getData, page]);
+
+  const handleOnChangeOrganisation = (val) => {
+    setOrganisationFilter(val);
+    getData({ organisation: val, page, status: statusFilter });
+  };
 
   return (
     <div id="requested-download">
@@ -218,6 +276,41 @@ const ManageDownload = () => {
               <Title className="page-title" level={3}>
                 Manage Download
               </Title>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={24} className="manage-download-filter-wrapper">
+              <div>
+                <Space>
+                  {filterButtons.map((fb) => (
+                    <Button
+                      key={fb.key}
+                      onClick={fb.onClick}
+                      ghost={fb.key === statusFilter ? false : true}
+                      type={fb.key === statusFilter ? "default" : "text"}
+                    >
+                      {fb.label}
+                    </Button>
+                  ))}
+                </Space>
+              </div>
+              <div>
+                <Select
+                  style={{ width: "300px" }}
+                  allowClear
+                  showSearch
+                  className="member-dropdown-wrapper"
+                  placeholder="Select Organisation"
+                  options={organisationInSameIsco.map((o) => ({
+                    label: o.name,
+                    value: o.id,
+                  }))}
+                  onChange={handleOnChangeOrganisation}
+                  onClear={() => setOrganisationFilter(null)}
+                  value={organisationFilter}
+                  optionFilterProp="label"
+                />
+              </div>
             </Col>
           </Row>
           <Row>
