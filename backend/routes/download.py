@@ -169,6 +169,12 @@ def requested_download_list(
     req: Request,
     page: int = 1,
     page_size: int = 10,
+    organisation: Optional[int] = Query(
+        None, decription="Filter by organisation"
+    ),
+    status: Optional[DownloadStatusType] = Query(
+        None, description="Filter by download status"
+    ),
     session: Session = Depends(get_session),
     credentials: credentials = Depends(security),
 ):
@@ -177,9 +183,11 @@ def requested_download_list(
     )
     data = crud.get_requested_download_list(
         session=session,
-        organisation=admin.organisation,
+        admin_organisation=admin.organisation,
         page=page,
         page_size=page_size,
+        status=status,
+        organisation_filter=organisation,
     )
     total_data = data["count"]
     data = data["downloads"]
