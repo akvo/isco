@@ -290,14 +290,9 @@ const SubmissionProgress = () => {
                   allowClear
                   showSearch
                   placeholder="Questionnaires"
-                  optionFilterProp="children"
+                  optionFilterProp="label"
                   value={formSelected}
                   onChange={setFormSelected}
-                  filterOption={(input, option) =>
-                    option.children
-                      .toLowerCase()
-                      .indexOf(input.toLowerCase()) >= 0
-                  }
                   options={forms}
                 />
                 {showOrganisationFilter && (
@@ -306,14 +301,9 @@ const SubmissionProgress = () => {
                     allowClear
                     showSearch
                     placeholder="Organization"
-                    optionFilterProp="children"
+                    optionFilterProp="label"
                     value={orgValue}
                     onChange={handleOrganisationFilter}
-                    filterOption={(input, option) =>
-                      option.children
-                        .toLowerCase()
-                        .indexOf(input.toLowerCase()) >= 0
-                    }
                   >
                     {organisationInSameIsco.length
                       ? organisationInSameIsco.map((o) => (
