@@ -1,5 +1,7 @@
 import React, { Fragment } from "react";
 
+const currentYear = new Date().getFullYear();
+
 const uiText = {
   en: {
     welcome: (
@@ -11,7 +13,7 @@ const uiText = {
         for 2021 data
       </Fragment>
     ),
-    welcome2: "2024 Monitoring Round",
+    welcome2: `${currentYear} Monitoring Round`,
     welcome3: (
       <Fragment>
         Welcome
@@ -310,7 +312,7 @@ const uiText = {
         für das Berichtsjahr 2021!
       </Fragment>
     ),
-    welcome2: "Monitoringrunde 2024",
+    welcome2: `Monitoringrunde ${currentYear}`,
     welcome3: (
       <Fragment>
         Willkommen
