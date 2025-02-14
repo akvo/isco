@@ -29,6 +29,7 @@ const Download = () => {
   const [downloadLoading, setDownloadLoading] = useState(null);
   const [downloadData, setDownloadData] = useState(null);
   const [activeFilter, setActiveFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState(null);
 
   const text = useMemo(() => {
     return uiText[activeLang];
@@ -117,6 +118,41 @@ const Download = () => {
     }, 1000);
   }
 
+  const filterButtons = [
+    {
+      key: "all",
+      label: "All",
+      onClick: () => {
+        setStatusFilter("all");
+        getData(activeFilter, null);
+      },
+    },
+    {
+      key: "request",
+      label: "Request to Download",
+      onClick: () => {
+        setStatusFilter("request");
+        getData(activeFilter, "request");
+      },
+    },
+    {
+      key: "pending",
+      label: "Pending",
+      onClick: () => {
+        setStatusFilter("pending");
+        getData(activeFilter, "pending");
+      },
+    },
+    {
+      key: "ready",
+      label: "Ready for Download",
+      onClick: () => {
+        setStatusFilter("approved");
+        getData(activeFilter, "approved");
+      },
+    },
+  ];
+
   const columns = [
     {
       title: text.formNameText,
@@ -186,16 +222,23 @@ const Download = () => {
     getData();
   }, []);
 
-  const getData = (submitted) => {
+  const getData = (submitted, status) => {
     setIsLoading(true);
+    function addQueryParam(url, key, value) {
+      const separator = url.includes("?") ? "&" : "?";
+      return `${url}${separator}${encodeURIComponent(key)}=${encodeURIComponent(
+        value
+      )}`;
+    }
+    let url = "/download/list?";
+    if ((submitted || submitted === 0) && submitted !== "all") {
+      url = addQueryParam(url, "submitted", submitted);
+    }
+    if (status) {
+      url = addQueryParam(url, "status", status);
+    }
     api
-      .get(
-        `/download/list?page=1${
-          (submitted || submitted === 0) && submitted !== "all"
-            ? `&submitted=${submitted}`
-            : ""
-        }`
-      )
+      .get(url)
       .then((res) => {
         setData(res.data);
       })
@@ -208,9 +251,10 @@ const Download = () => {
       });
   };
 
-  const handleStatusFilter = (status) => {
-    setActiveFilter(status || status === 0 ? status : "all");
-    getData(status || status === 0 ? status : "all");
+  const handleStatusFilter = (submitStatus) => {
+    const submitted = submitStatus || submitStatus === 0 ? submitStatus : "all";
+    setActiveFilter(submitted);
+    getData(submitted, statusFilter);
   };
 
   return (
@@ -229,25 +273,42 @@ const Download = () => {
             </Col>
           </Row>
           <Row>
-            <Col span={24}>
-              <Select
-                style={{ width: "200px" }}
-                allowClear
-                showSearch
-                className="member-dropdown-wrapper"
-                placeholder="Select Status"
-                options={status.map((o) => ({
-                  label: o.name,
-                  value: o.value,
-                }))}
-                onChange={handleStatusFilter}
-                onClear={() => setActiveFilter("all")}
-                value={activeFilter}
-                filterOption={(input, option) =>
-                  option?.label?.toLowerCase().indexOf(input?.toLowerCase()) >=
-                  0
-                }
-              />
+            <Col span={24} className="download-filter-wrapper">
+              <div>
+                <Space>
+                  {filterButtons.map((fb) => (
+                    <Button
+                      key={fb.key}
+                      onClick={fb.onClick}
+                      ghost={fb.key === statusFilter ? false : true}
+                      type={fb.key === statusFilter ? "default" : "text"}
+                    >
+                      {fb.label}
+                    </Button>
+                  ))}
+                </Space>
+              </div>
+              <div>
+                <Select
+                  style={{ width: "200px" }}
+                  allowClear
+                  showSearch
+                  className="member-dropdown-wrapper"
+                  placeholder="Select Status"
+                  options={status.map((o) => ({
+                    label: o.name,
+                    value: o.value,
+                  }))}
+                  onChange={handleStatusFilter}
+                  onClear={() => setActiveFilter("all")}
+                  value={activeFilter}
+                  filterOption={(input, option) =>
+                    option?.label
+                      ?.toLowerCase()
+                      .indexOf(input?.toLowerCase()) >= 0
+                  }
+                />
+              </div>
             </Col>
             <Col span={24}>
               <Space

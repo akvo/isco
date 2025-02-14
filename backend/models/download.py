@@ -26,10 +26,11 @@ class DownloadResponse(TypedDict):
 
 
 class DownloadStatusType(enum.Enum):
-    approved = 'approved'
-    pending = 'pending'
-    rejected = 'rejected'
-    expired = 'expired'
+    approved = "approved"
+    pending = "pending"
+    rejected = "rejected"
+    expired = "expired"
+    request = "request"
 
 
 class DownloadDict(TypedDict):
@@ -80,14 +81,16 @@ class DownloadRequestedResponse(BaseModel):
 
 class Download(Base):
     __tablename__ = "download"
-    id = Column(Integer,
-                primary_key=True,
-                index=True,
-                nullable=True,
-                autoincrement=True)
-    uuid = Column(pg.UUID(as_uuid=True),
-                  nullable=True,
-                  default=str(uuid.uuid4()))
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
+        nullable=True,
+        autoincrement=True,
+    )
+    uuid = Column(
+        pg.UUID(as_uuid=True), nullable=True, default=str(uuid.uuid4())
+    )
     form_type = Column(Enum(FormType), nullable=True)
     data = Column(Integer, nullable=False)
     organisation = Column(Integer, ForeignKey(Organisation.id))
@@ -98,18 +101,21 @@ class Download(Base):
     expired = Column(DateTime, nullable=True)
     request_by_user = relationship(User, foreign_keys=[request_by])
     approved_by_user = relationship(User, foreign_keys=[approved_by])
-    organisation_detail = relationship(Organisation,
-                                       foreign_keys=[organisation])
+    organisation_detail = relationship(
+        Organisation, foreign_keys=[organisation]
+    )
 
-    def __init__(self,
-                 uuid: str,
-                 data: int,
-                 organisation: int,
-                 request_by: int,
-                 file: str,
-                 form_type: Optional[FormType] = None,
-                 approved_by: Optional[int] = None,
-                 expired: Optional[datetime] = None):
+    def __init__(
+        self,
+        uuid: str,
+        data: int,
+        organisation: int,
+        request_by: int,
+        file: str,
+        form_type: Optional[FormType] = None,
+        approved_by: Optional[int] = None,
+        expired: Optional[datetime] = None,
+    ):
         self.form_type = form_type
         self.uuid = uuid
         self.data = data
@@ -162,7 +168,7 @@ class Download(Base):
             "request_by": self.request_by,
             "request_by_name": self.request_by_user.name,
             "request_date": self.created.strftime("%B %d, %Y"),
-            "status": status
+            "status": status,
         }
 
     @property
@@ -187,5 +193,5 @@ class Download(Base):
         return {
             "uuid": str(self.uuid) if self.uuid else None,
             "expired": self.expired,
-            "status": status
+            "status": status,
         }
