@@ -29,7 +29,7 @@ const Download = () => {
   const [downloadLoading, setDownloadLoading] = useState(null);
   const [downloadData, setDownloadData] = useState(null);
   const [activeFilter, setActiveFilter] = useState("all");
-  const [statusFilter, setStatusFilter] = useState(null);
+  const [statusFilter, setStatusFilter] = useState("all");
 
   const text = useMemo(() => {
     return uiText[activeLang];
@@ -234,7 +234,7 @@ const Download = () => {
     if ((submitted || submitted === 0) && submitted !== "all") {
       url = addQueryParam(url, "submitted", submitted);
     }
-    if (status) {
+    if (status && status !== "all") {
       url = addQueryParam(url, "status", status);
     }
     api
@@ -244,6 +244,9 @@ const Download = () => {
       })
       .catch((e) => {
         const { status, statusText } = e.response;
+        if (status === 404) {
+          setData([]);
+        }
         console.error(status, statusText);
       })
       .finally(() => {
