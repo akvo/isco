@@ -223,15 +223,17 @@ const Login = () => {
             {!resetPassword ? text.btnLogin : text.formResetPwd}
           </Button>
         </Form>
-        <Button
-          type="text"
-          onClick={(e) => {
-            e.preventDefault();
-            setResetPassword(!resetPassword);
-          }}
-        >
-          {resetPassword ? text.btnBackToLogin : text.formForgotPwd}
-        </Button>
+        <div style={{ textAlign: "right" }}>
+          <Button
+            type="link"
+            onClick={(e) => {
+              e.preventDefault();
+              setResetPassword(!resetPassword);
+            }}
+          >
+            {resetPassword ? text.btnBackToLogin : text.formForgotPwd}
+          </Button>
+        </div>
       </Space>
     </Auth>
   );
