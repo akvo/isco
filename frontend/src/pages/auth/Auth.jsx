@@ -17,7 +17,12 @@ const Auth = ({ children }) => {
   return (
     <div id="auth">
       <Row className="auth-landing"></Row>
-      <Row className="auth-form-container" align="top" justify="space-between">
+      <Row
+        className="auth-form-container"
+        align="top"
+        justify="space-between"
+        style={{ paddingTop: window.innerHeight > 720 ? "15vh" : "5vh" }}
+      >
         <Col span={12} className="brand-wrapper">
           <Space direction="vertical" size={20}>
             <Title className="title" level={2}>
@@ -73,14 +78,16 @@ const Auth = ({ children }) => {
       </Row>
       <Row
         style={{
-          marginTop: "6rem",
+          position: window.innerHeight > 720 ? "absolute" : "relative",
+          bottom: 0,
+          marginTop: "5vh",
           width: "100%",
           background: "#fff",
           boxShadow: "1px -2px 7px 0px rgba(207, 207, 207, 0.75)",
           WebkitBoxShadow: "1px -2px 7px 0px rgba(207, 207, 207, 0.75)",
           MozBoxShadow: "1px -2px 7px 0px rgba(207, 207, 207, 0.75)",
           padding: "16px 32px",
-          fontSize: 14,
+          fontSize: 13,
           fontStyle: "italic",
         }}
       >

@@ -3,6 +3,9 @@
 #root {
   #auth {
     // min-height: calc(100vh - 10rem);
+    // display: flex;
+    // flex-direction: column;
+    // justify-content: space-between;
 
     .ant-space.ant-space-vertical {
       width: 100%;
@@ -11,7 +14,7 @@
 
     .auth-landing {
       // position: relative;
-      height: 30vh;
+      height: 15vh;
       background-image: url("../../../public/images/cacao-seeds.jpg");
       background-size: cover;
       background-position: 50%;
@@ -20,7 +23,7 @@
     .auth-form-container {
       margin: auto;
       padding: 0;
-      padding-top: 6rem;
+      padding-top: 5vh;
       width: 100%;
       // position: absolute;
       // top: 47%;
