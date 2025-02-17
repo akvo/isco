@@ -80,7 +80,7 @@ const ManageDownload = () => {
   const [viewData, setViewData] = useState(null);
   const [modalViewVisible, setModalViewVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("pending");
   const [organisationFilter, setOrganisationFilter] = useState(null);
 
   const { optionValues } = store.useState((s) => s);
@@ -144,19 +144,10 @@ const ManageDownload = () => {
 
   const filterButtons = [
     {
-      key: "all",
-      label: "All",
-      onClick: () => {
-        setStatusFilter("all");
-        getData({ page, organisation: organisationFilter, status: null });
-      },
-    },
-    {
       key: "pending",
       label: "Pending Approval",
       onClick: () => {
         setStatusFilter("pending");
-        getData({ page, organisation: organisationFilter, status: "pending" });
       },
     },
     {
@@ -164,7 +155,13 @@ const ManageDownload = () => {
       label: "Approved",
       onClick: () => {
         setStatusFilter("approved");
-        getData({ page, organisation: organisationFilter, status: "approved" });
+      },
+    },
+    {
+      key: "all",
+      label: "All",
+      onClick: () => {
+        setStatusFilter("all");
       },
     },
   ];
@@ -255,8 +252,8 @@ const ManageDownload = () => {
   );
 
   useEffect(() => {
-    getData({ page });
-  }, [getData, page]);
+    getData({ page, status: statusFilter, organisation: organisationFilter });
+  }, [getData, page, statusFilter, organisationFilter]);
 
   const handleOnChangeOrganisation = (val) => {
     setOrganisationFilter(val);
