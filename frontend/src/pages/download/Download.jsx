@@ -287,25 +287,36 @@ const Download = () => {
                 </Space>
               </div>
               <div>
-                <Select
-                  style={{ width: "200px" }}
-                  allowClear
-                  showSearch
-                  className="member-dropdown-wrapper"
-                  placeholder="Select Status"
-                  options={status.map((o) => ({
-                    label: o.name,
-                    value: o.value,
-                  }))}
-                  onChange={handleStatusFilter}
-                  onClear={() => setActiveFilter("all")}
-                  value={activeFilter}
-                  filterOption={(input, option) =>
-                    option?.label
-                      ?.toLowerCase()
-                      .indexOf(input?.toLowerCase()) >= 0
-                  }
-                />
+                <Space
+                  style={{
+                    background: "#dfdfdf",
+                    paddingLeft: 10,
+                    borderRadius: "5px 0 0 5px",
+                  }}
+                >
+                  <label style={{ fontSize: 14, fontWeight: 500 }}>
+                    Status:
+                  </label>
+                  <Select
+                    style={{ width: "200px" }}
+                    allowClear
+                    showSearch
+                    className="member-dropdown-wrapper"
+                    placeholder="Select Status"
+                    options={status.map((o) => ({
+                      label: o.name,
+                      value: o.value,
+                    }))}
+                    onChange={handleStatusFilter}
+                    onClear={() => setActiveFilter("all")}
+                    value={activeFilter}
+                    filterOption={(input, option) =>
+                      option?.label
+                        ?.toLowerCase()
+                        .indexOf(input?.toLowerCase()) >= 0
+                    }
+                  />
+                </Space>
               </div>
             </Col>
             <Col span={24}>
