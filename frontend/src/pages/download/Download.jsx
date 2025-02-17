@@ -29,7 +29,7 @@ const Download = () => {
   const [downloadLoading, setDownloadLoading] = useState(null);
   const [downloadData, setDownloadData] = useState(null);
   const [activeFilter, setActiveFilter] = useState("all");
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("request");
 
   const text = useMemo(() => {
     return uiText[activeLang];
@@ -120,16 +120,8 @@ const Download = () => {
 
   const filterButtons = [
     {
-      key: "all",
-      label: "All",
-      onClick: () => {
-        setStatusFilter("all");
-        getData(activeFilter, null);
-      },
-    },
-    {
       key: "request",
-      label: "Request to Download",
+      label: "Request Download",
       onClick: () => {
         setStatusFilter("request");
         getData(activeFilter, "request");
@@ -149,6 +141,14 @@ const Download = () => {
       onClick: () => {
         setStatusFilter("approved");
         getData(activeFilter, "approved");
+      },
+    },
+    {
+      key: "all",
+      label: "All",
+      onClick: () => {
+        setStatusFilter("all");
+        getData(activeFilter, null);
       },
     },
   ];
@@ -219,8 +219,8 @@ const Download = () => {
   ];
 
   useEffect(() => {
-    getData();
-  }, []);
+    getData(null, statusFilter);
+  }, [statusFilter]);
 
   const getData = (submitted, status) => {
     setIsLoading(true);
