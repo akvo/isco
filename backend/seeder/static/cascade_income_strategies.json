@@ -1,6 +1,8 @@
 {
   "name": "Income Strategies List",
-  "type": "cascade",
+  "type": "nested",
+  "action": "update",
+  "update": "Income Strategies List",
   "cascades": [
     {
       "name": "Price related income strategies",
