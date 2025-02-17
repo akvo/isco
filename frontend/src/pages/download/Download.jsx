@@ -124,7 +124,6 @@ const Download = () => {
       label: "Request Download",
       onClick: () => {
         setStatusFilter("request");
-        getData(activeFilter, "request");
       },
     },
     {
@@ -132,15 +131,13 @@ const Download = () => {
       label: "Pending",
       onClick: () => {
         setStatusFilter("pending");
-        getData(activeFilter, "pending");
       },
     },
     {
-      key: "ready",
+      key: "approved",
       label: "Ready for Download",
       onClick: () => {
         setStatusFilter("approved");
-        getData(activeFilter, "approved");
       },
     },
     {
@@ -148,7 +145,6 @@ const Download = () => {
       label: "All",
       onClick: () => {
         setStatusFilter("all");
-        getData(activeFilter, null);
       },
     },
   ];
@@ -219,8 +215,8 @@ const Download = () => {
   ];
 
   useEffect(() => {
-    getData(null, statusFilter);
-  }, [statusFilter]);
+    getData(activeFilter, statusFilter);
+  }, [activeFilter, statusFilter]);
 
   const getData = (submitted, status) => {
     setIsLoading(true);
@@ -257,7 +253,6 @@ const Download = () => {
   const handleStatusFilter = (submitStatus) => {
     const submitted = submitStatus || submitStatus === 0 ? submitStatus : "all";
     setActiveFilter(submitted);
-    getData(submitted, statusFilter);
   };
 
   return (
