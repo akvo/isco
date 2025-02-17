@@ -11,19 +11,20 @@ from models.cascade_list import CascadeListDict, CascadeListPayload
 # Cascade
 
 
-def add_cascade(session: Session,
-                payload: CascadePayload):
-    cascade = Cascade(id=None, name=payload['name'], type=payload['type'])
-    if payload['cascades']:
-        for cl in payload['cascades']:
-            cid = cl['cascade']
+def add_cascade(session: Session, payload: CascadePayload):
+    cascade = Cascade(id=None, name=payload["name"], type=payload["type"])
+    if payload["cascades"]:
+        for cl in payload["cascades"]:
+            cid = cl["cascade"]
             cid = None if cid is None else cid
-            clist = CascadeList(cascade=cid,
-                                parent=cl['parent'],
-                                code=cl['code'],
-                                name=cl['name'],
-                                path=cl['path'],
-                                level=cl['level'])
+            clist = CascadeList(
+                cascade=cid,
+                parent=cl["parent"],
+                code=cl["code"],
+                name=cl["name"],
+                path=cl["path"],
+                level=cl["level"],
+            )
             cascade.cascades.append(clist)
     session.add(cascade)
     session.commit()
@@ -41,21 +42,27 @@ def get_cascade_by_id(session: Session, id: int) -> CascadeBase:
     if cascade is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"cascade {id} not found")
+            detail=f"cascade {id} not found",
+        )
     return cascade
 
 
-def get_cascade_by_name(session: Session, name: str, ctype: str):
-    cascade = session.query(Cascade).filter(and_(
-        Cascade.name == name, Cascade.type == ctype)).first()
+def get_cascade_by_name(
+    session: Session, name: str, ctype: Optional[str] = None
+):
+    cascade = session.query(Cascade).filter(Cascade.name == name)
+    if ctype:
+        cascade = cascade.filter(Cascade.type == ctype)
+    cascade = cascade.first()
     return cascade
 
 
-def update_cascade(session: Session,
-                   id: int, payload: CascadePayload) -> CascadeDict:
+def update_cascade(
+    session: Session, id: int, payload: CascadePayload
+) -> CascadeDict:
     cascade = get_cascade_by_id(session=session, id=id)
-    cascade.name = payload['name']
-    cascade.type = payload['type']
+    cascade.name = payload["name"]
+    cascade.type = payload["type"]
     session.commit()
     session.flush()
     session.refresh(cascade)
@@ -73,12 +80,14 @@ def delete_cascade(session: Session, id: int):
 
 
 def add_cascade_list(session: Session, payload: CascadeListPayload):
-    clist = CascadeList(cascade=payload['cascade'],
-                        parent=payload['parent'],
-                        code=payload['code'],
-                        name=payload['name'],
-                        path=payload['path'],
-                        level=payload['level'])
+    clist = CascadeList(
+        cascade=payload["cascade"],
+        parent=payload["parent"],
+        code=payload["code"],
+        name=payload["name"],
+        path=payload["path"],
+        level=payload["level"],
+    )
     session.add(clist)
     session.commit()
     session.flush()
@@ -86,19 +95,22 @@ def add_cascade_list(session: Session, payload: CascadeListPayload):
     return clist
 
 
-def get_cascade_list_by_cascade_id(session: Session,
-                                   cascade_id: List[int],
-                                   transform: Optional[int] = 1):
-    cascades = session.query(Cascade).filter(
-        Cascade.id.in_(cascade_id)).all()
-    clist = session.query(
-        CascadeList).filter(and_(
-            CascadeList.level == 1,
-            CascadeList.cascade.in_(cascade_id))).all()
+def get_cascade_list_by_cascade_id(
+    session: Session, cascade_id: List[int], transform: Optional[int] = 1
+):
+    cascades = session.query(Cascade).filter(Cascade.id.in_(cascade_id)).all()
+    clist = (
+        session.query(CascadeList)
+        .filter(
+            and_(CascadeList.level == 1, CascadeList.cascade.in_(cascade_id))
+        )
+        .all()
+    )
     if not cascades or not clist:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"cascade list {cascade_id} not found")
+            detail=f"cascade list {cascade_id} not found",
+        )
     data = {}
     for c in cascades:
         key = f"tree_{c.id}"
@@ -114,15 +126,21 @@ def get_cascade_list_by_cascade_id(session: Session,
     return data
 
 
-def get_cascade_list_by_cascade_id_path(session: Session,
-                                        cascade_id: int, path: int):
+def get_cascade_list_by_cascade_id_path(
+    session: Session, cascade_id: int, path: int
+):
     path_tmp = None
     if path:
         path_tmp = f"{path}."
-    clist = session.query(
-        CascadeList).filter(and_(
-            CascadeList.cascade == cascade_id,
-            CascadeList.path == path_tmp)).all()
+    clist = (
+        session.query(CascadeList)
+        .filter(
+            and_(
+                CascadeList.cascade == cascade_id, CascadeList.path == path_tmp
+            )
+        )
+        .all()
+    )
     return clist
 
 
@@ -131,32 +149,36 @@ def get_cascade_list_by_id(session: Session, id: int) -> CascadeListDict:
     if clist is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"cascade list {id} not found")
+            detail=f"cascade list {id} not found",
+        )
     return clist
 
 
-def get_cascade_list_by_name(session: Session,
-                             name: str,
-                             cascade: int,
-                             parent: Optional[int] = None):
-    clist = session.query(CascadeList).filter(and_(
-        func.lower(CascadeList.name) == func.lower(name),
-        CascadeList.cascade == cascade))
+def get_cascade_list_by_name(
+    session: Session, name: str, cascade: int, parent: Optional[int] = None
+):
+    clist = session.query(CascadeList).filter(
+        and_(
+            func.lower(CascadeList.name) == func.lower(name),
+            CascadeList.cascade == cascade,
+        )
+    )
     if parent:
         clist = clist.filter(CascadeList.parent == parent)
     clist = clist.first()
     return clist
 
 
-def update_cascade_list(session: Session, id: int,
-                        payload: CascadeListPayload) -> CascadeListBase:
+def update_cascade_list(
+    session: Session, id: int, payload: CascadeListPayload
+) -> CascadeListBase:
     clist = get_cascade_list_by_id(session=session, id=id)
-    clist.cascade = payload['cascade']
-    clist.parent = payload['parent']
-    clist.code = payload['code']
-    clist.name = payload['name']
-    clist.path = payload['path']
-    clist.level = payload['level']
+    clist.cascade = payload["cascade"]
+    clist.parent = payload["parent"]
+    clist.code = payload["code"]
+    clist.name = payload["name"]
+    clist.path = payload["path"]
+    clist.level = payload["level"]
     session.commit()
     session.flush()
     session.refresh(clist)

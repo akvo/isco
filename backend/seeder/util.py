@@ -1,68 +1,74 @@
 import db.crud_cascade as crud
 
 
+def process_cascade(session, cascade, data, parent_id=None, path=""):
+    """
+    Recursively processes cascades and
+    ensures children are deleted before the parent
+    """
+    clist_payload = {
+        "cascade": cascade.id,
+        "parent": parent_id,
+        "code": None,
+        "name": data["name"],
+        "path": path,
+        "level": data["level"],
+    }
+
+    clist = crud.get_cascade_list_by_name(
+        session=session,
+        name=data["name"],
+        cascade=cascade.id,
+        parent=parent_id,
+    )
+
+    cond1 = not clist and "action" not in data
+    cond2 = not clist and "action" in data and data["action"] == "new"
+    if cond1 or cond2:
+        clist = crud.add_cascade_list(session=session, payload=clist_payload)
+
+    # Process children recursively first
+    if clist and "childrens" in data and data["childrens"]:
+        for child in data["childrens"]:
+            process_cascade(
+                session,
+                cascade,
+                child,
+                parent_id=clist.id,
+                path=f"{path}{clist.id}.",
+            )
+
+    # Handle deletion (after children are processed)
+    if clist and "action" in data and data["action"] == "delete":
+        crud.delete_cascade_list(session=session, id=clist.id)
+        return  # Stop further processing if deleted
+
+    # Handle update
+    if clist and "action" in data and data["action"] == "update":
+        if "update" in data:
+            clist_payload["name"] = data["update"]
+        crud.update_cascade_list(
+            session=session, id=clist.id, payload=clist_payload
+        )
+
+
 def cascade_seeder(session, data):
-    # seed cascade
+    """Seed the cascade with nested child elements"""
     cascade_payload = {
         "name": data["name"],
         "type": data["type"],
-        "cascades": None
+        "cascades": None,
     }
-    cascade = crud.get_cascade_by_name(
-        session=session, name=data['name'], ctype=data['type'])
+    cascade = crud.get_cascade_by_name(session=session, name=data["name"])
     if not cascade:
-        cascade = crud.add_cascade(
-            session=session, payload=cascade_payload)
-    for d in data["cascades"]:
-        clist_payload = {
-            "cascade": cascade.id,
-            "parent": None,
-            "code": None,
-            "name": d["name"],
-            "path": None,
-            "level": d["level"]
-        }
-        clist = crud.get_cascade_list_by_name(
-            session=session, name=d['name'], cascade=cascade.id)
-        cond1 = not clist and "action" not in d
-        cond2 = not clist and "action" in d and d["action"] == "new"
-        if cond1 or cond2:
-            clist = crud.add_cascade_list(
-                session=session, payload=clist_payload)
-        # delete cascade list
-        if clist and "action" in d and d["action"] == "delete":
-            crud.delete_cascade_list(session=session, id=clist.id)
-        # update cascade list
-        if clist and "action" in d and d['action'] == "update":
-            if "update" in d:
-                clist_payload['name'] = d['update']
-            crud.update_cascade_list(
-                session=session, id=clist.id, payload=clist_payload)
+        cascade = crud.add_cascade(session=session, payload=cascade_payload)
+    if cascade and "action" in data and data["action"] == "update":
+        # Update existing cascade
+        cascade_payload["name"] = data["update"]
+        cascade = crud.update_cascade(
+            session=session, id=cascade.id, payload=cascade_payload
+        )
 
-        # seed cascade childs
-        for c in d["childrens"]:
-            child_payload = {
-                "cascade": cascade.id,
-                "parent": clist.id,
-                "code": None,
-                "name": c["name"],
-                "path": f"{clist.id}.",
-                "level": c["level"]
-            }
-            child = crud.get_cascade_list_by_name(
-                session=session, name=c['name'],
-                cascade=cascade.id, parent=clist.id)
-            cond3 = not child and "action" not in c
-            cond4 = not child and "action" in c and c["action"] == "new"
-            if cond3 or cond4:
-                child = crud.add_cascade_list(
-                    session=session, payload=child_payload)
-            # delete cascade list childs
-            if child and "action" in c and c["action"] == "delete":
-                crud.delete_cascade_list(session=session, id=child.id)
-            # update cascade list
-            if child and "action" in c and c['action'] == "update":
-                if "update" in c:
-                    child_payload['name'] = c['update']
-                crud.update_cascade_list(
-                    session=session, id=child.id, payload=child_payload)
+    # Start recursive processing for cascades
+    for d in data["cascades"]:
+        process_cascade(session, cascade, d)
