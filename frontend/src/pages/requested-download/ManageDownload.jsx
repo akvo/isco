@@ -257,7 +257,6 @@ const ManageDownload = () => {
 
   const handleOnChangeOrganisation = (val) => {
     setOrganisationFilter(val);
-    getData({ organisation: val, page, status: statusFilter });
   };
 
   return (
