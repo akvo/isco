@@ -260,7 +260,9 @@ const ManageUser = () => {
       // for All vallue
       orgIds = orgIds.map((o) => o.id);
     } else {
-      orgIds = orgIds.filter((o) => o.member_type === member).map((o) => o.id);
+      orgIds = orgIds
+        .filter((o) => o.member_type.includes(member))
+        .map((o) => o.id);
     }
     orgIds = orgIds.length ? orgIds : null;
     setMemberFilter(orgIds);
