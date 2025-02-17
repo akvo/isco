@@ -37,13 +37,13 @@ const SubmissionProgress = () => {
     return `${form.label} questionnaire`;
   }, [forms, formSelected]);
 
-  const orgName = useMemo(() => {
-    if (!organisationInSameIsco.length || !orgValue) {
-      return "organisation";
-    }
-    const org = organisationInSameIsco.find((x) => x.id === orgValue);
-    return org.name;
-  }, [organisationInSameIsco, orgValue]);
+  // const orgName = useMemo(() => {
+  //   if (!organisationInSameIsco.length || !orgValue) {
+  //     return "organisation";
+  //   }
+  //   const org = organisationInSameIsco.find((x) => x.id === orgValue);
+  //   return org.name;
+  // }, [organisationInSameIsco, orgValue]);
 
   useEffect(() => {
     if (!forms.length) {
@@ -286,7 +286,7 @@ const SubmissionProgress = () => {
             <Col flex={1} align="start">
               <Space wrap align="center">
                 <Select
-                  style={{ width: "18rem" }}
+                  style={{ width: "16rem" }}
                   allowClear
                   showSearch
                   placeholder="Questionnaires"
@@ -297,7 +297,7 @@ const SubmissionProgress = () => {
                 />
                 {showOrganisationFilter && (
                   <Select
-                    style={{ width: "18rem" }}
+                    style={{ width: "14rem" }}
                     allowClear
                     showSearch
                     placeholder="Organization"
@@ -319,7 +319,8 @@ const SubmissionProgress = () => {
             <Col align="end">
               <Space align="center">
                 <span style={{ fontSize: "14px" }}>
-                  Show as {orgName} which has no submitted {formName}
+                  Show only organizations that haven’t submitted {formName} for
+                  this round
                 </span>
                 <Checkbox
                   checked={showNonSubmitted}
