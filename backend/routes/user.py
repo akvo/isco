@@ -25,6 +25,7 @@ from db import crud_user, crud_organisation
 from typing import List, Optional
 from util.mailer import Email, MailTypeEnum
 from http import HTTPStatus
+from util.common import get_prev_year
 
 security = HTTPBearer()
 user_route = APIRouter()
@@ -283,12 +284,13 @@ def verify_email(
     member_admins = find_member_admins(
         session=session, organisation=user["organisation"]
     )
+    current_year = get_prev_year(prev=0, year=True)
     if member_admins:
         body_member = f"""
             Dear reporting member / partner,
             <p>
             {user['name']} ({user['email']}) from your
-            organisation has signed up for the 2024 Monitoring
+            organisation has signed up for the {current_year} Monitoring
             Round at cocoamonitoring.net
             </p>
             <p>
@@ -314,7 +316,7 @@ def verify_email(
             Sehr geehrte/r Teilnehmer/in,
             <p>
             Herr/ Frau {user['name']} ({user['email']}) aus Ihrer
-            Organisation hat sich für die Monitoring-Runde 2024 auf
+            Organisation hat sich für die Monitoring-Runde {current_year} auf
             cocoamonitoring.net
             registriert.
             </p>

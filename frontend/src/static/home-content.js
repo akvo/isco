@@ -1,6 +1,8 @@
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
 
+const currentYear = new Date().getFullYear();
+
 const homeContent = (handleShow) => {
   return {
     en: {
@@ -8,8 +10,8 @@ const homeContent = (handleShow) => {
       p1: "Dear Participants,",
       p2: (
         <Fragment>
-          Thank you for participating in the 2024 monitoring round of Beyond
-          Chocolate, DISCO, FRISCO, GISCO and SWISSCO. Your reporting is
+          Thank you for participating in the {currentYear} monitoring round of
+          Beyond Chocolate, DISCO, FRISCO, GISCO and SWISSCO. Your reporting is
           essential to help us track the progress of the ISCOs and to define
           action points for the future. You can start your reporting by going to
           the survey tab at the top of the screen and/or by scrolling down.
@@ -53,11 +55,11 @@ const homeContent = (handleShow) => {
       p2: (
         <Fragment>
           Liebe Teilnehmerinnen und Teilnehmer, vielen Dank für Ihre Teilnahme
-          an der Monitoringrunde 2024. Ihre Berichterstattung ist wichtig, damit
-          wir die Fortschritte der ISCOs verfolgen und Aktionspunkte für die
-          Zukunft festlegen können. Sie können mit der Berichterstattung
-          beginnen, indem Sie an den oberen Rand des Bildschirms gehen und/oder
-          nach unten scrollen.
+          an der Monitoringrunde {currentYear}. Ihre Berichterstattung ist
+          wichtig, damit wir die Fortschritte der ISCOs verfolgen und
+          Aktionspunkte für die Zukunft festlegen können. Sie können mit der
+          Berichterstattung beginnen, indem Sie an den oberen Rand des
+          Bildschirms gehen und/oder nach unten scrollen.
           <br />
           Ihre Rückmeldungen zum Monitoringsystem sind für uns sehr wertvoll –
           Sie können diese im Feedbackformular (im Menu oben) oder in den

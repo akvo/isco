@@ -1,8 +1,13 @@
 import os
 import enum
 
+from util.common import get_prev_year
+
 webdomain = os.environ["WEBDOMAIN"]
 image_url = f"{webdomain}/email-icons"
+
+
+current_year = get_prev_year(prev=0, year=True)
 
 
 class EmailText(enum.Enum):
@@ -26,12 +31,12 @@ class EmailText(enum.Enum):
         "title": None,
         "title_translation": None,
         "subject": "Registration",
-        "body": """
+        "body": f"""
             Dear reporting member / partner,
             <p>
             #user_name# (#user_email#) from your
-            organisation has signed up for the 2024 Monitoring
-            Round at cocoamonitoring.net
+            organisation has signed up for the {current_year}
+            Monitoring Round at cocoamonitoring.net
             </p>
             <p>
             If this is an invalid signup please get in touch with
@@ -53,13 +58,12 @@ class EmailText(enum.Enum):
             </ul>
             """,
         "message": None,
-        "body_translation": """
+        "body_translation": f"""
             Sehr geehrte/r Teilnehmer/in,
             <p>
             Herr/ Frau #user_name# (#user_email#) aus Ihrer
-            Organisation hat sich für die Monitoring-Runde 2024 auf
-            cocoamonitoring.net
-            registriert.
+            Organisation hat sich für die Monitoring-Runde {current_year}
+            auf cocoamonitoring.net registriert.
             </p>
             <p>
             Wenn dies eine ungültige Anmeldung ist, wenden Sie sich bitte
@@ -188,20 +192,21 @@ class EmailText(enum.Enum):
         "title": None,
         "title_translation": None,
         "subject": "User Signup approved | Benutzeranmeldung Genehmigt",
-        "body": """<div>
+        "body": f"""<div>
                 Dear reporting member,
                 <p>
                 Your password for the online monitoring tool of
                 Beyond Chocolate, DISCO, FRISCO, SWISSCO and GISCO has been
-                set and you will now be able to start reporting on your 2022
-                data.
+                set and you will now be able to start reporting on your
+                {current_year} data.
                 </p>
                 <p>
                 Once you have logged in, please click the “survey” tab at the
                 top left of the screen. You will then be able to open a new
-                questionnaire and start reporting on your 2022 data. Please do
-                not forget to save your questionnaire before you leave the
-                tool so you can continue working on it at a later time.
+                questionnaire and start reporting on your {current_year} data.
+                Please do not forget to save your questionnaire before you
+                leave the tool so you can continue working on it at a later
+                time.
                 </p>
                 <p>
                 In case of questions and feedback, please contact:
@@ -220,22 +225,22 @@ class EmailText(enum.Enum):
                 </ul>
                 </p>
                 </div>""",
-        "body_translation": """<div>
+        "body_translation": f"""<div>
                 Sehr geehrtes meldendes Mitglied,
                 <p>
                 Ihr Passwort für das Online-Monitoring-Tool von Beyond
                 Chocolate, DISCO, FRISCO, SWISSCO und GISCO wurde festgelegt
                 und Sie können nun mit der Berichterstattung über Ihre Daten
-                aus dem Jahr 2022 beginnen.
+                aus dem Jahr {current_year} beginnen.
                 </p>
                 <p>
                 Sobald Sie sich eingeloggt haben, klicken Sie bitte auf die
                 Registerkarte "Umfrage" oben links auf dem Bildschirm. Sie
                 können dann einen neuen Fragebogen öffnen und mit der
-                Berichterstattung über Ihre Daten für 2022 beginnen. Bitte
-                vergessen Sie nicht, Ihren Fragebogen zu speichern, bevor Sie
-                das Tool verlassen, damit Sie ihn zu einem späteren Zeitpunkt
-                weiterbearbeiten können.
+                Berichterstattung über Ihre Daten für {current_year} beginnen.
+                Bitte vergessen Sie nicht, Ihren Fragebogen zu speichern, bevor
+                Sie das Tool verlassen, damit Sie ihn zu einem späteren
+                Zeitpunkt weiterbearbeiten können.
                 </p>
                 <p>
                 </p>
