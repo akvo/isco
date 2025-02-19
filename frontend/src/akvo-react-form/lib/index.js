@@ -5,7 +5,12 @@ import { intersection, orderBy } from "lodash";
 import * as locale from "locale-codes";
 
 const getDependencyAncestors = (questions, current, dependencies) => {
-  const ids = dependencies.map((x) => x?.id);
+  const ids = dependencies.map((x) => {
+    if (typeof x?.id === "undefined") {
+      console.info("Dependency Ancestors", { current, dependencies });
+    }
+    return x?.id;
+  });
   const ancestors = questions
     .filter((q) => ids.includes(q.id))
     .filter((q) => q?.dependency);
