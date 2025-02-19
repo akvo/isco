@@ -4,10 +4,21 @@ import ReactHtmlParser from "react-html-parser";
 import { intersection, orderBy } from "lodash";
 import * as locale from "locale-codes";
 
-const getDependencyAncestors = (questions, current, dependencies) => {
+const getDependencyAncestors = (
+  questions,
+  current,
+  dependencies,
+  questionId,
+  questionName
+) => {
   const ids = dependencies.map((x) => {
     if (typeof x?.id === "undefined") {
-      console.info("Dependency Ancestors", { current, dependencies });
+      console.info("Dependency Ancestors", {
+        questionId,
+        questionName,
+        current,
+        dependencies,
+      });
     }
     return x?.id;
   });
@@ -19,7 +30,13 @@ const getDependencyAncestors = (questions, current, dependencies) => {
     current = [current, ...dependencies].flatMap((x) => x);
     ancestors.forEach((a) => {
       if (a?.dependency) {
-        current = getDependencyAncestors(questions, current, a.dependency);
+        current = getDependencyAncestors(
+          questions,
+          current,
+          a.dependency,
+          questionId,
+          questionName
+        );
       }
     });
   }
@@ -50,7 +67,9 @@ export const transformForm = (forms) => {
         dependency: getDependencyAncestors(
           questions,
           x.dependency,
-          x.dependency
+          x.dependency,
+          x.id,
+          x.name
         ),
       };
     }
