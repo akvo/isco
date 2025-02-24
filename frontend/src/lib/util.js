@@ -63,8 +63,14 @@ export const isNumeric = (value) => {
 
 export const globalSelectProps = {
   allowClear: true,
+  dropdownStyle: {
+    overflowY: "scroll",
+  },
 };
 
 export const globalMultipleSelectProps = {
   allowClear: false,
+  dropdownStyle: {
+    overflowY: "scroll",
+  },
 };
