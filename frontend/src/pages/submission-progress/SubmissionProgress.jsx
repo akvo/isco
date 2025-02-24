@@ -4,6 +4,7 @@ import { Row, Col, Typography, Table, Select, Space, Checkbox } from "antd";
 import { api, store } from "../../lib";
 import { uiText } from "../../static";
 import _ from "lodash";
+import { globalSelectProps } from "../../lib/util";
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -287,23 +288,23 @@ const SubmissionProgress = () => {
               <Space wrap align="center">
                 <Select
                   style={{ width: "16rem" }}
-                  allowClear
                   showSearch
                   placeholder="Questionnaires"
                   optionFilterProp="label"
                   value={formSelected}
                   onChange={setFormSelected}
                   options={forms}
+                  {...globalSelectProps}
                 />
                 {showOrganisationFilter && (
                   <Select
                     style={{ width: "14rem" }}
-                    allowClear
                     showSearch
                     placeholder="Organization"
                     optionFilterProp="label"
                     value={orgValue}
                     onChange={handleOrganisationFilter}
+                    {...globalSelectProps}
                   >
                     {organisationInSameIsco.length
                       ? organisationInSameIsco.map((o) => (

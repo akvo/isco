@@ -26,6 +26,7 @@ import { store, api } from "../../lib";
 import { isoLangs } from "../../lib";
 import { useNotification } from "../../util";
 import capitalize from "lodash/capitalize";
+import { globalSelectProps } from "../../lib/util";
 
 const { Panel } = Collapse;
 
@@ -511,6 +512,7 @@ const QuestionEditor = ({
                       }
                       onChange={() => setActivePanel(panelKey)}
                       disabled={question?.disableDelete || false}
+                      {...globalSelectProps}
                     />
                   </Form.Item>
                   <Tag style={{ float: "left" }}>Question ID: {qId}</Tag>

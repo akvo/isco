@@ -6,6 +6,7 @@ import { RiPencilFill } from "react-icons/ri";
 
 import AddMember from "./AddMember";
 import { api, store } from "../../lib";
+import { globalSelectProps } from "../../lib/util";
 
 const { Title } = Typography;
 
@@ -197,7 +198,6 @@ const ManageMember = () => {
             <Col flex={1} align="start">
               <Space wrap>
                 <Select
-                  allowClear
                   showSearch
                   className="member-dropdown-wrapper"
                   placeholder="Member Name"
@@ -216,9 +216,9 @@ const ManageMember = () => {
                       ?.toLowerCase()
                       .indexOf(input?.toLowerCase()) >= 0
                   }
+                  {...globalSelectProps}
                 />
                 <Select
-                  allowClear
                   showSearch
                   className="member-dropdown-wrapper"
                   placeholder="Member Type"
@@ -237,9 +237,9 @@ const ManageMember = () => {
                       ?.toLowerCase()
                       .indexOf(input?.toLowerCase()) >= 0
                   }
+                  {...globalSelectProps}
                 />
                 <Select
-                  allowClear
                   showSearch
                   className="member-dropdown-wrapper"
                   placeholder="ISCO"
@@ -258,6 +258,7 @@ const ManageMember = () => {
                       ?.toLowerCase()
                       .indexOf(input?.toLowerCase()) >= 0
                   }
+                  {...globalSelectProps}
                 />
               </Space>
             </Col>

@@ -13,6 +13,7 @@ import {
 } from "antd";
 import { api, store } from "../../lib";
 import { useNotification } from "../../util";
+import { globalSelectProps } from "../../lib/util";
 
 const { Title } = Typography;
 
@@ -293,7 +294,6 @@ const ManageDownload = () => {
               <div>
                 <Select
                   style={{ width: "300px" }}
-                  allowClear
                   showSearch
                   className="member-dropdown-wrapper"
                   placeholder="Select Organisation"
@@ -305,6 +305,7 @@ const ManageDownload = () => {
                   onClear={() => setOrganisationFilter(null)}
                   value={organisationFilter}
                   optionFilterProp="label"
+                  {...globalSelectProps}
                 />
               </div>
             </Col>

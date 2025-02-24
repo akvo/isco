@@ -5,6 +5,7 @@ import isEmpty from "lodash/isEmpty";
 import { useNotification } from "../../util";
 import orderBy from "lodash/orderBy";
 import { Webform } from "../../akvo-react-form";
+import { globalSelectProps } from "../../lib/util";
 
 const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
   const { notify } = useNotification();
@@ -146,6 +147,7 @@ const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
                 option?.label?.toLowerCase().indexOf(input?.toLowerCase()) >= 0
               }
               disabled={editDatapoint}
+              {...globalSelectProps}
             />
           </Space>
           <Space size={20} style={{ paddingLeft: "20px" }}>
@@ -166,6 +168,7 @@ const SetupRoadmap = ({ setCurrentTab, editDatapoint, setEditDatapoint }) => {
                 option?.label?.toLowerCase().indexOf(input?.toLowerCase()) >= 0
               }
               disabled={isEmpty(formValue)}
+              {...globalSelectProps}
             />
           </Space>
         </Col>

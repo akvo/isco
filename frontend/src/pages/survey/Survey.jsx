@@ -7,6 +7,7 @@ import { useNotification } from "../../util";
 import { uiText, webformContent } from "../../static";
 import { FiRefreshCw, FiInfo } from "react-icons/fi";
 import orderBy from "lodash/orderBy";
+import { globalMultipleSelectProps, globalSelectProps } from "../../lib/util";
 
 const Survey = () => {
   const { notify } = useNotification();
@@ -388,6 +389,7 @@ const Survey = () => {
                       0
                     }
                     onChange={handleOnChangeSavedSubmissionDropdown}
+                    {...globalSelectProps}
                   />
                 </Col>
                 <Col>
@@ -429,6 +431,7 @@ const Survey = () => {
                     }
                     value={selectedCollaborators}
                     onChange={handleOnChangeCollaborators}
+                    {...globalMultipleSelectProps}
                   />
                 </Col>
                 <Col>
@@ -465,6 +468,7 @@ const Survey = () => {
                 filterOption={(input, option) =>
                   option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
                 }
+                {...globalSelectProps}
               />
             </Col>
             {!showPrevSubmissionDropdown && (
@@ -497,6 +501,7 @@ const Survey = () => {
                 filterOption={(input, option) =>
                   option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
                 }
+                {...globalSelectProps}
               />
             </Col>
             <Col>

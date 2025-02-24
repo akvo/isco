@@ -15,6 +15,7 @@ import { uiText } from "../../static";
 import { useNotification } from "../../util";
 import { handleLoad } from "../../util/common";
 import moment from "moment";
+import { globalSelectProps } from "../../lib/util";
 
 const { Title } = Typography;
 
@@ -299,7 +300,6 @@ const Download = () => {
                   </label>
                   <Select
                     style={{ width: "200px" }}
-                    allowClear
                     showSearch
                     className="member-dropdown-wrapper"
                     placeholder="Select Status"
@@ -315,6 +315,7 @@ const Download = () => {
                         ?.toLowerCase()
                         .indexOf(input?.toLowerCase()) >= 0
                     }
+                    {...globalSelectProps}
                   />
                 </Space>
               </div>

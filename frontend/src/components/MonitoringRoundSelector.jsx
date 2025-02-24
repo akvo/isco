@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Select } from "antd";
+import { globalSelectProps } from "../lib/util";
 
 const MonitoringRoundSelector = ({
   options,
@@ -24,7 +25,6 @@ const MonitoringRoundSelector = ({
 
   return (
     <Select
-      allowClear
       showArrow
       showSearch
       className={`custom-dropdown-wrapper ${className ? className : ""}`}
@@ -38,6 +38,7 @@ const MonitoringRoundSelector = ({
       onChange={onChange}
       style={style ? style : { width: "11rem" }}
       disabled={disabled}
+      {...globalSelectProps}
     />
   );
 };

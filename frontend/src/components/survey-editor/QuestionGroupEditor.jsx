@@ -25,7 +25,11 @@ import { TbTrashOff } from "react-icons/tb";
 import { store, api } from "../../lib";
 import orderBy from "lodash/orderBy";
 import { defaultRepeatingObject, defaultOption } from "../../lib/store";
-import { generateID } from "../../lib/util";
+import {
+  generateID,
+  globalMultipleSelectProps,
+  globalSelectProps,
+} from "../../lib/util";
 import { isoLangs } from "../../lib";
 import { useNotification } from "../../util";
 import Question from "./Question";
@@ -209,7 +213,6 @@ const QuestionGroupSetting = ({
                       ]}
                     >
                       <Select
-                        allowClear
                         mode="multiple"
                         showSearch={true}
                         className="custom-dropdown-wrapper"
@@ -220,6 +223,7 @@ const QuestionGroupSetting = ({
                             .toLowerCase()
                             .indexOf(input.toLowerCase()) >= 0
                         }
+                        {...globalMultipleSelectProps}
                       />
                     </Form.Item>
                   </div>
@@ -234,7 +238,6 @@ const QuestionGroupSetting = ({
                       ]}
                     >
                       <Select
-                        allowClear
                         mode="multiple"
                         showSearch={true}
                         className="custom-dropdown-wrapper"
@@ -245,6 +248,7 @@ const QuestionGroupSetting = ({
                             .toLowerCase()
                             .indexOf(input.toLowerCase()) >= 0
                         }
+                        {...globalMultipleSelectProps}
                       />
                     </Form.Item>
                   </div>
@@ -264,7 +268,6 @@ const QuestionGroupSetting = ({
                         ]}
                       >
                         <Select
-                          allowClear
                           showSearch={true}
                           className="custom-dropdown-wrapper"
                           placeholder="Select leading question"
@@ -276,6 +279,7 @@ const QuestionGroupSetting = ({
                           }
                           style={{ width: "100%" }}
                           onChange={(val) => setSelectedLeadingQuestion(val)}
+                          {...globalSelectProps}
                         />
                       </Form.Item>
                     </div>

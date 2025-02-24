@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./style.scss";
 import { Row, Col, Form, Input, Select, Switch, Button, Space } from "antd";
 import { store } from "../../lib";
+import { globalMultipleSelectProps } from "../../lib/util";
 
 const FormEditor = ({
   form,
@@ -59,6 +60,7 @@ const FormEditor = ({
               filterOption={(input, option) =>
                 option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
+              {...globalMultipleSelectProps}
             />
           </Form.Item>
         </div>

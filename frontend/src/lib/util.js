@@ -60,3 +60,11 @@ export const passwordCheckBoxOptions = (text) => {
 export const isNumeric = (value) => {
   return !isNaN(value) && !isNaN(parseFloat(value));
 };
+
+export const globalSelectProps = {
+  allowClear: true,
+};
+
+export const globalMultipleSelectProps = {
+  allowClear: false,
+};

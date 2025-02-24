@@ -10,6 +10,7 @@ import {
   Select,
   Table,
 } from "antd";
+import { globalSelectProps } from "../../lib/util";
 
 const EditableCell = ({
   editing,
@@ -32,9 +33,9 @@ const EditableCell = ({
         style={{ width: "100%" }}
         options={inputOptions.map((o) => ({ value: o.name, label: o.name }))}
         placeholder={`${uiText.pleaseSelect} ${title}`}
-        allowClear
         showSearch
         filterOption
+        {...globalSelectProps}
       />
     ) : (
       <Input

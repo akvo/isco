@@ -14,6 +14,7 @@ import {
   notification,
 } from "antd";
 import { api, store } from "../../lib";
+import { globalMultipleSelectProps, globalSelectProps } from "../../lib/util";
 
 const { Title } = Typography;
 
@@ -284,6 +285,7 @@ const AddUser = ({
                 className="custom-dropdown-wrapper bg-grey"
                 placeholder="Role"
                 options={roles}
+                {...globalSelectProps}
               />
             </Form.Item>
           </Col>
@@ -306,6 +308,7 @@ const AddUser = ({
                   label: o.name.toUpperCase(),
                   value: o.id,
                 }))}
+                {...globalSelectProps}
               />
             </Form.Item>
           </Col>
@@ -323,7 +326,6 @@ const AddUser = ({
               <Select
                 showArrow
                 showSearch
-                allowClear
                 mode="multiple"
                 className="custom-dropdown-wrapper bg-grey"
                 placeholder="Questionnaire Access"
@@ -331,6 +333,7 @@ const AddUser = ({
                   option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
                 }
                 options={publishedForm}
+                {...globalMultipleSelectProps}
               />
             </Form.Item>
           </Col>
