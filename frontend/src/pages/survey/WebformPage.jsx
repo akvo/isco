@@ -1,4 +1,3 @@
-// TODO :: DO we need to save the repeat index string for a long term?
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import "./style.scss";
 import { Spin, Button, Checkbox, Modal, Space, Alert } from "antd";
@@ -1037,7 +1036,6 @@ const WebformPage = ({
           notify({
             type: "success",
             message: "Submitted.",
-            duration: 0,
           });
           setFormLoaded(null);
           setFormValue({});
@@ -1047,7 +1045,6 @@ const WebformPage = ({
           notify({
             type: "error",
             message: "Oops, something went wrong.",
-            duration: 0,
           });
         })
         .finally(() => {
@@ -1078,7 +1075,6 @@ const WebformPage = ({
           notify({
             type: "success",
             message: "Saved.",
-            duration: 0,
           });
         })
         .catch((e) => {
@@ -1086,7 +1082,6 @@ const WebformPage = ({
           notify({
             type: "error",
             message: "Oops, something went wrong.",
-            duration: 0,
           });
         })
         .finally(() => {
@@ -1103,7 +1098,6 @@ const WebformPage = ({
       notify({
         type: "info",
         message: "No answers to save.",
-        duration: 0,
       });
       setTimeout(() => {
         handleLogout();
@@ -1153,7 +1147,6 @@ const WebformPage = ({
         notify({
           type: "success",
           message: "Submitted.",
-          duration: 0,
         });
         setFormLoaded(null);
         setFormValue({});
@@ -1163,7 +1156,6 @@ const WebformPage = ({
         notify({
           type: "error",
           message: "Oops, something went wrong.",
-          duration: 0,
         });
       })
       .finally(() => {

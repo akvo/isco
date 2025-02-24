@@ -55,7 +55,6 @@ const Download = () => {
         notification.info({
           message: text.popupDownloadRequestMessage,
           description: text.popupDownloadRequestDescription,
-          duration: 8,
         });
       })
       .catch(() => {

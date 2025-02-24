@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import "./styles.scss";
 import {
   Row,
@@ -30,14 +30,44 @@ const AddMember = ({
   const [form] = Form.useForm();
   const { optionValues } = store.useState((s) => s);
   const { member_type, isco_type } = optionValues;
-  const memberType = member_type.filter((isco) => isco.name !== "All");
 
-  const iscoType = isco_type.filter((isco) => isco.name !== "All");
+  const [isAllMemberType, setIsAllMemberType] = useState(false);
+  const [isAllIscoType, setIsAllIscoType] = useState(false);
 
   const isAdd = !selectedMember;
   const requiredFields = isAdd ? true : false;
   const modalTitle = isAdd ? "New Member" : "Update Member";
   const buttonOkText = isAdd ? "Add Member" : "Update Member";
+
+  const memberType = useMemo(() => {
+    if (!isAllMemberType) {
+      return member_type;
+    }
+    return member_type.map((member) => {
+      if (isAllMemberType && member.name !== "All") {
+        return { ...member, disabled: true };
+      }
+      return {
+        ...member,
+        disabled: false,
+      };
+    });
+  }, [isAllMemberType, member_type]);
+
+  const iscoType = useMemo(() => {
+    if (!isAllIscoType) {
+      return isco_type;
+    }
+    return isco_type.map((isco) => {
+      if (isAllIscoType && isco.name !== "All") {
+        return { ...isco, disabled: true };
+      }
+      return {
+        ...isco,
+        disabled: false,
+      };
+    });
+  }, [isAllIscoType, isco_type]);
 
   // set initial form values
   useEffect(() => {
@@ -48,6 +78,17 @@ const AddMember = ({
     }
     if (selectedMember?.id) {
       const { name, member_type, isco_type } = selectedMember;
+      if (member_type.includes(1)) {
+        setIsAllMemberType(true);
+      } else {
+        setIsAllMemberType(false);
+      }
+      if (isco_type.includes(1)) {
+        setIsAllIscoType(true);
+      } else {
+        setIsAllIscoType(false);
+      }
+
       form.setFieldsValue({ name: name });
       form.setFieldsValue({ member_type: member_type });
       form.setFieldsValue({ isco_type: isco_type });
@@ -55,9 +96,31 @@ const AddMember = ({
   }, [selectedMember, form]);
 
   const handleOnClickModalCancel = () => {
+    setIsAllIscoType(false);
+    setIsAllMemberType(false);
     form.resetFields();
     setIsAddMemberVisible(false);
     setSelectedMember(null);
+  };
+
+  const handleFormAddMemberOnChange = (currentValue) => {
+    Object.entries(currentValue).forEach(([key, value]) => {
+      // is all
+      if (key === "member_type" && value.includes(1)) {
+        setIsAllMemberType(true);
+        form.setFieldValue("member_type", [1]);
+      }
+      if (key === "member_type" && !value.includes(1)) {
+        setIsAllMemberType(false);
+      }
+      if (key === "isco_type" && value.includes(1)) {
+        setIsAllIscoType(true);
+        form.setFieldValue("isco_type", [1]);
+      }
+      if (key === "isco_type" && !value.includes(1)) {
+        setIsAllIscoType(false);
+      }
+    });
   };
 
   const onFinish = (values) => {
@@ -81,6 +144,8 @@ const AddMember = ({
           setSending(false);
           setIsAddMemberVisible(false);
           setReload(reload + 1);
+          setIsAllIscoType(false);
+          setIsAllMemberType(false);
           form.resetFields();
         })
         .catch(() => {
@@ -104,6 +169,8 @@ const AddMember = ({
           setSending(false);
           setIsAddMemberVisible(false);
           setReload(reload + 1);
+          setIsAllIscoType(false);
+          setIsAllMemberType(false);
           form.resetFields();
         })
         .catch(() => {
@@ -119,7 +186,7 @@ const AddMember = ({
   const options = (data) => {
     const rendering = data.map((v) => {
       return (
-        <Option value={v.id} key={v.id}>
+        <Option value={v.id} key={v.id} disabled={v?.disabled || false}>
           {v.name}
         </Option>
       );
@@ -148,7 +215,11 @@ const AddMember = ({
         </Space>
       }
       width={840}
-      onCancel={() => setIsAddMemberVisible(false)}
+      onCancel={() => {
+        setIsAddMemberVisible(false);
+        setIsAllIscoType(false);
+        setIsAllMemberType(false);
+      }}
       centered
       maskClosable={false}
     >
@@ -157,6 +228,7 @@ const AddMember = ({
         name="account-detail"
         layout="vertical"
         onFinish={onFinish}
+        onValuesChange={handleFormAddMemberOnChange}
         onFinishFailed={(values, errorFields) =>
           console.info(values, errorFields)
         }
