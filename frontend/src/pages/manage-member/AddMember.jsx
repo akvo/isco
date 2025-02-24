@@ -13,6 +13,7 @@ import {
   notification,
 } from "antd";
 import { api, store } from "../../lib";
+import { globalMultipleSelectProps } from "../../lib/util";
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -191,7 +192,6 @@ const AddMember = ({
               <Select
                 showArrow
                 showSearch
-                allowClear
                 mode="multiple"
                 className="custom-dropdown-wrapper bg-grey"
                 placeholder="Member Type"
@@ -200,6 +200,7 @@ const AddMember = ({
                   option.children.toLowerCase().indexOf(input.toLowerCase()) >=
                   0
                 }
+                {...globalMultipleSelectProps}
               >
                 {options(memberType)}
               </Select>
@@ -221,7 +222,6 @@ const AddMember = ({
               <Select
                 showArrow
                 showSearch
-                allowClear
                 mode="multiple"
                 className="custom-dropdown-wrapper bg-grey"
                 placeholder="ISCO"
@@ -230,6 +230,7 @@ const AddMember = ({
                   option.children.toLowerCase().indexOf(input.toLowerCase()) >=
                   0
                 }
+                {...globalMultipleSelectProps}
               >
                 {options(iscoType)}
               </Select>

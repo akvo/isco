@@ -15,6 +15,7 @@ import { api, store } from "../../lib";
 import { useNotification } from "../../util";
 import ReactCodeInput from "react-verification-code-input";
 import { MonitoringRoundSelector } from "../../components";
+import { globalSelectProps } from "../../lib/util";
 
 const { Title } = Typography;
 
@@ -164,7 +165,6 @@ const DownloadReport = () => {
                       <Select
                         showArrow
                         showSearch
-                        allowClear
                         className="custom-dropdown-wrapper bg-grey"
                         placeholder="Select Questionnaire"
                         optionFilterProp="children"
@@ -173,6 +173,7 @@ const DownloadReport = () => {
                         value={formSelected}
                         onChange={(val) => setFormSelected(val)}
                         style={{ width: "8rem" }}
+                        {...globalSelectProps}
                       />
                       <MonitoringRoundSelector
                         value={selectedMonitoringRound}
@@ -187,7 +188,6 @@ const DownloadReport = () => {
                       <Select
                         showArrow
                         showSearch
-                        allowClear
                         className="custom-dropdown-wrapper bg-grey"
                         placeholder="Select Member Type"
                         optionFilterProp="children"
@@ -208,11 +208,11 @@ const DownloadReport = () => {
                         value={memberSelected}
                         onChange={(val) => setMemberSelected(val)}
                         style={{ width: "8rem" }}
+                        {...globalSelectProps}
                       />
                       <Select
                         showArrow
                         showSearch
-                        allowClear
                         className="custom-dropdown-wrapper bg-grey"
                         placeholder="Select ISCO Type"
                         optionFilterProp="children"
@@ -233,6 +233,7 @@ const DownloadReport = () => {
                         value={iscoSelected}
                         onChange={(val) => setIscoSelected(val)}
                         style={{ width: "8rem" }}
+                        {...globalSelectProps}
                       />
                       <InputNumber
                         className="bg-grey"
@@ -246,7 +247,6 @@ const DownloadReport = () => {
                       <Select
                         showArrow
                         showSearch
-                        allowClear
                         className="custom-dropdown-wrapper bg-grey"
                         placeholder="Select Organisation"
                         optionFilterProp="children"
@@ -262,6 +262,7 @@ const DownloadReport = () => {
                         value={organisationSelected}
                         onChange={(val) => setOrganisationSelected(val)}
                         style={{ width: "8rem" }}
+                        {...globalSelectProps}
                       /> */}
                     </Space>
                   </Col>

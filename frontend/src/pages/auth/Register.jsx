@@ -16,7 +16,7 @@ import {
 import Auth from "./Auth";
 import { store, api } from "../../lib";
 import { uiText, webformContent } from "../../static";
-import { passwordCheckBoxOptions } from "../../lib/util";
+import { globalSelectProps, passwordCheckBoxOptions } from "../../lib/util";
 import { intersection, sortBy } from "lodash";
 import { useNotification } from "../../util";
 
@@ -252,13 +252,13 @@ const Register = () => {
           </Form.Item>
           <Form.Item>
             <Select
-              allowClear
               size="large"
               className="bg-grey"
               placeholder={text.registerFilterOrganizationsBy}
               options={iscoOption}
               onChange={(val) => setIscoFilter(val)}
               getPopupContainer={(trigger) => trigger.parentNode}
+              {...globalSelectProps}
             />
           </Form.Item>
           <Form.Item
@@ -280,6 +280,7 @@ const Register = () => {
                 option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
               getPopupContainer={(trigger) => trigger.parentNode}
+              {...globalSelectProps}
             />
           </Form.Item>
           <Form.Item name="agreement">

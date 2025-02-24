@@ -4,6 +4,7 @@ import { Row, Col, Card, Form, Input, Select, Space, Button } from "antd";
 import { api, store } from "../../lib";
 import { useNotification } from "../../util";
 import { uiText } from "../../static";
+import { globalSelectProps } from "../../lib/util";
 
 const categories = ["Questionnaire", "Tool", "Other"];
 
@@ -105,6 +106,7 @@ const Feedback = () => {
                       label: x,
                       value: x.toLowerCase(),
                     }))}
+                    {...globalSelectProps}
                   />
                 </Form.Item>
                 {/* TextArea */}

@@ -171,5 +171,19 @@ body {
   /* dropdown list z-index */
   .ant-select-dropdown {
     z-index: 10001;
+    overflow-y: scroll !important;
+    scrollbar-width: thin;
+
+    // custom
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: #ccc;
+      border-radius: 4px;
+    }
+    &::-webkit-scrollbar-track {
+      background-color: #f0f0f0;
+    }
   }
 }

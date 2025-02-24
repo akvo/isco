@@ -21,6 +21,7 @@ import DataCleaningWebform from "./DataCleaningWebform";
 import DataDetail from "./DataDetail";
 import { useNotification } from "../../util";
 import { MonitoringRoundSelector } from "../../components";
+import { globalSelectProps } from "../../lib/util";
 
 const { Title } = Typography;
 
@@ -363,9 +364,9 @@ const DataCleaning = () => {
                   options={forms}
                   value={formSelected}
                   onChange={(val) => setFormSelected(val)}
+                  {...globalSelectProps}
                 />
                 <Select
-                  allowClear
                   showSearch
                   className="custom-dropdown-wrapper"
                   placeholder="Organization"
@@ -385,6 +386,7 @@ const DataCleaning = () => {
                       .indexOf(input?.toLowerCase()) >= 0
                   }
                   disabled={!formSelected}
+                  {...globalSelectProps}
                 />
                 <MonitoringRoundSelector
                   value={selectedMonitoringRound}

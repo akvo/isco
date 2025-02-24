@@ -14,6 +14,7 @@ import { RiPencilFill, RiDeleteBinFill, RiPrinterFill } from "react-icons/ri";
 import { useNotification } from "../../util";
 import { handleLoad } from "../../util/common";
 import moment from "moment";
+import { globalSelectProps } from "../../lib/util";
 
 const CurrentRoadmap = ({ setCurrentTab, setEditDatapoint }) => {
   const { notify } = useNotification();
@@ -201,7 +202,6 @@ const CurrentRoadmap = ({ setCurrentTab, setEditDatapoint }) => {
       >
         <Col flex={1} align="start">
           <Select
-            allowClear
             showSearch
             className="member-dropdown-wrapper"
             placeholder="Member Type"
@@ -211,6 +211,7 @@ const CurrentRoadmap = ({ setCurrentTab, setEditDatapoint }) => {
             filterOption={(input, option) =>
               option?.label?.toLowerCase().indexOf(input?.toLowerCase()) >= 0
             }
+            {...globalSelectProps}
           />
         </Col>
       </Row>

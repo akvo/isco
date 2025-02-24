@@ -22,6 +22,7 @@ import { store, api } from "../../lib";
 import capitalize from "lodash/capitalize";
 import moment from "moment";
 import { useNotification } from "../../util";
+import { globalSelectProps } from "../../lib/util";
 
 const { Title } = Typography;
 
@@ -363,7 +364,6 @@ const ManageUser = () => {
                 {showOrganisationFilter && (
                   <>
                     <Select
-                      allowClear
                       showSearch
                       className="organisation-dropdown-wrapper"
                       placeholder="Organization"
@@ -382,9 +382,9 @@ const ManageUser = () => {
                           ?.toLowerCase()
                           .indexOf(input?.toLowerCase()) >= 0
                       }
+                      {...globalSelectProps}
                     />
                     <Select
-                      allowClear
                       showSearch
                       className="member-dropdown-wrapper"
                       placeholder="Member Type"
@@ -403,9 +403,9 @@ const ManageUser = () => {
                           ?.toLowerCase()
                           .indexOf(input?.toLowerCase()) >= 0
                       }
+                      {...globalSelectProps}
                     />
                     <Select
-                      allowClear
                       showSearch
                       className="member-dropdown-wrapper"
                       placeholder="ISCO"
@@ -424,6 +424,7 @@ const ManageUser = () => {
                           ?.toLowerCase()
                           .indexOf(input?.toLowerCase()) >= 0
                       }
+                      {...globalSelectProps}
                     />
                   </>
                 )}

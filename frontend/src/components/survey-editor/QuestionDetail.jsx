@@ -15,7 +15,7 @@ import { HiPlus, HiMinus, HiArrowSmUp, HiArrowSmDown } from "react-icons/hi";
 import { store } from "../../lib";
 import orderBy from "lodash/orderBy";
 import { defaultOption, defaultRepeatingObject } from "../../lib/store";
-import { generateID, insert } from "../../lib/util";
+import { generateID, globalSelectProps, insert } from "../../lib/util";
 import { useNotification } from "../../util";
 
 const RenderOptionInput = ({
@@ -111,13 +111,13 @@ const RenderRepeatingObjectInput = ({
               name={`question-${qId}-repeating_objects_field-${ro?.id || roi}`}
             >
               <Select
-                allowClear
                 placeholder="Select field value"
                 className="bg-grey"
                 options={repeating_object_option?.map((x) => ({
                   label: x,
                   value: x,
                 }))}
+                {...globalSelectProps}
               />
             </Form.Item>
           </Col>
@@ -383,7 +383,6 @@ const QuestionDetail = ({
               rules={[{ required: true, message: "Please select cascade" }]}
             >
               <Select
-                allowClear
                 className="bg-grey"
                 placeholder={`Select ${type?.split("_").join(" ")}`}
                 options={cascadeValues?.map((x) => {
@@ -392,6 +391,7 @@ const QuestionDetail = ({
                     value: x?.id,
                   };
                 })}
+                {...globalSelectProps}
               />
             </Form.Item>
           </div>

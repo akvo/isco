@@ -4,6 +4,7 @@ import { Space, Select } from "antd";
 import { orderBy, isEmpty, uniqBy, intersection } from "lodash";
 import CommentField from "./CommentField";
 import { Webform } from "../../akvo-react-form";
+import { globalMultipleSelectProps } from "../../lib/util";
 
 const Preview = () => {
   const { surveyEditor, optionValues } = store.useState((s) => s);
@@ -405,7 +406,6 @@ const Preview = () => {
             <div className="field-label">Member Type</div>
             <Select
               mode="multiple"
-              allowClear
               showSearch
               className="custom-dropdown-wrapper bg-grey"
               placeholder="Select Member Type"
@@ -416,13 +416,13 @@ const Preview = () => {
                 option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
               style={{ width: "22rem" }}
+              {...globalMultipleSelectProps}
             />
           </div>
           <div className="field-wrapper">
             <div className="field-label">ISCO</div>
             <Select
               mode="multiple"
-              allowClear
               showSearch
               className="custom-dropdown-wrapper bg-grey"
               placeholder="Select ISCO"
@@ -433,6 +433,7 @@ const Preview = () => {
                 option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
               style={{ width: "22rem" }}
+              {...globalMultipleSelectProps}
             />
           </div>
         </Space>

@@ -7,6 +7,7 @@ import {
   validateDisableDependencyQuestionInRepeatQuestionLevel,
   checkHideFieldsForRepeatInQuestionLevel,
 } from "../lib";
+import { globalMultipleSelectProps } from "../../lib/util";
 
 const MultipleOptionField = ({
   id,
@@ -144,9 +145,9 @@ const MultipleOptionField = ({
               menu
             )
           }
-          allowClear
           onChange={onChange}
           disabled={is_repeat_identifier || disableFieldByDependency} // handle leading_question -> is_repeat_identifier
+          {...globalMultipleSelectProps}
         >
           {options.map((o, io) => (
             <Select.Option key={io} value={o.name}>

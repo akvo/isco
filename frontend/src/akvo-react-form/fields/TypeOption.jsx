@@ -7,6 +7,7 @@ import {
   validateDisableDependencyQuestionInRepeatQuestionLevel,
   checkHideFieldsForRepeatInQuestionLevel,
 } from "../lib";
+import { globalSelectProps } from "../../lib/util";
 
 const OptionField = ({
   id,
@@ -222,12 +223,12 @@ const OptionField = ({
                 menu
               )
             }
-            allowClear
             showSearch
             filterOption
             optionFilterProp="children"
             onChange={onChange}
             disabled={is_repeat_identifier || disableFieldByDependency} // handle leading_question -> is_repeat_identifier
+            {...globalSelectProps}
           >
             {options.map((o, io) => (
               <Select.Option key={io} value={o.name}>

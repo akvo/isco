@@ -9,6 +9,7 @@ import {
   validateDisableDependencyQuestionInRepeatQuestionLevel,
   checkHideFieldsForRepeatInQuestionLevel,
 } from "../lib";
+import { globalSelectProps } from "../../lib/util";
 
 const CascadeApiField = ({
   id,
@@ -214,11 +215,11 @@ const CascadeApiField = ({
                       : []
                   }
                   value={selected?.[ci] || null}
-                  allowClear
                   showSearch
                   filterOption
                   optionFilterProp="label"
                   disabled={disableFieldByDependency}
+                  {...globalSelectProps}
                 />
               </Form.Item>
             </Row>

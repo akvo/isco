@@ -24,6 +24,7 @@ import {
 import { store } from "../../lib";
 import { orderBy, take } from "lodash";
 import { generateDisabledOptions } from "./QuestionGroupEditor";
+import { globalMultipleSelectProps, globalSelectProps } from "../../lib/util";
 
 const { TabPane } = Tabs;
 
@@ -414,7 +415,6 @@ const QuestionSetting = ({
                   <div className="field-label">Member Type</div>
                   <Form.Item name={memberAccessField}>
                     <Select
-                      allowClear
                       mode="multiple"
                       showSearch={true}
                       className="custom-dropdown-wrapper bg-grey"
@@ -425,6 +425,7 @@ const QuestionSetting = ({
                           .toLowerCase()
                           .indexOf(input.toLowerCase()) >= 0
                       }
+                      {...globalMultipleSelectProps}
                     />
                   </Form.Item>
                 </div>
@@ -434,7 +435,6 @@ const QuestionSetting = ({
                   <div className="field-label">ISCO</div>
                   <Form.Item name={iscoAccessField}>
                     <Select
-                      allowClear
                       mode="multiple"
                       showSearch={true}
                       className="custom-dropdown-wrapper bg-grey"
@@ -445,6 +445,7 @@ const QuestionSetting = ({
                           .toLowerCase()
                           .indexOf(input.toLowerCase()) >= 0
                       }
+                      {...globalMultipleSelectProps}
                     />
                   </Form.Item>
                 </div>
@@ -687,6 +688,7 @@ const QuestionSetting = ({
                       0
                     }
                     onChange={handleChangeQuestionSkipLogicDependentTo}
+                    {...globalSelectProps}
                   />
                 </Form.Item>
                 <Tooltip title="Delete question skip logic">
@@ -711,7 +713,6 @@ const QuestionSetting = ({
                         ]}
                       >
                         <Select
-                          allowClear
                           className="bg-grey"
                           placeholder="Select logic"
                           options={operators?.map((x) => {
@@ -720,6 +721,7 @@ const QuestionSetting = ({
                               value: x,
                             };
                           })}
+                          {...globalSelectProps}
                         />
                       </Form.Item>
                     </div>
@@ -752,7 +754,6 @@ const QuestionSetting = ({
                       ]}
                     >
                       <Select
-                        allowClear
                         mode="multiple"
                         className="bg-grey"
                         placeholder="Select value"
@@ -760,6 +761,7 @@ const QuestionSetting = ({
                           label: x?.name,
                           value: x?.id,
                         }))}
+                        {...globalMultipleSelectProps}
                       />
                     </Form.Item>
                   </div>
