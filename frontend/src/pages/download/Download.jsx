@@ -155,6 +155,16 @@ const Download = () => {
       dataIndex: "form",
       key: "form",
       width: "10%",
+      render: (_, record) => {
+        if (
+          record.form_type === "project" &&
+          record.name &&
+          record.name !== ""
+        ) {
+          return `${record.form} - ${record.name}`;
+        }
+        return record.form;
+      },
     },
     {
       title: text.formTypeText,
