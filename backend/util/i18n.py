@@ -34,53 +34,57 @@ class EmailText(enum.Enum):
         "body": f"""
             Dear reporting member / partner,
             <p>
-            #user_name# (#user_email#) from your
-            organisation has signed up for the {current_year}
-            Monitoring Round at cocoamonitoring.net
+            #user_name# (#user_email#) from your organisation has signed up for
+            the {current_year} Monitoring Round at cocoamonitoring.net
             </p>
             <p>
-            If this is an invalid signup please get in touch with
-            the reporting tool admins. Contact:
+            If this is an invalid signup please get in touch with the reporting
+            tool admins. Contact:
             </p>
             <ul>
                 <li>
-                For Beyond Chocolate:
-                Marloes Humbeeck (humbeeck@idhtrade.org)</li>
-                <li>For DISCO:
-                Mark de Waard (dewaard@idhtrade.org)</li>
-                <li>For FRISCO:
-                Kitty Grapperon (kgrapperon@deloitte.fr)</li>
-                <li>For GISCO:
-                Ulrike Joras (ulrike.joras@giz.de)</li>
-                <li>For SWISSCO:
-                Fabienne Bauer (fabienne.bauer@kakaoplattform.ch)
+                    For Beyond Chocolate and DISCO:
+                    Lisa Graepel (graepel@idhtrade.org)
+                </li>
+                <li>
+                    For FRISCO: Kitty Grapperon (kgrapperon@deloitte.fr)
+                </li>
+                <li>
+                    For GISCO: Ulrike Joras (ulrike.joras@giz.de)
+                </li>
+                <li>
+                    For SWISSCO: Esther Waldmeier
+                    (esther. waldmeier@kakaoplattform.ch)
                 </li>
             </ul>
             """,
         "message": None,
         "body_translation": f"""
-            Sehr geehrte/r Teilnehmer/in,
+            Liebes Mitglied, ,
             <p>
-            Herr/ Frau #user_name# (#user_email#) aus Ihrer
-            Organisation hat sich für die Monitoring-Runde {current_year}
-            auf cocoamonitoring.net registriert.
+            Herr/ Frau #user_name# (#user_email#) aus Ihrer Organisation hat
+            sich für die Monitoring-Runde {current_year} auf cocoamonitoring.
+            net registriert.
             </p>
             <p>
-            Wenn dies eine ungültige Anmeldung ist, wenden Sie sich bitte
-            an die Administratoren des Monitoringtools:
+            Wenn dies eine ungültige Anmeldung ist, wenden Sie sich bitte an
+            die Administratoren des Monitoringtools:
             </p>
             <ul>
                 <li>
-                Für Beyond Chocolate:
-                Marloes Humbeeck (humbeeck@idhtrade.org)</li>
-                <li>Für DISCO:
-                Mark de Waard (dewaard@idhtrade.org)</li>
-                <li>Für FRISCO:
-                Kitty Grapperon (kgrapperon@deloitte.fr)</li>
-                <li>Für GISCO:
-                Ulrike Joras (ulrike.joras@giz.de)</li>
-                <li>Für SWISSCO:
-                Fabienne Bauer (fabienne.bauer@kakaoplattform.ch)</li>
+                    Für Beyond Chocolate und DISCO:
+                    Lisa Graepel (graepel@idhtrade.org)
+                </li>
+                <li>
+                    Für FRISCO: Kitty Grapperon (kgrapperon@deloitte.fr)
+                </li>
+                <li>
+                    Für GISCO: Ulrike Joras (ulrike.joras@giz.de)
+                </li>
+                <li>
+                    Für SWISSCO: Esther Waldmeier
+                    (esther-waldmeier@kakaoplattform.ch)
+                </li>
             </ul>
             """,
         "image": None,
@@ -97,17 +101,19 @@ class EmailText(enum.Enum):
                 <p>
                 Thank you for signing up to the online monitoring tool of
                 Beyond Chocolate, DISCO, FRISCO, SWISSCO and GISCO. Your
-                registration has been approved. Please click following button
-                to set your password and finalize your registration.
+                registration has been approved.
+                Please click the following button to set your password and
+                finalize your registration.
                 </p>
                 </div>""",
         "body_translation": """<div>
-                Sehr geehrtes meldendes Mitglied,
+                Liebes  Mitglied,
                 <p>
-                vielen Dank, dass Sie sich für das Online-Monitoring-Tool
-                von Beyond Chocolate, DISCO, FRISCO, SWISSCO und GISCO
-                angemeldet haben. Ihre Registrierung wurde bestätigt. Bitte
-                klicken Sie auf den untenstehenden Link, um Ihr Passwort
+                vielen Dank, dass Sie sich für das Online-Monitoring-Tool von
+                Beyond Chocolate, DISCO, FRISCO, SWISSCO und dem Forum
+                Nachhaltiger Kakao  angemeldet haben. Ihre Registrierung wurde
+                bestätigt.
+                Bitte klicken Sie auf den untenstehenden Link, um Ihr Passwort
                 festzulegen und Ihre Registrierung abzuschließen.
                 </p>
                 </div>""",
@@ -126,25 +132,29 @@ class EmailText(enum.Enum):
         "title_translation": None,
         "subject": "Email Verification | E-Mail-Verifizierung",
         "body": """<div>
-                Dear reporting member,
-                <p>
-                Thank you for signing up to the online monitoring tool of
-                Beyond Chocolate, DISCO, FRISCO, SWISSCO and GISCO. Please
-                click following button to verify your email address. You will
-                be notified when as soon as your account has been approved.
-                </p>
-                </div>""",
+                    Dear reporting member,
+                    <p>
+                    Thank you for signing up to the online monitoring tool of
+                    Beyond Chocolate, DISCO, FRISCO, SWISSCO and GISCO. Please
+                    click the following button to verify your email address.
+                    You will be notified  as soon as your account has
+                    been approved.
+                    </p>
+                    </div>
+                    """,
         "body_translation": """<div>
-                „Liebes Mitglied,
-                <p>
-                vielen Dank, dass Sie sich für das Online-Monitoringtool von
-                Beyond Chocolate, DISCO, FRISCO, SWISSCO und Forum
-                Nachhaltiger Kakao angemeldet haben. Bitte klicken Sie auf
-                untenstehenden Link, um Ihre E-Mail-Adresse zu verifizieren.
-                Sie werden benachrichtigt, sobald Ihre Registrierung genehmigt
-                wurde.
-                </p>
-                </div>""",
+                    „Liebes Mitglied,
+                    <p>
+                    vielen Dank, dass Sie sich für das Online-Monitoringtool
+                    von Beyond Chocolate, DISCO, FRISCO, SWISSCO und vom Forum
+                    Nachhaltiger Kakao angemeldet haben. Bitte klicken Sie auf
+                    untenstehenden Link, um Ihre E-Mail-Adresse zu
+                    verifizieren.
+                    Sie werden benachrichtigt, sobald Ihre Registrierung
+                    genehmigt
+                    wurde.
+                    </p>
+                    </div>""",
         "message": None,
         "image": None,
         "button": """<a href="#button_url#" target="_blank" rel="noreferrer">
@@ -169,7 +179,7 @@ class EmailText(enum.Enum):
                 </p>
                 </div>""",
         "body_translation": """<div>
-                Sehr geehrtes meldendes Mitglied,
+                Liebes  Mitglied,
                 <p>
                 Sie haben eine Passwortänderung angefordert. Falls Sie dies
                 nicht waren, ignorieren Sie bitte diese E-Mail und stellen Sie
@@ -197,7 +207,7 @@ class EmailText(enum.Enum):
                 <p>
                 Your password for the online monitoring tool of
                 Beyond Chocolate, DISCO, FRISCO, SWISSCO and GISCO has been
-                set and you will now be able to start reporting on your
+                set and you will now be able to start reporting your
                 {current_year} data.
                 </p>
                 <p>
@@ -212,52 +222,60 @@ class EmailText(enum.Enum):
                 In case of questions and feedback, please contact:
                 <ul>
                     <li>
-                    For Beyond Chocolate:
-                    Marloes Humbeeck (humbeeck@idhtrade.org)</li>
-                    <li>For DISCO:
-                    Mark de Waard (dewaard@idhtrade.org)</li>
-                    <li>For FRISCO:
-                    Kitty Grapperon (kgrapperon@deloitte.fr)</li>
-                    <li>For GISCO:
-                    Ulrike Joras (ulrike.joras@giz.de)</li>
-                    <li>For SWISSCO:
-                    Fabienne Bauer (fabienne.bauer@kakaoplattform.ch)</li>
+                        For Beyond Chocolate and DISCO:
+                        Lisa Graepel (graepel@idhtrade.org
+                    </li>
+                    <li>
+                        For FRISCO: Kitty Grapperon
+                        (kgrapperon@deloitte.fr)
+                    </li>
+                    <li>
+                        For GISCO: Ulrike Joras (ulrike.joras@giz.de)
+                    </li>
+                    <li>
+                        For SWISSCO: Esther Waldmeier
+                        (esther.waldmeier@kakaoplattform.ch)
+                    </li>
                 </ul>
                 </p>
                 </div>""",
         "body_translation": f"""<div>
-                Sehr geehrtes meldendes Mitglied,
+                Liebes  Mitglied,
                 <p>
                 Ihr Passwort für das Online-Monitoring-Tool von Beyond
-                Chocolate, DISCO, FRISCO, SWISSCO und GISCO wurde festgelegt
-                und Sie können nun mit der Berichterstattung über Ihre Daten
-                aus dem Jahr {current_year} beginnen.
+                Chocolate, DISCO, FRISCO, SWISSCO und dem Forum Nachhaltiger
+                Kakao wurde festgelegt und Sie können nun mit der
+                Berichterstattung  Ihrer Daten aus dem Jahr {current_year}
+                beginnen.
                 </p>
                 <p>
                 Sobald Sie sich eingeloggt haben, klicken Sie bitte auf die
                 Registerkarte "Umfrage" oben links auf dem Bildschirm. Sie
                 können dann einen neuen Fragebogen öffnen und mit der
                 Berichterstattung über Ihre Daten für {current_year} beginnen.
-                Bitte vergessen Sie nicht, Ihren Fragebogen zu speichern, bevor
-                Sie das Tool verlassen, damit Sie ihn zu einem späteren
+                Bitte vergessen Sie nicht, Ihren Fragebogen zu speichern,
+                bevor Sie das Tool verlassen, damit Sie ihn zu einem späteren
                 Zeitpunkt weiterbearbeiten können.
                 </p>
                 <p>
-                </p>
                 Bei Fragen und Rückmeldungen wenden Sie sich bitte an:
                 <ul>
                     <li>
-                    Für Beyond Chocolate:
-                    Marloes Humbeeck (humbeeck@idhtrade.org)</li>
-                    <li>Für DISCO:
-                    Mark de Waard (dewaard@idhtrade.org)</li>
-                    <li>Für FRISCO:
-                    Kitty Grapperon (kgrapperon@deloitte.fr)</li>
-                    <li>Für GISCO:
-                    Ulrike Joras (ulrike.joras@giz.de)</li>
-                    <li>Für SWISSCO:
-                    Fabienne Bauer (fabienne.bauer@kakaoplattform.ch)</li>
+                        Für Beyond Chocolate und DISCO:
+                        Lisa Graepel (graepel @idhtrade.org)
+                    </li>
+                    <li>
+                        Für FRISCO: Kitty Grapperon (kgrapperon@deloitte.fr)
+                    </li>
+                    <li>
+                        Für GISCO: Ulrike Joras (ulrike.joras@giz.de)
+                    </li>
+                    <li>
+                        Für SWISSCO: Esther Waldmeier
+                        (esther.waldmeier @kakaoplattform.ch)
+                    </li>
                 </ul>
+                </p>
                 </div>""",
         "message": None,
         "image": None,
@@ -297,14 +315,14 @@ class EmailText(enum.Enum):
         "body_translation": """<div>
                 Sehr geehrtes Mitglied,
                 <p>
-                Ihr Antrag zum Herunterladen Ihrer Daten wurde genehmigt.
-                Sie können nun in das Online-Tool einloggen und Ihre Daten
+                Ihr Antrag zum Herunterladen Ihrer Daten wurde genehmigt. Sie
+                können sich nun in das Online-Tool einloggen und Ihre Daten
                 herunterladen.
                 </p>
                 <p>
-                Aus Sicherheitsgründen ändert der genehmigte Datenzugang endet
-                nach einer Frist von 5 Tagen. Danach müssten Sie erneut eine
-                Anfrage stellen.
+                Aus Sicherheitsgründen endet der genehmigte Datenzugang nach
+                einer Frist von 5 Tagen. Danach müssten Sie erneut eine Anfrage
+                stellen.
                 </p>
                 </div>""",
         "message": None,
@@ -365,13 +383,11 @@ class EmailText(enum.Enum):
                 organisation as a collaborator for a project.
                 </p>
                 <p>
-                You can now view and data to the saved project in your
+                You can now view and edit data in the saved project in your
                 \"previously saved forms\" section in the portal.
                 </p>
-                <p>
-                Please contact us via the feedback form in case you face any
-                issues.
-                </p>
+                <p>Please contact us via the feedback form in case you face
+                any issues.</p>
                 </div>""",
         "body_translation": """<div>
                 Sehr geehrte/r Teilnehmer/in,
