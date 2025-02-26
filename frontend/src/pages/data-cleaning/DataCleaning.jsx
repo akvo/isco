@@ -72,10 +72,16 @@ const DataCleaning = () => {
       width: "60px",
     },
     {
+      title: "Form Name",
+      dataIndex: "form_name",
+      key: "form_name",
+      width: "20%",
+    },
+    {
       title: "Organisation",
       dataIndex: "organisation_name",
       key: "organisation_name",
-      width: "20%",
+      width: "15%",
     },
     {
       title: "Member Type",
@@ -414,6 +420,8 @@ const DataCleaning = () => {
                     }))
                   }
                   disabled={formSelected || dataID ? false : true}
+                  type="primary"
+                  ghost
                 >
                   Search
                 </Button>
