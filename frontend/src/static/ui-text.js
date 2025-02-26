@@ -227,7 +227,7 @@ const uiText = {
       "Thank you for the data download request. The secretariat admins will be notified about your request. You will receive an email from us once your data is ready for download",
     // banner
     bannerSaveSurvey:
-      "Please save your data at regular intervals to prevent data loss due to unforeseen circumstances.",
+      "Your data is not automatically saved. Please save your data at regular intervals to prevent data loss due to unforeseen circumstances.",
     bannerDownloadPage:
       "Data from previous monitoring rounds will be available soon.",
     faqTitle: "Frequently Asked Question",
@@ -534,7 +534,7 @@ const uiText = {
       "Vielen Dank für die Anfrage zum Download der Daten. Die Sekretariatsverwaltung wird über Ihre Anfrage benachrichtigt. Sie erhalten von uns eine E-Mail, sobald Ihre Daten zum Download bereitstehen",
     // banner
     bannerSaveSurvey:
-      "Bitte speichern Sie Ihre Fragebögen regelmäßig, um zu verhindern, dass Eingaben durch unerwartete Unterbrechungen verloren gehen.",
+      "Ihre Daten werden nicht automatisch gespeichert. Bitte speichern Sie Ihre Daten regelmäßig, um Datenverlust durch unvorhergesehene Umstände zu vermeiden.",
     bannerDownloadPage:
       "Ihre Informationen aus der vergangenen Monitoringrunde werden in Kürze zum Herunterladen zur Verfügung stehen.",
     faqTitle: "Frequently Asked Question",
