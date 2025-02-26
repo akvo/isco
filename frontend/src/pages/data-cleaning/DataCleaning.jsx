@@ -15,6 +15,7 @@ import {
   PlusSquareOutlined,
   RightOutlined,
   MinusSquareOutlined,
+  SearchOutlined,
 } from "@ant-design/icons";
 import { api, store } from "../../lib";
 import DataCleaningWebform from "./DataCleaningWebform";
@@ -46,6 +47,12 @@ const DataCleaning = () => {
   const [selectedMonitoringRound, setSelectedMonitoringRound] = useState(null);
   const [organisationValue, setOrganisationValue] = useState(null);
   const [dataID, setDataID] = useState(null);
+  const [filters, setFilters] = useState({
+    formSelected: null,
+    selectedMonitoringRound: null,
+    organisationValue: null,
+    dataID: null,
+  });
 
   // pagination
   const [pageSize, setPageSize] = useState(10);
@@ -147,6 +154,8 @@ const DataCleaning = () => {
   }, [forms]);
 
   const fetchData = useCallback(() => {
+    const { formSelected, dataID, selectedMonitoringRound, organisationValue } =
+      filters;
     if (formSelected || dataID) {
       setIsLoading(true);
       let url = `/data/form/${
@@ -179,15 +188,15 @@ const DataCleaning = () => {
         .finally(() => {
           setIsLoading(false);
         });
+    } else {
+      setData({
+        current: 1,
+        data: [],
+        total: 0,
+        total_page: 0,
+      });
     }
-  }, [
-    formSelected,
-    page,
-    pageSize,
-    selectedMonitoringRound,
-    organisationValue,
-    dataID,
-  ]);
+  }, [page, pageSize, filters]);
 
   useEffect(() => {
     fetchData();
@@ -393,6 +402,21 @@ const DataCleaning = () => {
                   onChange={setSelectedMonitoringRound}
                   disabled={!formSelected}
                 />
+                <Button
+                  icon={<SearchOutlined />}
+                  onClick={() =>
+                    setFilters((prev) => ({
+                      ...prev,
+                      formSelected,
+                      selectedMonitoringRound,
+                      organisationValue,
+                      dataID,
+                    }))
+                  }
+                  disabled={formSelected || dataID ? false : true}
+                >
+                  Search
+                </Button>
               </Space>
             </Col>
           </Row>
