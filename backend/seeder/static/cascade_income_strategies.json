@@ -7,117 +7,117 @@
     {
       "name": "Price related income strategies",
       "level": 1,
-      "action": "new",
-      "update": "Price related income strategies",
+      "action": "update",
+      "update": "Price related income strategies / Preisbezogene Einkommensstrategien",
       "childrens": [
         {
           "name": "Payment of a Living Income Reference Price  (LIRP)",
           "level": 2,
-          "action": "new",
-          "update": "Payment of a Living Income Reference Price  (LIRP)"
+          "action": "update",
+          "update": "Payment of a Living Income Reference Price (LIRP) /  Zahlung eines Referenzpreises für existenzsichernde Einkommen (LIRP) "
         },
         {
           "name": "Volume based Premiums (except the LIRP)",
           "level": 2,
-          "action": "new",
-          "update": "Volume based Premiums (except the LIRP)"
+          "action": "update",
+          "update": "Volume based Premiums (except the LIRP) / Volumenbasierte Prämien (außer dem LIRP)"
         },
         {
           "name": "Other conditional and unconditional cash payments",
           "level": 2,
-          "action": "new",
-          "update": "Other conditional and unconditional cash payments"
+          "action": "update",
+          "update": "Other conditional and unconditional cash payments / Weitere bedingte und bedingungslose Barzahlungen"
         }
       ]
     },
     {
       "name": "Farming practices related income strategies",
       "level": 1,
-      "action": "new",
-      "update": "Farming practices related income strategies",
+      "action": "update",
+      "update": "Farming practices / Landwirtschaftliche Praktiken",
       "childrens": [
         {
           "name": "Cocoa productivity",
           "level": 2,
-          "action": "new",
-          "update": "Cocoa productivity"
+          "action": "update",
+          "update": "Cocoa productivity / Kakaoproduktivität"
         },
         {
           "name": "Crop diversification",
           "level": 2,
-          "action": "new",
-          "update": "Crop diversification"
+          "action": "update",
+          "update": "Crop diversification / Diversifizierung des Anbaus"
         },
         {
           "name": "Reduction of production costs",
           "level": 2,
-          "action": "new",
-          "update": "Reduction of production costs"
+          "action": "update",
+          "update": "Reduction of production costs / Reduzierung der Produktionskosten"
         },
         {
           "name": "Adaptation to climate change",
           "level": 2,
-          "action": "new",
-          "update": "Adaptation to climate change"
+          "action": "update",
+          "update": "Adaptation to climate change / Anpassung an den Klimawandel"
         }
       ]
     },
     {
       "name": "Other income strategies",
       "level": 1,
-      "action": "new",
-      "update": "Other income strategies",
+      "action": "update",
+      "update": "Other income strategies / Weitere Einkommensstrategien",
       "childrens": [
         {
           "name": "Women's economic empowerment",
           "level": 2,
-          "action": "new",
-          "update": "Women's economic empowerment"
+          "action": "update",
+          "update": "Women's economic empowerment / Wirtschaftliche Stärkung von Frauen"
         },
         {
           "name": "Responsible procurement practices",
           "level": 2,
-          "action": "new",
-          "update": "Responsible procurement practices"
+          "action": "update",
+          "update": "Responsible procurement practices / Verantwortungsbewusste Beschaffungspraktiken"
         },
         {
           "name": "Community and landscape approaches",
           "level": 2,
-          "action": "new",
-          "update": "Community and landscape approaches"
+          "action": "update",
+          "update": "Community and landscape approaches / Landschaftsansätze"
         },
         {
           "name": "Payment for environmental services",
           "level": 2,
-          "action": "new",
-          "update": "Payment for environmental services"
+          "action": "update",
+          "update": "Payment for environmental services / Zahlung für Umweltleistungen"
         },
         {
           "name": "Off-farm income diversification",
           "level": 2,
-          "action": "new",
-          "update": "Off-farm income diversification"
+          "action": "update",
+          "update": "Off-farm income diversification / Einkommensdiversifizierung außerhalb der Landwirtschaft"
         },
         {
           "name": "Access to finance",
           "level": 2,
-          "action": "new",
-          "update": "Access to finance"
+          "action": "update",
+          "update": "Access to finance / Zugang zu Finanzmitteln"
         }
       ]
     },
     {
       "name": "Other",
       "level": 1,
-      "action": "new",
-      "update": "Other",
+      "action": "update",
+      "update": "Other / Andere",
       "childrens": []
     },
     {
       "name": "None",
       "level": 1,
-      "action": "new",
-      "update": "None",
+      "action": "update",
+      "update": "None / Keine",
       "childrens": []
     }
   ]
