@@ -91,7 +91,6 @@ const WebformPage = ({
   setClearForm,
   saveButtonRef,
 }) => {
-  // const formId = 7; testing purpose
   const { notify } = useNotification();
 
   const { user, language } = store.useState((s) => s);
