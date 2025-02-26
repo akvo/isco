@@ -150,5 +150,9 @@ class Email:
         TESTING = os.environ.get("TESTING")
         if TESTING:
             return True
-        res = mailjet.send.create(data=self.data)
-        return res.status_code == 200
+        try:
+            res = mailjet.send.create(data=self.data)
+            return res.status_code == 200
+        except Exception as e:
+            print(f"Mailjet mailer error: {e}")
+            return False
