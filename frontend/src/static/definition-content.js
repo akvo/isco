@@ -14,6 +14,7 @@ const numberOfHHIndirectSupplyChainColumns = [
     title: <b>Country</b>,
     dataIndex: "country",
     key: "country",
+    width: "40%",
   },
   {
     title: (
@@ -21,11 +22,13 @@ const numberOfHHIndirectSupplyChainColumns = [
     ),
     dataIndex: "avg_land_size",
     key: "avg_land_size",
+    width: "20%",
   },
   {
     title: <b>Average annual yield</b>,
     dataIndex: "avg_annual_yield",
     key: "avg_annual_yield",
+    width: "20%",
   },
   {
     title: (
@@ -37,6 +40,7 @@ const numberOfHHIndirectSupplyChainColumns = [
     ),
     dataIndex: "avg_yield",
     key: "avg_yield",
+    width: "20%",
   },
 ];
 
@@ -1078,8 +1082,9 @@ const definitionContent = {
             <Table
               columns={numberOfHHIndirectSupplyChainColumns}
               dataSource={numberOfHHIndirectSupplyChainDataSource}
-              tableLayout="auto"
+              // tableLayout="auto"
               size="middle"
+              pagination={false}
               bordered
             />
           </div>
@@ -2176,9 +2181,10 @@ const definitionContent = {
             <Table
               columns={numberOfHHIndirectSupplyChainColumns}
               dataSource={numberOfHHIndirectSupplyChainDataSource}
-              tableLayout="auto"
+              // tableLayout="auto"
               size="middle"
               bordered
+              pagination={false}
             />
           </div>
         </Fragment>
