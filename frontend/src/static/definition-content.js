@@ -607,47 +607,50 @@ const definitionContent = {
       t: "Agroforestry System for Cocoa Production (Description)",
       d: (
         <Fragment>
-          <div>
-            The term AGROFRORESTRY refers to farming fields in which cacao trees
-            are deliberately combined with preferably native non-cocoa tree
-            species that have proven to be useful for AGROFORESTRY in a
-            stratified spatial arrangement and temporal sequence. This includes
-            other agricultural crops on the same land management unit,
-            triggering ecological, economic, social and sociocultural benefits.
-            AGROFORESTRY approaches should be locally adapted and should
-            consider the ecologic, economic, social and cultural environment.
-          </div>
-          <br />
-          <div>
-            The functions of AGROFORESTRY systems are to enable long term,
-            sustainable cocoa production which preserves biodiversity, prevents
-            erosion, protects the climate and natural genetic resources,
-            diversifies and sustains production to the benefit of all land
-            users. Cocoa AGROFORESTRY systems can be developed from different
-            starting points, in different ecologic environments. AGROFORESTRY
-            systems aim to provide diversified sources of income, can reduce
-            costs and can create co-benefits to increase the economic and
-            climate change related resilience and to food supply of particularly
-            smallholder farmers and local communities living in rural areas.
-          </div>
-          <br />
-          <div>
-            Cocoa farmers play a crucial role for the definition, adoption and
-            longevity of agroforestry systems. A joint process where the needs,
-            capabilities, preferences and experiences of farmers are taken into
-            account and in which the farmers are actively supported (technical
-            assistance, development plan, capacity building) is very important
-            to maintain and improve the existing production system towards
-            long-term sustainability.
-          </div>
-          <br />
-          <div>
-            Banana plants / plantains do not count as trees / tree species.*
-            <br />
-            *Only botanically classified trees count towards an agroforestry
-            system, other plants, such as forbs (in Deutsch: Stauden) (incl.
-            banana trees / plantains), therefore, do not count.
-          </div>
+          <ul type="bullet" style={{ margin: 0, padding: 0 }}>
+            <li>
+              The term AGROFRORESTRY refers to farming fields in which cocoa
+              trees are deliberately combined with preferably native non-cocoa
+              tree species that have proven to be useful for AGROFORESTRY in a
+              stratified spatial arrangement and temporal sequence. This
+              includes other agricultural crops on the same land management
+              unit, triggering ecological, economic, social, and sociocultural
+              benefits. AGROFORESTRY approaches should be locally adapted and
+              should consider the ecologic, economic, social, and cultural
+              environment.
+            </li>
+            <li>
+              The functions of AGROFORESTRY systems are to enable long-term,
+              sustainable cocoa production which preserves biodiversity,
+              prevents erosion, protects the climate and natural genetic
+              resources, diversifies and sustains production to the benefit of
+              all land users. Cocoa AGROFORESTRY systems can be developed from
+              different starting points, in different ecologic environments.
+              AGROFORESTRY systems aim to provide diversified sources of income,
+              can reduce costs, and can create co-benefits to increase the
+              economic and climate change related resilience and to food supply
+              of particularly smallholder farmers and local communities living
+              in rural areas.
+            </li>
+            <li>
+              Cocoa farmers play a crucial role for the definition, adoption,
+              and longevity of agroforestry systems. A joint process where the
+              needs, capabilities, preferences, and experiences of farmers are
+              taken into account and in which the farmers are actively supported
+              (technical assistance, development plan, capacity building) is
+              very important to maintain and improve the existing production
+              system towards long-term sustainability.
+            </li>
+            <li>
+              Banana plants / plantains do not count as trees / tree species.*
+              <br />
+              <small>
+                *Only botanically classified trees count towards an agroforestry
+                system, other plants, such as forbs (in Deutsch: Stauden) (incl.
+                banana trees / plantains), therefore, do not count.
+              </small>
+            </li>
+          </ul>
         </Fragment>
       ),
     },
@@ -660,62 +663,75 @@ const definitionContent = {
             <b>
               <u>Entry level for AGROFORESTRY (1):</u>
             </b>
-            <br />
-            At least 16 (non-cocoa) trees per ha with a minimum of 3 different
-            tree species, that are preferably native This entry level for
-            AGROFORESTRY systems corresponds to CFI and WCF indicators on
-            AGROFORESTRY
+            <ul>
+              <li>
+                At least 16 (non-cocoa) trees per ha with a minimum of 3
+                different tree species, that are preferably native. This entry
+                level for AGROFORESTRY systems corresponds to CFI and WCF
+                indicators on AGROFORESTRY.
+              </li>
+            </ul>
           </div>
           <br />
           <div>
             <b>
-              <u>Basic Category for AGROFERSTRY (2):</u>
+              <u>Basic Category for AGROFORESTRY (2):</u>
             </b>
-            <br />
-            At least 40% shade canopy cover with a minimum of 5 different native
-            tree species. This category for AGROFORESTRY is in accordance with
-            Rainforest Alliance’s shade coverage and species diversity reference
-            parameters.
+            <ul>
+              <li>
+                At least 40% shade canopy cover with a minimum of 5 different
+                native tree species. This category for AGROFORESTRY is in
+                accordance with Rainforest Alliance’s shade coverage and species
+                diversity reference parameters.
+              </li>
+            </ul>
           </div>
           <br />
           <div>
             <b>
               <u>Advanced Category for AGROFORESTRY (3):</u>
             </b>
-            <br />
-            At least 40% shade canopy cover
-            <ul style={{ marginLeft: "25px" }}>
+            <ul>
               <li>
-                Minimum of 12 different native tree species (pioneer specied
-                excluded)
+                At least 40% shade canopy cover
+                <ul type="circle">
+                  <li>
+                    Minimum of 12 different native tree species (pioneer species
+                    excluded),
+                  </li>
+                  <li>At least 15% native vegetation coverage,</li>
+                  <li>
+                    2 strata or stories and shade species should attain a
+                    minimum of 12-15 meters in height.
+                  </li>
+                </ul>
               </li>
-              <li>At least 15% native vegetation coverage</li>
               <li>
-                2 strata or stories and shade species should attain a minimum of
-                12-15 meters in height
+                In this category a special focus is given to the landscape
+                approach on AGROFORESTRY. This category is in alignment with the
+                recommendations of the VOICE Network.
               </li>
             </ul>
-            In this category a special focus is given to the landscape approach
-            on AGROFORESTRY. This category is in alignment with the
-            recommendations of the VOICE Network.
           </div>
           <br />
           <div>
             <b>
               <u>Dynamic AGROFORESTRY Systems (4):</u>
             </b>
-            <br />
-            These systems are characterized by a very high density of trees per
-            hectare. There is an abundance of different tree species, high
-            biodiversity, plant communities with different life cycles that
-            serve different purposes (carbon sequestration, income sources, food
-            etc.). They grow in different stories (strata) without competition.
-            There are at least 3 different stories (strata), regenerative
-            practices are used, and food security and income sources outside of
-            cocoa are guaranteed. This system mimics the natural habitat of
-            cacao in a highly developed cultivation system. Chocolats
-            Halba&apos;s Dynamic AGROFORESTRY Projects are seen as a model for
-            this category.
+            <ul>
+              <li>
+                These systems are characterized by a very high density of trees
+                per hectare. There is an abundance of different tree species,
+                high biodiversity, plant communities with different life cycles
+                that serve different purposes (carbon sequestration, income
+                sources, food etc.). They grow in different stories (strata)
+                without competition. There are at least 3 different stories
+                (strata), regenerative practices are used, and food security and
+                income sources outside of cocoa are guaranteed. This system
+                mimics the natural habitat of cacao in a highly developed
+                cultivation system.
+              </li>
+            </ul>
           </div>
         </Fragment>
       ),
@@ -1675,50 +1691,52 @@ const definitionContent = {
     },
     {
       i: "Agroforestry System for Cocoa Production (Description)",
-      t: "Agroforstsystem im Kakaoanbau (Beschreibung)",
+      t: "Agroforstsystem für die Kakaoproduktion (Beschreibung)",
       d: (
         <Fragment>
-          <div>
-            Der Begriff Agroforstwirtschaft bezieht sich auf Anbauflächen, auf
-            denen Kakaobäume bewusst mit vorzugsweise einheimischen und sich für
-            AGROFORSTSYSTEME eignende Nicht-Kakaobaumarten kombiniert werden.
-            Dabei handelt es sich in der Regel um andere Nutzpflanzen, wodurch
-            ökologische, ökonomische, soziale und soziokulturelle Vorteile
-            entstehen können. Agroforstansätze sollten lokal angepasst sein und
-            das ökologische, ökonomische, soziale und kulturelle Umfeld
-            berücksichtigen.
-          </div>
-          <br />
-          <div>
-            AGROFORSTSYSTEME ermöglichen eine ökologisch und wirtschaftlich
-            nachhaltige Kakaoproduktion, welche die biologische Artenvielfalt
-            erhält, Erosion verringert, das Klima und die natürlichen Ressourcen
-            schützt und den Anbau diversifiziert - zum Vorteil von Bäuerinnen
-            und Bauern. AGROFORSTSYSTEME zielen darauf ab, das Einkommen von
-            Bäuerinnen und Bauern zu diversifizieren, gegebenenfalls
-            Produktionskosten zu reduzieren, die wirtschaftliche und
-            klimawandelbezogene Resilienz von kakaoanbauenden Betrieben zu
-            erhöhen und die Nahrungsmittelversorgung im ländlichen Raum zu
-            verbessern.
-          </div>
-          <br />
-          <div>
-            Kakaobäuerinnen und -bauern spielen eine entscheidende Rolle für die
-            Akzeptanz, Verbreitung und Nachhaltigkeit von AGROFORSTSYSTEMEN. Ein
-            gemeinschaftlicher Prozess, in dem die Bedürfnisse, Präferenzen und
-            Erfahrungen der Bäuerinnen und Bauern berücksichtigt werden und sie
-            aktiv unterstützt werden (über technische Unterstützung,
-            Entwicklungspläne, Kapazitätsaufbau), ist essenziell, um bestehende
-            Anbausysteme nachhaltiger auszugestalten.
-          </div>
-          <br />
-          <div>
-            Bananenpflanzen / Kochbananen zählen nicht als Bäume / Baumarten.*
-            <br />
-            *Lediglich botanisch klassifizierte Bäume werden als „Bäume“
-            gewertet, andere Pflanzen wie Stauden (so auch
-            (Koch-)Bananenstauden), zählen daher nicht.
-          </div>
+          <ul type="bullet" style={{ margin: 0, padding: 0 }}>
+            <li>
+              Der Begriff Agroforstwirtschaft bezieht sich auf Anbauflächen, auf
+              denen Kakaobäume bewusst mit vorzugsweise einheimischen und sich
+              für AGROFORSTSYSTEME eignende Nicht-Kakaobaumarten kombiniert
+              werden. Dabei handelt es sich in der Regel um andere Nutzpflanzen,
+              wodurch ökologische, ökonomische, soziale und soziokulturelle
+              Vorteile entstehen können. Agroforstansätze sollten lokal
+              angepasst sein und das ökologische, ökonomische, soziale und
+              kulturelle Umfeld berücksichtigen.
+            </li>
+            <li>
+              AGROFORSTSYSTEME ermöglichen eine ökologisch und wirtschaftlich
+              nachhaltige Kakaoproduktion, welche die biologische Artenvielfalt
+              erhält, Erosion verringert, das Klima und die natürlichen
+              Ressourcen schützt und den Anbau diversifiziert - zum Vorteil von
+              Bäuerinnen und Bauern. AGROFORSTSYSTEME zielen darauf ab, das
+              Einkommen von Bäuerinnen und Bauern zu diversifizieren,
+              gegebenenfalls Produktionskosten zu reduzieren, die
+              wirtschaftliche und klimawandelbezogene Resilienz von
+              kakaoanbauenden Betrieben zu erhöhen und die
+              Nahrungsmittelversorgung im ländlichen Raum zu verbessern.
+            </li>
+            <li>
+              Kakaobäuerinnen und -bauern spielen eine entscheidende Rolle für
+              die Akzeptanz, Verbreitung und Nachhaltigkeit von
+              AGROFORSTSYSTEMEN. Ein gemeinschaftlicher Prozess, in dem die
+              Bedürfnisse, Präferenzen und Erfahrungen der Bäuerinnen und Bauern
+              berücksichtigt werden und sie aktiv unterstützt werden (über
+              technische Unterstützung, Entwicklungspläne, Kapazitätsaufbau),
+              ist essenziell, um bestehende Anbausysteme nachhaltiger
+              auszugestalten.
+            </li>
+            <li>
+              Bananenpflanzen/Kochbananen zählen nicht als Bäume/Baumarten.*
+              <br />
+              <small>
+                *Lediglich botanisch klassifizierte Bäume werden als „Bäume“
+                gewertet, andere Pflanzen wie Stauden (so auch
+                (Koch-)Bananenstauden), zählen daher nicht.
+              </small>
+            </li>
+          </ul>
         </Fragment>
       ),
     },
@@ -1731,63 +1749,77 @@ const definitionContent = {
             <b>
               <u>Einstiegstufe für AGROFORSTSYSTEME (1):</u>
             </b>
-            <br />
-            Mindestens 16 Nicht-Kakaobäume pro Hektar mit mindestens 3
-            verschiedenen – vorzugsweise einheimischen – Baumarten. Diese
-            Einstiegsstufe für AGROFORSTSYSTEME entspricht den
-            Agroforstindikatoren von CFI und WCF.
+            <ul>
+              <li>
+                Mindestens 16 Nicht-Kakaobäume pro Hektar mit mindestens 3
+                verschiedenen – vorzugsweise einheimischen – Baumarten
+              </li>
+              <li>
+                Diese Einstiegsstufe für AGROFORSTSYSTEME entspricht den
+                Agroforstindikatoren von CFI und WCF.
+              </li>
+            </ul>
           </div>
           <br />
           <div>
             <b>
               <u>Basiskategorie für AGROFORSTSYSTEME (2):</u>
             </b>
-            <br />
-            Mindestens 40 % Überschirmungsgrad und mindestens 5 verschiedene
-            einheimische Baumarten. Diese Kategorie für AGROFORSTSYSTEME
-            entspricht den Rainforest Alliance Referenzparametern für
-            Beschattung und biologischer Artenvielfalt.
+            <ul>
+              <li>
+                Mindestens 40 % Überschirmungsgrad und mindestens 5 verschiedene
+                einheimische Baumarten. Diese Kategorie für AGROFORSTSYSTEME
+                entspricht den Rainforest Alliance Referenzparametern für
+                Beschattung und biologischer Artenvielfalt.
+              </li>
+            </ul>
           </div>
           <br />
           <div>
             <b>
               <u>Fortgeschrittene Kategorie für AGROFORSTSYSTEME (3):</u>
             </b>
-            <br />
-            Mindestens 40% Überschirmungsgrad,
-            <ul style={{ marginLeft: "25px" }}>
+            <ul>
+              <li>Mindestens 40% Überschirmungsgrad,</li>
+              <ul type="circle">
+                <li>
+                  mindestens 12 verschiedene einheimische Baumarten (nicht:
+                  Pionierbaumarten),
+                </li>
+                <li>Mindestens 15% einheimische Vegetationsbedeckung,</li>
+                <li>
+                  2 Stockwerke / Baumstrata und eine Mindesthöhe der
+                  Schattenbäume von 12-15 Metern.
+                </li>
+              </ul>
               <li>
-                mindestens 12 verschiedene einheimische Baumarten (nicht:
-                Pionierbaumarten)
-              </li>
-              <li>Mindestens 15% einheimische Vegetationsbedeckung</li>
-              <li>
-                2 Stockwerke / Baumstrata und eine Mindesthöhe der Schattenbäume
-                von 12-15 Metern
+                In dieser Kategorie wird ein besonderer Fokus auf den
+                landschaftlichen Ansatz der Agroforstwirtschaft gelegt. Sie
+                orientiert sich an den Empfehlungen des VOICE-Netzwerks.
               </li>
             </ul>
-            In dieser Kategorie wird ein besonderer Fokus auf den
-            landschaftlichen Ansatz der Agroforstwirtschaft gelegt. Sie
-            orientiert sich an den Empfehlungen des VOICE-Netzwerks.
           </div>
           <br />
           <div>
             <b>
               <u>Dynamische AGROFORSTSYSTEME (4):</u>
             </b>
-            <br />
-            Diese Systeme zeichnen sich durch eine sehr hohe Baumdichte pro
-            Hektar aus. Das Anbausystem beherbergt viele verschiedene Baum- und
-            Pflanzenarten mit unterschiedlichen Lebenszyklen, die verschiedene
-            Zwecke erfüllen (Kohlenstoffbindung, alternative Einkommensquellen,
-            Nahrung etc.). Sie gedeihen in verschiedenen Schichten ohne
-            Konkurrenz zueinander. Es gibt mindestens 3 verschiedene Stockwerke
-            / Strata, es werden regernative landwirtschaftliche Praktiken
-            angewendet und die Nahrungsmittelsicherheit sowie alternative
-            Einkommensquellen außerhalb des Kakaos sind gesichert. Dieses System
-            ahmt den natürlichen Lebensraum des Kakaos in einem hoch
-            entwickelten Anbausystem nach, wobei die dynamischen
-            Agroforstprojekte von Chocolats Halba als Vorbild gelten.
+            <ul>
+              <li>
+                Diese Systeme zeichnen sich durch eine sehr hohe Baumdichte pro
+                Hektar aus. Das Anbausystem beherbergt viele verschiedene Baum-
+                und Pflanzenarten mit unterschiedlichen Lebenszyklen, die
+                verschiedene Zwecke erfüllen (Kohlenstoffbindung, alternative
+                Einkommensquellen, Nahrung etc.). Sie gedeihen in verschiedenen
+                Schichten ohne Konkurrenz zueinander. Es gibt mindestens 3
+                verschiedene Stockwerke/Strata, es werden regenerative
+                landwirtschaftliche Praktiken angewendet und die
+                Nahrungsmittelsicherheit sowie alternative Einkommensquellen
+                außerhalb des Kakaos sind gesichert. Dieses System ahmt den
+                natürlichen Lebensraum des Kakaos in einem hoch entwickelten
+                Anbausystem nach.
+              </li>
+            </ul>
           </div>
         </Fragment>
       ),
