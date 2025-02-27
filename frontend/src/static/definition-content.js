@@ -1971,21 +1971,22 @@ const definitionContent = {
       ),
     },
     {
-      i: "Project",
-      t: "Projekt",
+      i: "Project / Programme",
+      t: "Projekt / Programm",
       d: (
         <Fragment>
           <div>
-            • Ein Kakao-Nachhaltigkeitsprojekt/-programm ist definiert als ein
+            Ein Kakao-Nachhaltigkeitsprojekt/-programm ist definiert als ein
             Programm, ein Projekt oder eine Initiative, welches/welche die
             Nachhaltigkeit (oder einzelne Aspekte der Nachhaltigkeit) in der
             Kakaoproduktion, -verarbeitung und/oder entlang der Lieferketten zu
             fördern versucht.
-            <br />• Unter der Bezeichnung "Nachhaltigkeitsprojekt/-programm"
-            kann ein Mitglied über jedes "Programm, Projekt oder Initiative" im
-            Bereich der Nachhaltigkeit berichten. Mitglieder mit größeren
-            Nachhaltigkeitsprogrammen können wählen zwischen: (a) aggregierter
-            Berichterstattung zu einem großen Programm mit mehreren
+            <br />
+            Unter der Bezeichnung &quot;Nachhaltigkeitsprojekt/-programm&quot;
+            kann ein Mitglied über jedes &quot;Programm, Projekt oder
+            Initiative&quot; im Bereich der Nachhaltigkeit berichten. Mitglieder
+            mit größeren Nachhaltigkeitsprogrammen können wählen zwischen: (a)
+            aggregierter Berichterstattung zu einem großen Programm mit mehreren
             Interventionsbereichen; oder (b) separater Berichterstattung für
             zugrunde liegende (z.B. länderspezifische) Projekte.
           </div>
