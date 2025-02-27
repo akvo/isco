@@ -1113,8 +1113,8 @@ const definitionContent = {
       ),
     },
     {
-      i: "Certified or cocoa covered through a company programm",
-      t: "Certified or cocoa covered through a company programm",
+      i: "Certified or cocoa covered through a company program",
+      t: "Certified or cocoa covered through a company program",
       d: "Cocoa produced in compliance with the requirements of certification standards (such as Fairtrade or Rainforest Alliance) or company schemes on sustainable cocoa.",
     },
     {
@@ -2404,7 +2404,7 @@ const definitionContent = {
       ),
     },
     {
-      i: "Certified or cocoa covered through a company programm",
+      i: "Certified or cocoa covered through a company program",
       t: "Zertifizierter oder durch Unternehmensprogramme unabhängig geprüfter Kakao",
       d: "Kakao, der gemäß den Anforderungen von Zertifizierungsstandards (wie Fairtrade oder Rainforest Alliance) oder durch Unternehmensprogramme für nachhaltigen Kakao produziert wurde.",
     },
