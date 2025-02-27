@@ -3,24 +3,10 @@ import { Table } from "antd";
 
 const numberOfHHIndirectSupplyChainData = [
   ["Côte d'Ivoire", 3.0, 1521.6, 507.2],
-  ["Ghana", 2.0, 1104.6, 552.3],
+  ["Ghana", 3.44, 1131.7, 329],
   ["Nigeria", 2.3, 630.89, 274.3],
   ["Cameroon", 3.3, 1592.58, 482.6],
   ["Ecuador", 5.8, 3840.18, 662.1],
-  ["Venezuela", 3.5, 1228.85, 351.1],
-  ["Sierra Leone", 3.5, 1327.2, 379.2],
-  ["Dominican Republic", 3.5, 1883.35, 538.1],
-  ["Peru", 3.5, 3378.2, 965.2],
-  ["Brazil", 3.5, 1624.0, 464.0],
-  ["Columbia", 3.5, 1173.2, 335.2],
-  ["Democratic Republic of Congo", 3.5, 1867.95, 533.7],
-  ["Indonesia", 3.5, 1619.1, 462.6],
-  ["Liberia", 3.5, 576.45, 164.7],
-  ["Madagascar", 3.5, 3139.5, 897.0],
-  ["Togo", 3.5, 3945.9, 1127.4],
-  ["Uganda", 3.5, 1845.55, 527.3],
-  ["Vietnam", 3.5, 1648.5, 471.0],
-  ["Tanzania", 3.5, 2525.2, 721.2],
 ];
 
 const numberOfHHIndirectSupplyChainColumns = [
@@ -30,7 +16,9 @@ const numberOfHHIndirectSupplyChainColumns = [
     key: "country",
   },
   {
-    title: <b>Average land size in ha (Cocoa Barometer)</b>,
+    title: (
+      <b>Average land size in ha (Cocoa Barometer and CHIS Study in Ghana)</b>
+    ),
     dataIndex: "avg_land_size",
     key: "avg_land_size",
   },
@@ -40,7 +28,13 @@ const numberOfHHIndirectSupplyChainColumns = [
     key: "avg_annual_yield",
   },
   {
-    title: <b>Average yield in kg/ha in 2022 (FAOSTAT)</b>,
+    title: (
+      <b>
+        Average yield in kg/ha in 2022*
+        <br />
+        <small>*2024 data available for Ghana</small>
+      </b>
+    ),
     dataIndex: "avg_yield",
     key: "avg_yield",
   },
@@ -339,7 +333,7 @@ const definitionContent = {
     {
       i: "Reached (farming households reached)",
       t: "Reached (farming households reached)",
-      d: 'The term “reached” (as in "farming households reached") is contextual, it could mean "engaged in", "benefiting", etc. Each data collection, for "# of farming households reached", shall to the extent possible be linked to an activity, output or outcome of the cocoa sustainability project or initiative; such linking thus contextualizes the implication of and / or benefits for the concerned farming household.',
+      d: "The term “reached” (as in ”farming households reached”) is contextual, it could mean ”engaged in”, ”benefiting”, etc. Each data collection, for “# of farming households reached”, shall to the extent possible be linked to an activity, output or outcome of the cocoa sustainability project or initiative; such linking thus contextualizes the implication of and / or benefits for the concerned farming household.",
     },
     {
       i: "Farming land",
@@ -446,7 +440,7 @@ const definitionContent = {
             that are economically justified and reduce or minimize risks to
             human health and the environment. IPM emphasizes the growth of a
             healthy crop with the least possible disruption to agro-ecosystems
-            and encourages natural pest control mechanisms. (FAQ:{" "}
+            and encourages natural pest control mechanisms. (FAO:{" "}
             <a
               href="http://www.fao.org/agriculture/crops/thematic-sitemap/theme/pests/ipm/en/"
               target="_blank"
@@ -488,32 +482,56 @@ const definitionContent = {
       d: (
         <Fragment>
           <div>
-            Please refer to the LICOP website for an overview of living income
-            benchmarks and studies. If there is no benchmark available for the
-            region you are working in, please consult the LICOP FAQ living
-            income benchmarks which provides guidance for using alternatives
-            when there is no benchmark available.
+            Please refer to the{" "}
+            <a
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ fontSize: "14px" }}
+            >
+              LICOP website
+            </a>{" "}
+            for an overview of living income benchmarks and studies. If there is
+            no benchmark available for the region you are working in, please
+            consult the
+            <a
+              href="https://c69aa8ac-6965-42b2-abb7-0f0b86c23d2e.filesusr.com/ugd/0c5ab3_4a0b8a8f12d74abc86b2260984a967ae.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ fontSize: "14px" }}
+            >
+              LICOP FAQ living income benchmarks
+            </a>{" "}
+            which provides guidance for using alternatives when there is no
+            benchmark available.
           </div>
         </Fragment>
       ),
     },
     {
-      i: "Living income reference price (LIRP)",
-      t: "Living income reference price (LIRP)",
+      i: "Living Income Reference Price",
+      t: "Living Income Reference Price",
       d: (
         <Fragment>
           <div>
             A Living Income Reference Price indicates the price needed for an
             average farmer household with a viable farm size and an adequate
             productivity level to make a living income from the sales of their
-            crop. It can be calculated with the formula: Living Income Reference
-            Price (LIRP) = Cost of decent living + cost of sustainable
-            production / viable land area * sustainable yields For Fairtade the
-            current LIRP (2022) at farmgate is:
+            crop. It can be calculated with the formula:
+            <br />
+            <code>
+              Living Income Reference Price (LIRP) = Cost of decent living +
+              cost of sustainable production / viable land area * sustainable
+              yields
+            </code>
+            <br />
+            For Fairtade the relevant price at farmgate is:
             <ul style={{ marginLeft: "25px" }}>
               <li>Ghana: 16.50 GHC / 2.12 USD per kg</li>
               <li>Côte d’Ivoire: 1.602 CFA / 2.39 USD per kg</li>
             </ul>
+            For other origins, please indicate in the comment box, which LIRP
+            you are using.
           </div>
         </Fragment>
       ),
@@ -745,10 +763,9 @@ const definitionContent = {
         <Fragment>
           <div>
             A tree species occurring within its natural range (past or present)
-            and dispersal potential (i.e. within the range it occupies naturally
-            or could occupy without direct or indirect introduction or care by
-            humans). <br />
-            FAO (2020).
+            and dispersal potential (i.e., within the range it occupies
+            naturally or could occupy without direct or indirect introduction or
+            care by humans). (FAO:{" "}
             <a
               href="http://www.fao.org/3/I8661EN/i8661en.pdf"
               target="_blank"
@@ -757,6 +774,7 @@ const definitionContent = {
             >
               http://www.fao.org/3/I8661EN/i8661en.pdf
             </a>
+            ).
           </div>
         </Fragment>
       ),
@@ -767,22 +785,20 @@ const definitionContent = {
       d: (
         <Fragment>
           <div>
-            The amount of money that a household earns, or gains, each year
+            • The amount of money that a household earns, or gains, each year
             after costs, taxes, and transfers. It represents the money available
             to a household for spending on goods or services and savings. This
             is currently calculated via: Production * producer price (including
             farmer sustainability premiums where relevant) – costs + non-cocoa
             income (such as non-agricultural income, income from rent, and
-            remittances) minus associated costs. <br /> <br />
-            <i>
-              <u>Points of attention:</u>
-            </i>{" "}
+            remittances) - associated costs. <br /> <br />
+            <u>Points of attention:</u>
             <br />
             <i>Costs to include:</i>
             <ul style={{ marginLeft: "25px" }}>
               <li>
                 <i>
-                  amortization of infrastructure and interests paid on loans
+                  amortization of infrastructure and interests paid on loans,
                 </i>
               </li>
               <li>
@@ -830,11 +846,10 @@ const definitionContent = {
             Replanting and / or regenerating trees across a defined landscape
             that incorporates native (preferably) and non-native tree species to
             restore the multiple ecological benefits of forests (with focus on
-            achieving natural forest). (Source: Accountability Framework) <br />
-            <br />
-            Best practice is to develop a forest restoration plan based on an
-            initial assessment (baseline) and action plan shared with the (local
-            or national) government.
+            achieving natural forest). (Source: Accountability Framework). Best
+            practice is to develop a forest restoration plan based on an initial
+            assessment (baseline) and action plan shared with the (local or
+            national) government.
           </div>
         </Fragment>
       ),
@@ -882,24 +897,22 @@ const definitionContent = {
       ),
     },
     {
-      i: "Project",
-      t: "Project",
+      i: "Project / Programme",
+      t: "Project / Programme",
       d: (
         <Fragment>
           <div>
-            A cocoa sustainability project is defined as a program, project or
-            initiative targeting (aspects of) sustainability in cocoa
-            production, processing and / or supply chains.
+            A cocoa sustainability project / programme is defined as a
+            programme, project or initiative targeting (aspects of)
+            sustainability in cocoa production, processing and / or supply
+            chains.
             <br />
-            <br />
-            <i>
-              Under the label “sustainability project”, the reporting system
-              allows a member to report on any sustainability “program, project
-              or initiative”. Members with larger sustainability programs can
-              choose between: (a) reporting aggregated data on a large program,
-              with several intervention areas; or (b) reporting separately for
-              underlying (for example country-specific) projects.
-            </i>
+            Under the label “sustainability project / programme”, the reporting
+            system allows a member to report on any sustainability “programme,
+            project or initiative”. Members with larger sustainability
+            programmes can choose between: (a) reporting aggregated data on a
+            large programme, with several intervention areas; or (b) reporting
+            separately for underlying (for example country-specific) projects.
           </div>
         </Fragment>
       ),
@@ -978,18 +991,15 @@ const definitionContent = {
             knowledge, skills and abilities (agency) and in the power relations
             and structures (norms, customs, institutions, policies, laws, etc.)
             that shape her access to rights and resources, choices and
-            opportunities, and ultimately wellbeing.{" "}
-            <i>
-              (WCF Gender Integration guidance note, Annex on Gender Principles
-              and definitions)
-            </i>
+            opportunities, and ultimately wellbeing. (WCF Gender Integration
+            guidance note, Annex on Gender Principles and definitions).
           </div>
         </Fragment>
       ),
     },
     {
-      i: "Yield (cocoa yield):",
-      t: "Yield (cocoa yield):",
+      i: "Yield (cocoa yield)",
+      t: "Yield (cocoa yield)",
       d: "Total cocoa weight (typically expressed in kilograms) produced per unit area (typically expressed in hectare), in a given year.",
     },
     {
@@ -1062,7 +1072,7 @@ const definitionContent = {
             <ul>
               <li>Ghana: (20.000/1104.6)*1.000 = 18.106 farmers</li>
               <li>Ecuador: (2.000/3840.18)*1.000 = 520 farmers</li>
-              <li>Total: 18.626 farmers</li>
+              <li>Total: 18.626 farmers </li>
             </ul>
             <br />
             <Table
@@ -1390,7 +1400,7 @@ const definitionContent = {
     {
       i: "Reached (farming households reached)",
       t: "erreicht („erreichte bäuerliche Haushalte“)",
-      d: 'Der Begriff "erreicht" (im Sinne von "erreichte bäuerliche Haushalte") ist kontextabhängig, er könnte beispielsweise "involviert in" oder "profitierend von" bedeuten. Entsprechende Datenerhebungen sollten die Variable "Anzahl der erreichten bäuerlichen Haushalten" in Beziehung setzen zu einer Aktivität oder einer Wirkung / einem Ergebnis des Nachhaltigkeitsprojekts; Diese Verknüpfung kontextualisiert die Implikationen / Vorteile für die „erreichten“ bäuerlichen Haushalte.',
+      d: 'Der Begriff "erreicht" (im Sinne von "erreichte bäuerliche Haushalte") ist kontextabhängig, er könnte beispielsweise "involviert in" oder "profitierend von" bedeuten. Entsprechende Datenerhebungen sollten die Variable "Anzahl der erreichten bäuerlichen Haushalte" in Beziehung setzen zu einer Aktivität oder einer Wirkung/einem Ergebnis des Nachhaltigkeitsprojekts; Diese Verknüpfung kontextualisiert die Implikationen/Vorteile für die „erreichten“ bäuerlichen Haushalte.',
     },
     {
       i: "Farming land",
@@ -1538,18 +1548,18 @@ const definitionContent = {
     },
     {
       i: "Living income benchmarks",
-      t: "Benchmarks / Richtwerte für existenzsichernde Einkommen",
+      t: "Benchmarks/Richtwerte für existenzsichernde Einkommen",
       d: (
         <Fragment>
           <div>
             Auf der{" "}
             <a
-              href="https://www.living-income.com/living-income-benchmarks"
+              href="#"
               target="_blank"
               rel="noopener noreferrer"
               style={{ fontSize: "14px" }}
             >
-              LICOP-Website
+              ALIGN-Webseite
             </a>{" "}
             finden Sie einen Überblick über Benchmarks und Studien zum
             existenzsichernden Einkommen. Wenn für die Region, in der Sie
@@ -1560,16 +1570,16 @@ const definitionContent = {
               rel="noopener noreferrer"
               style={{ fontSize: "14px" }}
             >
-              Living Income Community of Practice,
-            </a>{" "}
-            die Anleitungen für die Verwendung von Alternativen enthalten, wenn
-            keine Benchmark verfügbar ist.
+              Living Income Community of Practice
+            </a>
+            , die Anleitungen für die Verwendung von Alternativen enthalten,
+            wenn keine Benchmark verfügbar ist.
           </div>
         </Fragment>
       ),
     },
     {
-      i: "Living income reference price (LIRP)",
+      i: "Living Income Reference Price",
       t: "Referenzpreis für existenzsicherndes Einkommen",
       d: (
         <Fragment>
@@ -1578,15 +1588,21 @@ const definitionContent = {
             an, den ein durchschnittlicher Bauernhaushalt mit einer rentablen
             Betriebsgröße und einem angemessenen Produktivitätsniveau benötigt,
             um ein existenzsicherndes Einkommen aus dem Verkauf seiner Ernte zu
-            erzielen. Es kann mit der Formel berechnet werden: Referenzpreis für
-            existenzsicherndes Einkommen (LIRP) = Kosten für menschenwürdiges
-            Leben + Kosten für nachhaltige Produktion / lebensfähige Landfläche
-            * nachhaltige Erträge Für Fairtrade lautet der aktuelle LIRP (2022)
-            bei farmgate:
+            erzielen. Es kann mit der Formel berechnet werden:
+            <br />
+            <code>
+              Referenzpreis für existenzsicherndes Einkommen (LIRP) = Kosten für
+              menschenwürdiges Leben + Kosten für nachhaltige Produktion /
+              lebensfähige Landfläche * nachhaltige Erträge
+            </code>
+            <br />
+            Für Fairtrade lautet beispielsweise der LIRP (2022):
             <ul style={{ marginLeft: "25px" }}>
-              <li>Ghana: 16,50 GHC / 2,12 USD pro kg;</li>
-              <li>Elfenbeinküste: 1.602 CFA / 2.39 USD pro kg</li>
+              <li>Ghana: 16,50 GHC / 2,12 USD pro kg</li>
+              <li>Côte d‘Ivoire: 1.602 CFA / 2.39 USD pro kg</li>
             </ul>
+            Für andere Ursprünge geben Sie bitte im Kommentarfeld an, welches
+            LIRP Sie verwenden.
           </div>
         </Fragment>
       ),
@@ -1821,8 +1837,7 @@ const definitionContent = {
             (früher oder heute) oder Verbreitungspotentials vorkommt (d.h.
             innerhalb des Gebiets, in dem sie natürlicherweise vorkommt oder
             ohne direkte oder indirekte Einwirkung oder Pflege durch den
-            Menschen vorkommen könnte). <br />
-            FAO (2020).
+            Menschen vorkommen könnte). (FAO:{" "}
             <a
               href="http://www.fao.org/3/I8661EN/i8661en.pdf"
               target="_blank"
@@ -1831,13 +1846,14 @@ const definitionContent = {
             >
               http://www.fao.org/3/I8661EN/i8661en.pdf
             </a>
+            ).
           </div>
         </Fragment>
       ),
     },
     {
       i: "Net household income",
-      t: "Netto-Haushaltseinkommen",
+      t: "Haushaltsnettoeinkommen-Haushaltseinkommen",
       d: (
         <Fragment>
           <div>
@@ -1848,7 +1864,7 @@ const definitionContent = {
             (einschließlich Nachhaltigkeitsprämien) – Produktionskosten +
             Einkommen aus alternativen Quellen (z. B. nicht-landwirtschaftliches
             Einkommen, Mieteinnahmen etc.) abzüglich der damit verbundenen
-            Kosten. <br /> <br />
+            Kosten.
             <i>Zu den Kosten können gehören:</i>
             <ul style={{ marginLeft: "25px" }}>
               <li>
@@ -1898,17 +1914,15 @@ const definitionContent = {
       d: (
         <Fragment>
           <div>
-            Bezeichnet das Neupflanzen und / oder die Regenerierung von
+            Bezeichnet das Neupflanzen und/oder die Regenerierung von
             bestehenden Bäumen in einem bestimmten Gebiet unter Einbezug
-            (vorzugsweise) einheimischer aber auch nicht-einheimischer
+            (vorzugsweise) einheimischer, aber auch nicht-einheimischer
             Baumarten, um die vielfältigen ökologischen Vorteile von Wäldern
             wiederherzustellen (mit dem Ziel, die Entstehung natürlicher Walder
-            zu fördern). (Quelle: Accountability Framework) <br />
-            <br />
-            „Best practice“ ist die Entwicklung eines Plans zur
-            Wiederherstellung des Waldes auf der Grundlage einer ersten
-            Bewertung (Ausgangssituation) und eines mit der (lokalen oder
-            nationalen) Regierung abgestimmten Aktionsplans.
+            zu fördern). (Quelle: Accountability Framework). „Best practice“ ist
+            die Entwicklung eines Plans zur Wiederherstellung des Waldes auf der
+            Grundlage einer ersten Bewertung (Ausgangssituation) und eines mit
+            der (lokalen oder nationalen) Regierung abgestimmten Aktionsplans.
           </div>
         </Fragment>
       ),
@@ -1962,22 +1976,18 @@ const definitionContent = {
       d: (
         <Fragment>
           <div>
-            Ein Kakao-Nachhaltigkeitsprojekt ist definiert als ein Programm, ein
-            Projekt oder eine Initiative, welches / welche die Nachhaltigkeit
-            (oder einzelne Aspekte der Nachhaltigkeit) in der Kakaoproduktion,
-            -verarbeitung und / oder entlang der Lieferketten zu fördern
-            versucht.
-            <br />
-            <br />
-            <i>
-              Unter der Bezeichnung &quot;Nachhaltigkeitsprojekt&quot; kann ein
-              Mitglied über jedes &quot;Programm, Projekt oder Initiative&quot;
-              im Bereich der Nachhaltigkeit berichten. Mitglieder mit größeren
-              Nachhaltigkeitsprogrammen können wählen zwischen: (a) aggregierter
-              Berichterstattung zu einem großen Programm mit mehreren
-              Interventionsbereichen; oder (b) separater Berichterstattung für
-              zugrunde liegende (z.B. länderspezifische) Projekte.
-            </i>
+            • Ein Kakao-Nachhaltigkeitsprojekt/-programm ist definiert als ein
+            Programm, ein Projekt oder eine Initiative, welches/welche die
+            Nachhaltigkeit (oder einzelne Aspekte der Nachhaltigkeit) in der
+            Kakaoproduktion, -verarbeitung und/oder entlang der Lieferketten zu
+            fördern versucht.
+            <br />• Unter der Bezeichnung "Nachhaltigkeitsprojekt/-programm"
+            kann ein Mitglied über jedes "Programm, Projekt oder Initiative" im
+            Bereich der Nachhaltigkeit berichten. Mitglieder mit größeren
+            Nachhaltigkeitsprogrammen können wählen zwischen: (a) aggregierter
+            Berichterstattung zu einem großen Programm mit mehreren
+            Interventionsbereichen; oder (b) separater Berichterstattung für
+            zugrunde liegende (z.B. länderspezifische) Projekte.
           </div>
         </Fragment>
       ),
@@ -2057,22 +2067,20 @@ const definitionContent = {
       d: (
         <Fragment>
           <div>
-            Der kombinierte Effekt von Veränderungen im Bewusstsein, des Wissens
-            und der Fähigkeiten von Frauen sowie von Veränderungen der
-            Machtverhältnisse und Strukturen (Normen, Bräuche, Institutionen,
-            Gesetzgebung usw.), welche den Zugang von Frauen zu Rechten und
-            Ressourcen, ihre Entscheidungen und Chancen und letztlich ihr
-            Wohlergehen prägen.{" "}
-            <i>
-              (WCF-Gender Integration Guidance Note, Anhang zu Gender-Prinzipien
-              und Definitionen)
-            </i>
+            Die kombinierte Wirkung von Veränderungen im Bewusstsein, Wissen,
+            den Fähigkeiten und Kompetenzen einer Frau (<b>Eigenmacht</b>) sowie
+            in den Machtverhältnissen und Strukturen (Normen, Bräuche,
+            Institutionen, Richtlinien, Gesetze usw.), die ihren Zugang zu
+            Rechten und Ressourcen, ihre Entscheidungsfreiheit und Chancen sowie
+            letztlich ihr Wohlergehen beeinflussen. (WCF-Leitfaden zur
+            Geschlechterintegration, Anhang zu Gender-Prinzipien und
+            Definitionen).
           </div>
         </Fragment>
       ),
     },
     {
-      i: "Yield (cocoa yield):",
+      i: "Yield (cocoa yield)",
       t: "Ertrag (Kakaoertrag)",
       d: "Gesamtgewicht des Kakaos (typischerweise angegeben in Kilogramm), der je Flächeneinheit (typischerweise in Hektar) in einem bestimmten Jahr erzeugt wird.",
     },
@@ -2134,25 +2142,35 @@ const definitionContent = {
     },
     {
       i: "Methodology to calculate number of households in the indirect supply chain",
-      t: "Methodik zur Berechnung der Anzahl von Haushalten in der indirekten Lieferkette",
+      t: "Methodik zur Berechnung der Anzahl der Haushalte in der indirekten Lieferkette",
       d: (
         <Fragment>
           <div>
-            Bitte berechnen Sie die Anzahl der Haushalte in Ihrer indirekten
-            Lieferkette, indem Sie die Gesamtvolumina, die Sie über die
-            indirekte Lieferkette bezogen haben, durch den durchschnittlichen
-            jährlichen Ertrag der Bauern in Ihrer indirekten Lieferkette teilen.
-            Bitte finden Sie den durchschnittlichen jährlichen Ertrag für die
-            größten Kakaoproduzentenländer in der untenstehenden Tabelle.
+            Bitte berechnen Sie die Anzahl der Haushalte in der indirekten
+            Lieferkette, indem Sie die Gesamtmenge, die Sie über die indirekte
+            Lieferkette bezogen haben, durch den durchschnittlichen Jahresertrag
+            der Bauern in Ihrer indirekten Lieferkette teilen. In der
+            nachstehenden Tabelle finden Sie die durchschnittlichen
+            Jahreserträge für einige die größten Kakaoanbauländer. Bitte
+            beachten Sie: Die folgenden Zahlen beziehen sich auf das Jahr 2022.
+            Die ISCOs werden sich bemühen, aktualisierte Zahlen in das
+            Monitoring-Tool aufzunehmen.
             <br />
             <br />
-            Beispiel: 20.000 MT-BE werden aus Ghana bezogen und 2.000 MT-BE
-            werden aus Ecuador bezogen
+            Beispiel: Aus Ghana werden 20.000 MT-BE bezogen, aus Ecuador 2.000
+            MT-BE.
             <ul>
-              <li>Ghana: (20.000/1104,6)*1.000 = 18.106 Bauern</li>
-              <li>Ecuador: (2.000/3840,18)*1.000 = 520 Bauern</li>
+              <li>
+                Ghana: (20.000/1.104,6)*1.000 = 18.106 Bäuerinnen und Bauern
+              </li>
+              <li>
+                Ecuador: (2.000/3.840,18)*1.000 = 520 Bäuerinnen und Bauern
+              </li>
               <li>Gesamt: 18.626 Bauern</li>
             </ul>
+            Bitte beachten Sie: Die folgenden Zahlen beziehen sich auf das Jahr
+            2022. Die ISCOs werden sich bemühen, aktualisierte Zahlen in das
+            Monitoring-Tool aufzunehmen.
             <br />
             <Table
               columns={numberOfHHIndirectSupplyChainColumns}
