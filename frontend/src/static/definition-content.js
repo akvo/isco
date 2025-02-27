@@ -3,24 +3,10 @@ import { Table } from "antd";
 
 const numberOfHHIndirectSupplyChainData = [
   ["Côte d'Ivoire", 3.0, 1521.6, 507.2],
-  ["Ghana", 2.0, 1104.6, 552.3],
+  ["Ghana", 3.44, 1131.7, 329],
   ["Nigeria", 2.3, 630.89, 274.3],
   ["Cameroon", 3.3, 1592.58, 482.6],
   ["Ecuador", 5.8, 3840.18, 662.1],
-  ["Venezuela", 3.5, 1228.85, 351.1],
-  ["Sierra Leone", 3.5, 1327.2, 379.2],
-  ["Dominican Republic", 3.5, 1883.35, 538.1],
-  ["Peru", 3.5, 3378.2, 965.2],
-  ["Brazil", 3.5, 1624.0, 464.0],
-  ["Columbia", 3.5, 1173.2, 335.2],
-  ["Democratic Republic of Congo", 3.5, 1867.95, 533.7],
-  ["Indonesia", 3.5, 1619.1, 462.6],
-  ["Liberia", 3.5, 576.45, 164.7],
-  ["Madagascar", 3.5, 3139.5, 897.0],
-  ["Togo", 3.5, 3945.9, 1127.4],
-  ["Uganda", 3.5, 1845.55, 527.3],
-  ["Vietnam", 3.5, 1648.5, 471.0],
-  ["Tanzania", 3.5, 2525.2, 721.2],
 ];
 
 const numberOfHHIndirectSupplyChainColumns = [
@@ -28,21 +14,33 @@ const numberOfHHIndirectSupplyChainColumns = [
     title: <b>Country</b>,
     dataIndex: "country",
     key: "country",
+    width: "40%",
   },
   {
-    title: <b>Average land size in ha (Cocoa Barometer)</b>,
+    title: (
+      <b>Average land size in ha (Cocoa Barometer and CHIS Study in Ghana)</b>
+    ),
     dataIndex: "avg_land_size",
     key: "avg_land_size",
+    width: "20%",
   },
   {
     title: <b>Average annual yield</b>,
     dataIndex: "avg_annual_yield",
     key: "avg_annual_yield",
+    width: "20%",
   },
   {
-    title: <b>Average yield in kg/ha in 2022 (FAOSTAT)</b>,
+    title: (
+      <b>
+        Average yield in kg/ha in 2022*
+        <br />
+        <small>*2024 data available for Ghana</small>
+      </b>
+    ),
     dataIndex: "avg_yield",
     key: "avg_yield",
+    width: "20%",
   },
 ];
 
@@ -76,14 +74,20 @@ const definitionContent = {
             <b>
               <u>MT-BE:</u>
             </b>{" "}
-            MT-BE stands for &quot;metric tons bean equivalents&quot; of a
-            certain quantity of semi-finished cocoa products or cocoa-containing
+            MT-BE stands for ”metric tons bean equivalents” of a certain
+            quantity of semi-finished cocoa products or cocoa-containing
             products. In other words, the MT-BE represents the corresponding
             volume of cocoa beans sourced, expressed in metric tons. Conversion
             to MT-BE, of cocoa sourced in different forms, is to be done using
             the ICCO conversion factors; being: 1,33 for cocoa butter (1804),
             1,25 for cocoa paste/liquor (18031), and 1,18 for cocoa powder and
-            cake (1805, 18032).
+            cake (1805, 18032). With respect to the MT-BE of cocoa contained in
+            consumer end products supplied to the national market in Europe,
+            reporting is to be done by the consumer brands. For their own labels
+            (brands), retailers are expected to report in the same way as the
+            consumer brands. Of course, where required, these brands / retailers
+            will rely on the corresponding information obtained from their
+            suppliers.
           </div>
         </Fragment>
       ),
@@ -159,10 +163,10 @@ const definitionContent = {
             Child Labour Monitoring and Remediation Systems are a means of
             targeting prevention, mitigation and remediation assistance to
             children involved in or at-risk of child labour, as well as to their
-            families and communities. To meet the definition of a Child Labour
-            Monitoring and Remediation Systems (CLMRS) or equivalent, the system
-            must implement the following core activities:
-            <ul style={{ marginLeft: "25px" }}>
+            families and communities. To meet the definition of a{" "}
+            <i>Child Labour Monitoring and Remediation Systems (CLMRS)</i> or
+            equivalent, the system must implement the following core activities:
+            <ol style={{ marginLeft: "25px" }} start={1}>
               <li>
                 Raise awareness on child labour and resulting harm amongst
                 farmers, children and the wider community.
@@ -180,9 +184,9 @@ const definitionContent = {
                 Follow-up with children identified in child labour and continue
                 to monitor their status on a regular basis until they have
                 stopped engaging in child labour and have satisfactory
-                alternatives
+                alternatives.
               </li>
-            </ul>
+            </ol>
           </div>
         </Fragment>
       ),
@@ -193,8 +197,8 @@ const definitionContent = {
       d: "Please refer to the definition of “Child Labour Monitoring and Remediation Systems (CLMRS)”",
     },
     {
-      i: "Cocoa traceability level",
-      t: "Cocoa traceability level",
+      i: "Cocoa traceability levels",
+      t: "Cocoa traceability levels",
       d: (
         <Fragment>
           <div>
@@ -205,31 +209,31 @@ const definitionContent = {
             not require segregation but can be applied also with a mass balance
             mechanism. Distinction is made between the following traceability
             levels:
-            <ul style={{ marginLeft: "25px" }}>
+            <ol style={{ marginLeft: "25px" }} start={1}>
               <li>
-                Score 1: Origin unknown, expressed in % of the total volume
-                supplied/ processed.
-              </li>
-              <li>
-                Score 2: Country known, expressed in % of the total volume
-                supplied/ processed.
-              </li>
-              <li>
-                Score 3: Cooperative known, expressed in % of the total volume
-                supplied/ processed.
-              </li>
-              <li>
-                Score 4a: Farm known and having at least one coordination per
-                farm (farm mapping), expressed in % of the total volume
-                supplied/ processed.
-              </li>
-              <li>
-                Score 4b: Farm known, having point coordinates and /or polygons
-                for plots less than 4ha and polygon boundaries of the plots
-                bigger than 4ha, expressed in % of the total volume supplied/
+                Origin unknown, expressed in % of the total volume supplied/
                 processed.
               </li>
-            </ul>
+              <li>
+                Country known, expressed in % of the total volume supplied/
+                processed.
+              </li>
+              <li>
+                Cooperative known, expressed in % of the total volume supplied/
+                processed.
+              </li>
+              <li value={4}>
+                a. Farm known and having at least one coordination per farm
+                (farm mapping), expressed in % of the total volume supplied/
+                processed.
+              </li>
+              <li value={4}>
+                b. Farm known, having point coordinates and /or polygons for
+                plots less than 4ha and polygon boundaries of the plots bigger
+                than 4ha, expressed in % of the total volume supplied/
+                processed.
+              </li>
+            </ol>
           </div>
         </Fragment>
       ),
@@ -279,16 +283,7 @@ const definitionContent = {
         <Fragment>
           <div>
             The conversion of forest to other land use independently whether
-            human-induced or not.{" "}
-            <a
-              href="https://www.fao.org/3/I8661EN/i8661en.pdf"
-              target="_blank"
-              rel="noreferrer"
-              style={{ fontSize: "14px" }}
-            >
-              (FAO)
-            </a>
-            <br />
+            human -induced or not.
           </div>
         </Fragment>
       ),
@@ -299,12 +294,10 @@ const definitionContent = {
       d: (
         <Fragment>
           <div>
-            Having point coordinates for plots less than 4ha and polygon
-            boundaries of the plots bigger than 4ha and verified as not in a
-            protected forest and as not comprising land that was deforested or
-            degraded since 31.12.2018 for GISCO and 31.12.2020 for the other
-            ISCOs
-            <br />
+            Having polygons of the farm (&gt; 4 ha) and farm plots (&lt; 4 ha)
+            verified as not in a protected forest and as not comprising land
+            that was deforested since 31.12.2018 for GISCO and 31.12.2020 for
+            the other ISCOs.
           </div>
         </Fragment>
       ),
@@ -344,7 +337,7 @@ const definitionContent = {
     {
       i: "Reached (farming households reached)",
       t: "Reached (farming households reached)",
-      d: 'The term “reached” (as in "farming households reached") is contextual, it could mean "engaged in", "benefiting", etc. Each data collection, for "# of farming households reached", shall to the extent possible be linked to an activity, output or outcome of the cocoa sustainability project or initiative; such linking thus contextualizes the implication of and / or benefits for the concerned farming household.',
+      d: "The term “reached” (as in ”farming households reached”) is contextual, it could mean ”engaged in”, ”benefiting”, etc. Each data collection, for “# of farming households reached”, shall to the extent possible be linked to an activity, output or outcome of the cocoa sustainability project or initiative; such linking thus contextualizes the implication of and / or benefits for the concerned farming household.",
     },
     {
       i: "Farming land",
@@ -371,7 +364,7 @@ const definitionContent = {
     },
     {
       i: "Direct supply",
-      t: "Direct supply",
+      t: "Direct sourcing",
       d: "For cocoa to be categorized as “cocoa sourced through a direct supply chain”, there shall be a relatively stable partnership and collaboration, in which the individual cocoa farmers / farming families are known (registered).  Such partnership and collaboration may cover issues such as price, quality, good agricultural practices, social, human rights and environmental issues, certification requirements, etc. This partnership and collaboration between the ISCO cocoa sourcing company and the producers (cocoa farming households) may be conducted through cooperatives, farmer organisations and / or other intermediaries embedded within the direct supply chain.",
     },
     {
@@ -435,12 +428,12 @@ const definitionContent = {
     },
     {
       i: "Indirect supply",
-      t: "Indirect supply",
+      t: "Indirect Supply",
       d: "For cocoa to be categorized as “cocoa sourced through an indirect supply chain”, there is no or minimal contact, no partnership and no collaboration between the cocoa sourcing company and the cocoa producer. The cocoa is typically sourced through (several) intermediaries which do not disclose the individual farmers / farming families that produced the cocoa.",
     },
     {
-      i: "Integrated Pest Management",
-      t: "Integrated Pest Management",
+      i: "Integrated Pest Management (IPM)",
+      t: "Integrated Pest Management (IPM)",
       d: (
         <Fragment>
           <div>
@@ -451,27 +444,27 @@ const definitionContent = {
             that are economically justified and reduce or minimize risks to
             human health and the environment. IPM emphasizes the growth of a
             healthy crop with the least possible disruption to agro-ecosystems
-            and encourages natural pest control mechanisms. FAO:
-            <br />
+            and encourages natural pest control mechanisms. (FAO:{" "}
             <a
-              href="http://www.fao.org/agriculture/crops/thematic-sitemap/theme/pests/ipm/en/ "
+              href="http://www.fao.org/agriculture/crops/thematic-sitemap/theme/pests/ipm/en/"
               target="_blank"
               rel="noopener noreferrer"
               style={{ fontSize: "14px" }}
             >
               http://www.fao.org/agriculture/crops/thematic-sitemap/theme/pests/ipm/en/{" "}
             </a>
+            )
           </div>
         </Fragment>
       ),
     },
     {
-      i: "Living income",
-      t: "Living income",
+      i: "Living Income",
+      t: "Living Income",
       d: (
         <Fragment>
           <div>
-            Living income refers to the net annual income required for a
+            • Living income refers to the net annual income required for a
             household in a particular place to afford a decent standard of
             living for all members of that household. Elements of a decent
             standard of living include: food, water, housing, education,
@@ -481,7 +474,7 @@ const definitionContent = {
             <br />
             <i>
               Any Living Income Benchmarks should be based on publications by or
-              for the Living Income Community of Practice.{" "}
+              for the Living Income Community of Practice.
             </i>
           </div>
         </Fragment>
@@ -493,46 +486,71 @@ const definitionContent = {
       d: (
         <Fragment>
           <div>
-            Please refer to the LICOP website for an overview of living income
-            benchmarks and studies. If there is no benchmark available for the
-            region you are working in, please consult the LICOP FAQ living
-            income benchmarks which provides guidance for using alternatives
-            when there is no benchmark available.
+            Please refer to the{" "}
+            <a
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ fontSize: "14px" }}
+            >
+              LICOP website
+            </a>{" "}
+            for an overview of living income benchmarks and studies. If there is
+            no benchmark available for the region you are working in, please
+            consult the
+            <a
+              href="https://c69aa8ac-6965-42b2-abb7-0f0b86c23d2e.filesusr.com/ugd/0c5ab3_4a0b8a8f12d74abc86b2260984a967ae.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ fontSize: "14px" }}
+            >
+              LICOP FAQ living income benchmarks
+            </a>{" "}
+            which provides guidance for using alternatives when there is no
+            benchmark available.
           </div>
         </Fragment>
       ),
     },
     {
-      i: "Living income reference price (LIRP)",
-      t: "Living income reference price (LIRP)",
+      i: "Living Income Reference Price",
+      t: "Living Income Reference Price",
       d: (
         <Fragment>
           <div>
             A Living Income Reference Price indicates the price needed for an
             average farmer household with a viable farm size and an adequate
             productivity level to make a living income from the sales of their
-            crop. It can be calculated with the formula: Living Income Reference
-            Price (LIRP) = Cost of decent living + cost of sustainable
-            production / viable land area * sustainable yields For Fairtade the
-            current LIRP (2022) at farmgate is:
+            crop. It can be calculated with the formula:
+            <br />
+            <code>
+              Living Income Reference Price (LIRP) = Cost of decent living +
+              cost of sustainable production / viable land area * sustainable
+              yields
+            </code>
+            <br />
+            For Fairtade the relevant price at farmgate is:
             <ul style={{ marginLeft: "25px" }}>
               <li>Ghana: 16.50 GHC / 2.12 USD per kg</li>
               <li>Côte d’Ivoire: 1.602 CFA / 2.39 USD per kg</li>
             </ul>
+            For other origins, please indicate in the comment box, which LIRP
+            you are using.
           </div>
         </Fragment>
       ),
     },
     {
       i: "Living Income strategy",
-      t: "Living Income strategy",
+      t: "Living Income Strategy",
       d: (
         <Fragment>
           <div>
             A living income strategy is a strategy with the explicit goal to
             enable cocoa farming households to earn a living income. A living
-            income strategy includes a monitoring and learning component. A
-            living income strategy uses a combination, or “smart-mix” of
+            income strategy includes a monitoring and learning component.
+            <br />
+            A living income strategy uses a combination, or “smart-mix” of
             strategies that target multiple income drivers. Multiple income
             drivers* are being assessed strategically for the purpose of closing
             the living income gap**. The interventions for each driver depend on
@@ -543,9 +561,13 @@ const definitionContent = {
             household behaviour. These strategies include improved procurement
             practices. They range from service delivery for improved production
             and processing, to brand and consumer engagement, and to improving
-            the enabling environment. A living income strategy goes beyond
-            income generating activities (IGAs) that do not have the explicit
-            aim of closing living income gaps.
+            the enabling environment.
+            <br />
+            <br />
+            A living income strategy goes beyond income generating activities
+            (IGAs) that do not have the explicit aim of closing living income
+            gaps.
+            <br />
             <br />
             *land size, yield, price, cost of production, diversified incomes
             <br />
@@ -582,55 +604,58 @@ const definitionContent = {
     },
     {
       i: "Premiums granted to the farmer and / or coopertaive",
-      t: "Premiums granted to the farmer and / or coopertaive",
-      d: "A premium granted to a farmer and/or cooperative is an additional amount of money paid in addition to the regular market price paid to the producers or producer organizations. The amount of 'premiums granted' does not necessarily correspond to the amount of 'premiums paid in cash'. Part of the premiums granted could be deducted for payment as 'withholding' for reimbursement of (a) loan(s) to the farmer or as 'payment for services' requested by and provided to the farmer.",
+      t: "Premium granted",
+      d: "A premium granted to a farmer and/or cooperative is an additional amount of money paid in addition to the regular market price paid to the producers or producer organizations. Premiums are here understood only as market or volume related payments and do hence not include payments such as 'payments for environmental services', conditional or unconditional cash payments etc. Please note that LIRP payments are covered in a separate question.",
     },
     {
       i: "Agroforestry System for Cocoa Production (Description)",
       t: "Agroforestry System for Cocoa Production (Description)",
       d: (
         <Fragment>
-          <div>
-            The term AGROFRORESTRY refers to farming fields in which cacao trees
-            are deliberately combined with preferably native non-cocoa tree
-            species that have proven to be useful for AGROFORESTRY in a
-            stratified spatial arrangement and temporal sequence. This includes
-            other agricultural crops on the same land management unit,
-            triggering ecological, economic, social and sociocultural benefits.
-            AGROFORESTRY approaches should be locally adapted and should
-            consider the ecologic, economic, social and cultural environment.
-          </div>
-          <br />
-          <div>
-            The functions of AGROFORESTRY systems are to enable long term,
-            sustainable cocoa production which preserves biodiversity, prevents
-            erosion, protects the climate and natural genetic resources,
-            diversifies and sustains production to the benefit of all land
-            users. Cocoa AGROFORESTRY systems can be developed from different
-            starting points, in different ecologic environments. AGROFORESTRY
-            systems aim to provide diversified sources of income, can reduce
-            costs and can create co-benefits to increase the economic and
-            climate change related resilience and to food supply of particularly
-            smallholder farmers and local communities living in rural areas.
-          </div>
-          <br />
-          <div>
-            Cocoa farmers play a crucial role for the definition, adoption and
-            longevity of agroforestry systems. A joint process where the needs,
-            capabilities, preferences and experiences of farmers are taken into
-            account and in which the farmers are actively supported (technical
-            assistance, development plan, capacity building) is very important
-            to maintain and improve the existing production system towards
-            long-term sustainability.
-          </div>
-          <br />
-          <div>
-            Banana plants / plantains do not count as trees / tree species.*
-            <br />
-            *Only botanically classified trees count towards an agroforestry
-            system, other plants, such as forbs (in Deutsch: Stauden) (incl.
-            banana trees / plantains), therefore, do not count.
-          </div>
+          <ul type="bullet" style={{ margin: 0, padding: 0 }}>
+            <li>
+              The term AGROFRORESTRY refers to farming fields in which cocoa
+              trees are deliberately combined with preferably native non-cocoa
+              tree species that have proven to be useful for AGROFORESTRY in a
+              stratified spatial arrangement and temporal sequence. This
+              includes other agricultural crops on the same land management
+              unit, triggering ecological, economic, social, and sociocultural
+              benefits. AGROFORESTRY approaches should be locally adapted and
+              should consider the ecologic, economic, social, and cultural
+              environment.
+            </li>
+            <li>
+              The functions of AGROFORESTRY systems are to enable long-term,
+              sustainable cocoa production which preserves biodiversity,
+              prevents erosion, protects the climate and natural genetic
+              resources, diversifies and sustains production to the benefit of
+              all land users. Cocoa AGROFORESTRY systems can be developed from
+              different starting points, in different ecologic environments.
+              AGROFORESTRY systems aim to provide diversified sources of income,
+              can reduce costs, and can create co-benefits to increase the
+              economic and climate change related resilience and to food supply
+              of particularly smallholder farmers and local communities living
+              in rural areas.
+            </li>
+            <li>
+              Cocoa farmers play a crucial role for the definition, adoption,
+              and longevity of agroforestry systems. A joint process where the
+              needs, capabilities, preferences, and experiences of farmers are
+              taken into account and in which the farmers are actively supported
+              (technical assistance, development plan, capacity building) is
+              very important to maintain and improve the existing production
+              system towards long-term sustainability.
+            </li>
+            <li>
+              Banana plants / plantains do not count as trees / tree species.*
+              <br />
+              <small>
+                *Only botanically classified trees count towards an agroforestry
+                system, other plants, such as forbs (in Deutsch: Stauden) (incl.
+                banana trees / plantains), therefore, do not count.
+              </small>
+            </li>
+          </ul>
         </Fragment>
       ),
     },
@@ -643,62 +668,75 @@ const definitionContent = {
             <b>
               <u>Entry level for AGROFORESTRY (1):</u>
             </b>
-            <br />
-            At least 16 (non-cocoa) trees per ha with a minimum of 3 different
-            tree species, that are preferably native This entry level for
-            AGROFORESTRY systems corresponds to CFI and WCF indicators on
-            AGROFORESTRY
+            <ul>
+              <li>
+                At least 16 (non-cocoa) trees per ha with a minimum of 3
+                different tree species, that are preferably native. This entry
+                level for AGROFORESTRY systems corresponds to CFI and WCF
+                indicators on AGROFORESTRY.
+              </li>
+            </ul>
           </div>
           <br />
           <div>
             <b>
-              <u>Basic Category for AGROFERSTRY (2):</u>
+              <u>Basic Category for AGROFORESTRY (2):</u>
             </b>
-            <br />
-            At least 40% shade canopy cover with a minimum of 5 different native
-            tree species. This category for AGROFORESTRY is in accordance with
-            Rainforest Alliance’s shade coverage and species diversity reference
-            parameters.
+            <ul>
+              <li>
+                At least 40% shade canopy cover with a minimum of 5 different
+                native tree species. This category for AGROFORESTRY is in
+                accordance with Rainforest Alliance’s shade coverage and species
+                diversity reference parameters.
+              </li>
+            </ul>
           </div>
           <br />
           <div>
             <b>
               <u>Advanced Category for AGROFORESTRY (3):</u>
             </b>
-            <br />
-            At least 40% shade canopy cover
-            <ul style={{ marginLeft: "25px" }}>
+            <ul>
               <li>
-                Minimum of 12 different native tree species (pioneer specied
-                excluded)
+                At least 40% shade canopy cover
+                <ul type="circle">
+                  <li>
+                    Minimum of 12 different native tree species (pioneer species
+                    excluded),
+                  </li>
+                  <li>At least 15% native vegetation coverage,</li>
+                  <li>
+                    2 strata or stories and shade species should attain a
+                    minimum of 12-15 meters in height.
+                  </li>
+                </ul>
               </li>
-              <li>At least 15% native vegetation coverage</li>
               <li>
-                2 strata or stories and shade species should attain a minimum of
-                12-15 meters in height
+                In this category a special focus is given to the landscape
+                approach on AGROFORESTRY. This category is in alignment with the
+                recommendations of the VOICE Network.
               </li>
             </ul>
-            In this category a special focus is given to the landscape approach
-            on AGROFORESTRY. This category is in alignment with the
-            recommendations of the VOICE Network.
           </div>
           <br />
           <div>
             <b>
               <u>Dynamic AGROFORESTRY Systems (4):</u>
             </b>
-            <br />
-            These systems are characterized by a very high density of trees per
-            hectare. There is an abundance of different tree species, high
-            biodiversity, plant communities with different life cycles that
-            serve different purposes (carbon sequestration, income sources, food
-            etc.). They grow in different stories (strata) without competition.
-            There are at least 3 different stories (strata), regenerative
-            practices are used, and food security and income sources outside of
-            cocoa are guaranteed. This system mimics the natural habitat of
-            cacao in a highly developed cultivation system. Chocolats
-            Halba&apos;s Dynamic AGROFORESTRY Projects are seen as a model for
-            this category.
+            <ul>
+              <li>
+                These systems are characterized by a very high density of trees
+                per hectare. There is an abundance of different tree species,
+                high biodiversity, plant communities with different life cycles
+                that serve different purposes (carbon sequestration, income
+                sources, food etc.). They grow in different stories (strata)
+                without competition. There are at least 3 different stories
+                (strata), regenerative practices are used, and food security and
+                income sources outside of cocoa are guaranteed. This system
+                mimics the natural habitat of cacao in a highly developed
+                cultivation system.
+              </li>
+            </ul>
           </div>
         </Fragment>
       ),
@@ -711,13 +749,13 @@ const definitionContent = {
           <div>
             Hazardous pesticides include as minimum requirement all substances
             which:
-            <ol type="1" style={{ marginLeft: "1.5rem" }}>
+            <ol type="1" start={1} style={{ marginLeft: "1.5rem" }}>
               <li>
                 are listed as <b>persistent organic pollutants (POPs)</b> in the
                 Stockholm Convention within the Annex III of the Rotterdam
-                Convention and / or the Montreal Protocol
+                Convention and / or the Montreal Protocol,
               </li>
-              <li>are classified by WHO as 1A or 1B,</li>
+              <li>are classified by WHO as 1A or 1B, </li>
               <li>
                 are listed in the <b>Dirty Dozen</b> of PAN, or
               </li>
@@ -750,10 +788,9 @@ const definitionContent = {
         <Fragment>
           <div>
             A tree species occurring within its natural range (past or present)
-            and dispersal potential (i.e. within the range it occupies naturally
-            or could occupy without direct or indirect introduction or care by
-            humans). <br />
-            FAO (2020).
+            and dispersal potential (i.e., within the range it occupies
+            naturally or could occupy without direct or indirect introduction or
+            care by humans). (FAO:{" "}
             <a
               href="http://www.fao.org/3/I8661EN/i8661en.pdf"
               target="_blank"
@@ -762,6 +799,7 @@ const definitionContent = {
             >
               http://www.fao.org/3/I8661EN/i8661en.pdf
             </a>
+            ).
           </div>
         </Fragment>
       ),
@@ -772,22 +810,20 @@ const definitionContent = {
       d: (
         <Fragment>
           <div>
-            The amount of money that a household earns, or gains, each year
+            • The amount of money that a household earns, or gains, each year
             after costs, taxes, and transfers. It represents the money available
             to a household for spending on goods or services and savings. This
             is currently calculated via: Production * producer price (including
             farmer sustainability premiums where relevant) – costs + non-cocoa
             income (such as non-agricultural income, income from rent, and
-            remittances) minus associated costs. <br /> <br />
-            <i>
-              <u>Points of attention:</u>
-            </i>{" "}
+            remittances) - associated costs. <br /> <br />
+            <u>Points of attention:</u>
             <br />
             <i>Costs to include:</i>
             <ul style={{ marginLeft: "25px" }}>
               <li>
                 <i>
-                  amortization of infrastructure and interests paid on loans
+                  amortization of infrastructure and interests paid on loans,
                 </i>
               </li>
               <li>
@@ -835,11 +871,10 @@ const definitionContent = {
             Replanting and / or regenerating trees across a defined landscape
             that incorporates native (preferably) and non-native tree species to
             restore the multiple ecological benefits of forests (with focus on
-            achieving natural forest). (Source: Accountability Framework) <br />
-            <br />
-            Best practice is to develop a forest restoration plan based on an
-            initial assessment (baseline) and action plan shared with the (local
-            or national) government.
+            achieving natural forest). (Source: Accountability Framework). Best
+            practice is to develop a forest restoration plan based on an initial
+            assessment (baseline) and action plan shared with the (local or
+            national) government.
           </div>
         </Fragment>
       ),
@@ -887,24 +922,22 @@ const definitionContent = {
       ),
     },
     {
-      i: "Project",
-      t: "Project",
+      i: "Project / Programme",
+      t: "Project / Programme",
       d: (
         <Fragment>
           <div>
-            A cocoa sustainability project is defined as a program, project or
-            initiative targeting (aspects of) sustainability in cocoa
-            production, processing and / or supply chains.
+            A cocoa sustainability project / programme is defined as a
+            programme, project or initiative targeting (aspects of)
+            sustainability in cocoa production, processing and / or supply
+            chains.
             <br />
-            <br />
-            <i>
-              Under the label “sustainability project”, the reporting system
-              allows a member to report on any sustainability “program, project
-              or initiative”. Members with larger sustainability programs can
-              choose between: (a) reporting aggregated data on a large program,
-              with several intervention areas; or (b) reporting separately for
-              underlying (for example country-specific) projects.
-            </i>
+            Under the label “sustainability project / programme”, the reporting
+            system allows a member to report on any sustainability “programme,
+            project or initiative”. Members with larger sustainability
+            programmes can choose between: (a) reporting aggregated data on a
+            large programme, with several intervention areas; or (b) reporting
+            separately for underlying (for example country-specific) projects.
           </div>
         </Fragment>
       ),
@@ -983,18 +1016,15 @@ const definitionContent = {
             knowledge, skills and abilities (agency) and in the power relations
             and structures (norms, customs, institutions, policies, laws, etc.)
             that shape her access to rights and resources, choices and
-            opportunities, and ultimately wellbeing.{" "}
-            <i>
-              (WCF Gender Integration guidance note, Annex on Gender Principles
-              and definitions)
-            </i>
+            opportunities, and ultimately wellbeing. (WCF Gender Integration
+            guidance note, Annex on Gender Principles and definitions).
           </div>
         </Fragment>
       ),
     },
     {
-      i: "Yield (cocoa yield):",
-      t: "Yield (cocoa yield):",
+      i: "Yield (cocoa yield)",
+      t: "Yield (cocoa yield)",
       d: "Total cocoa weight (typically expressed in kilograms) produced per unit area (typically expressed in hectare), in a given year.",
     },
     {
@@ -1067,19 +1097,195 @@ const definitionContent = {
             <ul>
               <li>Ghana: (20.000/1104.6)*1.000 = 18.106 farmers</li>
               <li>Ecuador: (2.000/3840.18)*1.000 = 520 farmers</li>
-              <li>Total: 18.626 farmers</li>
+              <li>Total: 18.626 farmers </li>
             </ul>
             <br />
             <Table
               columns={numberOfHHIndirectSupplyChainColumns}
               dataSource={numberOfHHIndirectSupplyChainDataSource}
-              tableLayout="auto"
+              // tableLayout="auto"
               size="middle"
+              pagination={false}
               bordered
             />
           </div>
         </Fragment>
       ),
+    },
+    {
+      i: "Certified or cocoa covered through a company programm",
+      t: "Certified or cocoa covered through a company programm",
+      d: "Cocoa produced in compliance with the requirements of certification standards (such as Fairtrade or Rainforest Alliance) or company schemes on sustainable cocoa.",
+    },
+    {
+      i: "Cocoa grower",
+      t: "Cocoa grower",
+      d: "A cocoa grower is an individual (member of a cocoa farming household or other individual) structurally involved in farming work related to the production of cocoa beans.",
+    },
+    {
+      i: "Covered",
+      t: "Covered",
+      d: (
+        <Fragment>
+          <div>
+            A household can be considered “covered” by a CLMRS or comparable
+            system, if an assessment of child labour risk has been conducted at
+            household level, EITHER:
+            <ul>
+              <li>
+                through an in-person monitoring visit, including child
+                interview, OR
+              </li>
+              <li>
+                through assessment using a household-level risk model (ie. a
+                systematic analysis of reliable data about the household to
+                predict child labour, using a transparent, documented method of
+                assessment)
+              </li>
+            </ul>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Data transfer from ICI",
+      t: "Data transfer from ICI",
+      d: (
+        <Fragment>
+          <div>
+            The ISCOs and ICI conduct a data transfer on eight harmonized
+            questions, ensuring that members that are part of both the ISCOs and
+            ICI can choose to only report on child labour questions once.
+            Members will be able to indicate in the ICI tool as well as the ISCO
+            tool that they consent to their data being shared with the ISCOs.
+            They will no longer need to report in the ISCO tool. If members do
+            not want to share their data with the ISCOs via ICI, they will be
+            required to report on child labour questions through the ISCO tool.
+          </div>
+          <img
+            src="/images/definition-content/data-transfer-cli.jpg"
+            width="90%"
+          />
+        </Fragment>
+      ),
+    },
+    {
+      i: "Evidence of impact of system to prevent and address child labour",
+      t: "Evidence of impact of system to prevent and address child labour",
+      d: "Evidence could include a robust impact study, where impact is demonstrated in this context, compared to a control group (e.g. through a randomized control trial (RCT), difference-in-difference analysis, regression discontinuity design etc.",
+    },
+    {
+      i: "Identified in child labour",
+      t: "Identified in child labour",
+      d: "This means a child has been identified in a situation of child labour, in accordance with ILO conventions and national legislation (e.g. hazardous activity frameworks). The respective indicator counts the number of children currently covered ever identified in child labour. Even if the child has since stopped working, they should be counted here.",
+    },
+    {
+      i: "Manufactured",
+      t: "Manufactured",
+      d: (
+        <Fragment>
+          <div>
+            As ‘manufactured’ we typically understand, from semi-finished
+            product or chocolate to chocolate end products, including moulding,
+            filling & enrobing. The relevant HS- Codes for manufactured are:
+            <ul>
+              <li>
+                <b>18063100</b> Chocolate and other preparations containing
+                cocoa, in blocks, slabs or bars of &lt;= 2 kg, filled;
+              </li>
+              <li>
+                <b>180632</b> Chocolate and other preparations containing cocoa,
+                in blocks, slabs or bars of &lt;= 2 kg (excl. filled);
+              </li>
+              <li>
+                <b>180690</b> Chocolate and other preparations containing cocoa,
+                in containers or immediate packings of &lt;= 2 kg (excl. in
+                blocks, slabs or bars and cocoa powder)
+              </li>
+            </ul>
+          </div>
+          <div>
+            Please note: If you manufacture end products in a factory from beans
+            and not semi-finished products, please report your volumes only once
+            here and not in the next question. You can choose “n/a” in the tool,
+            if this question is not relevant for your company/organization.
+          </div>
+          <div>
+            Conversion to MT-BE, of cocoa sourced in different forms, is to be
+            done using the ICCO conversion factors, being: 1,33 for cocoa butter
+            (1804); 1,25 for cocoa paste/liquor (18031); and 1,18 for cocoa
+            powder and cake (1805, 18032).
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Methodology # of farmers for which the LI gap is measured",
+      t: "Methodology # of farmers for which the LI gap is measured",
+      d: "The ISCOs do not require members to measure the income gap of every individual farmer in their supply chain, but for a representative sample of their supply chain. Members will be able to specify how they define a representative sample in a follow-up question.",
+    },
+    {
+      i: "Methodology to calculate MT-BE",
+      t: "Methodology to calculate MT-BE",
+      d: "Conversion to MT-BE, of cocoa sourced in different forms, is to be done using the ICCO conversion factors, being: 1,33 for cocoa butter (1804); 1,25 for cocoa paste/liquor (18031); and 1,18 for cocoa powder and cake (1805, 18032). With respect to the MT-BE of cocoa contained in consumer end products supplied to the national market in Europe, reporting is to be done by the consumer brands. For their own labels (brands), retailers are expected to report in the same way as the consumer brands. Of course, where required, these brands/retailers will rely on the corresponding information obtained from their suppliers.",
+    },
+    {
+      i: "Multiple-purpose trees",
+      t: "Multiple-purpose trees",
+      d: "Tree species that are included on cocoa farms primarily to provide economical and / or ecological benefits to the farm. This may include tree crops such as fruit, oil palm, medicinal, fodder and / or timber / shade trees for later harvest.",
+    },
+    {
+      i: "Processed",
+      t: "Processed",
+      d: (
+        <Fragment>
+          <div>
+            All semi-finished products (including mass, powder, butter and
+            couverture) coming out of your national factories in whatever shape
+            the cocoa entered. The relevant HS-Codes would be:
+            <ul>
+              <li>
+                <b>1801</b> Cocoa beans, whole or broken, raw or roasted;
+              </li>
+              <li>
+                <b>1802</b> Cocoa shells, husks, skins and other cocoa waste;
+              </li>
+              <li>
+                <b>1803</b> Cocoa paste, whether or not defatted;
+              </li>
+              <li>
+                <b>1804</b> Cocoa butter, fat and oil;
+              </li>
+              <li>
+                <b>1805</b> Cocoa powder, not containing added sugar or other
+                sweetening matter;
+              </li>
+              <li>
+                <b>180610</b> Cocoa powder, sweetened;
+              </li>
+              <li>
+                <b>180620</b> Chocolate and other food preparations containing
+                cocoa, in blocks, slabs or bars weighing &gt; 2 kg or in liquid,
+                paste, powder, granular or other bulk form, in containers or
+                immediate packings of a content &gt; 2 kg (excl. cocoa powder).
+              </li>
+            </ul>
+          </div>
+          <div>
+            Please note: You can choose “n/a” in the tool, if this question is
+            not relevant for your company/organization. Conversion to MT-BE, of
+            cocoa sourced in different forms, is to be done using the ICCO
+            conversion factors, being: 1,33 for cocoa butter (1804); 1,25 for
+            cocoa paste/liquor (18031); and 1,18 for cocoa powder and cake
+            (1805, 18032).
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "System to prevent and address child labour",
+      t: "System to prevent and address child labour",
+      d: 'A "system" is a set of interventions to assess risks, prevent and address child labour. An example of another type of system is a comprehensive community development approach.',
     },
   ],
 
@@ -1110,7 +1316,14 @@ const definitionContent = {
             verschiedenen Formen bezogenem Kakao erfolgt über die
             ICCO-Umrechnungsfaktoren; 1,33 für Kakaobutter (1804), 1,25 für
             Kakaomasse (18031) und 1,18 für Kakaopulver und Presskuchen (1805,
-            18032).
+            18032). In Bezug auf die MT-BE von Kakao, der in
+            Endverbraucherprodukten enthalten ist, die an den nationalen Markt
+            in Europa geliefert werden, ist die Berichterstattung durch die
+            Verbrauchermarken vorzunehmen. Von den Einzelhändlern wird erwartet,
+            dass sie für ihre eigenen Labels (Marken) auf die gleiche Weise
+            berichten wie die Verbrauchermarken. Natürlich stützen sich diese
+            Marken/Einzelhändler bei Bedarf auf die entsprechenden
+            Informationen, die sie von ihren Lieferanten erhalten.
           </div>
         </Fragment>
       ),
@@ -1199,7 +1412,7 @@ const definitionContent = {
             Systems zur Überwachung und Abhilfe von Kinderarbeit (CLMRS) oder
             eines gleichwertigen Systems zu erfüllen, muss das System die
             folgenden Kernaktivitäten umsetzen:
-            <ul style={{ marginLeft: "25px" }}>
+            <ol style={{ marginLeft: "25px" }} start={1}>
               <li>
                 Stärkung des Bewusstseins bei Bäuerinnen und Bauern, Kindern und
                 der breiteren Bevölkerung bezüglich der Gefahren von
@@ -1220,7 +1433,7 @@ const definitionContent = {
                 regelmäßiges Überprüfen ihres Status, bis sie sich nicht mehr in
                 Kinderarbeit befinden und zur Schule gehen.
               </li>
-            </ul>
+            </ol>
           </div>
         </Fragment>
       ),
@@ -1231,52 +1444,52 @@ const definitionContent = {
       d: "Siehe Definition „Child Labour Monitoring and Remediation Systems (CLMRS)”",
     },
     {
-      i: "Cocoa traceability level",
-      t: "Rückverfolgbarkeitsniveau von Kakao",
+      i: "Cocoa traceability levels",
+      t: "Kakaorückverfolgbarkeitsstufen",
       d: (
         <Fragment>
           <div>
-            Beim „cocoa origin transparency level“ (Level der
-            Herkunftstransparenz) geht es darum, inwieweit detaillierte
-            Informationen über die Herkunft des Kakaos in den ersten Stufen des
-            Beschaffungsprozesses dokumentiert werden und ob diese Informationen
-            entlang der Lieferkette erhalten bleiben.
-            <ul style={{ marginLeft: "25px" }}>
-              <li>Stufe 1: Ursprung unbekannt oder nur Anbauland bekannt</li>
-              <li>Stufe 2: Anbauland und Anbauregion bekannt</li>
+            Die Kakaorückverfolgbarkeitsstufe bezieht sich auf das Maß an
+            Informationen über die Herkunft des Kakaos, die in der Anfangsphase
+            des Beschaffungsprozesses dokumentiert werden, wobei diese
+            Informationen auch in späteren Phasen der Wertschöpfungskette
+            verfügbar bleiben. Die Rückverfolgbarkeitsstufe erfordert keine
+            physische Trennung des Kakaos, sondern kann auch im Rahmen eines
+            Massenbilanzsystems angewendet werden. Es wird zwischen folgenden
+            Rückverfolgbarkeitsstufen unterschieden:
+            <ol style={{ marginLeft: "25px" }} start={1}>
               <li>
-                Stufe 3: Land, Region und Gemeinde / Ursprungskooperative
-                bekannt
+                <b>Herkunft unbekannt</b> - ausgedrückt in % des insgesamt
+                gelieferten/verarbeiteten Volumens.
               </li>
               <li>
-                Stufe 4: Betrieb bekannt, zusätzlich zu Land, Region und
-                Gemeinde / Ursprungskooperative
+                <b>Land bekannt</b> - ausgedrückt in % des insgesamt
+                gelieferten/verarbeiteten Volumens.
               </li>
               <li>
-                Stufe 5: Betrieb bekannt und Punktkoordinaten des
-                landwirtschaftlichen Betriebs verfügbar (Betriebskartierung)
+                <b>Genossenschaft bekannt</b> - ausgedrückt in % des insgesamt
+                gelieferten/verarbeiteten Volumens.
               </li>
-              <li>
-                Stufe 5+: Betrieb bekannt mit Polygongrenzen des
-                landwirtschaftlichen Betriebs
+              <li value={4}>
+                a.{" "}
+                <b>
+                  Farm bekannt und mit mindestens einer Koordinierung pro Farm
+                  (Farmkartierung)
+                </b>{" "}
+                - ausgedrückt in % des insgesamt gelieferten/verarbeiteten
+                Volumens.
               </li>
-              <li>
-                Stufe 6: Betrieb bekannt, die Polygongrenzen des Betriebs wurden
-                geprüft und dessen Anbauflächen liegen nachweislich nicht in
-                einem geschützten Wald und nicht auf Land, das seit 2018
-                abgeholzt wurde.
+              <li value={4}>
+                b.{" "}
+                <b>
+                  Farm bekannt, mit Punktkoordinaten und/oder Polygonen für
+                  Parzellen &lt;4 ha sowie Polygon-Grenzen für Parzellen &gt;4
+                  ha
+                </b>{" "}
+                - ausgedrückt in % des insgesamt gelieferten/verarbeiteten
+                Volumens.
               </li>
-            </ul>
-            Auch die hohen Rückverfolgbarkeits-Stufen erlauben das Vermischen
-            der Bohnen in späteren Stadien der Wertschöpfungskette (Transport
-            und / oder Verarbeitung).
-            <br />
-            Es ist allgemein anerkannt, dass die sich Kakaoindustrie mindestens
-            in Richtung Stufe 4 als Mindestanforderung bewegen sollte, d.h.
-            Kakao sollte – einschließlich der „ersten Meile“ – rückverfolgbar
-            sein. Es sollte nachvollziehbar sein, von welchem Betrieb
-            beschaffter Kakao stammt, sowohl für „direkte“ als auch für
-            „indirekte“ Lieferketten.
+            </ol>
           </div>
         </Fragment>
       ),
@@ -1332,16 +1545,8 @@ const definitionContent = {
       d: (
         <Fragment>
           <div>
-            Die Umwandlung von Wäldern in landwirtschaftlich genutzte Flächen,
-            unabhängig davon, ob sie vom Menschen herbeigeführt wird oder nicht.
-            <a
-              href="https://www.fao.org/3/I8661EN/i8661en.pdf"
-              target="_blank"
-              rel="noreferrer"
-              style={{ fontSize: "14px" }}
-            >
-              (FAO)
-            </a>
+            Die Umwandlung von Wald in eine andere Landnutzung, unabhängig
+            davon, ob sie durch den Menschen verursacht wurde oder nicht.
           </div>
         </Fragment>
       ),
@@ -1386,18 +1591,17 @@ const definitionContent = {
       d: (
         <Fragment>
           Der Begriff „bäuerlicher Haushalt“ bezeichnet eine kleinbäuerliche
-          kakaoanbauende Familie.
-          <br />
-          Ein Bäuerlicher Haushalt kann einen oder mehrere landwirtschaftliche
-          Betriebe umfassen, die von verschiedenen Mitgliedern des bäuerlichen
-          Haushalts (Bäuerinnen und Bauern) geführt werden.
+          kakaoanbauende Familie. Ein bäuerlicher Haushalt kann einen oder
+          mehrere landwirtschaftliche Betriebe umfassen, die von verschiedenen
+          Mitgliedern des bäuerlichen Haushalts (Bäuerinnen und Bauern) geführt
+          werden.
         </Fragment>
       ),
     },
     {
       i: "Reached (farming households reached)",
       t: "erreicht („erreichte bäuerliche Haushalte“)",
-      d: 'Der Begriff "erreicht" (im Sinne von "erreichte bäuerliche Haushalte") ist kontextabhängig, er könnte beispielsweise "involviert in" oder "profitierend von" bedeuten. Entsprechende Datenerhebungen sollten die Variable "Anzahl der erreichten bäuerlichen Haushalten" in Beziehung setzen zu einer Aktivität oder einer Wirkung / einem Ergebnis des Nachhaltigkeitsprojekts; Diese Verknüpfung kontextualisiert die Implikationen / Vorteile für die „erreichten“ bäuerlichen Haushalte.',
+      d: 'Der Begriff "erreicht" (im Sinne von "erreichte bäuerliche Haushalte") ist kontextabhängig, er könnte beispielsweise "involviert in" oder "profitierend von" bedeuten. Entsprechende Datenerhebungen sollten die Variable "Anzahl der erreichten bäuerlichen Haushalte" in Beziehung setzen zu einer Aktivität oder einer Wirkung/einem Ergebnis des Nachhaltigkeitsprojekts; Diese Verknüpfung kontextualisiert die Implikationen/Vorteile für die „erreichten“ bäuerlichen Haushalte.',
     },
     {
       i: "Farming land",
@@ -1424,7 +1628,7 @@ const definitionContent = {
     {
       i: "Direct supply",
       t: "Direkte Lieferkette",
-      d: "Damit Kakao als “durch eine direkte Lieferkette bezogener Kakao“ kategorisiert werden kann, muss eine stabile Partnerschaft bzw. Zusammenarbeit zwischen dem Unternehmen und den Kakaoproduzentinnen und -produzenten bestehen, in welcher die individuellen kakaoanabauenden Haushalte bekannt und registriert sind. Die Partnerschaft kann Themen wie Preise, Kakaoqualität, gute landwirtschaftliche Praktiken, soziale, menschenrechtliche und ökologische Fragen, Zertifizierungsanforderungen, etc. adressieren. Eine solche Partnerschaft bzw. Zusammenarbeit zwischen dem kakaobeschaffenden ISCO-Unternehmen und den Erzeugerinnen und Erzeugern kann auch über deren Kooperative / Erzeugerorganisation und / oder andere in die direkte Lieferkette eingebettete Akteure organisiert sein.",
+      d: "Damit Kakao als „durch eine direkte Lieferkette bezogener Kakao“ kategorisiert werden kann, muss eine stabile Partnerschaft bzw. Zusammenarbeit zwischen dem Unternehmen und den Kakaoproduzentinnen und -produzenten bestehen, in welcher die individuellen kakaoanabauenden Haushalte bekannt und registriert sind. Die Partnerschaft kann Themen wie Preise, Kakaoqualität, gute landwirtschaftliche Praktiken, soziale, menschenrechtliche und ökologische Fragen, Zertifizierungsanforderungen, etc. adressieren. Eine solche Partnerschaft bzw. Zusammenarbeit zwischen dem kakaobeschaffenden ISCO-Unternehmen und den Erzeugerinnen und Erzeugern kann auch über deren Kooperative / Erzeugerorganisation und / oder andere in die direkte Lieferkette eingebettete Akteure organisiert sein.",
     },
     {
       i: "Mass balance",
@@ -1487,11 +1691,11 @@ const definitionContent = {
     {
       i: "Indirect supply",
       t: "Indirekte Lieferkette",
-      d: 'Bei Kakao, der als "über eine indirekte Lieferkette bezogener Kakao" kategorisiert wird, besteht minimaler bis kein Kontakt, keine Partnerschaft und keine Zusammenarbeit zwischen dem kakaobeziehenden Unternehmen und den Produzentinnen und Produzenten. Der Kakao wird typischerweise über (mehrere) Zwischenhändler bezogen, welche keinerlei Informationen über die Bäuerinnen und Bauern, die den Kakao produziert haben, besitzen oder bereitstellen.',
+      d: "Damit Kakao als „Kakao aus einer indirekten Lieferkette“ eingestuft wird, darf es keinen oder nur minimalen Kontakt, keine Partnerschaft und keine Zusammenarbeit zwischen dem kakaoverarbeitenden Unternehmen und den Kakaoproduzenten geben. Der Kakao wird in der Regel über (mehrere) Zwischenhändler bezogen, die die einzelnen Bauern oder landwirtschaftlichen Familien, die den Kakao produziert haben, nicht offenlegen.",
     },
     {
-      i: "Integrated Pest Management",
-      t: "Integrierte Schädlingsbekämpfung",
+      i: "Integrated Pest Management (IPM)",
+      t: "Integrierte Schädlingsbekämpfung (IPM)",
       d: (
         <Fragment>
           <div>
@@ -1505,22 +1709,22 @@ const definitionContent = {
             Gesundheit und die Umwelt minimieren. IPM strebt gesunde
             Anbaukulturen bei möglichst geringer Beeinträchtigung der
             landwirtschaftlichen Ökosysteme an und fördert natürliche Ansätze
-            der Schädlingsbekämpfung. FAO:
-            <br />
+            der Schädlingsbekämpfung. (FAO:
             <a
-              href="http://www.fao.org/agriculture/crops/thematic-sitemap/theme/pests/ipm/en/ "
+              href="http://www.fao.org/agriculture/crops/thematic-sitemap/theme/pests/ipm/en/"
               target="_blank"
               rel="noopener noreferrer"
               style={{ fontSize: "14px" }}
             >
-              http://www.fao.org/agriculture/crops/thematic-sitemap/theme/pests/ipm/en/{" "}
+              http://www.fao.org/agriculture/crops/thematic-sitemap/theme/pests/ipm/en/
             </a>
+            )
           </div>
         </Fragment>
       ),
     },
     {
-      i: "Living income",
+      i: "Living Income",
       t: "Existenzsicherndes Einkommen",
       d: (
         <Fragment>
@@ -1535,9 +1739,9 @@ const definitionContent = {
             Ereignisse. <i>(Living Income Community of Practice)</i>
             <br />
             <i>
-              Alle genutzten Benchmarks für existenzsichernde Einkommen sollten
-              auf Publikationen von oder für die Living Income Community of
-              Practice beruhen.
+              Alle genutzten Benchmarks (Richtwerte) für existenzsichernde
+              Einkommen sollten auf Publikationen von oder für die Living Income
+              Community of Practice beruhen.
             </i>
           </div>
         </Fragment>
@@ -1545,18 +1749,18 @@ const definitionContent = {
     },
     {
       i: "Living income benchmarks",
-      t: "Benchmarks / Richtwerte für existenzsichernde Einkommen",
+      t: "Benchmarks/Richtwerte für existenzsichernde Einkommen",
       d: (
         <Fragment>
           <div>
             Auf der{" "}
             <a
-              href="https://www.living-income.com/living-income-benchmarks"
+              href="#"
               target="_blank"
               rel="noopener noreferrer"
               style={{ fontSize: "14px" }}
             >
-              LICOP-Website
+              ALIGN-Webseite
             </a>{" "}
             finden Sie einen Überblick über Benchmarks und Studien zum
             existenzsichernden Einkommen. Wenn für die Region, in der Sie
@@ -1567,16 +1771,16 @@ const definitionContent = {
               rel="noopener noreferrer"
               style={{ fontSize: "14px" }}
             >
-              Living Income Community of Practice,
-            </a>{" "}
-            die Anleitungen für die Verwendung von Alternativen enthalten, wenn
-            keine Benchmark verfügbar ist.
+              Living Income Community of Practice
+            </a>
+            , die Anleitungen für die Verwendung von Alternativen enthalten,
+            wenn keine Benchmark verfügbar ist.
           </div>
         </Fragment>
       ),
     },
     {
-      i: "Living income reference price (LIRP)",
+      i: "Living Income Reference Price",
       t: "Referenzpreis für existenzsicherndes Einkommen",
       d: (
         <Fragment>
@@ -1585,51 +1789,58 @@ const definitionContent = {
             an, den ein durchschnittlicher Bauernhaushalt mit einer rentablen
             Betriebsgröße und einem angemessenen Produktivitätsniveau benötigt,
             um ein existenzsicherndes Einkommen aus dem Verkauf seiner Ernte zu
-            erzielen. Es kann mit der Formel berechnet werden: Referenzpreis für
-            existenzsicherndes Einkommen (LIRP) = Kosten für menschenwürdiges
-            Leben + Kosten für nachhaltige Produktion / lebensfähige Landfläche
-            * nachhaltige Erträge Für Fairtrade lautet der aktuelle LIRP (2022)
-            bei farmgate:
+            erzielen. Es kann mit der Formel berechnet werden:
+            <br />
+            <code>
+              Referenzpreis für existenzsicherndes Einkommen (LIRP) = Kosten für
+              menschenwürdiges Leben + Kosten für nachhaltige Produktion /
+              lebensfähige Landfläche * nachhaltige Erträge
+            </code>
+            <br />
+            Für Fairtrade lautet beispielsweise der LIRP (2022):
             <ul style={{ marginLeft: "25px" }}>
-              <li>Ghana: 16,50 GHC / 2,12 USD pro kg;</li>
-              <li>Elfenbeinküste: 1.602 CFA / 2.39 USD pro kg</li>
+              <li>Ghana: 16,50 GHC / 2,12 USD pro kg</li>
+              <li>Côte d‘Ivoire: 1.602 CFA / 2.39 USD pro kg</li>
             </ul>
+            Für andere Ursprünge geben Sie bitte im Kommentarfeld an, welches
+            LIRP Sie verwenden.
           </div>
         </Fragment>
       ),
     },
     {
       i: "Living Income strategy",
-      t: "Living Income Strategie (Strategie zur Erreichung eines Living Income)",
+      t: "Strategie für existenzsichernde Einkommen",
       d: (
         <Fragment>
           <div>
-            Eine Living Income Strategie ist eine Strategie mit dem expliziten
-            Ziel, Kakaobauernhaushalten ein existenzsicherndes Einkommen zu
+            Eine Strategie für existenzsichernde Einkommen (Living Income
+            Strategy) ist eine Strategie mit dem expliziten Ziel,
+            Kakaobauernhaushalten ein existenzsicherndes Einkommen zu
             ermöglichen. Eine Strategie für existenzsicherndes Einkommen
-            beinhaltet eine Monitoring- und Lernkomponente. Eine Living
-            Income-Strategie verwendet eine Kombination oder einen
-            &quot;Smart-Mix&quot; von Strategien, die auf mehrere
+            beinhaltet eine Monitoring- und Lernkomponente.
+            <br />
+            Eine Strategie für existenzsichernde Einkommen verwendet eine
+            Kombination oder einen „Smart-Mix“ von Strategien, die auf mehrere
             einkommensfördernde Faktoren abzielen. Faktoren, die das Einkommens
             erhöhen können* werden strategisch bewertet, um die Einkommenslücken
             zwischen tatsächlichen und existenzsichernden Einkommen zu
-            schließen**. Die Interventionen für jeden dieser Faktoren hängen von
-            der aktuellen Situation ab und davon, inwieweit diese Faktoren die
+            schließen**.
+            <br />
+            Die Interventionen für jeden dieser Faktoren hängen von der
+            aktuellen Situation ab und davon, inwieweit diese Faktoren die
             Einkommenslücke verschiedenen Typen von Bauern und Bäuerinnen
             adressieren. Einkommensfördernde Strategien gehen über Veränderungen
             in bäuerlichen Systemen und Haushalten hinaus und schließen
             Verbesserungen in unternehmerischen Beschaffungspraktiken ein. Sie
             reichen von der Erbringung von Dienstleistungen für eine verbesserte
             Produktion und Verarbeitung über die Marken- und Verbraucherbindung
-            bis hin zur Verbesserung des‚ enabling environments. Eine Living
-            Income Strategy geht über generelle einkommensschaffende Aktivitäten
-            (IGAs) hinaus, die nicht explizit das Ziel haben, die
-            Einkommenslücken zwischen tatsächlichen und existenzsichernden
-            Einkommen zu schließen. <br />
-            *Fläche, Ertrag, Preis, Produktionskosten, diversifizierte Einkommen{" "}
+            bis hin zur Verbesserung des „enabling environments“.
             <br />
-            **die Differenz zwischen dem tatsächlichen Haushaltseinkommen und
-            der bestehenden Benchmark für das existenzsichernde Einkommen
+            Eine Strategie für existenzsichernde Einkommen geht über generelle
+            einkommensschaffende Aktivitäten (IGAs) hinaus, die nicht explizit
+            das Ziel haben, die Einkommenslücken zwischen tatsächlichen und
+            existenzsichernden Einkommen zu schließen.
           </div>
         </Fragment>
       ),
@@ -1656,55 +1867,57 @@ const definitionContent = {
     },
     {
       i: "Premiums granted to the farmer and / or coopertaive",
-      t: "Gewährte Prämien an die Bäuerinnen und Bauern und / oder Kooperativen",
-      d: "Eine Prämie für Kooperativen und /oder Bäuerinnen und Bauern ist ein Geldbetrag, der zusätzlich zum regulären Marktpreis an Erzeugerinnen / Erzeuger oder Erzeugerorganisationen gezahlt wird. Die Höhe der gewährten Prämie entspricht nicht notwendigerweise dem Betrag der in bar bezahlten Prämie. Ein Teil der Prämien könnte z.B. als Rückzahlung für ein Darlehen oder zur Begleichung einer von der Bäuerin oder dem Bauern nachgefragte und erhaltene Dienstleistungen einbehalten werden.",
+      t: "Prämien",
+      d: "Eine an einen Landwirt und/oder eine Genossenschaft gewährte Prämie ist ein zusätzlicher Geldbetrag, der über den regulären Marktpreis hinaus an die Produzenten oder Produzentenorganisationen gezahlt wird. Prämien werden hier ausschließlich als markt- oder volumenbezogene Zahlungen verstanden und schließen daher keine Zahlungen wie „Zahlungen für Umweltleistungen“, bedingte oder unbedingte Geldtransfers usw. ein. Bitte beachten Sie, dass LIRP-Zahlungen in einer separaten Frage behandelt werden.",
     },
     {
       i: "Agroforestry System for Cocoa Production (Description)",
-      t: "Agroforstsystem im Kakaoanbau (Beschreibung)",
+      t: "Agroforstsystem für die Kakaoproduktion (Beschreibung)",
       d: (
         <Fragment>
-          <div>
-            Der Begriff Agroforstwirtschaft bezieht sich auf Anbauflächen, auf
-            denen Kakaobäume bewusst mit vorzugsweise einheimischen und sich für
-            AGROFORSTSYSTEME eignende Nicht-Kakaobaumarten kombiniert werden.
-            Dabei handelt es sich in der Regel um andere Nutzpflanzen, wodurch
-            ökologische, ökonomische, soziale und soziokulturelle Vorteile
-            entstehen können. Agroforstansätze sollten lokal angepasst sein und
-            das ökologische, ökonomische, soziale und kulturelle Umfeld
-            berücksichtigen.
-          </div>
-          <br />
-          <div>
-            AGROFORSTSYSTEME ermöglichen eine ökologisch und wirtschaftlich
-            nachhaltige Kakaoproduktion, welche die biologische Artenvielfalt
-            erhält, Erosion verringert, das Klima und die natürlichen Ressourcen
-            schützt und den Anbau diversifiziert - zum Vorteil von Bäuerinnen
-            und Bauern. AGROFORSTSYSTEME zielen darauf ab, das Einkommen von
-            Bäuerinnen und Bauern zu diversifizieren, gegebenenfalls
-            Produktionskosten zu reduzieren, die wirtschaftliche und
-            klimawandelbezogene Resilienz von kakaoanbauenden Betrieben zu
-            erhöhen und die Nahrungsmittelversorgung im ländlichen Raum zu
-            verbessern.
-          </div>
-          <br />
-          <div>
-            Kakaobäuerinnen und -bauern spielen eine entscheidende Rolle für die
-            Akzeptanz, Verbreitung und Nachhaltigkeit von AGROFORSTSYSTEMEN. Ein
-            gemeinschaftlicher Prozess, in dem die Bedürfnisse, Präferenzen und
-            Erfahrungen der Bäuerinnen und Bauern berücksichtigt werden und sie
-            aktiv unterstützt werden (über technische Unterstützung,
-            Entwicklungspläne, Kapazitätsaufbau), ist essenziell, um bestehende
-            Anbausysteme nachhaltiger auszugestalten.
-          </div>
-          <br />
-          <div>
-            Bananenpflanzen / Kochbananen zählen nicht als Bäume / Baumarten.*
-            <br />
-            *Lediglich botanisch klassifizierte Bäume werden als „Bäume“
-            gewertet, andere Pflanzen wie Stauden (so auch
-            (Koch-)Bananenstauden), zählen daher nicht.
-          </div>
+          <ul type="bullet" style={{ margin: 0, padding: 0 }}>
+            <li>
+              Der Begriff Agroforstwirtschaft bezieht sich auf Anbauflächen, auf
+              denen Kakaobäume bewusst mit vorzugsweise einheimischen und sich
+              für AGROFORSTSYSTEME eignende Nicht-Kakaobaumarten kombiniert
+              werden. Dabei handelt es sich in der Regel um andere Nutzpflanzen,
+              wodurch ökologische, ökonomische, soziale und soziokulturelle
+              Vorteile entstehen können. Agroforstansätze sollten lokal
+              angepasst sein und das ökologische, ökonomische, soziale und
+              kulturelle Umfeld berücksichtigen.
+            </li>
+            <li>
+              AGROFORSTSYSTEME ermöglichen eine ökologisch und wirtschaftlich
+              nachhaltige Kakaoproduktion, welche die biologische Artenvielfalt
+              erhält, Erosion verringert, das Klima und die natürlichen
+              Ressourcen schützt und den Anbau diversifiziert - zum Vorteil von
+              Bäuerinnen und Bauern. AGROFORSTSYSTEME zielen darauf ab, das
+              Einkommen von Bäuerinnen und Bauern zu diversifizieren,
+              gegebenenfalls Produktionskosten zu reduzieren, die
+              wirtschaftliche und klimawandelbezogene Resilienz von
+              kakaoanbauenden Betrieben zu erhöhen und die
+              Nahrungsmittelversorgung im ländlichen Raum zu verbessern.
+            </li>
+            <li>
+              Kakaobäuerinnen und -bauern spielen eine entscheidende Rolle für
+              die Akzeptanz, Verbreitung und Nachhaltigkeit von
+              AGROFORSTSYSTEMEN. Ein gemeinschaftlicher Prozess, in dem die
+              Bedürfnisse, Präferenzen und Erfahrungen der Bäuerinnen und Bauern
+              berücksichtigt werden und sie aktiv unterstützt werden (über
+              technische Unterstützung, Entwicklungspläne, Kapazitätsaufbau),
+              ist essenziell, um bestehende Anbausysteme nachhaltiger
+              auszugestalten.
+            </li>
+            <li>
+              Bananenpflanzen/Kochbananen zählen nicht als Bäume/Baumarten.*
+              <br />
+              <small>
+                *Lediglich botanisch klassifizierte Bäume werden als „Bäume“
+                gewertet, andere Pflanzen wie Stauden (so auch
+                (Koch-)Bananenstauden), zählen daher nicht.
+              </small>
+            </li>
+          </ul>
         </Fragment>
       ),
     },
@@ -1717,63 +1930,77 @@ const definitionContent = {
             <b>
               <u>Einstiegstufe für AGROFORSTSYSTEME (1):</u>
             </b>
-            <br />
-            Mindestens 16 Nicht-Kakaobäume pro Hektar mit mindestens 3
-            verschiedenen – vorzugsweise einheimischen – Baumarten. Diese
-            Einstiegsstufe für AGROFORSTSYSTEME entspricht den
-            Agroforstindikatoren von CFI und WCF.
+            <ul>
+              <li>
+                Mindestens 16 Nicht-Kakaobäume pro Hektar mit mindestens 3
+                verschiedenen – vorzugsweise einheimischen – Baumarten
+              </li>
+              <li>
+                Diese Einstiegsstufe für AGROFORSTSYSTEME entspricht den
+                Agroforstindikatoren von CFI und WCF.
+              </li>
+            </ul>
           </div>
           <br />
           <div>
             <b>
               <u>Basiskategorie für AGROFORSTSYSTEME (2):</u>
             </b>
-            <br />
-            Mindestens 40 % Überschirmungsgrad und mindestens 5 verschiedene
-            einheimische Baumarten. Diese Kategorie für AGROFORSTSYSTEME
-            entspricht den Rainforest Alliance Referenzparametern für
-            Beschattung und biologischer Artenvielfalt.
+            <ul>
+              <li>
+                Mindestens 40 % Überschirmungsgrad und mindestens 5 verschiedene
+                einheimische Baumarten. Diese Kategorie für AGROFORSTSYSTEME
+                entspricht den Rainforest Alliance Referenzparametern für
+                Beschattung und biologischer Artenvielfalt.
+              </li>
+            </ul>
           </div>
           <br />
           <div>
             <b>
               <u>Fortgeschrittene Kategorie für AGROFORSTSYSTEME (3):</u>
             </b>
-            <br />
-            Mindestens 40% Überschirmungsgrad,
-            <ul style={{ marginLeft: "25px" }}>
+            <ul>
+              <li>Mindestens 40% Überschirmungsgrad,</li>
+              <ul type="circle">
+                <li>
+                  mindestens 12 verschiedene einheimische Baumarten (nicht:
+                  Pionierbaumarten),
+                </li>
+                <li>Mindestens 15% einheimische Vegetationsbedeckung,</li>
+                <li>
+                  2 Stockwerke / Baumstrata und eine Mindesthöhe der
+                  Schattenbäume von 12-15 Metern.
+                </li>
+              </ul>
               <li>
-                mindestens 12 verschiedene einheimische Baumarten (nicht:
-                Pionierbaumarten)
-              </li>
-              <li>Mindestens 15% einheimische Vegetationsbedeckung</li>
-              <li>
-                2 Stockwerke / Baumstrata und eine Mindesthöhe der Schattenbäume
-                von 12-15 Metern
+                In dieser Kategorie wird ein besonderer Fokus auf den
+                landschaftlichen Ansatz der Agroforstwirtschaft gelegt. Sie
+                orientiert sich an den Empfehlungen des VOICE-Netzwerks.
               </li>
             </ul>
-            In dieser Kategorie wird ein besonderer Fokus auf den
-            landschaftlichen Ansatz der Agroforstwirtschaft gelegt. Sie
-            orientiert sich an den Empfehlungen des VOICE-Netzwerks.
           </div>
           <br />
           <div>
             <b>
               <u>Dynamische AGROFORSTSYSTEME (4):</u>
             </b>
-            <br />
-            Diese Systeme zeichnen sich durch eine sehr hohe Baumdichte pro
-            Hektar aus. Das Anbausystem beherbergt viele verschiedene Baum- und
-            Pflanzenarten mit unterschiedlichen Lebenszyklen, die verschiedene
-            Zwecke erfüllen (Kohlenstoffbindung, alternative Einkommensquellen,
-            Nahrung etc.). Sie gedeihen in verschiedenen Schichten ohne
-            Konkurrenz zueinander. Es gibt mindestens 3 verschiedene Stockwerke
-            / Strata, es werden regernative landwirtschaftliche Praktiken
-            angewendet und die Nahrungsmittelsicherheit sowie alternative
-            Einkommensquellen außerhalb des Kakaos sind gesichert. Dieses System
-            ahmt den natürlichen Lebensraum des Kakaos in einem hoch
-            entwickelten Anbausystem nach, wobei die dynamischen
-            Agroforstprojekte von Chocolats Halba als Vorbild gelten.
+            <ul>
+              <li>
+                Diese Systeme zeichnen sich durch eine sehr hohe Baumdichte pro
+                Hektar aus. Das Anbausystem beherbergt viele verschiedene Baum-
+                und Pflanzenarten mit unterschiedlichen Lebenszyklen, die
+                verschiedene Zwecke erfüllen (Kohlenstoffbindung, alternative
+                Einkommensquellen, Nahrung etc.). Sie gedeihen in verschiedenen
+                Schichten ohne Konkurrenz zueinander. Es gibt mindestens 3
+                verschiedene Stockwerke/Strata, es werden regenerative
+                landwirtschaftliche Praktiken angewendet und die
+                Nahrungsmittelsicherheit sowie alternative Einkommensquellen
+                außerhalb des Kakaos sind gesichert. Dieses System ahmt den
+                natürlichen Lebensraum des Kakaos in einem hoch entwickelten
+                Anbausystem nach.
+              </li>
+            </ul>
           </div>
         </Fragment>
       ),
@@ -1784,8 +2011,8 @@ const definitionContent = {
       d: (
         <Fragment>
           <div>
-            Gefährliche Pestizide umfassen mindestens alle Substanzen, die{" "}
-            <ol type="1" style={{ marginLeft: "1.5rem" }}>
+            Gefährliche Pestizide umfassen mindestens alle Substanzen, die
+            <ol type="1" start={1} style={{ marginLeft: "1.5rem" }}>
               <li>
                 als <b>Persistent Organic Pollutants (POPs)</b> in der Stockholm
                 Konvention, im Annex III der Rotterdam Konvention und / oder im
@@ -1801,9 +2028,9 @@ const definitionContent = {
                 ausgewiesen sind.
               </li>
             </ol>
-            Zudem – spezifisch für den Kakaoanbau – jene Pestizide, deren
-            Verwendung für Güter, die für den Export in EU-Staaten bestimmt
-            sind, nicht zugelassen sind.
+            Zudem umfassen sie - spezifisch für den Kakaoanbau - jene Pestizide,
+            deren Verwendung für Güter, die für den Export in EU-Staaten
+            bestimmt sind, nicht zugelassen sind.
           </div>
         </Fragment>
       ),
@@ -1828,8 +2055,7 @@ const definitionContent = {
             (früher oder heute) oder Verbreitungspotentials vorkommt (d.h.
             innerhalb des Gebiets, in dem sie natürlicherweise vorkommt oder
             ohne direkte oder indirekte Einwirkung oder Pflege durch den
-            Menschen vorkommen könnte). <br />
-            FAO (2020).
+            Menschen vorkommen könnte). (FAO:{" "}
             <a
               href="http://www.fao.org/3/I8661EN/i8661en.pdf"
               target="_blank"
@@ -1838,13 +2064,14 @@ const definitionContent = {
             >
               http://www.fao.org/3/I8661EN/i8661en.pdf
             </a>
+            ).
           </div>
         </Fragment>
       ),
     },
     {
       i: "Net household income",
-      t: "Netto-Haushaltseinkommen",
+      t: "Haushaltsnettoeinkommen-Haushaltseinkommen",
       d: (
         <Fragment>
           <div>
@@ -1855,7 +2082,7 @@ const definitionContent = {
             (einschließlich Nachhaltigkeitsprämien) – Produktionskosten +
             Einkommen aus alternativen Quellen (z. B. nicht-landwirtschaftliches
             Einkommen, Mieteinnahmen etc.) abzüglich der damit verbundenen
-            Kosten. <br /> <br />
+            Kosten.
             <i>Zu den Kosten können gehören:</i>
             <ul style={{ marginLeft: "25px" }}>
               <li>
@@ -1905,17 +2132,15 @@ const definitionContent = {
       d: (
         <Fragment>
           <div>
-            Bezeichnet das Neupflanzen und / oder die Regenerierung von
+            Bezeichnet das Neupflanzen und/oder die Regenerierung von
             bestehenden Bäumen in einem bestimmten Gebiet unter Einbezug
-            (vorzugsweise) einheimischer aber auch nicht-einheimischer
+            (vorzugsweise) einheimischer, aber auch nicht-einheimischer
             Baumarten, um die vielfältigen ökologischen Vorteile von Wäldern
             wiederherzustellen (mit dem Ziel, die Entstehung natürlicher Walder
-            zu fördern). (Quelle: Accountability Framework) <br />
-            <br />
-            „Best practice“ ist die Entwicklung eines Plans zur
-            Wiederherstellung des Waldes auf der Grundlage einer ersten
-            Bewertung (Ausgangssituation) und eines mit der (lokalen oder
-            nationalen) Regierung abgestimmten Aktionsplans.
+            zu fördern). (Quelle: Accountability Framework). „Best practice“ ist
+            die Entwicklung eines Plans zur Wiederherstellung des Waldes auf der
+            Grundlage einer ersten Bewertung (Ausgangssituation) und eines mit
+            der (lokalen oder nationalen) Regierung abgestimmten Aktionsplans.
           </div>
         </Fragment>
       ),
@@ -1964,27 +2189,24 @@ const definitionContent = {
       ),
     },
     {
-      i: "Project",
-      t: "Projekt",
+      i: "Project / Programme",
+      t: "Projekt / Programm",
       d: (
         <Fragment>
           <div>
-            Ein Kakao-Nachhaltigkeitsprojekt ist definiert als ein Programm, ein
-            Projekt oder eine Initiative, welches / welche die Nachhaltigkeit
-            (oder einzelne Aspekte der Nachhaltigkeit) in der Kakaoproduktion,
-            -verarbeitung und / oder entlang der Lieferketten zu fördern
-            versucht.
+            Ein Kakao-Nachhaltigkeitsprojekt/-programm ist definiert als ein
+            Programm, ein Projekt oder eine Initiative, welches/welche die
+            Nachhaltigkeit (oder einzelne Aspekte der Nachhaltigkeit) in der
+            Kakaoproduktion, -verarbeitung und/oder entlang der Lieferketten zu
+            fördern versucht.
             <br />
-            <br />
-            <i>
-              Unter der Bezeichnung &quot;Nachhaltigkeitsprojekt&quot; kann ein
-              Mitglied über jedes &quot;Programm, Projekt oder Initiative&quot;
-              im Bereich der Nachhaltigkeit berichten. Mitglieder mit größeren
-              Nachhaltigkeitsprogrammen können wählen zwischen: (a) aggregierter
-              Berichterstattung zu einem großen Programm mit mehreren
-              Interventionsbereichen; oder (b) separater Berichterstattung für
-              zugrunde liegende (z.B. länderspezifische) Projekte.
-            </i>
+            Unter der Bezeichnung &quot;Nachhaltigkeitsprojekt/-programm&quot;
+            kann ein Mitglied über jedes &quot;Programm, Projekt oder
+            Initiative&quot; im Bereich der Nachhaltigkeit berichten. Mitglieder
+            mit größeren Nachhaltigkeitsprogrammen können wählen zwischen: (a)
+            aggregierter Berichterstattung zu einem großen Programm mit mehreren
+            Interventionsbereichen; oder (b) separater Berichterstattung für
+            zugrunde liegende (z.B. länderspezifische) Projekte.
           </div>
         </Fragment>
       ),
@@ -2064,22 +2286,20 @@ const definitionContent = {
       d: (
         <Fragment>
           <div>
-            Der kombinierte Effekt von Veränderungen im Bewusstsein, des Wissens
-            und der Fähigkeiten von Frauen sowie von Veränderungen der
-            Machtverhältnisse und Strukturen (Normen, Bräuche, Institutionen,
-            Gesetzgebung usw.), welche den Zugang von Frauen zu Rechten und
-            Ressourcen, ihre Entscheidungen und Chancen und letztlich ihr
-            Wohlergehen prägen.{" "}
-            <i>
-              (WCF-Gender Integration Guidance Note, Anhang zu Gender-Prinzipien
-              und Definitionen)
-            </i>
+            Die kombinierte Wirkung von Veränderungen im Bewusstsein, Wissen,
+            den Fähigkeiten und Kompetenzen einer Frau (<b>Eigenmacht</b>) sowie
+            in den Machtverhältnissen und Strukturen (Normen, Bräuche,
+            Institutionen, Richtlinien, Gesetze usw.), die ihren Zugang zu
+            Rechten und Ressourcen, ihre Entscheidungsfreiheit und Chancen sowie
+            letztlich ihr Wohlergehen beeinflussen. (WCF-Leitfaden zur
+            Geschlechterintegration, Anhang zu Gender-Prinzipien und
+            Definitionen).
           </div>
         </Fragment>
       ),
     },
     {
-      i: "Yield (cocoa yield):",
+      i: "Yield (cocoa yield)",
       t: "Ertrag (Kakaoertrag)",
       d: "Gesamtgewicht des Kakaos (typischerweise angegeben in Kilogramm), der je Flächeneinheit (typischerweise in Hektar) in einem bestimmten Jahr erzeugt wird.",
     },
@@ -2141,36 +2361,215 @@ const definitionContent = {
     },
     {
       i: "Methodology to calculate number of households in the indirect supply chain",
-      t: "Methodik zur Berechnung der Anzahl von Haushalten in der indirekten Lieferkette",
+      t: "Methodik zur Berechnung der Anzahl der Haushalte in der indirekten Lieferkette",
       d: (
         <Fragment>
           <div>
-            Bitte berechnen Sie die Anzahl der Haushalte in Ihrer indirekten
-            Lieferkette, indem Sie die Gesamtvolumina, die Sie über die
-            indirekte Lieferkette bezogen haben, durch den durchschnittlichen
-            jährlichen Ertrag der Bauern in Ihrer indirekten Lieferkette teilen.
-            Bitte finden Sie den durchschnittlichen jährlichen Ertrag für die
-            größten Kakaoproduzentenländer in der untenstehenden Tabelle.
+            Bitte berechnen Sie die Anzahl der Haushalte in der indirekten
+            Lieferkette, indem Sie die Gesamtmenge, die Sie über die indirekte
+            Lieferkette bezogen haben, durch den durchschnittlichen Jahresertrag
+            der Bauern in Ihrer indirekten Lieferkette teilen. In der
+            nachstehenden Tabelle finden Sie die durchschnittlichen
+            Jahreserträge für einige die größten Kakaoanbauländer. Bitte
+            beachten Sie: Die folgenden Zahlen beziehen sich auf das Jahr 2022.
+            Die ISCOs werden sich bemühen, aktualisierte Zahlen in das
+            Monitoring-Tool aufzunehmen.
             <br />
             <br />
-            Beispiel: 20.000 MT-BE werden aus Ghana bezogen und 2.000 MT-BE
-            werden aus Ecuador bezogen
+            Beispiel: Aus Ghana werden 20.000 MT-BE bezogen, aus Ecuador 2.000
+            MT-BE.
             <ul>
-              <li>Ghana: (20.000/1104,6)*1.000 = 18.106 Bauern</li>
-              <li>Ecuador: (2.000/3840,18)*1.000 = 520 Bauern</li>
+              <li>
+                Ghana: (20.000/1.104,6)*1.000 = 18.106 Bäuerinnen und Bauern
+              </li>
+              <li>
+                Ecuador: (2.000/3.840,18)*1.000 = 520 Bäuerinnen und Bauern
+              </li>
               <li>Gesamt: 18.626 Bauern</li>
             </ul>
+            Bitte beachten Sie: Die folgenden Zahlen beziehen sich auf das Jahr
+            2022. Die ISCOs werden sich bemühen, aktualisierte Zahlen in das
+            Monitoring-Tool aufzunehmen.
             <br />
             <Table
               columns={numberOfHHIndirectSupplyChainColumns}
               dataSource={numberOfHHIndirectSupplyChainDataSource}
-              tableLayout="auto"
+              // tableLayout="auto"
               size="middle"
               bordered
+              pagination={false}
             />
           </div>
         </Fragment>
       ),
+    },
+    {
+      i: "Certified or cocoa covered through a company programm",
+      t: "Zertifizierter oder durch Unternehmensprogramme unabhängig geprüfter Kakao",
+      d: "Kakao, der gemäß den Anforderungen von Zertifizierungsstandards (wie Fairtrade oder Rainforest Alliance) oder durch Unternehmensprogramme für nachhaltigen Kakao produziert wurde.",
+    },
+    {
+      i: "Cocoa grower",
+      t: "Kakaobauer/-bäuerin",
+      d: "Ein Kakaobauer oder eine Kakaobäuerin ist eine Person (Mitglied eines Kakaobauernhaushalts oder eine andere Einzelperson), die strukturell in landwirtschaftliche Arbeiten im Zusammenhang mit der Produktion von Kakaobohnen eingebunden ist.",
+    },
+    {
+      i: "Covered",
+      t: "Abgedeckt („covered“)",
+      d: (
+        <Fragment>
+          <div>
+            Ein Haushalt kann als von einem System zur Überwachung und Abhilfe
+            von Kinderarbeit (CLMRS) oder einem vergleichbaren System abgedeckt
+            („covered“) betrachtet werden, wenn auf Haushaltsebene eine
+            Bewertung des Kinderarbeitsrisikos durchgeführt wurde, ENTWEDER:
+            <ul>
+              <li>
+                Durch einen persönlichen Kontrollbesuch, einschließlich einer
+                Befragung des Kindes, ODER
+              </li>
+              <li>
+                Durch eine Bewertung anhand eines Risikomodells auf
+                Haushaltsebene (d.h. eine systematische Analyse zuverlässiger
+                Daten über den Haushalt zur Vorhersage von Kinderarbeit unter
+                Verwendung einer transparenten, dokumentierten
+                Bewertungsmethode)
+              </li>
+            </ul>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Data transfer from ICI",
+      t: "Datenübermittlung von ICI",
+      d: (
+        <Fragment>
+          <div>
+            Die ISCOs und ICI führen einen Datentransfer zu acht harmonisierten
+            Fragen durch, um sicherzustellen, dass Mitglieder, die sowohl Teil
+            der ISCOs als auch von ICI sind, sich dafür entscheiden können, zu
+            Kinderarbeit nur einmal Bericht zu erstatten. Die Mitglieder müssen
+            sowohl im ICI-Tool als auch im ISCO-Tool angeben, dass sie damit
+            einverstanden sind, dass ihre Daten an die ISCOs weitergegeben
+            werden. Sie müssen dann nicht mehr im ISCO-Tool berichten. Wenn
+            Mitglieder ihre Daten nicht über ICI an die ISCOs weitergeben
+            möchten, müssen sie zu den acht Datenpunkten erneut über das
+            ISCO-Tool berichten.
+          </div>
+          <img
+            src="/images/definition-content/data-transfer-cli.jpg"
+            width="90%"
+          />
+        </Fragment>
+      ),
+    },
+    {
+      i: "Evidence of impact of system to prevent and address child labour",
+      t: "Nachweis der Wirkung des Systems zur Verhinderung und Bekämpfung von Kinderarbeit",
+      d: "Als Nachweis könnte bspw. eine belastbare Wirkungsstudie angegeben werden, in der die Wirkung in diesem Zusammenhang im Vergleich zu einer Kontrollgruppe nachgewiesen wird (z. B. durch eine randomisierte Kontrollstudie (randomized control trial; RCT), eine Differenzanalyse (difference-in-difference analysis), ein Regressionsdiskontinuitätsdesign (regression discontinuity design usw.)",
+    },
+    {
+      i: "Identified in child labour",
+      t: "Identifiziert in Kinderarbeit",
+      d: "Dies bedeutet, dass ein Kind in Übereinstimmung mit den ILO-Übereinkommen und nationalen Rechtsvorschriften (z. B. Hazardous Child Labour Activity Frameworks) in einer Situation von Kinderarbeit identifiziert wurde. Der entsprechende Indikator zählt die Anzahl der derzeit erfassten Kinder, die jemals in Kinderarbeit identifiziert wurden. Auch wenn das Kind inzwischen nicht mehr arbeitet, sollte es hier gezählt werden.",
+    },
+    {
+      i: "Manufactured",
+      t: "Manufactured (hergestellt)",
+      d: (
+        <Fragment>
+          <div>
+            Als „hergestellt“ verstehen wir typischerweise die Verarbeitung von
+            Halbfertigprodukten oder Schokolade bis hin zu Endprodukten,
+            einschließlich Formen, Füllen und Überziehen. Die relevanten
+            HS-Codes für hergestellte Produkte sind:
+            <ul>
+              <li>
+                <b>18063100</b> Schokolade und andere kakaohaltige
+                Zubereitungen, in Tafeln, Riegeln oder Blöcken von ≤ 2 kg,
+                gefüllt.
+              </li>
+              <li>
+                <b>180632</b> Schokolade und andere kakaohaltige Zubereitungen,
+                in Tafeln, Riegeln oder Blöcken von ≤ 2 kg (ohne Füllung).
+              </li>
+              <li>
+                <b>180690</b> Schokolade und andere kakaohaltige Zubereitungen,
+                in Behältnissen oder unmittelbaren Verpackungen von ≤ 2 kg
+                (ausgenommen Tafeln, Riegel, Blöcke und Kakaopulver).
+              </li>
+            </ul>
+          </div>
+          <div>
+            Hinweis: Falls Sie Endprodukte in einer Fabrik direkt aus Bohnen und
+            nicht aus Halbfertigprodukten herstellen, melden Sie Ihre Volumina
+            bitte nur hier und nicht in der nächsten Frage. Falls diese Frage
+            für Ihr Unternehmen/Ihre Organisation nicht relevant ist, können Sie
+            im Tool „n/a“ auswählen.
+          </div>
+          <div>
+            Umrechnung in MT-BE (Metric Tons Bean Equivalent) für Kakao in
+            unterschiedlichen Verarbeitungsformen erfolgt nach den
+            ICCO-Umrechnungsfaktoren: 1,33 für Kakaobutter (HS-Code 1804), 1,25
+            für Kakaomasse/-likör (HS-Code 18031), 1,18 für Kakaopulver und
+            Kakaokuchen (HS-Codes 1805, 18032)
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Methodology # of farmers for which the LI gap is measured",
+      t: "Methodik für Bauern, bei denen die Einkommenslücken zwischen tatsächlichen und existenzsichernden Einkommen (Living Income Gap) gemessen wird",
+      d: "Die ISCOs verlangen von den Mitgliedern nicht, die Einkommenslücken zwischen tatsächlichen und existenzsichernden Einkommenjedes einzelnen Bauern in ihrer Lieferkette zu messen, sondern für eine repräsentative Stichprobe ihrer Lieferkette. Die Mitglieder können in einer Folgefrage angeben, wie sie eine repräsentative Stichprobe definieren.",
+    },
+    {
+      i: "Methodology to calculate MT-BE",
+      t: "Methodik zur Berechnung von MT-BE",
+      d: "Die Umrechnung von Kakao aus verschiedenen Formen in MT-BE erfolgt unter Verwendung der ICCO-Umrechnungsfaktoren: 1,33 für Kakaobutter (1804); 1,25 für Kakaomasse/-likör (18031); und 1,18 für Kakaopulver und Kuchen (1805, 18032). In Bezug auf die MT-BE von Kakao, der in Verbraucherendprodukten enthalten ist, die auf den nationalen Markt in Europa geliefert werden, ist die Berichterstattung durch die Verbrauchermarken zu übernehmen. Von den Einzelhändlern wird erwartet, dass sie für ihre eigenen Labels (Marken) auf die gleiche Weise berichten wie die Verbrauchermarken. Selbstverständlich verlassen sich diese Marken/Händler bei Bedarf auf die entsprechenden Informationen, die sie von ihren Lieferanten erhalten.",
+    },
+    {
+      i: "Multiple-purpose trees",
+      t: "Mehrzweckbäume",
+      d: "Baumarten, die zusätzlich auf Kakaoanbauflächen gepflanzt werden, vor allem um ökonomischen oder ökologischen Mehrwert zu generieren. Dabei kann es sich um Obstbäume, Ölpalmen, Heilpflanzen, Futtermittelpflanzen und/oder Schattenbäume für die spätere Holzernte handeln.",
+    },
+    {
+      i: "Processed",
+      t: "Processed (verarbeitet)",
+      d: (
+        <Fragment>
+          <div>
+            Alle Halbfertigprodukte (einschließlich Kakaomasse, -pulver, -butter
+            und Kuvertüre), die aus Ihren nationalen Fabriken kommen –
+            unabhängig davon, in welcher Form der Kakao eingegangen ist. Die
+            relevanten HS-Codes sind:
+            <ul>
+              <li>
+                <b>1801</b> Kakaobohnen, ganz oder gebrochen, roh oder geröstet.
+              </li>
+              <li>
+                <b>1802</b> Kakaoschalen, -hülsen, -häute und andere
+                Kakaorückstände.
+              </li>
+              <li>
+                <b>1803</b> Kakaomasse, entfettet oder nicht entfettet.
+              </li>
+              <li>
+                <b>1804</b> Kakaobutter, -fett und -öl.
+              </li>
+              <li>
+                <b>1805</b> Kakaopulver, ohne zugesetzten Zucker oder andere
+                Süßstoffe.
+              </li>
+            </ul>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "System to prevent and address child labour",
+      t: "System zur Verhinderung und Bekämpfung von Kinderarbeit",
+      d: 'Ein "System" ist eine Reihe von Maßnahmen zur Risikobewertung, Prävention und Bekämpfung von Kinderarbeit. Ein Beispiel für eine andere Art von System ist ein umfassender Ansatz zur Gemeindeentwicklung.',
     },
   ],
 };
