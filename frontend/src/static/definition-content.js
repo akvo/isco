@@ -364,7 +364,7 @@ const definitionContent = {
     },
     {
       i: "Direct supply",
-      t: "Direct supply",
+      t: "Direct sourcing",
       d: "For cocoa to be categorized as “cocoa sourced through a direct supply chain”, there shall be a relatively stable partnership and collaboration, in which the individual cocoa farmers / farming families are known (registered).  Such partnership and collaboration may cover issues such as price, quality, good agricultural practices, social, human rights and environmental issues, certification requirements, etc. This partnership and collaboration between the ISCO cocoa sourcing company and the producers (cocoa farming households) may be conducted through cooperatives, farmer organisations and / or other intermediaries embedded within the direct supply chain.",
     },
     {
@@ -428,7 +428,7 @@ const definitionContent = {
     },
     {
       i: "Indirect supply",
-      t: "Indirect supply",
+      t: "Indirect Supply",
       d: "For cocoa to be categorized as “cocoa sourced through an indirect supply chain”, there is no or minimal contact, no partnership and no collaboration between the cocoa sourcing company and the cocoa producer. The cocoa is typically sourced through (several) intermediaries which do not disclose the individual farmers / farming families that produced the cocoa.",
     },
     {
@@ -542,14 +542,15 @@ const definitionContent = {
     },
     {
       i: "Living Income strategy",
-      t: "Living Income strategy",
+      t: "Living Income Strategy",
       d: (
         <Fragment>
           <div>
             A living income strategy is a strategy with the explicit goal to
             enable cocoa farming households to earn a living income. A living
-            income strategy includes a monitoring and learning component. A
-            living income strategy uses a combination, or “smart-mix” of
+            income strategy includes a monitoring and learning component.
+            <br />
+            A living income strategy uses a combination, or “smart-mix” of
             strategies that target multiple income drivers. Multiple income
             drivers* are being assessed strategically for the purpose of closing
             the living income gap**. The interventions for each driver depend on
@@ -560,9 +561,13 @@ const definitionContent = {
             household behaviour. These strategies include improved procurement
             practices. They range from service delivery for improved production
             and processing, to brand and consumer engagement, and to improving
-            the enabling environment. A living income strategy goes beyond
-            income generating activities (IGAs) that do not have the explicit
-            aim of closing living income gaps.
+            the enabling environment.
+            <br />
+            <br />
+            A living income strategy goes beyond income generating activities
+            (IGAs) that do not have the explicit aim of closing living income
+            gaps.
+            <br />
             <br />
             *land size, yield, price, cost of production, diversified incomes
             <br />
@@ -599,8 +604,8 @@ const definitionContent = {
     },
     {
       i: "Premiums granted to the farmer and / or coopertaive",
-      t: "Premiums granted to the farmer and / or coopertaive",
-      d: "A premium granted to a farmer and/or cooperative is an additional amount of money paid in addition to the regular market price paid to the producers or producer organizations. The amount of 'premiums granted' does not necessarily correspond to the amount of 'premiums paid in cash'. Part of the premiums granted could be deducted for payment as 'withholding' for reimbursement of (a) loan(s) to the farmer or as 'payment for services' requested by and provided to the farmer.",
+      t: "Premium granted",
+      d: "A premium granted to a farmer and/or cooperative is an additional amount of money paid in addition to the regular market price paid to the producers or producer organizations. Premiums are here understood only as market or volume related payments and do hence not include payments such as 'payments for environmental services', conditional or unconditional cash payments etc. Please note that LIRP payments are covered in a separate question.",
     },
     {
       i: "Agroforestry System for Cocoa Production (Description)",
@@ -1107,6 +1112,181 @@ const definitionContent = {
         </Fragment>
       ),
     },
+    {
+      i: "Certified or cocoa covered through a company programm",
+      t: "Certified or cocoa covered through a company programm",
+      d: "Cocoa produced in compliance with the requirements of certification standards (such as Fairtrade or Rainforest Alliance) or company schemes on sustainable cocoa.",
+    },
+    {
+      i: "Cocoa grower",
+      t: "Cocoa grower",
+      d: "A cocoa grower is an individual (member of a cocoa farming household or other individual) structurally involved in farming work related to the production of cocoa beans.",
+    },
+    {
+      i: "Covered",
+      t: "Covered",
+      d: (
+        <Fragment>
+          <div>
+            A household can be considered “covered” by a CLMRS or comparable
+            system, if an assessment of child labour risk has been conducted at
+            household level, EITHER:
+            <ul>
+              <li>
+                through an in-person monitoring visit, including child
+                interview, OR
+              </li>
+              <li>
+                through assessment using a household-level risk model (ie. a
+                systematic analysis of reliable data about the household to
+                predict child labour, using a transparent, documented method of
+                assessment)
+              </li>
+            </ul>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Data transfer from ICI",
+      t: "Data transfer from ICI",
+      d: (
+        <Fragment>
+          <div>
+            The ISCOs and ICI conduct a data transfer on eight harmonized
+            questions, ensuring that members that are part of both the ISCOs and
+            ICI can choose to only report on child labour questions once.
+            Members will be able to indicate in the ICI tool as well as the ISCO
+            tool that they consent to their data being shared with the ISCOs.
+            They will no longer need to report in the ISCO tool. If members do
+            not want to share their data with the ISCOs via ICI, they will be
+            required to report on child labour questions through the ISCO tool.
+          </div>
+          <img
+            src="/images/definition-content/data-transfer-cli.jpg"
+            width="90%"
+          />
+        </Fragment>
+      ),
+    },
+    {
+      i: "Evidence of impact of system to prevent and address child labour",
+      t: "Evidence of impact of system to prevent and address child labour",
+      d: "Evidence could include a robust impact study, where impact is demonstrated in this context, compared to a control group (e.g. through a randomized control trial (RCT), difference-in-difference analysis, regression discontinuity design etc.",
+    },
+    {
+      i: "Identified in child labour",
+      t: "Identified in child labour",
+      d: "This means a child has been identified in a situation of child labour, in accordance with ILO conventions and national legislation (e.g. hazardous activity frameworks). The respective indicator counts the number of children currently covered ever identified in child labour. Even if the child has since stopped working, they should be counted here.",
+    },
+    {
+      i: "Manufactured",
+      t: "Manufactured",
+      d: (
+        <Fragment>
+          <div>
+            As ‘manufactured’ we typically understand, from semi-finished
+            product or chocolate to chocolate end products, including moulding,
+            filling & enrobing. The relevant HS- Codes for manufactured are:
+            <ul>
+              <li>
+                <b>18063100</b> Chocolate and other preparations containing
+                cocoa, in blocks, slabs or bars of &lt;= 2 kg, filled;
+              </li>
+              <li>
+                <b>180632</b> Chocolate and other preparations containing cocoa,
+                in blocks, slabs or bars of &lt;= 2 kg (excl. filled);
+              </li>
+              <li>
+                <b>180690</b> Chocolate and other preparations containing cocoa,
+                in containers or immediate packings of &lt;= 2 kg (excl. in
+                blocks, slabs or bars and cocoa powder)
+              </li>
+            </ul>
+          </div>
+          <div>
+            Please note: If you manufacture end products in a factory from beans
+            and not semi-finished products, please report your volumes only once
+            here and not in the next question. You can choose “n/a” in the tool,
+            if this question is not relevant for your company/organization.
+          </div>
+          <div>
+            Conversion to MT-BE, of cocoa sourced in different forms, is to be
+            done using the ICCO conversion factors, being: 1,33 for cocoa butter
+            (1804); 1,25 for cocoa paste/liquor (18031); and 1,18 for cocoa
+            powder and cake (1805, 18032).
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Methodology # of farmers for which the LI gap is measured",
+      t: "Methodology # of farmers for which the LI gap is measured",
+      d: "The ISCOs do not require members to measure the income gap of every individual farmer in their supply chain, but for a representative sample of their supply chain. Members will be able to specify how they define a representative sample in a follow-up question.",
+    },
+    {
+      i: "Methodology to calculate MT-BE",
+      t: "Methodology to calculate MT-BE",
+      d: "Conversion to MT-BE, of cocoa sourced in different forms, is to be done using the ICCO conversion factors, being: 1,33 for cocoa butter (1804); 1,25 for cocoa paste/liquor (18031); and 1,18 for cocoa powder and cake (1805, 18032). With respect to the MT-BE of cocoa contained in consumer end products supplied to the national market in Europe, reporting is to be done by the consumer brands. For their own labels (brands), retailers are expected to report in the same way as the consumer brands. Of course, where required, these brands/retailers will rely on the corresponding information obtained from their suppliers.",
+    },
+    {
+      i: "Multiple-purpose trees",
+      t: "Multiple-purpose trees",
+      d: "Tree species that are included on cocoa farms primarily to provide economical and / or ecological benefits to the farm. This may include tree crops such as fruit, oil palm, medicinal, fodder and / or timber / shade trees for later harvest.",
+    },
+    {
+      i: "Processed",
+      t: "Processed",
+      d: (
+        <Fragment>
+          <div>
+            All semi-finished products (including mass, powder, butter and
+            couverture) coming out of your national factories in whatever shape
+            the cocoa entered. The relevant HS-Codes would be:
+            <ul>
+              <li>
+                <b>1801</b> Cocoa beans, whole or broken, raw or roasted;
+              </li>
+              <li>
+                <b>1802</b> Cocoa shells, husks, skins and other cocoa waste;
+              </li>
+              <li>
+                <b>1803</b> Cocoa paste, whether or not defatted;
+              </li>
+              <li>
+                <b>1804</b> Cocoa butter, fat and oil;
+              </li>
+              <li>
+                <b>1805</b> Cocoa powder, not containing added sugar or other
+                sweetening matter;
+              </li>
+              <li>
+                <b>180610</b> Cocoa powder, sweetened;
+              </li>
+              <li>
+                <b>180620</b> Chocolate and other food preparations containing
+                cocoa, in blocks, slabs or bars weighing &gt; 2 kg or in liquid,
+                paste, powder, granular or other bulk form, in containers or
+                immediate packings of a content &gt; 2 kg (excl. cocoa powder).
+              </li>
+            </ul>
+          </div>
+          <div>
+            Please note: You can choose “n/a” in the tool, if this question is
+            not relevant for your company/organization. Conversion to MT-BE, of
+            cocoa sourced in different forms, is to be done using the ICCO
+            conversion factors, being: 1,33 for cocoa butter (1804); 1,25 for
+            cocoa paste/liquor (18031); and 1,18 for cocoa powder and cake
+            (1805, 18032).
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "System to prevent and address child labour",
+      t: "System to prevent and address child labour",
+      d: 'A "system" is a set of interventions to assess risks, prevent and address child labour. An example of another type of system is a comprehensive community development approach.',
+    },
   ],
 
   de: [
@@ -1448,7 +1628,7 @@ const definitionContent = {
     {
       i: "Direct supply",
       t: "Direkte Lieferkette",
-      d: "Damit Kakao als “durch eine direkte Lieferkette bezogener Kakao“ kategorisiert werden kann, muss eine stabile Partnerschaft bzw. Zusammenarbeit zwischen dem Unternehmen und den Kakaoproduzentinnen und -produzenten bestehen, in welcher die individuellen kakaoanabauenden Haushalte bekannt und registriert sind. Die Partnerschaft kann Themen wie Preise, Kakaoqualität, gute landwirtschaftliche Praktiken, soziale, menschenrechtliche und ökologische Fragen, Zertifizierungsanforderungen, etc. adressieren. Eine solche Partnerschaft bzw. Zusammenarbeit zwischen dem kakaobeschaffenden ISCO-Unternehmen und den Erzeugerinnen und Erzeugern kann auch über deren Kooperative / Erzeugerorganisation und / oder andere in die direkte Lieferkette eingebettete Akteure organisiert sein.",
+      d: "Damit Kakao als „durch eine direkte Lieferkette bezogener Kakao“ kategorisiert werden kann, muss eine stabile Partnerschaft bzw. Zusammenarbeit zwischen dem Unternehmen und den Kakaoproduzentinnen und -produzenten bestehen, in welcher die individuellen kakaoanabauenden Haushalte bekannt und registriert sind. Die Partnerschaft kann Themen wie Preise, Kakaoqualität, gute landwirtschaftliche Praktiken, soziale, menschenrechtliche und ökologische Fragen, Zertifizierungsanforderungen, etc. adressieren. Eine solche Partnerschaft bzw. Zusammenarbeit zwischen dem kakaobeschaffenden ISCO-Unternehmen und den Erzeugerinnen und Erzeugern kann auch über deren Kooperative / Erzeugerorganisation und / oder andere in die direkte Lieferkette eingebettete Akteure organisiert sein.",
     },
     {
       i: "Mass balance",
@@ -1511,7 +1691,7 @@ const definitionContent = {
     {
       i: "Indirect supply",
       t: "Indirekte Lieferkette",
-      d: 'Bei Kakao, der als "über eine indirekte Lieferkette bezogener Kakao" kategorisiert wird, besteht minimaler bis kein Kontakt, keine Partnerschaft und keine Zusammenarbeit zwischen dem kakaobeziehenden Unternehmen und den Produzentinnen und Produzenten. Der Kakao wird typischerweise über (mehrere) Zwischenhändler bezogen, welche keinerlei Informationen über die Bäuerinnen und Bauern, die den Kakao produziert haben, besitzen oder bereitstellen.',
+      d: "Damit Kakao als „Kakao aus einer indirekten Lieferkette“ eingestuft wird, darf es keinen oder nur minimalen Kontakt, keine Partnerschaft und keine Zusammenarbeit zwischen dem kakaoverarbeitenden Unternehmen und den Kakaoproduzenten geben. Der Kakao wird in der Regel über (mehrere) Zwischenhändler bezogen, die die einzelnen Bauern oder landwirtschaftlichen Familien, die den Kakao produziert haben, nicht offenlegen.",
     },
     {
       i: "Integrated Pest Management (IPM)",
@@ -1630,36 +1810,37 @@ const definitionContent = {
     },
     {
       i: "Living Income strategy",
-      t: "Living Income Strategie (Strategie zur Erreichung eines Living Income)",
+      t: "Strategie für existenzsichernde Einkommen",
       d: (
         <Fragment>
           <div>
-            Eine Living Income Strategie ist eine Strategie mit dem expliziten
-            Ziel, Kakaobauernhaushalten ein existenzsicherndes Einkommen zu
+            Eine Strategie für existenzsichernde Einkommen (Living Income
+            Strategy) ist eine Strategie mit dem expliziten Ziel,
+            Kakaobauernhaushalten ein existenzsicherndes Einkommen zu
             ermöglichen. Eine Strategie für existenzsicherndes Einkommen
-            beinhaltet eine Monitoring- und Lernkomponente. Eine Living
-            Income-Strategie verwendet eine Kombination oder einen
-            &quot;Smart-Mix&quot; von Strategien, die auf mehrere
+            beinhaltet eine Monitoring- und Lernkomponente.
+            <br />
+            Eine Strategie für existenzsichernde Einkommen verwendet eine
+            Kombination oder einen „Smart-Mix“ von Strategien, die auf mehrere
             einkommensfördernde Faktoren abzielen. Faktoren, die das Einkommens
             erhöhen können* werden strategisch bewertet, um die Einkommenslücken
             zwischen tatsächlichen und existenzsichernden Einkommen zu
-            schließen**. Die Interventionen für jeden dieser Faktoren hängen von
-            der aktuellen Situation ab und davon, inwieweit diese Faktoren die
+            schließen**.
+            <br />
+            Die Interventionen für jeden dieser Faktoren hängen von der
+            aktuellen Situation ab und davon, inwieweit diese Faktoren die
             Einkommenslücke verschiedenen Typen von Bauern und Bäuerinnen
             adressieren. Einkommensfördernde Strategien gehen über Veränderungen
             in bäuerlichen Systemen und Haushalten hinaus und schließen
             Verbesserungen in unternehmerischen Beschaffungspraktiken ein. Sie
             reichen von der Erbringung von Dienstleistungen für eine verbesserte
             Produktion und Verarbeitung über die Marken- und Verbraucherbindung
-            bis hin zur Verbesserung des‚ enabling environments. Eine Living
-            Income Strategy geht über generelle einkommensschaffende Aktivitäten
-            (IGAs) hinaus, die nicht explizit das Ziel haben, die
-            Einkommenslücken zwischen tatsächlichen und existenzsichernden
-            Einkommen zu schließen. <br />
-            *Fläche, Ertrag, Preis, Produktionskosten, diversifizierte Einkommen{" "}
+            bis hin zur Verbesserung des „enabling environments“.
             <br />
-            **die Differenz zwischen dem tatsächlichen Haushaltseinkommen und
-            der bestehenden Benchmark für das existenzsichernde Einkommen
+            Eine Strategie für existenzsichernde Einkommen geht über generelle
+            einkommensschaffende Aktivitäten (IGAs) hinaus, die nicht explizit
+            das Ziel haben, die Einkommenslücken zwischen tatsächlichen und
+            existenzsichernden Einkommen zu schließen.
           </div>
         </Fragment>
       ),
@@ -1686,8 +1867,8 @@ const definitionContent = {
     },
     {
       i: "Premiums granted to the farmer and / or coopertaive",
-      t: "Gewährte Prämien an die Bäuerinnen und Bauern und / oder Kooperativen",
-      d: "Eine Prämie für Kooperativen und /oder Bäuerinnen und Bauern ist ein Geldbetrag, der zusätzlich zum regulären Marktpreis an Erzeugerinnen / Erzeuger oder Erzeugerorganisationen gezahlt wird. Die Höhe der gewährten Prämie entspricht nicht notwendigerweise dem Betrag der in bar bezahlten Prämie. Ein Teil der Prämien könnte z.B. als Rückzahlung für ein Darlehen oder zur Begleichung einer von der Bäuerin oder dem Bauern nachgefragte und erhaltene Dienstleistungen einbehalten werden.",
+      t: "Prämien",
+      d: "Eine an einen Landwirt und/oder eine Genossenschaft gewährte Prämie ist ein zusätzlicher Geldbetrag, der über den regulären Marktpreis hinaus an die Produzenten oder Produzentenorganisationen gezahlt wird. Prämien werden hier ausschließlich als markt- oder volumenbezogene Zahlungen verstanden und schließen daher keine Zahlungen wie „Zahlungen für Umweltleistungen“, bedingte oder unbedingte Geldtransfers usw. ein. Bitte beachten Sie, dass LIRP-Zahlungen in einer separaten Frage behandelt werden.",
     },
     {
       i: "Agroforestry System for Cocoa Production (Description)",
@@ -2221,6 +2402,174 @@ const definitionContent = {
           </div>
         </Fragment>
       ),
+    },
+    {
+      i: "Certified or cocoa covered through a company programm",
+      t: "Zertifizierter oder durch Unternehmensprogramme unabhängig geprüfter Kakao",
+      d: "Kakao, der gemäß den Anforderungen von Zertifizierungsstandards (wie Fairtrade oder Rainforest Alliance) oder durch Unternehmensprogramme für nachhaltigen Kakao produziert wurde.",
+    },
+    {
+      i: "Cocoa grower",
+      t: "Kakaobauer/-bäuerin",
+      d: "Ein Kakaobauer oder eine Kakaobäuerin ist eine Person (Mitglied eines Kakaobauernhaushalts oder eine andere Einzelperson), die strukturell in landwirtschaftliche Arbeiten im Zusammenhang mit der Produktion von Kakaobohnen eingebunden ist.",
+    },
+    {
+      i: "Covered",
+      t: "Abgedeckt („covered“)",
+      d: (
+        <Fragment>
+          <div>
+            Ein Haushalt kann als von einem System zur Überwachung und Abhilfe
+            von Kinderarbeit (CLMRS) oder einem vergleichbaren System abgedeckt
+            („covered“) betrachtet werden, wenn auf Haushaltsebene eine
+            Bewertung des Kinderarbeitsrisikos durchgeführt wurde, ENTWEDER:
+            <ul>
+              <li>
+                Durch einen persönlichen Kontrollbesuch, einschließlich einer
+                Befragung des Kindes, ODER
+              </li>
+              <li>
+                Durch eine Bewertung anhand eines Risikomodells auf
+                Haushaltsebene (d.h. eine systematische Analyse zuverlässiger
+                Daten über den Haushalt zur Vorhersage von Kinderarbeit unter
+                Verwendung einer transparenten, dokumentierten
+                Bewertungsmethode)
+              </li>
+            </ul>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Data transfer from ICI",
+      t: "Datenübermittlung von ICI",
+      d: (
+        <Fragment>
+          <div>
+            Die ISCOs und ICI führen einen Datentransfer zu acht harmonisierten
+            Fragen durch, um sicherzustellen, dass Mitglieder, die sowohl Teil
+            der ISCOs als auch von ICI sind, sich dafür entscheiden können, zu
+            Kinderarbeit nur einmal Bericht zu erstatten. Die Mitglieder müssen
+            sowohl im ICI-Tool als auch im ISCO-Tool angeben, dass sie damit
+            einverstanden sind, dass ihre Daten an die ISCOs weitergegeben
+            werden. Sie müssen dann nicht mehr im ISCO-Tool berichten. Wenn
+            Mitglieder ihre Daten nicht über ICI an die ISCOs weitergeben
+            möchten, müssen sie zu den acht Datenpunkten erneut über das
+            ISCO-Tool berichten.
+          </div>
+          <img
+            src="/images/definition-content/data-transfer-cli.jpg"
+            width="90%"
+          />
+        </Fragment>
+      ),
+    },
+    {
+      i: "Evidence of impact of system to prevent and address child labour",
+      t: "Nachweis der Wirkung des Systems zur Verhinderung und Bekämpfung von Kinderarbeit",
+      d: "Als Nachweis könnte bspw. eine belastbare Wirkungsstudie angegeben werden, in der die Wirkung in diesem Zusammenhang im Vergleich zu einer Kontrollgruppe nachgewiesen wird (z. B. durch eine randomisierte Kontrollstudie (randomized control trial; RCT), eine Differenzanalyse (difference-in-difference analysis), ein Regressionsdiskontinuitätsdesign (regression discontinuity design usw.)",
+    },
+    {
+      i: "Identified in child labour",
+      t: "Identifiziert in Kinderarbeit",
+      d: "Dies bedeutet, dass ein Kind in Übereinstimmung mit den ILO-Übereinkommen und nationalen Rechtsvorschriften (z. B. Hazardous Child Labour Activity Frameworks) in einer Situation von Kinderarbeit identifiziert wurde. Der entsprechende Indikator zählt die Anzahl der derzeit erfassten Kinder, die jemals in Kinderarbeit identifiziert wurden. Auch wenn das Kind inzwischen nicht mehr arbeitet, sollte es hier gezählt werden.",
+    },
+    {
+      i: "Manufactured",
+      t: "Manufactured (hergestellt)",
+      d: (
+        <Fragment>
+          <div>
+            Als „hergestellt“ verstehen wir typischerweise die Verarbeitung von
+            Halbfertigprodukten oder Schokolade bis hin zu Endprodukten,
+            einschließlich Formen, Füllen und Überziehen. Die relevanten
+            HS-Codes für hergestellte Produkte sind:
+            <ul>
+              <li>
+                <b>18063100</b> Schokolade und andere kakaohaltige
+                Zubereitungen, in Tafeln, Riegeln oder Blöcken von ≤ 2 kg,
+                gefüllt.
+              </li>
+              <li>
+                <b>180632</b> Schokolade und andere kakaohaltige Zubereitungen,
+                in Tafeln, Riegeln oder Blöcken von ≤ 2 kg (ohne Füllung).
+              </li>
+              <li>
+                <b>180690</b> Schokolade und andere kakaohaltige Zubereitungen,
+                in Behältnissen oder unmittelbaren Verpackungen von ≤ 2 kg
+                (ausgenommen Tafeln, Riegel, Blöcke und Kakaopulver).
+              </li>
+            </ul>
+          </div>
+          <div>
+            Hinweis: Falls Sie Endprodukte in einer Fabrik direkt aus Bohnen und
+            nicht aus Halbfertigprodukten herstellen, melden Sie Ihre Volumina
+            bitte nur hier und nicht in der nächsten Frage. Falls diese Frage
+            für Ihr Unternehmen/Ihre Organisation nicht relevant ist, können Sie
+            im Tool „n/a“ auswählen.
+          </div>
+          <div>
+            Umrechnung in MT-BE (Metric Tons Bean Equivalent) für Kakao in
+            unterschiedlichen Verarbeitungsformen erfolgt nach den
+            ICCO-Umrechnungsfaktoren: 1,33 für Kakaobutter (HS-Code 1804), 1,25
+            für Kakaomasse/-likör (HS-Code 18031), 1,18 für Kakaopulver und
+            Kakaokuchen (HS-Codes 1805, 18032)
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "Methodology # of farmers for which the LI gap is measured",
+      t: "Methodik für Bauern, bei denen die Einkommenslücken zwischen tatsächlichen und existenzsichernden Einkommen (Living Income Gap) gemessen wird",
+      d: "Die ISCOs verlangen von den Mitgliedern nicht, die Einkommenslücken zwischen tatsächlichen und existenzsichernden Einkommenjedes einzelnen Bauern in ihrer Lieferkette zu messen, sondern für eine repräsentative Stichprobe ihrer Lieferkette. Die Mitglieder können in einer Folgefrage angeben, wie sie eine repräsentative Stichprobe definieren.",
+    },
+    {
+      i: "Methodology to calculate MT-BE",
+      t: "Methodik zur Berechnung von MT-BE",
+      d: "Die Umrechnung von Kakao aus verschiedenen Formen in MT-BE erfolgt unter Verwendung der ICCO-Umrechnungsfaktoren: 1,33 für Kakaobutter (1804); 1,25 für Kakaomasse/-likör (18031); und 1,18 für Kakaopulver und Kuchen (1805, 18032). In Bezug auf die MT-BE von Kakao, der in Verbraucherendprodukten enthalten ist, die auf den nationalen Markt in Europa geliefert werden, ist die Berichterstattung durch die Verbrauchermarken zu übernehmen. Von den Einzelhändlern wird erwartet, dass sie für ihre eigenen Labels (Marken) auf die gleiche Weise berichten wie die Verbrauchermarken. Selbstverständlich verlassen sich diese Marken/Händler bei Bedarf auf die entsprechenden Informationen, die sie von ihren Lieferanten erhalten.",
+    },
+    {
+      i: "Multiple-purpose trees",
+      t: "Mehrzweckbäume",
+      d: "Baumarten, die zusätzlich auf Kakaoanbauflächen gepflanzt werden, vor allem um ökonomischen oder ökologischen Mehrwert zu generieren. Dabei kann es sich um Obstbäume, Ölpalmen, Heilpflanzen, Futtermittelpflanzen und/oder Schattenbäume für die spätere Holzernte handeln.",
+    },
+    {
+      i: "Processed",
+      t: "Processed (verarbeitet)",
+      d: (
+        <Fragment>
+          <div>
+            Alle Halbfertigprodukte (einschließlich Kakaomasse, -pulver, -butter
+            und Kuvertüre), die aus Ihren nationalen Fabriken kommen –
+            unabhängig davon, in welcher Form der Kakao eingegangen ist. Die
+            relevanten HS-Codes sind:
+            <ul>
+              <li>
+                <b>1801</b> Kakaobohnen, ganz oder gebrochen, roh oder geröstet.
+              </li>
+              <li>
+                <b>1802</b> Kakaoschalen, -hülsen, -häute und andere
+                Kakaorückstände.
+              </li>
+              <li>
+                <b>1803</b> Kakaomasse, entfettet oder nicht entfettet.
+              </li>
+              <li>
+                <b>1804</b> Kakaobutter, -fett und -öl.
+              </li>
+              <li>
+                <b>1805</b> Kakaopulver, ohne zugesetzten Zucker oder andere
+                Süßstoffe.
+              </li>
+            </ul>
+          </div>
+        </Fragment>
+      ),
+    },
+    {
+      i: "System to prevent and address child labour",
+      t: "System zur Verhinderung und Bekämpfung von Kinderarbeit",
+      d: 'Ein "System" ist eine Reihe von Maßnahmen zur Risikobewertung, Prävention und Bekämpfung von Kinderarbeit. Ein Beispiel für eine andere Art von System ist ein umfassender Ansatz zur Gemeindeentwicklung.',
     },
   ],
 };
