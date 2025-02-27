@@ -76,14 +76,20 @@ const definitionContent = {
             <b>
               <u>MT-BE:</u>
             </b>{" "}
-            MT-BE stands for &quot;metric tons bean equivalents&quot; of a
-            certain quantity of semi-finished cocoa products or cocoa-containing
+            MT-BE stands for ”metric tons bean equivalents” of a certain
+            quantity of semi-finished cocoa products or cocoa-containing
             products. In other words, the MT-BE represents the corresponding
             volume of cocoa beans sourced, expressed in metric tons. Conversion
             to MT-BE, of cocoa sourced in different forms, is to be done using
             the ICCO conversion factors; being: 1,33 for cocoa butter (1804),
             1,25 for cocoa paste/liquor (18031), and 1,18 for cocoa powder and
-            cake (1805, 18032).
+            cake (1805, 18032). With respect to the MT-BE of cocoa contained in
+            consumer end products supplied to the national market in Europe,
+            reporting is to be done by the consumer brands. For their own labels
+            (brands), retailers are expected to report in the same way as the
+            consumer brands. Of course, where required, these brands / retailers
+            will rely on the corresponding information obtained from their
+            suppliers.
           </div>
         </Fragment>
       ),
@@ -159,10 +165,10 @@ const definitionContent = {
             Child Labour Monitoring and Remediation Systems are a means of
             targeting prevention, mitigation and remediation assistance to
             children involved in or at-risk of child labour, as well as to their
-            families and communities. To meet the definition of a Child Labour
-            Monitoring and Remediation Systems (CLMRS) or equivalent, the system
-            must implement the following core activities:
-            <ul style={{ marginLeft: "25px" }}>
+            families and communities. To meet the definition of a{" "}
+            <i>Child Labour Monitoring and Remediation Systems (CLMRS)</i> or
+            equivalent, the system must implement the following core activities:
+            <ol style={{ marginLeft: "25px" }} start={1}>
               <li>
                 Raise awareness on child labour and resulting harm amongst
                 farmers, children and the wider community.
@@ -180,9 +186,9 @@ const definitionContent = {
                 Follow-up with children identified in child labour and continue
                 to monitor their status on a regular basis until they have
                 stopped engaging in child labour and have satisfactory
-                alternatives
+                alternatives.
               </li>
-            </ul>
+            </ol>
           </div>
         </Fragment>
       ),
@@ -193,8 +199,8 @@ const definitionContent = {
       d: "Please refer to the definition of “Child Labour Monitoring and Remediation Systems (CLMRS)”",
     },
     {
-      i: "Cocoa traceability level",
-      t: "Cocoa traceability level",
+      i: "Cocoa traceability levels",
+      t: "Cocoa traceability levels",
       d: (
         <Fragment>
           <div>
@@ -205,31 +211,31 @@ const definitionContent = {
             not require segregation but can be applied also with a mass balance
             mechanism. Distinction is made between the following traceability
             levels:
-            <ul style={{ marginLeft: "25px" }}>
+            <ol style={{ marginLeft: "25px" }} start={1}>
               <li>
-                Score 1: Origin unknown, expressed in % of the total volume
-                supplied/ processed.
-              </li>
-              <li>
-                Score 2: Country known, expressed in % of the total volume
-                supplied/ processed.
-              </li>
-              <li>
-                Score 3: Cooperative known, expressed in % of the total volume
-                supplied/ processed.
-              </li>
-              <li>
-                Score 4a: Farm known and having at least one coordination per
-                farm (farm mapping), expressed in % of the total volume
-                supplied/ processed.
-              </li>
-              <li>
-                Score 4b: Farm known, having point coordinates and /or polygons
-                for plots less than 4ha and polygon boundaries of the plots
-                bigger than 4ha, expressed in % of the total volume supplied/
+                Origin unknown, expressed in % of the total volume supplied/
                 processed.
               </li>
-            </ul>
+              <li>
+                Country known, expressed in % of the total volume supplied/
+                processed.
+              </li>
+              <li>
+                Cooperative known, expressed in % of the total volume supplied/
+                processed.
+              </li>
+              <li value={4}>
+                a. Farm known and having at least one coordination per farm
+                (farm mapping), expressed in % of the total volume supplied/
+                processed.
+              </li>
+              <li value={4}>
+                b. Farm known, having point coordinates and /or polygons for
+                plots less than 4ha and polygon boundaries of the plots bigger
+                than 4ha, expressed in % of the total volume supplied/
+                processed.
+              </li>
+            </ol>
           </div>
         </Fragment>
       ),
@@ -279,16 +285,7 @@ const definitionContent = {
         <Fragment>
           <div>
             The conversion of forest to other land use independently whether
-            human-induced or not.{" "}
-            <a
-              href="https://www.fao.org/3/I8661EN/i8661en.pdf"
-              target="_blank"
-              rel="noreferrer"
-              style={{ fontSize: "14px" }}
-            >
-              (FAO)
-            </a>
-            <br />
+            human -induced or not.
           </div>
         </Fragment>
       ),
@@ -299,12 +296,10 @@ const definitionContent = {
       d: (
         <Fragment>
           <div>
-            Having point coordinates for plots less than 4ha and polygon
-            boundaries of the plots bigger than 4ha and verified as not in a
-            protected forest and as not comprising land that was deforested or
-            degraded since 31.12.2018 for GISCO and 31.12.2020 for the other
-            ISCOs
-            <br />
+            Having polygons of the farm (&gt; 4 ha) and farm plots (&lt; 4 ha)
+            verified as not in a protected forest and as not comprising land
+            that was deforested since 31.12.2018 for GISCO and 31.12.2020 for
+            the other ISCOs.
           </div>
         </Fragment>
       ),
@@ -439,8 +434,8 @@ const definitionContent = {
       d: "For cocoa to be categorized as “cocoa sourced through an indirect supply chain”, there is no or minimal contact, no partnership and no collaboration between the cocoa sourcing company and the cocoa producer. The cocoa is typically sourced through (several) intermediaries which do not disclose the individual farmers / farming families that produced the cocoa.",
     },
     {
-      i: "Integrated Pest Management",
-      t: "Integrated Pest Management",
+      i: "Integrated Pest Management (IPM)",
+      t: "Integrated Pest Management (IPM)",
       d: (
         <Fragment>
           <div>
@@ -451,27 +446,27 @@ const definitionContent = {
             that are economically justified and reduce or minimize risks to
             human health and the environment. IPM emphasizes the growth of a
             healthy crop with the least possible disruption to agro-ecosystems
-            and encourages natural pest control mechanisms. FAO:
-            <br />
+            and encourages natural pest control mechanisms. (FAQ:{" "}
             <a
-              href="http://www.fao.org/agriculture/crops/thematic-sitemap/theme/pests/ipm/en/ "
+              href="http://www.fao.org/agriculture/crops/thematic-sitemap/theme/pests/ipm/en/"
               target="_blank"
               rel="noopener noreferrer"
               style={{ fontSize: "14px" }}
             >
               http://www.fao.org/agriculture/crops/thematic-sitemap/theme/pests/ipm/en/{" "}
             </a>
+            )
           </div>
         </Fragment>
       ),
     },
     {
-      i: "Living income",
-      t: "Living income",
+      i: "Living Income",
+      t: "Living Income",
       d: (
         <Fragment>
           <div>
-            Living income refers to the net annual income required for a
+            • Living income refers to the net annual income required for a
             household in a particular place to afford a decent standard of
             living for all members of that household. Elements of a decent
             standard of living include: food, water, housing, education,
@@ -481,7 +476,7 @@ const definitionContent = {
             <br />
             <i>
               Any Living Income Benchmarks should be based on publications by or
-              for the Living Income Community of Practice.{" "}
+              for the Living Income Community of Practice.
             </i>
           </div>
         </Fragment>
@@ -711,13 +706,13 @@ const definitionContent = {
           <div>
             Hazardous pesticides include as minimum requirement all substances
             which:
-            <ol type="1" style={{ marginLeft: "1.5rem" }}>
+            <ol type="1" start={1} style={{ marginLeft: "1.5rem" }}>
               <li>
                 are listed as <b>persistent organic pollutants (POPs)</b> in the
                 Stockholm Convention within the Annex III of the Rotterdam
-                Convention and / or the Montreal Protocol
+                Convention and / or the Montreal Protocol,
               </li>
-              <li>are classified by WHO as 1A or 1B,</li>
+              <li>are classified by WHO as 1A or 1B, </li>
               <li>
                 are listed in the <b>Dirty Dozen</b> of PAN, or
               </li>
@@ -1110,7 +1105,14 @@ const definitionContent = {
             verschiedenen Formen bezogenem Kakao erfolgt über die
             ICCO-Umrechnungsfaktoren; 1,33 für Kakaobutter (1804), 1,25 für
             Kakaomasse (18031) und 1,18 für Kakaopulver und Presskuchen (1805,
-            18032).
+            18032). In Bezug auf die MT-BE von Kakao, der in
+            Endverbraucherprodukten enthalten ist, die an den nationalen Markt
+            in Europa geliefert werden, ist die Berichterstattung durch die
+            Verbrauchermarken vorzunehmen. Von den Einzelhändlern wird erwartet,
+            dass sie für ihre eigenen Labels (Marken) auf die gleiche Weise
+            berichten wie die Verbrauchermarken. Natürlich stützen sich diese
+            Marken/Einzelhändler bei Bedarf auf die entsprechenden
+            Informationen, die sie von ihren Lieferanten erhalten.
           </div>
         </Fragment>
       ),
@@ -1199,7 +1201,7 @@ const definitionContent = {
             Systems zur Überwachung und Abhilfe von Kinderarbeit (CLMRS) oder
             eines gleichwertigen Systems zu erfüllen, muss das System die
             folgenden Kernaktivitäten umsetzen:
-            <ul style={{ marginLeft: "25px" }}>
+            <ol style={{ marginLeft: "25px" }} start={1}>
               <li>
                 Stärkung des Bewusstseins bei Bäuerinnen und Bauern, Kindern und
                 der breiteren Bevölkerung bezüglich der Gefahren von
@@ -1220,7 +1222,7 @@ const definitionContent = {
                 regelmäßiges Überprüfen ihres Status, bis sie sich nicht mehr in
                 Kinderarbeit befinden und zur Schule gehen.
               </li>
-            </ul>
+            </ol>
           </div>
         </Fragment>
       ),
@@ -1231,52 +1233,52 @@ const definitionContent = {
       d: "Siehe Definition „Child Labour Monitoring and Remediation Systems (CLMRS)”",
     },
     {
-      i: "Cocoa traceability level",
-      t: "Rückverfolgbarkeitsniveau von Kakao",
+      i: "Cocoa traceability levels",
+      t: "Kakaorückverfolgbarkeitsstufen",
       d: (
         <Fragment>
           <div>
-            Beim „cocoa origin transparency level“ (Level der
-            Herkunftstransparenz) geht es darum, inwieweit detaillierte
-            Informationen über die Herkunft des Kakaos in den ersten Stufen des
-            Beschaffungsprozesses dokumentiert werden und ob diese Informationen
-            entlang der Lieferkette erhalten bleiben.
-            <ul style={{ marginLeft: "25px" }}>
-              <li>Stufe 1: Ursprung unbekannt oder nur Anbauland bekannt</li>
-              <li>Stufe 2: Anbauland und Anbauregion bekannt</li>
+            Die Kakaorückverfolgbarkeitsstufe bezieht sich auf das Maß an
+            Informationen über die Herkunft des Kakaos, die in der Anfangsphase
+            des Beschaffungsprozesses dokumentiert werden, wobei diese
+            Informationen auch in späteren Phasen der Wertschöpfungskette
+            verfügbar bleiben. Die Rückverfolgbarkeitsstufe erfordert keine
+            physische Trennung des Kakaos, sondern kann auch im Rahmen eines
+            Massenbilanzsystems angewendet werden. Es wird zwischen folgenden
+            Rückverfolgbarkeitsstufen unterschieden:
+            <ol style={{ marginLeft: "25px" }} start={1}>
               <li>
-                Stufe 3: Land, Region und Gemeinde / Ursprungskooperative
-                bekannt
+                <b>Herkunft unbekannt</b> - ausgedrückt in % des insgesamt
+                gelieferten/verarbeiteten Volumens.
               </li>
               <li>
-                Stufe 4: Betrieb bekannt, zusätzlich zu Land, Region und
-                Gemeinde / Ursprungskooperative
+                <b>Land bekannt</b> - ausgedrückt in % des insgesamt
+                gelieferten/verarbeiteten Volumens.
               </li>
               <li>
-                Stufe 5: Betrieb bekannt und Punktkoordinaten des
-                landwirtschaftlichen Betriebs verfügbar (Betriebskartierung)
+                <b>Genossenschaft bekannt</b> - ausgedrückt in % des insgesamt
+                gelieferten/verarbeiteten Volumens.
               </li>
-              <li>
-                Stufe 5+: Betrieb bekannt mit Polygongrenzen des
-                landwirtschaftlichen Betriebs
+              <li value={4}>
+                a.{" "}
+                <b>
+                  Farm bekannt und mit mindestens einer Koordinierung pro Farm
+                  (Farmkartierung)
+                </b>{" "}
+                - ausgedrückt in % des insgesamt gelieferten/verarbeiteten
+                Volumens.
               </li>
-              <li>
-                Stufe 6: Betrieb bekannt, die Polygongrenzen des Betriebs wurden
-                geprüft und dessen Anbauflächen liegen nachweislich nicht in
-                einem geschützten Wald und nicht auf Land, das seit 2018
-                abgeholzt wurde.
+              <li value={4}>
+                b.{" "}
+                <b>
+                  Farm bekannt, mit Punktkoordinaten und/oder Polygonen für
+                  Parzellen &lt;4 ha sowie Polygon-Grenzen für Parzellen &gt;4
+                  ha
+                </b>{" "}
+                - ausgedrückt in % des insgesamt gelieferten/verarbeiteten
+                Volumens.
               </li>
-            </ul>
-            Auch die hohen Rückverfolgbarkeits-Stufen erlauben das Vermischen
-            der Bohnen in späteren Stadien der Wertschöpfungskette (Transport
-            und / oder Verarbeitung).
-            <br />
-            Es ist allgemein anerkannt, dass die sich Kakaoindustrie mindestens
-            in Richtung Stufe 4 als Mindestanforderung bewegen sollte, d.h.
-            Kakao sollte – einschließlich der „ersten Meile“ – rückverfolgbar
-            sein. Es sollte nachvollziehbar sein, von welchem Betrieb
-            beschaffter Kakao stammt, sowohl für „direkte“ als auch für
-            „indirekte“ Lieferketten.
+            </ol>
           </div>
         </Fragment>
       ),
@@ -1332,16 +1334,8 @@ const definitionContent = {
       d: (
         <Fragment>
           <div>
-            Die Umwandlung von Wäldern in landwirtschaftlich genutzte Flächen,
-            unabhängig davon, ob sie vom Menschen herbeigeführt wird oder nicht.
-            <a
-              href="https://www.fao.org/3/I8661EN/i8661en.pdf"
-              target="_blank"
-              rel="noreferrer"
-              style={{ fontSize: "14px" }}
-            >
-              (FAO)
-            </a>
+            Die Umwandlung von Wald in eine andere Landnutzung, unabhängig
+            davon, ob sie durch den Menschen verursacht wurde oder nicht.
           </div>
         </Fragment>
       ),
@@ -1386,11 +1380,10 @@ const definitionContent = {
       d: (
         <Fragment>
           Der Begriff „bäuerlicher Haushalt“ bezeichnet eine kleinbäuerliche
-          kakaoanbauende Familie.
-          <br />
-          Ein Bäuerlicher Haushalt kann einen oder mehrere landwirtschaftliche
-          Betriebe umfassen, die von verschiedenen Mitgliedern des bäuerlichen
-          Haushalts (Bäuerinnen und Bauern) geführt werden.
+          kakaoanbauende Familie. Ein bäuerlicher Haushalt kann einen oder
+          mehrere landwirtschaftliche Betriebe umfassen, die von verschiedenen
+          Mitgliedern des bäuerlichen Haushalts (Bäuerinnen und Bauern) geführt
+          werden.
         </Fragment>
       ),
     },
@@ -1490,8 +1483,8 @@ const definitionContent = {
       d: 'Bei Kakao, der als "über eine indirekte Lieferkette bezogener Kakao" kategorisiert wird, besteht minimaler bis kein Kontakt, keine Partnerschaft und keine Zusammenarbeit zwischen dem kakaobeziehenden Unternehmen und den Produzentinnen und Produzenten. Der Kakao wird typischerweise über (mehrere) Zwischenhändler bezogen, welche keinerlei Informationen über die Bäuerinnen und Bauern, die den Kakao produziert haben, besitzen oder bereitstellen.',
     },
     {
-      i: "Integrated Pest Management",
-      t: "Integrierte Schädlingsbekämpfung",
+      i: "Integrated Pest Management (IPM)",
+      t: "Integrierte Schädlingsbekämpfung (IPM)",
       d: (
         <Fragment>
           <div>
@@ -1505,22 +1498,22 @@ const definitionContent = {
             Gesundheit und die Umwelt minimieren. IPM strebt gesunde
             Anbaukulturen bei möglichst geringer Beeinträchtigung der
             landwirtschaftlichen Ökosysteme an und fördert natürliche Ansätze
-            der Schädlingsbekämpfung. FAO:
-            <br />
+            der Schädlingsbekämpfung. (FAO:
             <a
-              href="http://www.fao.org/agriculture/crops/thematic-sitemap/theme/pests/ipm/en/ "
+              href="http://www.fao.org/agriculture/crops/thematic-sitemap/theme/pests/ipm/en/"
               target="_blank"
               rel="noopener noreferrer"
               style={{ fontSize: "14px" }}
             >
-              http://www.fao.org/agriculture/crops/thematic-sitemap/theme/pests/ipm/en/{" "}
+              http://www.fao.org/agriculture/crops/thematic-sitemap/theme/pests/ipm/en/
             </a>
+            )
           </div>
         </Fragment>
       ),
     },
     {
-      i: "Living income",
+      i: "Living Income",
       t: "Existenzsicherndes Einkommen",
       d: (
         <Fragment>
@@ -1535,9 +1528,9 @@ const definitionContent = {
             Ereignisse. <i>(Living Income Community of Practice)</i>
             <br />
             <i>
-              Alle genutzten Benchmarks für existenzsichernde Einkommen sollten
-              auf Publikationen von oder für die Living Income Community of
-              Practice beruhen.
+              Alle genutzten Benchmarks (Richtwerte) für existenzsichernde
+              Einkommen sollten auf Publikationen von oder für die Living Income
+              Community of Practice beruhen.
             </i>
           </div>
         </Fragment>
@@ -1784,8 +1777,8 @@ const definitionContent = {
       d: (
         <Fragment>
           <div>
-            Gefährliche Pestizide umfassen mindestens alle Substanzen, die{" "}
-            <ol type="1" style={{ marginLeft: "1.5rem" }}>
+            Gefährliche Pestizide umfassen mindestens alle Substanzen, die
+            <ol type="1" start={1} style={{ marginLeft: "1.5rem" }}>
               <li>
                 als <b>Persistent Organic Pollutants (POPs)</b> in der Stockholm
                 Konvention, im Annex III der Rotterdam Konvention und / oder im
@@ -1801,9 +1794,9 @@ const definitionContent = {
                 ausgewiesen sind.
               </li>
             </ol>
-            Zudem – spezifisch für den Kakaoanbau – jene Pestizide, deren
-            Verwendung für Güter, die für den Export in EU-Staaten bestimmt
-            sind, nicht zugelassen sind.
+            Zudem umfassen sie - spezifisch für den Kakaoanbau - jene Pestizide,
+            deren Verwendung für Güter, die für den Export in EU-Staaten
+            bestimmt sind, nicht zugelassen sind.
           </div>
         </Fragment>
       ),
