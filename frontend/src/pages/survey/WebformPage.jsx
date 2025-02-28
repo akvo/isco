@@ -659,14 +659,14 @@ const WebformPage = ({
     }
   }, [activeLang]);
 
-  // handle automatically close mismatch alert
-  useEffect(() => {
-    if (mismatch) {
-      setTimeout(() => {
-        setMismatch(false);
-      }, 5000);
-    }
-  }, [mismatch]);
+  // Disable handle automatically close mismatch alert
+  // useEffect(() => {
+  //   if (mismatch) {
+  //     setTimeout(() => {
+  //       setMismatch(false);
+  //     }, 5000);
+  //   }
+  // }, [mismatch]);
 
   // set comment to answer value
   useEffect(() => {
