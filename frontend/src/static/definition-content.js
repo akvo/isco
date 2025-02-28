@@ -239,21 +239,6 @@ const definitionContent = {
       ),
     },
     {
-      i: "Community Action Plan (CAP)",
-      t: "Community Action Plan (CAP)",
-      d: "A developed plan, based on a community needs assessment (CNA), prepared by or in participation with the community. The plan should include interventions that address important community development needs. The plan implementation should be led by the community with equitable and diverse community representation and with short-term external technical and financial support with, if applicable, a long-term plan to sustainably hand over all responsibility to the community including management and finance. The short-term plan should include the use of participatory tools to build the capacity of community members to act in accordance with the problems, needs, and potential of the community, to implement those plans.",
-    },
-    {
-      i: "Community Needs Assessment (CNA)",
-      t: "Community Needs Assessment (CNA)",
-      d: "An assessment conducted with the participation of a community to identify and determine the priority short and long-term development needs of that community that includes research to understand community dynamics that are important to develop a relevant and sustainable community action plan.",
-    },
-    {
-      i: "Conventional traceability of cocoa",
-      t: "Conventional traceability of cocoa",
-      d: "Conventional cocoa (traceability category 0) is cocoa sourced without conforming to the traceability requirements of ‘mass balance’, ‘segregated’, or ‘identity preserved’ - please refer to the corresponding definitions.",
-    },
-    {
       i: "Coverage (for CLMRS and similar systems)",
       t: "Coverage (for CLMRS and similar systems)",
       d: (
@@ -303,25 +288,6 @@ const definitionContent = {
       ),
     },
     {
-      i: "Degraded lands",
-      t: "Degraded lands",
-      d: (
-        <Fragment>
-          <div>
-            “Land degradation: the deterioration or loss of the productive
-            capacity of the soils for present and future.”
-            <br />
-            <i>(from the Global Environmental Facility)</i>
-          </div>
-        </Fragment>
-      ),
-    },
-    {
-      i: "Farmer or farmer-based organisations",
-      t: "Farmer or farmer-based organisations",
-      d: "Farmer-based organizations (FBOs) are: “cooperatives”; “other professional groups of farmers”; other groups that are recognized formal or informal institutions with a cocoa aggregating and sale role and ideally provide support / technical services to members and influence cocoa farming or broader life in the community. A member can be an individual who, for example, pays a membership fee, is formally recognized by the organization as a member, or holds a formal position within the organization.",
-    },
-    {
       i: "Farming household",
       t: "Farming household",
       d: (
@@ -366,65 +332,6 @@ const definitionContent = {
       i: "Direct supply",
       t: "Direct sourcing",
       d: "For cocoa to be categorized as “cocoa sourced through a direct supply chain”, there shall be a relatively stable partnership and collaboration, in which the individual cocoa farmers / farming families are known (registered).  Such partnership and collaboration may cover issues such as price, quality, good agricultural practices, social, human rights and environmental issues, certification requirements, etc. This partnership and collaboration between the ISCO cocoa sourcing company and the producers (cocoa farming households) may be conducted through cooperatives, farmer organisations and / or other intermediaries embedded within the direct supply chain.",
-    },
-    {
-      i: "Mass balance",
-      t: "Mass balance",
-      d: (
-        <Fragment>
-          <div>
-            The mass balance system administratively monitors the trade of
-            conforming cocoa throughout the entire supply chain. The system
-            requires transparent documentation and justification of the origin
-            and quantity of conforming cocoa purchased by the first buyer. The
-            mass balance system allows mixing conforming and non-conforming
-            cocoa in later stages of the cocoa value chain (e.g. transport,
-            processing, manufacturing). Cocoa value chain actors can sell a
-            certain mass of conforming cocoa, or an equivalent volume of
-            conforming cocoa-containing products, to the extent that the actual
-            volumes of sales of conforming products are tracked and audited
-            through the supply chain and providing that the bean equivalents of
-            these volumes do not exceed the amount of conforming cocoa beans
-            bought at origin.{" "}
-            <i>
-              (Definition drafted using elements borrowed from ISO-CEN and
-              Fairtrade)
-            </i>
-          </div>
-        </Fragment>
-      ),
-    },
-    {
-      i: "Segregated",
-      t: "Segregated",
-      d: (
-        <Fragment>
-          <div>
-            Certified or independently verified cocoa meeting the segregation
-            requirements. As per the mass-balance system, segregation requires a
-            transparent documentation and justification of the origin and
-            quantity of conforming cocoa (this is certified or independently
-            verified cocoa) purchased by the first buyer. Conforming cocoa is
-            kept segregated from nonconforming cocoa, including during
-            transport, storage, processing cocoa, and manufacturing of
-            cocoa-containing products. Segregation does allow mixing cocoa from
-            different origins to the extent that all cocoa being mixed qualifies
-            as conforming cocoa (as per the certification standard or verified
-            company scheme being applied). The cocoa supply chain actors shall
-            demonstrate that they have taken the required measures to avoid
-            mixing conforming cocoa with nonconforming cocoa.{" "}
-            <i>
-              (Definition drafted using elements borrowed from ISO-CEN and
-              Rainforest Alliance)
-            </i>
-          </div>
-        </Fragment>
-      ),
-    },
-    {
-      i: "Identity preserved",
-      t: "Identity preserved",
-      d: "Identity preserved is the highest traceability category. There is no mixing of cocoa, neither with non-conforming cocoa, nor with cocoa from other origins. If the ‘single origin’ is set at cooperative level or at cocoa-producing area (combining different cooperatives), then conforming cocoa from this broader origin may be combined. In other words, the “identity preserved” system meets all requirements of “segregated cocoa”, but it does not allow mixing cocoa from different origins.",
     },
     {
       i: "Indirect supply",
@@ -843,21 +750,6 @@ const definitionContent = {
       d: "Areas that are not currently under cultivation (e.g., defined buffer areas between different cocoa (or other) farms, defined sloped areas, uncultivated watershed areas, fallow land). This does not include newly established cocoa agroforestry.",
     },
     {
-      i: "Payments for Ecosystem / Environmental Services (PES)",
-      t: "Payments for Ecosystem / Environmental Services (PES)",
-      d: "Compensating individuals or communities for the adoption of targeted behaviours that increase the capacity of present ecosystems to provide beneficial services to local population (such as water filtration, erosion reduction, social value etc.). The activities must align with at least one of three core intervention areas: conservation, restoration, and agroforestry.  Interventions should also eliminate threats to or enhance the provision of ecosystem services including climate change mitigation, soil restoration, biodiversity, and watershed services. Compensation should offset and ideally exceed the opportunity and transactional costs of all participating individuals for adopting the targeted behaviour.",
-    },
-    {
-      i: "Plot",
-      t: "Plot",
-      d: "Plot is the basic geospatial unit of land use. In cocoa, a farmer may possess (or otherwise operate) one or more plots. A farmer’s combined total number of plots is a “farm”, whether the plots are geographically contiguous or not. In Ghana, a plot may also be called a farm, thus a farm may be made up of smaller “farms”. In this situation extra attention must be paid by members to ensure enumerators measure and count farms mapped according to the correct definition of farm.",
-    },
-    {
-      i: "Pre-financing",
-      t: "Pre-financing",
-      d: "An arrangement to have production activities paid in advance by a third party and to be repaid at a later date by a farmer based on agreement between the parties involved.",
-    },
-    {
       i: "Program",
       t: "Program",
       d: "Please refer to the definition of “Project”.",
@@ -875,48 +767,6 @@ const definitionContent = {
             practice is to develop a forest restoration plan based on an initial
             assessment (baseline) and action plan shared with the (local or
             national) government.
-          </div>
-        </Fragment>
-      ),
-    },
-    {
-      i: "Risk assessment",
-      t: "Risk assessment",
-      d: "A systematic process of evaluating potential risk in a company’s current or future operations, supply chains, and investments. In the context of the Accountability Framework, this term refers to the assessment of risk of non-compliance with the company commitments or applicable law related to the Accountability Framework scope, as well as adverse impacts to internationally recognized human rights. This is different from the use of the term in a general business context, where it refers to assessment of financial risks and the drivers of such risk (e.g., legal risk, credit risk, reputation risk, and others). Risk of adverse social and environmental impacts, including non-compliance with company commitments, can be an important element of broader business risk.",
-    },
-    {
-      i: "Sustainability commitments of companies",
-      t: "Sustainability commitments of companies",
-      d: (
-        <Fragment>
-          <div>
-            A public statement by a company that specifies the actions that it
-            intends to take or the goals, criteria, or targets that it intends
-            to meet with regard to its management of or performance on
-            environmental, social, and / or governance topics.
-            <ul style={{ marginLeft: "25px" }}>
-              <li>
-                Commitments may also be titled or referred to as policies,
-                pledges, or other terms.
-              </li>
-              <li>
-                Commitments may be company-wide (e.g., a company-wide forest
-                policy) or specific to certain commodities, regions, or business
-                units. They may be topic-specific, or they may address multiple
-                environmental, social, and/or governance topics.
-              </li>
-              <li>
-                Commitments, as defined here, are distinct from the operational
-                policies or procedures (e.g., sourcing codes, supplier
-                requirements, manuals, and standard operation procedures) by
-                which companies may operationalize their commitments or
-                sustainability initiatives. Commitments are generally broader,
-                more normative or aspirational, and take a multi-year view of
-                company performance, whereas operational policies or procedures
-                tend to focus on specific implementation details, parameters, or
-                requirements.
-              </li>
-            </ul>
           </div>
         </Fragment>
       ),
@@ -988,25 +838,6 @@ const definitionContent = {
       ),
     },
     {
-      i: "Verification",
-      t: "Verification",
-      d: (
-        <Fragment>
-          <div>
-            Assessment and validation of compliance, performance, and / or
-            actions relative to a stated commitment, standard, or target.
-            Verification processes typically utilize monitoring data but may
-            also include other sources of information and analysis.
-          </div>
-        </Fragment>
-      ),
-    },
-    {
-      i: "Village Savings and Loans Association (VSLA)",
-      t: "Village Savings and Loans Association (VSLA)",
-      d: "Village Savings and Loans Association (VSLA) is a type of Accumulating Savings and Credit Association formed as a group of people who choose to work together and pool their savings. The money can then be borrowed with modest interest by members, over an agreed period. At the end of a predetermined term, the overall fund (which is made up of the savings and the interest payments) is paid out to the group members based on their percent of contribution to the savings pool. At that point members can decide whether to start a new cycle or whether to disband. Crucial activities that benefit VSLA members include (i) creating and maintaining a group dynamic to grow self-esteem and self-confidence, (ii) providing access to basic financial services (savings and credit), (iii) unlocking entrepreneurial potential by learning to identify, create, and manage an income generating activity.",
-    },
-    {
       i: "Women’s empowerment",
       t: "Women’s empowerment",
       d: (
@@ -1026,59 +857,6 @@ const definitionContent = {
       i: "Yield (cocoa yield)",
       t: "Yield (cocoa yield)",
       d: "Total cocoa weight (typically expressed in kilograms) produced per unit area (typically expressed in hectare), in a given year.",
-    },
-    {
-      i: "Youth",
-      t: "Youth",
-      d: (
-        <Fragment>
-          <div>
-            Youth is best understood as a period of transition from the
-            dependence of childhood to adulthood’s independence. That’s why, as
-            a category, youth is more fluid than other fixed age-groups. Yet,
-            age is the easiest way to define this group, particularly in
-            relation to education and employment, because ‘youth’ is often
-            referred to a person between the ages of leaving compulsory
-            education, and finding their first job. <br />
-            <br />
-            <i>
-              For Ghana & Côte d’Ivoire: Youth are persons between the ages of
-              15 and 35 years. For other countries: Youth are persons between
-              the ages of 15 and 24 years.
-            </i>
-            <br />
-            <br />
-            <i>
-              United Nations Department of Economic and Social Affairs (2013).
-              <br />
-              <a
-                href="https://www.un.org/esa/socdev/documents/youth/fact-sheets/youth-definition.pdf "
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ fontSize: "14px" }}
-              >
-                https://www.un.org/esa/socdev/documents/youth/fact-sheets/youth-definition.pdf
-              </a>
-            </i>
-          </div>
-        </Fragment>
-      ),
-    },
-    {
-      i: "Youth empowerment",
-      t: "Youth empowerment",
-      d: (
-        <Fragment>
-          <div>
-            Youth empowerment is defined as a process where youth are enabled to
-            enjoy secure and sustainable livelihoods, fulfil their potential and
-            decide on their future. With an emphasis on decent youth employment,
-            skills development, business opportunities and participation in
-            decision making. <br />
-            (Fairtrade (n.d.))
-          </div>
-        </Fragment>
-      ),
     },
     {
       i: "Methodology to calculate number of households in the indirect supply chain",
@@ -1495,21 +1273,6 @@ const definitionContent = {
       ),
     },
     {
-      i: "Community Action Plan (CAP)",
-      t: "Gemeindeaktionsplan",
-      d: "Ein Plan, der auf der Grundlage einer Bedarfsanalyse einer Gemeinde (Community Needs Assessment, CNA) von oder in Zusammenarbeit mit der Gemeinde entwickelt wird. Der Plan sollte Maßnahmen enthalten, die wichtige Entwicklungsbedürfnisse der Gemeinde adressieren. Er sollte von der Gemeinde unter Repräsentanz aller gesellschaftlicher Gruppen umgesetzt werden – gegebenenfalls mit kurzfristiger externer technischer und finanzieller Unterstützung. Der Plan sollte den Einsatz partizipatorischer Maßnahmen umfassen, um die Fähigkeit der Gemeindemitglieder zu stärken und sie zu ermächtigen, Verhaltensanpassungen entsprechend der identifizierten Probleme, Bedürfnisse und Potentiale der Gemeinde vorzunehmen.",
-    },
-    {
-      i: "Community Needs Assessment (CNA)",
-      t: "Bedarfsanalyse eine Gemeinde",
-      d: "Eine unter Beteiligung einer Gemeinde durchgeführte Bewertung, um die vorrangigen kurz- und langfristigen Entwicklungsbedürfnisse dieser Gemeinde zu ermitteln. Diese sollte Untersuchungen zum besseren Verständnis der Gemeindedynamiken umfassen, welche für die Entwicklung eines wirksamen und nachhaltigen Gemeindeaktionsplans essentiell sind.",
-    },
-    {
-      i: "Conventional traceability of cocoa",
-      t: "Rückverfolgbarkeit von konventionellem Kakao",
-      d: "Konventioneller Kakao (Rückverfolgbarkeits-Kategorie 0) ist beschaffter Kakao, der nicht den Rückverfolgbarkeitsanforderungen von „Mass Balance“, „Segregiert“ oder „Identity preserved“ entspricht – siehe die entsprechenden Definitionen.",
-    },
-    {
       i: "Coverage (for CLMRS and similar systems)",
       t: "Abdeckung (für CLMRS und vergleichbare Systeme)",
       d: (
@@ -1566,26 +1329,6 @@ const definitionContent = {
       ),
     },
     {
-      i: "Degraded lands",
-      t: "Degradierte Böden",
-      d: (
-        <Fragment>
-          <div>
-            Bodendegradierung bezeichnet die Verschlechterung oder den Verlust
-            der produktiven Kapazität des Bodens für die heutige und zukünftige
-            landwirtschaftliche Nutzung.
-            <br />
-            <i>(aus The Global Environmental Facility)</i>
-          </div>
-        </Fragment>
-      ),
-    },
-    {
-      i: "Farmer or farmer-based organisations",
-      t: "Erzeugerorganisation",
-      d: "Erzeugerorganisationen (farmer-based organisations, FBO) sind: Kooperativen; andere professionelle Zusammenschlüsse von Bäuerinnen und Bauern; oder sonstige Organisationsformen, die als formelle oder informelle Institutionen mit der Rolle fungieren, Kakao aufzukaufen und zu verkaufen, Unterstützung / technische Dienstleistungen für Mitglieder bereitzustellen und Einfluss auf den Kakaoanbau oder das Zusammenleben in der Gemeinde zu nehmen. Ein Mitglied kann ein Individuum sein, das einen Mitgliedsbeitrag bezahlt, das formell von der Erzeugerorganisation als Mitglied anerkannt ist und / oder das eine formelle Position innerhalb der Organisation innehat. ",
-    },
-    {
       i: "Farming household",
       t: "Bäuerlicher Haushalt",
       d: (
@@ -1629,64 +1372,6 @@ const definitionContent = {
       i: "Direct supply",
       t: "Direkte Lieferkette",
       d: "Damit Kakao als „durch eine direkte Lieferkette bezogener Kakao“ kategorisiert werden kann, muss eine stabile Partnerschaft bzw. Zusammenarbeit zwischen dem Unternehmen und den Kakaoproduzentinnen und -produzenten bestehen, in welcher die individuellen kakaoanabauenden Haushalte bekannt und registriert sind. Die Partnerschaft kann Themen wie Preise, Kakaoqualität, gute landwirtschaftliche Praktiken, soziale, menschenrechtliche und ökologische Fragen, Zertifizierungsanforderungen, etc. adressieren. Eine solche Partnerschaft bzw. Zusammenarbeit zwischen dem kakaobeschaffenden ISCO-Unternehmen und den Erzeugerinnen und Erzeugern kann auch über deren Kooperative / Erzeugerorganisation und / oder andere in die direkte Lieferkette eingebettete Akteure organisiert sein.",
-    },
-    {
-      i: "Mass balance",
-      t: "Mengenausgleich",
-      d: (
-        <Fragment>
-          <div>
-            Der Mengenausgleich (mass balance) überwacht administrativ den
-            Handel von konformem Kakao (= zertifizierter oder unabhängig
-            überprüfter Kakao) entlang der gesamten Lieferkette. Das
-            Mengenausgleichssystem erfordert eine transparente Dokumentation und
-            Nachweise über Herkunft und Mengen des vom Erstkäufer aufgekauften
-            konformen Kakaos. Das Mengenausgleichssystem ermöglicht das
-            Vermischen von konformem mit nicht-konformem Kakao in den
-            nachgelagerten Stufen der Wertschöpfungskette (z.B. bei Transport
-            oder Verarbeitung). Die Akteure der Kakaolieferkette können eine
-            bestimmte Menge an konformem Kakao oder ein äquivalentes Volumen
-            konformer kakaohaltiger Produkte verkaufen, sofern die tatsächlichen
-            Mengen verkaufter konformer Produkte über die gesamte Lieferkette
-            nachvollziehbar sind und auditiert werden und deren
-            Kakaobohnenäquivalente die Mengen des im Ursprung eingekauften
-            konformen Kakaos nicht übersteigen.{" "}
-            <i>(Basierend auf Definitionen von ISO-CEN und Fairtrade)</i>
-          </div>
-        </Fragment>
-      ),
-    },
-    {
-      i: "Segregated",
-      t: "Segregiert",
-      d: (
-        <Fragment>
-          <div>
-            Segregierter („segregated“) Kakao bezeichnet zertifizierten oder
-            unabhängig überprüften Kakao, der die Segregationsanforderungen
-            erfüllt. Wie das Mengenausgleichssystem erfordert die Segregation
-            eine transparente Dokumentation und Nachweise über Herkunft und
-            Menge des vom Erstkäufer gekauften konformen Kakaos. Konformer Kakao
-            wird von nicht-konformem Kakao (= nicht zertifizierter oder
-            unabhängig überprüfter Kakao) getrennt gehalten – auch während des
-            Transports, der Lagerung, der Verarbeitung von Kakao und der
-            Herstellung kakaohaltiger Produkte. Jedoch ist das Vermischen von
-            Kakao unterschiedlicher Herkünfte möglich, sofern der gesamte zu
-            vermischende Kakao als konformer Kakao gilt. Die Akteure in der
-            Kakaolieferkette müssen nachweisen, dass sie die erforderlichen
-            Maßnahmen ergriffen haben, um zu vermeiden, dass konformer Kakao mit
-            nicht-konformem Kakao vermischt wird.{" "}
-            <i>
-              (Basierend auf Definitionen von ISO-CEN und Rainforest Alliance)
-            </i>
-          </div>
-        </Fragment>
-      ),
-    },
-    {
-      i: "Identity preserved",
-      t: "Identity preserved",
-      d: '"Identity preserved" ist die höchste Rückverfolgbarkeitskategorie. Es erfolgt keine Vermischung des Kakaos, weder mit nicht-konformem Kakao (= nicht zertifiziert oder unabhängig überprüft) noch mit Kakao anderer Herkünfte. Wenn sich der Begriff "single Origin" auf ein Kakaoanbaugebiet (das verschiedene Kooperativen zusammenfasst) und nicht auf eine einzige Kooperative bezieht, dann kann konformer Kakao aus diesem breiteren Ursprung vermischt werden. Das "identity preserved" System erfüllt also alle Anforderungen für "segregierten Kakao", erlaubt aber darüber hinaus nicht das Vermischen von Kakao aus verschiedenen Ursprüngen.',
     },
     {
       i: "Indirect supply",
@@ -2107,21 +1792,6 @@ const definitionContent = {
       d: "Flächen, die derzeit nicht bewirtschaftet werden (z.B. festgelegte Pufferzonen zwischen verschiedenen Kakao- (oder anderen landwirtschaftlichen) Betrieben, nicht bewirtschaftete Wassereinzugsgebiete, Brachland, etc.). Beinhaltet nicht: Neu errichtete Kakao-Agroforstsysteme.",
     },
     {
-      i: "Payments for Ecosystem / Environmental Services (PES)",
-      t: "Zahlungen für Ökosystem- / Umweltleistungen",
-      d: "Bezeichnet die Kompensation von Individuen oder Gemeinschaften für die Übernahme wünschenswerter Verhaltensweisen, welche die Fähigkeit von lokalen Ökosysteme erhöhen, der Bevölkerung wertvolle Dienste zu leisten (wie der Filterung von Wasser, der Verringerung von Erosion, Schaffung von sozialem Mehrwert, etc.). Die Aktivitäten müssen mindestens einem der drei Hauptinterventionsbereiche zuordenbar sein: Dem Erhalt oder der Wiederherstellung von Ökosystemen oder der Agroforstwirtschaft. Die Maßnahmen sollen Gefährdungen für Ökosystemleistungen beseitigen oder deren Wirksamkeit steigern und könnten Interventionen zum Klimaschutz, zur Sanierung degradierter Böden oder zur Förderung der Artenvielfalt umfassen. Die finanzielle Kompensation sollte die Opportunitäts- und Transaktionskosten aller Beteiligten für die Verhaltensanpassung abdecken und idealerweise übersteigen.",
-    },
-    {
-      i: "Plot",
-      t: "Parzelle",
-      d: 'Eine Parzelle ist die übliche räumliche Einheit der Landnutzung. Im Kakaoanbau kann eine Bäuerin oder ein Bauer eine oder mehrere Parzellen besitzen und bewirtschaften. Die Gesamtzahl der Parzellen einer Bäuerin / eines Bauern ist ein landwirtschaftlicher Betrieb, unabhängig davon, ob die Parzellen aneinandergrenzen oder nicht. In Ghana kann eine Parzelle bereits als "Betrieb" angesehen werden, so dass ein Betrieb aus mehreren kleineren "Betrieben" bestehen kann. In solchen Fällen muss darauf geachtet werden, dass dies bei Erhebungen beispielsweise zur „Anzahl an kartierten Betrieben“ berücksichtigt wird.',
-    },
-    {
-      i: "Pre-financing",
-      t: "Vorfinanzierung",
-      d: "Eine Vereinbarung, bei der die landwirtschaftliche Produktion von einem Dritten im Voraus bezahlt wird und der Betrag zu einem späteren Zeitpunkt von der Bäuerin oder dem Bauern zu den vereinbarten Konditionen zurückgezahlt wird.",
-    },
-    {
       i: "Program",
       t: "Programm",
       d: "Siehe Definition “Projekt”",
@@ -2141,49 +1811,6 @@ const definitionContent = {
             die Entwicklung eines Plans zur Wiederherstellung des Waldes auf der
             Grundlage einer ersten Bewertung (Ausgangssituation) und eines mit
             der (lokalen oder nationalen) Regierung abgestimmten Aktionsplans.
-          </div>
-        </Fragment>
-      ),
-    },
-    {
-      i: "Risk assessment",
-      t: "Risikoanalyse",
-      d: "Ein systematischer Prozess zur Bewertung potenzieller Risiken in Verbindung mit gegenwärtigen oder zukünftigen Aktivitäten, Lieferketten und Investitionen eines Unternehmens. Im Kontext des Accountability Framework bezieht sich dieser Begriff auf eine Bewertung des Risikos der Nichteinhaltung von Unternehmensselbstverpflichtungen oder geltendem Recht sowie auf potenzielle Verletzungen international anerkannter Menschenrechte. Dies unterscheidet sich von der Verwendung des Begriffs in einem allgemeinen geschäftlichen Kontext, wo er sich vorrangig auf die Bewertung finanzieller Risiken und deren Treiber (z.B. Rechtsrisiken, Kreditrisiken, Reputationsrisiken, etc.) bezieht. Das Risiko negativer sozialer und ökologischer Auswirkungen, einschließlich der Nichteinhaltung von Unternehmensselbstverpflichtungen, kann jedoch ein wichtiges Element des allgemeinen Geschäftsrisikos darstellen.",
-    },
-    {
-      i: "Sustainability commitments of companies",
-      t: "Nachhaltigkeitsselbstverpflichtungen von Unternehmen",
-      d: (
-        <Fragment>
-          <div>
-            Das öffentliche Statement eines Unternehmens, das die beabsichtigten
-            Maßnahmen, Ziele, Kriterien oder Vorgaben spezifiziert, die es mit
-            Blick auf das Management oder seine Performance in Bezug auf
-            Umwelt-, Sozial- und / oder Governance-Themen zu implementieren
-            beabsichtigt.
-            <ul style={{ marginLeft: "25px" }}>
-              <li>
-                Unternehmensselbstverpflichtungen können unternehmensweit
-                (beispielsweise eine unternehmensweite Forstpolitik) oder
-                spezifisch für bestimmte Rohstoffe, Regionen oder
-                Geschäftsbereiche sein. Sie können themenspezifisch sein oder
-                sich auf mehrere Umwelt-, Sozial- und / oder Governance-Themen
-                beziehen.
-              </li>
-              <li>
-                Selbstverpflichtungen, wie sie hier definiert sind,
-                unterscheiden sich von operativen Richtlinien oder Verfahren
-                (z.B. Beschaffungsrichtlinien, Lieferantenanforderungen,
-                Handbücher und Standardarbeitsverfahren), mit denen Unternehmen
-                ihre Selbstverpflichtungen operationalisieren können.
-                Selbstverpflichtungen sind in der Regel breiter angelegt, häufig
-                normativer und ambitionierter Natur, und nehmen einen
-                mehrjährigen Blick auf die Unternehmensperformance ein, während
-                sich betriebliche Richtlinien oder Verfahren tendenziell auf
-                spezifische Implementierungsdetails, -parameter oder
-                -anforderungen beziehen.
-              </li>
-            </ul>
           </div>
         </Fragment>
       ),
@@ -2261,26 +1888,6 @@ const definitionContent = {
       ),
     },
     {
-      i: "Verification",
-      t: "Verifizierung",
-      d: (
-        <Fragment>
-          <div>
-            Bewertung und Nachweis der Einhaltung, der Performance und / oder
-            der Umsetzung von Maßnahmen in Verbindung mit einer veröffentlichten
-            Selbstverpflichtung, einem Standard oder einem erklärten Ziel.
-            Verifizierungsprozesse nutzen in der Regel Monitoring-Daten, können
-            aber auch andere Informationsquellen nutzen.
-          </div>
-        </Fragment>
-      ),
-    },
-    {
-      i: "Village Savings and Loans Association (VSLA)",
-      t: "Village Savings and Loans Association (VSLA)",
-      d: "Eine Village Savings and Loans Association (VSLA) ist eine Art Spar- und Kreditvereinigung, die von einer Gruppe von Menschen gegründet wird, die zusammenarbeiten und ihre Ersparnisse zusammenlegen wollen. Das Geld kann dann von Mitgliedern mit moderaten Zinsen über einen vereinbarten Zeitraum geliehen werden. Am Ende einer vorher festgelegten Laufzeit wird der gesamte Fonds (zusammengesetzt aus den Ersparnissen und den angefallenen Zinszahlungen) an die Gruppenmitglieder auf der Grundlage ihres prozentualen Beitrags zum ursprünglichen Fonds ausgezahlt. Zu diesem Zeitpunkt können die Mitglieder entscheiden, ob sie einen neuen Zyklus beginnen oder die Aktivität einstellen wollen. Zu den wichtigsten Aktivitäten, die den VSLA-Mitgliedern zugutekommen, gehören (i) die Schaffung einer Gruppendynamik, die Selbstwirksamkeit und Selbstvertrauen stärkt, (ii) der Zugang zu grundlegenden Finanzdienstleistungen (Sparmöglichkeiten und Kredite), (iii) die Freisetzung unternehmerischen Potenzials, indem eine einkommensschaffende Aktivität identifiziert, gestaltet und umgesetzt wird.",
-    },
-    {
       i: "Women’s empowerment",
       t: "Empowerment von Frauen",
       d: (
@@ -2302,62 +1909,6 @@ const definitionContent = {
       i: "Yield (cocoa yield)",
       t: "Ertrag (Kakaoertrag)",
       d: "Gesamtgewicht des Kakaos (typischerweise angegeben in Kilogramm), der je Flächeneinheit (typischerweise in Hektar) in einem bestimmten Jahr erzeugt wird.",
-    },
-    {
-      i: "Youth",
-      t: "Jugend",
-      d: (
-        <Fragment>
-          <div>
-            Jugend lässt sich am besten beschreiben als eine Phase des Übergangs
-            von der Abhängigkeit der Kindheit hin zur Unabhängigkeit des
-            Erwachsenseins. Die Kategorie Jugend ist daher fluider als andere,
-            festere Altersgruppen. Dennoch ist das Alter der einfachste Weg, um
-            „Jugend“ zu definieren, insbesondere in Bezug auf Bildung und
-            Beschäftigung; denn in der Regel werden Personen zwischen dem Ende
-            der Schulpflicht und der Aufnahme der ersten Beschäftigung als
-            „Jugendliche“ bezeichnet. <br />
-            <br />
-            <i>
-              Für Ghana und Côte d&apos;Ivoire gilt: Jugendliche sind Personen
-              im Alter zwischen 15 und 35 Jahren. Für andere Länder gilt:
-              Jugendliche sind Personen im Alter zwischen 15 und 24 Jahren.
-            </i>
-            <br />
-            <br />
-            <i>
-              United Nations Department of Economic and Social Affairs (2013).
-              <br />
-              <a
-                href="https://www.un.org/esa/socdev/documents/youth/fact-sheets/youth-definition.pdf "
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ fontSize: "14px" }}
-              >
-                https://www.un.org/esa/socdev/documents/youth/fact-sheets/youth-definition.pdf
-              </a>
-            </i>
-          </div>
-        </Fragment>
-      ),
-    },
-    {
-      i: "Youth empowerment",
-      t: "Empowerment der Jugend",
-      d: (
-        <Fragment>
-          <div>
-            Empowerment der Jugend bezeichnet einen Prozess, in welchem
-            Jugendliche in die Lage versetzt werden, ein sicheres Lebensumfeld
-            genießen zu können, ihr Potenzial auszuschöpfen und selbst über ihre
-            Zukunft entscheiden zu können. Schwerpunkte liegen dabei auf der
-            Bereitstellung von angemessenen Beschäftigungsmöglichkeiten für
-            Jugendliche, der Förderung ihrer Fähigkeiten und Kenntnisse, und der
-            Beteiligung von Jugendlichen an Entscheidungsprozessen. <br />
-            (Fairtrade (o.D.))
-          </div>
-        </Fragment>
-      ),
     },
     {
       i: "Methodology to calculate number of households in the indirect supply chain",
