@@ -174,10 +174,17 @@ export const Webform = ({
   }, [forms]);
 
   useEffect(() => {
-    if (initialDataValue.length) {
+    if (typeof initialDataValue !== "undefined" && initialDataValue !== null) {
       form.resetFields();
+      setCompleteGroup([]);
       GlobalStore.update((gs) => {
         gs.initialValue = initialDataValue;
+      });
+    }
+    if (!initialDataValue?.length) {
+      // reset datapoint name
+      GlobalStore.update((gs) => {
+        gs.dataPointName = [];
       });
     }
   }, [initialDataValue, form]);
@@ -437,7 +444,6 @@ export const Webform = ({
 
   useEffect(() => {
     // initial value load: related to src/lib/db.js line 95
-    form.resetFields();
     if (initialValue.length) {
       setLoadingInitial(true);
       let values = {};
@@ -506,6 +512,7 @@ export const Webform = ({
             : values;
       }
       if (isEmpty(values)) {
+        form.setFieldsValue({});
         setCompleteGroup([]);
         setLoadingInitial(false);
       } else {

@@ -37,10 +37,15 @@ const Sidebar = ({
             {uiText.formOverview}
           </div>
         }
-        dataSource={formsMemo?.question_group?.map((qg, qgi) => ({
-          ...qg,
-          appear: showGroup.includes(qgi),
-        }))}
+        dataSource={formsMemo?.question_group?.map((qg, qgi) => {
+          // appear only when repeats has length for repeatable group
+          return {
+            ...qg,
+            appear: qg?.repeatable
+              ? showGroup.includes(qgi) && qg?.repeats?.length
+              : showGroup.includes(qgi),
+          };
+        })}
         renderItem={(item, key) =>
           item.appear && (
             <List.Item

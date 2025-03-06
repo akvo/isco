@@ -163,6 +163,15 @@ const WebformPage = ({
     }
   };
 
+  useEffect(() => {
+    setDisableSubmit(true);
+    setAnswer([]);
+    setInitialAnswers([]);
+    setComment({});
+    setClearForm(false);
+    webformRef?.current?.resetFields();
+  }, [clearForm, webformRef, setClearForm]);
+
   // set comment def values
   useEffect(() => {
     if (!isEmpty(commentDefValues)) {

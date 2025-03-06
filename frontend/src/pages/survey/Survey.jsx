@@ -259,6 +259,7 @@ const Survey = () => {
   const handleOnClickOpenPrevSubmission = () => {
     resetSavedFormDropdown();
     if (selectedPrevSubmission === "" || !selectedPrevSubmission) {
+      webformRef?.current?.resetFields();
       setClearForm(true);
     }
     if (formLoaded) {
