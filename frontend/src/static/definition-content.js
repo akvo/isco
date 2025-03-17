@@ -395,7 +395,7 @@ const definitionContent = {
           <div>
             Please refer to the{" "}
             <a
-              href="#"
+              href="https://align-tool.com/source-map"
               target="_blank"
               rel="noopener noreferrer"
               style={{ fontSize: "14px" }}
@@ -1440,7 +1440,7 @@ const definitionContent = {
           <div>
             Auf der{" "}
             <a
-              href="#"
+              href="https://align-tool.com/source-map"
               target="_blank"
               rel="noopener noreferrer"
               style={{ fontSize: "14px" }}
