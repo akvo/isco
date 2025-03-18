@@ -164,12 +164,24 @@ const WebformPage = ({
   };
 
   useEffect(() => {
+    const webform = webformRef?.current;
     setDisableSubmit(true);
     setAnswer([]);
     setInitialAnswers([]);
     setComment({});
     setClearForm(false);
     webformRef?.current?.resetFields();
+    return () => {
+      // clear when unmount
+      setDisableSubmit(true);
+      setAnswer([]);
+      setInitialAnswers([]);
+      setComment({});
+      setClearForm(false);
+      if (webform) {
+        webform?.resetFields();
+      }
+    };
   }, [clearForm, webformRef, setClearForm]);
 
   // set comment def values

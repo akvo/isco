@@ -182,9 +182,11 @@ export const Webform = ({
       });
     }
     if (!initialDataValue?.length) {
+      form.resetFields();
       // reset datapoint name
       GlobalStore.update((gs) => {
         gs.dataPointName = [];
+        gs.initialValue = [];
       });
     }
   }, [initialDataValue, form]);
@@ -319,6 +321,11 @@ export const Webform = ({
         { ...filteredFormValues, datapoint: { name: dpName, geo: dpGeo } },
         refreshForm
       );
+      // reset datapoint name
+      GlobalStore.update((gs) => {
+        gs.dataPointName = [];
+        gs.initialValue = [];
+      });
     }
   };
 
@@ -444,99 +451,102 @@ export const Webform = ({
 
   useEffect(() => {
     // initial value load: related to src/lib/db.js line 95
-    if (initialValue.length) {
-      setLoadingInitial(true);
-      let values = {};
-      const allQuestions =
-        forms?.question_group
-          ?.map((qg, qgi) =>
-            qg.question.map((q) => ({
-              ...q,
-              groupIndex: qgi,
-              group_leading_question: qg?.leading_question || null,
-            }))
-          )
-          ?.flatMap((q) => q) || [];
-      const groupRepeats = transformForm(forms)?.question_group?.map((qg) => {
-        const q = initialValue.filter((i) =>
-          qg.question.map((q) => q.id).includes(i.question)
-        );
-        const rep = maxBy(q, "repeatIndex")?.repeatIndex;
-        // handle not leading question when load initial value
-        if (!qg?.leading_question && rep) {
-          return { ...qg, repeat: rep + 1, repeats: range(rep + 1) };
-        }
-        // handle leading question when load initial value
-        if (qg?.leading_question && rep) {
-          const findLeadingAnswer = initialValue?.find(
-            (v) => v.question === qg.leading_question
-          );
-          return {
-            ...qg,
-            repeat: rep + 1,
-            repeats: findLeadingAnswer?.value || range(rep + 1),
-          };
-        }
-        return qg;
-      });
-      setUpdatedQuestionGroup(groupRepeats);
-
-      for (const val of initialValue) {
-        const question = allQuestions.find((q) => q.id === val.question);
-        let objName = val?.repeatIndex
-          ? `${val.question}-${val.repeatIndex}`
-          : val.question;
-
-        // handle leading question when load initial value
-        if (question?.group_leading_question) {
-          const findLeadingAnswer = initialValue?.find(
-            (v) => v.question === question.group_leading_question
-          );
-          if (
-            findLeadingAnswer?.value &&
-            findLeadingAnswer?.value?.[val.repeatIndex]
-          ) {
-            objName = `${val.question}-${
-              findLeadingAnswer.value[val.repeatIndex]
-            }`;
-          }
-        }
-        // handle to show also 0 init value from number
-        values =
-          val?.value || val?.value === 0
-            ? {
-                ...values,
-                [objName]:
-                  question?.type !== "date" ? val.value : moment(val.value),
-              }
-            : values;
-      }
-      if (isEmpty(values)) {
-        form.setFieldsValue({});
-        setCompleteGroup([]);
-        setLoadingInitial(false);
-      } else {
-        form.setFieldsValue(values);
-        setTimeout(() => {
-          onValuesChange(groupRepeats, values[Object.keys(values)[0]], values);
-          setLoadingInitial(false);
-        }, 1000);
-      }
-      const appearQuestion = Object.keys(form.getFieldsValue()).map((x) =>
-        parseInt(x.replace("-", ""))
+    setLoadingInitial(true);
+    let values = {};
+    const allQuestions =
+      forms?.question_group
+        ?.map((qg, qgi) =>
+          qg.question.map((q) => ({
+            ...q,
+            groupIndex: qgi,
+            group_leading_question: qg?.leading_question || null,
+          }))
+        )
+        ?.flatMap((q) => q) || [];
+    const groupRepeats = transformForm(forms)?.question_group?.map((qg) => {
+      const q = initialValue.filter((i) =>
+        qg.question.map((q) => q.id).includes(i.question)
       );
-      const appearGroup = forms?.question_group
-        ?.map((qg, qgi) => {
-          const appear = intersection(
-            qg.question.map((q) => q.id),
-            appearQuestion
-          );
-          return { groupIndex: qgi, appearQuestion: appear.length };
-        })
-        .filter((x) => x.appearQuestion)
-        .map((x) => x.groupIndex);
-      setShowGroup(appearGroup);
+      const rep = maxBy(q, "repeatIndex")?.repeatIndex;
+      // handle not leading question when load initial value
+      if (!qg?.leading_question && rep) {
+        return { ...qg, repeat: rep + 1, repeats: range(rep + 1) };
+      }
+      // handle leading question when load initial value
+      if (qg?.leading_question && rep) {
+        const findLeadingAnswer = initialValue?.find(
+          (v) => v.question === qg.leading_question
+        );
+        return {
+          ...qg,
+          repeat: rep + 1,
+          repeats: findLeadingAnswer?.value || range(rep + 1),
+        };
+      }
+      return qg;
+    });
+    setUpdatedQuestionGroup(groupRepeats);
+
+    for (const val of initialValue) {
+      const question = allQuestions.find((q) => q.id === val.question);
+      let objName = val?.repeatIndex
+        ? `${val.question}-${val.repeatIndex}`
+        : val.question;
+
+      // handle leading question when load initial value
+      if (question?.group_leading_question) {
+        const findLeadingAnswer = initialValue?.find(
+          (v) => v.question === question.group_leading_question
+        );
+        if (
+          findLeadingAnswer?.value &&
+          findLeadingAnswer?.value?.[val.repeatIndex]
+        ) {
+          objName = `${val.question}-${
+            findLeadingAnswer.value[val.repeatIndex]
+          }`;
+        }
+      }
+      // handle to show also 0 init value from number
+      values =
+        val?.value || val?.value === 0
+          ? {
+              ...values,
+              [objName]:
+                question?.type !== "date" ? val.value : moment(val.value),
+            }
+          : values;
     }
+
+    // reset form fields before set the new values
+    form.setFieldsValue({});
+    form.resetFields();
+    if (isEmpty(values)) {
+      setCompleteGroup([]);
+      setLoadingInitial(false);
+    } else {
+      form.setFieldsValue(values);
+      setTimeout(() => {
+        onValuesChange(groupRepeats, values[Object.keys(values)[0]], values);
+        setLoadingInitial(false);
+      }, 1000);
+    }
+    // EOL reset form fields before set the new values
+
+    const appearQuestion = Object.keys(form.getFieldsValue()).map((x) =>
+      parseInt(x.replace("-", ""))
+    );
+    const appearGroup = forms?.question_group
+      ?.map((qg, qgi) => {
+        const appear = intersection(
+          qg.question.map((q) => q.id),
+          appearQuestion
+        );
+        return { groupIndex: qgi, appearQuestion: appear.length };
+      })
+      .filter((x) => x.appearQuestion)
+      .map((x) => x.groupIndex);
+    setShowGroup(appearGroup);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialValue]);
 
