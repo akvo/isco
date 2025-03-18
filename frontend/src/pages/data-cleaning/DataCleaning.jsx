@@ -27,7 +27,7 @@ import { globalSelectProps } from "../../lib/util";
 const { Title } = Typography;
 
 const DataCleaning = () => {
-  const webformRef = useRef();
+  const webformRef = useRef(null);
   const { optionValues } = store.useState((s) => s);
   const { organisationInSameIsco } = optionValues;
   const { notify } = useNotification();

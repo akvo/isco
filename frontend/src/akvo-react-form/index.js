@@ -324,7 +324,6 @@ export const Webform = ({
       // reset datapoint name
       GlobalStore.update((gs) => {
         gs.dataPointName = [];
-        gs.initialValue = [];
       });
     }
   };
