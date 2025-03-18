@@ -519,9 +519,9 @@ export const Webform = ({
     }
 
     // reset form fields before set the new values
-    form.setFieldsValue({});
     form.resetFields();
     if (isEmpty(values)) {
+      form.setFieldsValue({});
       setCompleteGroup([]);
       setLoadingInitial(false);
     } else {
