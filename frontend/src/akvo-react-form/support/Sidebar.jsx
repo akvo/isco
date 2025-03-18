@@ -47,7 +47,7 @@ const Sidebar = ({
           };
         })}
         renderItem={(item, key) =>
-          item.appear && (
+          item.appear ? (
             <List.Item
               key={key}
               onClick={() => {
@@ -73,6 +73,8 @@ const Sidebar = ({
               )}
               {item?.name || `Section ${key + 1}`}
             </List.Item>
+          ) : (
+            ""
           )
         }
       />

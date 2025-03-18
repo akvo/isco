@@ -132,6 +132,25 @@ const DataCleaningWebform = ({
     return uiText[activeLang];
   }, [activeLang]);
 
+  useEffect(() => {
+    const webform = webformRef?.current;
+    setDisableSubmit(true);
+    setAnswer([]);
+    setInitialAnswers([]);
+    setComment({});
+    webformRef?.current?.resetFields();
+    return () => {
+      // clear when unmount
+      setDisableSubmit(true);
+      setAnswer([]);
+      setInitialAnswers([]);
+      setComment({});
+      if (webform) {
+        webform?.resetFields();
+      }
+    };
+  }, [webformRef]);
+
   // set comment def values
   useEffect(() => {
     if (!isEmpty(commentDefValues)) {
