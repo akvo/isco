@@ -298,11 +298,12 @@ const DataCleaning = () => {
               justify="space-between"
             >
               <Col span={24} align="start">
-                <Space align="middle" size={20}>
+                <Space align="middle" size={15}>
                   <Title
                     className={`page-title ${isEdit ? "clickable" : ""}`}
                     level={3}
                     onClick={handleBack}
+                    style={{ minWidth: 175 }}
                   >
                     Data Cleaning
                   </Title>

@@ -182,6 +182,7 @@ export const Webform = ({
       });
     }
     if (!initialDataValue?.length) {
+      form.resetFields();
       // reset datapoint name
       GlobalStore.update((gs) => {
         gs.dataPointName = [];
@@ -516,9 +517,11 @@ export const Webform = ({
             }
           : values;
     }
+
+    // reset form fields before set the new values
+    form.setFieldsValue({});
+    form.resetFields();
     if (isEmpty(values)) {
-      form.setFieldsValue({});
-      form.resetFields();
       setCompleteGroup([]);
       setLoadingInitial(false);
     } else {
@@ -528,6 +531,8 @@ export const Webform = ({
         setLoadingInitial(false);
       }, 1000);
     }
+    // EOL reset form fields before set the new values
+
     const appearQuestion = Object.keys(form.getFieldsValue()).map((x) =>
       parseInt(x.replace("-", ""))
     );
