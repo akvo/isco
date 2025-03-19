@@ -57,17 +57,28 @@ const reorderAnswersRepeatIndex = (formValue, answer) => {
   const repeatValues = answer.filter(
     (x) => intersection([x.question], repeatQuestions).length
   );
+
+  // Group by repeat_index
+  const grouped = groupBy(repeatValues, "repeat_index");
+  // Sort groups by original repeat_index
+  const sortedGroups = orderBy(Object.entries(grouped), ([index]) =>
+    Number(index)
+  );
   const reorderedRepeatIndex = repeatQuestions
     .map((id) => {
-      return orderBy(repeatValues, ["repeat_index"])
-        .filter((x) => x.question === id)
-        .map((v, vi) => ({
-          ...v,
-          repeat_index:
-            !isNumeric(v.repeat_index) && v?.repeat_index_string
-              ? v.repeat_index_string
-              : vi,
-        }));
+      // Reassign repeat_index sequentially
+      const reorderedData = sortedGroups.flatMap(([, group], newIndex) =>
+        group
+          .filter((x) => x.question === id)
+          .map((v) => ({
+            ...v,
+            repeat_index:
+              !isNumeric(v.repeat_index) && v?.repeat_index_string
+                ? v.repeat_index_string
+                : newIndex,
+          }))
+      );
+      return reorderedData;
     })
     .flatMap((x) => x);
   return nonRepeatValues.concat(reorderedRepeatIndex);
