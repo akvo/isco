@@ -4,7 +4,7 @@ import { Spin, Button, Checkbox, Modal, Space, Alert } from "antd";
 import { Webform } from "../../akvo-react-form";
 import { api, store } from "../../lib";
 import { useNotification, useIdle } from "../../util";
-import { intersection, isEmpty, orderBy, groupBy } from "lodash";
+import { intersection, isEmpty, groupBy } from "lodash";
 import ErrorPage from "../error/ErrorPage";
 import {
   CommentField,

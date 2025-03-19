@@ -4,7 +4,7 @@ import { Row, Col, Button, Space, Spin, Modal } from "antd";
 import { WarningOutlined } from "@ant-design/icons";
 import { api, store } from "../../lib";
 import { useNotification } from "../../util";
-import { intersection, isEmpty, orderBy } from "lodash";
+import { intersection, isEmpty } from "lodash";
 import { CommentField } from "../../components";
 import { Webform } from "../../akvo-react-form";
 import { uiText } from "../../static";
