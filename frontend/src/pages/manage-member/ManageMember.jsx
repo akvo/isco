@@ -95,8 +95,14 @@ const ManageMember = () => {
         .then((res) => {
           const { data } = res;
           const orgs = data?.data.map((o) => {
-            const members = [o.member.join(", ")];
-            const iscos = [o.isco.join(", ")];
+            // handle all option value
+            const members = o.member_type.includes(1)
+              ? ["All"]
+              : [o.member.join(", ")];
+            const iscos = o.isco_type.includes(1)
+              ? ["All"]
+              : [o.isco.join(", ")];
+            // eol handle all option value
             const findOrganisation = organisation.find((el) => el.id === o.id);
             return {
               ...o,

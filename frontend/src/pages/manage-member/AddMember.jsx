@@ -77,21 +77,30 @@ const AddMember = ({
       form.setFieldsValue({ isco_type: [] });
     }
     if (selectedMember?.id) {
-      const { name, member_type, isco_type } = selectedMember;
-      if (member_type.includes(1)) {
+      const {
+        name,
+        member_type: formMemberType,
+        isco_type: formIscoType,
+      } = selectedMember;
+      form.setFieldsValue({ name: name });
+      if (formMemberType.includes(1)) {
         setIsAllMemberType(true);
+        form.setFieldsValue({
+          member_type: formMemberType.filter((it) => it === 1),
+        });
       } else {
         setIsAllMemberType(false);
+        form.setFieldsValue({ member_type: formMemberType });
       }
-      if (isco_type.includes(1)) {
+      if (formIscoType.includes(1)) {
         setIsAllIscoType(true);
+        form.setFieldsValue({
+          isco_type: formIscoType.filter((it) => it === 1),
+        });
       } else {
         setIsAllIscoType(false);
+        form.setFieldsValue({ isco_type: formIscoType });
       }
-
-      form.setFieldsValue({ name: name });
-      form.setFieldsValue({ member_type: member_type });
-      form.setFieldsValue({ isco_type: isco_type });
     }
   }, [selectedMember, form]);
 
@@ -124,13 +133,29 @@ const AddMember = ({
   };
 
   const onFinish = (values) => {
-    const { name, member_type, isco_type } = values;
+    const allMemberTypeIds = member_type.map((it) => it.id);
+    const allIscoTypeIds = isco_type.map((it) => it.id);
+
+    // handle select all option
+    const {
+      name,
+      member_type: formMemberType,
+      isco_type: formIscoType,
+    } = values;
+    const memberTypePayload = formMemberType.includes(1)
+      ? allMemberTypeIds
+      : formMemberType;
+    const iscoTypePayload = formIscoType.includes(1)
+      ? allIscoTypeIds
+      : formIscoType;
+    // EOL handle select all option
+
     const payload = {
       code: "1",
       name: name,
       active: true,
-      member_type: member_type,
-      isco_type: isco_type,
+      member_type: memberTypePayload,
+      isco_type: iscoTypePayload,
     };
     setSending(true);
     if (!selectedMember) {
