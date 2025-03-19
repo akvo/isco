@@ -4,40 +4,11 @@ import { Row, Col, Button, Space, Spin, Modal } from "antd";
 import { WarningOutlined } from "@ant-design/icons";
 import { api, store } from "../../lib";
 import { useNotification } from "../../util";
-import { intersection, isEmpty, orderBy } from "lodash";
+import { intersection, isEmpty } from "lodash";
 import { CommentField } from "../../components";
 import { Webform } from "../../akvo-react-form";
 import { uiText } from "../../static";
-import { isNumeric } from "../../lib/util";
-
-const reorderAnswersRepeatIndex = (formValue, answer) => {
-  // reordered repeat index answer
-  const repeatQuestions = formValue.question_group
-    .filter((qg) => qg.repeatable)
-    .flatMap((qg) => qg.question)
-    .map((q) => q.id);
-  const nonRepeatValues = answer.filter(
-    (x) => !intersection([x.question], repeatQuestions).length
-  );
-  const repeatValues = answer.filter(
-    (x) => intersection([x.question], repeatQuestions).length
-  );
-  const reorderedRepeatIndex = repeatQuestions
-    .map((id) => {
-      return orderBy(repeatValues, ["repeat_index"])
-        .filter((x) => x.question === id)
-        .map((v, vi) => ({
-          ...v,
-          repeat_index:
-            !isNumeric(v.repeat_index) && v?.repeat_index_string
-              ? v.repeat_index_string
-              : vi,
-        }));
-    })
-    .flatMap((x) => x);
-  return nonRepeatValues.concat(reorderedRepeatIndex);
-  // end  of reorder repeat index
-};
+import { isNumeric, reorderAnswersRepeatIndex } from "../../lib/util";
 
 const checkDependentValue = (formValue, answer) => {
   const questions = formValue.question_group.flatMap((qg) => qg.question);
