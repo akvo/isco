@@ -1,4 +1,5 @@
 import api from "./api";
+import { intersection, orderBy, groupBy } from "lodash";
 
 export const generateID = () => {
   return Math.floor(100000000 + Math.random() * 900000000);
@@ -73,4 +74,44 @@ export const globalMultipleSelectProps = {
   dropdownStyle: {
     overflowY: "scroll",
   },
+};
+
+export const reorderAnswersRepeatIndex = (formValue, answer) => {
+  // reordered repeat index answer
+  const repeatQuestions = formValue.question_group
+    .filter((qg) => qg.repeatable)
+    .flatMap((qg) => qg.question)
+    .map((q) => q.id);
+  const nonRepeatValues = answer.filter(
+    (x) => !intersection([x.question], repeatQuestions).length
+  );
+  const repeatValues = answer.filter(
+    (x) => intersection([x.question], repeatQuestions).length
+  );
+
+  // Group by repeat_index
+  const grouped = groupBy(repeatValues, "repeat_index");
+  // Sort groups by original repeat_index
+  const sortedGroups = orderBy(Object.entries(grouped), ([index]) =>
+    Number(index)
+  );
+  const reorderedRepeatIndex = repeatQuestions
+    .map((id) => {
+      // Reassign repeat_index sequentially
+      const reorderedData = sortedGroups.flatMap(([, group], newIndex) =>
+        group
+          .filter((x) => x.question === id)
+          .map((v) => ({
+            ...v,
+            repeat_index:
+              !isNumeric(v.repeat_index) && v?.repeat_index_string
+                ? v.repeat_index_string
+                : newIndex,
+          }))
+      );
+      return reorderedData;
+    })
+    .flatMap((x) => x);
+  return nonRepeatValues.concat(reorderedRepeatIndex);
+  // end  of reorder repeat index
 };

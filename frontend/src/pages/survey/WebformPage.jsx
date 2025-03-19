@@ -15,7 +15,7 @@ import { uiText } from "../../static";
 import Countdown from "react-countdown";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
-import { isNumeric } from "../../lib/util";
+import { isNumeric, reorderAnswersRepeatIndex } from "../../lib/util";
 // import test from "./test.json" // testing purpose
 
 const computedValidations = window?.computed_validations;
@@ -44,46 +44,6 @@ const LockedCheckbox = ({ onChange, isLocked, text }) => (
     <Checkbox checked={isLocked} onChange={onChange} /> {text.lockedBy}
   </>
 );
-
-const reorderAnswersRepeatIndex = (formValue, answer) => {
-  // reordered repeat index answer
-  const repeatQuestions = formValue.question_group
-    .filter((qg) => qg.repeatable)
-    .flatMap((qg) => qg.question)
-    .map((q) => q.id);
-  const nonRepeatValues = answer.filter(
-    (x) => !intersection([x.question], repeatQuestions).length
-  );
-  const repeatValues = answer.filter(
-    (x) => intersection([x.question], repeatQuestions).length
-  );
-
-  // Group by repeat_index
-  const grouped = groupBy(repeatValues, "repeat_index");
-  // Sort groups by original repeat_index
-  const sortedGroups = orderBy(Object.entries(grouped), ([index]) =>
-    Number(index)
-  );
-  const reorderedRepeatIndex = repeatQuestions
-    .map((id) => {
-      // Reassign repeat_index sequentially
-      const reorderedData = sortedGroups.flatMap(([, group], newIndex) =>
-        group
-          .filter((x) => x.question === id)
-          .map((v) => ({
-            ...v,
-            repeat_index:
-              !isNumeric(v.repeat_index) && v?.repeat_index_string
-                ? v.repeat_index_string
-                : newIndex,
-          }))
-      );
-      return reorderedData;
-    })
-    .flatMap((x) => x);
-  return nonRepeatValues.concat(reorderedRepeatIndex);
-  // end  of reorder repeat index
-};
 
 const WebformPage = ({
   webformRef,
@@ -302,7 +262,7 @@ const WebformPage = ({
       );
       const validations =
         computedValidations
-          .find((cv) => cv.form_id === formId)
+          ?.find((cv) => cv.form_id === formId)
           ?.validations?.map((v) => {
             // also remap the question group if not available for member/isco type
             const findGroup = formValue?.question_group?.find(
