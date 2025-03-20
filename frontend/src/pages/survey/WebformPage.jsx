@@ -45,6 +45,22 @@ const LockedCheckbox = ({ onChange, isLocked, text }) => (
   </>
 );
 
+const getAllKeyWithNA = ({ values, text }) => {
+  const allKeyWithNA = Object.keys(values)
+    .filter((key) => key.includes("dataNA_"))
+    .map((key) => {
+      const elCheckUnavailable = document.getElementById(key);
+      const isChecked = elCheckUnavailable?.checked;
+      const keySplit = key.split("_");
+      const qidWithRepeatIndex = keySplit[1];
+      return {
+        [qidWithRepeatIndex]: isChecked ? text.inputDataUnavailable : null,
+      };
+    })
+    .reduce((acc, curr) => ({ ...acc, ...curr }), {});
+  return allKeyWithNA;
+};
+
 const WebformPage = ({
   webformRef,
   formId,
@@ -831,18 +847,7 @@ const WebformPage = ({
 
   const onChange = ({ current, values }) => {
     // handle data unavailable checkbox - comment
-    const allKeyWithNA = Object.keys(values)
-      .filter((key) => key.includes("dataNA_"))
-      .map((key) => {
-        const elCheckUnavailable = document.getElementById(key);
-        const isChecked = elCheckUnavailable?.checked;
-        const keySplit = key.split("_");
-        const qidWithRepeatIndex = keySplit[1];
-        return {
-          [qidWithRepeatIndex]: isChecked ? text.inputDataUnavailable : null,
-        };
-      })
-      .reduce((acc, curr) => ({ ...acc, ...curr }), {});
+    const allKeyWithNA = getAllKeyWithNA({ values, text });
     const dataUnavailable = Object.keys(current)
       .filter((key) => key.includes("dataNA_"))
       .map((key) => {
@@ -1101,9 +1106,11 @@ const WebformPage = ({
   };
 
   const onFinishShowWarning = (values) => {
+    // handle data unavailable checkbox - comment
+    const allKeyWithNA = getAllKeyWithNA({ values, text });
     // directly submit without showing warning modal
     setIsSubmitting(true);
-    const transformedAnswerValues = transformValues(values);
+    const transformedAnswerValues = transformValues(values, allKeyWithNA);
     setAnswer(transformedAnswerValues);
     setIsForce(false);
     setIsSave(false);
@@ -1114,9 +1121,10 @@ const WebformPage = ({
   };
 
   const onCompleteFailed = ({ values }) => {
+    const allKeyWithNA = getAllKeyWithNA({ values, text });
     // submit with showing warning modal
     setIsSubmitting(true);
-    const transformedAnswerValues = transformValues(values);
+    const transformedAnswerValues = transformValues(values, allKeyWithNA);
     setAnswer(transformedAnswerValues);
     // force submit
     setIsSave(false);
