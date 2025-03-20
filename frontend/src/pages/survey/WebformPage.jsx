@@ -1001,7 +1001,11 @@ const WebformPage = ({
           if (prevAnswer) {
             return {
               ...prevAnswer,
-              value: finalFormValues?.[key] || null,
+              value:
+                typeof finalFormValues?.[key] !== "undefined" &&
+                finalFormValues?.[key] !== null
+                  ? finalFormValues[key]
+                  : null,
             };
           }
           return false;
