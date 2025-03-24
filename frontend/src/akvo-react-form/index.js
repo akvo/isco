@@ -382,18 +382,18 @@ export const Webform = ({
           let ixs = [ix];
           if (x?.repeatable) {
             let iter = x?.repeat;
-            let suffix = "";
-            // handle leading_question
-            if (isLeadingQuestion) {
-              // handle ids naming for leading_question
-              const repeatSuffix =
-                iter && x?.repeats?.length ? x.repeats[iter - 1] : "";
-              suffix = iter ? `-${repeatSuffix}` : "";
-            } else {
-              // normal repeat group
-              suffix = iter > 1 ? `-${iter - 1}` : "";
-            }
             do {
+              // handle leading_question
+              let suffix = "";
+              if (isLeadingQuestion) {
+                // handle ids naming for leading_question
+                const repeatSuffix =
+                  iter && x?.repeats?.length ? x.repeats[iter - 1] : "";
+                suffix = iter ? `-${repeatSuffix}` : "";
+              } else {
+                // normal repeat group
+                suffix = iter > 1 ? `-${iter - 1}` : "";
+              }
               const rids = x.question.map((q) => `${q.id}${suffix}`);
               ids = [...ids, ...rids];
               ixs = [...ixs, `${ix}-${iter}`];
@@ -466,22 +466,35 @@ export const Webform = ({
       const q = initialValue.filter((i) =>
         qg.question.map((q) => q.id).includes(i.question)
       );
-      const rep = maxBy(q, "repeatIndex")?.repeatIndex;
+      const rep = maxBy(q, "repeat_index")?.repeat_index;
       // handle not leading question when load initial value
       if (!qg?.leading_question && rep) {
         return { ...qg, repeat: rep + 1, repeats: range(rep + 1) };
       }
       // handle leading question when load initial value
       if (qg?.leading_question && rep) {
+        // load leading question with initial value inside repeat group
         const findLeadingAnswer = initialValue?.find(
           (v) => v.question === qg.leading_question
         );
         return {
           ...qg,
-          repeat: rep + 1,
+          repeat: findLeadingAnswer?.value?.length || 1,
           repeats: findLeadingAnswer?.value || range(rep + 1),
         };
       }
+      if (qg?.leading_question && !rep) {
+        // load leading question without initial value inside repeat group
+        const findLeadingAnswer = initialValue?.find(
+          (v) => v.question === qg.leading_question
+        );
+        return {
+          ...qg,
+          repeat: 1,
+          repeats: findLeadingAnswer?.value || range(rep + 1),
+        };
+      }
+      // eol handle leading question when load initial value
       return qg;
     });
     setUpdatedQuestionGroup(groupRepeats);

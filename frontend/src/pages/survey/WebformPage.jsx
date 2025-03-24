@@ -4,7 +4,7 @@ import { Spin, Button, Checkbox, Modal, Space, Alert } from "antd";
 import { Webform } from "../../akvo-react-form";
 import { api, store } from "../../lib";
 import { useNotification, useIdle } from "../../util";
-import { intersection, isEmpty, groupBy } from "lodash";
+import { intersection, isEmpty, groupBy, uniq } from "lodash";
 import ErrorPage from "../error/ErrorPage";
 import {
   CommentField,
@@ -736,16 +736,39 @@ const WebformPage = ({
       values,
       webformRef?.current?.getFieldsValue()
     );
+
+    // Remap the coreMandatoryQuestionIds with available question ids to support dependent question
+    const allAvailableQIds = uniq(
+      Object.entries(webformRef?.current?.getFieldsValue() || {})
+        .map(([key]) => {
+          const [qid] = key.split("-");
+          return isNumeric(qid) ? parseInt(qid) : false;
+        })
+        .filter((x) => x)
+    );
+    const modifiedCoreMandatoryQIds = coreMandatoryQuestionIds
+      .map((cm) => {
+        const exists = cm.question_ids.some((value) =>
+          allAvailableQIds.includes(value)
+        );
+        if (exists) {
+          return cm;
+        }
+        return cm; // return false to filter coreMandatoryQuestionIds with available question ids
+      })
+      .filter((x) => x);
+    // EOL Remap the coreMandatoryQuestionIds with available question ids to support dependent question
+
     // begin check core mandatory answered
     let checkCoreMandatoryQuestionFailed = false;
-    if (coreMandatoryQuestionIds.length) {
+    if (modifiedCoreMandatoryQIds.length) {
       // check if core mandatory answered
       const allAnswers = answerValues;
       answerValues = groupRepeatableAnswerValues(answerValues);
       const checkError = Object.keys(answerValues)
         .map((k) => {
           const resValues = answerValues[k];
-          return coreMandatoryQuestionIds.map((v) => {
+          return modifiedCoreMandatoryQIds.map((v) => {
             if (!k.includes(String(v.group_id))) {
               return false;
             }
@@ -760,7 +783,7 @@ const WebformPage = ({
         .flat()
         .filter((x) => x);
       // overall
-      const allMandatoryQids = coreMandatoryQuestionIds.flatMap(
+      const allMandatoryQids = modifiedCoreMandatoryQIds.flatMap(
         (q) => q.question_ids
       );
       const allAnswerQids = allAnswers.map((a) => a.question);
@@ -831,6 +854,7 @@ const WebformPage = ({
           return {
             question: qid,
             value: value,
+            repeatIndex: repeatIndex,
             repeat_index: repeatIndex,
             repeat_index_string: repeatIndexString,
             comment: dataUnavailable?.[key]
