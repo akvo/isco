@@ -387,6 +387,7 @@ def add(
         published=published, answers=answers, submitted=submitted
     )
     # end check core mandatory question answered
+
     # validate by computed validations
     # TODO:: Enable this
     # check_computed_validation(
@@ -666,8 +667,9 @@ def update_by_id(
         published=published, answers=answers, submitted=submitted
     )
     # end check core mandatory question answered
+
     # validate by computed validations
-    # TODO:: Enablel this
+    # TODO:: Enable this
     # check_computed_validation(
     #     form_id=data.form, answers=answers, submitted=submitted,
     #     published=published)
