@@ -168,21 +168,21 @@ const DataCleaningWebform = ({
         .then((res) => {
           const { data, status } = res;
           const { form, initial_values } = data;
+          // handle leading question
+          const questionWithLeadingQuestionGroup = form.question_group
+            .flatMap((qg) => {
+              const question = qg.question.map((q) => ({
+                ...q,
+                lead_by_question: qg?.leading_question,
+              }));
+              return question;
+            })
+            ?.filter((q) => q?.lead_by_question);
           if (status === 200) {
             let commentValues = {};
             // load initial form value from saved data
             if (initial_values && isEmpty(answer)) {
               setSavedData(initial_values);
-              // handle leading question
-              const questionWithLeadingQuestionGroup = form.question_group
-                .flatMap((qg) => {
-                  const question = qg.question.map((q) => ({
-                    ...q,
-                    lead_by_question: qg?.leading_question,
-                  }));
-                  return question;
-                })
-                ?.filter((q) => q?.lead_by_question);
               const answers = initial_values.answer.map((a) => {
                 const { question, repeat_index, comment } = a;
                 // handle leading question
@@ -200,7 +200,9 @@ const DataCleaningWebform = ({
                 }
                 // eol handle leading question
                 const commentQid =
-                  repeat_index > 0 ? `${question}-${repeat_index}` : question;
+                  repeat_index > 0 || repeatIndexString
+                    ? `${question}-${repeatIndexString}`
+                    : question;
                 commentValues = {
                   ...commentValues,
                   [commentQid]: comment,
@@ -225,8 +227,24 @@ const DataCleaningWebform = ({
               setInitialAnswers(answer);
               answer.forEach((a) => {
                 const { question, repeat_index, comment } = a;
+                // handle leading question
+                let repeatIndexString =
+                  repeat_index > 0 ? String(repeat_index) : null;
+                const findQuestion = questionWithLeadingQuestionGroup.find(
+                  (q) => q.id === question
+                );
+                if (findQuestion?.lead_by_question) {
+                  const leadingAnswer = initial_values.answer.find(
+                    (a) => a.question === findQuestion.lead_by_question
+                  )?.value;
+                  repeatIndexString =
+                    leadingAnswer?.[repeat_index] || repeat_index;
+                }
+                // eol handle leading question
                 const commentQid =
-                  repeat_index > 0 ? `${question}-${repeat_index}` : question;
+                  repeat_index > 0 || repeatIndexString
+                    ? `${question}-${repeatIndexString}`
+                    : question;
                 commentValues = {
                   ...commentValues,
                   [commentQid]: comment,
@@ -312,11 +330,20 @@ const DataCleaningWebform = ({
   // set comment to answer value
   useEffect(() => {
     if (!isEmpty(comment) && answer.length) {
-      const qid = parseInt(Object.keys(comment)[0]);
-      const findAnswer = answer.find((x) => parseInt(x.question) === qid);
-      if (findAnswer) {
+      const commentKey = Object.keys(comment)[0];
+      const [commentQid, repeatIndex] = commentKey.split("-");
+      // check if comment key available in answer
+      const checkIfAvailable = answer.find((a) =>
+        repeatIndex
+          ? a.question === parseInt(commentQid) &&
+            (String(a.repeat_index) === repeatIndex ||
+              String(a.repeat_index_string) === repeatIndex)
+          : a.question === parseInt(commentQid)
+      );
+      let updatedAnswerWithComment = answer;
+      if (checkIfAvailable) {
         // update answer
-        const updatedAnswer = answer.map((a) => {
+        updatedAnswerWithComment = updatedAnswerWithComment.map((a) => {
           const qid =
             a.repeat_index > 0 || a.repeat_index_string
               ? `${a.question}-${a.repeat_index_string}`
@@ -329,34 +356,43 @@ const DataCleaningWebform = ({
           }
           return a;
         });
-        setAnswer(updatedAnswer);
-        setComment({});
+      } else {
+        updatedAnswerWithComment = [
+          ...updatedAnswerWithComment,
+          {
+            comment: comment?.[commentKey] || null,
+            question: parseInt(commentQid),
+            repeatIndex: isNumeric(repeatIndex) ? repeatIndex : null,
+            repeat_index: isNumeric(repeatIndex) ? repeatIndex : null,
+            repeat_index_string: repeatIndex,
+            value: null,
+          },
+        ];
       }
+      setAnswer(updatedAnswerWithComment);
+      setComment({});
     }
   }, [comment, answer]);
 
   // delete comment
   useEffect(() => {
     if (deletedComment && answer.length) {
-      const findAnswer = answer.find((x) => x.question === deletedComment);
-      if (findAnswer) {
-        // update answer
-        const updatedAnswer = answer.map((a) => {
-          const qid =
-            a.repeat_index > 0 || a.repeat_index_string
-              ? `${a.question}-${a.repeat_index_string}`
-              : a.question;
-          if (String(deletedComment) === String(qid)) {
-            return {
-              ...a,
-              comment: null,
-            };
-          }
-          return a;
-        });
-        setAnswer(updatedAnswer);
-        setDeletedComment(null);
-      }
+      // update answer
+      const updatedAnswerWithComment = answer.map((a) => {
+        const qid =
+          a.repeat_index > 0 || a.repeat_index_string
+            ? `${a.question}-${a.repeat_index_string}`
+            : a.question;
+        if (String(deletedComment) === String(qid)) {
+          return {
+            ...a,
+            comment: null,
+          };
+        }
+        return a;
+      });
+      setAnswer(updatedAnswerWithComment);
+      setDeletedComment(null);
     }
   }, [deletedComment, answer]);
 
@@ -496,7 +532,13 @@ const DataCleaningWebform = ({
         );
         // value
         const value = values?.[key] || values?.[key] === 0 ? values[key] : null;
-        if (value || value === 0 || mergeDataUnavailable?.[key]) {
+        // check if has value || has dataNA || has comment
+        if (
+          value ||
+          value === 0 ||
+          mergeDataUnavailable?.[key] ||
+          findAnswer?.comment
+        ) {
           return {
             question: qid,
             value: value,

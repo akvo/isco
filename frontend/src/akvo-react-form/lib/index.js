@@ -3,6 +3,7 @@ import ReactDOMServer from "react-dom/server";
 import ReactHtmlParser from "react-html-parser";
 import { intersection, orderBy } from "lodash";
 import * as locale from "locale-codes";
+import { uiText as parentUIText } from "../../static";
 
 const getDependencyAncestors = (
   questions,
@@ -396,4 +397,34 @@ export const checkHideFieldsForRepeatInQuestionLevel = ({
     return hideFields?.length === repeats?.length;
   }
   return false;
+};
+
+export const containsUnavailableText = (str) => {
+  if (!str) {
+    return false;
+  }
+
+  const dataNaTexts = [
+    parentUIText.en.inputDataUnavailable,
+    parentUIText.de.inputDataUnavailable,
+  ].map((text) => text.replace(/\s+/g, "").toLowerCase());
+
+  const unavailableTexts = [
+    "dataunavailable",
+    "/na",
+    "n/a",
+    "datennichtverfügbar",
+    "keinedaten",
+    "k.A.",
+    "nichtverfügbar",
+    "n.v.",
+    "N/V",
+    ...dataNaTexts,
+  ];
+
+  // Remove all spaces before checking
+  const normalizedStr = str.replace(/\s+/g, "").toLowerCase();
+  return unavailableTexts.some((term) =>
+    normalizedStr.includes(term.toLowerCase())
+  );
 };

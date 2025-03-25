@@ -7,6 +7,7 @@ import {
   renderQuestionLabelForErrorMessage,
   validateDisableDependencyQuestionInRepeatQuestionLevel,
   checkHideFieldsForRepeatInQuestionLevel,
+  containsUnavailableText,
 } from "../lib";
 
 const TextField = ({
@@ -47,13 +48,21 @@ const TextField = ({
         const qid = String(id).split("-")?.[0];
         if (String(arfQid) === String(id)) {
           const commentField = extraContent.querySelector(`#comment-${qid}`);
-          if (commentField?.value && !currentValue) {
+          const commentFieldValue = commentField?.value
+            ? commentField.value
+            : null;
+          if (
+            rule?.allowNA &&
+            commentFieldValue &&
+            containsUnavailableText(commentFieldValue) &&
+            isNaN(currentValue)
+          ) {
             setNaChecked(true);
           }
         }
       }, 500);
     }
-  }, [id, currentValue, coreMandatory]);
+  }, [id, currentValue, coreMandatory, rule?.allowNA]);
 
   // handle the dependency for show_repeat_in_question_level
   const disableFieldByDependency =

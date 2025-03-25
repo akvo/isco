@@ -679,21 +679,46 @@ const WebformPage = ({
   // set comment to answer value
   useEffect(() => {
     if (!isEmpty(comment) && answer.length) {
+      const commentKey = Object.keys(comment)[0];
+      const [commentQid, repeatIndex] = commentKey.split("-");
+      // check if comment key available in answer
+      const checkIfAvailable = answer.find((a) =>
+        repeatIndex
+          ? a.question === parseInt(commentQid) &&
+            (String(a.repeat_index) === repeatIndex ||
+              String(a.repeat_index_string) === repeatIndex)
+          : a.question === parseInt(commentQid)
+      );
       // update answer
-      const updatedAnswer = answer.map((a) => {
-        const qid =
-          a.repeat_index > 0 || a.repeat_index_string
-            ? `${a.question}-${a.repeat_index_string}`
-            : a.question;
-        if (comment?.[qid] || comment[qid] === "") {
-          return {
-            ...a,
-            comment: comment[qid] === "" ? null : comment[qid],
-          };
-        }
-        return a;
-      });
-      setAnswer(updatedAnswer);
+      let updatedAnswerWithComment = answer;
+      if (!isEmpty(checkIfAvailable)) {
+        updatedAnswerWithComment = updatedAnswerWithComment.map((a) => {
+          const qid =
+            a.repeat_index > 0 || a.repeat_index_string
+              ? `${a.question}-${a.repeat_index_string}`
+              : a.question;
+          if (comment?.[qid] || comment[qid] === "") {
+            return {
+              ...a,
+              comment: comment[qid] === "" ? null : comment[qid],
+            };
+          }
+          return a;
+        });
+      } else {
+        updatedAnswerWithComment = [
+          ...updatedAnswerWithComment,
+          {
+            comment: comment?.[commentKey] || null,
+            question: parseInt(commentQid),
+            repeatIndex: isNumeric(repeatIndex) ? repeatIndex : null,
+            repeat_index: isNumeric(repeatIndex) ? repeatIndex : null,
+            repeat_index_string: repeatIndex,
+            value: null,
+          },
+        ];
+      }
+      setAnswer(updatedAnswerWithComment);
       setComment({});
     }
   }, [comment, answer]);
@@ -702,7 +727,7 @@ const WebformPage = ({
   useEffect(() => {
     if (deletedComment && answer.length) {
       // update answer
-      const updatedAnswer = answer.map((a) => {
+      const updatedAnswerWithComment = answer.map((a) => {
         const qid =
           a.repeat_index > 0 || a.repeat_index_string
             ? `${a.question}-${a.repeat_index_string}`
@@ -715,7 +740,7 @@ const WebformPage = ({
         }
         return a;
       });
-      setAnswer(updatedAnswer);
+      setAnswer(updatedAnswerWithComment);
       setDeletedComment(null);
     }
   }, [deletedComment, answer]);
@@ -850,7 +875,13 @@ const WebformPage = ({
         );
         // value
         const value = values?.[key] || values?.[key] === 0 ? values[key] : null;
-        if (value || value === 0 || dataUnavailable?.[key]) {
+        // check if has value || has dataNA || has comment
+        if (
+          value ||
+          value === 0 ||
+          dataUnavailable?.[key] ||
+          findAnswer?.comment
+        ) {
           return {
             question: qid,
             value: value,
