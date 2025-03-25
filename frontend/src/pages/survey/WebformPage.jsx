@@ -682,11 +682,12 @@ const WebformPage = ({
       const commentKey = Object.keys(comment)[0];
       const [commentQid, repeatIndex] = commentKey.split("-");
       // check if comment key available in answer
-      const checkIfAvailable = answer.find(
-        (a) =>
-          a.question === parseInt(commentQid) &&
-          (String(a.repeat_index) === repeatIndex ||
-            String(a.repeat_index_string) === repeatIndex)
+      const checkIfAvailable = answer.find((a) =>
+        repeatIndex
+          ? a.question === parseInt(commentQid) &&
+            (String(a.repeat_index) === repeatIndex ||
+              String(a.repeat_index_string) === repeatIndex)
+          : a.question === parseInt(commentQid)
       );
       // update answer
       let updatedAnswerWithComment = answer;
@@ -874,7 +875,13 @@ const WebformPage = ({
         );
         // value
         const value = values?.[key] || values?.[key] === 0 ? values[key] : null;
-        if (value || value === 0 || dataUnavailable?.[key]) {
+        // check if has value || has dataNA || has comment
+        if (
+          value ||
+          value === 0 ||
+          dataUnavailable?.[key] ||
+          findAnswer?.comment
+        ) {
           return {
             question: qid,
             value: value,
