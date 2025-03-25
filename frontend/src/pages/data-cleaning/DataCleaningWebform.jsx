@@ -9,6 +9,7 @@ import { CommentField } from "../../components";
 import { Webform } from "../../akvo-react-form";
 import { uiText } from "../../static";
 import { isNumeric, reorderAnswersRepeatIndex } from "../../lib/util";
+import { containsUnavailableText } from "../../akvo-react-form/lib";
 
 const checkDependentValue = (formValue, answer) => {
   const questions = formValue.question_group.flatMap((qg) => qg.question);
@@ -138,12 +139,22 @@ const DataCleaningWebform = ({
           const buttons = el?.getElementsByTagName("button");
           const delBtn = buttons?.[0];
           const addBtn = buttons?.[1];
+
+          // check dataNA
+          const key = `dataNA_${arfQid}`;
+          const elCheckUnavailable = document.getElementById(key);
+          const isChecked = elCheckUnavailable?.checked;
+
           if (isComment && delBtn) {
             delBtn.style.display = "initial";
           }
           if (isComment && addBtn) {
             addBtn.style.display = "none";
           }
+          if (isChecked || containsUnavailableText(isComment)) {
+            delBtn.style.display = "none"; // hide delete button dataNA
+          }
+
           // handle text area value
           const textArea = el.getElementsByTagName("textarea");
           if (isComment && textArea?.[0]) {
@@ -437,6 +448,28 @@ const DataCleaningWebform = ({
         const isChecked = elCheckUnavailable?.checked;
         const keySplit = key.split("_");
         const qidWithRepeatIndex = keySplit[1];
+        const [qid, repeatIndex] = qidWithRepeatIndex.split("-");
+        // find comment
+        const checkIfAvailable = answer.find((a) =>
+          repeatIndex
+            ? a.question === parseInt(qid) &&
+              (String(a.repeat_index) === repeatIndex ||
+                String(a.repeat_index_string) === repeatIndex)
+            : a.question === parseInt(qid)
+        );
+        if (checkIfAvailable) {
+          let currCommentValue = checkIfAvailable?.comment || null;
+          if (
+            currCommentValue &&
+            containsUnavailableText(currCommentValue) === false
+          ) {
+            currCommentValue = `${text.inputDataUnavailable} - ${currCommentValue}`;
+          }
+          return {
+            [qidWithRepeatIndex]: isChecked ? currCommentValue : null,
+          };
+        }
+        //
         return {
           [qidWithRepeatIndex]: isChecked ? text.inputDataUnavailable : null,
         };
@@ -468,7 +501,7 @@ const DataCleaningWebform = ({
             addCommentButton.style.display = "none";
           }
           if (deleteCommentButton) {
-            deleteCommentButton.style.display = "initial";
+            deleteCommentButton.style.display = "none"; // hide delete for dataNA
           }
           if (commentField) {
             commentField.style.display = "initial";
@@ -511,6 +544,10 @@ const DataCleaningWebform = ({
 
     const transformValues = Object.keys(filteredValues)
       .map((key) => {
+        // checkDataNA
+        const elCheckUnavailable = document.getElementById(`dataNA_${key}`);
+        const isChecked = elCheckUnavailable?.checked;
+
         let question = key;
         let repeatIndex = 0;
         let repeatIndexString = null;
@@ -539,16 +576,24 @@ const DataCleaningWebform = ({
           mergeDataUnavailable?.[key] ||
           findAnswer?.comment
         ) {
+          let commentValue = findAnswer
+            ? findAnswer?.comment
+            : mergeDataUnavailable?.[key]
+            ? mergeDataUnavailable[key] // using key because key is questionId-with repeat index
+            : null;
+          if (
+            isChecked &&
+            commentValue &&
+            containsUnavailableText(commentValue) === false
+          ) {
+            commentValue = `${text.inputDataUnavailable} - ${commentValue}`;
+          }
           return {
             question: qid,
             value: value,
             repeat_index: repeatIndex,
             repeat_index_string: repeatIndexString,
-            comment: mergeDataUnavailable?.[key]
-              ? mergeDataUnavailable[key] // using key because key is questionId-with repeat index
-              : findAnswer
-              ? findAnswer?.comment
-              : null,
+            comment: commentValue,
           };
         }
         return false;
@@ -581,8 +626,20 @@ const DataCleaningWebform = ({
     const value = curr.target.value;
     const elParent = curr.currentTarget.parentNode.parentNode.parentNode;
     const arfQid = elParent.getAttribute("arf_qid");
+
+    // check if the dataNA checked
+    const key = `dataNA_${arfQid}`;
+    const elCheckUnavailable = document.getElementById(key);
+    const isChecked = elCheckUnavailable?.checked;
+
+    const defaultText = text.inputDataUnavailable;
+    let newValue = value;
+    if (isChecked && containsUnavailableText(newValue) === false) {
+      newValue = `${defaultText} - ${newValue}`;
+    }
+
     setComment({
-      [arfQid]: value,
+      [arfQid]: newValue,
     });
   };
 

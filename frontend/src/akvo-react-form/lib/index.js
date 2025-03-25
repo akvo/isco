@@ -401,7 +401,7 @@ export const checkHideFieldsForRepeatInQuestionLevel = ({
 
 export const containsUnavailableText = (str) => {
   if (!str) {
-    return false;
+    return null;
   }
 
   const dataNaTexts = [
