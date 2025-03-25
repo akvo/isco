@@ -5,7 +5,10 @@ import { Extra, FieldLabel, RepeatTableView } from "../support";
 import GlobalStore from "../lib/store";
 import { InputFieldIcon } from "../lib/svgIcons";
 import { DataUnavailableField } from "../components";
-import { renderQuestionLabelForErrorMessage } from "../lib";
+import {
+  renderQuestionLabelForErrorMessage,
+  containsUnavailableText,
+} from "../lib";
 import {
   validateDisableDependencyQuestionInRepeatQuestionLevel,
   checkHideFieldsForRepeatInQuestionLevel,
@@ -75,13 +78,21 @@ const InputField = ({
         const qid = String(id).split("-")?.[0];
         if (String(arfQid) === String(id)) {
           const commentField = extraContent.querySelector(`#comment-${qid}`);
-          if (commentField?.value && !currentValue) {
+          const commentFieldValue = commentField?.value
+            ? commentField.value
+            : null;
+          if (
+            rule?.allowNA &&
+            commentFieldValue &&
+            containsUnavailableText(commentFieldValue) &&
+            isNaN(currentValue)
+          ) {
             setNaChecked(true);
           }
         }
       }, 500);
     }
-  }, [id, currentValue, coreMandatory]);
+  }, [id, currentValue, coreMandatory, rule?.allowNA]);
 
   const onChange = useCallback(
     (e) => {

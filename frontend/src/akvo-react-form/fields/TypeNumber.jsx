@@ -14,13 +14,8 @@ import {
   renderQuestionLabelForErrorMessage,
   validateDisableDependencyQuestionInRepeatQuestionLevel,
   checkHideFieldsForRepeatInQuestionLevel,
+  containsUnavailableText,
 } from "../lib";
-import { uiText as parentUIText } from "../../static";
-
-const dataNaTexts = [
-  parentUIText.en.inputDataUnavailable,
-  parentUIText.de.inputDataUnavailable,
-];
 
 const NumberField = ({
   id,
@@ -92,17 +87,21 @@ const NumberField = ({
         const qid = String(id).split("-")?.[0];
         if (String(arfQid) === String(id)) {
           const commentField = extraContent.querySelector(`#comment-${qid}`);
+          const commentFieldValue = commentField?.value
+            ? commentField.value
+            : null;
           if (
-            commentField?.value &&
-            isNaN(currentValue) &&
-            dataNaTexts.includes(commentField?.value)
+            rule?.allowNA &&
+            commentFieldValue &&
+            containsUnavailableText(commentFieldValue) &&
+            isNaN(currentValue)
           ) {
             setNaChecked(true);
           }
         }
       }, 500);
     }
-  }, [id, currentValue, coreMandatory]);
+  }, [id, currentValue, coreMandatory, rule?.allowNA]);
 
   const onChange = useCallback(
     (value, fieldId) => {
