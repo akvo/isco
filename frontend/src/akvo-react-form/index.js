@@ -358,7 +358,18 @@ export const Webform = ({
         });
       // filter form values
       const values = filterFormValues(form.getFieldsValue(), forms);
-      const errors = form.getFieldsError();
+
+      // Handle dataNA_qid checkbox true marked as errors
+      const errors = form.getFieldsError()?.filter((e) => {
+        const qid = String(e.name[0]);
+        const dataNAfield = `dataNA_${qid}`;
+        if (values[dataNAfield] || qid.includes("dataNA")) {
+          // if dataNA checked remove qid from error list
+          return false;
+        }
+        return e;
+      });
+
       const data = Object.keys(values).map((k) => ({
         id: k.toString(),
         value: values[k],

@@ -209,7 +209,7 @@ const AutoField = ({
       <Form.Item
         className="arf-field-child"
         key={keyform}
-        name={id}
+        name={disableFieldByDependency ? "" : id}
         rules={rules}
         required={required}
       >

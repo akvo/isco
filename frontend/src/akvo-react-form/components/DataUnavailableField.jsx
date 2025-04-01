@@ -11,9 +11,13 @@ const DataUnavailableField = ({
   naChecked,
   setNaChecked,
   show_repeat_in_question_level,
+  disabled = false,
 }) => {
+  const form = Form.useFormInstance();
   const { language } = store.useState((s) => s);
   const { active: activeLang } = language;
+
+  const fieldName = `dataNA_${id}`;
 
   const text = useMemo(() => {
     return uiText[activeLang];
@@ -23,8 +27,15 @@ const DataUnavailableField = ({
     return "";
   }
 
+  form.setFieldValue(fieldName, naChecked);
+
   return (
-    <Form.Item key={`dataNA_${keyform}`} name={`dataNA_${id}`} noStyle>
+    <Form.Item
+      key={`dataNA_${keyform}`}
+      name={fieldName}
+      valuePropName="checked"
+      noStyle
+    >
       <Checkbox
         id={`dataNA_${id}`}
         checked={naChecked}
@@ -32,6 +43,7 @@ const DataUnavailableField = ({
           setNaChecked(e.target.checked);
         }}
         style={show_repeat_in_question_level ? {} : { marginTop: "8px" }}
+        disabled={disabled}
       >
         {text.inputDataUnavailable}
       </Checkbox>
