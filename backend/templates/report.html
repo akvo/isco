@@ -155,7 +155,7 @@
             </thead>
             {% endif %}
             <tbody>
-              {% for a in r.answers %} {% if a.value %}
+              {% for a in r.answers %} {% if a.value is not none or a.comment %}
               <tr>
                 <td style="page-break-inside: avoid; word-break: break-word">
                   <div style="font-weight: 500">
@@ -190,7 +190,9 @@
                       {% endfor %}
                     </ul>
                     {% else %}
-                    <div style="margin-left: 20px">{{ a.value }}</div>
+                    <div style="margin-left: 20px">
+                      {{ '-' if a.value is none else a.value }}
+                    </div>
                     {% endif %}
                   </div>
                   {% if a.comment %}

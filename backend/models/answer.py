@@ -135,9 +135,9 @@ class Answer(Base):
             val = self.value
             if q.rule:
                 if q.rule.get("allow_decimal"):
-                    val = float(val) if val or val == 0 else None
+                    val = float(val) if val is not None else None
             else:
-                val = int(val) if val or val == 0 else None
+                val = int(val) if val or val is not None else None
             answer.update({"value": val})
         if type == QuestionType.option:
             answer.update({"value": self.options[0]})
@@ -174,9 +174,9 @@ class Answer(Base):
             val = self.value
             if q.rule:
                 if q.rule.get("allow_decimal"):
-                    val = float(val) if val or val == 0 else None
+                    val = float(val) if val is not None else None
             else:
-                val = int(val) if val or val == 0 else None
+                val = int(val) if val or val is not None else None
             answer.update({"value": val})
         if type == QuestionType.option:
             answer.update({"value": self.options[0]})
@@ -207,9 +207,9 @@ class Answer(Base):
             val = self.value
             if q.rule:
                 if q.rule.get("allow_decimal"):
-                    val = float(val) if val or val == 0 else None
+                    val = float(val) if val is not None else None
             else:
-                val = int(val) if val or val == 0 else None
+                val = int(val) if val or val is not None else None
             answer.update({"value": val})
         if type == QuestionType.option:
             answer.update({"value": self.options[0]})
@@ -245,9 +245,9 @@ class Answer(Base):
             answer = self.value
             if q.rule:
                 if q.rule.get("allow_decimal"):
-                    answer = float(answer) if answer else None
+                    answer = float(answer) if answer is not None else None
             else:
-                answer = int(answer) if answer else None
+                answer = int(answer) if answer is not None else None
             return answer
         if type == QuestionType.option:
             return self.options[0] if self.options else None
@@ -278,9 +278,9 @@ class Answer(Base):
             answer = self.value
             if q.rule:
                 if q.rule.get("allow_decimal"):
-                    answer = float(answer) if answer else None
+                    answer = float(answer) if answer is not None else None
             else:
-                answer = int(answer) if answer else None
+                answer = int(answer) if answer is not None else None
         if type == QuestionType.option:
             answer = self.options[0] if self.options else None
         if type in [
@@ -314,9 +314,9 @@ class Answer(Base):
             answer = self.value
             if q.rule:
                 if q.rule.get("allow_decimal"):
-                    answer = float(answer) if answer else None
+                    answer = float(answer) if answer is not None else None
             else:
-                answer = int(answer) if answer else None
+                answer = int(answer) if answer is not None else None
         if q.type == QuestionType.option:
             answer = self.options[0] if self.options else None
         if q.type in [
@@ -343,9 +343,9 @@ class Answer(Base):
             answer = self.value
             if q.rule:
                 if q.rule.get("allow_decimal"):
-                    answer = float(answer) if answer else None
+                    answer = float(answer) if answer is not None else None
             else:
-                answer = int(answer) if answer else None
+                answer = int(answer) if answer is not None else None
             if q.repeating_objects:
                 unit = list(
                     filter(lambda x: x["field"] == "unit", q.repeating_objects)
@@ -354,7 +354,7 @@ class Answer(Base):
                     unit = unit[0].get("value")
                 else:
                     unit = ""
-                answer = f"{answer} {unit}" if answer else None
+                answer = f"{answer} {unit}" if answer is not None else None
         if q.type == QuestionType.option:
             answer = self.options[0] if self.options else None
         if q.type in [
