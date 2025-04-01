@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Form, Checkbox } from "antd";
 import uiText from "../../static/ui-text";
 import { store } from "../../lib";
@@ -23,11 +23,13 @@ const DataUnavailableField = ({
     return uiText[activeLang];
   }, [activeLang]);
 
+  useEffect(() => {
+    form.setFieldValue(fieldName, naChecked);
+  }, [fieldName, naChecked, form]);
+
   if (!allowNA || coreMandatory) {
     return "";
   }
-
-  form.setFieldValue(fieldName, naChecked);
 
   return (
     <Form.Item

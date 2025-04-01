@@ -593,18 +593,21 @@ export const Webform = ({
   const firstGroup = take(showGroup);
   const lastGroup = takeRight(showGroup);
 
-  const SubmitButton = ({ ...props }) => (
-    <Button
-      key="submit"
-      type="primary"
-      htmlType="submit"
-      onClick={() => form.submit()}
-      {...submitButtonSetting}
-      {...props}
-    >
-      {uiText.submit}
-    </Button>
-  );
+  const enableSubmitButtonWhenAllGroupsCompleted = useMemo(() => {
+    if (!formsMemo?.question_group?.length) {
+      return false;
+    }
+    const appearGroups = formsMemo.question_group
+      .filter((qg, qgi) => {
+        if (qg?.repeatable) {
+          return showGroup.includes(qgi) && qg?.repeats?.length;
+        }
+        return showGroup.includes(qgi);
+      })
+      .map((_, qgi) => qgi);
+    const completeGroupWithoutRepeat = completeGroup.filter((cg) => !isNaN(cg));
+    return completeGroupWithoutRepeat.length === appearGroups.length;
+  }, [completeGroup, formsMemo?.question_group, showGroup]);
 
   const PrevNextButton = () => {
     return formsMemo?.question_group.map((_, key) => {
@@ -660,6 +663,24 @@ export const Webform = ({
     const lastShownGroup = last(showGroup);
     return activeGroup === lastShownGroup;
   }, [activeGroup, showGroup]);
+
+  const SubmitButton = ({ ...props }) => (
+    <Button
+      key="submit"
+      type="primary"
+      htmlType="submit"
+      onClick={() => form.submit()}
+      {...submitButtonSetting}
+      {...props}
+      disabled={
+        isLastGroup
+          ? submitButtonSetting?.disabled
+          : !enableSubmitButtonWhenAllGroupsCompleted
+      }
+    >
+      {uiText.submit}
+    </Button>
+  );
 
   if (!formsMemo?.question_group) {
     return "Error Format";
@@ -742,7 +763,11 @@ export const Webform = ({
               >
                 <SubmitButton
                   block
-                  disabled={isLastGroup ? submitButtonSetting?.disabled : true}
+                  disabled={
+                    isLastGroup
+                      ? submitButtonSetting?.disabled
+                      : !enableSubmitButtonWhenAllGroupsCompleted
+                  }
                 />
               </div>
             }

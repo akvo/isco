@@ -21,4 +21,6 @@ isco_values = [
     'GISCO',
     'DISCO',
     'Beyond Chocolate'
+    'SWISSCO',
+    'FRISCO'
 ]
