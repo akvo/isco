@@ -135,7 +135,7 @@ const NumberField = ({
 
       <Form.Item
         key={keyform}
-        name={id}
+        name={disableFieldByDependency ? "" : id}
         rules={[
           ...rules,
           {
@@ -206,6 +206,7 @@ const NumberField = ({
         naChecked={naChecked}
         setNaChecked={setNaChecked}
         show_repeat_in_question_level={show_repeat_in_question_level}
+        disabled={disableFieldByDependency}
       />
 
       {!!extraAfter?.length &&

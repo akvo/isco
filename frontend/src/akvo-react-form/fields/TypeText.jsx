@@ -81,7 +81,7 @@ const TextField = ({
       <Form.Item
         className="arf-field-child"
         key={keyform}
-        name={id}
+        name={disableFieldByDependency ? "" : id}
         rules={[
           ...rules,
           {
@@ -117,6 +117,7 @@ const TextField = ({
         naChecked={naChecked}
         setNaChecked={setNaChecked}
         show_repeat_in_question_level={show_repeat_in_question_level}
+        disabled={disableFieldByDependency}
       />
 
       {!!extraAfter?.length &&

@@ -1,27 +1,12 @@
 import React from "react";
-import {
-  Row,
-  Col,
-  // Table
-} from "antd";
-
-// const repeatColumns = [
-//   {
-//     title: "Label",
-//     dataIndex: "label",
-//     key: "label",
-//     width: "30%",
-//   },
-//   {
-//     title: "Field",
-//     dataIndex: "field",
-//     key: "field",
-//   },
-// ];
+import { Row, Col } from "antd";
 
 const RepeatTableView = ({ id, dataSource = [] }) => {
   // GridView
   return dataSource.map((ds) => {
+    if (!React.isValidElement(ds.field)) {
+      return "";
+    }
     return (
       <Row
         key={`${id}-${ds.label}`}
@@ -34,22 +19,6 @@ const RepeatTableView = ({ id, dataSource = [] }) => {
       </Row>
     );
   });
-
-  // TableView
-  // return (
-  //   <Table
-  //     className="arf-field-child"
-  //     rowKey={(record) => {
-  //       return `${id}-${record?.label}`;
-  //     }}
-  //     size="small"
-  //     showHeader={false}
-  //     columns={repeatColumns}
-  //     dataSource={dataSource}
-  //     pagination={false}
-  //     bordered={false}
-  //   />
-  // );
 };
 
 export default RepeatTableView;
