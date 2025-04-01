@@ -24,7 +24,12 @@ const DataUnavailableField = ({
   }
 
   return (
-    <Form.Item key={`dataNA_${keyform}`} name={`dataNA_${id}`} noStyle>
+    <Form.Item
+      key={`dataNA_${keyform}`}
+      name={`dataNA_${id}`}
+      valuePropName="checked"
+      noStyle
+    >
       <Checkbox
         id={`dataNA_${id}`}
         checked={naChecked}
