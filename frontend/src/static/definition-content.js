@@ -485,31 +485,6 @@ const definitionContent = {
       ),
     },
     {
-      i: "Certified or independently verified cocoa",
-      t: "Certified or independently verified cocoa",
-      d: (
-        <Fragment>
-          <div>
-            Cocoa produced in compliance with the requirements of accepted
-            certification standards or independently verified company schemes on
-            sustainable cocoa.
-            <br />
-            The list of accepted certification standards and independently
-            verified company schemes currently comprises the following:
-            <ul style={{ marginLeft: "25px" }}>
-              <li>Rainforest Alliance</li>
-              <li>Fairtrade</li>
-              <li>Organic - Bio Suisse</li>
-              <li>Naturland</li>
-              <li>
-                Company schemes (for example Cocoa Life; to be specified below)
-              </li>
-            </ul>
-          </div>
-        </Fragment>
-      ),
-    },
-    {
       i: "Premiums granted to the farmer and / or coopertaive",
       t: "Premium granted",
       d: "A premium granted to a farmer and/or cooperative is an additional amount of money paid in addition to the regular market price paid to the producers or producer organizations. Premiums are here understood only as market or volume related payments and do hence not include payments such as 'payments for environmental services', conditional or unconditional cash payments etc. Please note that LIRP payments are covered in a separate question.",
@@ -1527,26 +1502,6 @@ const definitionContent = {
             das Ziel haben, die Einkommenslücken zwischen tatsächlichen und
             existenzsichernden Einkommen zu schließen.
           </div>
-        </Fragment>
-      ),
-    },
-    {
-      i: "Certified or independently verified cocoa",
-      t: "Zertifiziert oder unabhängig überprüfter Kakao",
-      d: (
-        <Fragment>
-          Kakao, der unter Erfüllung der Anforderungen von anerkannten
-          Zertifizierungsstandards oder unabhängig überprüften
-          Unternehmensprogrammen für nachhaltigen Kakao produziert wurde. Die
-          Liste der anerkannten Nachhaltigkeitsstandards und unabhängig
-          überprüfter Unternehmensprogramme umfasst derzeit die folgenden:
-          <ul style={{ marginLeft: "25px" }}>
-            <li>Rainforest Alliance</li>
-            <li>Fairtrade</li>
-            <li>Bio - Bio Suisse</li>
-            <li>Naturland</li>
-            <li>Unternehmensprogramme (z.B. Cocoa Life, zu spezifizieren)</li>
-          </ul>
         </Fragment>
       ),
     },
