@@ -83,6 +83,44 @@ const MainEditor = () => {
       })
       .finally(() => {
         setSaveButtonLoading(false);
+        questionGroup?.map((item) => {
+          const data = {
+            ...item,
+            question: null,
+          };
+          saveQuestionGroup(item.id, data);
+        });
+      });
+  };
+
+  const saveQuestionGroup = (id, data) => {
+    api
+      .put(`/question_group/${id}`, data, {
+        "content-type": "application/json",
+      })
+      .then((res) => {
+        const { data } = res;
+        store.update((s) => {
+          s.surveyEditor = {
+            ...s.surveyEditor,
+            questionGroup: [
+              ...s.surveyEditor.questionGroup.filter((x) => x?.id !== id),
+              data,
+            ],
+          };
+        });
+        notify({
+          type: "success",
+          message: "Section saved successfully.",
+        });
+      })
+      .catch((e) => {
+        const { status, statusText } = e.response;
+        console.error(status, statusText);
+        notify({
+          type: "error",
+          message: "Oops, something went wrong.",
+        });
       });
   };
 
@@ -141,7 +179,7 @@ const MainEditor = () => {
                 {/* Button */}
                 <Col span={24}>
                   <Row align="start" justify="space-between">
-                    <Col span={14} align="start" onClick={() => form.submit()}>
+                    <Col span={14} align="start">
                       <Form
                         form={form}
                         name="survey-detail"
