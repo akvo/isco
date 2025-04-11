@@ -124,33 +124,30 @@ const dataSecurityContent = {
         The following persons will have such access to data before anonymization
         and aggregation:
       </p>
+
       <p className="text-justify">
-        <u>For GISCO:</u>
+        <u>For the German Initiative on Sustainable Cocoa:</u>
       </p>
       <ul className="pl-5">
         <li>Martina Gaebler, GISCO</li>
+        <li>Julia Ditz, GISCO</li>
         <li>Ulrike Joras, GISCO</li>
+        <li>Additional staff member of the secretariat, to be appointed</li>
         <li>Patrick Stoop, C-Lever.org</li>
         <li>Hilde Geens, C-Lever.org</li>
+        <li>Other external person, to be appointed</li>
       </ul>
-      <p className="text-justify">
-        <u>For FRISCO:</u>
-      </p>
-      <ul className="pl-5">
-        <li>Maxime Ghafari</li>
-        <li>Kitty Grapperon</li>
-        <li>Patrick Stoop, C-Lever.org</li>
-        <li>Hilde Geens, C-Lever.org</li>
-      </ul>
+
       <p className="text-justify">
         <u>For Beyond Chocolate:</u>
       </p>
       <ul className="pl-5">
         <li>Charles Snoeck</li>
-        <li>Marloes Humbeeck</li>
+        <li>Lisa Graepel</li>
         <li>Patrick Stoop, C-Lever.org</li>
         <li>Hilde Geens, C-Lever.org</li>
       </ul>
+
       <p className="text-justify">
         <u>For DISCO:</u>
       </p>
@@ -160,16 +157,28 @@ const dataSecurityContent = {
         <li>Patrick Stoop, C-Lever.org</li>
         <li>Hilde Geens, C-Lever.org</li>
       </ul>
+
       <p className="text-justify">
         <u>For SWISSCO:</u>
       </p>
       <ul className="pl-5">
+        <li>Esther Waldmeier</li>
         <li>Christian Robin</li>
         <li>Fabienne Bauer</li>
-        <li>Sophie Tüllmann</li>
         <li>Patrick Stoop, C-Lever.org</li>
         <li>Hilde Geens, C-Lever.org</li>
       </ul>
+
+      <p className="text-justify">
+        <u>For FRISCO:</u>
+      </p>
+      <ul className="pl-5">
+        <li>Kitty Grapperon</li>
+        <li>Maxime Ghafari</li>
+        <li>Patrick Stoop, C-Lever.org</li>
+        <li>Hilde Geens, C-Lever.org</li>
+      </ul>
+
       <p className="text-justify">
         Each of the named persons above is required to sign a confidentiality
         agreement before getting access to the data of the corresponding
@@ -378,17 +387,20 @@ const dataSecurityContent = {
         die Berechtigung, vor der Anonymisierung und Aggregation auf Daten
         zuzugreifen:
       </p>
+
       <p className="text-justify">
         <u>Für das Kakaoforum:</u>
       </p>
       <ul className="pl-5">
-        <li>Martina Gaebler</li>
-        <li>Ulrike Joras</li>
-        <li>Julia Ditz</li>
-        <li>Weiterer Mitarbeitender der Geschäftsstelle, zu benennen</li>
+        <li>Martina Gaebler, GISCO</li>
+        <li>Julia Ditz, GISCO</li>
+        <li>Ulrike Joras, GISCO</li>
+        <li>
+          Zusätzliches Mitglied des Sekretariats, das noch ernannt werden soll
+        </li>
         <li>Patrick Stoop, C-Lever.org</li>
         <li>Hilde Geens, C-Lever.org</li>
-        <li>Koen Sneyers, C-Lever.org</li>
+        <li>Andere externe Person, die noch ernannt werden soll</li>
       </ul>
 
       <p className="text-justify">
@@ -396,7 +408,7 @@ const dataSecurityContent = {
       </p>
       <ul className="pl-5">
         <li>Charles Snoeck</li>
-        <li>Marloes Humbeeck</li>
+        <li>Lisa Graepel</li>
         <li>Patrick Stoop, C-Lever.org</li>
         <li>Hilde Geens, C-Lever.org</li>
       </ul>
@@ -415,9 +427,9 @@ const dataSecurityContent = {
         <u>Für SWISSCO:</u>
       </p>
       <ul className="pl-5">
+        <li>Esther Waldmeier</li>
         <li>Christian Robin</li>
         <li>Fabienne Bauer</li>
-        <li>Sophie Tüllmann</li>
         <li>Patrick Stoop, C-Lever.org</li>
         <li>Hilde Geens, C-Lever.org</li>
       </ul>
@@ -426,8 +438,8 @@ const dataSecurityContent = {
         <u>Für FRISCO:</u>
       </p>
       <ul className="pl-5">
-        <li>Maxime Ghafari</li>
         <li>Kitty Grapperon</li>
+        <li>Maxime Ghafari</li>
         <li>Patrick Stoop, C-Lever.org</li>
         <li>Hilde Geens, C-Lever.org</li>
       </ul>
