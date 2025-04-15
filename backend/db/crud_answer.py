@@ -2,7 +2,12 @@ from datetime import datetime
 from typing import List, Union
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
-from models.answer import Answer, AnswerDict, AnswerBase
+from models.answer import (
+    Answer,
+    AnswerDict,
+    AnswerBase,
+    convert_single_option_value,
+)
 from models.question import QuestionType
 
 
@@ -22,7 +27,8 @@ def append_value(
     if type == QuestionType.date.value:
         answer.text = value
     if type == QuestionType.option.value:
-        answer.options = [value]
+        conv_value = convert_single_option_value(value=value)
+        answer.options = [conv_value]
     if type == QuestionType.multiple_option.value:
         answer.options = value
     if type == QuestionType.nested_list.value or type == "tree":

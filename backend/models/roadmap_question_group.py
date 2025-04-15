@@ -38,13 +38,18 @@ class RoadmapQuestionGroup(Base):
         primaryjoin="RoadmapQuestion.question_group==RoadmapQuestionGroup.id",
         cascade="all, delete",
         passive_deletes=True,
-        backref="roadmap_question_group_detail")
+        backref="roadmap_question_group_detail",
+    )
 
     def __init__(
-        self, id: Optional[int], name: str,
-        translations: Optional[List[dict]], repeat: Optional[bool],
-        order: Optional[int], description: Optional[str],
-        repeat_text: Optional[str]
+        self,
+        id: Optional[int],
+        name: str,
+        translations: Optional[List[dict]],
+        repeat: Optional[bool],
+        order: Optional[int],
+        description: Optional[str],
+        repeat_text: Optional[str],
     ):
         self.id = id
         self.name = name
@@ -71,7 +76,7 @@ class RoadmapQuestionGroup(Base):
             "order": self.order,
             "repeat": self.repeat,
             "repeat_text": self.repeat_text,
-            "question": [q.serialize for q in self.question]
+            "question": [q.serialize for q in self.question],
         }
 
     @property
@@ -80,13 +85,12 @@ class RoadmapQuestionGroup(Base):
 
     @property
     def serializeJson(self):
-        print(self.question)
         group = {
             "name": self.name,
             "description": self.description,
             "order": self.order,
             "repeatable": self.repeat,
-            "question": [q.serializeJson for q in self.question]
+            "question": [q.serializeJson for q in self.question],
         }
         if self.repeat:
             group.update({"repeatButtonPlacement": "bottom"})
@@ -95,13 +99,13 @@ class RoadmapQuestionGroup(Base):
         if self.translations:
             translations = []
             for lang in self.translations:
-                tmp = {"language": lang['language']}
+                tmp = {"language": lang["language"]}
                 if "name" in lang:
-                    tmp.update({"name": lang['name']})
+                    tmp.update({"name": lang["name"]})
                 if "description" in lang:
-                    tmp.update({"description": lang['description']})
+                    tmp.update({"description": lang["description"]})
                 if self.repeat and self.repeat_text and "repeat_text" in lang:
-                    tmp.update({"repeatText": lang['repeat_text']})
+                    tmp.update({"repeatText": lang["repeat_text"]})
                 translations.append(tmp)
             group.update({"translations": translations})
         return group

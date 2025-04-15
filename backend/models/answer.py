@@ -13,6 +13,17 @@ import sqlalchemy.dialects.postgresql as pg
 from db.connection import Base
 
 
+def convert_single_option_value(value):
+    try:
+        float_val = float(value)
+        if float_val.is_integer():
+            return str(int(float_val))
+        else:
+            return value
+    except (ValueError, TypeError):
+        return value
+
+
 class AnswerDictWithId(TypedDict):
     id: int
     question: int
@@ -140,7 +151,8 @@ class Answer(Base):
                 val = int(val) if val or val is not None else None
             answer.update({"value": val})
         if type == QuestionType.option:
-            answer.update({"value": self.options[0]})
+            value = convert_single_option_value(self.options[0])
+            answer.update({"value": value})
         if type in [QuestionType.multiple_option, QuestionType.nested_list]:
             answer.update({"value": self.options})
         if type == QuestionType.cascade:
@@ -179,7 +191,8 @@ class Answer(Base):
                 val = int(val) if val or val is not None else None
             answer.update({"value": val})
         if type == QuestionType.option:
-            answer.update({"value": self.options[0]})
+            value = convert_single_option_value(self.options[0])
+            answer.update({"value": value})
         if type in [QuestionType.multiple_option, QuestionType.nested_list]:
             answer.update({"value": self.options})
         if type == QuestionType.cascade:
@@ -212,7 +225,8 @@ class Answer(Base):
                 val = int(val) if val or val is not None else None
             answer.update({"value": val})
         if type == QuestionType.option:
-            answer.update({"value": self.options[0]})
+            value = convert_single_option_value(self.options[0])
+            answer.update({"value": value})
         if type in [QuestionType.multiple_option, QuestionType.nested_list]:
             answer.update({"value": self.options})
         if type == QuestionType.cascade:
@@ -250,7 +264,12 @@ class Answer(Base):
                 answer = int(answer) if answer is not None else None
             return answer
         if type == QuestionType.option:
-            return self.options[0] if self.options else None
+            value = (
+                convert_single_option_value(self.options[0])
+                if self.options
+                else None
+            )
+            return value
         if type in [
             QuestionType.multiple_option,
             QuestionType.cascade,
@@ -282,7 +301,12 @@ class Answer(Base):
             else:
                 answer = int(answer) if answer is not None else None
         if type == QuestionType.option:
-            answer = self.options[0] if self.options else None
+            value = (
+                convert_single_option_value(self.options[0])
+                if self.options
+                else None
+            )
+            answer = value
         if type in [
             QuestionType.multiple_option,
             QuestionType.cascade,
@@ -318,7 +342,12 @@ class Answer(Base):
             else:
                 answer = int(answer) if answer is not None else None
         if q.type == QuestionType.option:
-            answer = self.options[0] if self.options else None
+            value = (
+                convert_single_option_value(self.options[0])
+                if self.options
+                else None
+            )
+            answer = value
         if q.type in [
             QuestionType.multiple_option,
             QuestionType.cascade,
@@ -356,7 +385,12 @@ class Answer(Base):
                     unit = ""
                 answer = f"{answer} {unit}" if answer is not None else None
         if q.type == QuestionType.option:
-            answer = self.options[0] if self.options else None
+            value = (
+                convert_single_option_value(self.options[0])
+                if self.options
+                else None
+            )
+            answer = value
         if q.type in [
             QuestionType.option,
             QuestionType.multiple_option,
