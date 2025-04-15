@@ -12,7 +12,7 @@ from sqlalchemy import func, and_, extract, null
 from sqlalchemy.orm import Session
 import db.crud_data as crud
 from db import crud_answer, crud_form, crud_collaborator, crud_organisation
-from models.answer import Answer, AnswerDict
+from models.answer import Answer, AnswerDict, convert_single_option_value
 from models.question import QuestionType, Question
 from models.cascade_list import CascadeList
 from db.connection import get_session
@@ -417,7 +417,9 @@ def add(
         if q["type"] == QuestionType.number.value:
             answer.value = a["value"]
         if q["type"] == QuestionType.option.value:
-            answer.options = [a["value"]]
+            value = a.get("value", 0)
+            value = convert_single_option_value(value=value)
+            answer.options = [value]
         if q["type"] == QuestionType.multiple_option.value:
             answer.options = a["value"]
         if q["type"] == QuestionType.cascade.value:
