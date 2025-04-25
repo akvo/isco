@@ -10,7 +10,7 @@ from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
-from db.connection import get_session
+from db.connection import get_session, SessionLocal
 import util.sheets as sheets
 from util.cipher import Cipher
 from middleware import verify_super_admin
@@ -20,6 +20,36 @@ security = HTTPBearer()
 download_summary_route = APIRouter()
 filetype = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 expired_time = 5
+
+
+def generate_summary_in_background(
+    filename: str,
+    form_id: int,
+    user_org: int,
+    member_type: Optional[int] = None,
+    isco_type: Optional[int] = None,
+    organisation_id: Optional[int] = None,
+    show_comment: Optional[bool] = False,
+    monitoring_round: Optional[int] = None,
+    user=None,
+    code=None,
+):
+    session = SessionLocal()
+    try:
+        sheets.generate_summary(
+            session=session,
+            filename=filename,
+            form_id=form_id,
+            user_org=user_org,
+            member_type=member_type,
+            isco_type=isco_type,
+            organisation_id=organisation_id,
+            show_comment=show_comment,
+            monitoring_round=monitoring_round,
+        )
+        send_email_code(user=user, code=code)
+    finally:
+        session.close()
 
 
 def send_email_code(user, code):
@@ -81,8 +111,21 @@ async def new_summary_file(
     uuid = str(uuid4()).replace("-", "")
     code = np.random.randint(100000, 999999)
     file_id = Cipher(f"{uuid}-{code}").encode()
-    sheets.generate_summary(
-        session=session,
+    if TESTING:
+        sheets.generate_summary(
+            session=session,
+            filename=file_id,
+            form_id=form_id,
+            user_org=user.organisation,
+            member_type=member_type,
+            isco_type=isco_type,
+            organisation_id=organisation_id,
+            show_comment=True,
+            monitoring_round=monitoring_round,
+        )
+        return {"uuid": uuid, "code": code}
+    background_tasks.add_task(
+        generate_summary_in_background,
         filename=file_id,
         form_id=form_id,
         user_org=user.organisation,
@@ -91,11 +134,12 @@ async def new_summary_file(
         organisation_id=organisation_id,
         show_comment=True,
         monitoring_round=monitoring_round,
+        user=user,
+        code=code,
     )
-    if TESTING:
-        return {"uuid": uuid, "code": code}
     background_tasks.add_task(delete_temporary, file_id)
-    send_email_code(user=user, code=code)
+    # send_email_code(user=user, code=code)
+    # print('Download summary CODE', code, '======')
     return {"uuid": uuid}
 
 
