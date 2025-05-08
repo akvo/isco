@@ -16,6 +16,7 @@ import { useNotification } from "../../util";
 import { handleLoad } from "../../util/common";
 import moment from "moment";
 import { globalSelectProps } from "../../lib/util";
+import { orderBy } from "lodash";
 
 const { Title } = Typography;
 
@@ -246,7 +247,11 @@ const Download = () => {
     api
       .get(url)
       .then((res) => {
-        setData(res.data);
+        const remapData = res.data.map((d) => ({
+          ...d,
+          sortedDate: new Date(d.submitted),
+        }));
+        setData(orderBy(remapData, ["sortedDate"], ["asc"]));
       })
       .catch((e) => {
         const { status, statusText } = e.response;

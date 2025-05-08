@@ -19,6 +19,8 @@ import { isNumeric, reorderAnswersRepeatIndex } from "../../lib/util";
 import { containsUnavailableText } from "../../akvo-react-form/lib";
 // import test from "./test.json" // testing purpose
 
+// TODO :: Check mandatory question appear while the mandatory question still hiding
+
 const computedValidations = window?.computed_validations;
 
 const SaveButton = ({
@@ -1116,29 +1118,32 @@ const WebformPage = ({
                 : String(a.question);
             return qid === key;
           });
-          // check dataNA
-          const dataNAKey = `dataNA_${key}`;
-          let comment = prevAnswer?.comment || null;
-          if (
-            prevAnswer &&
-            finalFormValues?.[dataNAKey] === false &&
-            containsUnavailableText(comment)
-          ) {
-            comment = null;
-          }
-          if (prevAnswer && finalFormValues?.[dataNAKey] === true) {
-            comment = text.inputDataUnavailable;
-          }
-          // eol check dataNA
           if (prevAnswer) {
+            // CHECK dataNA
+            const dataNAKey = `dataNA_${key}`;
+            let comment = prevAnswer?.comment || null;
+            let value =
+              typeof finalFormValues?.[key] !== "undefined" &&
+              finalFormValues?.[key] !== null
+                ? finalFormValues[key]
+                : null;
+
+            if (
+              finalFormValues?.[dataNAKey] === false &&
+              containsUnavailableText(comment)
+            ) {
+              comment = null;
+            }
+            if (finalFormValues?.[dataNAKey] === true) {
+              comment = text.inputDataUnavailable;
+              // flash out answer if dataNA checked
+              value = null;
+            }
+            // EOL CHECK dataNA
             return {
               ...prevAnswer,
-              comment: comment,
-              value:
-                typeof finalFormValues?.[key] !== "undefined" &&
-                finalFormValues?.[key] !== null
-                  ? finalFormValues[key]
-                  : null,
+              comment,
+              value,
             };
           }
           return false;
