@@ -979,10 +979,10 @@ const WebformPage = ({
             [qidWithRepeatIndex]: text.inputDataUnavailable,
           });
         } else {
+          commentField.value = null;
           deleteCommentButton.style.display = "none";
           commentField.style.display = "none";
           addCommentButton.style.display = "initial";
-          commentField.value = null;
           setComment({
             [qidWithRepeatIndex]: null,
           });
@@ -1116,9 +1116,24 @@ const WebformPage = ({
                 : String(a.question);
             return qid === key;
           });
+          // check dataNA
+          const dataNAKey = `dataNA_${key}`;
+          let comment = prevAnswer?.comment || null;
+          if (
+            prevAnswer &&
+            finalFormValues?.[dataNAKey] === false &&
+            containsUnavailableText(comment)
+          ) {
+            comment = null;
+          }
+          if (prevAnswer && finalFormValues?.[dataNAKey] === true) {
+            comment = text.inputDataUnavailable;
+          }
+          // eol check dataNA
           if (prevAnswer) {
             return {
               ...prevAnswer,
+              comment: comment,
               value:
                 typeof finalFormValues?.[key] !== "undefined" &&
                 finalFormValues?.[key] !== null

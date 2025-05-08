@@ -154,7 +154,8 @@ class Answer(Base):
             value = convert_single_option_value(self.options[0])
             answer.update({"value": value})
         if type in [QuestionType.multiple_option, QuestionType.nested_list]:
-            answer.update({"value": self.options})
+            value = [convert_single_option_value(opt) for opt in self.options]
+            answer.update({"value": value})
         if type == QuestionType.cascade:
             answer.update({"value": [int(float(o)) for o in self.options]})
         return answer
@@ -194,7 +195,8 @@ class Answer(Base):
             value = convert_single_option_value(self.options[0])
             answer.update({"value": value})
         if type in [QuestionType.multiple_option, QuestionType.nested_list]:
-            answer.update({"value": self.options})
+            value = [convert_single_option_value(opt) for opt in self.options]
+            answer.update({"value": value})
         if type == QuestionType.cascade:
             answer.update({"value": [int(float(o)) for o in self.options]})
         return answer
@@ -228,7 +230,8 @@ class Answer(Base):
             value = convert_single_option_value(self.options[0])
             answer.update({"value": value})
         if type in [QuestionType.multiple_option, QuestionType.nested_list]:
-            answer.update({"value": self.options})
+            value = [convert_single_option_value(opt) for opt in self.options]
+            answer.update({"value": value})
         if type == QuestionType.cascade:
             answer.update({"value": [int(float(o)) for o in self.options]})
         return answer
@@ -275,7 +278,8 @@ class Answer(Base):
             QuestionType.cascade,
             QuestionType.nested_list,
         ]:
-            return self.options
+            value = [convert_single_option_value(opt) for opt in self.options]
+            return value
         if type == QuestionType.cascade:
             return [int(float(o)) for o in self.options]
         return None
@@ -312,7 +316,8 @@ class Answer(Base):
             QuestionType.cascade,
             QuestionType.nested_list,
         ]:
-            return self.options
+            value = [convert_single_option_value(opt) for opt in self.options]
+            return value
         if type == QuestionType.cascade:
             return [int(float(o)) for o in self.options]
         return {
@@ -353,7 +358,8 @@ class Answer(Base):
             QuestionType.cascade,
             QuestionType.nested_list,
         ]:
-            answer = "|".join(self.options) if self.options else None
+            value = [convert_single_option_value(opt) for opt in self.options]
+            answer = "|".join(value) if value else None
         return {qname: answer}
 
     @property
@@ -397,7 +403,8 @@ class Answer(Base):
             QuestionType.cascade,
             QuestionType.nested_list,
         ]:
-            answer = self.options
+            value = [convert_single_option_value(opt) for opt in self.options]
+            answer = value
             value_type = "list"
         if q.type == QuestionType.cascade:
             answer = " - ".join(answer) if answer else None
