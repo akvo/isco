@@ -422,9 +422,24 @@ const DataCleaningWebform = ({
                 : String(a.question);
             return qid === key;
           });
+          // check dataNA
+          const dataNAKey = `dataNA_${key}`;
+          let comment = prevAnswer?.comment || null;
+          if (
+            prevAnswer &&
+            finalFormValues?.[dataNAKey] === false &&
+            containsUnavailableText(comment)
+          ) {
+            comment = null;
+          }
+          if (prevAnswer && finalFormValues?.[dataNAKey] === true) {
+            comment = text.inputDataUnavailable;
+          }
+          // eol check dataNA
           if (prevAnswer) {
             return {
               ...prevAnswer,
+              comment: comment,
               value:
                 typeof finalFormValues?.[key] !== "undefined" &&
                 finalFormValues?.[key] !== null
@@ -511,15 +526,15 @@ const DataCleaningWebform = ({
             [qidWithRepeatIndex]: text.inputDataUnavailable,
           });
         } else {
+          if (commentField) {
+            commentField.value = null;
+            commentField.style.display = "none";
+          }
           if (deleteCommentButton) {
             deleteCommentButton.style.display = "none";
           }
           if (addCommentButton) {
             addCommentButton.style.display = "initial";
-          }
-          if (commentField) {
-            commentField.style.display = "none";
-            commentField.value = null;
           }
           setComment({
             [qidWithRepeatIndex]: null,
