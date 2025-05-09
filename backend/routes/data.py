@@ -383,9 +383,10 @@ def add(
 
     # validate core mandatory & computed validation if submitted
     # check core mandatory question answered
-    check_core_mandatory_questions_answer(
-        published=published, answers=answers, submitted=submitted
-    )
+    # TODO:: Enable this
+    # check_core_mandatory_questions_answer(
+    #     published=published, answers=answers, submitted=submitted
+    # )
     # end check core mandatory question answered
 
     # validate by computed validations
@@ -665,9 +666,10 @@ def update_by_id(
 
     # validate core mandatory & computed validation if submitted
     # check core mandatory question answered
-    check_core_mandatory_questions_answer(
-        published=published, answers=answers, submitted=submitted
-    )
+    # TODO:: Enable this
+    # check_core_mandatory_questions_answer(
+    #     published=published, answers=answers, submitted=submitted
+    # )
     # end check core mandatory question answered
 
     # validate by computed validations

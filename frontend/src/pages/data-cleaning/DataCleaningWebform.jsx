@@ -439,7 +439,6 @@ const DataCleaningWebform = ({
               comment = null;
             }
             if (finalFormValues?.[dataNAKey] === true) {
-              comment = text.inputDataUnavailable;
               // flash out answer if dataNA checked
               value = null;
             }
