@@ -804,7 +804,8 @@ const WebformPage = ({
           return isNumeric(qid) ? parseInt(qid) : false;
         })
         .filter((x) => x)
-    );
+    ); // availableQids mean that all qIDs that appear on browser
+    // do not include hiden question (not appear on browser & dependent question)
     const modifiedCoreMandatoryQIds = coreMandatoryQuestionIds
       .map((cm) => {
         const exists = cm.question_ids.some((value) =>
@@ -813,7 +814,7 @@ const WebformPage = ({
         if (exists) {
           return cm;
         }
-        return cm; // return false to filter coreMandatoryQuestionIds with available question ids
+        return false; // return false to filter coreMandatoryQuestionIds with available question ids
       })
       .filter((x) => x);
     // EOL Remap the coreMandatoryQuestionIds with available question ids to support dependent question
@@ -1116,29 +1117,32 @@ const WebformPage = ({
                 : String(a.question);
             return qid === key;
           });
-          // check dataNA
-          const dataNAKey = `dataNA_${key}`;
-          let comment = prevAnswer?.comment || null;
-          if (
-            prevAnswer &&
-            finalFormValues?.[dataNAKey] === false &&
-            containsUnavailableText(comment)
-          ) {
-            comment = null;
-          }
-          if (prevAnswer && finalFormValues?.[dataNAKey] === true) {
-            comment = text.inputDataUnavailable;
-          }
-          // eol check dataNA
           if (prevAnswer) {
+            // CHECK dataNA
+            const dataNAKey = `dataNA_${key}`;
+            let comment = prevAnswer?.comment || null;
+            let value =
+              typeof finalFormValues?.[key] !== "undefined" &&
+              finalFormValues?.[key] !== null
+                ? finalFormValues[key]
+                : null;
+
+            if (
+              finalFormValues?.[dataNAKey] === false &&
+              containsUnavailableText(comment)
+            ) {
+              comment = null;
+            }
+            if (finalFormValues?.[dataNAKey] === true) {
+              comment = text.inputDataUnavailable;
+              // flash out answer if dataNA checked
+              value = null;
+            }
+            // EOL CHECK dataNA
             return {
               ...prevAnswer,
-              comment: comment,
-              value:
-                typeof finalFormValues?.[key] !== "undefined" &&
-                finalFormValues?.[key] !== null
-                  ? finalFormValues[key]
-                  : null,
+              comment,
+              value,
             };
           }
           return false;
