@@ -19,8 +19,6 @@ import { isNumeric, reorderAnswersRepeatIndex } from "../../lib/util";
 import { containsUnavailableText } from "../../akvo-react-form/lib";
 // import test from "./test.json" // testing purpose
 
-// TODO :: Check mandatory question appear while the mandatory question still hiding
-
 const computedValidations = window?.computed_validations;
 
 const SaveButton = ({
@@ -806,7 +804,8 @@ const WebformPage = ({
           return isNumeric(qid) ? parseInt(qid) : false;
         })
         .filter((x) => x)
-    );
+    ); // availableQids mean that all qIDs that appear on browser
+    // do not include hiden question (not appear on browser & dependent question)
     const modifiedCoreMandatoryQIds = coreMandatoryQuestionIds
       .map((cm) => {
         const exists = cm.question_ids.some((value) =>
@@ -815,7 +814,7 @@ const WebformPage = ({
         if (exists) {
           return cm;
         }
-        return cm; // return false to filter coreMandatoryQuestionIds with available question ids
+        return false; // return false to filter coreMandatoryQuestionIds with available question ids
       })
       .filter((x) => x);
     // EOL Remap the coreMandatoryQuestionIds with available question ids to support dependent question
