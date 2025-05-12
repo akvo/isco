@@ -597,10 +597,10 @@ const DataCleaningWebform = ({
           mergeDataUnavailable?.[key] ||
           findAnswer?.comment
         ) {
-          let commentValue = findAnswer
-            ? findAnswer?.comment
-            : mergeDataUnavailable?.[key]
+          let commentValue = mergeDataUnavailable?.[key]
             ? mergeDataUnavailable[key] // using key because key is questionId-with repeat index
+            : findAnswer
+            ? findAnswer?.comment
             : null;
           if (
             isChecked &&

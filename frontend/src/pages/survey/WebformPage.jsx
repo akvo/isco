@@ -921,10 +921,10 @@ const WebformPage = ({
           dataUnavailable?.[key] ||
           findAnswer?.comment
         ) {
-          let commentValue = findAnswer
-            ? findAnswer?.comment
-            : dataUnavailable?.[key]
+          let commentValue = dataUnavailable?.[key]
             ? dataUnavailable[key] // using key because key is questionId-with repeat index
+            : findAnswer
+            ? findAnswer?.comment
             : null;
           if (
             isChecked &&
@@ -1004,7 +1004,7 @@ const WebformPage = ({
       ...allKeyWithNA,
       ...dataUnavailable,
     });
-    setDisableSubmit(transformValues.length === 0);
+    setDisableSubmit(transformedAnswerValues.length === 0);
     setAnswer(transformedAnswerValues);
 
     // reset form for prev submisison value to empty
