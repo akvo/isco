@@ -1133,6 +1133,10 @@ const WebformPage = ({
             ) {
               comment = null;
             }
+            if (finalFormValues?.[dataNAKey] === true && !comment) {
+              // add dataNA text if no comment available yet
+              comment = text.inputDataUnavailable;
+            }
             if (finalFormValues?.[dataNAKey] === true) {
               // flash out answer if dataNA checked
               value = null;
