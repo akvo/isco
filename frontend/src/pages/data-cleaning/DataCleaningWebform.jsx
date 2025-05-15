@@ -35,7 +35,19 @@ const checkDependentValue = (formValue, answer) => {
       if (findDependency) {
         // check dependency answer
         const check = findDependency.dependency.map((d) => {
-          const dependentToAnswer = answer.find((x) => x.question === d.id);
+          // TODO :: remove this line
+          // const dependentToAnswer = answer.find((x) => x.question === d.id);
+          // EOL TODO
+          const dependentToAnswer = answer.find((x) => {
+            // respect repeat index
+            if (isNaN(x?.repeat_index)) {
+              return (
+                x?.repeat_index_string === a?.repeat_index_string &&
+                x.question === d.id
+              );
+            }
+            return x?.repeat_index === a?.repeat_index && x.question === d.id;
+          });
           if (!dependentToAnswer || !dependentToAnswer?.value) {
             return false;
           }
