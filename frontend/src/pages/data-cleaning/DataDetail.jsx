@@ -189,10 +189,17 @@ const DataDetail = ({ record }) => {
     };
   });
 
+  const currentAnswers = record.answer;
+  const historyAnswers = history.flatMap((h) => h.answer);
+  const mergedAnswers = [...currentAnswers, ...historyAnswers];
+  const uniqueByQuestion = _.uniqBy(mergedAnswers, (item) =>
+    JSON.stringify([item.question, item.repeat_index, item.repeat_identifier])
+  );
+
   // transform answer to group by question group and repeat index
-  const answers = _.chain(
+  const currAndHistoryAnswers = _.chain(
     _.orderBy(
-      record.answer,
+      uniqueByQuestion, // before record.answer
       ["question_group_order", "question_order"],
       ["asc"]
     )
@@ -201,7 +208,7 @@ const DataDetail = ({ record }) => {
     .mapValues((value) => _.chain(value).groupBy("repeat_index").value())
     .value();
 
-  if (_.isEmpty(answers)) {
+  if (_.isEmpty(currAndHistoryAnswers)) {
     return (
       <Space
         key={`space-no-data-${record.id}`}
@@ -219,14 +226,30 @@ const DataDetail = ({ record }) => {
     );
   }
 
-  return Object.keys(answers).map((key, ki) => {
-    const length = Object.values(answers[key]).length;
+  return Object.keys(currAndHistoryAnswers).map((key, ki) => {
+    const title = ReactHtmlParser(key);
+    const length = Object.values(currAndHistoryAnswers[key]).length;
     const values = _.orderBy(
-      Object.values(answers[key]),
+      Object.values(currAndHistoryAnswers[key]),
       ["question_order"],
       ["asc"]
-    );
-    const title = ReactHtmlParser(key);
+    ).map((v) => {
+      // fetch into record answer instead of using the merger answers
+      // because this answers Object created from record(current) + history answers
+      const currentAnswers = v.map((curr) => {
+        const findAnswer = record?.answer?.find(
+          (x) =>
+            x.question === curr.question &&
+            x.repeat_identifier === curr.repeat_identifier
+        );
+        return {
+          ...curr,
+          [`value`]: findAnswer?.value || "",
+          [`comment`]: findAnswer?.comment || "",
+        };
+      });
+      return currentAnswers;
+    });
 
     return values.map((v, vi) => {
       // find repeat identifier
