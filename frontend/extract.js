@@ -6,7 +6,7 @@ require("@babel/register")({
 
 const React = require("react");
 const ReactDOMServer = require("react-dom/server");
-const striptags = require("striptags");
+const { convert } = require("html-to-text");
 const XLSX = require("xlsx");
 
 // Mock browser globals
@@ -23,25 +23,10 @@ function extractString(val) {
   if (React.isValidElement(val)) {
     try {
       const html = ReactDOMServer.renderToStaticMarkup(val);
-      let text = html.replace(/<br\s*[\/]?>/gi, "\n");
-      text = text.replace(/<\/p>/gi, "\n\n");
-      text = text.replace(/<\/li>/gi, "\n");
-      text = text.replace(/<\/div>/gi, "\n\n");
-      text = text.replace(/<hr\s*[\/]?>/gi, "\n---\n");
-      text = text.replace(/<h\d[^>]*>/gi, "\n");
-      text = text.replace(/<\/h\d>/gi, "\n");
-
-      let clean = striptags(text);
-      clean = clean.replace(/&quot;/g, '"');
-      clean = clean.replace(/&amp;/g, "&");
-      clean = clean.replace(/&lt;/g, "<");
-      clean = clean.replace(/&gt;/g, ">");
-      clean = clean.replace(/&apos;/g, "'");
-
-      return clean
-        .replace(/[ \t]+/g, " ")
-        .replace(/\n\s*\n\s*\n/g, "\n\n")
-        .trim();
+      return convert(html, {
+        wordwrap: false,
+        selectors: [{ selector: "a", options: { ignoreHref: true } }],
+      }).trim();
     } catch (e) {
       console.error(e);
       return "Error extracting text";
