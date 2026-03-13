@@ -4,7 +4,10 @@ import requests as r
 from http import HTTPStatus
 from datetime import datetime
 from math import ceil
-from fastapi import Depends, Request, Response, APIRouter, HTTPException, Query
+from fastapi import (
+    Depends, Request, Response, APIRouter, HTTPException, Query,
+    BackgroundTasks
+)
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
 from typing import List, Optional, Union
@@ -194,7 +197,9 @@ def check_core_mandatory_questions_answer(
 #                 })
 
 
-def notify_secretariat_admin(session: Session, user, form_name: str):
+def notify_secretariat_admin(
+    session: Session, user, form_name: str, background_tasks: BackgroundTasks
+):
     organisation = crud_organisation.get_organisation_by_id(
         session=session, id=user.organisation
     )
@@ -212,7 +217,7 @@ def notify_secretariat_admin(session: Session, user, form_name: str):
             type=MailTypeEnum.notify_submission_completed_to_secretariat_admin,
             body=body_secretariat,
         )
-        email_secretariat.send
+        background_tasks.add_task(email_secretariat.send)
 
 
 @data_route.get(
@@ -358,6 +363,7 @@ def add(
     form_id: int,
     submitted: int,
     answers: List[AnswerDict],
+    background_tasks: BackgroundTasks,
     locked_by: Optional[int] = Query(None),
     collaborators: Optional[List[int]] = Query(None),
     session: Session = Depends(get_session),
@@ -452,13 +458,17 @@ def add(
                 session=session, data=data.id, payload={"organisation": org_id}
             )
         send_collaborator_email(
-            session=session, user=user, recipient_org_ids=collaborators
-        )
+            session=session,
+            user=user,
+            recipient_org_ids=collaborators,
+            background_tasks=background_tasks)
     # if submitted send notification email to secretariat admin
     if submitted:
         notify_secretariat_admin(
-            session=session, user=user, form_name=published["form_name"]
-        )
+            session=session,
+            user=user,
+            form_name=published["form_name"],
+            background_tasks=background_tasks)
     return data.serialize
 
 
@@ -622,6 +632,7 @@ def update_by_id(
     id: int,
     submitted: int,
     answers: List[AnswerDict],
+    background_tasks: BackgroundTasks,
     locked_by: Optional[int] = None,
     data_cleaning: Optional[bool] = False,
     session: Session = Depends(get_session),
@@ -805,8 +816,10 @@ def update_by_id(
     # data_cleaning notification email to secretariat admin
     if submitted and not data_cleaning:
         notify_secretariat_admin(
-            session=session, user=user, form_name=published["form_name"]
-        )
+            session=session,
+            user=user,
+            form_name=published["form_name"],
+            background_tasks=background_tasks)
     return data.serialize
 
 

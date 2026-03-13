@@ -2,7 +2,9 @@ import operator
 from math import ceil
 from typing import List, Optional
 from datetime import datetime
-from fastapi import Depends, Request, APIRouter, HTTPException, Query
+from fastapi import (
+    Depends, Request, APIRouter, HTTPException, Query, BackgroundTasks
+)
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
 from fastapi.responses import FileResponse
@@ -32,7 +34,8 @@ download_route = APIRouter()
 
 
 def send_email_download_notification(
-    session: Session, user, secretariat_admins
+    session: Session, user, secretariat_admins,
+    background_tasks: BackgroundTasks
 ):
     organisation = crud_organisation.get_organisation_by_id(
         session=session, id=user.organisation
@@ -54,7 +57,7 @@ def send_email_download_notification(
         body_translation=body_translation,
         type=MailTypeEnum.data_download_requested,
     )
-    email.send
+    background_tasks.add_task(email.send)
 
 
 @download_route.get(
@@ -216,6 +219,7 @@ def requested_download_list(
 def request_new_download(
     req: Request,
     data_id: int,
+    background_tasks: BackgroundTasks,
     session: Session = Depends(get_session),
     credentials: credentials = Depends(security),
 ):
@@ -239,7 +243,9 @@ def request_new_download(
             file=file[0],
         )
         if download and secretariat_admins:
-            send_email_download_notification(session, user, secretariat_admins)
+            send_email_download_notification(
+                session, user, secretariat_admins, background_tasks
+            )
         return download.response
     data = data.to_report
     data["request_by"] = user.name
@@ -259,7 +265,9 @@ def request_new_download(
         file=file,
     )
     if download and secretariat_admins:
-        send_email_download_notification(session, user, secretariat_admins)
+        send_email_download_notification(
+            session, user, secretariat_admins, background_tasks
+        )
     return download.response
 
 
@@ -324,6 +332,7 @@ def update_download_status(
     req: Request,
     uuid: str,
     approved: bool,
+    background_tasks: BackgroundTasks,
     session: Session = Depends(get_session),
     credentials: credentials = Depends(security),
 ):
@@ -354,5 +363,5 @@ def update_download_status(
                 else MailTypeEnum.ongoing_data_download_approved
             ),
         )
-        email.send
+        background_tasks.add_task(email.send)
     return update.list_of_download_request

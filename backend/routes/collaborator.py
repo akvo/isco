@@ -1,4 +1,4 @@
-from fastapi import Depends, Request, APIRouter
+from fastapi import Depends, Request, APIRouter, BackgroundTasks
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
 from typing import List
@@ -15,7 +15,9 @@ security = HTTPBearer()
 collaborator_route = APIRouter()
 
 
-def send_collaborator_email(session, user, recipient_org_ids):
+def send_collaborator_email(
+    session, user, recipient_org_ids, background_tasks: BackgroundTasks
+):
     assigning_name = user.name
     assigning_org = crud_org.get_organisation_by_id(
         session=session, id=user.organisation).name
@@ -59,7 +61,8 @@ def send_collaborator_email(session, user, recipient_org_ids):
             type=MailTypeEnum.add_collaborator,
             body=body,
             body_translation=body_translation)
-        return email.send
+        background_tasks.add_task(email.send)
+        return True
     return False
 
 
@@ -69,6 +72,7 @@ def send_collaborator_email(session, user, recipient_org_ids):
                          name="collaborator:create",
                          tags=["Collaborator"])
 def add(req: Request, data: int, payload: List[CollaboratorPayload],
+        background_tasks: BackgroundTasks,
         session: Session = Depends(get_session),
         credentials: credentials = Depends(security)):
     user = verify_user(session=session, authenticated=req.state.authenticated)
@@ -80,7 +84,10 @@ def add(req: Request, data: int, payload: List[CollaboratorPayload],
         collaborators.append(collaborator)
         org_ids.append(collaborator.organisation)
     send_collaborator_email(
-        session=session, user=user, recipient_org_ids=org_ids)
+        session=session,
+        user=user,
+        recipient_org_ids=org_ids,
+        background_tasks=background_tasks)
     return [c.serialize for c in collaborators]
 
 
@@ -90,6 +97,7 @@ def add(req: Request, data: int, payload: List[CollaboratorPayload],
                         name="collaborator:put",
                         tags=["Collaborator"])
 def update(req: Request, data: int, payload: List[CollaboratorPayload],
+           background_tasks: BackgroundTasks,
            session: Session = Depends(get_session),
            credentials: credentials = Depends(security)):
     user = verify_user(session=session, authenticated=req.state.authenticated)
@@ -115,7 +123,8 @@ def update(req: Request, data: int, payload: List[CollaboratorPayload],
     collaborators = crud.get_collaborator_by_data(session=session, data=data)
     # send email
     send_collaborator_email(
-        session=session, user=user, recipient_org_ids=org_ids)
+        session=session, user=user, recipient_org_ids=org_ids,
+        background_tasks=background_tasks)
     return [c.serialize for c in collaborators]
 
 
