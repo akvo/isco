@@ -1,4 +1,4 @@
-from fastapi import Depends, Request, APIRouter, HTTPException
+from fastapi import Depends, Request, APIRouter, HTTPException, BackgroundTasks
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
 from typing import List
@@ -14,8 +14,10 @@ security = HTTPBearer()
 feedback_route = APIRouter()
 
 
-def send_feedback_to_secretariat_admin(session: Session, user,
-                                       feedback: FeedbackPayload):
+def send_feedback_to_secretariat_admin(
+    session: Session, user, feedback: FeedbackPayload,
+    background_tasks: BackgroundTasks
+):
     organisation = crud_organisation.get_organisation_by_id(
         session=session, id=user.organisation)
     org_name = organisation.name
@@ -42,7 +44,7 @@ def send_feedback_to_secretariat_admin(session: Session, user,
                       body=body,
                       body_translation="",
                       type=MailTypeEnum.feedback)
-        email.send
+        background_tasks.add_task(email.send)
 
 
 @feedback_route.post("/feedback",
@@ -52,6 +54,7 @@ def send_feedback_to_secretariat_admin(session: Session, user,
                      tags=["Feedback"])
 def add(req: Request,
         payload: FeedbackPayload,
+        background_tasks: BackgroundTasks,
         session: Session = Depends(get_session),
         credentials: credentials = Depends(security)):
     user = verify_editor(session=session,
@@ -64,7 +67,8 @@ def add(req: Request,
                                  payload=payload)
     send_feedback_to_secretariat_admin(session=session,
                                        user=user,
-                                       feedback=payload)
+                                       feedback=payload,
+                                       background_tasks=background_tasks)
     return feedback.serialize
 
 

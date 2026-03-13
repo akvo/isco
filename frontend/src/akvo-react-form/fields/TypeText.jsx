@@ -75,13 +75,14 @@ const TextField = ({
 
   return (
     <div>
+      {/* TODO:: Move extra to parent component to avoid re rendering in each
+      input field */}
       {!!extraBefore?.length &&
         extraBefore.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
-
       <Form.Item
         className="arf-field-child"
         key={keyform}
-        name={disableFieldByDependency ? "" : id}
+        name={disableFieldByDependency ? "" : id} //TODO:: check ARF, update this to null instead of "" to prevent required validation when disabledFieldByDependency is true
         rules={[
           ...rules,
           {
@@ -107,7 +108,6 @@ const TextField = ({
       >
         <TextArea row={4} disabled={naChecked || disableFieldByDependency} />
       </Form.Item>
-
       {/* inputDataUnavailable */}
       <DataUnavailableField
         allowNA={rule?.allowNA}
@@ -119,7 +119,6 @@ const TextField = ({
         show_repeat_in_question_level={show_repeat_in_question_level}
         disabled={disableFieldByDependency}
       />
-
       {!!extraAfter?.length &&
         extraAfter.map((ex, exi) => <Extra key={exi} id={id} {...ex} />)}
     </div>

@@ -141,7 +141,7 @@ const Question = ({
     }
     // eol of hint
     if (field?.dependency) {
-      // TODO :: refine this to handle the dependency
+      // handle the dependency
       const modifiedDependency = modifyDependency(group, field, repeat);
       return (
         <Form.Item noStyle key={key} shouldUpdate={current}>

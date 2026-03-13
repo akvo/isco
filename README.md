@@ -57,6 +57,15 @@ docker-compose down -v
 docker volume rm isco-docker-sync
 ```
 
+### Static Content Extraction
+
+To extract the static content constants from the frontend application into a `.xlsx` spreadsheet, you can use the provided export script. This will run a script inside the Docker container to generate `frontend/content-export.xlsx`.
+
+```bash
+cd frontend
+./export.sh
+```
+
 ## Production
 
 ```bash
