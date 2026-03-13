@@ -6,7 +6,7 @@ from middleware import get_password_hash, verify_super_admin
 from middleware import decode_token, verify_token, organisations_in_same_isco
 from middleware import find_secretariat_admins, find_member_admins
 from fastapi import Depends, HTTPException, status, APIRouter, Request, Query
-from fastapi import Form, Response
+from fastapi import BackgroundTasks, Form, Response
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -35,11 +35,14 @@ oauth2_scopes = ["openid", "email"]
 webdomain = os.environ["WEBDOMAIN"]
 
 
-def send_verification_email(user, recipients, type=MailTypeEnum.verify_email):
+def send_verification_email(
+    user, recipients, background_tasks: BackgroundTasks,
+    type=MailTypeEnum.verify_email
+):
     email_token = create_access_token(data={"email": user["email"]})
     url = f"{webdomain}/verify_email/{email_token.get('token')}"
     email = Email(recipients=recipients, type=type, button_url=url)
-    email.send
+    background_tasks.add_task(email.send)
 
 
 @user_route.post(
@@ -198,6 +201,7 @@ def me(
 )
 def register(
     req: Request,
+    background_tasks: BackgroundTasks,
     payload: UserBase = Depends(UserBase.as_form),
     invitation: Optional[bool] = False,
     session: Session = Depends(get_session),
@@ -233,10 +237,10 @@ def register(
         email = Email(
             recipients=recipients, type=MailTypeEnum.invitation, button_url=url
         )
-        email.send
+        background_tasks.add_task(email.send)
     if not invitation:
         # send email register success with email verification link
-        send_verification_email(user, recipients)
+        send_verification_email(user, recipients, background_tasks)
     return user
 
 
@@ -248,7 +252,10 @@ def register(
     tags=["User"],
 )
 def verify_email(
-    req: Request, email: str, session: Session = Depends(get_session)
+    req: Request,
+    email: str,
+    background_tasks: BackgroundTasks,
+    session: Session = Depends(get_session)
 ):
     TESTING = os.environ.get("TESTING")
     if TESTING:
@@ -278,7 +285,7 @@ def verify_email(
             type=MailTypeEnum.register,
             body=body_secretariat,
         )
-        email_secretariat.send
+        background_tasks.add_task(email_secretariat.send)
 
     # inform member admin
     member_admins = find_member_admins(
@@ -344,7 +351,7 @@ def verify_email(
             body=body_member,
             body_translation=body_member_translation,
         )
-        email_member.send
+        background_tasks.add_task(email_member.send)
     return user
 
 
@@ -427,6 +434,7 @@ def update_user(
     req: Request,
     id: int,
     payload: UserUpdateByAdmin,
+    background_tasks: BackgroundTasks,
     approved: Optional[bool] = False,
     session: Session = Depends(get_session),
     credentials: credentials = Depends(security),
@@ -452,7 +460,7 @@ def update_user(
         email = Email(
             recipients=[user.recipient], type=MailTypeEnum.user_approved
         )
-        email.send
+        background_tasks.add_task(email.send)
     return res
 
 
@@ -497,6 +505,7 @@ def update_password(
 )
 def new_forgot_password(
     req: Request,
+    background_tasks: BackgroundTasks,
     email: str = Form(...),
     session: Session = Depends(get_session),
 ):
@@ -511,7 +520,7 @@ def new_forgot_password(
         type=MailTypeEnum.reset_password,
         button_url=url,
     )
-    email.send
+    background_tasks.add_task(email.send)
     return JSONResponse(
         status_code=status.HTTP_201_CREATED,
         content={"message": "url is generated"},
@@ -585,11 +594,14 @@ def post_forgot_password(
     tags=["User"],
 )
 def resend_verification_email(
-    req: Request, email: str, session: Session = Depends(get_session)
+    req: Request,
+    email: str,
+    background_tasks: BackgroundTasks,
+    session: Session = Depends(get_session)
 ):
     # resend email verification link
     user = crud_user.get_user_by_email(session=session, email=email)
-    send_verification_email(user.serialize, [user.recipient])
+    send_verification_email(user.serialize, [user.recipient], background_tasks)
     return user.serialize
 
 

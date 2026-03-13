@@ -75,7 +75,7 @@ def send_email_code(user, code):
         body_translation=body_translation,
         type=MailTypeEnum.otp_code,
     )
-    email.send
+    email.send()
 
 
 def delete_temporary(filename: str):

@@ -7,10 +7,12 @@ services:
       - 5000:5000
       - 5050:5050
   chromedriver:
+    platform: linux/amd64
     image: selenium/standalone-chrome
     restart: always
     network_mode: service:mainnetwork
   selenium:
+    platform: linux/amd64
     image: akvo/akvo-selenium-side-runner:20230215.031651.e73d03e
     command: ["tail", "-f", "/dev/null"]
     working_dir: /app
@@ -18,6 +20,7 @@ services:
       - ./tests:/app
     network_mode: service:mainnetwork
   pgadmin:
+    platform: linux/amd64
     image: dpage/pgadmin4:5.7
     environment:
       - PGADMIN_LISTEN_PORT=5050
@@ -30,6 +33,7 @@ services:
       - db
     network_mode: service:mainnetwork
   backend:
+    platform: linux/amd64
     volumes:
       - ./backend:/app:delegated
       - ../akvo-config/k8s-secrets/test/isco:/credentials/:ro
@@ -38,5 +42,8 @@ services:
       - WEBDOMAIN=http://localhost:3000
       - MAILJET_SECRET=$MAILJET_SECRET
       - MAILJET_APIKEY=$MAILJET_APIKEY
+    network_mode: service:mainnetwork
+  frontend:
+    platform: linux/amd64
 volumes:
   pg-admin-data:

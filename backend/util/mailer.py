@@ -145,7 +145,6 @@ class Email:
             payload.update({"Attachments": [attachment]})
         return payload
 
-    @property
     def send(self) -> int:
         TESTING = os.environ.get("TESTING")
         if TESTING:
