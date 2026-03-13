@@ -3,8 +3,8 @@
 
 set -euo pipefail
 
-pip -q install --upgrade pip
-pip -q install --cache-dir=.pip -r requirements.txt
+pip install --upgrade pip
+pip install --cache-dir=.pip -r requirements.txt
 pip check
 
 alembic upgrade head
