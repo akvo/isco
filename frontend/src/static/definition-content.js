@@ -164,7 +164,7 @@ const definitionContent = {
             targeting prevention, mitigation and remediation assistance to
             children involved in or at-risk of child labour, as well as to their
             families and communities. To meet the definition of a{" "}
-            <i>Child Labour Monitoring and Remediation Systems (CLMRS)</i> or
+            <i>Child Labour Monitoring and Remediation System</i> (CLMRS) or
             equivalent, the system must implement the following core activities:
             <ol style={{ marginLeft: "25px" }} start={1}>
               <li>
@@ -279,10 +279,10 @@ const definitionContent = {
       d: (
         <Fragment>
           <div>
-            Having polygons of the farm (&gt; 4 ha) and farm plots (&lt; 4 ha)
-            verified as not in a protected forest and as not comprising land
-            that was deforested since 31.12.2018 for GISCO and 31.12.2020 for
-            the other ISCOs.
+            Polygone der Farmen (&gt; 4 ha) und landwirtschaftliche Parzellen
+            (&lt; 4 ha) liegen nachweislich nicht in einem geschützten Wald oder
+            auf Land, das seit dem 31.12.2018 (für GISCO) bzw. dem 31.12.2020
+            (für die anderen ISCOs) entwaldet wurde.
           </div>
         </Fragment>
       ),
@@ -304,29 +304,6 @@ const definitionContent = {
       i: "Reached (farming households reached)",
       t: "Reached (farming households reached)",
       d: "The term “reached” (as in ”farming households reached”) is contextual, it could mean ”engaged in”, ”benefiting”, etc. Each data collection, for “# of farming households reached”, shall to the extent possible be linked to an activity, output or outcome of the cocoa sustainability project or initiative; such linking thus contextualizes the implication of and / or benefits for the concerned farming household.",
-    },
-    {
-      i: "Farming land",
-      t: "Farming land",
-      d: "Farming land comprises all land available for exploitation by the cocoa farming household(s); whatever the ownership, share cropping, rental or user right arrangements are. Size of the farming land is to be expressed in hectares (Ha).",
-    },
-    {
-      i: "Farming land under cocoa cultivation",
-      t: "Farming land under cocoa cultivation",
-      d: (
-        <Fragment>
-          <div>
-            &quot;Farming land under cocoa cultivation&quot; corresponds to
-            (parts of the household&apos;s) farming land (plots) where cocoa is
-            produced as the main crop*, whatever the type of cocoa cultivation
-            applied.
-            <br /> (*if in special cases a significant amount of cocoa is
-            produced on agricultural land (plots) where cocoa is only the
-            secondary crop then this land can also be accounted for as farming
-            land under cocoa cultivation)
-          </div>
-        </Fragment>
-      ),
     },
     {
       i: "Direct supply",
@@ -436,10 +413,10 @@ const definitionContent = {
               yields
             </code>
             <br />
-            For Fairtade the relevant price at farmgate is:
+            For Fairtade the relevant price at farmgate is (2025):
             <ul style={{ marginLeft: "25px" }}>
-              <li>Ghana: 16.50 GHC / 2.12 USD per kg</li>
-              <li>Côte d’Ivoire: 1.602 CFA / 2.39 USD per kg</li>
+              <li>Ghana: GHS 42.4 / USD 2.86 per kg</li>
+              <li>Côte d’Ivoire: CFA 1.736 / USD 2.80 per kg</li>
             </ul>
             For other origins, please indicate in the comment box, which LIRP
             you are using.
@@ -453,33 +430,62 @@ const definitionContent = {
       d: (
         <Fragment>
           <div>
-            A living income strategy is a strategy with the explicit goal to
-            enable cocoa farming households to earn a living income. A living
-            income strategy includes a monitoring and learning component.
+            A living income strategy is a time‑bound, evidence‑based plan whose
+            primary objective is to contribute to reducing and ultimately
+            closing, the living income gap* for a defined target group of cocoa
+            farming households in specific geographies. It must include the
+            following minimum components:
+            <ol style={{ marginBottom: 0 }}>
+              <li>
+                An analysis of current household incomes and gaps vs. a
+                recognized living income benchmark
+              </li>
+              <li>
+                A theory of change explaining how the strategy will reduce the
+                gap
+              </li>
+              <li>A monitoring, evaluation & learning (MEL) plan</li>
+            </ol>
             <br />
             A living income strategy uses a combination, or “smart-mix” of
             strategies that target multiple income drivers. Multiple income
-            drivers* are being assessed strategically for the purpose of closing
-            the living income gap**. The interventions for each driver depend on
-            the current situation of those drivers and to what extent addressing
-            these drivers can help close the living income gap among different
-            segments and profiles of farmers. Strategies that can improve income
-            drivers go beyond addressing changes in the farm system and
-            household behaviour. These strategies include improved procurement
-            practices. They range from service delivery for improved production
-            and processing, to brand and consumer engagement, and to improving
-            the enabling environment.
+            drivers** are strategically assessed for the purpose of closing the
+            living income gap (as part of the analysis (1) and theory of change
+            (2)).
+            <br />
+            The drivers to address are then chosen based on their potential for
+            closing the living income gap of specific farmer segments and the
+            member’s ability to realistically influence them. When designing
+            interventions to address selected income drivers, members should
+            choose different measures*** based on their expected effectiveness
+            and the member’s position in the supply chain. For companies, a
+            living income strategy must always include procurement practices in
+            line with the ISCO principles for sustainable procurement
+            practices.****
             <br />
             <br />
-            A living income strategy goes beyond income generating activities
-            (IGAs) that do not have the explicit aim of closing living income
-            gaps.
+            Income generating activities or activities that indirectly support
+            income generation (e.g., general community development) are
+            considered part of a living income strategy only when they are
+            designed and monitored for their contribution to closing the living
+            income gap.
             <br />
+            <br />* the difference between the actual household income and a
+            recognized{" "}
+            <a href="#living income benchmarks">Living Income Benchmark</a>{" "}
+            (current or adjusted)
             <br />
-            *land size, yield, price, cost of production, diversified incomes
+            ** land size, yield, price, cost of production, diversified incomes,
+            household costs
             <br />
-            **the difference between the actual household income and the
-            existing living income benchmark
+            *** Examples include the provision of trainings, an adaption of
+            procurement practices, direct cash transfers, consumer engagement,
+            and collaboration in landscape approaches to improve framework
+            conditions. **** Please refer to the definition of &quot;
+            <a href="#sustainable procurement practices">
+              sustainable procurement practices
+            </a>
+            &quot;.
           </div>
         </Fragment>
       ),
@@ -496,7 +502,7 @@ const definitionContent = {
         <Fragment>
           <ul type="bullet" style={{ margin: 0, padding: 0 }}>
             <li>
-              The term AGROFRORESTRY refers to farming fields in which cocoa
+              The term AGROFORESTRY refers to farming fields in which cocoa
               trees are deliberately combined with preferably native non-cocoa
               tree species that have proven to be useful for AGROFORESTRY in a
               stratified spatial arrangement and temporal sequence. This
@@ -543,7 +549,7 @@ const definitionContent = {
     },
     {
       i: "Agroforestry - Categories for Cocoa Agroforestry systems",
-      t: "Agroforestry - Categories for Cocoa Agroforestry systems",
+      t: "Agroforestry - Categories for cocoa agroforestry systems",
       d: (
         <Fragment>
           <div>
@@ -659,11 +665,6 @@ const definitionContent = {
       d: "Please refer to the definition of “Farming Household”",
     },
     {
-      i: "Multi-purpose trees",
-      t: "Multi-purpose trees",
-      d: "Tree species that are included on cocoa farms primarily to provide economical and / or ecological benefits to the farm. This may include tree crops such as fruit, oil palm, medicinal, fodder and / or timber / shade trees for later harvest.",
-    },
-    {
       i: "Native tree species",
       t: "Native tree species",
       d: (
@@ -701,7 +702,7 @@ const definitionContent = {
             remittances) - associated costs. <br /> <br />
             <u>Points of attention:</u>
             <br />
-            <i>Costs to include:</i>
+            <i>Point of attention - Include costs for:</i>
             <ul style={{ marginLeft: "25px" }}>
               <li>
                 <i>
@@ -726,7 +727,7 @@ const definitionContent = {
     },
     {
       i: "Program",
-      t: "Program",
+      t: "Programme",
       d: "Please refer to the definition of “Project”.",
     },
     {
@@ -848,9 +849,9 @@ const definitionContent = {
             Example: 20.000 MT-BE are sourced from Ghana and 2.000 MT-BE are
             sourced from Ecuador
             <ul>
-              <li>Ghana: (20.000/1104.6)*1.000 = 18.106 farmers</li>
-              <li>Ecuador: (2.000/3840.18)*1.000 = 520 farmers</li>
-              <li>Total: 18.626 farmers </li>
+              <li>Ghana: (20,000/1131.7)*1,000 = 17,672 households</li>
+              <li>Ecuador: (2,000/3840.18)*1,000 = 520 households</li>
+              <li>Total: 18,192 households</li>
             </ul>
             <br />
             <Table
@@ -867,8 +868,8 @@ const definitionContent = {
     },
     {
       i: "Certified or cocoa covered through a company program",
-      t: "Certified or cocoa covered through a company program",
-      d: "Cocoa produced in compliance with the requirements of certification standards (such as Fairtrade or Rainforest Alliance) or company schemes on sustainable cocoa.",
+      t: "Certified or cocoa covered through a company programme",
+      d: "Cocoa produced in compliance with the requirements of certification standards (such as Fairtrade or Rainforest Alliance) or company programmes on sustainable cocoa.",
     },
     {
       i: "Cocoa grower",
@@ -924,7 +925,7 @@ const definitionContent = {
     },
     {
       i: "Evidence of impact of system to prevent and address child labour",
-      t: "Evidence of impact of system to prevent and address child labour",
+      t: "Evidence of impact of systems to prevent and address child labour",
       d: "Evidence could include a robust impact study, where impact is demonstrated in this context, compared to a control group (e.g. through a randomized control trial (RCT), difference-in-difference analysis, regression discontinuity design etc.",
     },
     {
@@ -938,9 +939,10 @@ const definitionContent = {
       d: (
         <Fragment>
           <div>
-            As ‘manufactured’ we typically understand, from semi-finished
-            product or chocolate to chocolate end products, including moulding,
-            filling & enrobing. The relevant HS- Codes for manufactured are:
+            By ‘manufactured’ volumes, we typically mean chocolate end products
+            your factories produce from semi-finished products or chocolate,
+            including by moulding, filling, and enrobing. The relevant HS- Codes
+            for manufactured goods are:
             <ul>
               <li>
                 <b>18063100</b> Chocolate and other preparations containing
@@ -975,7 +977,15 @@ const definitionContent = {
     {
       i: "Methodology # of farmers for which the LI gap is measured",
       t: "Methodology # of farmers for which the LI gap is measured",
-      d: "The ISCOs do not require members to measure the income gap of every individual farmer in their supply chain, but for a representative sample of their supply chain. Members will be able to specify how they define a representative sample in a follow-up question.",
+      d: (
+        <Fragment>
+          The ISCOs do not require members to measure the income gap of every
+          individual farmer in their supply chain, but for a representative
+          sample of their supply chain. Members will be able to specify how they
+          define a representative sample in a follow-up question. Also refer to
+          the “<a href="#">Guidance on Living Income measurement</a>”.
+        </Fragment>
+      ),
     },
     {
       i: "Methodology to calculate MT-BE",
@@ -1039,6 +1049,31 @@ const definitionContent = {
       i: "System to prevent and address child labour",
       t: "System to prevent and address child labour",
       d: 'A "system" is a set of interventions to assess risks, prevent and address child labour. An example of another type of system is a comprehensive community development approach.',
+    },
+    {
+      i: "Sustainable procurement practices",
+      t: "Sustainable procurement practices",
+      d: (
+        <Fragment>
+          Procurement practices encompass the methods organizations use to
+          acquire goods or services. Cocoa procurement can be considered
+          sustainable when:
+          <ol style={{ listStyleType: "lower-alpha" }}>
+            <li>
+              Cocoa producing households receive adequate remuneration covering
+              the costs for sustainable cocoa production, making it profitable
+              and enabling them to reach a living income, and
+            </li>
+            <li>
+              Cocoa producers and cooperatives are enabled to better manage
+              risks through longer-term relationships and cooperation agreements
+              with their off takers.
+            </li>
+          </ol>
+          Sustainable procurement practices need to be part of a “smart mix”{" "}
+          <a href="#living income strategy">living income strategy</a>.
+        </Fragment>
+      ),
     },
   ],
 
@@ -1172,7 +1207,7 @@ const definitionContent = {
                 Kinderarbeit
               </li>
               <li>
-                Identifizierung von Kindern in Kinderarbeit durch aktives und
+                Identifizierung von Kindern in Kinderarbeit durch aktives,
                 regelmäßiges und wiederholtes Monitoring mithilfe
                 standardisierter Methoden zur Datenerfassung.
               </li>
@@ -1319,29 +1354,7 @@ const definitionContent = {
     {
       i: "Reached (farming households reached)",
       t: "erreicht („erreichte bäuerliche Haushalte“)",
-      d: 'Der Begriff "erreicht" (im Sinne von "erreichte bäuerliche Haushalte") ist kontextabhängig, er könnte beispielsweise "involviert in" oder "profitierend von" bedeuten. Entsprechende Datenerhebungen sollten die Variable "Anzahl der erreichten bäuerlichen Haushalte" in Beziehung setzen zu einer Aktivität oder einer Wirkung/einem Ergebnis des Nachhaltigkeitsprojekts; Diese Verknüpfung kontextualisiert die Implikationen/Vorteile für die „erreichten“ bäuerlichen Haushalte.',
-    },
-    {
-      i: "Farming land",
-      t: "Anbaufläche",
-      d: "Die Anbaufläche bezeichnet alle Flächen, die einem bäuerlichen Haushalt zur landwirtschaftlichen Nutzung zur Verfügung stehen, unabhängig von den Eigentums-, Anbau-, Pacht- oder Nutzungsrechtsverhältnissen. Die Größe der Anbaufläche sollte in Hektar (Ha) angegeben werden.",
-    },
-    {
-      i: "Farming land under cocoa cultivation",
-      t: "Kakaoanbaufläche",
-      d: (
-        <Fragment>
-          <div>
-            Die Kakaoanbaufläche entspricht dem Teil der Anbaufläche auf dem
-            Kakao als Hauptkultur* angebaut wird, unabhängig von der Art des
-            Kakaoanbaus.
-            <br /> (*wenn in besonderen Fällen eine erhebliche Menge Kakao auf
-            einer landwirtschaftlichen Fläche erzeugt wird, dieser aber nur eine
-            „Nebenkultur“ darstellt, können diese Flächen ebenfalls als
-            Kakaoanbaufläche gewertet werden.)
-          </div>
-        </Fragment>
-      ),
+      d: 'Der Begriff "erreicht" (im Sinne von "erreichte bäuerliche Haushalte") ist kontextabhängig; er könnte beispielsweise "involviert in" oder "profitierend von" bedeuten. Entsprechende Datenerhebungen sollten die Variable "Anzahl der erreichten bäuerlichen Haushalte" zu einer Aktivität oder einer Wirkung/einem Ergebnis des Nachhaltigkeitsprojekts in Bezug setzen. Diese Verknüpfung kontextualisiert die Implikationen/Vorteile für die „erreichten“ bäuerlichen Haushalte.',
     },
     {
       i: "Direct supply",
@@ -1457,10 +1470,10 @@ const definitionContent = {
               lebensfähige Landfläche * nachhaltige Erträge
             </code>
             <br />
-            Für Fairtrade lautet beispielsweise der LIRP (2022):
+            Für Fairtrade lautet beispielsweise der LIRP (2025):
             <ul style={{ marginLeft: "25px" }}>
-              <li>Ghana: 16,50 GHC / 2,12 USD pro kg</li>
-              <li>Côte d‘Ivoire: 1.602 CFA / 2.39 USD pro kg</li>
+              <li>Ghana: GHS 42.4 / USD 2.86 pro kg</li>
+              <li>Côte d’Ivoire: CFA 1.736 / USD 2.80 pro kg</li>
             </ul>
             Für andere Ursprünge geben Sie bitte im Kommentarfeld an, welches
             LIRP Sie verwenden.
@@ -1475,32 +1488,68 @@ const definitionContent = {
         <Fragment>
           <div>
             Eine Strategie für existenzsichernde Einkommen (Living Income
-            Strategy) ist eine Strategie mit dem expliziten Ziel,
-            Kakaobauernhaushalten ein existenzsicherndes Einkommen zu
-            ermöglichen. Eine Strategie für existenzsicherndes Einkommen
-            beinhaltet eine Monitoring- und Lernkomponente.
+            Strategy) ist ein zeitlich begrenzter, evidenzbasierter Plan, dessen
+            Hauptziel darin besteht, die Einkommenslücke* für eine bestimmte
+            Zielgruppe von Kakaobauernhaushalten in bestimmten Regionen zu
+            verringern und letztendlich zu schließen. Sie muss mindestens die
+            folgenden Komponenten umfassen:
+            <ol style={{ marginBottom: 0 }}>
+              <li>
+                Eine Analyse des aktuellen Haushaltseinkommens und der Lücke zu
+                einem anerkannten Richtwert für ein existenzsicherndes Einkommen
+              </li>
+              <li>
+                Eine Theory of Change, die erklärt, wie die Strategie diese
+                Lücke verringern wird
+              </li>
+              <li>Einen Plan für Monitoring, Evaluierung und Lernen (MEL)</li>
+            </ol>
             <br />
             Eine Strategie für existenzsichernde Einkommen verwendet eine
-            Kombination oder einen „Smart-Mix“ von Strategien, die auf mehrere
-            einkommensfördernde Faktoren abzielen. Faktoren, die das Einkommens
-            erhöhen können* werden strategisch bewertet, um die Einkommenslücken
-            zwischen tatsächlichen und existenzsichernden Einkommen zu
-            schließen**.
+            Kombination oder einen &quot;intelligenten Mix&quot; („smart mix“)
+            von Strategien, die auf mehrere Einkommensfaktoren abzielen. Zur
+            Verringerung von Einkommenslücken werden mehrere
+            Einkommensfaktoren** strategisch bewertet (als Teil der Analyse (1)
+            und der Theory of Change (2)). Die zu behandelnden Faktoren werden
+            dann auf der Grundlage ihres Potenzials zur Schließung der
+            Einkommenslücke bestimmter Farmersegmente und der Fähigkeit des
+            Mitglieds, sie realistisch zu beeinflussen, ausgewählt. Bei der
+            Entwicklung von Maßnahmen zur Beeinflussung ausgewählter
+            Einkommensfaktoren sollten die Mitglieder verschiedene Maßnahmen***
+            auf der Grundlage ihrer erwarteten Wirksamkeit und der Position des
+            Mitglieds in der Lieferkette wählen. Für Unternehmen muss eine
+            Strategie für ein existenzsicherndes Einkommen immer auch
+            Beschaffungspraktiken beinhalten, die den ISCO-Grundsätzen für
+            nachhaltige Beschaffungspraktiken entsprechen.****
             <br />
-            Die Interventionen für jeden dieser Faktoren hängen von der
-            aktuellen Situation ab und davon, inwieweit diese Faktoren die
-            Einkommenslücke verschiedenen Typen von Bauern und Bäuerinnen
-            adressieren. Einkommensfördernde Strategien gehen über Veränderungen
-            in bäuerlichen Systemen und Haushalten hinaus und schließen
-            Verbesserungen in unternehmerischen Beschaffungspraktiken ein. Sie
-            reichen von der Erbringung von Dienstleistungen für eine verbesserte
-            Produktion und Verarbeitung über die Marken- und Verbraucherbindung
-            bis hin zur Verbesserung des „enabling environments“.
             <br />
-            Eine Strategie für existenzsichernde Einkommen geht über generelle
-            einkommensschaffende Aktivitäten (IGAs) hinaus, die nicht explizit
-            das Ziel haben, die Einkommenslücken zwischen tatsächlichen und
-            existenzsichernden Einkommen zu schließen.
+            Einkommensschaffende Aktivitäten oder Aktivitäten, die die
+            Einkommensschaffung indirekt unterstützen (z.B. allgemeine
+            Gemeindeentwicklung), werden nur dann als Teil einer Strategie für
+            ein existenzsichernde Einkommen betrachtet, wenn sie auf ihren
+            Beitrag zur Schließung der Einkommenslücke hin konzipiert werden und
+            ihre dahingehende Wirkung gemessen wird.
+            <br />
+            <br />* die Differenz zwischen dem tatsächlichen Haushaltseinkommen
+            und einer anerkannten{" "}
+            <a href="#living income benchmarks">
+              Benchmark für ein existenzsicherndes Einkommen
+            </a>{" "}
+            (aktuell oder angepasst)
+            <br />
+            ** Landgröße, Ertrag, Preis, Produktionskosten, diversifizierte
+            Einkommen, Haushaltskosten
+            <br />
+            *** Beispiele sind die Bereitstellung von Schulungen, eine Anpassung
+            der Beschaffungspraktiken, direkte Geldtransfers, die Einbeziehung
+            von Verbrauchern und die Zusammenarbeit in Landschaftsansätzen zur
+            Verbesserung der Rahmenbedingungen.
+            <br />
+            **** Bitte beachten Sie die Definition von &quot;
+            <a href="#sustainable procurement practices">
+              sustainable procurement practices
+            </a>
+            &quot;.
           </div>
         </Fragment>
       ),
@@ -1679,11 +1728,6 @@ const definitionContent = {
       i: "Household",
       t: "Haushalt",
       d: "Siehe Definition „Bäuerlicher Haushalt“",
-    },
-    {
-      i: "Multi-purpose trees",
-      t: "Mehrzweckbäume",
-      d: "Baumarten, die zusätzlich auf Kakaoanbauflächen gepflanzt werden, vor allem um ökonomischen oder ökologischen Mehrwert zu generieren. Dabei kann es sich um Obstbäume, Ölpalmen, Heilpflanzen, Futtermittelpflanzen und / oder Schattenbäume für die spätere Holzernte handeln.",
     },
     {
       i: "Native tree species",
@@ -1885,13 +1929,9 @@ const definitionContent = {
             Beispiel: Aus Ghana werden 20.000 MT-BE bezogen, aus Ecuador 2.000
             MT-BE.
             <ul>
-              <li>
-                Ghana: (20.000/1.104,6)*1.000 = 18.106 Bäuerinnen und Bauern
-              </li>
-              <li>
-                Ecuador: (2.000/3.840,18)*1.000 = 520 Bäuerinnen und Bauern
-              </li>
-              <li>Gesamt: 18.626 Bauern</li>
+              <li>Ghana: (20.000/1.131,7)*1.000 = 17,672 Haushalte</li>
+              <li>Ecuador: (2.000/3.840,18)*1.000 = 520 Haushalte</li>
+              <li>Gesamt: 18.192 Haushalte</li>
             </ul>
             Bitte beachten Sie: Die folgenden Zahlen beziehen sich auf das Jahr
             2022. Die ISCOs werden sich bemühen, aktualisierte Zahlen in das
@@ -2026,8 +2066,19 @@ const definitionContent = {
     },
     {
       i: "Methodology # of farmers for which the LI gap is measured",
-      t: "Methodik für Bauern, bei denen die Einkommenslücken zwischen tatsächlichen und existenzsichernden Einkommen (Living Income Gap) gemessen wird",
-      d: "Die ISCOs verlangen von den Mitgliedern nicht, die Einkommenslücken zwischen tatsächlichen und existenzsichernden Einkommenjedes einzelnen Bauern in ihrer Lieferkette zu messen, sondern für eine repräsentative Stichprobe ihrer Lieferkette. Die Mitglieder können in einer Folgefrage angeben, wie sie eine repräsentative Stichprobe definieren.",
+      t: "Methodik für Bauern, bei denen die Einkommenslücke zwischen tatsächlichem und existenzsicherndem Einkommen (Living Income Gap) gemessen wird",
+      d: (
+        <Fragment>
+          Die ISCOs verlangen von den Mitgliedern nicht, die Einkommenslücke
+          zwischen tatsächlichem und existenzsicherndem Einkommen jedes
+          einzelnen Bauerns in ihrer Lieferkette zu messen, sondern für eine
+          repräsentative Stichprobe ihrer Lieferkette. Die Mitglieder können in
+          einer Folgefrage angeben, wie sie eine repräsentative Stichprobe
+          definieren. Weitere Informationen zur Berechnung von Einkommenslücken
+          finden Sie in der „
+          <a href="#">Guidance on Living Income Gap Measurement</a>“.
+        </Fragment>
+      ),
     },
     {
       i: "Methodology to calculate MT-BE",
@@ -2076,6 +2127,35 @@ const definitionContent = {
       i: "System to prevent and address child labour",
       t: "System zur Verhinderung und Bekämpfung von Kinderarbeit",
       d: 'Ein "System" ist eine Reihe von Maßnahmen zur Risikobewertung, Prävention und Bekämpfung von Kinderarbeit. Ein Beispiel für eine andere Art von System ist ein umfassender Ansatz zur Gemeindeentwicklung.',
+    },
+    {
+      i: "Sustainable procurement practices",
+      t: "Nachhaltige Beschaffungspraktiken",
+      d: (
+        <Fragment>
+          Beschaffungspraktiken umfassen die Methoden, die Organisationen
+          anwenden, um Waren oder Dienstleistungen zu erwerben. Die Beschaffung
+          von Kakao kann als nachhaltig bezeichnet werden, wenn:
+          <ol style={{ listStyleType: "lower-alpha" }}>
+            <li>
+              die kakaoproduzierenden Haushalte eine angemessene Vergütung
+              erhalten, die die Kosten für eine nachhaltige Kakaoproduktion
+              deckt, so dass diese rentabel ist und die Haushalte ein
+              existenzsicherndes Einkommen erzielen können, und
+            </li>
+            <li>
+              Kakaoproduzent*innen und Kooperativen durch längerfristige
+              Beziehungen und Kooperationsvereinbarungen mit ihren Abnehmern in
+              die Lage versetzt werden, Risiken besser zu steuern.
+            </li>
+          </ol>
+          Nachhaltige Beschaffungspraktiken müssen Teil des „smart mix“ in einer{" "}
+          <a href="#living income strategy">
+            Strategie für existenzsichernde Einkommen sein
+          </a>
+          .
+        </Fragment>
+      ),
     },
   ],
 };
