@@ -21,6 +21,7 @@ const Definition = () => {
           align="top"
           justify="space-between"
           gutter={[12, 12]}
+          id={x.i}
         >
           <Col key={"dt-" + idx} span={10} className="title">
             {x.t}
