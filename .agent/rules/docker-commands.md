@@ -11,15 +11,16 @@ trigger: always_on
 | Service | URL |
 |---------|-----|
 | Frontend (React) | http://localhost:3000 |
-| Backend API | http://localhost:5000 |
-| API Documentation | http://localhost:5000/docs |
-| pgAdmin | http://localhost:5050 |
+| Backend API | http://localhost:3000/api |
+| API Documentation | http://localhost:3000/api/docs |
+| pgadmin | http://localhost:5050 |
 
 ### Environment Management
 
 ```bash
+docker volume create isco-docker-sync # Required before first run
 ./dc.sh up -d           # Start all services
-./dc.sh down            # Stop all services
+./dc.sh stop            # Stop all services
 ./dc.sh ps              # View running services
 ./dc.sh logs -f         # Follow all logs
 ./dc.sh logs backend    # View specific service logs
@@ -47,6 +48,8 @@ trigger: always_on
 ### Rules
 
 1. **Never run `python`, `pip`, `node`, `npm`, or `yarn` directly** — always prefix with `./dc.sh exec backend` or `./dc.sh exec frontend`.
-2. **Database migrations** should run via Alembic within the backend container (`./dc.sh exec backend alembic upgrade head`).
-3. **Hot reload** is enabled for development services.
-4. **Environment variables** go in `.env` file (based on `.env.example`).
+2. **Setup**: Run `docker volume create isco-docker-sync` before starting services for the first time.
+3. **Pre-commit**: The `./dc.sh` script automatically handles `pre-commit` installation.
+4. **Database migrations** should run via Alembic within the backend container (`./dc.sh exec backend alembic upgrade head`).
+5. **Hot reload** is enabled for development services.
+6. **Environment variables** go in `.env` file (based on `.env.example`).
