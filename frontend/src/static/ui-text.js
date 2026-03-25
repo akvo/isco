@@ -38,6 +38,7 @@ const uiText = {
     navDownload: "Download",
     navImpressum: "Impressum",
     navFaq: "FAQ",
+    navDownloadFeedback: "Download Feedback",
     // Form
     formChangePwd: "Change Password",
     formEmail: "Email Address",
@@ -339,6 +340,7 @@ const uiText = {
     navDownload: "Download",
     navImpressum: "Impressum",
     navFaq: "FAQ",
+    navDownloadFeedback: "Download Feedback",
     // Form
     formChangePwd: "Passwort ändern",
     formEmail: "Emailadresse",

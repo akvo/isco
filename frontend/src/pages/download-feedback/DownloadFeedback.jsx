@@ -19,32 +19,20 @@ const DownloadFeedback = () => {
   const [iscoSelected, setIscoSelected] = useState(null);
   const [selectedMonitoringRound, setSelectedMonitoringRound] = useState(null);
   const [downloading, setDownloading] = useState(false);
-  const [allowedIsco, setAllowedIsco] = React.useState([]);
+  const [iscoOptions, setIscoOptions] = React.useState([]);
 
   React.useEffect(() => {
-    if (user?.role === "member_admin") {
-      api.get("/isco_type/mine").then((res) => {
-        setAllowedIsco(
-          res.data.map((x) => ({
-            label: x.name,
-            value: x.id,
-          }))
-        );
-      });
-    }
-  }, [user]);
-
-  const iscoOptions =
-    user?.role === "member_admin"
-      ? allowedIsco
-      : isco_type.length
-      ? isco_type
+    api.get("/isco_type/mine").then((res) => {
+      setIscoOptions(
+        res.data
           .filter((x) => x.id !== 1 || x.name.toLowerCase() !== "all")
           .map((x) => ({
             label: x.name,
             value: x.id,
           }))
-      : [];
+      );
+    });
+  }, []);
 
   const handleDownloadFeedback = () => {
     if (!selectedMonitoringRound) {
