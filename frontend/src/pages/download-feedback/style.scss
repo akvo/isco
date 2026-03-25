@@ -1,0 +1,35 @@
+#download-feedback {
+  padding: 24px;
+  background: #f0f2f5;
+  min-height: 100vh;
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .form-wrapper {
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-top: 24px;
+  }
+
+  .page-title {
+    margin-bottom: 0 !important;
+  }
+
+  .page-title-wrapper {
+    margin-bottom: 24px;
+  }
+
+  // Ant Design custom overrides to match project style
+  .ant-select-selector {
+    border-radius: 4px !important;
+  }
+
+  .ant-btn {
+    height: 40px;
+    padding: 0 24px;
+    font-weight: 500;
+  }
+}

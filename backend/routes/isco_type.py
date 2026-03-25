@@ -37,6 +37,29 @@ def get(req: Request, session: Session = Depends(get_session)):
     return [mt.serialize for mt in isco_type]
 
 
+@isco_type_route.get("/isco_type/mine",
+                     response_model=List[IscoTypeDict],
+                     summary="get all isco types for current user",
+                     name="isco_type:get_mine",
+                     tags=["Isco Type"])
+def get_mine(req: Request,
+             session: Session = Depends(get_session),
+             credentials: credentials = Depends(security)):
+    from models.user import UserRole
+    from models.organisation_isco import OrganisationIsco
+    from middleware import verify_admin
+    user = verify_admin(session=session,
+                        authenticated=req.state.authenticated)
+    if user.role == UserRole.secretariat_admin:
+        isco_type = crud.get_isco_type(session=session)
+        return [mt.serialize for mt in isco_type]
+    # Filter by user organisation
+    res = session.query(OrganisationIsco).filter(
+        OrganisationIsco.organisation == user.organisation).all()
+    # Return as IscoTypeDict
+    return [{"id": r.isco_type, "name": r.isco.name} for r in res]
+
+
 @isco_type_route.get("/isco_type/{id:path}",
                      response_model=IscoTypeBase,
                      summary="get member type by id",

@@ -42,10 +42,15 @@ const adminMenu = [
     link: "/data-cleaning",
   },
   {
-    title: "Manage Roadmap",
-    buttonText: "Manage Roadmap",
-    link: "/manage-roadmap",
+    title: "Download Feedback",
+    buttonText: "Download Feedback",
+    link: "/download-feedback",
   },
+  // {
+  //   title: "Manage Roadmap",
+  //   buttonText: "Manage Roadmap",
+  //   link: "/manage-roadmap",
+  // },
 ];
 
 const Admin = () => {

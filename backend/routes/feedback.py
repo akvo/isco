@@ -1,14 +1,19 @@
 from fastapi import Depends, Request, APIRouter, HTTPException, BackgroundTasks
 from fastapi.security import HTTPBearer
 from fastapi.security import HTTPBasicCredentials as credentials
-from typing import List
+from typing import List, Optional
 from sqlalchemy.orm import Session
 import db.crud_feedback as crud
 from db.connection import get_session
 from db import crud_organisation
 from models.feedback import FeedbackDict, FeedbackPayload, FeedbackCategory
-from middleware import verify_editor, find_secretariat_admins
+from middleware import verify_editor, find_secretariat_admins, verify_admin
 from util.mailer import Email, MailTypeEnum
+from util.sheets import generate_feedback_export
+from fastapi.responses import StreamingResponse
+from models.user import UserRole
+from models.organisation_isco import OrganisationIsco
+import os
 
 security = HTTPBearer()
 feedback_route = APIRouter()
@@ -82,3 +87,64 @@ def get_data(req: Request,
              credentials: credentials = Depends(security)):
     feedbacks = crud.get_feedback(session=session)
     return [f.serialize for f in feedbacks]
+
+
+@feedback_route.get("/feedback/download",
+                    summary="download feedback",
+                    name="feedback:download",
+                    tags=["Feedback"])
+def download(req: Request,
+             isco_type_id: Optional[int] = None,
+             monitoring_round: Optional[int] = None,
+             session: Session = Depends(get_session),
+             credentials: credentials = Depends(security)):
+    user = verify_admin(session=session,
+                        authenticated=req.state.authenticated)
+
+    isco_type_ids = None
+    if user.role == UserRole.member_admin:
+        # Get ISCOs for the user's organisation
+        user_org_iscos = session.query(OrganisationIsco).filter(
+            OrganisationIsco.organisation == user.organisation
+        ).all()
+        allowed_isco_ids = [o.isco_type for o in user_org_iscos]
+
+        if isco_type_id:
+            if isco_type_id not in allowed_isco_ids:
+                raise HTTPException(
+                    status_code=403,
+                    detail="You don't have access to this ISCO's feedback"
+                )
+            isco_type_ids = [isco_type_id]
+        else:
+            isco_type_ids = allowed_isco_ids
+    else:
+        # Secretariat admin can see all
+        if isco_type_id:
+            isco_type_ids = [isco_type_id]
+
+    results = crud.get_feedback_for_export(
+        session=session,
+        isco_type_ids=isco_type_ids,
+        monitoring_round=monitoring_round)
+
+    if not results:
+        raise HTTPException(
+            status_code=404, detail="No feedback data available")
+
+    filename = "feedback_export"
+    file_path = generate_feedback_export(filename, results)
+
+    def iterfile():
+        with open(file_path, mode="rb") as file_like:
+            yield from file_like
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
+    return StreamingResponse(
+        iterfile(),
+        media_type="application/vnd.openxmlformats-officedocument"
+                   ".spreadsheetml.sheet",
+        headers={
+            "Content-Disposition": f"attachment; filename={filename}.xlsx"
+        })
