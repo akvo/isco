@@ -268,7 +268,4 @@ class TestFeedbackDownload:
             app.url_path_for("feedback:download"),
             headers={"Authorization": f"Bearer {account.token}"},
         )
-        # It's 200 because it defaults to [2], and f1 (created in previous test? No, f1 is separate per test case usually)
-        # Wait, if there is no feedback for ISCO 2, it might be 404.
-        # But for this security test, 200 or 404 is fine as long as it's not 403 or all.
         assert response.status_code in [200, 404]
