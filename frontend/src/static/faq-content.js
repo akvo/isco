@@ -57,13 +57,15 @@ const faqEn = [
         <p>
           Reporting is obligatory for members of Beyond Chocolate, DISCO, GISCO
           and SWISSCO. If a member does not report within the given timeframe
-          (by April 15th), next steps will be taken by the ISCOs in accordance
+          (by May 13th), next steps will be taken by the ISCOs in accordance
           with the agreed processes and procedures. If a member fails to report,
           exclusion from the ISCO in question is a possibility.
         </p>
         <p>
-          Please note that for FRISCO this monitoring round is a pilot. FRISCO
-          members have an extended deadline until June 2024.
+          Members who join FRISCO are expected to contribute to the initiative
+          by participating to the monitoring. While no sanctions will be applied
+          to members who do not participate, a lack of engagement will result in
+          impacting the overall collective progress of FRISCO.
         </p>
       </Fragment>
     ),
@@ -257,6 +259,18 @@ const faqEn = [
       </Fragment>
     ),
   },
+  {
+    h: "How should I measure the living income gap?",
+    c: (
+      <Fragment>
+        <p>
+          We encourage members to follow the CHIS methodology and related
+          simplified versions. Please refer to the &quot;
+          <a href="#">Guidance on Living income Measurement</a>&quot;.
+        </p>
+      </Fragment>
+    ),
+  },
 ];
 
 const faqDe = [
@@ -323,16 +337,18 @@ const faqDe = [
         <p>
           Die Berichterstattung ist für Mitglieder von Beyond Chocolate, DISCO,
           SWISSCO und dem Forum Nachhaltiger Kakao obligatorisch. Berichtet ein
-          Mitglied nicht innerhalb des vorgegebenen Zeitrahmens (bis zum 15.
-          April), werden die nächsten Schritte in Übereinstimmung mit den
+          Mitglied nicht innerhalb des vorgegebenen Zeitrahmens (bis zum 13.
+          Mai), werden die nächsten Schritte in Übereinstimmung mit den
           vereinbarten Prozessen und Verfahren von denn ISCOs eingeleitet.
           Berichtet ein Mitglied nicht, ist ein Ausschluss aus dem jeweiligen
           ISCO möglich.
         </p>
         <p>
-          Bitte beachten Sie, dass es sich für FRISCO um ein Pilotprojekt
-          handelt. FRISCO-Mitglieder haben bis Juni 2024 Zeit um die Daten
-          einzugeben.
+          Von den Mitgliedern, die FRISCO beitreten, wird erwartet, dass sie zur
+          Initiative beitragen, indem sie sich am Monitoring beteiligen. Es
+          werden zwar keine Sanktionen gegen Mitglieder verhängt, die sich nicht
+          beteiligen. Mangelndes Engagement wird sich aber auf den kollektiven
+          Fortschritt von FRISCO auswirken.
         </p>
       </Fragment>
     ),
@@ -540,6 +556,20 @@ const faqDe = [
           </ul>
         </p>
         <p>Die Prämiendaten werden nicht nach Zielmärkten aufgeschlüsselt.</p>
+      </Fragment>
+    ),
+  },
+  {
+    en: "How should I measure the living income gap?",
+    h: "Wie soll ich die Armutslücke messen?",
+    c: (
+      <Fragment>
+        <p>
+          Wir empfehlen unseren Mitgliedern, die CHIS-Methodik und die damit
+          verbundenen vereinfachten Versionen zu verwenden. Bitte beachten Sie
+          auch unsere &quot;
+          <a href="#">Guidance on Living Income Measurement</a>&quot;.
+        </p>
       </Fragment>
     ),
   },
