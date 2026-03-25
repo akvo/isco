@@ -194,15 +194,15 @@ class TestFeedbackDownload:
         assert len(data) == 1
         assert data[0]["id"] == 2
 
-        # Test /feedback/download with allowed ISCO
+        # Test /feedback/download with member_admin (should be forbidden)
         response = await client.get(
             app.url_path_for("feedback:download"),
             params={"isco_type_id": 2},
             headers={"Authorization": f"Bearer {account.token}"},
         )
-        assert response.status_code == 200
+        assert response.status_code == 403
 
-        # Test /feedback/download with forbidden ISCO
+        # Test /feedback/download with another ISCO (should still be forbidden)
         response = await client.get(
             app.url_path_for("feedback:download"),
             params={"isco_type_id": 3},

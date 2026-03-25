@@ -12,7 +12,6 @@ from util.mailer import Email, MailTypeEnum
 from util.sheets import generate_feedback_export
 from fastapi.responses import StreamingResponse
 from models.user import UserRole
-from models.organisation_isco import OrganisationIsco
 import os
 from datetime import datetime
 
@@ -102,27 +101,14 @@ def download(req: Request,
     user = verify_admin(session=session,
                         authenticated=req.state.authenticated)
 
-    isco_type_ids = None
-    if user.role == UserRole.member_admin:
-        # Get ISCOs for the user's organisation
-        user_org_iscos = session.query(OrganisationIsco).filter(
-            OrganisationIsco.organisation == user.organisation
-        ).all()
-        allowed_isco_ids = [o.isco_type for o in user_org_iscos]
+    if user.role != UserRole.secretariat_admin:
+        raise HTTPException(
+            status_code=403,
+            detail="Only secretariat_admin can download feedback")
 
-        if isco_type_id:
-            if isco_type_id not in allowed_isco_ids:
-                raise HTTPException(
-                    status_code=403,
-                    detail="You don't have access to this ISCO's feedback"
-                )
-            isco_type_ids = [isco_type_id]
-        else:
-            isco_type_ids = allowed_isco_ids
-    else:
-        # Secretariat admin can see all
-        if isco_type_id:
-            isco_type_ids = [isco_type_id]
+    isco_type_ids = None
+    if isco_type_id:
+        isco_type_ids = [isco_type_id]
 
     results = crud.get_feedback_for_export(
         session=session,

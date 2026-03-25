@@ -264,7 +264,7 @@ const App = () => {
           <Route
             exact
             path="/download-feedback"
-            element={<Secure element={DownloadFeedback} adminPage={false} />}
+            element={<Secure element={DownloadFeedback} adminPage={true} />}
           />
           <Route exact path="/survey" element={<Secure element={Survey} />} />
           <Route

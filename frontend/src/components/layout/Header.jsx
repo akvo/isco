@@ -113,11 +113,6 @@ const Header = ({ className = "header", ...props }) => {
                 <>
                   <Link to="/survey">{text.navSurvey}</Link>
                   <Link to="/download">{text.navDownload}</Link>
-                  {user?.role === "member_admin" && (
-                    <Link to="/download-feedback">
-                      {text.navDownloadFeedback}
-                    </Link>
-                  )}
                 </>
               )}
               <Link to="/definition">{text.navDefinitions}</Link>
