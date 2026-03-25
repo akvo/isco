@@ -281,10 +281,12 @@ class TestFeedbackDownload:
         session.refresh(org)
 
         # Link to two ISCOs
-        session.add(OrganisationIsco(
-            id=None, organisation=org.id, isco_type=1))
-        session.add(OrganisationIsco(
-            id=None, organisation=org.id, isco_type=2))
+        session.add(
+            OrganisationIsco(id=None, organisation=org.id, isco_type=1)
+        )
+        session.add(
+            OrganisationIsco(id=None, organisation=org.id, isco_type=2)
+        )
         session.commit()
 
         user = User(
