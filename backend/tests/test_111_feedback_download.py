@@ -110,6 +110,11 @@ class TestFeedbackDownload:
         session.add(admin)
         session.commit()
 
+        # Link admin to ISCO 1
+        org_isco = OrganisationIsco(id=None, organisation=org.id, isco_type=1)
+        session.add(org_isco)
+        session.commit()
+
         # 2. Use Acc to get token
         account = Acc(email=admin_email, token=None)
 

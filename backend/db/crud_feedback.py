@@ -49,7 +49,7 @@ def get_feedback_for_export(
         .join(Organisation, User.organisation == Organisation.id)
     )
 
-    if isco_type_ids:
+    if isco_type_ids is not None:
         query = query.join(
             OrganisationIsco, Organisation.id == OrganisationIsco.organisation
         ).filter(OrganisationIsco.isco_type.in_(isco_type_ids))
