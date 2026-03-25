@@ -269,3 +269,60 @@ class TestFeedbackDownload:
             headers={"Authorization": f"Bearer {account.token}"},
         )
         assert response.status_code in [200, 404]
+
+    @pytest.mark.asyncio
+    async def test_download_no_duplicates_for_multiple_iscos(
+        self, app: FastAPI, session: Session, client: AsyncClient
+    ) -> None:
+        # 1. Setup Data with multiple ISCO associations
+        org = Organisation(name="Multi ISCO Org", code="MIO", active=True)
+        session.add(org)
+        session.commit()
+        session.refresh(org)
+
+        # Link to two ISCOs
+        session.add(
+            OrganisationIsco(id=None, organisation=org.id, isco_type=1)
+        )
+        session.add(
+            OrganisationIsco(id=None, organisation=org.id, isco_type=2)
+        )
+        session.commit()
+
+        user = User(
+            email="multi_isco@example.com",
+            password="password",
+            name="Multi ISCO User",
+            phone_number="123456",
+            role=UserRole.member_user,
+            organisation=org.id,
+            invitation=None,
+            approved=True,
+        )
+        user.email_verified = datetime.now()
+        session.add(user)
+        session.commit()
+        session.refresh(user)
+
+        # Add single feedback record
+        f1 = Feedback(
+            id=None,
+            user=user.id,
+            title="Deduplication Test",
+            category="questionnaire",
+            content="This should only appear once.",
+            created=datetime.now(),
+        )
+        session.add(f1)
+        session.commit()
+
+        # 2. Test CRUD function directly (this is where the join logic lives)
+        results = get_feedback_for_export(session, isco_type_ids=[1, 2])
+        # Filter for this specific feedback to be safe
+        member_results = [
+            r for r in results if r["title"] == "Deduplication Test"
+        ]
+
+        # BEFORE FIX: This would be 2
+        # AFTER FIX: This should be 1
+        assert len(member_results) == 1
