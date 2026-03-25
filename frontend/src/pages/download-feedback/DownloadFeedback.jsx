@@ -12,8 +12,6 @@ const handleSelectFilter = (input, option) =>
   option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 
 const DownloadFeedback = () => {
-  const { user } = store.useState((s) => s);
-  const { isco_type } = store.useState((s) => s.optionValues);
   const { notify } = useNotification();
 
   const [iscoSelected, setIscoSelected] = useState(null);
