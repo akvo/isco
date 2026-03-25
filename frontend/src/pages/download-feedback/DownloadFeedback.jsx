@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./style.scss";
-import { Row, Col, Typography, Select, Card, Space, Button } from "antd";
+import { Row, Col, Typography, Select, Space, Button } from "antd";
 import { api, store } from "../../lib";
 import { useNotification } from "../../util";
 import { MonitoringRoundSelector } from "../../components";
@@ -65,7 +65,11 @@ const DownloadFeedback = () => {
         const url = window.URL.createObjectURL(new Blob([res.data]));
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", "feedback_export.xlsx");
+        const dateStr = new Date()
+          .toISOString()
+          .split("T")[0]
+          .replaceAll("-", "");
+        link.setAttribute("download", `feedback_export_${dateStr}.xlsx`);
         document.body.appendChild(link);
         link.click();
         link.parentNode.removeChild(link);
@@ -94,53 +98,49 @@ const DownloadFeedback = () => {
             className="page-title-wrapper"
             align="middle"
             justify="space-between"
+            gutter={[20, 20]}
           >
-            <Col span={24} align="start">
+            <Col flex={1} align="start">
               <Title className="page-title" level={3}>
                 Download Feedback
               </Title>
             </Col>
           </Row>
-          <Row>
-            <Col span={24}>
-              <Card className="form-wrapper">
-                <Row gutter={[12, 12]}>
-                  <Col span={24}>
-                    <Space size={12}>
-                      <Select
-                        showArrow
-                        showSearch
-                        className="custom-dropdown-wrapper bg-grey"
-                        placeholder="Select ISCO Type (Optional)"
-                        optionFilterProp="children"
-                        filterOption={handleSelectFilter}
-                        options={iscoOptions}
-                        value={iscoSelected}
-                        onChange={(val) => setIscoSelected(val)}
-                        style={{ width: "15rem" }}
-                        {...globalSelectProps}
-                      />
-                      <MonitoringRoundSelector
-                        value={selectedMonitoringRound}
-                        onChange={setSelectedMonitoringRound}
-                        className="bg-grey"
-                        style={{ minWidth: "150px", width: "175px" }}
-                      />
-                    </Space>
-                  </Col>
-                  <Col span={24}>
-                    <Button
-                      ghost
-                      type="primary"
-                      disabled={!selectedMonitoringRound}
-                      loading={downloading}
-                      onClick={handleDownloadFeedback}
-                    >
-                      Download Feedback
-                    </Button>
-                  </Col>
-                </Row>
-              </Card>
+          <Row
+            className="filter-wrapper"
+            align="middle"
+            justify="space-between"
+            gutter={[20, 20]}
+          >
+            <Col flex={1} align="start">
+              <Space wrap size={16}>
+                <Select
+                  showSearch
+                  className="isco-dropdown-wrapper"
+                  placeholder="Select ISCO Type (Optional)"
+                  optionFilterProp="children"
+                  filterOption={handleSelectFilter}
+                  options={iscoOptions}
+                  value={iscoSelected}
+                  onChange={(val) => setIscoSelected(val)}
+                  {...globalSelectProps}
+                />
+                <MonitoringRoundSelector
+                  value={selectedMonitoringRound}
+                  onChange={setSelectedMonitoringRound}
+                  className="monitoring-round-selector"
+                  style={{ width: "12rem" }}
+                />
+                <Button
+                  type="primary"
+                  ghost
+                  disabled={!selectedMonitoringRound}
+                  loading={downloading}
+                  onClick={handleDownloadFeedback}
+                >
+                  Download Feedback
+                </Button>
+              </Space>
             </Col>
           </Row>
         </Col>

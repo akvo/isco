@@ -124,8 +124,9 @@ class TestFeedbackDownload:
             "application/vnd.openxmlformats-officedocument"
             ".spreadsheetml.sheet"
         )
+        date_str = datetime.now().strftime("%Y%m%d")
         assert (
-            "attachment; filename=feedback_export.xlsx"
+            f"attachment; filename=feedback_export_{date_str}.xlsx"
             in response.headers["content-disposition"]
         )
 

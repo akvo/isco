@@ -1,35 +1,30 @@
-#download-feedback {
-  padding: 24px;
-  background: #f0f2f5;
-  min-height: 100vh;
+@import "../../variables";
 
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
+#root {
+  #download-feedback {
+    .page-title-wrapper {
+      border-bottom: 1px solid #777777;
+    }
 
-  .form-wrapper {
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    margin-top: 24px;
-  }
+    .page-title {
+      margin: 40px 0 20px 0;
+    }
 
-  .page-title {
-    margin-bottom: 0 !important;
-  }
+    .filter-wrapper {
+      padding: 24px 0;
+      font-size: 14px;
 
-  .page-title-wrapper {
-    margin-bottom: 24px;
-  }
+      .isco-dropdown-wrapper {
+        width: 18rem;
+      }
 
-  // Ant Design custom overrides to match project style
-  .ant-select-selector {
-    border-radius: 4px !important;
-  }
+      .monitoring-round-selector {
+        width: 12rem;
+      }
+    }
 
-  .ant-btn {
-    height: 40px;
-    padding: 0 24px;
-    font-weight: 500;
+    .ant-btn {
+      height: 32px;
+    }
   }
 }

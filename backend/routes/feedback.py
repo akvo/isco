@@ -14,6 +14,7 @@ from fastapi.responses import StreamingResponse
 from models.user import UserRole
 from models.organisation_isco import OrganisationIsco
 import os
+from datetime import datetime
 
 security = HTTPBearer()
 feedback_route = APIRouter()
@@ -132,7 +133,8 @@ def download(req: Request,
         raise HTTPException(
             status_code=404, detail="No feedback data available")
 
-    filename = "feedback_export"
+    date_str = datetime.now().strftime("%Y%m%d")
+    filename = f"feedback_export_{date_str}"
     file_path = generate_feedback_export(filename, results)
 
     def iterfile():
