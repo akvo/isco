@@ -107,22 +107,22 @@ def download(req: Request,
             status_code=403,
             detail="Only secretariat_admin can download feedback")
 
-    # Get ISCOs for the user's organisation (respected ISCOs)
-    user_org_iscos = session.query(OrganisationIsco).filter(
-        OrganisationIsco.organisation == user.organisation
-    ).all()
-    allowed_isco_ids = [o.isco_type for o in user_org_iscos]
-
-    isco_type_ids = None
-    if isco_type_id:
-        if isco_type_id not in allowed_isco_ids:
+    if isco_type_id is None:
+        user_org_iscos = session.query(OrganisationIsco).filter(
+            OrganisationIsco.organisation == user.organisation
+        ).all()
+        isco_type_ids = [o.isco_type for o in user_org_iscos]
+    else:
+        # Check if the requested isco_type_id is respected by the user
+        exists = session.query(OrganisationIsco).filter(
+            OrganisationIsco.organisation == user.organisation,
+            OrganisationIsco.isco_type == isco_type_id
+        ).first()
+        if not exists:
             raise HTTPException(
                 status_code=403,
-                detail="Not allowed to access this ISCO's feedback"
-            )
+                detail="Not allowed to access this ISCO's feedback")
         isco_type_ids = [isco_type_id]
-    else:
-        isco_type_ids = allowed_isco_ids
 
     results = crud.get_feedback_for_export(
         session=session,
