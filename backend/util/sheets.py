@@ -252,3 +252,29 @@ def generate_summary(
     session.close()
     writer.save()
     return tmp_file
+
+
+def generate_feedback_export(filename: str, results: list):
+    tmp_file = f"./tmp/{filename}.xlsx"
+    df = pd.DataFrame(results)
+    # Rename columns to be more user friendly
+    column_mapping = {
+        "monitoring_round": "Monitoring Round",
+        "user_name": "User Name",
+        "organisation_name": "Organisation",
+        "title": "Title",
+        "category": "Category",
+        "content": "Feedback"
+    }
+    df = df.rename(columns=column_mapping)
+    # Reorder columns to match request
+    cols = [
+        "Monitoring Round", "User Name", "Organisation",
+        "Title", "Category", "Feedback"
+    ]
+    df = df[cols]
+
+    writer = pd.ExcelWriter(tmp_file, engine="xlsxwriter")
+    df.to_excel(writer, index=False, sheet_name="Feedback")
+    writer.save()
+    return tmp_file
