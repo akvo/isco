@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./style.scss";
 import { Row, Col, Typography, Select, Space, Button } from "antd";
-import { api, store } from "../../lib";
+import { api } from "../../lib";
 import { useNotification } from "../../util";
 import { MonitoringRoundSelector } from "../../components";
 import { globalSelectProps } from "../../lib/util";
