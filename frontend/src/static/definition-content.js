@@ -205,10 +205,8 @@ const definitionContent = {
             The cocoa traceability level concerns the level of information on
             the origin of cocoa being documented at the initial stage of the
             cocoa sourcing process, with such information remaining available at
-            later stages of the value chain. The cocoa traceability level does
-            not require segregation but can be applied also with a mass balance
-            mechanism. Distinction is made between the following traceability
-            levels:
+            later stages of the value chain. Distinction is made between the
+            following traceability levels:
             <ol style={{ marginLeft: "25px" }} start={1}>
               <li>
                 Origin unknown, expressed in % of the total volume supplied/
@@ -493,7 +491,7 @@ const definitionContent = {
     {
       i: "Premiums granted to the farmer and / or coopertaive",
       t: "Premium granted",
-      d: "A premium granted to a farmer and/or cooperative is an additional amount of money paid in addition to the regular market price paid to the producers or producer organizations. Premiums are here understood only as market or volume related payments and do hence not include payments such as 'payments for environmental services', conditional or unconditional cash payments etc. Please note that LIRP payments are covered in a separate question.",
+      d: "A premium granted to a farmer and/or cooperative is an amount of money paid in addition to the regular market price paid to the producers or producer organizations. Premiums are here understood only as market or volume based payments and do hence not include 'payments for environmental services', conditional or unconditional cash payments, etc. Such payments can be entered in the follow-up question on non-volume-based cash payments to farming households. Please note that LIRP payments, too, are covered in a separate question.",
     },
     {
       i: "Agroforestry System for Cocoa Production (Description)",
@@ -549,7 +547,7 @@ const definitionContent = {
     },
     {
       i: "Agroforestry - Categories for Cocoa Agroforestry systems",
-      t: "Agroforestry - Categories for cocoa agroforestry systems",
+      t: "Agroforestry - Categories for Cocoa Agroforestry systems",
       d: (
         <Fragment>
           <div>
@@ -836,7 +834,7 @@ const definitionContent = {
     },
     {
       i: "Methodology to calculate number of households in the indirect supply chain",
-      t: "Methodology to calculate number of households in the indirect supply chain",
+      t: "Methodology to calculate the number of households in the indirect supply chain",
       d: (
         <Fragment>
           <div>
@@ -909,12 +907,14 @@ const definitionContent = {
           <div>
             The ISCOs and ICI conduct a data transfer on eight harmonized
             questions, ensuring that members that are part of both the ISCOs and
-            ICI can choose to only report on child labour questions once.
-            Members will be able to indicate in the ICI tool as well as the ISCO
-            tool that they consent to their data being shared with the ISCOs.
-            They will no longer need to report in the ISCO tool. If members do
-            not want to share their data with the ISCOs via ICI, they will be
-            required to report on child labour questions through the ISCO tool.
+            ICI can choose to only report on child labour questions once. In
+            addition, GISCO and ICI conduct a data transfer on one harmonized
+            question on forced labour. Members will be able to indicate in the
+            ICI tool as well as the ISCO tool that they consent to their data
+            being shared with the ISCOs. They will no longer need to report in
+            the ISCO tool. If members do not want to share their data with the
+            ISCOs via ICI, they will be required to report on child labour
+            questions through the ISCO tool.
           </div>
           <img
             src="/images/definition-content/data-transfer-cli.jpg"
@@ -1241,9 +1241,7 @@ const definitionContent = {
             Informationen über die Herkunft des Kakaos, die in der Anfangsphase
             des Beschaffungsprozesses dokumentiert werden, wobei diese
             Informationen auch in späteren Phasen der Wertschöpfungskette
-            verfügbar bleiben. Die Rückverfolgbarkeitsstufe erfordert keine
-            physische Trennung des Kakaos, sondern kann auch im Rahmen eines
-            Massenbilanzsystems angewendet werden. Es wird zwischen folgenden
+            verfügbar bleiben. Es wird zwischen folgenden
             Rückverfolgbarkeitsstufen unterschieden:
             <ol style={{ marginLeft: "25px" }} start={1}>
               <li>
@@ -1354,7 +1352,7 @@ const definitionContent = {
     {
       i: "Reached (farming households reached)",
       t: "erreicht („erreichte bäuerliche Haushalte“)",
-      d: 'Der Begriff "erreicht" (im Sinne von "erreichte bäuerliche Haushalte") ist kontextabhängig; er könnte beispielsweise "involviert in" oder "profitierend von" bedeuten. Entsprechende Datenerhebungen sollten die Variable "Anzahl der erreichten bäuerlichen Haushalte" zu einer Aktivität oder einer Wirkung/einem Ergebnis des Nachhaltigkeitsprojekts in Bezug setzen. Diese Verknüpfung kontextualisiert die Implikationen/Vorteile für die „erreichten“ bäuerlichen Haushalte.',
+      d: 'Der Begriff "erreicht" (im Sinne von "erreichte bäuerliche Haushalte") ist kontextabhängig; er könnte beispielsweise "involviert in" oder "profitierend von" bedeuten. Entsprechende Datenerhebungen sollten die Variable "Anzahl der erreichten bäuerlichen Haushalte"  zu einer Aktivität oder einer Wirkung/einem Ergebnis des Nachhaltigkeitsprojekts in Bezug setzen. Diese Verknüpfung kontextualisiert die Implikationen/Vorteile für die „erreichten“ bäuerlichen Haushalte.',
     },
     {
       i: "Direct supply",
@@ -1557,7 +1555,7 @@ const definitionContent = {
     {
       i: "Premiums granted to the farmer and / or coopertaive",
       t: "Prämien",
-      d: "Eine an einen Landwirt und/oder eine Genossenschaft gewährte Prämie ist ein zusätzlicher Geldbetrag, der über den regulären Marktpreis hinaus an die Produzenten oder Produzentenorganisationen gezahlt wird. Prämien werden hier ausschließlich als markt- oder volumenbezogene Zahlungen verstanden und schließen daher keine Zahlungen wie „Zahlungen für Umweltleistungen“, bedingte oder unbedingte Geldtransfers usw. ein. Bitte beachten Sie, dass LIRP-Zahlungen in einer separaten Frage behandelt werden.",
+      d: "Eine an einen Landwirt und/oder eine Genossenschaft gewährte Prämie ist ein zusätzlicher Geldbetrag, der über den regulären Marktpreis hinaus an die Produzenten oder Produzentenorganisationen gezahlt wird. Prämien werden hier ausschließlich als markt- oder volumenbezogene Zahlungen verstanden und schließen daher keine Zahlungen wie „Zahlungen für Umweltleistungen“, bedingte oder unbedingte Geldtransfers usw. ein. Solche Zahlungen können in einer Folgefrage zu nicht-volumenbezogenen Zahlungen angegeben werden. Bitte beachten Sie, dass auch LIRP-Zahlungen in einer separaten Frage behandelt werden.",
     },
     {
       i: "Agroforestry System for Cocoa Production (Description)",
@@ -1995,13 +1993,14 @@ const definitionContent = {
             Die ISCOs und ICI führen einen Datentransfer zu acht harmonisierten
             Fragen durch, um sicherzustellen, dass Mitglieder, die sowohl Teil
             der ISCOs als auch von ICI sind, sich dafür entscheiden können, zu
-            Kinderarbeit nur einmal Bericht zu erstatten. Die Mitglieder müssen
-            sowohl im ICI-Tool als auch im ISCO-Tool angeben, dass sie damit
-            einverstanden sind, dass ihre Daten an die ISCOs weitergegeben
-            werden. Sie müssen dann nicht mehr im ISCO-Tool berichten. Wenn
-            Mitglieder ihre Daten nicht über ICI an die ISCOs weitergeben
-            möchten, müssen sie zu den acht Datenpunkten erneut über das
-            ISCO-Tool berichten.
+            Kinderarbeit nur einmal Bericht zu erstatten. Zusätzlich führen
+            GISCO und ICI einen Datentransfer zu einer harmonisierten Frage zu
+            Zwangsarbeit durch. Die Mitglieder müssen sowohl im ICI-Tool als
+            auch im ISCO-Tool angeben, dass sie damit einverstanden sind, dass
+            ihre Daten an die ISCOs weitergegeben werden. Sie müssen dann nicht
+            mehr im ISCO-Tool berichten. Wenn Mitglieder ihre Daten nicht über
+            ICI an die ISCOs weitergeben möchten, müssen sie zu den acht
+            Datenpunkten erneut über das ISCO-Tool berichten.
           </div>
           <img
             src="/images/definition-content/data-transfer-cli.jpg"
