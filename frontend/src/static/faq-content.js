@@ -231,31 +231,16 @@ const faqEn = [
     c: (
       <Fragment>
         <p>
-          Premium related questions are to be completed only by supply chain
-          actors that are member of GISCO. Please report if premiums were paid
-          for any volume of cocoa sourced by or on behalf of your organisation /
-          company.
+          Please report if premiums were paid for any volume of cocoa sourced by
+          or on behalf of your organisation / company. Premiums your
+          organization paid through intermediaries should be reported here as
+          well.
         </p>
         <p>
-          You are only expected to report on premiums paid on your behalf, if
-          your supplier (who managed the premium payments on your behalf), is
-          not reporting such payments as part of the GISCO reporting. In other
-          words, if a company is reporting on this question block, the client
-          companies are not expected to report again on the already reported
-          premium payments. The same premiums should be reported only once.
+          Premium payments need to be disaggregated by the countries in which
+          they were paid (Ghana, Côte d’Ivoire, Nigeria, Cameroon, Ecuador,
+          Other). The data is not to be disaggregated per destination market.
         </p>
-        <p>
-          Note that it is mandatory to report on sourcing in Côte d&apos;Ivoire
-          and in Ghana separately, while for other countries you can choose to:
-          <ul>
-            <li>
-              (a) provide country-specific data per country where you sourced
-              cocoa with premiums;
-            </li>
-            <li>(b) provide only aggregated data.</li>
-          </ul>
-        </p>
-        <p>Premium data is not to be disaggregated per destination market.</p>
       </Fragment>
     ),
   },
@@ -529,33 +514,17 @@ const faqDe = [
     c: (
       <Fragment>
         <p>
-          Die Fragen zu Prämienzahlungen sind nur von Akteuren der Lieferkette
-          auszufüllen, die Mitglied von GISCO sind. Bitte geben Sie an, ob
-          Prämien für Kakao gezahlt wurden, der von oder im Namen Ihrer
-          Organisation/Ihrem Unternehmen bezogen wurde.
+          Bitte geben Sie an, ob Prämien für Kakao gezahlt wurden, der von oder
+          im Namen Ihrer Organisation/Ihrem Unternehmen bezogen wurde. Auch
+          Prämien, die über Lieferkettenpartner an Farmer gezahlt wurden,
+          sollten hier angegeben werden.
         </p>
         <p>
-          Sie müssen nur dann über die in Ihrem Namen gezahlten Prämien
-          berichten, wenn Ihr Lieferant (der die Prämienzahlungen in Ihrem Namen
-          verwaltet hat) solche Zahlungen nicht im Rahmen der Berichterstattung
-          des Forums selbst angibt. Mit anderen Worten: Wenn ein Unternehmen
-          diesen Fragenblock ausfüllt, wird von den Kundenunternehmen nicht
-          erwartet, dass sie die bereits gemeldeten Prämienzahlungen erneut
-          melden. Die gleichen Prämien sollten nur einmal gemeldet werden.
+          Prämienzahlungen sollten nach den Ländern aufgeschlüsselt werden, in
+          denen sie getätigt werden (Ghana, Côte d’Ivoire, Nigeria, Kamerun,
+          Ecuador, andere). Die Prämiendaten werden nicht nach Zielmärkten
+          aufgeschlüsselt.
         </p>
-        <p>
-          Bitte beachten Sie, dass es verpflichtend ist, über die Beschaffung in
-          Côte d&apos;Ivoire und in Ghana separat zu berichten, während Sie für
-          andere Länder wählen können zwischen:
-          <ul>
-            <li>
-              (a) länderspezifische Daten für jedes Land, aus dem Sie Kakao mit
-              Prämien bezogen haben,
-            </li>
-            <li>(b) nur aggregierte Daten bereitstellen.</li>
-          </ul>
-        </p>
-        <p>Die Prämiendaten werden nicht nach Zielmärkten aufgeschlüsselt.</p>
       </Fragment>
     ),
   },
