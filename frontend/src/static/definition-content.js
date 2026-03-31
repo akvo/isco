@@ -983,7 +983,15 @@ const definitionContent = {
           individual farmer in their supply chain, but for a representative
           sample of their supply chain. Members will be able to specify how they
           define a representative sample in a follow-up question. Also refer to
-          the “<a href="#">Guidance on Living Income measurement</a>”.
+          the “
+          <a
+            href="https://www.kakaoforum.de/wp-content/uploads/Guidance-LI-Measurement-FINAL-2503.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Guidance on Living Income measurement
+          </a>
+          ”.
         </Fragment>
       ),
     },
@@ -2075,7 +2083,14 @@ const definitionContent = {
           einer Folgefrage angeben, wie sie eine repräsentative Stichprobe
           definieren. Weitere Informationen zur Berechnung von Einkommenslücken
           finden Sie in der „
-          <a href="#">Guidance on Living Income Gap Measurement</a>“.
+          <a
+            href="https://www.kakaoforum.de/wp-content/uploads/Guidance-LI-Measurement-FINAL-2503.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Guidance on Living Income Gap Measurement
+          </a>
+          “.
         </Fragment>
       ),
     },
