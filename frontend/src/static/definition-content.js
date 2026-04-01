@@ -277,10 +277,10 @@ const definitionContent = {
       d: (
         <Fragment>
           <div>
-            Polygone der Farmen (&gt; 4 ha) und landwirtschaftliche Parzellen
-            (&lt; 4 ha) liegen nachweislich nicht in einem geschützten Wald oder
-            auf Land, das seit dem 31.12.2018 (für GISCO) bzw. dem 31.12.2020
-            (für die anderen ISCOs) entwaldet wurde.
+            Having polygons of the farm (&gt; 4 ha) and farm plots (&lt; 4 ha)
+            verified as not in a protected forest and as not comprising land
+            that was deforested since 31.12.2018 for GISCO and 31.12.2020 for
+            the other ISCOs.
           </div>
         </Fragment>
       ),
@@ -479,7 +479,9 @@ const definitionContent = {
             *** Examples include the provision of trainings, an adaption of
             procurement practices, direct cash transfers, consumer engagement,
             and collaboration in landscape approaches to improve framework
-            conditions. **** Please refer to the definition of &quot;
+            conditions.
+            <br />
+            **** Please refer to the definition of &quot;
             <a href="#sustainable procurement practices">
               sustainable procurement practices
             </a>
@@ -547,7 +549,7 @@ const definitionContent = {
     },
     {
       i: "Agroforestry - Categories for Cocoa Agroforestry systems",
-      t: "Agroforestry - Categories for Cocoa Agroforestry systems",
+      t: "Agroforestry - Categories for cocoa agroforestry systems",
       d: (
         <Fragment>
           <div>
@@ -698,9 +700,8 @@ const definitionContent = {
             farmer sustainability premiums where relevant) – costs + non-cocoa
             income (such as non-agricultural income, income from rent, and
             remittances) - associated costs. <br /> <br />
-            <u>Points of attention:</u>
+            <u>Point of attention - Include costs for:</u>
             <br />
-            <i>Point of attention - Include costs for:</i>
             <ul style={{ marginLeft: "25px" }}>
               <li>
                 <i>
@@ -1336,10 +1337,10 @@ const definitionContent = {
       d: (
         <Fragment>
           <div>
-            Polygone von landwirtschaftlichen Parzellen (&gt; 4 ha) und der
-            landwirtschaftlichen Parzellen (&lt; 4 ha) als nicht in einem
-            geschützten Wald liegend und als nicht entwaldetes Land seit dem
-            31.12.2018 für GISCO und 31.12. 2020 für die anderen ISCOs.
+            Polygone der Farmen (&gt; 4 ha) und landwirtschaftliche Parzellen
+            (&lt; 4 ha) liegen nachweislich nicht in einem geschützten Wald oder
+            auf Land, das seit dem 31.12.2018 (für GISCO) bzw. dem 31.12.2020
+            (für die anderen ISCOs) entwaldet wurde.
           </div>
         </Fragment>
       ),
