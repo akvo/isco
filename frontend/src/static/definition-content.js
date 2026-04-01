@@ -615,14 +615,14 @@ const definitionContent = {
               <li>
                 These systems are characterized by a very high density of trees
                 per hectare. There is an abundance of different tree species,
-                high biodiversity, plant communities with different life cycles
-                that serve different purposes (carbon sequestration, income
-                sources, food etc.). They grow in different stories (strata)
-                without competition. There are at least 3 different stories
-                (strata), regenerative practices are used, and food security and
-                income sources outside of cocoa are guaranteed. This system
-                mimics the natural habitat of cacao in a highly developed
-                cultivation system.
+                high biodiversity, and plant communities with different life
+                cycles that serve different purposes (carbon sequestration,
+                income sources, food etc.). They grow in different stories
+                (strata) without competition. There are at least 3 different
+                stories (strata), regenerative practices are used, and food
+                security and income sources outside of cocoa are guaranteed.
+                This system mimics the natural habitat of cacao in a highly
+                developed cultivation system.
               </li>
             </ul>
           </div>
