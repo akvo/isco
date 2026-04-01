@@ -251,7 +251,14 @@ const faqEn = [
         <p>
           We encourage members to follow the CHIS methodology and related
           simplified versions. Please refer to the &quot;
-          <a href="#">Guidance on Living income Measurement</a>&quot;.
+          <a
+            href="https://www.kakaoforum.de/wp-content/uploads/Guidance-LI-Measurement-FINAL-2503.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Guidance on Living Income Measurement
+          </a>
+          &quot;.
         </p>
       </Fragment>
     ),
@@ -537,7 +544,14 @@ const faqDe = [
           Wir empfehlen unseren Mitgliedern, die CHIS-Methodik und die damit
           verbundenen vereinfachten Versionen zu verwenden. Bitte beachten Sie
           auch unsere &quot;
-          <a href="#">Guidance on Living Income Measurement</a>&quot;.
+          <a
+            href="https://www.kakaoforum.de/wp-content/uploads/Guidance-LI-Measurement-FINAL-2503.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Guidance on Living Income Measurement
+          </a>
+          &quot;.
         </p>
       </Fragment>
     ),

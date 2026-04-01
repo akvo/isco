@@ -132,6 +132,7 @@ const dataSecurityContent = {
         <li>Martina Gaebler, GISCO</li>
         <li>Julia Ditz, GISCO</li>
         <li>Ulrike Joras, GISCO</li>
+        <li>Katharina Münster, GISCO</li>
         <li>Additional staff member of the secretariat, to be appointed</li>
         <li>Patrick Stoop, C-Lever.org</li>
         <li>Hilde Geens, C-Lever.org</li>
@@ -143,7 +144,6 @@ const dataSecurityContent = {
       </p>
       <ul className="pl-5">
         <li>Charles Snoeck</li>
-        <li>Lisa Graepel</li>
         <li>Patrick Stoop, C-Lever.org</li>
         <li>Hilde Geens, C-Lever.org</li>
       </ul>
@@ -152,8 +152,8 @@ const dataSecurityContent = {
         <u>For DISCO:</u>
       </p>
       <ul className="pl-5">
-        <li>Mark de Waard</li>
-        <li>Lisa Graepel</li>
+        <li>Beatrix Richards</li>
+        <li>Robin Eagle</li>
         <li>Patrick Stoop, C-Lever.org</li>
         <li>Hilde Geens, C-Lever.org</li>
       </ul>
@@ -173,8 +173,10 @@ const dataSecurityContent = {
         <u>For FRISCO:</u>
       </p>
       <ul className="pl-5">
-        <li>Kitty Grapperon</li>
+        <li>Marine Lanièce</li>
+        <li>Anne-Charline Gal</li>
         <li>Maxime Ghafari</li>
+        <li>Angèle Parrour</li>
         <li>Patrick Stoop, C-Lever.org</li>
         <li>Hilde Geens, C-Lever.org</li>
       </ul>
@@ -395,6 +397,7 @@ const dataSecurityContent = {
         <li>Martina Gaebler, GISCO</li>
         <li>Julia Ditz, GISCO</li>
         <li>Ulrike Joras, GISCO</li>
+        <li>Katharina Münster, GISCO</li>
         <li>
           Zusätzliches Mitglied des Sekretariats, das noch ernannt werden soll
         </li>
@@ -408,7 +411,6 @@ const dataSecurityContent = {
       </p>
       <ul className="pl-5">
         <li>Charles Snoeck</li>
-        <li>Lisa Graepel</li>
         <li>Patrick Stoop, C-Lever.org</li>
         <li>Hilde Geens, C-Lever.org</li>
       </ul>
@@ -417,8 +419,8 @@ const dataSecurityContent = {
         <u>Für DISCO:</u>
       </p>
       <ul className="pl-5">
-        <li>Mark de Waard</li>
-        <li>Lisa Graepel</li>
+        <li>Beatrix Richards</li>
+        <li>Robin Eagle</li>
         <li>Patrick Stoop, C-Lever.org</li>
         <li>Hilde Geens, C-Lever.org</li>
       </ul>
@@ -438,8 +440,10 @@ const dataSecurityContent = {
         <u>Für FRISCO:</u>
       </p>
       <ul className="pl-5">
-        <li>Kitty Grapperon</li>
+        <li>Marine Lanièce</li>
+        <li>Anne-Charline Gal</li>
         <li>Maxime Ghafari</li>
+        <li>Angèle Parrour</li>
         <li>Patrick Stoop, C-Lever.org</li>
         <li>Hilde Geens, C-Lever.org</li>
       </ul>

@@ -54,12 +54,11 @@ const icEn = (handleShow) => {
               3511 MH Utrecht <br />
             </p>
             <p>
-              Contact: Mark de Waard <br />
-              Email:{" "}
-              <a href="mailto:deWaard@idhtrade.org">
-                deWaard@idhtrade.org
+              Contact: Robin Eagle and Beatrix Richards <br />
+              Email: <a href="mailto:eagle@idhtrade.org">
+                eagle@idhtrade.org
               </a>{" "}
-              <br />
+              and <a href="mailto:richards@idh.org">richards@idh.org</a> <br />
             </p>
             <br />
             <br />
@@ -218,12 +217,11 @@ const icDe = (handleShow) => {
               3511 MH Utrecht <br />
             </p>
             <p>
-              Kontakt: Mark de Waard <br />
-              Email:{" "}
-              <a href="mailto:deWaard@idhtrade.org">
-                deWaard@idhtrade.org
+              Kontakt: Robin Eagle and Beatrix Richards <br />
+              Email: <a href="mailto:eagle@idhtrade.org">
+                eagle@idhtrade.org
               </a>{" "}
-              <br />
+              and <a href="mailto:richards@idh.org">richards@idh.org</a> <br />
             </p>{" "}
             <br />
             <br />
@@ -267,8 +265,8 @@ const icDe = (handleShow) => {
           <Fragment>
             <h4>Stiftung Akvo</h4> <hr />
             <p>
-              &apos;s-Gravenhekje 1-A, <br />
-              1011 TG Amsterdam, <br />
+              Nieuwezijds Voorburgwal 162 <br />
+              1012 SJ Amsterdam <br />
               Die Niederlande <br />
             </p>
             <p>
