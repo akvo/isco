@@ -39,28 +39,11 @@ Build a comprehensive PRD through stakeholder elicitation:
 
 **Output**: `agent_docs/prd.md`
 
-### 3. Create Feature Document
+### 3. Create Feature Specification
 
-For task-specific or feature-level requirements, create a Feature Document:
+For task-specific or feature-level requirements, create a Feature Specification using the `bmad-team/templates/FEATURE_SPEC.md` template. This is the **brainstorming output** — the approved contract that all developers can read.
 
-```markdown
-# Feature: [Issue ID (Optional)] - [Slug]
-
-## Overview
-[Brief description of the feature and its purpose]
-
-## User Stories Mapping
-[Reference stories in agent_docs/stories/]
-
-## Requirements
-- **Functional**: [Specific behavior]
-- **Non-Functional**: [Performance, Security, etc.]
-
-## Constraints
-[Specific technical or business constraints]
-```
-
-**Output**: `agent_docs/features/[issue-id]-[slug].md`
+**Output**: `docs/{FEATURE_NAME}.md` (git-tracked, shared with all devs)
 
 ### 4. Competitive Analysis
 
@@ -93,10 +76,9 @@ Facilate a structured discovery session:
 2. Ask clarifying questions before generating artifacts
 3. Present options when tradeoffs exist — never decide silently
 4. Detect the current stack by checking the directory name and its `.agent/rules/`. Respect stack-specific constraints (e.g., Docker commands, specific frameworks).
-5. Check `agent_docs/` for existing artifacts.
-    - **Living Documents** (`prd.md`, `product-brief.md`, `index.md`): Always **update** these to reflect the current requirements. Read `index.md` first to find all related docs.
-    - **Feature Documents**: Always create or update specific feature docs to keep the main PRD clean.
-    - **Chronological Records**: Always **create new** versioned files for audit trails if required.
+5. Check `docs/` for existing feature specs and `agent_docs/` for internal artifacts.
+    - **Feature Specs** (`docs/{FEATURE_NAME}.md`): Create or update using the `bmad-team/templates/FEATURE_SPEC.md` template. These are the brainstorming output — must be approved before sprint planning.
+    - **Internal Docs** (`agent_docs/prd.md`, `agent_docs/product-brief.md`): Keep internal product requirements here.
 
 6. Validate assumptions with the user at each checkpoint.
 7. Produce structured markdown documents as output.

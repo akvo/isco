@@ -11,7 +11,7 @@ description: When writing tests, designing test strategy, or implementing TDD cy
 - Test domain logic in isolation with mocked dependencies.
 - Speed: Fast (<100ms per test).
 - Backend: `./dc.sh exec backend ./test.sh`
-- Frontend: `./dc.sh exec frontend npm run test` (Jest)
+- Frontend: `./dc.sh exec frontend yarn test` (Jest)
 - Coverage Goal: >85% of domain logic.
 
 **Integration Tests (20% of tests):**

@@ -18,8 +18,10 @@ You are the BMAD Orchestrator, responsible for guiding a product through its ent
 Before starting:
 1. Confirm the project name and scope with the user
 2. **Detect the current stack** (e.g., FastAPI/Next.js, Laravel, Streamlit) by checking the directory name and its `.agent/rules/`.
-3. Create an `agent_docs/` directory for artifacts
-4. **Check for existing artifacts** in `agent_docs/`. Explain the distinction between **Living Documents** (`index.md`, `prd.md`, etc., updated to maintain current state) and **Chronological Records** (newly created to preserve history). Always consult `agent_docs/index.md` as the master map.
+3. Create an `agent_docs/` directory for internal sprint artifacts
+4. **Check for existing artifacts**:
+    - `docs/` for shared feature specs and LLD (git-tracked)
+    - `agent_docs/` for sprint plans and stories (local only)
 
 5. Ask the user: "**Is this a new feature, refinement, refactor, minor bug, or a general task?**"
 6. **Scale-Adaptive Routing**: If the task is a minor bug, minor refactor, or small ticket, immediately switch to the `/bmad-fastpath` workflow. Only proceed with the full 8-agent orchestrator phase below if it is a major feature or architectural change.
@@ -29,11 +31,11 @@ Before starting:
 ## Lifecycle Phases
 
 **CRITICAL: DOCUMENTATION MAINTENANCE**
-For every phase, if a corresponding artifact already exists in `agent_docs/`, you MUST:
-1. Read the existing artifact first.
-2. Determine if the current task is a revision/enhancement of an existing feature or a completely new one.
-3. If it's a revision or enhancement to the project's current state, **update** the corresponding **Living Document** (`index.md`, `prd.md`, `architecture.md`, `user-guide.md`, `README.md`).
-4. If it's a point-in-time record or a significant update to a historical trail, **create a new** **Chronological Record** (`ADRs`, `stories`, `sprint-plans`, `research-findings`) with a new version number or ID.
+For every phase, check both `docs/` and `agent_docs/`:
+1. Read existing artifacts first.
+2. Feature specs go to `docs/{FEATURE_NAME}.md` (shared, git-tracked, follows `bmad-team/templates/FEATURE_SPEC.md`).
+3. Sprint plans and stories go to `agent_docs/` (local only).
+4. `docs/LLD.md` is a living document — always update it when architecture changes.
 
 
 
@@ -42,13 +44,12 @@ For every phase, if a corresponding artifact already exists in `agent_docs/`, yo
 **Goal**: Define project vision (Skeleton) or feature requirements
 **Steps**:
 1. Load the bmad-pm skill
-2. Update **Living Documents** (`product-brief.md`, `prd.md`, `index.md`) ONLY if the task is a "General Task" or "Vision Change" that affects the project skeleton.
-3. For "Feature" or "Refinement" tasks, create a **Feature Document** in `agent_docs/features/`.
+2. For "Feature" or "Refinement" tasks, create a **Feature Specification** in `docs/{FEATURE_NAME}.md` using the `bmad-team/templates/FEATURE_SPEC.md` template.
+3. For "General Task" or "Vision Change", update `agent_docs/prd.md` or `agent_docs/product-brief.md`.
 **Artifacts Produced**:
-- `agent_docs/product-brief.md` (Update only)
-- `agent_docs/prd.md` (Update only)
-- `agent_docs/features/[issue-id]-[slug].md` (New/Update)
-**Gate**: User approves the updated Skeleton or the new Feature Document before proceeding
+- `docs/{FEATURE_NAME}.md` (New/Update — git-tracked)
+- `agent_docs/product-brief.md`, `agent_docs/prd.md` (internal only)
+**Gate**: User approves the Feature Specification before proceeding
 
 ---
 
@@ -57,12 +58,12 @@ For every phase, if a corresponding artifact already exists in `agent_docs/`, yo
 **Goal**: Deepen and validate requirements
 **Steps**:
 1. Load the bmad-analyst skill
-2. Review Feature Document from Phase 1
+2. Review Feature Specification from Phase 1 (`docs/{FEATURE_NAME}.md`)
 3. Conduct deep research on key areas
-4. Refine Feature Document with hardened requirements
+4. Refine Feature Specification with hardened requirements
 **Artifacts Produced**:
-- `agent_docs/research-findings.md`
-- `agent_docs/features/[issue-id]-[slug].md` (refined)
+- `docs/{FEATURE_NAME}.md` (refined — git-tracked)
+- `agent_docs/research-findings.md` (internal notes)
 **Gate**: All requirements are testable and traceable
 
 ---
@@ -72,13 +73,13 @@ For every phase, if a corresponding artifact already exists in `agent_docs/`, yo
 **Goal**: Design the technical architecture
 **Steps**:
 1. Load the bmad-architect skill
-2. Review refined PRD from Phase 2
+2. Review refined Feature Spec from Phase 2
 3. Design system architecture with tech stack decisions
-4. Create ADRs for significant decisions
+4. Document ADRs inline in `docs/{FEATURE_NAME}.md` or `docs/LLD.md`
 5. Design data model and API contracts
 **Artifacts Produced**:
-- `agent_docs/architecture.md`
-- `agent_docs/adrs/`
+- `docs/LLD.md` (updated)
+- `docs/{FEATURE_NAME}.md` (architecture section updated)
 **Gate**: Architecture reviewed and approved
 
 ---
@@ -153,13 +154,12 @@ For every phase, if a corresponding artifact already exists in `agent_docs/`, yo
 **Steps**:
 1. Load the bmad-writer skill
 2. Review all artifacts from previous phases
-3. Create API documentation
-4. Create architecture documentation
-5. Create user guide / README
+3. Update `docs/LLD.md` with final architecture
+4. Update `docs/{FEATURE_NAME}.md` with implementation details
+5. Update `README.md`
 **Artifacts Produced**:
-- `agent_docs/api-docs.md`
-- `agent_docs/architecture-docs.md`
-- `agent_docs/user-guide.md`
+- `docs/LLD.md` (updated)
+- `docs/{FEATURE_NAME}.md` (finalized)
 - Updated `README.md`
 **Gate**: Documentation passes quality audit
 
@@ -195,11 +195,11 @@ Users may start from any phase if prerequisites are met:
 
 | Phase | Agent | Skill | Key Output |
 |-------|-------|-------|------------|
-| 1. Ideate | John | bmad-pm | Product Brief + PRD |
-| 2. Analyze | Mary | bmad-analyst | Refined PRD |
-| 3. Architect | Winston | bmad-architect | Architecture + ADRs |
+| 1. Ideate | John | bmad-pm | Feature Spec (`docs/`) |
+| 2. Analyze | Mary | bmad-analyst | Refined Feature Spec |
+| 3. Architect | Winston | bmad-architect | LLD + ADRs (`docs/`) |
 | 4. Design | Sally | bmad-ux | UX Specification |
-| 5. Plan | Bob | bmad-sm | User Stories |
+| 5. Plan | Bob | bmad-sm | User Stories (`agent_docs/`) |
 | 6. Implement | Amelia | bmad-dev | Working Code |
 | 7. Test | Murat | bmad-tester | Test Strategy |
-| 8. Document | Paige | bmad-writer | Technical Docs |
+| 8. Document | Paige | bmad-writer | Final Docs (`docs/`) |

@@ -72,7 +72,7 @@ Continue the Red-Green-Refactor cycle for each story requirement.
 ./dc.sh exec backend ./test.sh
 
 # Frontend: Run Jest tests
-./dc.sh exec frontend npm run test -- --watchAll=false
+./dc.sh exec frontend yarn test --watchAll=false
 ```
 
 ## Completion Criteria

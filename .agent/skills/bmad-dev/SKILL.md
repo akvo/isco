@@ -64,7 +64,7 @@ Provide and incorporate feedback on code changes:
 4. Check `agent_docs/` for context but focus on `agent_docs/stories/`.
     - **Update status**: Mark stories as "In Progress" when starting.
     - **Completion Checklist**: When finishing, mark the story as "Implemented", update **Actual Time** spent, and check off completed UAC/TAC criteria.
-    - **Sync Sprint Plan & Features**: Simultaneously update `agent_docs/sprint-plan.md` to display the completed state and update the corresponding feature doc in `agent_docs/features/`.
+    - **Sync Sprint Plan & Docs**: Simultaneously update `agent_docs/sprint-plan.md` to display the completed state and update the corresponding feature doc in `docs/{FEATURE_NAME}.md`.
     - **Proactive Workflows**: Proactively scan `.agent/workflows/` and use required workflows (like `/2-implement.md`) for the current stack.
     - **Living Documents**: Read `index.md` for architectural context if needed.
 

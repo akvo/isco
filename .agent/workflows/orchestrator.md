@@ -40,7 +40,7 @@ Execute phases **sequentially**.
 
 ### Phase 4: Verify
 **File:** `4-verify.md` (The Quality Gate)
-- Full lint/test/build validation (flake8, npm run lint).
+- Full lint/test/build validation (flake8, yarn lint).
 - Ensure "WOW" aesthetics and responsive standards are met.
 
 ### Phase 5: Commit
@@ -66,5 +66,5 @@ Execute phases **sequentially**.
 | **1. Research** | Workspace Search | Research Log |
 | **2. Implement** | Pytest (backend/test.sh), Jest | Unit Tests + Code |
 | **3. Integrate** | Browser Tool | Connectivity Verified |
-| **4. Verify** | flake8, npm lint | All Checks Pass |
+| **4. Verify** | flake8, yarn lint | All Checks Pass |
 | **5. Commit** | Conventional Commits | Git History Update |

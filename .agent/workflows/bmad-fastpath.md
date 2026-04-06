@@ -20,7 +20,8 @@ You are the BMAD Orchestrator executing the Fastpath. This streamlined pipeline 
 1. Load `bmad-architect`
 2. Analyze the bug or requested change.
 3. Identify precisely which files to change (using Document Sharding).
-4. Outline the exact implementation steps.
+4. Check if the change affects behavior documented in `docs/` — if so, note which docs need updating.
+5. Outline the exact implementation steps.
 **Gate**: User approves the technical footprint.
 
 ### Step 2: Plan (Story Creation)
@@ -47,9 +48,11 @@ You are the BMAD Orchestrator executing the Fastpath. This streamlined pipeline 
 
 ### Step 5: Document (Writer)
 **Agent**: bmad-writer
-**Goal**: Changelog and commit
+**Goal**: Changelog, commit, and docs update
 1. Load `bmad-writer`
 2. Update the README or changelog if applicable.
+3. If the fix changes documented behavior, update the relevant `docs/{FEATURE_NAME}.md`.
+4. Update `docs/LLD.md` if the system architecture is affected.
 
 ## Completion
 Once completed, hand back control to the user.

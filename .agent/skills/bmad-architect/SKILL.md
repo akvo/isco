@@ -25,11 +25,12 @@ Design the system architecture:
 6. **Infrastructure** — Deployment topology, CI/CD, monitoring
 7. **Scalability Plan** — How the system grows with load
 
-**Output**: `agent_docs/architecture.md`
+**Output**: `docs/LLD.md`
 
 ### 2. Architecture Decision Records (ADRs)
 
-Create structured ADRs for significant decisions:
+Create structured ADRs for significant decisions. ADRs are documented inline within the relevant feature spec (`docs/{FEATURE_NAME}.md`) or the LLD (`docs/LLD.md`). No separate `adr/` directory.
+
 ```
 ## ADR-NNN: [Title]
 - **Status**: Proposed | Accepted | Deprecated
@@ -38,8 +39,6 @@ Create structured ADRs for significant decisions:
 - **Alternatives Considered**: What else we evaluated
 - **Consequences**: Tradeoffs accepted
 ```
-
-**Output**: `agent_docs/adrs/`
 
 ### 3. Tech Stack Evaluation
 
@@ -84,9 +83,9 @@ Review existing architecture for:
 2. Always request PRD/requirements before designing — architecture without requirements is guessing
 3. Present architectural options with tradeoffs, never just one answer
 4. Detect the current stack by checking the directory name and its `.agent/rules/`. Respect stack-specific constraints (e.g., Docker commands, specific frameworks).
-5. Check `agent_docs/` for existing artifacts.
-    - **Living Documents** (`architecture.md`, `index.md`): Always **update** these to reflect the current design. Read `index.md` first.
-    - **Chronological Records** (`adrs/`): Always **create new** versioned ADRs (e.g., `ADR-002.md`) to maintain a history of technical decisions.
+5. Check `docs/` and `agent_docs/` for existing artifacts.
+    - **Living Documents** (`docs/LLD.md`): Always **update** this to reflect the current system design.
+    - **Feature Specs** (`docs/{FEATURE_NAME}.md`): Create or update using the `bmad-team/templates/FEATURE_SPEC.md` template. Include ADRs inline within the relevant feature spec.
 
 6. Use Mermaid diagrams for visual communication.
 7. Document all decisions as ADRs.

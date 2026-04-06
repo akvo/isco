@@ -38,11 +38,11 @@ docker volume create isco-docker-sync # Required before first run
 ### Frontend Commands
 
 ```bash
-./dc.sh exec frontend npm run prettier-write       # Format code
+./dc.sh exec frontend yarn prettier-write       # Format code
 ./dc.sh exec frontend bash                          # Open shell
-./dc.sh exec frontend npm start                    # Start dev server
-./dc.sh exec frontend npm run lint                  # Run ESLint
-./dc.sh exec frontend npm run test                  # Run tests (Jest)
+./dc.sh exec frontend yarn start                    # Start dev server
+./dc.sh exec frontend yarn lint                  # Run ESLint
+./dc.sh exec frontend yarn test                  # Run tests (Jest)
 ```
 
 ### Rules

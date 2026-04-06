@@ -9,15 +9,15 @@ description: When writing or modifying frontend code (React components, styles, 
 
 - **React 17** (Functional Components preferred)
 - **react-scripts** as the build tool
-- **Vanilla CSS** by default (with Tailwind optional)
+- **Ant Design (antd)** and **SCSS** for styling
 - **Axios** for API communication
 - **Jest** and **React Testing Library** for tests
 
 ### Code Style
 
 - Use **ESLint** and **Prettier**.
-- Run linter: `./dc.sh exec frontend npm run lint`
-- Run formatter: `./dc.sh exec frontend npm run prettier-write`
+- Run linter: `./dc.sh exec frontend yarn lint`
+- Run formatter: `./dc.sh exec frontend yarn prettier-write`
 
 ### Modern React Patterns
 

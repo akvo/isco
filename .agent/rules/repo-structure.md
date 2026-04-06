@@ -8,13 +8,12 @@ This is a **multi-stack agent skeleton repository**. Each subdirectory represent
 
 ### Directory Convention
 
-```
-<stack-name>/
-└── .agent/
-    ├── rules/        # Coding standards (always_on + model_decision)
-    ├── skills/       # On-demand task guides (<name>/SKILL.md)
-    └── workflows/    # Development phase workflows
-```
+├── .agent/           # Local agent config (Rules, Skills, Workflows) — NOT in git
+├── agent_docs/       # Local agent state (Sprint plans, Stories) — NOT in git
+├── docs/             # Shared documentation (LLD.md + feature specs) — IN git
+└── ...
+
+See @docs-standard.md for the full documentation standard.
 
 ### Rules for This Repo
 

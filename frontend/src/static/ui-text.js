@@ -378,7 +378,7 @@ const uiText = {
     btnClose: "Schließen",
     btnSave: "Speichern",
     btnDontSave: "Nicht speichern",
-    lockedBy: "Reserviert",
+    lockedBy: "Sperren",
     btnSaveChanges: "Änderungen speichern",
     btnDeleteUser: "Nutzer löschen",
     btnInformUser: "Nutzer/in informieren",
