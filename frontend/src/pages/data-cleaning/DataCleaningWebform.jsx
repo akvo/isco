@@ -203,8 +203,9 @@ const DataCleaningWebform = ({
             ?.filter((q) => q?.lead_by_question);
           if (status === 200) {
             let commentValues = {};
+            const isNewDataId = initial_values?.id !== savedData?.id;
             // load initial form value from saved data
-            if (initial_values && isEmpty(answer)) {
+            if (initial_values && (isEmpty(answer) || isNewDataId)) {
               setSavedData(initial_values);
               const answers = initial_values.answer.map((a) => {
                 const { question, repeat_index, comment } = a;
@@ -246,7 +247,7 @@ const DataCleaningWebform = ({
               setCommentDefValues(commentValues);
             }
             // load initial value when user change translations
-            if (!isEmpty(answer)) {
+            if (!isEmpty(answer) && !isNewDataId) {
               setInitialAnswers(answer);
               answer.forEach((a) => {
                 const { question, repeat_index, comment } = a;
@@ -425,8 +426,11 @@ const DataCleaningWebform = ({
     let updatedAnswer = answer;
     if (finalFormValues) {
       updatedAnswer = Object.keys(finalFormValues)
+        .filter(
+          (key) => key.toLowerCase() !== "datapoint" && !key.includes("dataNA_")
+        )
         .map((key) => {
-          const prevAnswer = answer.find((a) => {
+          let prevAnswer = answer.find((a) => {
             // return prev value with correct key
             const qid =
               a.repeat_index > 0 || a.repeat_index_string
@@ -434,38 +438,60 @@ const DataCleaningWebform = ({
                 : String(a.question);
             return qid === key;
           });
-          if (prevAnswer) {
-            // CHECK dataNA
-            const dataNAKey = `dataNA_${key}`;
-            let comment = prevAnswer?.comment || null;
-            let value =
-              typeof finalFormValues?.[key] !== "undefined" &&
-              finalFormValues?.[key] !== null
-                ? finalFormValues[key]
-                : null;
 
-            if (
-              finalFormValues?.[dataNAKey] === false &&
-              containsUnavailableText(comment)
-            ) {
-              comment = null;
+          // check dataNA
+          const dataNAKey = `dataNA_${key}`;
+          let comment = prevAnswer?.comment || null;
+          let value =
+            typeof finalFormValues?.[key] !== "undefined" &&
+            finalFormValues?.[key] !== null
+              ? finalFormValues[key]
+              : null;
+
+          if (
+            finalFormValues?.[dataNAKey] === false &&
+            containsUnavailableText(comment)
+          ) {
+            comment = null;
+          }
+          if (finalFormValues?.[dataNAKey] === true && !comment) {
+            // add dataNA text if no comment available yet
+            comment = text.inputDataUnavailable;
+          }
+          if (finalFormValues?.[dataNAKey] === true) {
+            // flash out answer if dataNA checked
+            value = null;
+          }
+          // EOL CHECK dataNA
+
+          if (!prevAnswer) {
+            let question = key;
+            let repeatIndex = null;
+            let repeatIndexString = null;
+            if (key.includes("-")) {
+              const split = key.split("-");
+              question = split[0];
+              repeatIndexString = split[1];
+              repeatIndex = isNumeric(split[1]) ? parseInt(split[1]) : split[1];
             }
-            if (finalFormValues?.[dataNAKey] === true && !comment) {
-              // add dataNA text if no comment available yet
-              comment = text.inputDataUnavailable;
-            }
-            if (finalFormValues?.[dataNAKey] === true) {
-              // flash out answer if dataNA checked
-              value = null;
-            }
-            // EOL CHECK dataNA
-            return {
-              ...prevAnswer,
-              comment,
-              value,
+            prevAnswer = {
+              question: parseInt(question),
+              repeat_index: repeatIndex,
+              repeatIndex: repeatIndex,
+              repeat_index_string: repeatIndexString,
+              comment: null,
             };
           }
-          return false;
+
+          if (!value && value !== 0 && !comment) {
+            return false;
+          }
+
+          return {
+            ...prevAnswer,
+            comment,
+            value,
+          };
         })
         .filter((x) => x);
     }
