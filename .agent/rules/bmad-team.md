@@ -35,12 +35,10 @@ Ideate → Analyze → Architect → Design → Plan → Implement → Test → 
 4. The **Scrum Master** translates PRD + Architecture into developer-ready stories
 5. The **Developer** never starts without an approved story
 6. Cross-references: each agent skill is at `bmad-{role}/SKILL.md`
-7. **Documentation Maintenance**: When modifying a feature, check for existing artifacts in `agent_docs/`.
-    - **Living Documents** (`prd.md`, `architecture.md`, `user-guide.md`, `README.md`): These represent the **project skeleton** (overall purpose, shared architecture). Always **update** these to reflect the current high-level state. **NEVER** overwrite these with task-specific descriptions.
-    - **Sprint Tracking** (`sprint-plan.md`, `stories/`): When a task/story is completed, you MUST explicitly update the corresponding story document (fill Actual Time, check off UAC/TAC) AND update `sprint-plan.md` to reflect the completed state.
-    - **Feature Documents** (`agent_docs/features/`): Create these for specific issues, tasks, or features to describe detailed requirements and logic. Update them simultaneously when implementing.
-    - **Chronological Records** (`ADRs`, `stories`, `sprint-plans`, `research-findings`): Always **create new** versioned files (e.g., `ADR-002.md`) to maintain history.
-
+7. **Documentation Maintenance**: Documentation is split between local agent state and shared project docs. See @docs-standard.md for full details.
+    - **Internal** (`agent_docs/`): Sprint plans, stories, research. **NEVER** push to git.
+    - **Shared** (`docs/`): `LLD.md` + one `.md` per feature. **ALWAYS** version in git. No credentials.
+    - **Brainstorm First**: Feature specs in `docs/` must be approved before sprint planning in `agent_docs/`.
 8. **Stack & Workflow Awareness**: Detect the current stack by checking the directory name and its `.agent/rules/`. Respect stack-specific constraints (e.g., Docker commands). Actively explore `.agent/workflows/` and proactively use relevant concurrent workflows (e.g., `/2-implement`, `/sprint-status`) even if not explicitly instructed to do so.
 
 

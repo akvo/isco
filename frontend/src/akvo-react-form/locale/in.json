@@ -31,5 +31,6 @@
   "previous": "पहले का",
   "errorFileSize": "फ़ाइल का आकार सीमा से अधिक है। कृपया इससे छोटी फ़ाइल अपलोड करें",
   "dragFileToUpload": "अपलोड करने के लिए इस क्षेत्र में फ़ाइल को क्लिक या ड्रैग करें",
-  "fileUploadOnlySupport": "अधिकतम आकार वाले केवल JPEG, JPG और PNG"
+  "fileUploadOnlySupport": "अधिकतम आकार वाले केवल JPEG, JPG और PNG",
+  "errorDataUnavailableConflict": "Please provide either an answer or check 'n/a', not both."
 }

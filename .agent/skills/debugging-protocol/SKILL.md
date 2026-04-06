@@ -67,7 +67,7 @@ If you haven't completed Phase 1, you cannot propose fixes.
 
 1. **Create Failing Test Case**
    - Backend: `./dc.sh exec backend pytest -k "test_name"`
-   - Frontend: `./dc.sh exec frontend npm run test -- -t "test name"`
+   - Frontend: `./dc.sh exec frontend yarn test -t "test name"`
    - MUST exist before fixing.
 
 2. **Implement Single Fix** — ONE change at a time.

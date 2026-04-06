@@ -13,11 +13,11 @@ Run the full test suite and audit the implementation against all project rules a
 
 ### 1. Run Full Test Suite
 - **Backend:** `./dc.sh exec backend ./test.sh`
-- **Frontend:** `./dc.sh exec frontend npm run test -- --watchAll=false`
+- **Frontend:** `./dc.sh exec frontend yarn test --watchAll=false`
 
-### 2. Linting & Formatting
+### 3. ESLint & Flake8 (Static Analysis)
 - **Backend:** Inline in `./test.sh` (or `./dc.sh exec backend flake8`)
-- **Frontend:** `./dc.sh exec frontend npm run lint`
+- **Frontend:** `./dc.sh exec frontend yarn lint`
 - Ensure no warnings or errors.
 
 ### 3. Rule Compliance Audit

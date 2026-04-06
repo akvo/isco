@@ -26,6 +26,8 @@ const Survey = () => {
   );
   const [savedSubmissions, setSavedSubmissions] = useState([]);
   const [selectedSavedSubmission, setSelectedSavedSubmission] = useState(null);
+  const [committedSavedSubmission, setCommittedSavedSubmission] =
+    useState(null);
   const [reloadDropdownValue, setReloadDropdownValue] = useState(true);
 
   const [collaborators, setCollaborators] = useState(null);
@@ -39,6 +41,7 @@ const Survey = () => {
   // previous submission
   const [prevSubmissionOptions, setPrevSubmissionOptions] = useState([]);
   const [selectedPrevSubmission, setSelectedPrevSubmission] = useState(null);
+  const [committedPrevSubmission, setCommittedPrevSubmission] = useState(null);
   const [clearForm, setClearForm] = useState(false);
 
   const handleOnClickDataSecurity = () => {
@@ -203,7 +206,7 @@ const Survey = () => {
     setSelectedCollaborators(val);
   };
 
-  const onOkModal = ({ cancel = false }) => {
+  const onOkModal = ({ cancel = false, nextConfig = null }) => {
     // handle onOkModal to trigger save button
     // SaveFormDataModal
     if (saveButtonRef?.current && !cancel) {
@@ -220,21 +223,32 @@ const Survey = () => {
           },
         };
       });
-    }, 100);
-    setTimeout(() => {
-      if (selectedForm) {
-        setFormLoaded(selectedForm);
-        return;
-      }
-      if (selectedSavedSubmission) {
-        setFormLoaded(selectedSavedSubmission.form);
-        return;
-      }
+      // Wait for the unmount to finish before loading the next one
+      setTimeout(() => {
+        if (!nextConfig) {
+          return;
+        }
+        const { type, formId, savedSubmission, prevSubmission } = nextConfig;
+        if (type === "new") {
+          setCommittedSavedSubmission(null);
+          setCommittedPrevSubmission(null);
+          setFormLoaded(formId);
+        } else if (type === "prev") {
+          setCommittedSavedSubmission(null);
+          setCommittedPrevSubmission(prevSubmission);
+          setFormLoaded(formId);
+        } else if (type === "saved") {
+          setCommittedSavedSubmission(savedSubmission);
+          setCommittedPrevSubmission(null);
+          setFormLoaded(savedSubmission.form);
+        }
+      }, 200);
     }, 100);
   };
 
   const handleOnClickOpenNewForm = () => {
     resetSavedFormDropdown();
+    const nextConfig = { type: "new", formId: selectedForm };
     if (formLoaded) {
       // show modal
       store.update((s) => {
@@ -243,14 +257,16 @@ const Survey = () => {
           saveFormData: {
             ...s.notificationModal.saveFormData,
             visible: true,
-            onOk: () => onOkModal({ cancel: false }),
-            onCancel: () => onOkModal({ cancel: true }),
+            onOk: () => onOkModal({ cancel: false, nextConfig }),
+            onCancel: () => onOkModal({ cancel: true, nextConfig }),
           },
         };
       });
       return;
     }
     if (selectedForm) {
+      setCommittedSavedSubmission(null);
+      setCommittedPrevSubmission(null);
       setFormLoaded(selectedForm);
       return;
     }
@@ -262,6 +278,11 @@ const Survey = () => {
       webformRef?.current?.resetFields();
       setClearForm(true);
     }
+    const nextConfig = {
+      type: "prev",
+      formId: selectedForm,
+      prevSubmission: selectedPrevSubmission,
+    };
     if (formLoaded) {
       // show modal
       store.update((s) => {
@@ -270,14 +291,16 @@ const Survey = () => {
           saveFormData: {
             ...s.notificationModal.saveFormData,
             visible: true,
-            onOk: () => onOkModal({ cancel: false }),
-            onCancel: () => onOkModal({ cancel: true }),
+            onOk: () => onOkModal({ cancel: false, nextConfig }),
+            onCancel: () => onOkModal({ cancel: true, nextConfig }),
           },
         };
       });
       return;
     }
     if (selectedForm) {
+      setCommittedSavedSubmission(null);
+      setCommittedPrevSubmission(selectedPrevSubmission);
       setFormLoaded(selectedForm);
       return;
     }
@@ -288,6 +311,10 @@ const Survey = () => {
       selectedSavedSubmission?.form_type === "project" ? false : true;
     resetCollaboratorDropdown(disableAddCollaboratorDropdownValue, false);
     resetNewFormDropdown();
+    const nextConfig = {
+      type: "saved",
+      savedSubmission: selectedSavedSubmission,
+    };
     if (formLoaded) {
       // show modal
       store.update((s) => {
@@ -296,16 +323,17 @@ const Survey = () => {
           saveFormData: {
             ...s.notificationModal.saveFormData,
             visible: true,
-            onOk: () => onOkModal({ cancel: false }),
-            onCancel: () => onOkModal({ cancel: true }),
+            onOk: () => onOkModal({ cancel: false, nextConfig }),
+            onCancel: () => onOkModal({ cancel: true, nextConfig }),
           },
         };
       });
       return;
     }
     if (selectedSavedSubmission) {
+      setCommittedSavedSubmission(selectedSavedSubmission);
+      setCommittedPrevSubmission(null);
       setFormLoaded(selectedSavedSubmission.form);
-      return;
     }
   };
 
@@ -521,13 +549,16 @@ const Survey = () => {
         <Space direction="vertical" style={{ width: "100%" }}>
           <Alert type="warning" showIcon message={text.bannerSaveSurvey} />
           <WebformPage
+            key={`${formLoaded}-${committedSavedSubmission?.id || "new"}-${
+              committedPrevSubmission || "noprev"
+            }`}
             webformRef={webformRef}
             formId={formLoaded}
             setFormLoaded={setFormLoaded}
-            selectedSavedSubmission={selectedSavedSubmission}
+            selectedSavedSubmission={committedSavedSubmission}
             setReloadDropdownValue={setReloadDropdownValue}
             selectedFormEnablePrefilledValue={selectedFormEnablePrefilledValue}
-            selectedPrevSubmission={selectedPrevSubmission}
+            selectedPrevSubmission={committedPrevSubmission}
             setShowCollaboratorForm={setShowCollaboratorForm}
             setCollaborators={setCollaborators}
             selectedCollaborators={selectedCollaborators}

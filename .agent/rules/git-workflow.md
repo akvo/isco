@@ -1,22 +1,39 @@
 ---
-trigger: model_decision
-description: When creating branches, committing code, managing PRs, or working with version control
+trigger: always_on
+description: Standardized commit message format for the entire repository
 ---
 
-## Git Workflow Principles
+## Commit Message Standard
 
-### Commit Messages — Conventional Commits
+To ensure traceability from code changes to their corresponding requirements/issues, a standardized format is enforced across the entire repository.
 
-**Format:**
+### Format specification
+
+Every commit MUST follow this format:
+
 ```
 [#issue_number] <type>(<scope>): <description>
-
-[optional body]
-
-[optional footer]
 ```
 
-**Types:**
+> [!IMPORTANT]
+> If you are about to commit and do not have an issue number, you MUST ask the user to confirm the issue number before proceeding. Never invent an issue number.
+
+### Pull Request Strategy
+
+When creating a PR:
+1. **Title Format**: `[#issue_number] <Clear group/feature name> - <Short Description>`
+2. **Safety Audit**: If applicable, attach or link the `safety-audit-issue-[issue_number].md` file.
+3. **QA Guide**: If applicable, reference the `qa-guide-issue-[issue_number].md`.
+
+### Components
+
+1. **`[#issue_number]`**: (Required) The ID of the issue being addressed, enclosed in brackets and prefixed with #.
+2. **`<type>`**: (Required) The type of change (see below).
+3. **`<scope>`**: (Optional) The specific area affected (e.g., `backend`, `frontend`, `auth`).
+4. **`<description>`**: (Required) A concise, imperative mood summary.
+
+### Types
+
 | Type | Purpose |
 |------|---------|
 | `feat` | New feature |
@@ -26,35 +43,12 @@ description: When creating branches, committing code, managing PRs, or working w
 | `refactor` | Code change (no new feature/fix) |
 | `test` | Adding or updating tests |
 | `chore` | Maintenance, dependencies |
-| `perf` | Performance improvement |
-| `ci` | CI/CD configuration changes |
 
-**Rules:**
-- Description is imperative mood ("add" not "added", "fix" not "fixes").
-- Scope matches the feature area (e.g., `backend`, `frontend`, `auth`, `api`).
-- Description is concise (<72 characters).
-- Body explains **why**, not what (the diff shows what).
+### Examples
 
-### Branch Naming
-
-**Format:** `<type>/<ticket-or-short-description>`
-
-**Examples:**
-```
-feat/user-crud-api
-fix/auth-token-expiry
-refactor/storage-layer
-chore/update-deps
-```
-
-### Commit Hygiene
-
-- **One logical change per commit** — don't mix unrelated changes.
-- **Never commit broken tests** — all tests must pass before committing.
-- **Don't commit debug code** — remove console.log, print statements, TODO hacks.
-- **Don't commit secrets** — use `.gitignore` and environment variables.
+- `[#1] feat(api): add FastAPI endpoint for user profile`
+- `[#12] fix(auth): resolve login timeout`
+- `[#45] docs: update README with setup instructions`
 
 ### Related Rules
-- Root Git Workflow @/Users/galihpratama/Dev/my-antigravity-pilot/.agent/rules/git-workflow.md
-- Testing Strategy @testing-strategy.md
-- Docker Commands @docker-commands.md
+- Repo Structure @repo-structure.md

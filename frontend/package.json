@@ -70,6 +70,11 @@
       "react-app/jest"
     ]
   },
+  "jest": {
+    "transformIgnorePatterns": [
+      "[/\\\\]node_modules[/\\\\](?!(@react-leaflet|react-leaflet)/).+\\.(js|jsx|mjs|cjs|ts|tsx)$"
+    ]
+  },
   "browserslist": {
     "production": [
       ">0.2%",

@@ -68,7 +68,7 @@ Build functional components in `frontend/src/features/[feature-name]/components/
 `./dc.sh exec backend ./test.sh`
 
 ### 3.2. Frontend Tests
-`./dc.sh exec frontend npm run test -- src/features/[feature-name]/tests`
+`./dc.sh exec frontend yarn test -- src/features/[feature-name]/tests`
 
 ## Rule Compliance
 
