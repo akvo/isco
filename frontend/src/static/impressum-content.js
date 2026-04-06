@@ -58,7 +58,9 @@ const icEn = (handleShow) => {
               Email: <a href="mailto:eagle@idhtrade.org">
                 eagle@idhtrade.org
               </a>{" "}
-              and <a href="mailto:richards@idh.org">richards@idh.org</a> <br />
+              and{" "}
+              <a href="mailto:richards@idhtrade.org">richards@idhtrade.org</a>{" "}
+              <br />
             </p>
             <br />
             <br />
@@ -221,7 +223,9 @@ const icDe = (handleShow) => {
               Email: <a href="mailto:eagle@idhtrade.org">
                 eagle@idhtrade.org
               </a>{" "}
-              and <a href="mailto:richards@idh.org">richards@idh.org</a> <br />
+              and{" "}
+              <a href="mailto:richards@idhtrade.org">richards@idhtrade.org</a>{" "}
+              <br />
             </p>{" "}
             <br />
             <br />
