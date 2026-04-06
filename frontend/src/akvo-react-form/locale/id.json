@@ -31,5 +31,6 @@
   "previous": "Sebelumnya",
   "errorFileSize": "Ukuran berkas melebihi batas. Harap unggah berkas yang lebih kecil dari",
   "dragFileToUpload": "Klik atau seret berkas ke area ini untuk mengunggah",
-  "fileUploadOnlySupport": "Hanya JPEG, JPG, dan PNG dengan ukuran maksimal"
+  "fileUploadOnlySupport": "Hanya JPEG, JPG, dan PNG dengan ukuran maksimal",
+  "errorDataUnavailableConflict": "Please provide either an answer or check 'n/a', not both."
 }

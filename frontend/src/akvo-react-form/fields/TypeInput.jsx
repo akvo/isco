@@ -128,6 +128,10 @@ const InputField = ({
                 name.props.children
               );
               const requiredErr = `${questionLabel} ${uiText.errorIsRequired}`;
+              const conflictErr = `${questionLabel} - ${uiText.errorDataUnavailableConflict}`;
+              if ((value || value === 0) && naChecked) {
+                return Promise.reject(new Error(conflictErr));
+              }
               if (value || value === 0) {
                 return Promise.resolve();
               }

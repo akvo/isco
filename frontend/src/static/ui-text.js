@@ -300,6 +300,8 @@ const uiText = {
         <b>Total Value</b>
       </>
     ),
+    errorDataUnavailableConflict:
+      "Please provide either an answer or check 'n/a', not both.",
     inputDataUnavailable: "Data unavailable/NA",
   },
 
@@ -597,6 +599,8 @@ const uiText = {
     cvMinValueText: "Validierung, Mindestwert",
     cvEqualValueText: "Validierung, Wert muss gleich sein",
     cvTotalValueText: "Gesamtwert",
+    errorDataUnavailableConflict:
+      "Bitte geben Sie entweder eine Antwort an oder wählen Sie 'N/A', nicht beides.",
     inputDataUnavailable: "Daten nicht verfügbar/NV",
   },
 };
