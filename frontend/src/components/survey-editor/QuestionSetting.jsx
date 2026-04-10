@@ -22,7 +22,7 @@ import {
   MdOutlineLibraryAddCheck,
 } from "react-icons/md";
 import { store } from "../../lib";
-import { orderBy, take } from "lodash";
+import { orderBy } from "lodash";
 import { generateDisabledOptions } from "./QuestionGroupEditor";
 import { globalMultipleSelectProps, globalSelectProps } from "../../lib/util";
 
@@ -102,9 +102,9 @@ const QuestionSetting = ({
   // take skip logic question by question current order
   const skipLogicQuestion = useMemo(() => {
     return orderBy(
-      take(allQuestion, question?.order)?.filter(
-        (q) => skipLogicQuestionType.includes(q?.type) && q?.id !== qid
-      ),
+      allQuestion
+        ?.filter((q) => q.order < question.order && q?.id !== qid)
+        ?.filter((q) => skipLogicQuestionType.includes(q?.type)),
       ["order"]
     )?.map((q) => {
       let icon = <AiOutlineFieldNumber style={{ marginRight: "8px" }} />;
