@@ -1,0 +1,629 @@
+{
+  "id": "3837e61a-40bf-431a-9c80-4812b82fc9cb",
+  "version": "2.0",
+  "name": "ISCO",
+  "url": "http://localhost:3000",
+  "tests": [{
+    "id": "503ee785-e026-46d7-b3ec-957d9cd2cdce",
+    "name": "login_with_verified_super_admin",
+    "commands": [{
+      "id": "f1d16719-6f17-44fb-a359-36717dac357f",
+      "comment": "Open login page",
+      "command": "open",
+      "target": "/login",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "f06e897a-ecf5-46a9-b5a3-c4b6e48bf0e7",
+      "comment": "set window size",
+      "command": "setWindowSize",
+      "target": "942x1012",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "dd0266b0-1221-420b-9a68-308d6c1ddd77",
+      "comment": "wait for email field show",
+      "command": "waitForElementPresent",
+      "target": "id=email",
+      "targets": [
+        ["id=email", "id"],
+        ["css=#email", "css:finder"],
+        ["xpath=//input[@id='email']", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div/div/div/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "a23f651f-ebbd-4071-ae1f-c4157e95f30b",
+      "comment": "filling the email field",
+      "command": "type",
+      "target": "id=email",
+      "targets": [
+        ["id=email", "id"],
+        ["css=#email", "css:finder"],
+        ["xpath=//input[@id='email']", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div/div/div/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "verified_user@test.com"
+    }, {
+      "id": "9513e4ee-1839-4749-9d6b-7727879aed59",
+      "comment": "filling password field",
+      "command": "type",
+      "target": "id=password",
+      "targets": [
+        ["id=password", "id"],
+        ["css=#password", "css:finder"],
+        ["xpath=//input[@id='password']", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div[2]/div/div/div/span/input", "xpath:idRelative"],
+        ["xpath=//span/input", "xpath:position"]
+      ],
+      "value": "password"
+    }, {
+      "id": "bdecd68b-86d7-41fc-ae57-14dcd93a51fb",
+      "comment": "clicking login button",
+      "command": "click",
+      "target": "css=.ant-btn-primary",
+      "targets": [
+        ["css=.ant-btn-primary", "css:finder"],
+        ["xpath=(//button[@type='button'])[3]", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/button", "xpath:idRelative"],
+        ["xpath=//form/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Login')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "ded99655-55ef-42dc-99b9-7c0209720d78",
+      "comment": "check if Welcome Page shows",
+      "command": "assertText",
+      "target": "css=.intro-text > h1",
+      "targets": [
+        ["css=.intro-text > h1", "css:finder"],
+        ["xpath=//div[@id='home']/div/div/h1", "xpath:idRelative"],
+        ["xpath=//h1", "xpath:position"],
+        ["xpath=//h1[contains(.,'WELCOME TO THE COCOA MONITORING OF DISCO, BEYOND CHOCOLATE AND GISCO!')]", "xpath:innerText"]
+      ],
+      "value": "WELCOME TO THE COCOA MONITORING OF DISCO, BEYOND CHOCOLATE AND GISCO!"
+    }]
+  }, {
+    "id": "aef7c7a5-d280-4f21-804d-de9079e86a0e",
+    "name": "00_open_manage_survey_page",
+    "commands": [{
+      "id": "2d4da232-2f69-4a12-b89c-60441b37d958",
+      "comment": "login with verified super admin",
+      "command": "run",
+      "target": "login_with_verified_super_admin",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "a5adbdf9-1cf4-46ce-9841-f48d6dd293bf",
+      "comment": "click dropdown menu",
+      "command": "click",
+      "target": "css=.ant-dropdown-trigger .ant-space-item:nth-child(2)",
+      "targets": [
+        ["css=.ant-dropdown-trigger .ant-space-item:nth-child(2)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div[2]/div/div[2]/a/div/div[2]", "xpath:idRelative"],
+        ["xpath=//a/div/div[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "33ca8053-3ba7-46a8-bacb-0df523370352",
+      "comment": "wait dropdown menu visible",
+      "command": "waitForElementVisible",
+      "target": "css=.account-dropdown-menu",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "ec5dd064-b6ec-4c98-870e-34698623d37a",
+      "comment": "click Admin menu",
+      "command": "executeScript",
+      "target": "document.querySelectorAll('.ant-dropdown-menu-item').forEach(function(d){if(d.querySelector('a').textContent == \"Admin\"){d.querySelector('a').click()}})",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "2299ac9e-edcc-456c-8405-411f9ce86914",
+      "comment": "assert Admin page loaded",
+      "command": "assertText",
+      "target": "css=.page-title",
+      "targets": [
+        ["css=.page-title", "css:finder"],
+        ["xpath=//div[@id='admin']/div/div/h3", "xpath:idRelative"],
+        ["xpath=//h3", "xpath:position"],
+        ["xpath=//h3[contains(.,'Welcome Admin')]", "xpath:innerText"]
+      ],
+      "value": "Welcome Admin"
+    }, {
+      "id": "61babfa2-6890-4071-9823-13a4a2200033",
+      "comment": "click Manage Survey menu",
+      "command": "click",
+      "target": "css=.ant-col:nth-child(2) > .ant-card .ant-btn",
+      "targets": [
+        ["css=.ant-col:nth-child(2) > .ant-card .ant-btn", "css:finder"],
+        ["xpath=(//button[@type='button'])[5]", "xpath:attributes"],
+        ["xpath=//div[@id='admin']/div/div/div/div[2]/div/div[2]/div/button", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div[2]/div/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Manage Surveys')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "1eb1de07-7118-4417-b447-15164dc68320",
+      "comment": "assert Manage Surveys text appear",
+      "command": "assertText",
+      "target": "css=.page-title",
+      "targets": [
+        ["css=.page-title", "css:finder"],
+        ["xpath=//div[@id='manage-survey']/div/div/h3", "xpath:idRelative"],
+        ["xpath=//h3", "xpath:position"],
+        ["xpath=//h3[contains(.,'Manage Surveys')]", "xpath:innerText"]
+      ],
+      "value": "Manage Surveys"
+    }, {
+      "id": "e0f5a76a-99d6-400f-818b-efd591ca0704",
+      "comment": "assert New Survey button appear",
+      "command": "assertText",
+      "target": "css=.button-add > span",
+      "targets": [
+        ["css=.button-add > span", "css:finder"],
+        ["xpath=//div[@id='manage-survey']/div/div/div/div/button/span", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/div/div/button/span", "xpath:position"],
+        ["xpath=//span[contains(.,'New Survey')]", "xpath:innerText"]
+      ],
+      "value": "New Survey"
+    }]
+  }, {
+    "id": "3a71c5db-05ac-4938-96b7-7c74881c5ed7",
+    "name": "01_add_new_survey",
+    "commands": [{
+      "id": "c9cf05f8-9d75-4a44-8448-7c749e63f8a2",
+      "comment": "",
+      "command": "run",
+      "target": "00_open_manage_survey_page",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "db1fbfb1-13dd-4753-aa81-0297f17fc8d8",
+      "comment": "click New Survey button",
+      "command": "click",
+      "target": "css=.button-add",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "5bae5ba8-4a58-47fc-9652-6c9ff8074288",
+      "comment": "wait modal visible",
+      "command": "waitForElementVisible",
+      "target": "css=.ant-modal-header",
+      "targets": [
+        ["css=.ant-modal-header", "css:finder"],
+        ["xpath=//div[2]/div/div[2]/div", "xpath:position"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "3a3fe875-71ff-41c2-bb27-5c788d735da1",
+      "comment": "assert Survey Details form visible",
+      "command": "assertText",
+      "target": "css=#rcDialogTitle0 > .ant-typography",
+      "targets": [
+        ["css=#rcDialogTitle0 > .ant-typography", "css:finder"],
+        ["xpath=//div[@id='rcDialogTitle0']/h4", "xpath:idRelative"],
+        ["xpath=//h4", "xpath:position"],
+        ["xpath=//h4[contains(.,'Survey Details')]", "xpath:innerText"]
+      ],
+      "value": "Survey Details"
+    }, {
+      "id": "b6638bef-bcd2-4b19-9ca5-b20bd600d8be",
+      "comment": "assert Survey Name field present",
+      "command": "assertElementPresent",
+      "target": "id=survey-detail_form-name",
+      "targets": [
+        ["id=survey-detail_form-name", "id"],
+        ["css=#survey-detail_form-name", "css:finder"],
+        ["xpath=//input[@id='survey-detail_form-name']", "xpath:attributes"],
+        ["xpath=//form[@id='survey-detail']/div/div/div/div[2]/div/div/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "eb9f7f24-d6df-4470-8caf-954ddaec4780",
+      "comment": "fill Survey Name field",
+      "command": "type",
+      "target": "id=survey-detail_form-name",
+      "targets": [
+        ["id=survey-detail_form-name", "id"],
+        ["css=#survey-detail_form-name", "css:finder"],
+        ["xpath=//input[@id='survey-detail_form-name']", "xpath:attributes"],
+        ["xpath=//form[@id='survey-detail']/div/div/div/div[2]/div/div/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "Test Case Survey"
+    }, {
+      "id": "8e5b07de-a40e-479f-bda5-18811c52726c",
+      "comment": "assert Survey Description present",
+      "command": "assertElementPresent",
+      "target": "id=survey-detail_form-description",
+      "targets": [
+        ["id=survey-detail_form-description", "id"],
+        ["css=#survey-detail_form-description", "css:finder"],
+        ["xpath=//textarea[@id='survey-detail_form-description']", "xpath:attributes"],
+        ["xpath=//form[@id='survey-detail']/div/div/div[2]/div[2]/div/div/div/textarea", "xpath:idRelative"],
+        ["xpath=//textarea", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "1c13af79-758b-4856-8483-7552583a4ab9",
+      "comment": "fill Survey Description field",
+      "command": "type",
+      "target": "id=survey-detail_form-description",
+      "targets": [
+        ["id=survey-detail_form-description", "id"],
+        ["css=#survey-detail_form-description", "css:finder"],
+        ["xpath=//textarea[@id='survey-detail_form-description']", "xpath:attributes"],
+        ["xpath=//form[@id='survey-detail']/div/div/div[2]/div[2]/div/div/div/textarea", "xpath:idRelative"],
+        ["xpath=//textarea", "xpath:position"]
+      ],
+      "value": "Lorem ipsum sit dolor amet"
+    }, {
+      "id": "0d3c9953-94e2-45b9-9ebc-7fc32fbb4631",
+      "comment": "assert Languages dropdown present",
+      "command": "assertElementPresent",
+      "target": "css=.ant-select-selection-overflow",
+      "targets": [
+        ["css=.ant-select-selection-overflow", "css:finder"],
+        ["xpath=//form[@id='survey-detail']/div/div/div[3]/div[2]/div/div/div/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[3]/div[2]/div/div/div/div/div/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "c02362a9-7194-4218-927b-b0e18efb82be",
+      "comment": "click Languages dropdown",
+      "command": "click",
+      "target": "css=.ant-select-selection-overflow",
+      "targets": [
+        ["css=.ant-select-selection-overflow", "css:finder"],
+        ["xpath=//form[@id='survey-detail']/div/div/div[3]/div[2]/div/div/div/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[3]/div[2]/div/div/div/div/div/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "fca8e108-a43f-4804-8e09-aac52b5ca295",
+      "comment": "wait Languages dropdown items present",
+      "command": "waitForElementPresent",
+      "target": "css=.ant-select-item-option-active",
+      "targets": [
+        ["css=.ant-select-item-option-active", "css:finder"],
+        ["xpath=//div[2]/div/div/div/div[5]", "xpath:position"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "0b0b8876-3940-4da0-9301-eca601df26fe",
+      "comment": "select Indonesian language",
+      "command": "executeScript",
+      "target": "document.querySelectorAll('.ant-select-item').forEach(function(d){if(d.getAttribute('title') === 'Indonesian'){d.click()}})",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "105b0f2d-0b6f-49fd-97db-ab7d5e70948b",
+      "comment": "assert Enable Prefilled Value present",
+      "command": "assertText",
+      "target": "css=.ant-space-item > .field-label",
+      "targets": [
+        ["css=.ant-space-item > .field-label", "css:finder"],
+        ["xpath=//form[@id='survey-detail']/div/div/div[4]/div/div[2]/span", "xpath:idRelative"],
+        ["xpath=//div[4]/div/div[2]/span", "xpath:position"],
+        ["xpath=//span[contains(.,'Enable Prefilled Value')]", "xpath:innerText"]
+      ],
+      "value": "Enable Prefilled Value"
+    }, {
+      "id": "98f0db1a-ff3d-44ba-b3ff-d5f8b1692f46",
+      "comment": "turn on Enable Prefilled Value",
+      "command": "click",
+      "target": "id=survey-detail_form-enable_prefilled_value",
+      "targets": [
+        ["id=survey-detail_form-enable_prefilled_value", "id"],
+        ["css=#survey-detail_form-enable_prefilled_value", "css:finder"],
+        ["xpath=//button[@id='survey-detail_form-enable_prefilled_value']", "xpath:attributes"],
+        ["xpath=//form[@id='survey-detail']/div/div/div[4]/div/div/div/div/div/div/button", "xpath:idRelative"],
+        ["xpath=//div[4]/div/div/div/div/div/div/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "0dc9aa8a-c25c-4653-a195-bcd75a82e94e",
+      "comment": "assert Cancel button present",
+      "command": "assertText",
+      "target": "css=.ant-btn-default > span",
+      "targets": [
+        ["css=.ant-btn-default > span", "css:finder"],
+        ["xpath=//div[3]/div/div/button/span", "xpath:position"],
+        ["xpath=//span[contains(.,'Cancel')]", "xpath:innerText"]
+      ],
+      "value": "Cancel"
+    }, {
+      "id": "6b35e45a-6197-42f5-9d6f-b4b28e255caa",
+      "comment": "assert Create Survey button present",
+      "command": "assertText",
+      "target": "css=.ant-space-item > .ant-btn-primary > span",
+      "targets": [
+        ["css=.ant-space-item > .ant-btn-primary > span", "css:finder"],
+        ["xpath=//div[3]/div/div[2]/button/span", "xpath:position"],
+        ["xpath=//span[contains(.,'Create Survey')]", "xpath:innerText"]
+      ],
+      "value": "Create Survey"
+    }, {
+      "id": "0799dc85-0ffe-40a4-81c4-e3b09606e8b8",
+      "comment": "click Create New Survey button",
+      "command": "click",
+      "target": "css=.ant-space-item > .ant-btn-primary",
+      "targets": [
+        ["css=.ant-space-item > .ant-btn-primary", "css:finder"],
+        ["xpath=(//button[@type='button'])[22]", "xpath:attributes"],
+        ["xpath=//div[3]/div/div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Create Survey')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "c7eb7a72-e8ce-4bcb-8c11-c52c185434f0",
+      "comment": "Wait notification message",
+      "command": "waitForElementPresent",
+      "target": "css=.ant-message-notice-content",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "8d753f1d-5c16-4be2-87dd-05f772a3192d",
+      "comment": "Success notification dispalyed",
+      "command": "assertText",
+      "target": "css=.ant-message-notice-content",
+      "targets": [],
+      "value": "Survey saved successfully."
+    }]
+  }, {
+    "id": "c110ca8f-869b-4cbf-9b83-1b5034ef4fd6",
+    "name": "02_edit_new_survey",
+    "commands": [{
+      "id": "2370c31e-f77b-4c8f-96ad-efa69858df99",
+      "comment": "",
+      "command": "run",
+      "target": "00_open_manage_survey_page",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "a430f1fd-922a-41c3-a839-e89778febb66",
+      "comment": "Wait for Manage Surveys table loaded",
+      "command": "waitForElementVisible",
+      "target": "xpath=//div[@id='manage-survey']/div/div/div/div/div/div/div/div/div/div/table/tbody/tr/td",
+      "targets": [
+        ["css=.ant-table-cell-row-hover:nth-child(1)", "css:finder"],
+        ["xpath=//div[@id='manage-survey']/div/div/div/div/div/div/div/div/div/div/table/tbody/tr/td", "xpath:idRelative"],
+        ["xpath=//td", "xpath:position"],
+        ["xpath=//td[contains(.,'Test Case Survey')]", "xpath:innerText"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "4c47d666-c8a3-430f-9838-1c8a3242946b",
+      "comment": "Assert Test Survey in table list",
+      "command": "assertText",
+      "target": "xpath=//div[@id='manage-survey']/div/div/div/div/div/div/div/div/div/div/table/tbody/tr/td",
+      "targets": [
+        ["css=.ant-table-cell-row-hover:nth-child(1)", "css:finder"],
+        ["xpath=//div[@id='manage-survey']/div/div/div/div/div/div/div/div/div/div/table/tbody/tr/td", "xpath:idRelative"],
+        ["xpath=//td", "xpath:position"],
+        ["xpath=//td[contains(.,'Test Case Survey')]", "xpath:innerText"]
+      ],
+      "value": "Test Case Survey"
+    }, {
+      "id": "1de0763d-fb74-4b6a-9f6a-ad4782976fad",
+      "comment": "Click edit button",
+      "command": "click",
+      "target": "xpath=//div[@id='manage-survey']/div/div/div/div/div/div/div/div/div/div/table/tbody/tr/td[6]/div/div/button",
+      "targets": [
+        ["css=.ant-table-cell-row-hover .ant-space-item:nth-child(1) > .ant-btn", "css:finder"],
+        ["xpath=(//button[@type='button'])[5]", "xpath:attributes"],
+        ["xpath=//div[@id='manage-survey']/div/div/div/div/div/div/div/div/div/div/table/tbody/tr/td[6]/div/div/button", "xpath:idRelative"],
+        ["xpath=//td[6]/div/div/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "5ba23de2-998d-4836-8a46-b91eb1d0213d",
+      "comment": "Wait for publish button visible",
+      "command": "waitForElementVisible",
+      "target": "xpath=//div[@id='main-form-editor']/div/div/div/div/div[2]/div/div/div/div/div[2]/button",
+      "targets": [
+        ["css=.float-right", "css:finder"],
+        ["xpath=(//button[@type='button'])[8]", "xpath:attributes"],
+        ["xpath=//div[@id='main-form-editor']/div/div/div/div/div[2]/div/div/div/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/div/div/div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Publish')]", "xpath:innerText"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "f2d9675a-4c91-46b1-9b50-c74e26650c1a",
+      "comment": "Assert form editor tab available",
+      "command": "assertText",
+      "target": "xpath=//div[@id='survey-editor']/div/div/div/div/div/div/div/div/div/div",
+      "targets": [
+        ["id=rc-tabs-0-tab-form-editor", "id"],
+        ["css=#rc-tabs-0-tab-form-editor", "css:finder"],
+        ["xpath=//div[@id='rc-tabs-0-tab-form-editor']", "xpath:attributes"],
+        ["xpath=//div[@id='survey-editor']/div/div/div/div/div/div/div/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[2]/div[2]/div/div/div/div/div/div/div/div/div/div", "xpath:position"]
+      ],
+      "value": "Form Editor"
+    }, {
+      "id": "56af747e-7d3c-4cfe-817c-25328a4c232d",
+      "comment": "Assert preview tab available",
+      "command": "assertText",
+      "target": "xpath=//div[@id='survey-editor']/div/div/div/div/div/div/div/div/div[2]/div",
+      "targets": [
+        ["id=rc-tabs-0-tab-preview", "id"],
+        ["css=#rc-tabs-0-tab-preview", "css:finder"],
+        ["xpath=//div[@id='rc-tabs-0-tab-preview']", "xpath:attributes"],
+        ["xpath=//div[@id='survey-editor']/div/div/div/div/div/div/div/div/div[2]/div", "xpath:idRelative"],
+        ["xpath=//div/div/div/div/div/div/div[2]/div", "xpath:position"]
+      ],
+      "value": "Preview"
+    }, {
+      "id": "9efcf4c1-1cf4-4298-93f3-02325fdb33c0",
+      "comment": "Assert survey name label",
+      "command": "assertText",
+      "target": "xpath=//form[@id='survey-detail']/div/div/div/div/div/div",
+      "targets": [
+        ["css=.field-wrapper:nth-child(1) > .field-label", "css:finder"],
+        ["xpath=//form[@id='survey-detail']/div/div/div/div/div/div", "xpath:idRelative"],
+        ["xpath=//form/div/div/div/div/div/div", "xpath:position"]
+      ],
+      "value": "Survey Name"
+    }, {
+      "id": "b0e619f4-bf0f-4e98-88e0-f83fbc89f730",
+      "comment": "Assert survey name value",
+      "command": "assertValue",
+      "target": "xpath=//form[@id='survey-detail']/div/div/div/div/div/div[2]/div/div/div/input",
+      "targets": [
+        ["id=survey-detail_form-name", "id"],
+        ["css=#survey-detail_form-name", "css:finder"],
+        ["xpath=//input[@id='survey-detail_form-name']", "xpath:attributes"],
+        ["xpath=//form[@id='survey-detail']/div/div/div/div/div/div[2]/div/div/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "Test Case Survey"
+    }, {
+      "id": "35e40559-a1bd-4656-9736-f7b0f01cfdec",
+      "comment": "Assert survey description label",
+      "command": "assertText",
+      "target": "xpath=//form[@id='survey-detail']/div/div/div/div/div[2]/div",
+      "targets": [
+        ["css=.field-wrapper:nth-child(2) > .field-label", "css:finder"],
+        ["xpath=//form[@id='survey-detail']/div/div/div/div/div[2]/div", "xpath:idRelative"],
+        ["xpath=//form/div/div/div/div/div[2]/div", "xpath:position"]
+      ],
+      "value": "Survey Description"
+    }, {
+      "id": "a283f9b4-069e-48e6-93f0-bdea8b79c26b",
+      "comment": "Assert survey description value",
+      "command": "assertValue",
+      "target": "xpath=//form[@id='survey-detail']/div/div/div/div/div[2]/div[2]/div/div/div/textarea",
+      "targets": [
+        ["id=survey-detail_form-description", "id"],
+        ["css=#survey-detail_form-description", "css:finder"],
+        ["xpath=//textarea[@id='survey-detail_form-description']", "xpath:attributes"],
+        ["xpath=//form[@id='survey-detail']/div/div/div/div/div[2]/div[2]/div/div/div/textarea", "xpath:idRelative"],
+        ["xpath=//textarea", "xpath:position"]
+      ],
+      "value": "Lorem ipsum sit dolor amet"
+    }, {
+      "id": "5a467ef9-8025-4cdc-b01e-d08ee32bda49",
+      "comment": "Assert languages label",
+      "command": "assertText",
+      "target": "xpath=//form[@id='survey-detail']/div/div/div/div/div[3]/div",
+      "targets": [
+        ["css=.field-wrapper:nth-child(3) > .field-label", "css:finder"],
+        ["xpath=//form[@id='survey-detail']/div/div/div/div/div[3]/div", "xpath:idRelative"],
+        ["xpath=//form/div/div/div/div/div[3]/div", "xpath:position"]
+      ],
+      "value": "Languages"
+    }, {
+      "id": "b9243500-6bff-4e8d-8884-d99bb2dcb98c",
+      "comment": "Assert languages value",
+      "command": "assertSelectedValue",
+      "target": "xpath=//form[@id='survey-detail']/div/div/div/div/div[3]/div[2]/div/div/div/div/div",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "de63827c-6215-4ea5-9cb3-ee805b48499f",
+      "comment": "Assert enable prefilled value label",
+      "command": "assertText",
+      "target": "xpath=//form[@id='survey-detail']/div/div/div/div/div[4]/div/div[2]/span",
+      "targets": [
+        ["css=.ant-space-item > .field-label", "css:finder"],
+        ["xpath=//form[@id='survey-detail']/div/div/div/div/div[4]/div/div[2]/span", "xpath:idRelative"],
+        ["xpath=//div[2]/span", "xpath:position"],
+        ["xpath=//span[contains(.,'Enable Prefilled Value')]", "xpath:innerText"]
+      ],
+      "value": "Enable Prefilled Value"
+    }, {
+      "id": "ecbb40d1-c493-4e73-957d-9efcca108f80",
+      "comment": "Assert enable prefilled value",
+      "command": "assertText",
+      "target": "xpath=//form[@id='survey-detail']/div/div/div/div/div[4]/div/div/div/div/div",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "c873b3e9-fc42-4c71-bf46-d63f813feee5",
+      "comment": "Assert form metadata save button available",
+      "command": "assertText",
+      "target": "xpath=//form[@id='survey-detail']/div/div/div/div/button",
+      "targets": [
+        ["css=.ant-btn:nth-child(5)", "css:finder"],
+        ["xpath=(//button[@type='button'])[7]", "xpath:attributes"],
+        ["xpath=//form[@id='survey-detail']/div/div/div/div/button", "xpath:idRelative"],
+        ["xpath=//form/div/div/div/div/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Save')]", "xpath:innerText"]
+      ],
+      "value": "Save"
+    }, {
+      "id": "05e30519-18e7-4121-bf28-0576af5dbdb3",
+      "comment": "Assert add new section button available",
+      "command": "assertElementPresent",
+      "target": "xpath=//div[@id='main-form-editor']/div/div/div/div/div/button",
+      "targets": [
+        ["css=.ant-btn-default", "css:finder"],
+        ["xpath=(//button[@type='button'])[5]", "xpath:attributes"],
+        ["xpath=//div[@id='main-form-editor']/div/div/div/div/div/button", "xpath:idRelative"],
+        ["xpath=//div/div/div/div[2]/div/div/div/div/div/div/div/div/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "1316bada-c678-41cd-b988-fbb03fc04f84",
+      "comment": "Assert default question group available",
+      "command": "assertValue",
+      "target": "xpath=//input[@id='survey-detail_question_group-21-name']",
+      "targets": [
+        ["id=survey-detail_question_group-21-name", "id"],
+        ["css=#survey-detail_question_group-21-name", "css:finder"],
+        ["xpath=//input[@id='survey-detail_question_group-21-name']", "xpath:attributes"],
+        ["xpath=//form[@id='survey-detail']/div/div/div/div[2]/div/div/div/div/input", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/div/div/input", "xpath:position"]
+      ],
+      "value": "New section - please change name"
+    }, {
+      "id": "eb5c609e-128f-43b5-a49a-dab1f68612b7",
+      "comment": "Click show/hide section question button",
+      "command": "click",
+      "target": "xpath=//form[@id='survey-detail']/div/div/div/div[3]/div/div/button",
+      "targets": [
+        ["css=.ant-tooltip-open", "css:finder"],
+        ["xpath=(//button[@type='button'])[10]", "xpath:attributes"],
+        ["xpath=//form[@id='survey-detail']/div/div/div/div[3]/div/div/button", "xpath:idRelative"],
+        ["xpath=//div[3]/div/div/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "78a234f5-8928-417b-8ac9-ad6dbbd31bfc",
+      "comment": "Wait for Add new question button visible",
+      "command": "waitForElementVisible",
+      "target": "xpath=//form[@id='survey-detail']/div/div/div[2]/div/div/div/button",
+      "targets": [
+        ["css=.ant-row:nth-child(1) > .ant-space .ant-btn", "css:finder"],
+        ["xpath=(//button[@type='button'])[13]", "xpath:attributes"],
+        ["xpath=//form[@id='survey-detail']/div/div/div[2]/div/div/div/button", "xpath:idRelative"],
+        ["xpath=//form/div/div/div[2]/div/div/div/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Add new question')]", "xpath:innerText"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "a213c309-b905-4ce9-b128-899daa53995e",
+      "comment": "Assert default question available",
+      "command": "assertValue",
+      "target": "xpath=//form[@id='survey-detail']/div/div/div[2]/div[2]/div/div/div/div/div/div/div/div/div/div/div/div/input",
+      "targets": [],
+      "value": "New question - please change name"
+    }]
+  }],
+  "suites": [{
+    "id": "9eecc3e3-ddb5-44db-a81d-e4a4935a4d48",
+    "name": "isco_survey_management",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["aef7c7a5-d280-4f21-804d-de9079e86a0e", "3a71c5db-05ac-4938-96b7-7c74881c5ed7", "c110ca8f-869b-4cbf-9b83-1b5034ef4fd6"]
+  }],
+  "urls": ["http://localhost:3000/"],
+  "plugins": []
+}
