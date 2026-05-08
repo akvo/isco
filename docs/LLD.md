@@ -18,6 +18,7 @@ The backend is a FastAPI application exposing RESTful JSON endpoints.
 - **`models/`**: SQLAlchemy declarative base models mapping directly to the PostgreSQL database schema (e.g., `user.py`, `form.py`, `data.py`).
 - **`routes/`**: FastAPI API routers (controllers) that handle incoming HTTP requests and map them to CRUD operations and business logic (e.g., `user.py`, `survey.py`).
 - **`middleware.py`**: Interceptors and dependency injectors, notably handling JWT parsing, Token verification, and Role-Based Access Control (RBAC).
+- **`services/visualization/`**: (New) specialized logic for indicator aggregation, formula evaluation, and region-filtering.
 
 ### Frontend (`/frontend`)
 The frontend is built with React and organized by features and functional components.
@@ -25,6 +26,7 @@ The frontend is built with React and organized by features and functional compon
 - **`src/components/`**: Reusable generic layout or UI components (e.g., Modals, Layouts).
 - **`src/lib/`**: Centralized logic such as generic HTTP instances (`api`), and global state `store` built with Pullstate.
 - **`src/App.js`**: Main entry point that sets up standard react-router routes and a `<Secure />` wrapper protecting specific paths depending on `user.role`.
+- **Visualization Components**: Recharts-based dashboards and Ant Design raw data tables.
 
 ## Data Architecture
 
@@ -56,3 +58,9 @@ The data architecture is heavily relational. Key entities:
   - `verify_admin`: Validates role is `secretariat_admin` or `member_admin`.
   - `verify_super_admin`: Validates role is strictly `secretariat_admin`.
 - **Passwords**: Hashed automatically using `passlib(bcrypt)`. Never stored in plaintext. No plain secrets are committed to Git. All credentials and keys (like `SECRET_KEY`) inject via `.env` files.
+
+## Visualization System
+The platform includes a context-aware visualization engine that aggregates survey data into performance indicators.
+- **Static Config**: Decouples business logic (indicator definitions) from the database schema.
+- **Aggregation Logic**: Performs multi-level calculations (Individual vs. ISCO vs. GISCO) and applies regional filters (e.g. West Africa) based on survey-embedded identifiers.
+- **Context Awareness**: Aggregates are scoped by initiative (`isco_id`) and time (`year`).
