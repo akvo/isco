@@ -2,5 +2,6 @@
 .vscode/
 .DS_Store
 .env
+.agent/
 agent_docs/.agent/
 agent_docs/
