@@ -79,9 +79,8 @@ The `rule` JSON object for a question with comparison validations will contain t
 - `comparison_operator`: `"less_than_or_equal" | "greater_than_or_equal" | "equal"`
 - `comparison_target`: ID of the target numeric question.
 - `comparison_sources`: Array of numeric question IDs to sum (only for `sum_comparison`).
-- `comparison_message`: Localized error message in English.
-- `comparison_message_de`: Localized error message in German.
-- `comparison_message_fr`: Localized error message in French.
+
+Instead of storing localized warning message strings in the database, the frontend dynamically constructs the error message using static locale templates keyed by the comparison type and operator, and replaces a `{target}` placeholder with the target question's name.
 
 #### Example `rule` object on a comparison source question (e.g. Q6):
 ```json
@@ -90,12 +89,10 @@ The `rule` JSON object for a question with comparison validations will contain t
   "min": 0,
   "comparison_type": "comparison",
   "comparison_operator": "less_than_or_equal",
-  "comparison_target": 5,
-  "comparison_message": "Answer must be less than or equal to Question 5",
-  "comparison_message_de": "Der Wert muss kleiner oder gleich der Antwort auf Frage 5 sein",
-  "comparison_message_fr": "La valeur doit être inférieure ou égale à celle de la question 5"
+  "comparison_target": 5
 }
 ```
+
 
 ### 2.2 How `computed_validations.json` Logic is Handled in the Frontend
 
@@ -214,7 +211,31 @@ Q3 (male growers)                       <=  Q2 (total farmers)
 
 The new **Comparison Validation** block is added to the existing "Validation Criteria" `TabPane` in `QuestionSetting.jsx`, visible only for `type === "number"` questions:
 
-![Question Setting Comparison Validation UI](question_setting_mockup.png)
+```
++-----------------------------------------------------------------------------------+
+|  Validation Criteria (Tab)                                                        |
++-----------------------------------------------------------------------------------+
+|  ... [existing fields: min, max, allow_decimal] ...                               |
+|                                                                                   |
+|  [ Comparison Validation ]                                                        |
+|                                                                                   |
+|  Comparison Type:                                                                 |
+|  [ sum_comparison                      v ]  (Options: None / comparison /         |
+|                                                      sum_comparison)              |
+|                                                                                   |
+|  Source Questions:                                                                |
+|  [ x Q3: Male Growers   | x Q4: Female Growers    v ]  (Multi-select, shown       |
+|                                                         only for sum_comparison)  |
+|                                                                                   |
+|  Operator:                                                                        |
+|  [ less_than_or_equal                  v ]  (Options: less_than_or_equal /        |
+|                                                      greater_than_or_equal /      |
+|                                                      equal)                       |
+|                                                                                   |
+|  Target Question:                                                                 |
+|  [ Q2: Total Farmers                   v ]  (Dropdown of numeric questions)       |
++-----------------------------------------------------------------------------------+
+```
 
 **Field mapping to `question.rule` keys:**
 
@@ -224,17 +245,54 @@ The new **Comparison Validation** block is added to the existing "Validation Cri
 | Source Questions multi-select | `question-{qid}-rule-comparison_sources` | `comparison_sources` |
 | Operator dropdown | `question-{qid}-rule-comparison_operator` | `comparison_operator` |
 | Target Question dropdown | `question-{qid}-rule-comparison_target` | `comparison_target` |
-| Error Message (EN) | `question-{qid}-rule-comparison_message` | `comparison_message` |
-| Error Message (DE) | `question-{qid}-rule-comparison_message_de` | `comparison_message_de` |
-| Error Message (FR) | `question-{qid}-rule-comparison_message_fr` | `comparison_message_fr` |
 
-The "Source Questions" field only appears when `comparison_type === "sum_comparison"`. When `comparison_type` is set back to `"None"`, all comparison fields are reset.
+The "Source Questions" field only appears when `comparison_type === "sum_comparison"`. When `comparison_type` is set back to `"None"`, all comparison fields are reset. We use static locale template strings on the frontend instead of custom error message text inputs.
+
 
 #### Mockup: Webform – Inline Validation Errors
 
 Errors appear immediately below the answer input field as Ant Design form validation messages:
 
-![Webform Inline Validation Error UI](webform_validation_mockup.png)
+```
++-----------------------------------------------------------------------------------+
+|  Q2. Total Farmers                                                                |
+|  [ 180                                       ] [ ] N/A                            |
+|                                                                                   |
+|  Q3. Male Growers                                                                 |
+|  [ 120                                       ] [ ] N/A                            |
+|                                                                                   |
+|  Q4. Female Growers                                                               |
+|  [ 100                                       ] [ ] N/A                            |
+|  ! Sum of values must be less than or equal to Total Farmers                      |
++-----------------------------------------------------------------------------------+
+```
+
+#### Static Comparison Message Resolution Example
+
+At runtime, when a validation fails, the error message is dynamically constructed using:
+1. The **active locale file** (to fetch the message template by `comparison_type` and `comparison_operator`).
+2. The **target question's translated label** (resolved from the flat list of questions in `GlobalStore`).
+3. Substituting the `{target}` placeholder in the template.
+
+**Rule Configuration:**
+* `comparison_type`: `"comparison"`
+* `comparison_operator`: `"less_than_or_equal"`
+* `comparison_target`: `5` (Target question: "Q5: Total Cocoa Area (ha)")
+
+**English Scenario:**
+* Locale File Key: `"comparison_less_than_or_equal": "Answer must be less than or equal to {target}"`
+* Target Question Label: `"Total Cocoa Area (ha)"`
+* Resolved Message: **"Answer must be less than or equal to Total Cocoa Area (ha)"**
+
+**German Scenario:**
+* Locale File Key: `"comparison_less_than_or_equal": "Der Wert muss kleiner oder gleich der Antwort auf {target} sein"`
+* Target Question Label: `"Kakao-Gesamtfläche (ha)"`
+* Resolved Message: **"Der Wert muss kleiner oder gleich der Antwort auf Kakao-Gesamtfläche (ha) sein"**
+
+**French Scenario:**
+* Locale File Key: `"comparison_less_than_or_equal": "La valeur doit être inférieure ou égale à celle de {target}"`
+* Target Question Label: `"Superficie totale de cacao (ha)"`
+* Resolved Message: **"La valeur doit être inférieure ou égale à celle de Superficie totale de cacao (ha)"**
 
 Inside `TypeNumber.jsx`, the `NumberField` component uses `<Form.Item dependencies={[...targetOrSourceKeys]}>` so the validator re-runs reactively when related fields change:
 
@@ -291,7 +349,6 @@ In the survey editor:
    - **Sources** (if type is `sum_comparison`): Multi-select listing all other numeric questions.
    - **Operator**: Dropdown select with options `<=`, `>=`, `==`.
    - **Target Question**: Dropdown select listing all other numeric questions.
-   - **Error Messages**: Inputs for custom localized error messages (English, German, French).
 2. When the Comparison Type changes to `"None"`, any comparison fields are cleared/reset.
 3. Form values mapped to `question-${qid}-rule-${key}` are automatically parsed and saved back to the database as part of the question's `rule` object.
 
@@ -364,7 +421,7 @@ Add an on-value-change validator inside `NumberField` that reads `question.rule`
 - [ ] Source field keys (for `sum_comparison`) follow the same repeat-index scoping.
 - [ ] The `<Form.Item>` wrapping the input declares a `dependencies` prop containing all resolved target/source keys so Ant Design re-runs the validator reactively.
 - [ ] The custom validator skips (returns `Promise.resolve()`) when `value` is `undefined`/`null`, or `naChecked === true`.
-- [ ] The error message is selected from `rule.comparison_message` (EN), `rule.comparison_message_de` (DE), `rule.comparison_message_fr` (FR) using the active language from the store.
+- [ ] The error message is loaded dynamically from static translation keys based on comparison type and operator (e.g., `comparison_less_than_or_equal`), replacing a `{target}` placeholder with the target question's name/label.
 - [ ] No changes are made to the `computed_validations.json` system or `checkComputedValidationFunction`.
 
 ---
@@ -383,13 +440,13 @@ Extend the existing **Validation Criteria** tab (visible for `type === "number"`
 - [ ] The **Comparison Type** dropdown offers three options: `None`, `comparison`, `sum_comparison`.
 - [ ] When `sum_comparison` is selected, a **Source Questions** multi-select appears, listing all other numeric questions in the form.
 - [ ] When `comparison` or `sum_comparison` is selected, an **Operator** dropdown (`≤`, `≥`, `=`) and a **Target Question** dropdown appear.
-- [ ] Three text inputs are shown for localized error messages: EN, DE, FR.
 - [ ] When **Comparison Type is set back to `None`**, all comparison-related fields are cleared/reset.
 - [ ] After saving and reopening the question, all previously configured values are correctly pre-populated.
 
 #### Technical Acceptance Criteria (TAC)
 
-- [ ] Form item names follow the pattern `question-${qid}-rule-comparison_type`, `…comparison_sources`, `…comparison_operator`, `…comparison_target`, `…comparison_message`, `…comparison_message_de`, `…comparison_message_fr`.
+- [ ] Form item names follow the pattern `question-${qid}-rule-comparison_type`, `…comparison_sources`, `…comparison_operator`, `…comparison_target`.
+
 - [ ] The "Source Questions" `<Form.Item>` renders conditionally only when `form.getFieldValue(comparisonTypeField) === "sum_comparison"`.
 - [ ] Operator and Target Question fields render when type is `"comparison"` or `"sum_comparison"`.
 - [ ] On type change to `"None"`, `form.resetFields([...allComparisonFieldNames])` is called and `handleFormOnValuesChange` is triggered.
@@ -464,5 +521,5 @@ We will verify the feature inside the application using a mock local form (e.g.,
    - Test within a repeatable group to confirm validations are properly isolated to the same repeat index.
 3. **Survey Editor**:
    - Open a numeric question's "Validation Criteria" tab.
-   - Set Comparison Type to `sum_comparison`, add sources, select a target, fill error messages.
+   - Set Comparison Type to `sum_comparison`, add sources, select a target.
    - Save and reload — confirm the `rule` JSON persists correctly and the webform reflects the new validator.
