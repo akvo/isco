@@ -158,7 +158,57 @@ The `checkComputedValidationFunction` callback:
 #### Step 4 — Validation Warning Modal (`ValidationWarningModal.jsx`)
 Renders a collapsible panel per failed group, listing question names, their answers, the current total, and the expected constraint value (via `text.cvMaxValueText`, `text.cvMinValueText`, `text.cvEqualValueText`).
 
-> **Important distinction**: The new inline comparison validations (Section 2.3) live inside `TypeNumber.jsx` as Ant Design `Form.Item` validators and fire immediately on value change. They are **separate from** the `computed_validations.json` mechanism, which fires only on submission.
+---
+
+### ⚠️ Two Validation Systems — They Are NOT Interchangeable
+
+This is the most important conceptual boundary in the entire feature. The two systems look similar on the surface (both involve "summing questions") but they solve fundamentally different problems. **You should never configure the same validation in both.**
+
+#### System 1 — `computed_validations.json` (existing, submission-time)
+
+> **"The sum of a fixed set of questions must equal / not-exceed a *hardcoded constant*."**
+
+```
+sum(Q634 + Q635)                       <= 100   ← target is a static number
+sum(Q670 + Q671 + Q673 + Q660)         == 100   ← percentage breakdown must total 100
+sum(Q897 + Q898 + Q899 + Q900)         == 100   ← another percentage group
+```
+
+**Key traits:**
+- Target is always a **hardcoded number** (`max`, `min`, or `equal` field in JSON)
+- These are **percentage breakdown questions** — e.g. "What % of growers are female?", "What % are certified?" — where all the sub-questions must collectively add up to 100%
+- Configured in a **static JSON file** per environment, not in the survey editor
+- Fires **only on form submission** — the user sees a modal popup
+- Adding a new form/group requires editing `computed_validations.json` and redeploying
+
+#### System 2 — `comparison_type` in `question.rule` (new, inline)
+
+> **"This question (or the sum of a set of source questions) must be ≤ / ≥ / = *another question's live answer*."**
+
+```
+Q6 (certified area)                    <=  Q5 (total area)          ← target is Q5's value
+Q3 (male growers) + Q4 (female growers) <=  Q2 (total farmers)      ← target is Q2's value
+Q3 (male growers)                       <=  Q2 (total farmers)
+```
+
+**Key traits:**
+- Target is always **another question's dynamic value** (`comparison_target` = a question ID)
+- These are **logical integrity constraints** — a sub-count cannot exceed the total count
+- Configured **per-question inside the survey editor UI**, stored in `question.rule` (DB)
+- Fires **immediately on value change** — the user sees a red inline error below the field
+- Adding a new constraint requires editing the question's rule in the survey editor
+
+#### Decision Matrix
+
+| Scenario | Use which system? | Reason |
+|---|---|---|
+| Q634 + Q635 must add up to ≤ 100 | `computed_validations.json` | Target is the fixed number 100 |
+| Q670 + Q671 + Q673 + Q660 must equal 100% | `computed_validations.json` | Target is the fixed number 100 |
+| Q3 male + Q4 female must not exceed Q2 total | `sum_comparison` in `question.rule` | Target is Q2's live answer |
+| Q6 area certified must not exceed Q5 total area | `comparison` in `question.rule` | Target is Q5's live answer |
+
+> [!IMPORTANT]
+> The questions listed in `computed_validations.json` (e.g. Q634, Q635, Q670–Q673, Q897–Q900) do **NOT** need `comparison_type` set in their `question.rule`. They are already validated by the submission-time system. Setting `sum_comparison` on them would be redundant and would fire a confusing inline error for a percentage-breakdown question where intermediate states (e.g. only one field filled) are perfectly valid.
 
 #### Mockup: Question Setting (Survey Editor)
 
@@ -274,17 +324,126 @@ We will add keys to locale files inside `frontend/src/akvo-react-form/locale/`:
 
 ## 3. Effort Estimation
 
-| Task | Files Affected | Estimated Effort |
-|------|----------------|-----------------|
-| Add Comparison Validation UI to `QuestionSetting.jsx` | `QuestionSetting.jsx` | **3–4 h** |
-| Implement inline validator in `TypeNumber.jsx` / `NumberField` | `TypeNumber.jsx` | **4–5 h** |
-| Propagate `variable_name` through `TypeCascade.jsx` → `TypeCascadeApi.jsx` | `TypeCascade.jsx`, `TypeCascadeApi.jsx` | **1–2 h** |
-| Add locale keys to all 5 locale JSON files | `en.json`, `de.json`, `fr.json`, `id.json`, `in.json` | **0.5 h** |
-| Manual verification & regression testing | — | **2–3 h** |
-| **Total** | | **~11–14.5 h** |
-
 > [!NOTE]
-> The `computed_validations.json` files themselves (backend config) do **not** need to change for this feature — they govern the existing sum-to-100% check only. The new inline comparisons are driven entirely by `question.rule` data stored in the database and resolved at webform load time.
+> All estimates assume **1 developer working with an AI coding assistant** (pair-programming mode). Estimates cover implementation + inline unit tests only. QA/UAT time is listed separately under Epic 3.
+
+### Summary Table
+
+| Epic | Estimate |
+| ---- | -------- |
+| Epic 1 — Inline Cross-Question Numerical Validations | **7–9 h** |
+| Epic-2 — Comparison Validation UI in Survey Editor | **6–8 h** |
+| Epic 3 — Dynamic Cascade Placeholders + Locale | **4–5 h** |
+| Epic 4 — QA, Manual Verification & Regression | **5–6 h** |
+| **Total** | **~22–28 h** |
+
+---
+
+### Epic 1 — Inline Cross-Question Numerical Validations
+
+**Files:** `TypeNumber.jsx`
+**Estimate:** 7–9 h
+
+**Description:**
+Add an on-value-change validator inside `NumberField` that reads `question.rule` and immediately shows a red inline error when a comparison constraint is violated. Supports both single-question comparison (`comparison`) and sum-of-sources comparison (`sum_comparison`), scoped to the correct repeat-group index.
+
+#### User Acceptance Criteria (UAC)
+
+- [ ] When Q6 > Q5, a red error message appears immediately below the Q6 input without requiring form submission.
+- [ ] The error message uses the language currently active in the UI (EN / DE / FR).
+- [ ] The error disappears automatically when Q6 is reduced to ≤ Q5, or when Q5 is increased to ≥ Q6.
+- [ ] When Q3 + Q4 > Q2, a red error appears immediately below Q4 (the configured source question).
+- [ ] Inside a repeatable group, row 1 validations (Q6-1 vs Q5-1) are completely independent from row 2 (Q6-2 vs Q5-2).
+- [ ] Checking the **n/a** ("Data unavailable") checkbox on a question suppresses its comparison validation entirely.
+- [ ] An empty/unanswered source or target question does not trigger a false validation error.
+
+#### Technical Acceptance Criteria (TAC)
+
+- [ ] `NumberField` reads `rule.comparison_type` to determine which branch to execute (`"comparison"` vs `"sum_comparison"` vs `"None"`).
+- [ ] Target field key is resolved as `${rule.comparison_target}-${repeatIndex}` for repeatable groups, or `rule.comparison_target` (integer) for non-repeatable groups.
+- [ ] Source field keys (for `sum_comparison`) follow the same repeat-index scoping.
+- [ ] The `<Form.Item>` wrapping the input declares a `dependencies` prop containing all resolved target/source keys so Ant Design re-runs the validator reactively.
+- [ ] The custom validator skips (returns `Promise.resolve()`) when `value` is `undefined`/`null`, or `naChecked === true`.
+- [ ] The error message is selected from `rule.comparison_message` (EN), `rule.comparison_message_de` (DE), `rule.comparison_message_fr` (FR) using the active language from the store.
+- [ ] No changes are made to the `computed_validations.json` system or `checkComputedValidationFunction`.
+
+---
+
+### Epic 2 — Comparison Validation UI in Survey Editor
+
+**Files:** `QuestionSetting.jsx`
+**Estimate:** 6–8 h
+
+**Description:**
+Extend the existing **Validation Criteria** tab (visible for `type === "number"` questions) with a new "Comparison Validation" block. Fields map directly to keys in `question.rule` via the existing `question-${qid}-rule-*` naming convention so they are auto-persisted with zero additional API changes.
+
+#### User Acceptance Criteria (UAC)
+
+- [ ] A "Comparison Validation" section is visible inside the Validation Criteria tab for all numeric questions.
+- [ ] The **Comparison Type** dropdown offers three options: `None`, `comparison`, `sum_comparison`.
+- [ ] When `sum_comparison` is selected, a **Source Questions** multi-select appears, listing all other numeric questions in the form.
+- [ ] When `comparison` or `sum_comparison` is selected, an **Operator** dropdown (`≤`, `≥`, `=`) and a **Target Question** dropdown appear.
+- [ ] Three text inputs are shown for localized error messages: EN, DE, FR.
+- [ ] When **Comparison Type is set back to `None`**, all comparison-related fields are cleared/reset.
+- [ ] After saving and reopening the question, all previously configured values are correctly pre-populated.
+
+#### Technical Acceptance Criteria (TAC)
+
+- [ ] Form item names follow the pattern `question-${qid}-rule-comparison_type`, `…comparison_sources`, `…comparison_operator`, `…comparison_target`, `…comparison_message`, `…comparison_message_de`, `…comparison_message_fr`.
+- [ ] The "Source Questions" `<Form.Item>` renders conditionally only when `form.getFieldValue(comparisonTypeField) === "sum_comparison"`.
+- [ ] Operator and Target Question fields render when type is `"comparison"` or `"sum_comparison"`.
+- [ ] On type change to `"None"`, `form.resetFields([...allComparisonFieldNames])` is called and `handleFormOnValuesChange` is triggered.
+- [ ] Target and Source dropdowns filter to only `type === "number"` questions, excluding the question being configured.
+- [ ] No new API endpoints or Pydantic model changes are required — the existing `rule` JSONB column handles all new keys.
+
+---
+
+### Epic 3 — Dynamic Cascade Placeholders + Locale Keys
+
+**Files:** `TypeCascade.jsx`, `TypeCascadeApi.jsx`, `en.json`, `de.json`, `fr.json`, `id.json`, `in.json`
+**Estimate:** 4–5 h
+
+**Description:**
+Propagate `variable_name` from the question definition down through the cascade component tree so that `CascadeApiField` can render a contextual placeholder at level 1 ("select country" / "select partner") instead of the generic "Select level 1".
+
+#### User Acceptance Criteria (UAC)
+
+- [ ] The country cascade field shows **"select country"** (EN), **"Land auswählen"** (DE), **"Sélectionner le pays"** (FR) before any selection is made.
+- [ ] The partner cascade field shows **"select partner"** (EN), **"Partner auswählen"** (DE), **"Sélectionner le partenaire"** (FR).
+- [ ] Levels 2 and beyond continue to show the generic **"Select level 2"**, **"Select level 3"**, etc.
+- [ ] Switching the UI language updates the placeholder text immediately without a page reload.
+- [ ] All other cascade fields (where `variable_name` is neither `"country"` nor `"partner"`) are unaffected.
+
+#### Technical Acceptance Criteria (TAC)
+
+- [ ] `TypeCascade` passes `variable_name` as a prop to `TypeCascadeApi`.
+- [ ] `TypeCascadeApi` passes `variable_name` as a prop to `CascadeApiField` (both direct render and repeat-table render paths).
+- [ ] Inside `CascadeApiField`, the `placeholder` for `ci === 0` is resolved as:
+  - `variable_name === "country"` → `uiText.selectCountry`
+  - `variable_name === "partner"` → `uiText.selectPartner`
+  - otherwise → `` `${uiText.selectLevel} ${ci + 1}` ``
+- [ ] All 5 locale files (`en.json`, `de.json`, `fr.json`, `id.json`, `in.json`) contain both `selectCountry` and `selectPartner` keys with correct translations.
+
+---
+
+### Epic 4 — QA, Manual Verification & Regression
+
+**Estimate:** 5–6 h
+
+**Description:**
+End-to-end manual verification across all three epics using a local dev environment. Includes regression checks to ensure existing `computed_validations.json` submission-time checks are not affected.
+
+#### User Acceptance Criteria (UAC)
+
+- [ ] All UAC items from Epics 1, 2, and 3 are confirmed passing in the local dev environment.
+- [ ] Submitting a form with a sum-to-100% violation (e.g. Q634 + Q635 ≠ 100) still shows the existing **ValidationWarningModal** popup — the submission-time check is unaffected.
+- [ ] A form with no comparison rules configured shows no unexpected inline errors.
+
+#### Technical Acceptance Criteria (TAC)
+
+- [ ] Existing Jest test suite passes without regressions (`./dc.sh exec frontend yarn test`).
+- [ ] ESLint passes with no new errors (`./dc.sh exec frontend yarn lint`).
+- [ ] `checkComputedValidationFunction` in `WebformPage.jsx` produces identical output before and after the changes (no side-effects from Epic 1).
 
 ---
 
@@ -295,6 +454,7 @@ We will add front-end tests using the existing Jest/React Testing Library setup 
 
 ### 4.2 Manual Verification
 We will verify the feature inside the application using a mock local form (e.g., `form_id` 100 or a specific dev form):
+
 1. **Dynamic Placeholder**:
    - Inspect Country and Partner cascade fields before any selection.
    - Confirm placeholder text shows "select country" and "select partner" (and correct localized text when changing language to German/French).
