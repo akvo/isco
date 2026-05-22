@@ -2,15 +2,61 @@
 
 This document specifies the technical design, configuration changes, and implementation plan for adding dynamic placeholders and immediate inline numerical validations to the survey form system.
 
+---
+
+## 0. Related Files
+
+Below is a complete inventory of every file touched by this feature, grouped by concern.
+
+### Backend
+
+| File | Role |
+|------|------|
+| [`backend/source/config/test/computed_validations.json`](../backend/source/config/test/computed_validations.json) | Test-env sum-to-100% config used by `/config.js` endpoint |
+| [`backend/source/config/local/computed_validations.json`](../backend/source/config/local/computed_validations.json) | Local-dev environment config |
+| [`backend/source/config/production/computed_validations.json`](../backend/source/config/production/computed_validations.json) | Production environment config |
+| [`backend/core/config.py`](../backend/core/config.py) | `/config.js` FastAPI endpoint — reads the correct `computed_validations.json` by `BUCKET_FOLDER` env var and injects it as `window.computed_validations` |
+| [`backend/routes/data.py`](../backend/routes/data.py) | Contains the **commented-out** `check_computed_validation()` function (server-side) and the `get_questions_from_published_form()` helper that populates `computed_validation_questions` per user role |
+
+### Frontend – Survey Webform
+
+| File | Role |
+|------|------|
+| [`frontend/src/pages/survey/WebformPage.jsx`](../frontend/src/pages/survey/WebformPage.jsx) | Consumes `window.computed_validations`; runs `checkComputedValidationFunction` on submit and shows `ValidationWarningModal` |
+| [`frontend/src/components/notification-modal/ValidationWarningModal.jsx`](../frontend/src/components/notification-modal/ValidationWarningModal.jsx) | Modal that renders the computed-validation error details |
+| [`frontend/src/akvo-react-form/fields/TypeNumber.jsx`](../frontend/src/akvo-react-form/fields/TypeNumber.jsx) | **To be modified** — `NumberField` will get the new inline comparison validator |
+| [`frontend/src/akvo-react-form/fields/TypeCascade.jsx`](../frontend/src/akvo-react-form/fields/TypeCascade.jsx) | **To be modified** — pass `variable_name` down to `TypeCascadeApi` |
+| [`frontend/src/akvo-react-form/fields/TypeCascadeApi.jsx`](../frontend/src/akvo-react-form/fields/TypeCascadeApi.jsx) | **To be modified** — `CascadeApiField` reads `variable_name` at level 0 to set a custom placeholder |
+
+### Frontend – Locale / Translations
+
+| File | Role |
+|------|------|
+| [`frontend/src/akvo-react-form/locale/en.json`](../frontend/src/akvo-react-form/locale/en.json) | Add `selectCountry`, `selectPartner` |
+| [`frontend/src/akvo-react-form/locale/de.json`](../frontend/src/akvo-react-form/locale/de.json) | Add `selectCountry`, `selectPartner` |
+| [`frontend/src/akvo-react-form/locale/fr.json`](../frontend/src/akvo-react-form/locale/fr.json) | Add `selectCountry`, `selectPartner` |
+| [`frontend/src/akvo-react-form/locale/id.json`](../frontend/src/akvo-react-form/locale/id.json) | Add `selectCountry`, `selectPartner` |
+| [`frontend/src/akvo-react-form/locale/in.json`](../frontend/src/akvo-react-form/locale/in.json) | Add `selectCountry`, `selectPartner` |
+| [`frontend/src/akvo-react-form/locale/index.js`](../frontend/src/akvo-react-form/locale/index.js) | Locale barrel file (no change needed unless new locale is added) |
+
+### Frontend – Survey Editor
+
+| File | Role |
+|------|------|
+| [`frontend/src/components/survey-editor/QuestionSetting.jsx`](../frontend/src/components/survey-editor/QuestionSetting.jsx) | **To be modified** — adds Comparison Validation UI block inside the "Validation Criteria" `TabPane` |
+| [`frontend/src/components/survey-editor/QuestionTabContent.jsx`](../frontend/src/components/survey-editor/QuestionTabContent.jsx) | Renders `QuestionSetting`; may need `rule` prop threading if not already passed |
+
+---
+
 ## 1. Requirements
 
 ### 1.1 Immediate Inline Numerical Validations
 We need to support immediate numerical comparisons on value change instead of waiting for form submission:
-1. **Q6 $\le$ Q5 Comparison**: The response to Question 6 must be less than or equal to the response to Question 5.
-2. **Q3 (Male Growers) + Q4 (Female Growers) $\le$ Q2 (Total Farmers)**: The sum of Q3 and Q4 must not exceed the total value in Q2.
-3. **Q3 (Male Growers) $\le$ Q2 (Total Farmers)**: The response to Q3 must be less than or equal to Q2.
+1. **Q6 ≤ Q5 Comparison**: The response to Question 6 must be less than or equal to the response to Question 5.
+2. **Q3 (Male Growers) + Q4 (Female Growers) ≤ Q2 (Total Farmers)**: The sum of Q3 and Q4 must not exceed the total value in Q2.
+3. **Q3 (Male Growers) ≤ Q2 (Total Farmers)**: The response to Q3 must be less than or equal to Q2.
 
-*Note: For repeatable question groups, comparisons must be computed within the same repeat index iteration (e.g., Q6-1 $\le$ Q5-1, Q6-2 $\le$ Q5-2, etc.).*
+*Note: For repeatable question groups, comparisons must be computed within the same repeat index iteration (e.g., Q6-1 ≤ Q5-1, Q6-2 ≤ Q5-2, etc.).*
 
 ### 1.2 Delayed Sum-to-100% Validation
 - We confirmed that the sum-to-100% validation check already runs exclusively on submission (inside `onSubmitValidationOrShowSubmitWarning` in `WebformPage.jsx`). This behavior matches the user's preference and will be preserved.
@@ -51,16 +97,130 @@ The `rule` JSON object for a question with comparison validations will contain t
 }
 ```
 
-### 2.2 Survey Editor UI (`QuestionSetting.jsx`)
-In the survey editor:
-1. Under the **Validation Criteria** tab for numeric questions, we render form inputs for comparison configuration:
-   - **Comparison Type**: Dropdown select with options `None`, `comparison`, and `sum_comparison`.
-   - **Sources** (if type is `sum_comparison`): Multi-select listing all other numeric questions.
-   - **Operator**: Dropdown select with options `<=`, `>=`, `==`.
-   - **Target Question**: Dropdown select listing all other numeric questions.
-   - **Error Messages**: Inputs for custom localized error messages (English, German, French).
-2. When the Comparison Type changes to `"None"`, any comparison fields are cleared/reset.
-3. Form values mapped to `question-${qid}-rule-${key}` are automatically parsed and saved back to the database as part of the question's `rule` object.
+### 2.2 How `computed_validations.json` Logic is Handled in the Frontend
+
+This is the central sum-to-100% (or max/min) validation mechanism for specific question groups across multiple forms. Here is a full trace from config file to UI:
+
+#### Step 1 — Configuration File (`computed_validations.json`)
+Each environment folder (`local/`, `test/`, `production/`) holds its own copy of this JSON file. The file is an array of **per-form validation rules**:
+
+```json
+[
+  {
+    "form_id": 4,
+    "validations": [
+      {
+        "group_id": 14,
+        "question_ids": [634, 635],
+        "max": 100
+      },
+      {
+        "group_id": 18,
+        "question_ids": [638, 639],
+        "equal": 100
+      }
+    ]
+  }
+]
+```
+
+Each validation entry supports three operators:
+| Key | Meaning |
+|-----|---------|
+| `max` | Sum of `question_ids` answers must be **≤ max** |
+| `min` | Sum of `question_ids` answers must be **≥ min** |
+| `equal` | Sum of `question_ids` answers must be **exactly equal** (e.g. 100% check) |
+
+#### Step 2 — Backend Injection (`backend/core/config.py`)
+The `/config.js` endpoint reads the file for the current `BUCKET_FOLDER` env and minifies it into a global JS variable:
+
+```python
+computed_validation = f"{CONFIG_SOURCE_PATH}/computed_validations.json"
+min_js = jsmin("var computed_validations=" + open(computed_validation).read() + ";")
+```
+
+This is served as a static JS file and loaded by the frontend HTML page, making `window.computed_validations` available globally at runtime.
+
+#### Step 3 — Frontend Consumption (`WebformPage.jsx`)
+At module level, `WebformPage.jsx` reads the global variable:
+```js
+const computedValidations = window?.computed_validations;
+```
+
+The `checkComputedValidationFunction` callback:
+1. Looks up the current `form_id` entry in `computedValidations`.
+2. Cross-references `group_id` and `question_ids` against the **user's visible questions** (filtered by member/isco type) using lodash `intersection`.
+3. For each answer group (supporting repeatable groups, keyed as `groupId_repeatIndex`), it sums the numeric answers of the relevant question IDs.
+4. Compares the total against `max`, `min`, or `equal` — and collects errors.
+5. Called with `onChangeEvent = false` inside `onSubmitValidationOrShowSubmitWarning` to block submission.
+6. If errors exist, `ValidationWarningModal` is shown with a breakdown per group.
+
+#### Step 4 — Validation Warning Modal (`ValidationWarningModal.jsx`)
+Renders a collapsible panel per failed group, listing question names, their answers, the current total, and the expected constraint value (via `text.cvMaxValueText`, `text.cvMinValueText`, `text.cvEqualValueText`).
+
+> **Important distinction**: The new inline comparison validations (Section 2.3) live inside `TypeNumber.jsx` as Ant Design `Form.Item` validators and fire immediately on value change. They are **separate from** the `computed_validations.json` mechanism, which fires only on submission.
+
+#### Mockup: Question Setting (Survey Editor)
+
+The new **Comparison Validation** block is added to the existing "Validation Criteria" `TabPane` in `QuestionSetting.jsx`, visible only for `type === "number"` questions:
+
+![Question Setting Comparison Validation UI](question_setting_mockup.png)
+
+**Field mapping to `question.rule` keys:**
+
+| UI Field | Form item name pattern | Saved as `rule` key |
+|---|---|---|
+| Comparison Type dropdown | `question-{qid}-rule-comparison_type` | `comparison_type` |
+| Source Questions multi-select | `question-{qid}-rule-comparison_sources` | `comparison_sources` |
+| Operator dropdown | `question-{qid}-rule-comparison_operator` | `comparison_operator` |
+| Target Question dropdown | `question-{qid}-rule-comparison_target` | `comparison_target` |
+| Error Message (EN) | `question-{qid}-rule-comparison_message` | `comparison_message` |
+| Error Message (DE) | `question-{qid}-rule-comparison_message_de` | `comparison_message_de` |
+| Error Message (FR) | `question-{qid}-rule-comparison_message_fr` | `comparison_message_fr` |
+
+The "Source Questions" field only appears when `comparison_type === "sum_comparison"`. When `comparison_type` is set back to `"None"`, all comparison fields are reset.
+
+#### Mockup: Webform – Inline Validation Errors
+
+Errors appear immediately below the answer input field as Ant Design form validation messages:
+
+![Webform Inline Validation Error UI](webform_validation_mockup.png)
+
+Inside `TypeNumber.jsx`, the `NumberField` component uses `<Form.Item dependencies={[...targetOrSourceKeys]}>` so the validator re-runs reactively when related fields change:
+
+```jsx
+<Form.Item
+  name={id}
+  dependencies={comparisonDeps}  // [targetKey] or [sourceKey1, sourceKey2, ...]
+  rules={[
+    ...rules,
+    {
+      validator: (_, value) => {
+        if (!value && value !== 0) return Promise.resolve();
+        if (naChecked) return Promise.resolve();
+
+        const fieldValues = form.getFieldsValue();
+        if (rule?.comparison_type === "comparison") {
+          const targetValue = fieldValues[targetKey];
+          if (targetValue === undefined || targetValue === null) return Promise.resolve();
+          const passes = compareValues(value, targetValue, rule.comparison_operator);
+          if (!passes) return Promise.reject(new Error(localizedMessage));
+        }
+        if (rule?.comparison_type === "sum_comparison") {
+          const sum = sourceKeys.reduce((acc, k) => acc + (fieldValues[k] ?? 0), 0);
+          const targetValue = fieldValues[targetKey];
+          if (targetValue === undefined || targetValue === null) return Promise.resolve();
+          const passes = compareValues(sum, targetValue, rule.comparison_operator);
+          if (!passes) return Promise.reject(new Error(localizedMessage));
+        }
+        return Promise.resolve();
+      }
+    }
+  ]}
+>
+```
+
+For **repeatable groups**, the field IDs are scoped by repeat index (e.g. `48-1`, `49-1`), so the target key is resolved as `${targetQuestionId}-${repeatIndex}`.
 
 ### 2.3 Number Field Validations (`TypeNumber.jsx`)
 We will update `NumberField` (in `TypeNumber.jsx`) to:
@@ -74,15 +234,26 @@ We will update `NumberField` (in `TypeNumber.jsx`) to:
    - Evaluate the comparison operator against the target value (and sum of source values if `sum_comparison`).
    - Reject the Promise with the corresponding localized warning message if evaluation fails.
 
-### 2.4 Cascade Dynamic Placeholders (`TypeCascade.jsx` / `TypeCascadeApi.jsx`)
+### 2.4 Survey Editor UI (`QuestionSetting.jsx`)
+In the survey editor:
+1. Under the **Validation Criteria** tab for numeric questions, we render form inputs for comparison configuration:
+   - **Comparison Type**: Dropdown select with options `None`, `comparison`, and `sum_comparison`.
+   - **Sources** (if type is `sum_comparison`): Multi-select listing all other numeric questions.
+   - **Operator**: Dropdown select with options `<=`, `>=`, `==`.
+   - **Target Question**: Dropdown select listing all other numeric questions.
+   - **Error Messages**: Inputs for custom localized error messages (English, German, French).
+2. When the Comparison Type changes to `"None"`, any comparison fields are cleared/reset.
+3. Form values mapped to `question-${qid}-rule-${key}` are automatically parsed and saved back to the database as part of the question's `rule` object.
+
+### 2.5 Cascade Dynamic Placeholders (`TypeCascade.jsx` / `TypeCascadeApi.jsx`)
 1. Propagate `variable_name` from `TypeCascade` to `TypeCascadeApi` and into `CascadeApiField`.
 2. Inside `CascadeApiField`, check if the select field is level 1 (`ci === 0`) and check the `variable_name`:
    - If `"country"`: Set placeholder to `uiText.selectCountry`.
    - If `"partner"`: Set placeholder to `uiText.selectPartner`.
    - Otherwise, default to standard `${uiText.selectLevel} ${ci + 1}`.
 
-### 2.5 Localization Updates
-We will add keys to translation files (`en.json`, `de.json`, `fr.json`, `id.json`, `in.json`):
+### 2.6 Localization Updates
+We will add keys to locale files inside `frontend/src/akvo-react-form/locale/`:
 - **English (`en.json`)**:
   - `"selectCountry": "select country"`
   - `"selectPartner": "select partner"`
@@ -101,12 +272,28 @@ We will add keys to translation files (`en.json`, `de.json`, `fr.json`, `id.json
 
 ---
 
-## 3. Verification Plan
+## 3. Effort Estimation
 
-### 3.1 Automated Testing
+| Task | Files Affected | Estimated Effort |
+|------|----------------|-----------------|
+| Add Comparison Validation UI to `QuestionSetting.jsx` | `QuestionSetting.jsx` | **3–4 h** |
+| Implement inline validator in `TypeNumber.jsx` / `NumberField` | `TypeNumber.jsx` | **4–5 h** |
+| Propagate `variable_name` through `TypeCascade.jsx` → `TypeCascadeApi.jsx` | `TypeCascade.jsx`, `TypeCascadeApi.jsx` | **1–2 h** |
+| Add locale keys to all 5 locale JSON files | `en.json`, `de.json`, `fr.json`, `id.json`, `in.json` | **0.5 h** |
+| Manual verification & regression testing | — | **2–3 h** |
+| **Total** | | **~11–14.5 h** |
+
+> [!NOTE]
+> The `computed_validations.json` files themselves (backend config) do **not** need to change for this feature — they govern the existing sum-to-100% check only. The new inline comparisons are driven entirely by `question.rule` data stored in the database and resolved at webform load time.
+
+---
+
+## 4. Verification Plan
+
+### 4.1 Automated Testing
 We will add front-end tests using the existing Jest/React Testing Library setup or backend route validation checks to verify configurations.
 
-### 3.2 Manual Verification
+### 4.2 Manual Verification
 We will verify the feature inside the application using a mock local form (e.g., `form_id` 100 or a specific dev form):
 1. **Dynamic Placeholder**:
    - Inspect Country and Partner cascade fields before any selection.
@@ -115,3 +302,7 @@ We will verify the feature inside the application using a mock local form (e.g.,
    - Change values of Q5 and Q6. Confirm that if Q6 > Q5, a warning shows immediately underneath the field. Confirm warning disappears when Q6 is decreased or Q5 is increased.
    - Change values of Q2, Q3, and Q4. Confirm warnings show immediately if Q3 > Q2 or if Q3 + Q4 > Q2.
    - Test within a repeatable group to confirm validations are properly isolated to the same repeat index.
+3. **Survey Editor**:
+   - Open a numeric question's "Validation Criteria" tab.
+   - Set Comparison Type to `sum_comparison`, add sources, select a target, fill error messages.
+   - Save and reload — confirm the `rule` JSON persists correctly and the webform reflects the new validator.
