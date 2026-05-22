@@ -388,18 +388,18 @@ We will add keys to locale files inside `frontend/src/akvo-react-form/locale/`:
 
 | Epic | Estimate |
 | ---- | -------- |
-| Epic 1 — Inline Cross-Question Numerical Validations | **7–9 h** |
-| Epic-2 — Comparison Validation UI in Survey Editor | **6–8 h** |
-| Epic 3 — Dynamic Cascade Placeholders + Locale | **4–5 h** |
-| Epic 4 — QA, Manual Verification & Regression | **5–6 h** |
-| **Total** | **~22–28 h** |
+| Epic 1 — Inline Cross-Question Numerical Validations | **10 h** |
+| Epic-2 — Comparison Validation UI in Survey Editor | **16 h** |
+| Epic 3 — Dynamic Cascade Placeholders + Locale | **6 h** |
+| Epic 4 — QA, Manual Verification & Regression | **6 h** |
+| **Total** | **38-40 h** |
 
 ---
 
 ### Epic 1 — Inline Cross-Question Numerical Validations
 
 **Files:** `TypeNumber.jsx`
-**Estimate:** 7–9 h
+**Estimate:** 10 h
 
 **Description:**
 Add an on-value-change validator inside `NumberField` that reads `question.rule` and immediately shows a red inline error when a comparison constraint is violated. Supports both single-question comparison (`comparison`) and sum-of-sources comparison (`sum_comparison`), scoped to the correct repeat-group index.
@@ -429,7 +429,7 @@ Add an on-value-change validator inside `NumberField` that reads `question.rule`
 ### Epic 2 — Comparison Validation UI in Survey Editor
 
 **Files:** `QuestionSetting.jsx`
-**Estimate:** 6–8 h
+**Estimate:** 16 h
 
 **Description:**
 Extend the existing **Validation Criteria** tab (visible for `type === "number"` questions) with a new "Comparison Validation" block. Fields map directly to keys in `question.rule` via the existing `question-${qid}-rule-*` naming convention so they are auto-persisted with zero additional API changes.
@@ -458,7 +458,7 @@ Extend the existing **Validation Criteria** tab (visible for `type === "number"`
 ### Epic 3 — Dynamic Cascade Placeholders + Locale Keys
 
 **Files:** `TypeCascade.jsx`, `TypeCascadeApi.jsx`, `en.json`, `de.json`, `fr.json`, `id.json`, `in.json`
-**Estimate:** 4–5 h
+**Estimate:** 6 h
 
 **Description:**
 Propagate `variable_name` from the question definition down through the cascade component tree so that `CascadeApiField` can render a contextual placeholder at level 1 ("select country" / "select partner") instead of the generic "Select level 1".
@@ -485,7 +485,7 @@ Propagate `variable_name` from the question definition down through the cascade 
 
 ### Epic 4 — QA, Manual Verification & Regression
 
-**Estimate:** 5–6 h
+**Estimate:** 6 h
 
 **Description:**
 End-to-end manual verification across all three epics using a local dev environment. Includes regression checks to ensure existing `computed_validations.json` submission-time checks are not affected.
