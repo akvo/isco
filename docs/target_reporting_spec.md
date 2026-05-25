@@ -16,11 +16,81 @@ Introduce target-reporting capability natively to the Survey Editor and main sur
   2. **Step 1 (Configuration)**: The Editor toggles "Target Survey" switch in Settings.
   3. **Step 2 (Question definition)**: Editor creates questions of type `number` or `input` inside question groups and defines a static target value (`target_value` on the question).
   4. **Step 3 (Answering)**: The Partner Reporter opens the Webform page for the published survey.
-  5. **Step 4 (Form rendering)**: The form detects the survey has `target_survey = true` and renders for each question:
-     - Target Indicator Display (read-only label showing the question's defined target from `Question.target_value`)
-     - Achievement field (Input box for reported achievement value, saved to `target_value` on the answer)
-     - Description/Narrative text field (Textarea for context, saved to `target_comment` on the answer)
+  5. **Step 4 (Form rendering)**: The form detects the survey has `target_survey = true` and renders for each question the Target, Achievement, and Description fields side-by-side.
   6. **Step 5 (Submission)**: Partner saves or submits. The answers payload containing `target_value` (achievement) and `target_comment` (description) is POSTed/PUTed to the backend.
+
+### UI/UX Wireframe Visuals
+
+#### 1. Survey Settings Panel (Survey Editor)
+```text
++--------------------------------------------------------+
+| Survey Settings                                        |
++--------------------------------------------------------+
+| Survey Name: [ Dynamic Target Survey                 ] |
+| Description: [ Survey to collect annual indicators    ] |
+|                                                        |
+| [ ] Enable pre-filled values                           |
+| [X] Target Survey (Enable indicator target reporting)  |
+|                                                        |
+| < Save Settings >                                      |
++--------------------------------------------------------+
+```
+
+#### 2. Question Group Configuration Drawer (Survey Editor)
+```text
++--------------------------------------------------------+
+| Edit Question Group                                    |
++--------------------------------------------------------+
+| Group Name: [ Sustainable Sourcing Indicators         ] |
+| Description: [ Key indicators for supply chain targets] |
+|                                                        |
+| [ ] Repeatable Group (Allow reporter to add multiple)  |
+|                                                        |
+| < Save Question Group >                                |
++--------------------------------------------------------+
+```
+
+#### 3. Question Configuration Drawer (Survey Editor)
+```text
++--------------------------------------------------------+
+| Edit Question                                          |
++--------------------------------------------------------+
+| Question Name: [ Number of smallholders supported    ] |
+| Question Type: ( Number )                              |
+| Defined Target Value: [ 1000                         ] |
+|                                                        |
+| < Save Question >                                      |
++--------------------------------------------------------+
+```
+
+#### 4. Webform Answering View (Partner Reporter)
+```text
++---------------------------------------------------------------------------------+
+| Question Group: Sustainable Sourcing Indicators                                 |
+| Key indicators for supply chain targets                                         |
++---------------------------------------------------------------------------------+
+| 1. Number of smallholders supported                                             |
+|                                                                                 |
+|    +----------------------+   +----------------------+   +--------------------+ |
+|    | Defined Target       |   | Reported Achievement |   | Progress Narrative | |
+|    |                      |   |                      |   |                    | |
+|    |  1000                |   | [ 950              ] |   | [ Narrative...   ] | |
+|    |                      |   |                      |   | [                  ] | |
+|    |  (Read-Only Label)   |   | (InputNumber)        |   | (Textarea)         | |
+|    +----------------------+   +----------------------+   +--------------------+ |
+|                                                                                 |
+| 2. Percentage of raw material certified sustainable                             |
+|                                                                                 |
+|    +----------------------+   +----------------------+   +--------------------+ |
+|    | Defined Target       |   | Reported Achievement |   | Progress Narrative | |
+|    |                      |   |                      |   |                    | |
+|    |  80%                 |   | [ 75%              ] |   | [ Narrative...   ] | |
+|    |                      |   |                      |   | [                  ] | |
+|    |  (Read-Only Label)   |   | (InputNumber)        |   | (Textarea)         | |
+|    +----------------------+   +----------------------+   +--------------------+ |
+|                                                                                 |
++---------------------------------------------------------------------------------+
+```
 
 ## III. Requirements (Scope Guardrails)
 
@@ -79,7 +149,7 @@ Introduce target-reporting capability natively to the Survey Editor and main sur
 
 ## V. Acceptance Criteria
 - **User Acceptance Criteria (UAC)**:
-  - Given an Editor designs a survey, when they set `target_survey` to `true` and define target values for questions, then these are saved in the database.
+  - Given an Editor designs a survey, when they set `target_survey` to `true`, then the flag is stored in the database.
   - Given a Reporter fills a target survey, when they save their responses, then target value, actual value, and description narrative are saved.
 - **Technical Acceptance Criteria (TAC)**:
   - Alembic DB migration generated.
@@ -104,13 +174,36 @@ Introduce target-reporting capability natively to the Survey Editor and main sur
 This epic encompasses database migrations, API changes to serialize and persist target flags/values, and UI updates in the Survey Editor and Webform rendering.
 
 - **Component Breakdown**:
-  - **DB Migration**: Generate Alembic migration script to add `target_survey` to `form` table, `target_value` to `question` table, and `target_value` + `target_comment` to `answer` table.
-  - **Backend Models**: Update SQLAlchemy models (`Form`, `Question`, `Answer`) and Pydantic models.
-  - **Backend CRUD & Routes**: Update CRUD and routes (`form.py`, `data.py`) to process target values.
-  - **Survey Editor UI**: Add toggle checkbox in Form Settings panel, and target value input field to Question creation drawer.
-  - **Webform UI**: Modify `WebformPage.jsx` and `akvo-react-form` fields to render Target/Actual/Description fields when loading target-reporting forms.
-- **Complexity Assessment**: Medium
-- **Ballpark Estimate**: 6.0 developer days
+  - **TS-1: DB Schema Migration & Alembic script generation**
+    - Generate migration script to add `target_survey` on `form`, `target_value` on `question`, and `target_value` + `target_comment` on `answer` tables.
+    - Complexity: Simple
+    - Estimate: 0.5 developer days
+  - **TS-2: Model Layer Updates**
+    - Modify database models `backend/models/form.py`, `backend/models/question.py`, and `backend/models/answer.py`.
+    - Update TypedDict schemas and Pydantic validation structures.
+    - Complexity: Simple
+    - Estimate: 0.5 developer days
+  - **TS-3: Backend CRUD and Routes Adaptation**
+    - Update `crud_form.py` and `crud_answer.py` functions to process, fetch, and update target flags/fields.
+    - Update router layers (`form.py`, `data.py`) to correctly receive and return the new columns.
+    - Complexity: Medium
+    - Estimate: 1.0 developer days
+  - **TS-4: Survey Editor Settings UI**
+    - Update survey settings settings panel to configure the `target_survey` flag.
+    - Update the question creation drawer to accept a `target_value` for numeric questions.
+    - Complexity: Medium
+    - Estimate: 1.0 developer days
+  - **TS-5: Webform Renderer UI Extension**
+    - Modify `WebformPage.jsx` and `TypeNumber.jsx` to render side-by-side inputs (read-only label for defined target, input box for reported achievement, textarea for description).
+    - Map and send fields correctly during save/submit.
+    - Complexity: Complex
+    - Estimate: 2.0 developer days
+  - **TS-6: E2E Testing and Validation**
+    - Run and write pytest cases validating database persistence and API serializers.
+    - Validate UI interactions in sandbox environments.
+    - Complexity: Medium
+    - Estimate: 1.0 developer days
+- **Total Estimated Effort**: 6.0 developer days
 - **Assumptions**: Reuses existing question types and components, eliminating the need to write custom HTML inputs or custom DB tables for question groups.
 
 ---
