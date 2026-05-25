@@ -177,33 +177,49 @@ This epic encompasses database migrations, API changes to serialize and persist 
   - **TS-1: DB Schema Migration & Alembic script generation**
     - Generate migration script to add `target_survey` on `form`, `target_value` on `question`, and `target_value` + `target_comment` on `answer` tables.
     - Complexity: Simple
-    - Estimate: 0.5 developer days
+    - Estimate: 4 hours (0.5 developer days)
   - **TS-2: Model Layer Updates**
     - Modify database models `backend/models/form.py`, `backend/models/question.py`, and `backend/models/answer.py`.
     - Update TypedDict schemas and Pydantic validation structures.
     - Complexity: Simple
-    - Estimate: 0.5 developer days
+    - Estimate: 4 hours (0.5 developer days)
   - **TS-3: Backend CRUD and Routes Adaptation**
     - Update `crud_form.py` and `crud_answer.py` functions to process, fetch, and update target flags/fields.
     - Update router layers (`form.py`, `data.py`) to correctly receive and return the new columns.
     - Complexity: Medium
-    - Estimate: 1.0 developer days
+    - Estimate: 8 hours (1.0 developer days)
   - **TS-4: Survey Editor Settings UI**
     - Update survey settings settings panel to configure the `target_survey` flag.
     - Update the question creation drawer to accept a `target_value` for numeric questions.
     - Complexity: Medium
-    - Estimate: 1.0 developer days
+    - Estimate: 8 hours (1.0 developer days)
   - **TS-5: Webform Renderer UI Extension**
     - Modify `WebformPage.jsx` and `TypeNumber.jsx` to render side-by-side inputs (read-only label for defined target, input box for reported achievement, textarea for description).
     - Map and send fields correctly during save/submit.
     - Complexity: Complex
-    - Estimate: 2.0 developer days
-  - **TS-6: E2E Testing and Validation**
+    - Estimate: 16 hours (2.0 developer days)
+  - **TS-6: Automated Testing & Verification**
     - Run and write pytest cases validating database persistence and API serializers.
     - Validate UI interactions in sandbox environments.
     - Complexity: Medium
-    - Estimate: 1.0 developer days
-- **Total Estimated Effort**: 6.0 developer days
+    - Estimate: 8 hours (1.0 developer days)
+  - **TS-7: QA (Quality Assurance) & Integration Testing**
+    - Perform manual edge-case verification, accessibility checks, and browser compatibility testing.
+    - Complexity: Simple
+    - Estimate: 4 hours
+  - **TS-8: UAT (User Acceptance Testing) & Feedback Loop**
+    - Staging deployment, testing and validation by partners, fixing minor user-reported layout or flow issues.
+    - Complexity: Medium
+    - Estimate: 8 hours
+  - **TS-9: Pre-release validation & Dry-run migrations**
+    - Run Alembic migrations on a clone of the production database to guarantee zero downtime and verify backward compatibility.
+    - Complexity: Simple
+    - Estimate: 2 hours
+  - **TS-10: Final Release & Deployment**
+    - Run production migrations, deploy backend/frontend builds, perform live smoke tests.
+    - Complexity: Simple
+    - Estimate: 2 hours
+- **Total Estimated Effort**: 64 hours (8.0 developer days)
 - **Assumptions**: Reuses existing question types and components, eliminating the need to write custom HTML inputs or custom DB tables for question groups.
 
 ---
