@@ -234,6 +234,574 @@
       "targets": [],
       "value": ""
     }]
+  }, {
+    "id": "415c439f-b443-47cd-b2da-ae33fb9acc8c",
+    "name": "02_login_user",
+    "commands": [{
+      "id": "d4a7871b-849d-40b0-8c03-70697a5d3018",
+      "comment": "Open login page",
+      "command": "open",
+      "target": "/login",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "40c23c7e-156b-4ff2-bc98-2d0df0364760",
+      "comment": "Wait for email field to be present",
+      "command": "waitForElementPresent",
+      "target": "id=email",
+      "targets": [
+        ["id=email", "id"],
+        ["css=#email", "css:finder"],
+        ["xpath=//input[@id='email']", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div/div/div/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "b4f53dc4-65fd-41ed-97c9-28a0e277be7f",
+      "comment": "Enter email address",
+      "command": "type",
+      "target": "id=email",
+      "targets": [
+        ["id=email", "id"],
+        ["css=#email", "css:finder"],
+        ["xpath=//input[@id='email']", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div/div/div/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "johndoe@test.test"
+    }, {
+      "id": "7e241cfc-f4ac-482e-ab5e-46232bb15cbf",
+      "comment": "Enter password",
+      "command": "type",
+      "target": "id=password",
+      "targets": [
+        ["id=password", "id"],
+        ["css=#password", "css:finder"],
+        ["xpath=//input[@id='password']", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div[2]/div/div/div/span/input", "xpath:idRelative"],
+        ["xpath=//span/input", "xpath:position"]
+      ],
+      "value": "Passcode@123"
+    }, {
+      "id": "daf5abe6-30e1-4711-b02f-383e4e84d3ac",
+      "comment": "Click on login button",
+      "command": "click",
+      "target": "css=.ant-btn-primary",
+      "targets": [
+        ["css=.ant-btn-primary", "css:finder"],
+        ["xpath=(//button[@type='button'])[3]", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/button", "xpath:idRelative"],
+        ["xpath=//form/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Login')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "fdbb0fbc-ef1b-4dd5-a30a-26d1022a9bb6",
+      "comment": "Wait for dropdown",
+      "command": "waitForElementPresent",
+      "target": "css=.ant-dropdown-trigger",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "809caeab-c4d9-4e66-b940-e70ca522e0eb",
+      "comment": "Username is visible",
+      "command": "assertText",
+      "target": "css=.ant-dropdown-trigger .ant-space-item:nth-child(2)",
+      "targets": [
+        ["css=.ant-dropdown-trigger .ant-space-item:nth-child(2)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div[2]/div/div[2]/a/div/div[2]", "xpath:idRelative"],
+        ["xpath=//a/div/div[2]", "xpath:position"]
+      ],
+      "value": "JOHN DOE"
+    }, {
+      "id": "6e20d37b-fdcf-4b77-bdb6-b3e6c6b94e29",
+      "comment": "Logout user",
+      "command": "click",
+      "target": "css=.ant-dropdown-trigger .ant-space-item:nth-child(2)",
+      "targets": [
+        ["css=.ant-dropdown-trigger .ant-space-item:nth-child(2)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div[2]/div/div[2]/a/div/div[2]", "xpath:idRelative"],
+        ["xpath=//a/div/div[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "02cebfbb-e69b-473d-8f40-ebc50e000a5b",
+      "comment": "Wait for dropdown to visible ",
+      "command": "waitForElementPresent",
+      "target": "css=.account-dropdown-menu",
+      "targets": [
+        ["css=.ant-dropdown-menu", "css:finder"],
+        ["xpath=//ul", "xpath:position"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "71f9a1d8-7ed6-44a5-941e-1c693ec15fd5",
+      "comment": "Click on logout",
+      "command": "executeScript",
+      "target": "document.querySelectorAll('.ant-dropdown-menu-item').forEach(function(d){if(d.querySelector('a').textContent == \"Logout\"){d.querySelector('a').click()}})",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "a03ade1c-80bd-4815-b8ff-d20bb326c46f",
+      "comment": "",
+      "command": "close",
+      "target": "",
+      "targets": [],
+      "value": ""
+    }]
+  }, {
+    "id": "f78a1a64-4b7d-4a64-8524-7a70e856f573",
+    "name": "03_unregister_login_user",
+    "commands": [{
+      "id": "e8637f27-ce7a-403a-bc46-cee91d68b564",
+      "comment": "Open login page",
+      "command": "open",
+      "target": "/login",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "a9b68854-1623-4577-aae2-a3e6e47d1717",
+      "comment": "Wait for email field to be present",
+      "command": "waitForElementPresent",
+      "target": "id=email",
+      "targets": [
+        ["id=email", "id"],
+        ["css=#email", "css:finder"],
+        ["xpath=//input[@id='email']", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div/div/div/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "8784ba6e-da35-4e2b-bdb5-b42447de0599",
+      "comment": "Enter email address",
+      "command": "type",
+      "target": "id=email",
+      "targets": [
+        ["id=email", "id"],
+        ["css=#email", "css:finder"],
+        ["xpath=//input[@id='email']", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div/div/div/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "test@test.test"
+    }, {
+      "id": "12bd777d-55ff-4b5b-b4fb-d2598a86ab97",
+      "comment": "Enter password",
+      "command": "type",
+      "target": "id=password",
+      "targets": [
+        ["id=password", "id"],
+        ["css=#password", "css:finder"],
+        ["xpath=//input[@id='password']", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div[2]/div/div/div/span/input", "xpath:idRelative"],
+        ["xpath=//span/input", "xpath:position"]
+      ],
+      "value": "password"
+    }, {
+      "id": "07aad50d-35dc-41cb-a896-e3e95e66f282",
+      "comment": "Click on login button",
+      "command": "click",
+      "target": "css=.ant-btn-primary",
+      "targets": [
+        ["css=.ant-btn-primary", "css:finder"],
+        ["xpath=(//button[@type='button'])[3]", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/button", "xpath:idRelative"],
+        ["xpath=//form/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Login')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "eba0a44f-3755-4870-b90e-35134d04307c",
+      "comment": "Wait for alert message to be present",
+      "command": "waitForElementPresent",
+      "target": "css=.ant-message-custom-content",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "0d71bcb2-06c2-44ab-ae2d-eb916382af85",
+      "comment": "Check for alert message",
+      "command": "assertText",
+      "target": "css=.ant-message-custom-content > span:nth-child(2)",
+      "targets": [],
+      "value": "Email password doesn't match."
+    }]
+  }, {
+    "id": "b07e6dfc-6e70-40c8-9474-d63e191c10cb",
+    "name": "04_forgot_password_registered_user",
+    "commands": [{
+      "id": "e63c5664-11f4-49bd-a482-e9d101c7c965",
+      "comment": "Open login page",
+      "command": "open",
+      "target": "/login",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "db6c36fb-e562-4a86-95d9-993c2c11aab2",
+      "comment": "Click on forgot password",
+      "command": "click",
+      "target": "xpath=//span[contains(.,'Forgot Password')]",
+      "targets": [
+        ["css=.ant-btn-text > span", "css:finder"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[5]/button/span", "xpath:idRelative"],
+        ["xpath=//div[5]/button/span", "xpath:position"],
+        ["xpath=//span[contains(.,'Forgot Password')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "a0ef6e43-ef3f-40c0-b7ff-81082db29ba5",
+      "comment": "Forgot password text visible",
+      "command": "assertText",
+      "target": "css=.ant-col > h2",
+      "targets": [
+        ["css=.ant-col > h2", "css:finder"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[2]/div/div/h2", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/h2", "xpath:position"],
+        ["xpath=//h2[contains(.,'Forgot Password')]", "xpath:innerText"]
+      ],
+      "value": "Forgot Password"
+    }, {
+      "id": "348dd916-5e25-411e-9032-82ab6df1acc4",
+      "comment": "",
+      "command": "type",
+      "target": "id=email",
+      "targets": [],
+      "value": "johndoe@test.test"
+    }, {
+      "id": "b5d967d5-1c7b-4e8c-b036-06b1a8aa3296",
+      "comment": "",
+      "command": "click",
+      "target": "css=.ant-btn-primary",
+      "targets": [
+        ["css=.ant-btn-primary", "css:finder"],
+        ["xpath=(//button[@type='button'])[3]", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/button", "xpath:idRelative"],
+        ["xpath=//form/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Reset Password')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "cd8145f0-0c30-4066-a0b8-e237b77e96d6",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.ant-message-custom-content > span:nth-child(2)",
+      "targets": [],
+      "value": "Reset Password link has been sent to your email"
+    }]
+  }, {
+    "id": "7b97a2a8-2383-4b79-b1e9-63c3908f9517",
+    "name": "05_forgot_password_for_an_un_registered_user",
+    "commands": [{
+      "id": "a6b62b74-fd21-4ebf-9027-6c1d419579a0",
+      "comment": "Open login page",
+      "command": "open",
+      "target": "/login",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "66738acb-5627-4153-9a00-d7ae428a896c",
+      "comment": "Click on forgot password",
+      "command": "click",
+      "target": "xpath=//span[contains(.,'Forgot Password')]",
+      "targets": [
+        ["css=.ant-btn-text > span", "css:finder"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[5]/button/span", "xpath:idRelative"],
+        ["xpath=//div[5]/button/span", "xpath:position"],
+        ["xpath=//span[contains(.,'Forgot Password')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "2928c733-d0b9-49af-9282-b4aaf8d4f62b",
+      "comment": "Forgot password text visible",
+      "command": "assertText",
+      "target": "css=.ant-col > h2",
+      "targets": [
+        ["css=.ant-col > h2", "css:finder"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[2]/div/div/h2", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/h2", "xpath:position"],
+        ["xpath=//h2[contains(.,'Forgot Password')]", "xpath:innerText"]
+      ],
+      "value": "Forgot Password"
+    }, {
+      "id": "5a9d9456-bae6-449d-897b-97a0c647a582",
+      "comment": "",
+      "command": "type",
+      "target": "id=email",
+      "targets": [],
+      "value": "test@test.test"
+    }, {
+      "id": "5bcee4fb-d0cf-4d36-9689-58591b134e87",
+      "comment": "",
+      "command": "click",
+      "target": "css=.ant-btn-primary",
+      "targets": [
+        ["css=.ant-btn-primary", "css:finder"],
+        ["xpath=(//button[@type='button'])[3]", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/button", "xpath:idRelative"],
+        ["xpath=//form/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Reset Password')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "f7366ba3-0c1e-4e12-bce9-7cf282818f47",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.ant-message-custom-content > span:nth-child(2)",
+      "targets": [],
+      "value": "Email not found"
+    }]
+  }, {
+    "id": "ebbe4420-c450-4ca1-b229-cab4816c02f0",
+    "name": "06_home_page_setup",
+    "commands": [{
+      "id": "b6c5cdd7-6b74-4918-a847-209558564af7",
+      "comment": "Open login page",
+      "command": "open",
+      "target": "/login",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "ef32606f-c687-4d59-b013-3c8bda180234",
+      "comment": "Wait for email field to be present",
+      "command": "waitForElementPresent",
+      "target": "id=email",
+      "targets": [
+        ["id=email", "id"],
+        ["css=#email", "css:finder"],
+        ["xpath=//input[@id='email']", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div/div/div/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "194b7d34-2424-4db7-ace6-01e4b1857c47",
+      "comment": "Enter email address",
+      "command": "type",
+      "target": "id=email",
+      "targets": [
+        ["id=email", "id"],
+        ["css=#email", "css:finder"],
+        ["xpath=//input[@id='email']", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div/div/div/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "verified_user@test.com"
+    }, {
+      "id": "903c94bf-1554-4070-b930-a8bff02becc3",
+      "comment": "Enter password",
+      "command": "type",
+      "target": "id=password",
+      "targets": [
+        ["id=password", "id"],
+        ["css=#password", "css:finder"],
+        ["xpath=//input[@id='password']", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/div[2]/div/div/div/span/input", "xpath:idRelative"],
+        ["xpath=//span/input", "xpath:position"]
+      ],
+      "value": "password"
+    }, {
+      "id": "0a4ebde8-58f4-4537-8752-8f03825f3bd7",
+      "comment": "Click on login button",
+      "command": "click",
+      "target": "css=.ant-btn-primary",
+      "targets": [
+        ["css=.ant-btn-primary", "css:finder"],
+        ["xpath=(//button[@type='button'])[3]", "xpath:attributes"],
+        ["xpath=//div[@id='auth']/div[2]/div[2]/div/div[4]/form/button", "xpath:idRelative"],
+        ["xpath=//form/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Login')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "162819d9-74ea-448d-afb5-d8a759d79984",
+      "comment": "Wait for home page to load",
+      "command": "waitForElementPresent",
+      "target": "css=.intro-text > h1",
+      "targets": [
+        ["css=.intro-text > h1", "css:finder"],
+        ["xpath=//div[@id='home']/div/div/h1", "xpath:idRelative"],
+        ["xpath=//h1", "xpath:position"],
+        ["xpath=//h1[contains(.,'WELCOME TO THE COCOA MONITORING OF DISCO, BEYOND CHOCOLATE AND GISCO!')]", "xpath:innerText"]
+      ],
+      "value": "3000"
+    }, {
+      "id": "4ffe8187-5014-4716-99d5-8d0a3a0ef813",
+      "comment": "Click on data security link",
+      "command": "click",
+      "target": "linkText=link",
+      "targets": [
+        ["linkText=link", "linkText"],
+        ["css=a:nth-child(4)", "css:finder"],
+        ["xpath=//a[contains(text(),'link')]", "xpath:link"],
+        ["xpath=//div[@id='home']/div/div/p/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/home')]", "xpath:href"],
+        ["xpath=//p/a", "xpath:position"],
+        ["xpath=//a[contains(.,'link')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "21517b41-684d-418d-a034-3a32961005bf",
+      "comment": "Wait for data security modal",
+      "command": "waitForElementVisible",
+      "target": "css=.data-security-modal-wrapper",
+      "targets": [
+        ["css=.ant-modal-header", "css:finder"],
+        ["xpath=//div[4]/div/div[2]/div/div[2]/div", "xpath:position"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "f02cbe17-71de-415f-8910-36a24114da34",
+      "comment": "Close modal",
+      "command": "click",
+      "target": "css=.ant-modal-close-icon",
+      "targets": [
+        ["css=.ant-modal-close-icon > svg", "css:finder"]
+      ],
+      "value": ""
+    }, {
+      "id": "4f2454cf-5abc-413f-8f5a-a50012d9573d",
+      "comment": "Wait for home page to load",
+      "command": "waitForElementPresent",
+      "target": "css=.intro-text > h1",
+      "targets": [
+        ["css=.intro-text > h1", "css:finder"],
+        ["xpath=//div[@id='home']/div/div/h1", "xpath:idRelative"],
+        ["xpath=//h1", "xpath:position"],
+        ["xpath=//h1[contains(.,'WELCOME TO THE COCOA MONITORING OF DISCO, BEYOND CHOCOLATE AND GISCO!')]", "xpath:innerText"]
+      ],
+      "value": "3000"
+    }, {
+      "id": "8eafa0ad-32f2-4fe0-a559-7cf02b2325a1",
+      "comment": "Click on start survey",
+      "command": "click",
+      "target": "css=.ant-btn-primary",
+      "targets": [
+        ["css=.ant-btn-primary", "css:finder"],
+        ["xpath=(//button[@type='button'])[4]", "xpath:attributes"],
+        ["xpath=//div[@id='home']/div/div/div/button", "xpath:idRelative"],
+        ["xpath=//div[2]/div[2]/div/div/div/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "feeba9fe-2a04-46e0-a0cc-1dc2d877d096",
+      "comment": "Survey page loaded",
+      "command": "assertText",
+      "target": "css=.ant-space-item p",
+      "targets": [
+        ["css=.ant-space-item p", "css:finder"],
+        ["xpath=//div[@id='survey']/div[2]/div/div/div/div/p", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/div/div/p", "xpath:position"],
+        ["xpath=//p[contains(.,'Pick a previously saved form')]", "xpath:innerText"]
+      ],
+      "value": "Pick a previously saved form"
+    }, {
+      "id": "924c92de-a1ac-49a4-82cd-de5733dcce6a",
+      "comment": "Come back to home",
+      "command": "click",
+      "target": "css=.title",
+      "targets": [
+        ["css=.title", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div/a/span", "xpath:idRelative"],
+        ["xpath=//a/span", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "1b9e4937-7987-4107-9cd6-c84e3933ca88",
+      "comment": "Wait for home page to load",
+      "command": "waitForElementPresent",
+      "target": "css=.intro-text > h1",
+      "targets": [
+        ["css=.intro-text > h1", "css:finder"],
+        ["xpath=//div[@id='home']/div/div/h1", "xpath:idRelative"],
+        ["xpath=//h1", "xpath:position"],
+        ["xpath=//h1[contains(.,'WELCOME TO THE COCOA MONITORING OF DISCO, BEYOND CHOCOLATE AND GISCO!')]", "xpath:innerText"]
+      ],
+      "value": "3000"
+    }, {
+      "id": "367a8749-fe84-44b3-9db4-00beedb1f77d",
+      "comment": "Click on FAQ",
+      "command": "click",
+      "target": "linkText=FAQ section",
+      "targets": [
+        ["linkText=FAQ section", "linkText"],
+        ["css=p:nth-child(2) > a:nth-child(1)", "css:finder"],
+        ["xpath=//a[contains(text(),'FAQ section')]", "xpath:link"],
+        ["xpath=//div[@id='home']/div[2]/div/p/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '/faq')])[2]", "xpath:href"],
+        ["xpath=//div[2]/div/p/a", "xpath:position"],
+        ["xpath=//a[contains(.,'FAQ section')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "156aabb6-2186-4961-a95d-e1833ac487ba",
+      "comment": "Faq page loaded",
+      "command": "assertText",
+      "target": "css=h3:nth-child(1)",
+      "targets": [
+        ["css=h3:nth-child(1)", "css:finder"],
+        ["xpath=//div[@id='faq']/div/div/h3", "xpath:idRelative"],
+        ["xpath=//h3", "xpath:position"],
+        ["xpath=//h3[contains(.,'Frequently Asked Question')]", "xpath:innerText"]
+      ],
+      "value": "Frequently Asked Question"
+    }, {
+      "id": "3b05fb4a-f626-4c13-8520-71c318450411",
+      "comment": "Come back to home",
+      "command": "click",
+      "target": "css=.title",
+      "targets": [
+        ["css=.title", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div/a/span", "xpath:idRelative"],
+        ["xpath=//a/span", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "db193eb7-f6ac-4eb4-92f8-baa840677ce9",
+      "comment": "Wait for home page to load",
+      "command": "waitForElementPresent",
+      "target": "css=.intro-text > h1",
+      "targets": [
+        ["css=.intro-text > h1", "css:finder"],
+        ["xpath=//div[@id='home']/div/div/h1", "xpath:idRelative"],
+        ["xpath=//h1", "xpath:position"],
+        ["xpath=//h1[contains(.,'WELCOME TO THE COCOA MONITORING OF DISCO, BEYOND CHOCOLATE AND GISCO!')]", "xpath:innerText"]
+      ],
+      "value": "3000"
+    }, {
+      "id": "5e56e2a7-2202-45a7-8483-a97b7b4a28fe",
+      "comment": "Click on feedback form",
+      "command": "click",
+      "target": "linkText=feedback form",
+      "targets": [
+        ["linkText=feedback form", "linkText"],
+        ["css=p:nth-child(3) > a", "css:finder"],
+        ["xpath=//a[contains(text(),'feedback form')]", "xpath:link"],
+        ["xpath=//div[@id='home']/div[2]/div/p[2]/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '/feedback')])[2]", "xpath:href"],
+        ["xpath=//p[2]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'feedback form')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "c08c43ad-0b97-4ff3-8e27-70f182035f95",
+      "comment": "Feedback form loaded",
+      "command": "assertText",
+      "target": "css=.ant-card-head-title",
+      "targets": [
+        ["css=.ant-card-head-title", "css:finder"],
+        ["xpath=//div[@id='feedback']/div/div/div/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[2]/div[2]/div/div/div/div/div/div", "xpath:position"]
+      ],
+      "value": "Please provide your feedback. It is highly valuable to improve the system."
+    }, {
+      "id": "1b44fc17-da40-44d4-9711-022a3dab62fd",
+      "comment": "",
+      "command": "close",
+      "target": "",
+      "targets": [],
+      "value": ""
+    }]
   }],
   "suites": [{
     "id": "3837e61a-40bf-431a-9c80-4812b82fc9cd",
@@ -241,7 +809,7 @@
     "persistSession": false,
     "parallel": false,
     "timeout": 300,
-    "tests": ["4318d2a1-c064-495e-93ad-f308f4bc75c8", "6ed049fb-6e3e-43e2-896c-91ad5afd4e79"]
+    "tests": ["4318d2a1-c064-495e-93ad-f308f4bc75c8", "6ed049fb-6e3e-43e2-896c-91ad5afd4e79", "415c439f-b443-47cd-b2da-ae33fb9acc8c", "f78a1a64-4b7d-4a64-8524-7a70e856f573", "b07e6dfc-6e70-40c8-9474-d63e191c10cb", "7b97a2a8-2383-4b79-b1e9-63c3908f9517", "ebbe4420-c450-4ca1-b229-cab4816c02f0"]
   }],
   "urls": ["http://localhost:3000/", "http://localhost:3000/api/docs"],
   "plugins": []
