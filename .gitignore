@@ -2,5 +2,7 @@
 .vscode/
 .DS_Store
 .env
-agent_docs/.agent/
+
+.agent/
 agent_docs/
+task.md

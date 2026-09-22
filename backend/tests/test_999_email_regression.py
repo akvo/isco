@@ -24,9 +24,6 @@ from middleware import get_password_hash, create_access_token, decode_token
 from util.mailer import (
     Email,
     MailTypeEnum,
-    EMAIL_PORT,
-    EMAIL_USE_TLS,
-    EMAIL_USE_SSL,
 )
 from datetime import datetime
 
@@ -523,16 +520,11 @@ class TestSmtpMessage:
         )
         msg = email.data
         assert msg["To"] == "Email Tester <tester@akvo.org>"
-        assert msg["From"] == "noreply@cocoamonitoring.net"
+        assert "From" in msg
         # A plain-text body with the rendered template as an HTML
         # alternative, so a client that refuses HTML still reads something.
         subtypes = [part.get_content_subtype() for part in msg.iter_parts()]
         assert subtypes == ["plain", "html"]
-        # STARTTLS on 587, not implicit SSL on 465. A flipped default here
-        # hands the message to the relay in plaintext.
-        assert EMAIL_PORT == 587
-        assert EMAIL_USE_TLS is True
-        assert EMAIL_USE_SSL is False
 
     def test_multiline_subject_is_collapsed(self):
         """util.i18n writes the bilingual subjects across source lines. A
@@ -550,3 +542,83 @@ class TestSmtpMessage:
             "ISCO Data Download Request "
             "| Anfrage zum Herunterladen von Daten"
         )
+
+    def test_port_465_auto_detects_ssl(self):
+        from util.mailer import get_smtp_config
+
+        env_override = {
+            "EMAIL_HOST": "akvomail.org",
+            "EMAIL_PORT": "465",
+            "EMAIL_HOST_USER": "isco-noreply@akvomail.org",
+            "EMAIL_HOST_PASSWORD": "secret_password",
+            "EMAIL_USE_SSL": "",
+            "EMAIL_USE_TLS": "",
+            "EMAIL_FROM": "",
+        }
+        with patch.dict(os.environ, env_override, clear=False):
+            config = get_smtp_config()
+            assert config["port"] == 465
+            assert config["use_ssl"] is True
+            assert config["use_tls"] is False
+            assert config["from_email"] == "isco-noreply@akvomail.org"
+
+    def test_port_587_auto_detects_tls(self):
+        from util.mailer import get_smtp_config
+
+        env_override = {
+            "EMAIL_HOST": "smtp.gmail.com",
+            "EMAIL_PORT": "587",
+            "EMAIL_HOST_USER": "mailer@akvo.org",
+        }
+        with patch.dict(os.environ, env_override, clear=False):
+            os.environ.pop("EMAIL_USE_SSL", None)
+            os.environ.pop("EMAIL_USE_TLS", None)
+            config = get_smtp_config()
+            assert config["port"] == 587
+            assert config["use_ssl"] is False
+            assert config["use_tls"] is True
+
+    def test_explicit_env_flags_override_port_defaults(self):
+        from util.mailer import get_smtp_config
+
+        # Explicitly requesting STARTTLS on custom port
+        with patch.dict(
+            os.environ,
+            {
+                "EMAIL_PORT": "2525",
+                "EMAIL_USE_TLS": "true",
+                "EMAIL_USE_SSL": "false",
+            },
+        ):
+            config = get_smtp_config()
+            assert config["use_ssl"] is False
+            assert config["use_tls"] is True
+
+        # Explicitly requesting SSL on custom port
+        with patch.dict(
+            os.environ,
+            {
+                "EMAIL_PORT": "2525",
+                "EMAIL_USE_SSL": "true",
+                "EMAIL_USE_TLS": "false",
+            },
+        ):
+            config = get_smtp_config()
+            assert config["use_ssl"] is True
+            assert config["use_tls"] is False
+
+    def test_custom_email_from_and_name(self):
+        with patch.dict(
+            os.environ,
+            {
+                "EMAIL_FROM": "custom-sender@akvomail.org",
+                "EMAIL_FROM_NAME": "ISCO Notifications",
+            },
+        ):
+            email = Email(
+                recipients=[{"Email": "tester@akvo.org", "Name": "Tester"}],
+                type=MailTypeEnum.register,
+            )
+            msg = email.data
+            expected_from = "ISCO Notifications <custom-sender@akvomail.org>"
+            assert msg["From"] == expected_from
