@@ -40,8 +40,12 @@ services:
     environment:
       - GOOGLE_APPLICATION_CREDENTIALS=/credentials/isco-service-account.json
       - WEBDOMAIN=http://localhost:3000
-      - MAILJET_SECRET=$MAILJET_SECRET
-      - MAILJET_APIKEY=$MAILJET_APIKEY
+      - EMAIL_HOST
+      - EMAIL_PORT
+      - EMAIL_HOST_USER
+      - EMAIL_HOST_PASSWORD
+      - EMAIL_USE_TLS
+      - EMAIL_USE_SSL
     network_mode: service:mainnetwork
   frontend:
     platform: linux/amd64

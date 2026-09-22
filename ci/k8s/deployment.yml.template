@@ -64,16 +64,39 @@ spec:
                 secretKeyRef:
                   name: isco
                   key: webdomain
-            - name: MAILJET_APIKEY
+            - name: EMAIL_HOST
               valueFrom:
                 secretKeyRef:
                   name: isco
-                  key: mailjet-apikey
-            - name: MAILJET_SECRET
+                  key: email-host
+            - name: EMAIL_HOST_USER
               valueFrom:
                 secretKeyRef:
                   name: isco
-                  key: mailjet-secret
+                  key: email-host-user
+            - name: EMAIL_HOST_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: isco
+                  key: email-host-password
+            - name: EMAIL_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: isco
+                  key: email-port
+                  optional: true
+            - name: EMAIL_USE_TLS
+              valueFrom:
+                secretKeyRef:
+                  name: isco
+                  key: email-use-tls
+                  optional: true
+            - name: EMAIL_USE_SSL
+              valueFrom:
+                secretKeyRef:
+                  name: isco
+                  key: email-use-ssl
+                  optional: true
             - name: BUCKET_FOLDER
               value: ${BUCKET_FOLDER}
             - name: GOOGLE_APPLICATION_CREDENTIALS

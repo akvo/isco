@@ -32,4 +32,4 @@ def get_by_id(
     email = Email(recipients=[], type=type)
     # if user and send:
     #     email.send
-    return email.data["Html-part"]
+    return email.html
