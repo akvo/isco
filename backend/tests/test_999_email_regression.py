@@ -21,6 +21,13 @@ from models.data import Data
 from models.feedback import FeedbackCategory
 from models.download import Download
 from middleware import get_password_hash, create_access_token, decode_token
+from util.mailer import (
+    Email,
+    MailTypeEnum,
+    EMAIL_PORT,
+    EMAIL_USE_TLS,
+    EMAIL_USE_SSL,
+)
 from datetime import datetime
 
 sys.path.append("..")
@@ -259,7 +266,7 @@ class TestEmailRegression:
         assert mock_send.called
         email_obj = mock_send.call_args[0][0]
         payload = email_obj.data
-        assert "tester@akvo.org" == payload["Recipients"][0]["Email"]
+        assert "tester@akvo.org" in payload["To"]
         assert "Email Verification" in payload["Subject"]
 
     async def test_02_registration_notification_to_admin(
@@ -283,9 +290,7 @@ class TestEmailRegression:
         assert mock_send.called
         email_obj = mock_send.call_args[0][0]
         payload = email_obj.data
-        assert any(
-            r["Email"] == "support@akvo.org" for r in payload["Recipients"]
-        )
+        assert "support@akvo.org" in payload["To"]
         assert "Registration" in payload["Subject"]
 
     async def test_03_invitation_email(
@@ -318,7 +323,7 @@ class TestEmailRegression:
         assert mock_send.called
         email_obj = mock_send.call_args[0][0]
         payload = email_obj.data
-        assert "invited@akvo.org" == payload["Recipients"][0]["Email"]
+        assert "invited@akvo.org" in payload["To"]
         assert "Invitation" in payload["Subject"]
 
     async def test_04_forgot_password_email(
@@ -342,7 +347,7 @@ class TestEmailRegression:
         assert mock_send.called
         email_obj = mock_send.call_args[0][0]
         payload = email_obj.data
-        assert "tester@akvo.org" == payload["Recipients"][0]["Email"]
+        assert "tester@akvo.org" in payload["To"]
         assert "Password Reset" in payload["Subject"]
 
     async def test_05_user_approval_email(
@@ -376,7 +381,7 @@ class TestEmailRegression:
         assert mock_send.called
         email_obj = mock_send.call_args[0][0]
         payload = email_obj.data
-        assert "tester@akvo.org" == payload["Recipients"][0]["Email"]
+        assert "tester@akvo.org" in payload["To"]
         assert "User Signup approved" in payload["Subject"]
 
     async def test_06_data_download_request_email(
@@ -505,3 +510,43 @@ class TestEmailRegression:
         email_obj = mock_send.call_args[0][0]
         payload = email_obj.data
         assert "New Feedback" in payload["Subject"]
+
+
+class TestSmtpMessage:
+    """The SMTP migration's own surface: the message the relay receives and
+    the transport defaults that decide how it is handed over."""
+
+    def test_message_carries_text_and_html(self):
+        email = Email(
+            recipients=[{"Email": "tester@akvo.org", "Name": "Email Tester"}],
+            type=MailTypeEnum.register,
+        )
+        msg = email.data
+        assert msg["To"] == "Email Tester <tester@akvo.org>"
+        assert msg["From"] == "noreply@cocoamonitoring.net"
+        # A plain-text body with the rendered template as an HTML
+        # alternative, so a client that refuses HTML still reads something.
+        subtypes = [part.get_content_subtype() for part in msg.iter_parts()]
+        assert subtypes == ["plain", "html"]
+        # STARTTLS on 587, not implicit SSL on 465. A flipped default here
+        # hands the message to the relay in plaintext.
+        assert EMAIL_PORT == 587
+        assert EMAIL_USE_TLS is True
+        assert EMAIL_USE_SSL is False
+
+    def test_multiline_subject_is_collapsed(self):
+        """util.i18n writes the bilingual subjects across source lines. A
+        header may not contain a linefeed, so every mail type has to survive
+        being turned into one."""
+        for type in MailTypeEnum:
+            subject = Email(recipients=[], type=type).data["Subject"]
+            assert "\n" not in subject
+            assert "  " not in subject
+
+        requested = Email(
+            recipients=[], type=MailTypeEnum.data_download_requested
+        ).data["Subject"]
+        assert requested == (
+            "ISCO Data Download Request "
+            "| Anfrage zum Herunterladen von Daten"
+        )
