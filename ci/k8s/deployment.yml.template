@@ -97,6 +97,12 @@ spec:
                   name: isco
                   key: email-use-ssl
                   optional: true
+            - name: EMAIL_FROM
+              valueFrom:
+                secretKeyRef:
+                  name: isco
+                  key: email-from
+                  optional: true
             - name: BUCKET_FOLDER
               value: ${BUCKET_FOLDER}
             - name: GOOGLE_APPLICATION_CREDENTIALS
