@@ -1,63 +1,57 @@
 import os
-from bs4 import BeautifulSoup
 import enum
+import smtplib
+from email.message import EmailMessage
+from email.utils import formataddr
+from bs4 import BeautifulSoup
 from typing import List, Optional
 from models.user import UserRecipient
-from mailjet_rest import Client
 from jinja2 import Environment, FileSystemLoader
-import base64
 from util.i18n import EmailText
 
-mjkey = os.environ["MAILJET_APIKEY"]
-mjsecret = os.environ["MAILJET_SECRET"]
 webdomain = os.environ["WEBDOMAIN"]
-image_url = f"{webdomain}/email-icons"
 
-mailjet = Client(auth=(mjkey, mjsecret))
 loader = FileSystemLoader(".")
 env = Environment(loader=loader)
 
 html_template = env.get_template("./templates/main.html")
-ftype = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-ftype += ";base64"
 
 
-def send(data):
-    res = mailjet.send.create(data=data)
-    res = res.json()
-    return res
+# Every setting has a default so development and test environments boot
+# without a relay configured; only a deployment that actually sends mail
+# has to supply them.
+#
+# The defaults describe the common correct relay: port 587 with STARTTLS.
+# Implicit SSL is what port 465 wants instead, and neither mode can be
+# inferred from the port number -- pick the wrong one and smtplib opens a
+# plaintext socket against a TLS-only port and blocks until EMAIL_TIMEOUT.
 
 
-def generate_icon(icon: str, color: Optional[str] = None):
-    svg_path = f"./templates/icons/{icon}.svg"
-    try:
-        open(svg_path)
-    except (OSError, IOError):
-        return None
-    soup = BeautifulSoup(open(svg_path, "r"), "lxml")
-    if color:
-        for spath in soup.findAll("path"):
-            spath["style"] = f"fill: {color};"
-    return soup
+def env_flag(name: str, default: str) -> bool:
+    value = os.environ.get(name, default)
+    return value.strip().lower() in ("1", "true", "yes")
+
+
+EMAIL_HOST = os.environ.get("EMAIL_HOST", "localhost")
+EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "587"))
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
+EMAIL_USE_TLS = env_flag("EMAIL_USE_TLS", "true")
+EMAIL_USE_SSL = env_flag("EMAIL_USE_SSL", "false")
+EMAIL_TIMEOUT = 10
+
+
+# Recipients arrive as {"Email", "Name"} dicts -- the shape
+# models.user.User.recipient produces and every call site passes along. Here
+# they only have to be rendered into an RFC 5322 address list.
+def format_recipients(recipients: List[UserRecipient]) -> str:
+    return ", ".join(formataddr((r["Name"], r["Email"])) for r in recipients)
 
 
 def html_to_text(html):
     soup = BeautifulSoup(html, "lxml")
     body = soup.find("body")
     return "".join(body.get_text())
-
-
-def format_attachment(file):
-    try:
-        open(file, "r")
-    except (OSError, IOError) as e:
-        print(e)
-        return None
-    return {
-        "ContentType": ftype,
-        "Filename": file.split("/")[2],
-        "content": base64.b64encode(open(file, "rb").read()).decode("UTF-8"),
-    }
 
 
 class MailTypeEnum(enum.Enum):
@@ -85,7 +79,6 @@ class Email:
         recipients: List[UserRecipient],
         type: MailTypeEnum,
         bcc: Optional[List[UserRecipient]] = None,
-        attachment: Optional[str] = None,
         context: Optional[str] = None,
         body: Optional[str] = None,
         body_translation: Optional[str] = None,
@@ -96,7 +89,6 @@ class Email:
         self.type = EmailText[type.value]
         self.recipients = recipients
         self.bcc = bcc
-        self.attachment = attachment
         self.context = context
         self.body = body
         self.body_translation = body_translation
@@ -105,7 +97,9 @@ class Email:
         self.signature = signature
 
     @property
-    def data(self):
+    def html(self) -> str:
+        """Rendered body; separate from `data` for the /template/email
+        preview, which wants the HTML without a message around it."""
         type = self.type.value
         body = type["body"]
         if self.body:
@@ -116,7 +110,7 @@ class Email:
         button = type["button"]
         if self.button_url:
             button = button.replace("#button_url#", self.button_url)
-        html = html_template.render(
+        return html_template.render(
             logo=f"{webdomain}/apple-touch-icon.png",
             instance_name="ISCO",
             webdomain=webdomain,
@@ -131,27 +125,42 @@ class Email:
             info=type["info"],
             signature=type["signature"],
         )
-        payload = {
-            "FromEmail": "noreply@cocoamonitoring.net",
-            "Subject": f"ISCO {type['subject']}",
-            "Html-part": html,
-            "Text-part": html_to_text(html),
-            "Recipients": self.recipients,
-        }
-        if self.bcc:
-            payload.update({"Bcc": self.bcc})
-        if self.attachment:
-            attachment = format_attachment(self.attachment)
-            payload.update({"Attachments": [attachment]})
-        return payload
 
-    def send(self) -> int:
+    @property
+    def data(self) -> EmailMessage:
+        html = self.html
+        msg = EmailMessage()
+        msg["From"] = "noreply@cocoamonitoring.net"
+        # A header may not contain a linefeed, and util.i18n wraps its
+        # bilingual subjects across source lines.
+        subject = " ".join(self.type.value["subject"].split())
+        msg["Subject"] = f"ISCO {subject}"
+        msg["To"] = format_recipients(self.recipients)
+        if self.bcc:
+            msg["Bcc"] = format_recipients(self.bcc)
+        # The plain-text rendering is the message body and the HTML is
+        # registered as an alternative, so a client that refuses HTML still
+        # receives something readable. smtplib strips the Bcc header on send
+        # while still using it for the envelope.
+        msg.set_content(html_to_text(html))
+        msg.add_alternative(html, subtype="html")
+        return msg
+
+    def send(self) -> bool:
         TESTING = os.environ.get("TESTING")
         if TESTING:
             return True
         try:
-            res = mailjet.send.create(data=self.data)
-            return res.status_code == 200
+            cls = smtplib.SMTP_SSL if EMAIL_USE_SSL else smtplib.SMTP
+            with cls(EMAIL_HOST, EMAIL_PORT, timeout=EMAIL_TIMEOUT) as relay:
+                # STARTTLS upgrades a plaintext connection, so it is only
+                # meaningful when the socket did not already start as SSL.
+                if EMAIL_USE_TLS and not EMAIL_USE_SSL:
+                    relay.starttls()
+                if EMAIL_HOST_USER:
+                    relay.login(EMAIL_HOST_USER, EMAIL_HOST_PASSWORD)
+                relay.send_message(self.data)
+            return True
         except Exception as e:
-            print(f"Mailjet mailer error: {e}")
+            print(f"[ERROR] Failed to send email: {e}")
             return False
