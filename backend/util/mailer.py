@@ -41,7 +41,9 @@ def get_smtp_config():
     port = int(os.environ.get("EMAIL_PORT", "587"))
     user = os.environ.get("EMAIL_HOST_USER", "")
     password = os.environ.get("EMAIL_HOST_PASSWORD", "")
-    from_email = os.environ.get("EMAIL_FROM") or "noreply@cocoamonitoring.net"
+    from_email = (
+        os.environ.get("EMAIL_FROM") or user or "noreply@cocoamonitoring.net"
+    )
     from_name = os.environ.get("EMAIL_FROM_NAME", "")
 
     explicit_ssl = env_flag("EMAIL_USE_SSL")

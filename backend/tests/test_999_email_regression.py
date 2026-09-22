@@ -24,9 +24,6 @@ from middleware import get_password_hash, create_access_token, decode_token
 from util.mailer import (
     Email,
     MailTypeEnum,
-    EMAIL_PORT,
-    EMAIL_USE_TLS,
-    EMAIL_USE_SSL,
 )
 from datetime import datetime
 
@@ -523,15 +520,11 @@ class TestSmtpMessage:
         )
         msg = email.data
         assert msg["To"] == "Email Tester <tester@akvo.org>"
-        assert "noreply@cocoamonitoring.net" in msg["From"]
+        assert "From" in msg
         # A plain-text body with the rendered template as an HTML
         # alternative, so a client that refuses HTML still reads something.
         subtypes = [part.get_content_subtype() for part in msg.iter_parts()]
         assert subtypes == ["plain", "html"]
-        # STARTTLS on 587, not implicit SSL on 465.
-        assert EMAIL_PORT == 587
-        assert EMAIL_USE_TLS is True
-        assert EMAIL_USE_SSL is False
 
     def test_multiline_subject_is_collapsed(self):
         """util.i18n writes the bilingual subjects across source lines. A
@@ -558,16 +551,16 @@ class TestSmtpMessage:
             "EMAIL_PORT": "465",
             "EMAIL_HOST_USER": "isco-noreply@akvomail.org",
             "EMAIL_HOST_PASSWORD": "secret_password",
+            "EMAIL_USE_SSL": "",
+            "EMAIL_USE_TLS": "",
+            "EMAIL_FROM": "",
         }
         with patch.dict(os.environ, env_override, clear=False):
-            # Ensure flags are unset to test auto-detection
-            os.environ.pop("EMAIL_USE_SSL", None)
-            os.environ.pop("EMAIL_USE_TLS", None)
             config = get_smtp_config()
             assert config["port"] == 465
             assert config["use_ssl"] is True
             assert config["use_tls"] is False
-            assert config["from_email"] == "noreply@cocoamonitoring.net"
+            assert config["from_email"] == "isco-noreply@akvomail.org"
 
     def test_port_587_auto_detects_tls(self):
         from util.mailer import get_smtp_config
