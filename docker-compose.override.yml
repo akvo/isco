@@ -46,6 +46,7 @@ services:
       - EMAIL_HOST_PASSWORD
       - EMAIL_USE_TLS
       - EMAIL_USE_SSL
+      - EMAIL_FROM
     network_mode: service:mainnetwork
   frontend:
     platform: linux/amd64

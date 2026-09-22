@@ -27,17 +27,65 @@ html_template = env.get_template("./templates/main.html")
 # plaintext socket against a TLS-only port and blocks until EMAIL_TIMEOUT.
 
 
-def env_flag(name: str, default: str) -> bool:
-    value = os.environ.get(name, default)
+def env_flag(name: str, default: Optional[str] = None) -> Optional[bool]:
+    value = os.environ.get(name)
+    if value is None or value.strip() == "":
+        if default is None:
+            return None
+        return default.strip().lower() in ("1", "true", "yes")
     return value.strip().lower() in ("1", "true", "yes")
 
 
+def get_smtp_config():
+    host = os.environ.get("EMAIL_HOST", "localhost")
+    port = int(os.environ.get("EMAIL_PORT", "587"))
+    user = os.environ.get("EMAIL_HOST_USER", "")
+    password = os.environ.get("EMAIL_HOST_PASSWORD", "")
+    from_email = os.environ.get("EMAIL_FROM") or "noreply@cocoamonitoring.net"
+    from_name = os.environ.get("EMAIL_FROM_NAME", "")
+
+    explicit_ssl = env_flag("EMAIL_USE_SSL")
+    explicit_tls = env_flag("EMAIL_USE_TLS")
+
+    if explicit_ssl is not None:
+        use_ssl = explicit_ssl
+    else:
+        use_ssl = port == 465
+
+    if explicit_tls is not None:
+        use_tls = explicit_tls
+    else:
+        use_tls = not use_ssl
+
+    timeout = int(os.environ.get("EMAIL_TIMEOUT", "10"))
+    return {
+        "host": host,
+        "port": port,
+        "user": user,
+        "password": password,
+        "from_email": from_email,
+        "from_name": from_name,
+        "use_ssl": use_ssl,
+        "use_tls": use_tls,
+        "timeout": timeout,
+    }
+
+
+# Static module-level defaults for backward compatibility
 EMAIL_HOST = os.environ.get("EMAIL_HOST", "localhost")
 EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "587"))
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
-EMAIL_USE_TLS = env_flag("EMAIL_USE_TLS", "true")
-EMAIL_USE_SSL = env_flag("EMAIL_USE_SSL", "false")
+EMAIL_USE_TLS = (
+    env_flag("EMAIL_USE_TLS", "true")
+    if env_flag("EMAIL_USE_TLS") is not None
+    else (EMAIL_PORT != 465)
+)
+EMAIL_USE_SSL = (
+    env_flag("EMAIL_USE_SSL", "false")
+    if env_flag("EMAIL_USE_SSL") is not None
+    else (EMAIL_PORT == 465)
+)
 EMAIL_TIMEOUT = 10
 
 
@@ -128,9 +176,15 @@ class Email:
 
     @property
     def data(self) -> EmailMessage:
+        config = get_smtp_config()
         html = self.html
         msg = EmailMessage()
-        msg["From"] = "noreply@cocoamonitoring.net"
+        if config["from_name"]:
+            msg["From"] = formataddr(
+                (config["from_name"], config["from_email"])
+            )
+        else:
+            msg["From"] = config["from_email"]
         # A header may not contain a linefeed, and util.i18n wraps its
         # bilingual subjects across source lines.
         subject = " ".join(self.type.value["subject"].split())
@@ -150,17 +204,24 @@ class Email:
         TESTING = os.environ.get("TESTING")
         if TESTING:
             return True
+        config = get_smtp_config()
         try:
-            cls = smtplib.SMTP_SSL if EMAIL_USE_SSL else smtplib.SMTP
-            with cls(EMAIL_HOST, EMAIL_PORT, timeout=EMAIL_TIMEOUT) as relay:
+            cls = smtplib.SMTP_SSL if config["use_ssl"] else smtplib.SMTP
+            with cls(
+                config["host"], config["port"], timeout=config["timeout"]
+            ) as relay:
                 # STARTTLS upgrades a plaintext connection, so it is only
                 # meaningful when the socket did not already start as SSL.
-                if EMAIL_USE_TLS and not EMAIL_USE_SSL:
+                if config["use_tls"] and not config["use_ssl"]:
                     relay.starttls()
-                if EMAIL_HOST_USER:
-                    relay.login(EMAIL_HOST_USER, EMAIL_HOST_PASSWORD)
+                if config["user"]:
+                    relay.login(config["user"], config["password"])
                 relay.send_message(self.data)
             return True
         except Exception as e:
-            print(f"[ERROR] Failed to send email: {e}")
+            print(
+                f"[ERROR] Failed to send email via {config['host']}:"
+                f"{config['port']} (SSL={config['use_ssl']}, "
+                f"TLS={config['use_tls']}): {e}"
+            )
             return False
