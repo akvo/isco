@@ -91,6 +91,7 @@ def filter_user(
     approved: bool,
     search: Optional[str] = None,
     organisation: Optional[List[int]] = None,
+    archived: Optional[bool] = None,
 ):
     user = session.query(User)
     user = user.filter(User.approved == approved)
@@ -103,6 +104,8 @@ def filter_user(
         )
     if organisation:
         user = user.filter(User.organisation.in_(organisation))
+    if archived is not None:
+        user = user.filter(User.archived == archived)
     return user
 
 
@@ -111,12 +114,14 @@ def count(
     approved: bool,
     search: Optional[str] = None,
     organisation: Optional[List[int]] = None,
+    archived: Optional[bool] = None,
 ) -> int:
     user = filter_user(
         session=session,
         approved=approved,
         search=search,
         organisation=organisation,
+        archived=archived,
     )
     user = user.count()
     return user
@@ -127,6 +132,7 @@ def get_all_user(
     approved: bool,
     search: Optional[str] = None,
     organisation: Optional[List[int]] = None,
+    archived: Optional[bool] = None,
     skip: int = 0,
     limit: int = 10,
 ) -> List[UserDict]:
@@ -135,8 +141,22 @@ def get_all_user(
         approved=approved,
         search=search,
         organisation=organisation,
+        archived=archived,
     )
     user = user.order_by(User.id.desc()).offset(skip).limit(limit).all()
+    return user
+
+
+def archive_user(
+    session: Session, id: int, archive: bool, changed_by_id: int
+) -> UserDict:
+    user = get_user_by_id(session=session, id=id)
+    user.archived = archive
+    user.last_status_changed_at = datetime.utcnow()
+    user.last_status_changed_by = changed_by_id
+    session.commit()
+    session.flush()
+    session.refresh(user)
     return user
 
 

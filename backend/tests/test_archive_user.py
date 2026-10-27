@@ -186,3 +186,226 @@ class TestArchiveUserAuth:
         assert res.status_code == 403
         data = res.json()
         assert data["detail"] == ARCHIVED_ERROR_MSG
+
+
+class TestArchiveUserRoutes:
+    @pytest.fixture(autouse=True)
+    def setup_route_users(self, session: Session):
+        org1 = session.query(Organisation).filter(
+            Organisation.code == "ORG1"
+        ).first()
+        if not org1:
+            org1 = Organisation(
+                code="ORG1", name="Organisation 1", active=True
+            )
+            session.add(org1)
+            session.commit()
+            session.refresh(org1)
+
+        org2 = session.query(Organisation).filter(
+            Organisation.code == "ORG2"
+        ).first()
+        if not org2:
+            org2 = Organisation(
+                code="ORG2", name="Organisation 2", active=True
+            )
+            session.add(org2)
+            session.commit()
+            session.refresh(org2)
+
+        emails = [
+            "super_adm@akvo.org",
+            "mem_adm1@akvo.org",
+            "mem_adm2@akvo.org",
+            "mem_usr1@akvo.org",
+            "mem_usr2@akvo.org",
+        ]
+        session.query(User).filter(User.email.in_(emails)).delete(
+            synchronize_session=False
+        )
+        session.commit()
+
+        super_admin = User(
+            name="Super Admin",
+            email="super_adm@akvo.org",
+            phone_number="111",
+            password=get_password_hash("pass"),
+            role=UserRole.secretariat_admin,
+            organisation=org1.id,
+            invitation=None,
+            approved=True,
+        )
+        super_admin.email_verified = datetime.utcnow()
+        session.add(super_admin)
+
+        mem_admin1 = User(
+            name="Member Admin 1",
+            email="mem_adm1@akvo.org",
+            phone_number="222",
+            password=get_password_hash("pass"),
+            role=UserRole.member_admin,
+            organisation=org1.id,
+            invitation=None,
+            approved=True,
+        )
+        mem_admin1.email_verified = datetime.utcnow()
+        session.add(mem_admin1)
+
+        mem_admin2 = User(
+            name="Member Admin 2",
+            email="mem_adm2@akvo.org",
+            phone_number="333",
+            password=get_password_hash("pass"),
+            role=UserRole.member_admin,
+            organisation=org2.id,
+            invitation=None,
+            approved=True,
+        )
+        mem_admin2.email_verified = datetime.utcnow()
+        session.add(mem_admin2)
+
+        mem_user1 = User(
+            name="Member User 1",
+            email="mem_usr1@akvo.org",
+            phone_number="444",
+            password=get_password_hash("pass"),
+            role=UserRole.member_user,
+            organisation=org1.id,
+            invitation=None,
+            approved=True,
+        )
+        mem_user1.email_verified = datetime.utcnow()
+        session.add(mem_user1)
+
+        mem_user2 = User(
+            name="Member User 2",
+            email="mem_usr2@akvo.org",
+            phone_number="555",
+            password=get_password_hash("pass"),
+            role=UserRole.member_user,
+            organisation=org2.id,
+            invitation=None,
+            approved=True,
+        )
+        mem_user2.email_verified = datetime.utcnow()
+        session.add(mem_user2)
+
+        session.commit()
+        session.refresh(super_admin)
+        session.refresh(mem_admin1)
+        session.refresh(mem_admin2)
+        session.refresh(mem_user1)
+        session.refresh(mem_user2)
+
+        self.super_admin = super_admin
+        self.mem_admin1 = mem_admin1
+        self.mem_admin2 = mem_admin2
+        self.mem_user1 = mem_user1
+        self.mem_user2 = mem_user2
+
+        yield
+
+        session.query(User).filter(User.email.in_(emails)).delete(
+            synchronize_session=False
+        )
+        session.commit()
+
+    async def test_archive_user_by_secretariat_admin(
+        self, app: FastAPI, client: AsyncClient
+    ) -> None:
+        token = create_access_token(data={"email": self.super_admin.email})
+        res = await client.put(
+            f"/user/{self.mem_user1.id}/archive?archive=true",
+            headers={"Authorization": f"Bearer {token.get('token')}"},
+        )
+        assert res.status_code == 200
+        data = res.json()
+        assert data["archived"] is True
+        assert data["last_status_changed_by"] == self.super_admin.id
+        assert data["last_status_changed_by_name"] == self.super_admin.name
+
+    async def test_unarchive_user_by_secretariat_admin(
+        self, app: FastAPI, client: AsyncClient
+    ) -> None:
+        token = create_access_token(data={"email": self.super_admin.email})
+        res = await client.put(
+            f"/user/{self.mem_user1.id}/archive?archive=false",
+            headers={"Authorization": f"Bearer {token.get('token')}"},
+        )
+        assert res.status_code == 200
+        data = res.json()
+        assert data["archived"] is False
+        assert data["last_status_changed_by"] == self.super_admin.id
+
+    async def test_self_archive_prevention(
+        self, app: FastAPI, client: AsyncClient
+    ) -> None:
+        token = create_access_token(data={"email": self.super_admin.email})
+        res = await client.put(
+            f"/user/{self.super_admin.id}/archive?archive=true",
+            headers={"Authorization": f"Bearer {token.get('token')}"},
+        )
+        assert res.status_code == 400
+        data = res.json()
+        assert data["detail"] == "You cannot archive your own account"
+
+    async def test_member_admin_cannot_archive_secretariat_admin(
+        self, app: FastAPI, client: AsyncClient
+    ) -> None:
+        token = create_access_token(data={"email": self.mem_admin1.email})
+        res = await client.put(
+            f"/user/{self.super_admin.id}/archive?archive=true",
+            headers={"Authorization": f"Bearer {token.get('token')}"},
+        )
+        assert res.status_code == 403
+
+    async def test_member_admin_cannot_archive_other_org_user(
+        self, app: FastAPI, client: AsyncClient
+    ) -> None:
+        token = create_access_token(data={"email": self.mem_admin1.email})
+        res = await client.put(
+            f"/user/{self.mem_user2.id}/archive?archive=true",
+            headers={"Authorization": f"Bearer {token.get('token')}"},
+        )
+        assert res.status_code == 403
+
+    async def test_member_admin_can_archive_own_org_user(
+        self, app: FastAPI, client: AsyncClient
+    ) -> None:
+        token = create_access_token(data={"email": self.mem_admin1.email})
+        res = await client.put(
+            f"/user/{self.mem_user1.id}/archive?archive=true",
+            headers={"Authorization": f"Bearer {token.get('token')}"},
+        )
+        assert res.status_code == 200
+        data = res.json()
+        assert data["archived"] is True
+        assert data["last_status_changed_by"] == self.mem_admin1.id
+
+    async def test_get_all_users_archived_filter(
+        self, app: FastAPI, client: AsyncClient
+    ) -> None:
+        token = create_access_token(data={"email": self.super_admin.email})
+        # Archive mem_user1
+        await client.put(
+            f"/user/{self.mem_user1.id}/archive?archive=true",
+            headers={"Authorization": f"Bearer {token.get('token')}"},
+        )
+
+        # Query archived=false
+        res_active = await client.get(
+            "/user?archived=false",
+            headers={"Authorization": f"Bearer {token.get('token')}"},
+        )
+        assert res_active.status_code == 200
+        active_ids = [u["id"] for u in res_active.json()["data"]]
+        assert self.mem_user1.id not in active_ids
+
+        # Query archived=true
+        res_archived = await client.get(
+            "/user?archived=true",
+            headers={"Authorization": f"Bearer {token.get('token')}"},
+        )
+        assert res_archived.status_code == 200
+        archived_ids = [u["id"] for u in res_archived.json()["data"]]
+        assert self.mem_user1.id in archived_ids

@@ -2,7 +2,7 @@ import os
 from math import ceil
 from middleware import Token, authenticate_user
 from middleware import create_access_token, verify_user, create_refresh_token
-from middleware import get_password_hash, verify_super_admin
+from middleware import get_password_hash, verify_super_admin, verify_admin
 from middleware import decode_token, verify_token, organisations_in_same_isco
 from middleware import find_secretariat_admins, find_member_admins
 from fastapi import Depends, HTTPException, status, APIRouter, Request, Query
@@ -146,6 +146,7 @@ def get_all(
     limit: int = 10,
     search: Optional[str] = None,
     approved: Optional[bool] = True,
+    archived: Optional[bool] = None,
     organisation: Optional[List[int]] = Query(None),
     session: Session = Depends(get_session),
     credentials: credentials = Depends(security),
@@ -172,12 +173,17 @@ def get_all(
         skip=(limit * (page - 1)),
         limit=limit,
         approved=approved,
+        archived=archived,
     )
     if not user:
         raise HTTPException(status_code=404, detail="Not found")
     # count total user
     total = crud_user.count(
-        session=session, approved=approved, search=search, organisation=org_ids
+        session=session,
+        approved=approved,
+        search=search,
+        organisation=org_ids,
+        archived=archived,
     )
     user = [u.serialize for u in user]
     total_page = ceil(total / limit) if total > 0 else 0
@@ -644,6 +650,46 @@ def resend_verification_email(
     # resend email verification link
     user = crud_user.get_user_by_email(session=session, email=email)
     send_verification_email(user.serialize, [user.recipient], background_tasks)
+    return user.serialize
+
+
+@user_route.put(
+    "/user/{id}/archive",
+    response_model=UserDict,
+    summary="archive or unarchive user",
+    name="user:archive",
+    tags=["User"],
+)
+def archive_user(
+    req: Request,
+    id: int,
+    archive: bool = True,
+    session: Session = Depends(get_session),
+    credentials: credentials = Depends(security),
+):
+    admin = verify_admin(
+        session=session, authenticated=req.state.authenticated
+    )
+    if admin.id == id:
+        raise HTTPException(
+            status_code=400,
+            detail="You cannot archive your own account",
+        )
+    target_user = crud_user.get_user_by_id(session=session, id=id)
+    if admin.role == UserRole.member_admin:
+        if target_user.role == UserRole.secretariat_admin:
+            raise HTTPException(
+                status_code=403,
+                detail="Member admin cannot modify secretariat admin",
+            )
+        if target_user.organisation != admin.organisation:
+            raise HTTPException(
+                status_code=403,
+                detail="Forbidden access",
+            )
+    user = crud_user.archive_user(
+        session=session, id=id, archive=archive, changed_by_id=admin.id
+    )
     return user.serialize
 
 
