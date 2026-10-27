@@ -6,6 +6,7 @@ services:
       - 3000:3000
       - 5000:5000
       - 5050:5050
+      - 8025:8025
   chromedriver:
     platform: linux/amd64
     image: selenium/standalone-chrome
@@ -32,21 +33,25 @@ services:
     depends_on:
       - db
     network_mode: service:mainnetwork
+  mailpit:
+    image: axllent/mailpit:latest
+    restart: unless-stopped
+    network_mode: service:mainnetwork
   backend:
     platform: linux/amd64
     volumes:
       - ./backend:/app:delegated
-      - ../akvo-config/k8s-secrets/test/isco:/credentials/:ro
+      - ./credentials:/credentials/:ro
     environment:
       - GOOGLE_APPLICATION_CREDENTIALS=/credentials/isco-service-account.json
       - WEBDOMAIN=http://localhost:3000
-      - EMAIL_HOST
-      - EMAIL_PORT
-      - EMAIL_HOST_USER
-      - EMAIL_HOST_PASSWORD
-      - EMAIL_USE_TLS
-      - EMAIL_USE_SSL
-      - EMAIL_FROM
+      - EMAIL_HOST=localhost
+      - EMAIL_PORT=1025
+      - EMAIL_HOST_USER=
+      - EMAIL_HOST_PASSWORD=
+      - EMAIL_USE_TLS=false
+      - EMAIL_USE_SSL=false
+      - EMAIL_FROM=noreply@cocoamonitoring.net
     network_mode: service:mainnetwork
   frontend:
     platform: linux/amd64

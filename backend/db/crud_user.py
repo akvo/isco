@@ -164,7 +164,7 @@ def accept_invitation(
 
 
 def new_reset_password(session: Session, email: str) -> ResetPasswordBase:
-    user = session.query(User).filter(User.email == email).first()
+    user = get_user_by_email(session=session, email=email)
     if not user:
         return None
     reset_password = (
