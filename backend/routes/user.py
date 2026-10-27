@@ -2,7 +2,7 @@ import os
 from math import ceil
 from middleware import Token, authenticate_user
 from middleware import create_access_token, verify_user, create_refresh_token
-from middleware import get_password_hash, verify_super_admin
+from middleware import get_password_hash, verify_super_admin, verify_admin
 from middleware import decode_token, verify_token, organisations_in_same_isco
 from middleware import find_secretariat_admins, find_member_admins
 from fastapi import Depends, HTTPException, status, APIRouter, Request, Query
@@ -75,6 +75,14 @@ def login(
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    if user.archived:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=(
+                "Your account has been archived. "
+                "Please contact your administrator."
+            ),
+        )
     access_token = create_access_token(data={"email": user.email})
     refresh_token = create_refresh_token(data={"email": user.email})
     return {
@@ -103,6 +111,19 @@ def refresh_token(
     access_token = create_access_token(data={"email": user_email})
     refresh_token = create_refresh_token(data={"email": user_email})
     user = crud_user.get_user_by_email(session=session, email=user_email)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found",
+        )
+    if user.archived:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=(
+                "Your account has been archived. "
+                "Please contact your administrator."
+            ),
+        )
     return {
         "access_token": access_token.get("token"),
         "refresh_token": refresh_token.get("token"),
@@ -125,6 +146,7 @@ def get_all(
     limit: int = 10,
     search: Optional[str] = None,
     approved: Optional[bool] = True,
+    archived: Optional[bool] = None,
     organisation: Optional[List[int]] = Query(None),
     session: Session = Depends(get_session),
     credentials: credentials = Depends(security),
@@ -151,12 +173,17 @@ def get_all(
         skip=(limit * (page - 1)),
         limit=limit,
         approved=approved,
+        archived=archived,
     )
     if not user:
         raise HTTPException(status_code=404, detail="Not found")
     # count total user
     total = crud_user.count(
-        session=session, approved=approved, search=search, organisation=org_ids
+        session=session,
+        approved=approved,
+        search=search,
+        organisation=org_ids,
+        archived=archived,
     )
     user = [u.serialize for u in user]
     total_page = ceil(total / limit) if total > 0 else 0
@@ -509,11 +536,21 @@ def new_forgot_password(
     email: str = Form(...),
     session: Session = Depends(get_session),
 ):
+    user = crud_user.get_user_by_email(session=session, email=email)
+    if not user:
+        raise HTTPException(status_code=404, detail="User Not found")
+    if user.archived:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=(
+                "Your account has been archived. "
+                "Please contact your administrator."
+            ),
+        )
     reset_password = crud_user.new_reset_password(session=session, email=email)
     if not reset_password:
         raise HTTPException(status_code=404, detail="User Not found")
     # Send reset password email
-    user = crud_user.get_user_by_email(session=session, email=email)
     url = f"{webdomain}/reset-password/{reset_password['url']}"
     email = Email(
         recipients=[user.recipient],
@@ -572,6 +609,17 @@ def post_forgot_password(
             status_code=status.HTTP_410_GONE,
             content={"message": "url is expired"},
         )
+    user = crud_user.get_user_by_id(session=session, id=reset_password["user"])
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    if user.archived:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=(
+                "Your account has been archived. "
+                "Please contact your administrator."
+            ),
+        )
     password = get_password_hash(password.get_secret_value())
     user = crud_user.update_password(
         session=session, id=reset_password["user"], password=password
@@ -602,6 +650,46 @@ def resend_verification_email(
     # resend email verification link
     user = crud_user.get_user_by_email(session=session, email=email)
     send_verification_email(user.serialize, [user.recipient], background_tasks)
+    return user.serialize
+
+
+@user_route.put(
+    "/user/{id}/archive",
+    response_model=UserDict,
+    summary="archive or unarchive user",
+    name="user:archive",
+    tags=["User"],
+)
+def archive_user(
+    req: Request,
+    id: int,
+    archive: bool = True,
+    session: Session = Depends(get_session),
+    credentials: credentials = Depends(security),
+):
+    admin = verify_admin(
+        session=session, authenticated=req.state.authenticated
+    )
+    if admin.id == id:
+        raise HTTPException(
+            status_code=400,
+            detail="You cannot archive your own account",
+        )
+    target_user = crud_user.get_user_by_id(session=session, id=id)
+    if admin.role == UserRole.member_admin:
+        if target_user.role == UserRole.secretariat_admin:
+            raise HTTPException(
+                status_code=403,
+                detail="Member admin cannot modify secretariat admin",
+            )
+        if target_user.organisation != admin.organisation:
+            raise HTTPException(
+                status_code=403,
+                detail="Forbidden access",
+            )
+    user = crud_user.archive_user(
+        session=session, id=id, archive=archive, changed_by_id=admin.id
+    )
     return user.serialize
 
 

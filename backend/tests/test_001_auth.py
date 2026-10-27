@@ -184,10 +184,14 @@ class TestUserAuthentication:
         res = res.json()
         assert res == {
             "approved": False,
+            "archived": False,
             "email": "support@akvo.org",
             "email_verified": None,
             "id": 1,
             "invitation": None,
+            "last_status_changed_at": None,
+            "last_status_changed_by": None,
+            "last_status_changed_by_name": None,
             "name": "John Doe",
             "organisation": 1,
             "role": "secretariat_admin",

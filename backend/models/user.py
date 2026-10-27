@@ -10,6 +10,7 @@ from typing_extensions import TypedDict
 from sqlalchemy import Column, Integer, String, Boolean
 from sqlalchemy import Enum, DateTime, Text
 from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship
 import sqlalchemy.dialects.postgresql as pg
 from db.connection import Base
 from models.organisation import OrganisationDict
@@ -46,6 +47,10 @@ class UserDict(TypedDict):
     invitation: Optional[str] = None
     questionnaires: Optional[List[int]] = None
     approved: bool
+    archived: bool
+    last_status_changed_at: Optional[datetime] = None
+    last_status_changed_by: Optional[int] = None
+    last_status_changed_by_name: Optional[str] = None
 
 
 class UserOrgDict(TypedDict):
@@ -60,6 +65,10 @@ class UserOrgDict(TypedDict):
     questionnaires: Optional[List[int]] = None
     approved: bool
     expired: Optional[datetime] = None
+    archived: bool
+    last_status_changed_at: Optional[datetime] = None
+    last_status_changed_by: Optional[int] = None
+    last_status_changed_by_name: Optional[str] = None
 
 
 class UserSimple(TypedDict):
@@ -89,6 +98,14 @@ class User(Base):
     invitation = Column(Text, nullable=True)
     questionnaires = Column(pg.ARRAY(Integer), nullable=True)
     approved = Column(Boolean, nullable=False, default=False)
+    archived = Column(Boolean, nullable=False, default=False)
+    last_status_changed_at = Column(DateTime, nullable=True)
+    last_status_changed_by = Column(
+        Integer, ForeignKey("user.id", ondelete="SET NULL"), nullable=True
+    )
+    status_changer = relationship(
+        "User", foreign_keys=[last_status_changed_by], remote_side=[id]
+    )
 
     def __init__(
         self,
@@ -98,9 +115,12 @@ class User(Base):
         phone_number: str,
         role: UserRole,
         organisation: int,
-        invitation: Optional[str],
+        invitation: Optional[str] = None,
         questionnaires: Optional[List[int]] = None,
         approved: Optional[bool] = None,
+        archived: Optional[bool] = False,
+        last_status_changed_at: Optional[datetime] = None,
+        last_status_changed_by: Optional[int] = None,
     ):
         self.email = email
         self.password = password
@@ -111,6 +131,9 @@ class User(Base):
         self.invitation = invitation
         self.questionnaires = questionnaires
         self.approved = approved
+        self.archived = archived if archived is not None else False
+        self.last_status_changed_at = last_status_changed_at
+        self.last_status_changed_by = last_status_changed_by
 
     def __repr__(self) -> int:
         return f"<User {self.id}>"
@@ -129,6 +152,12 @@ class User(Base):
             "invitation": self.invitation,
             "questionnaires": self.questionnaires,
             "approved": self.approved,
+            "archived": self.archived,
+            "last_status_changed_at": self.last_status_changed_at,
+            "last_status_changed_by": self.last_status_changed_by,
+            "last_status_changed_by_name": (
+                self.status_changer.name if self.status_changer else None
+            ),
         }
 
     @property
@@ -146,6 +175,9 @@ class UserBase(BaseModel):
     invitation: Optional[str] = str(uuid4())
     questionnaires: Optional[List[int]] = None
     approved: Optional[bool] = False
+    archived: Optional[bool] = False
+    last_status_changed_at: Optional[datetime] = None
+    last_status_changed_by: Optional[int] = None
 
     class Config:
         orm_mode = True

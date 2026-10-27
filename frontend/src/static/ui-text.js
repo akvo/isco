@@ -303,6 +303,22 @@ const uiText = {
     errorDataUnavailableConflict:
       "Please provide either an answer or check 'n/a', not both.",
     inputDataUnavailable: "Data unavailable/NA",
+    accountArchivedMessage:
+      "Your account has been archived. Please contact your administrator.",
+    accountArchivedBanner:
+      "Account archived by #name# on #date#. This user cannot log in.",
+    accountUnarchivedBanner: "Account reactivated by #name# on #date#.",
+    btnArchiveUser: "Archive User",
+    btnUnarchiveUser: "Unarchive User",
+    archiveUserConfirmTitle: "Are you sure you want to archive this user?",
+    unarchiveUserConfirmTitle: "Are you sure you want to unarchive this user?",
+    archiveUserSuccess: "User has been successfully archived",
+    unarchiveUserSuccess: "User has been successfully unarchived",
+    labelIncludeArchived: "Include Archived",
+    tagArchived: "Archived",
+    tooltipArchivedBy: "Archived by #name# on #date#",
+    tooltipCannotDeleteArchived:
+      "Archived users cannot be deleted. Unarchive first if deletion is required.",
   },
 
   de: {
@@ -602,6 +618,23 @@ const uiText = {
     errorDataUnavailableConflict:
       "Bitte geben Sie entweder eine Antwort an oder wählen Sie 'N/A', nicht beides.",
     inputDataUnavailable: "Daten nicht verfügbar/NV",
+    accountArchivedMessage:
+      "Ihr Konto wurde archiviert. Bitte kontaktieren Sie Ihren Administrator.",
+    accountArchivedBanner:
+      "Konto archiviert von #name# am #date#. Dieser Benutzer kann sich nicht anmelden.",
+    accountUnarchivedBanner: "Konto reaktiviert von #name# am #date#.",
+    btnArchiveUser: "Nutzer archivieren",
+    btnUnarchiveUser: "Nutzer reaktivieren",
+    archiveUserConfirmTitle: "Möchten Sie diesen Nutzer wirklich archivieren?",
+    unarchiveUserConfirmTitle:
+      "Möchten Sie diesen Nutzer wirklich reaktivieren?",
+    archiveUserSuccess: "Nutzer wurde erfolgreich archiviert",
+    unarchiveUserSuccess: "Nutzer wurde erfolgreich reaktiviert",
+    labelIncludeArchived: "Archivierte einbeziehen",
+    tagArchived: "Archiviert",
+    tooltipArchivedBy: "Archiviert von #name# am #date#",
+    tooltipCannotDeleteArchived:
+      "Archivierte Nutzer können nicht gelöscht werden. Bitte zuerst reaktivieren.",
   },
 };
 

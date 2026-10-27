@@ -31,19 +31,17 @@ class TestUserDisco:
             app.url_path_for("user:register"), data=user_payload
         )
         assert res.status_code == 200
-        invitation_link = (
-            session.query(User)
-            .filter(User.email == user_payload["email"])
-            .first()
-            .invitation
-        )
         res = res.json()
         assert res == {
             "approved": False,
+            "archived": False,
             "email": "galih@test.org",
             "email_verified": None,
             "id": 2,
-            "invitation": invitation_link,
+            "invitation": None,
+            "last_status_changed_at": None,
+            "last_status_changed_by": None,
+            "last_status_changed_by_name": None,
             "name": "Galih",
             "organisation": 3,
             "role": "secretariat_admin",

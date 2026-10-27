@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import "./style.scss";
 import {
   Row,
@@ -12,9 +12,13 @@ import {
   Select,
   Typography,
   notification,
+  Alert,
+  Popconfirm,
 } from "antd";
+import moment from "moment";
 import { api, store } from "../../lib";
 import { globalMultipleSelectProps, globalSelectProps } from "../../lib/util";
+import { uiText } from "../../static";
 
 const { Title } = Typography;
 
@@ -34,12 +38,23 @@ const AddUser = ({
   setSelectedUser,
 }) => {
   const [sending, setSending] = useState(false);
+  const [archiveLoading, setArchiveLoading] = useState(false);
   const [isApprovedByAdmin, setIsApprovedByAdmin] = useState(false);
 
   const [form] = Form.useForm();
-  const { optionValues } = store.useState((s) => s);
+  const {
+    user: currentUser,
+    optionValues,
+    language,
+  } = store.useState((s) => s);
+  const { active: activeLang } = language || {};
+  const text = useMemo(() => {
+    return uiText[activeLang] || uiText.en;
+  }, [activeLang]);
   const { organisation } = optionValues;
   const isAdd = !selectedUser;
+  const isArchived = Boolean(selectedUser?.archived);
+  const isSelf = selectedUser?.id === currentUser?.id;
   const isApprove = !isAdd && !selectedUser?.approved;
   const isEmailVerified = !isAdd && selectedUser?.email_verified;
   const disableFields = selectedUser !== null;
@@ -165,43 +180,170 @@ const AddUser = ({
     }
   };
 
+  const handleArchive = (archive) => {
+    setArchiveLoading(true);
+    api
+      .put(`/user/${selectedUser.id}/archive?archive=${archive}`)
+      .then(() => {
+        notification.success({
+          message: archive
+            ? text.archiveUserSuccess || "User has been successfully archived"
+            : text.unarchiveUserSuccess ||
+              "User has been successfully unarchived",
+        });
+        setIsAddUserVisible(false);
+        setSelectedUser(null);
+        setReload(reload + 1);
+        form.resetFields();
+      })
+      .catch((e) => {
+        const detail = e?.response?.data?.detail;
+        notification.error({
+          message: "An error occurred",
+          description: detail || "Internal Server Error",
+        });
+      })
+      .finally(() => {
+        setArchiveLoading(false);
+      });
+  };
+
   return (
     <Modal
       destroyOnClose={true}
       title={<Title level={4}>{modalTitle}</Title>}
       visible={isAddUserVisible}
       footer={
-        <Space>
-          <Button onClick={handleOnClickModalCancel}>Cancel</Button>
-          {isApprove ? (
-            <Button
-              type="primary"
-              onClick={() => {
-                setIsApprovedByAdmin(true);
-                form.submit();
-              }}
-              loading={sending}
-              disabled={!isEmailVerified}
-            >
-              Approve
-            </Button>
-          ) : (
-            <Button
-              type="primary"
-              ghost
-              onClick={() => form.submit()}
-              loading={sending}
-            >
-              {buttonOkText}
-            </Button>
-          )}
-        </Space>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <div>
+            {!isAdd &&
+              !isSelf &&
+              (isArchived ? (
+                <Popconfirm
+                  title={
+                    text.unarchiveUserConfirmTitle ||
+                    "Are you sure you want to unarchive this user?"
+                  }
+                  onConfirm={() => handleArchive(false)}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <Button type="primary" loading={archiveLoading}>
+                    {text.btnUnarchiveUser || "Unarchive User"}
+                  </Button>
+                </Popconfirm>
+              ) : (
+                <Popconfirm
+                  title={
+                    text.archiveUserConfirmTitle ||
+                    "Are you sure you want to archive this user?"
+                  }
+                  onConfirm={() => handleArchive(true)}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <Button danger loading={archiveLoading}>
+                    {text.btnArchiveUser || "Archive User"}
+                  </Button>
+                </Popconfirm>
+              ))}
+          </div>
+          <Space>
+            <Button onClick={handleOnClickModalCancel}>Cancel</Button>
+            {isArchived ? null : isApprove ? (
+              <Button
+                type="primary"
+                onClick={() => {
+                  setIsApprovedByAdmin(true);
+                  form.submit();
+                }}
+                loading={sending}
+                disabled={!isEmailVerified}
+              >
+                Approve
+              </Button>
+            ) : (
+              <Button
+                type="primary"
+                ghost
+                onClick={() => form.submit()}
+                loading={sending}
+              >
+                {buttonOkText}
+              </Button>
+            )}
+          </Space>
+        </div>
       }
       width={840}
       onCancel={handleOnClickModalCancel}
       centered
       maskClosable={false}
     >
+      {!isAdd && isArchived && (
+        <Alert
+          type="warning"
+          showIcon
+          message={
+            text.accountArchivedBanner
+              ? text.accountArchivedBanner
+                  .replace(
+                    "#name#",
+                    selectedUser?.last_status_changed_by_name || "Admin"
+                  )
+                  .replace(
+                    "#date#",
+                    selectedUser?.last_status_changed_at
+                      ? moment(selectedUser.last_status_changed_at).format(
+                          "MMMM Do YYYY, h:mm a"
+                        )
+                      : ""
+                  )
+              : `Account archived by ${
+                  selectedUser?.last_status_changed_by_name || "Admin"
+                } on ${
+                  selectedUser?.last_status_changed_at
+                    ? moment(selectedUser.last_status_changed_at).format(
+                        "MMMM Do YYYY, h:mm a"
+                      )
+                    : ""
+                }. This user cannot log in.`
+          }
+          style={{ marginBottom: 16 }}
+        />
+      )}
+      {!isAdd && !isArchived && selectedUser?.last_status_changed_at && (
+        <Alert
+          type="info"
+          showIcon
+          message={
+            text.accountUnarchivedBanner
+              ? text.accountUnarchivedBanner
+                  .replace(
+                    "#name#",
+                    selectedUser?.last_status_changed_by_name || "Admin"
+                  )
+                  .replace(
+                    "#date#",
+                    moment(selectedUser.last_status_changed_at).format(
+                      "MMMM Do YYYY, h:mm a"
+                    )
+                  )
+              : `Account reactivated by ${
+                  selectedUser?.last_status_changed_by_name || "Admin"
+                } on ${moment(selectedUser.last_status_changed_at).format(
+                  "MMMM Do YYYY, h:mm a"
+                )}.`
+          }
+          style={{ marginBottom: 16 }}
+        />
+      )}
       <Form
         form={form}
         name="account-detail"
@@ -285,6 +427,7 @@ const AddUser = ({
                 className="custom-dropdown-wrapper bg-grey"
                 placeholder="Role"
                 options={roles}
+                disabled={isArchived}
                 {...globalSelectProps}
               />
             </Form.Item>
@@ -301,6 +444,7 @@ const AddUser = ({
                 showSearch
                 className="custom-dropdown-wrapper bg-grey"
                 placeholder="Organization"
+                disabled={isArchived}
                 filterOption={(input, option) =>
                   option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
                 }
@@ -329,6 +473,7 @@ const AddUser = ({
                 mode="multiple"
                 className="custom-dropdown-wrapper bg-grey"
                 placeholder="Questionnaire Access"
+                disabled={isArchived}
                 filterOption={(input, option) =>
                   option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
                 }

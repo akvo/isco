@@ -104,6 +104,14 @@ def verify_user(session: Session, authenticated):
     user = crud_user.get_user_by_email(session=session, email=token_data.email)
     if user is None:
         raise credentials_exception
+    if user.archived:
+        raise HTTPException(
+            status_code=403,
+            detail=(
+                "Your account has been archived. "
+                "Please contact your administrator."
+            ),
+        )
     if not user.email_verified:
         raise HTTPException(
             status_code=403,
