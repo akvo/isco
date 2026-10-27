@@ -1,7 +1,16 @@
+import os
 import pytest
 from datetime import datetime
+from fastapi import FastAPI
+from httpx import AsyncClient
 from sqlalchemy.orm import Session
 from models.user import User, UserRole
+from models.organisation import Organisation
+from middleware import (
+    get_password_hash,
+    create_access_token,
+    create_refresh_token,
+)
 from tests.test_000_main import Acc
 
 pytestmark = pytest.mark.asyncio
@@ -13,6 +22,13 @@ class TestArchiveUserModel:
     def test_user_model_archived_fields_and_serialize(
         self, session: Session
     ) -> None:
+        org = session.query(Organisation).first()
+        if not org:
+            org = Organisation(code="TEST", name="Test Org", active=True)
+            session.add(org)
+            session.commit()
+            session.refresh(org)
+
         # Clean up any leftover test data
         session.query(User).filter(
             User.email.in_(["admin_tester@akvo.org", "target_user@akvo.org"])
@@ -26,7 +42,7 @@ class TestArchiveUserModel:
             phone_number="12345",
             password="hashed_pw",
             role=UserRole.secretariat_admin,
-            organisation=1,
+            organisation=org.id,
             invitation=None,
             approved=True,
         )
@@ -41,7 +57,7 @@ class TestArchiveUserModel:
             phone_number="54321",
             password="hashed_pw",
             role=UserRole.member_user,
-            organisation=1,
+            organisation=org.id,
             invitation=None,
             approved=True,
             archived=True,
@@ -69,3 +85,104 @@ class TestArchiveUserModel:
         session.delete(user)
         session.delete(admin)
         session.commit()
+
+
+ARCHIVED_ERROR_MSG = (
+    "Your account has been archived. Please contact your administrator."
+)
+
+
+class TestArchiveUserAuth:
+    @pytest.fixture(autouse=True)
+    def setup_archived_user(self, session: Session):
+        org = session.query(Organisation).first()
+        if not org:
+            org = Organisation(code="TEST", name="Test Org", active=True)
+            session.add(org)
+            session.commit()
+            session.refresh(org)
+
+        session.query(User).filter(
+            User.email == "archived_user@akvo.org"
+        ).delete(synchronize_session=False)
+        session.commit()
+
+        user = User(
+            name="Archived Person",
+            email="archived_user@akvo.org",
+            phone_number="123456",
+            password=get_password_hash("password123"),
+            role=UserRole.member_user,
+            organisation=org.id,
+            invitation=None,
+            approved=True,
+            archived=True,
+            last_status_changed_at=datetime.utcnow(),
+        )
+        user.email_verified = datetime.utcnow()
+        session.add(user)
+        session.commit()
+        session.refresh(user)
+
+        yield user
+
+        session.query(User).filter(
+            User.email == "archived_user@akvo.org"
+        ).delete(synchronize_session=False)
+        session.commit()
+
+    async def test_archived_user_cannot_login(
+        self, app: FastAPI, client: AsyncClient
+    ) -> None:
+        res = await client.post(
+            app.url_path_for("user:login"),
+            headers={"content-type": "application/x-www-form-urlencoded"},
+            data={
+                "username": "archived_user@akvo.org",
+                "password": "password123",
+                "grant_type": "password",
+                "scopes": ["openid", "email"],
+                "client_id": os.environ["CLIENT_ID"],
+                "client_secret": os.environ["CLIENT_SECRET"],
+            },
+        )
+        assert res.status_code == 403
+        data = res.json()
+        assert data["detail"] == ARCHIVED_ERROR_MSG
+
+    async def test_archived_user_token_rejected_in_middleware(
+        self, app: FastAPI, client: AsyncClient
+    ) -> None:
+        token = create_access_token(data={"email": "archived_user@akvo.org"})
+        res = await client.get(
+            app.url_path_for("user:me"),
+            headers={"Authorization": f"Bearer {token.get('token')}"},
+        )
+        assert res.status_code == 403
+        data = res.json()
+        assert data["detail"] == ARCHIVED_ERROR_MSG
+
+    async def test_archived_user_cannot_refresh_token(
+        self, app: FastAPI, client: AsyncClient
+    ) -> None:
+        ref_token = create_refresh_token(
+            data={"email": "archived_user@akvo.org"}
+        )
+        res = await client.post(
+            app.url_path_for("user:refresh_token"),
+            headers={"Authorization": f"Bearer {ref_token.get('token')}"},
+        )
+        assert res.status_code == 403
+        data = res.json()
+        assert data["detail"] == ARCHIVED_ERROR_MSG
+
+    async def test_archived_user_cannot_request_password_reset(
+        self, app: FastAPI, client: AsyncClient
+    ) -> None:
+        res = await client.post(
+            app.url_path_for("user:forgot-password"),
+            data={"email": "archived_user@akvo.org"},
+        )
+        assert res.status_code == 403
+        data = res.json()
+        assert data["detail"] == ARCHIVED_ERROR_MSG

@@ -75,6 +75,14 @@ def login(
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    if user.archived:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=(
+                "Your account has been archived. "
+                "Please contact your administrator."
+            ),
+        )
     access_token = create_access_token(data={"email": user.email})
     refresh_token = create_refresh_token(data={"email": user.email})
     return {
@@ -103,6 +111,19 @@ def refresh_token(
     access_token = create_access_token(data={"email": user_email})
     refresh_token = create_refresh_token(data={"email": user_email})
     user = crud_user.get_user_by_email(session=session, email=user_email)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found",
+        )
+    if user.archived:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=(
+                "Your account has been archived. "
+                "Please contact your administrator."
+            ),
+        )
     return {
         "access_token": access_token.get("token"),
         "refresh_token": refresh_token.get("token"),
@@ -509,11 +530,21 @@ def new_forgot_password(
     email: str = Form(...),
     session: Session = Depends(get_session),
 ):
+    user = crud_user.get_user_by_email(session=session, email=email)
+    if not user:
+        raise HTTPException(status_code=404, detail="User Not found")
+    if user.archived:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=(
+                "Your account has been archived. "
+                "Please contact your administrator."
+            ),
+        )
     reset_password = crud_user.new_reset_password(session=session, email=email)
     if not reset_password:
         raise HTTPException(status_code=404, detail="User Not found")
     # Send reset password email
-    user = crud_user.get_user_by_email(session=session, email=email)
     url = f"{webdomain}/reset-password/{reset_password['url']}"
     email = Email(
         recipients=[user.recipient],
@@ -571,6 +602,17 @@ def post_forgot_password(
         return JSONResponse(
             status_code=status.HTTP_410_GONE,
             content={"message": "url is expired"},
+        )
+    user = crud_user.get_user_by_id(session=session, id=reset_password["user"])
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    if user.archived:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=(
+                "Your account has been archived. "
+                "Please contact your administrator."
+            ),
         )
     password = get_password_hash(password.get_secret_value())
     user = crud_user.update_password(
