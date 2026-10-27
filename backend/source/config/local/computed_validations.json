@@ -1,55 +1,42 @@
 [
   {
-    "form_id": 100,
+    "form_id": 7,
     "validations": [
       {
-        "group_id": 1,
-        "question_ids": [7, 8],
-        "max": 30
-      },
-      {
-        "group_id": 2,
-        "question_ids": [4, 5, 6],
-        "max": 100
-      },
-      {
-        "group_id": 3,
-        "question_ids": [10, 11],
-        "equal": 100
-      }
-    ]
-  },
-  {
-    "form_id": 2,
-    "validations": [
-      {
-        "group_id": 19,
-        "question_ids": [48, 49],
+        "group_id": 90,
+        "question_ids": [837, 838, 839, 840, 841],
         "equal": 100
       },
       {
-        "group_id": 19,
-        "question_ids": [50, 51],
-        "equal": 100
-      }
-    ]
-  },
-  {
-    "form_id": 6,
-    "validations": [
-      {
-        "group_id": 15,
-        "question_ids": [53, 54, 55, 56],
+        "group_id": 90,
+        "question_ids": [880, 882, 885, 886, 890, 897, 896],
         "equal": 100
       },
       {
-        "group_id": 16,
-        "question_ids": [57, 58],
-        "max": 25
+        "group_id": 90,
+        "question_ids": [
+          879, 881, 883, 884, 887, 888, 889, 891, 892, 893, 894, 895, 925
+        ],
+        "equal": 100
       },
       {
-        "group_id": 17,
-        "question_ids": [59, 60],
+        "group_id": 101,
+        "question_ids": [
+          988, 989, 990, 991, 1076, 1078, 1079, 995, 1090, 1093, 1095, 997, 998,
+          999, 1101, 1099, 1097, 1105, 1103, 1110, 1113, 1115, 1118
+        ],
+        "equal": 100
+      },
+      {
+        "group_id": 103,
+        "question_ids": [1017, 1018, 1019, 1020, 1120, 1121, 1122, 1123],
+        "equal": 100
+      },
+      {
+        "group_id": 104,
+        "question_ids": [
+          1022, 1023, 1024, 1025, 1026, 1027, 1030, 1031, 1032, 1125, 1126
+        ],
         "equal": 100
       }
     ]
