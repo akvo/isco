@@ -108,10 +108,21 @@ const Login = () => {
       })
       .catch((e) => {
         console.error(e);
-        notify({
-          type: "error",
-          message: "Email password doesn't match.",
-        });
+        const status = e?.response?.status;
+        const detail = e?.response?.data?.detail;
+        if (status === 403 && detail?.includes("archived")) {
+          notify({
+            type: "error",
+            message:
+              text.accountArchivedMessage ||
+              "Your account has been archived. Please contact your administrator.",
+          });
+        } else {
+          notify({
+            type: "error",
+            message: "Email password doesn't match.",
+          });
+        }
       })
       .finally(() => {
         setBtnLoading(false);
@@ -132,11 +143,22 @@ const Login = () => {
         });
         setResetPasswordSuccess(true);
       })
-      .catch(() => {
-        notify({
-          type: "error",
-          message: "Email not found",
-        });
+      .catch((e) => {
+        const status = e?.response?.status;
+        const detail = e?.response?.data?.detail;
+        if (status === 403 && detail?.includes("archived")) {
+          notify({
+            type: "error",
+            message:
+              text.accountArchivedMessage ||
+              "Your account has been archived. Please contact your administrator.",
+          });
+        } else {
+          notify({
+            type: "error",
+            message: "Email not found",
+          });
+        }
       })
       .finally(() => {
         setBtnLoading(false);

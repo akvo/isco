@@ -303,6 +303,11 @@ const uiText = {
     errorDataUnavailableConflict:
       "Please provide either an answer or check 'n/a', not both.",
     inputDataUnavailable: "Data unavailable/NA",
+    accountArchivedMessage:
+      "Your account has been archived. Please contact your administrator.",
+    accountArchivedBanner:
+      "Account archived by #name# on #date#. This user cannot log in.",
+    accountUnarchivedBanner: "Account reactivated by #name# on #date#.",
   },
 
   de: {
@@ -602,6 +607,11 @@ const uiText = {
     errorDataUnavailableConflict:
       "Bitte geben Sie entweder eine Antwort an oder wählen Sie 'N/A', nicht beides.",
     inputDataUnavailable: "Daten nicht verfügbar/NV",
+    accountArchivedMessage:
+      "Ihr Konto wurde archiviert. Bitte kontaktieren Sie Ihren Administrator.",
+    accountArchivedBanner:
+      "Konto archiviert von #name# am #date#. Dieser Benutzer kann sich nicht anmelden.",
+    accountUnarchivedBanner: "Konto reaktiviert von #name# am #date#.",
   },
 };
 
