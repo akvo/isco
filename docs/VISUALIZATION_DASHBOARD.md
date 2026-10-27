@@ -1,39 +1,55 @@
 # Individual Reporting Back Dashboard
 
+> [!NOTE]
+> **Implementation Specification Update**:
+> This document served as the foundational concept document. The finalized engineering design and delivery artifacts are now available in:
+
+> - **High-Level Design (HLD)**: [docs/hld/member_dashboard_hld.md](docs/hld/member_dashboard_hld.md) (Executive & Partner Overview for Google Docs export)
+> - **Low-Level Design (LLD)**: [docs/lld/member_dashboard_lld.md](docs/lld/member_dashboard_lld.md) (Technical & Code Architecture)
+> - **Feature Specification**: [docs/features/001_member_dashboard_spec.md](docs/features/001_member_dashboard_spec.md) (Sprint & Test Implementation Spec)
+
 ## Overview
+
 The "Individual Reporting Back Dashboard" is a visualization feature requested by partners to provide member organisations with a performance overview compared to ISCO and GISCO averages.
 
 ## Problem Statement
+
 Members need a way to visualize their performance across various challenges (Transparency, Deforestation, Living Income, Child Labour) relative to industry averages over time.
 
 ## Target Users
+
 - **Member Admins**: To monitor their own organisation's progress.
 - **Secretariat Admins**: To understand aggregated performance and individual member contributions.
 
 ## Visualisation Structure
+
 The dashboard is grouped by **Challenges**, each containing one or more **Indicators**. Each indicator is represented by a chart showing:
+
 - **Member Performance**: The value for the specific organisation.
 - **ISCO Average**: The average value across all ISCO members.
 - **GISCO Average**: The global average.
 - **Time Dimension**: Data is tracked over years (e.g., 2022, 2023, 2024).
 
 ## Configuration (Static Mapping)
-The visualization logic relies on mapping specific Question IDs to indicators.
 
-### Mapping Table
-| Challenge | Indicator | Country | Question IDs | Comments |
-|-----------|-----------|---------|--------------|----------|
-| Transparency and traceability | Share of cocoa sourced traceable to farm level | Global | ID840 + ID841 | |
-| Transparency and traceability | Share of cocoa sourced directly | Global | ID86 | |
-| Deforestation | Share of deforestation free cocoa | Global | ID851 | |
-| Living income | Share of households in direct supply chain for which a LI gap is measured | Global | ID1216 / ID842 | Aggregate for all repeat groups |
-| Living income | Share of households in direct supply chain for which a LI strategy is implemented | Global | ID847 / ID842 | Aggregate for all repeat groups |
-| Child Labour | Share of households in supply chain covered by CLMRS | West Africa | ID575 / ID842 | |
-| Child Labour | Share of cases of child labour identified among children covered | West Africa | ID577 / ID873 | |
-| Child Labour | Share of children who received support among those identified | West Africa | ID579 / ID577 | |
-| Child Labour | Share of children who received 2-follow-up visits among those identified in child labour | West Africa | ID874 / ID577 | |
+The visualization logic relies on mapping specific Question IDs and Question Groups across Survey Forms to indicators.
+
+### Indicator & Question Group Mapping Table
+
+| Challenge | Indicator | Scope | Form | Question Group (ID & Name) | Question IDs & Description | Formula / Aggregation |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Transparency & Traceability** | Share of cocoa sourced traceable to farm level | Global | Form 7 | Group 90: Sourcing & Traceability | • `ID840`: Direct cocoa volume traceable to farm/polygon<br>• `ID841`: Indirect cocoa volume traceable to farm/polygon | `ID840 + ID841` |
+| **Transparency & Traceability** | Share of cocoa sourced directly | Global | Form 7 | Group 90: Sourcing & Traceability | • `ID86`: Direct sourcing volume / percentage | `ID86` |
+| **Deforestation** | Share of deforestation free cocoa | Global | Form 7 | Group 15: Deforestation-Free Supply Chains | • `ID851`: Volume/share verified deforestation-free | `ID851` |
+| **Living Income** | Share of households in direct supply chain for which a LI gap is measured | Global | Form 7 | Supplier Group (Repeats): Living Income Assessment | • `ID1216`: Households measured for LI gap in repeat group<br>• `ID842`: Total cocoa volume / direct households | `SUM(ID1216) / ID842` (across supplier repeats) |
+| **Living Income** | Share of households in direct supply chain for which a LI strategy is implemented | Global | Form 7 | Supplier Group (Repeats): Living Income Assessment | • `ID847`: Households covered by LI strategy in repeat group<br>• `ID842`: Total cocoa volume / direct households | `SUM(ID847) / ID842` (across supplier repeats) |
+| **Child Labour** | Share of households in supply chain covered by CLMRS | West Africa | Form 7 | Group: Child Labour Monitoring Systems (CLMRS) | • `ID575`: Households covered by CLMRS in West Africa<br>• `ID842`: Total direct supply chain households/volume | `ID575 / ID842` |
+| **Child Labour** | Share of cases of child labour identified among children covered | West Africa | Form 7 | Group: Child Labour Identification & Remediation | • `ID577`: Identified child labour cases<br>• `ID873`: Total children monitored/covered under CLMRS | `ID577 / ID873` *(Inverted: lower is better)* |
+| **Child Labour** | Share of children who received support among those identified | West Africa | Form 7 | Group: Remediation & Support Services | • `ID579`: Children provided remediation support<br>• `ID577`: Total identified child labour cases | `ID579 / ID577` |
+| **Child Labour** | Share of children who received 2-follow-up visits among those identified | West Africa | Form 7 | Group: Monitoring & Follow-up Verification | • `ID874`: Identified children with >=2 follow-up visits<br>• `ID577`: Total identified child labour cases | `ID874 / ID577` |
 
 ## Technical Implementation (Draft)
+
 
 ### Backend
 1. **Static Configuration Service**: A new service or utility to load the mapping (from a JSON/YAML file or a database table).
