@@ -60,8 +60,13 @@ Available containers:
 - mainnetwork
 - db
 - pgadmin
+- mailpit
 
-#### Stop
+#### Local Mail (Mailpit)
+
+Emails sent by the backend in local development (user invitations, password resets, download readiness) are captured by **Mailpit** without needing external SMTP credentials:
+- **Web UI**: [http://localhost:8025](http://localhost:8025)
+- **SMTP Server**: `localhost:1025` (pre-configured for the backend)
 
 ```bash
 ./dc.sh stop
