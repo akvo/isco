@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import "./style.scss";
 import {
   Row,
@@ -23,6 +23,7 @@ import capitalize from "lodash/capitalize";
 import moment from "moment";
 import { useNotification } from "../../util";
 import { globalSelectProps } from "../../lib/util";
+import { uiText } from "../../static";
 
 const { Title } = Typography;
 
@@ -63,15 +64,20 @@ const InvitationCopy = ({ invitation }) => {
 };
 
 const ManageUser = () => {
-  const { isLoggedIn, user, optionValues } = store.useState((s) => s);
+  const { isLoggedIn, user, optionValues, language } = store.useState((s) => s);
   const {
     organisationInSameIsco: organisation,
     member_type,
     isco_type,
   } = optionValues;
+  const { active: activeLang } = language || {};
+  const text = useMemo(() => {
+    return uiText[activeLang] || uiText.en;
+  }, [activeLang]);
   const { notify } = useNotification();
 
   const [showPendingUser, setShowPendingUser] = useState(false);
+  const [showArchived, setShowArchived] = useState(false);
   const [isAddUserVisible, setIsAddUserVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [reload, setReload] = useState(0);
@@ -96,6 +102,38 @@ const ManageUser = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
+      render: (name, record) => (
+        <Space>
+          <span>{name}</span>
+          {record?.archived && (
+            <Tooltip
+              title={
+                record?.last_status_changed_at
+                  ? text.tooltipArchivedBy
+                    ? text.tooltipArchivedBy
+                        .replace(
+                          "#name#",
+                          record.last_status_changed_by_name || "Admin"
+                        )
+                        .replace(
+                          "#date#",
+                          moment(record.last_status_changed_at).format(
+                            "MMMM Do YYYY, h:mm a"
+                          )
+                        )
+                    : `Archived by ${
+                        record.last_status_changed_by_name || "Admin"
+                      } on ${moment(record.last_status_changed_at).format(
+                        "MMMM Do YYYY, h:mm a"
+                      )}`
+                  : text.tagArchived || "Archived"
+              }
+            >
+              <Tag color="default">{text.tagArchived || "Archived"}</Tag>
+            </Tooltip>
+          )}
+        </Space>
+      ),
     },
     {
       title: "Email",
@@ -145,19 +183,36 @@ const ManageUser = () => {
               setSelectedUser(record);
             }}
           />
-          <Popconfirm
-            title="Delete user can't be undone."
-            okText="Delete"
-            cancelText="Cancel"
-            onConfirm={() => handleDeleteButton(record)}
-          >
-            <Button
-              className="action-btn"
-              icon={<RiDeleteBinFill />}
-              shape="circle"
-              type="text"
-            />
-          </Popconfirm>
+          {record?.archived ? (
+            <Tooltip
+              title={
+                text.tooltipCannotDeleteArchived ||
+                "Archived users cannot be deleted. Unarchive first if deletion is required."
+              }
+            >
+              <Button
+                className="action-btn"
+                icon={<RiDeleteBinFill />}
+                shape="circle"
+                type="text"
+                disabled
+              />
+            </Tooltip>
+          ) : (
+            <Popconfirm
+              title="Delete user can't be undone."
+              okText="Delete"
+              cancelText="Cancel"
+              onConfirm={() => handleDeleteButton(record)}
+            >
+              <Button
+                className="action-btn"
+                icon={<RiDeleteBinFill />}
+                shape="circle"
+                type="text"
+              />
+            </Popconfirm>
+          )}
         </Space>
       ),
     },
@@ -165,7 +220,7 @@ const ManageUser = () => {
 
   useEffect(() => {
     setPage(1);
-  }, [showPendingUser]);
+  }, [showPendingUser, showArchived]);
 
   useEffect(() => {
     // get form
@@ -198,6 +253,9 @@ const ManageUser = () => {
       }
       if (showPendingUser) {
         url = `${url}&approved=0`;
+      }
+      if (!showArchived) {
+        url = `${url}&archived=false`;
       }
       api
         .get(url)
@@ -234,6 +292,7 @@ const ManageUser = () => {
     iscoFilter,
     reload,
     showPendingUser,
+    showArchived,
   ]);
 
   const handleShowPendingUsers = () => {
@@ -430,14 +489,23 @@ const ManageUser = () => {
                 )}
               </Space>
             </Col>
-            {/* Show Pending User */}
+            {/* Show Pending User & Include Archived */}
             <Col align="end">
-              <Space align="center">
-                <span>Pending Users</span>
-                <Checkbox
-                  value={showPendingUser}
-                  onChange={handleShowPendingUsers}
-                />
+              <Space align="center" size="middle">
+                <Space align="center">
+                  <span>{text.labelIncludeArchived || "Include Archived"}</span>
+                  <Checkbox
+                    checked={showArchived}
+                    onChange={(e) => setShowArchived(e.target.checked)}
+                  />
+                </Space>
+                <Space align="center">
+                  <span>Pending Users</span>
+                  <Checkbox
+                    value={showPendingUser}
+                    onChange={handleShowPendingUsers}
+                  />
+                </Space>
               </Space>
             </Col>
           </Row>
@@ -445,6 +513,9 @@ const ManageUser = () => {
             <Col span={24}>
               <Table
                 rowKey={(record) => `${record?.key}-${record?.id}`}
+                rowClassName={(record) =>
+                  record?.archived ? "row-archived" : ""
+                }
                 className="table-wrapper"
                 columns={columns}
                 dataSource={data?.data || []}

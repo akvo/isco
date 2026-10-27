@@ -1,0 +1,57 @@
+[
+  {
+    "form_id": 100,
+    "validations": [
+      {
+        "group_id": 1,
+        "question_ids": [7, 8],
+        "max": 30
+      },
+      {
+        "group_id": 2,
+        "question_ids": [4, 5, 6],
+        "max": 100
+      },
+      {
+        "group_id": 3,
+        "question_ids": [10, 11],
+        "equal": 100
+      }
+    ]
+  },
+  {
+    "form_id": 2,
+    "validations": [
+      {
+        "group_id": 19,
+        "question_ids": [48, 49],
+        "equal": 100
+      },
+      {
+        "group_id": 19,
+        "question_ids": [50, 51],
+        "equal": 100
+      }
+    ]
+  },
+  {
+    "form_id": 6,
+    "validations": [
+      {
+        "group_id": 15,
+        "question_ids": [53, 54, 55, 56],
+        "equal": 100
+      },
+      {
+        "group_id": 16,
+        "question_ids": [57, 58],
+        "max": 25
+      },
+      {
+        "group_id": 17,
+        "question_ids": [59, 60],
+        "equal": 100
+      }
+    ]
+  }
+]

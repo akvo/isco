@@ -45,11 +45,22 @@ const SetPassword = ({ url, invalidUrl, notify }) => {
         });
         navigate("/login");
       })
-      .catch(() => {
-        notify({
-          type: "error",
-          message: "Internal Server Error",
-        });
+      .catch((e) => {
+        const status = e?.response?.status;
+        const detail = e?.response?.data?.detail;
+        if (status === 403 && detail?.includes("archived")) {
+          notify({
+            type: "error",
+            message:
+              text.accountArchivedMessage ||
+              "Your account has been archived. Please contact your administrator.",
+          });
+        } else {
+          notify({
+            type: "error",
+            message: "Internal Server Error",
+          });
+        }
       })
       .finally(() => {
         setBtnLoading(false);
