@@ -2,7 +2,7 @@
 
 > **Document Type**: High-Level Design (HLD)  
 > **Target Audience**: GISCO Secretariat (Dr. Ulrike Joras), Platform Management (Joy Ghosh @ Akvo), Evaluators (Hilde Geens @ c-lever.org), Member Company Admins  
-> **Scope**: **"Dashboard Member X" sheet** (Multi-Year Trend Dashboard: 9 Interactive Line Charts & Peer Group Selector)  
+> **Scope**: **"Dashboard Member X" sheet** (Multi-Year Trend Dashboard: 9 Interactive Line Charts & Fixed Peer Group Benchmark)  
 > **Status**: Ready for Google Docs Export & Partner Review  
 
 ---
@@ -11,7 +11,7 @@
 
 The **Member Reporting Back Dashboard** digitizes the reference Excel reporting workflow (`5_Template DUMMY_Individual_reporting_back_ISCO_GISCO.xlsx`, specifically the **"Dashboard Member X"** sheet) into an interactive, role-aware analytics dashboard within the ISCO web application.
 
-It enables member organisations to self-serve their sustainability performance over time (2022–2024) across four key challenges, benchmarked against their harmonized peer group within **GISCO** and across all **ISCO** platforms.
+It enables member organisations to self-serve their sustainability performance over time (2022–2024) across four key challenges, benchmarked against their automatically assigned harmonized peer group within **GISCO** and across all **ISCO** platforms.
 
 ```text
 +--------------------------------------------------------------------------------------------------------------------+
@@ -21,9 +21,9 @@ It enables member organisations to self-serve their sustainability performance o
 +--------------------------------------------------------------------------------------------------------------------+
 |                                                                                                                    |
 |  Individual Reporting Back Dashboard – Chocolatier Example AG                                                      |
-|  Overview of performance per challenge – Member vs ISCO average over time (2022 - 2024)                             |
+|  Overview of performance per challenge – Member vs Large Manufacturer average over time (2022 - 2024)              |
 |                                                                                                                    |
-|  [Select Peer Group: (v) Large Manufacturer ]              [Benchmark Scope: (v) GISCO (Germany) ]                 |
+|  [Peer Group: Large Manufacturer]                          [Benchmark Scope: GISCO & ISCO]                         |
 |                                                                                                                    |
 |  +--------------------------------------------------------------------------------------------------------------+  |
 |  | CHALLENGE 1: TRANSPARENCY AND TRACEABILITY                                                                   |  |

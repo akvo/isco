@@ -2,7 +2,7 @@
 
 > **Document Type**: Low-Level Design (LLD)  
 > **Target Audience**: Backend & Frontend Engineers, QA Engineers  
-> **Scope**: **"Dashboard Member X" sheet** (Multi-Year Trend Dashboard: 9 Interactive Line Charts & Peer Group Selector)  
+> **Scope**: **"Dashboard Member X" sheet** (Multi-Year Trend Dashboard: 9 Interactive Line Charts & Fixed Peer Group Benchmark)  
 > **Status**: Approved for Implementation  
 
 ---
@@ -15,7 +15,7 @@ The feature delivers an interactive time-series dashboard rendering the **9 sust
 flowchart TD
     subgraph Frontend["React 17 SPA (/frontend)"]
         Page["MemberDashboardPage"]
-        Header["DashboardHeader (Peer Group Selector & Org Switcher)"]
+        Header["DashboardHeader (Static Peer Group Tag & Admin Org Switcher)"]
         ChallengeSec["ChallengeSection (4 Challenges)"]
         ChartCard["IndicatorLineChartCard (9 Line Charts)"]
         DataGrid["CompactDataGrid (Year x Member x ISCO x GISCO)"]
@@ -255,7 +255,6 @@ Alembic migration creates the tables and seeds 4 harmonized peer groups linked t
 
 **Query Parameters**:
 - `organisation_id` (optional, integer): Target organisation. Restricted to `secretariat_admin`. Defaults to caller's organisation.
-- `peer_group_id` (optional, integer): Target peer group for benchmarking. Defaults to organisation's mapped peer group.
 - `isco_id` (optional, integer): Baseline ISCO scope (defaults to GISCO = 1).
 
 **Success Response (`200 OK`)**:
@@ -264,13 +263,11 @@ Alembic migration creates the tables and seeds 4 harmonized peer groups linked t
   "organisation": {
     "id": 45,
     "name": "Chocolatier Example AG",
-    "selected_peer_group_id": 2,
-    "available_peer_groups": [
-      { "id": 1, "code": "trader_processor", "name": "Trader/Processor" },
-      { "id": 2, "code": "large_manufacturer", "name": "Large Manufacturer" },
-      { "id": 3, "code": "sme", "name": "SME" },
-      { "id": 4, "code": "retail", "name": "Retail" }
-    ]
+    "peer_group": {
+      "id": 2,
+      "code": "large_manufacturer",
+      "name": "Large Manufacturer"
+    }
   },
   "years": [2022, 2023, 2024],
   "challenges": [
@@ -283,6 +280,7 @@ Alembic migration creates the tables and seeds 4 harmonized peer groups linked t
           "name": "Share of cocoa sourced directly",
           "country": "Global",
           "unit": "percentage",
+          "chart_type": "line",
           "higher_is_better": true,
           "series": [
             { "year": 2022, "member": 0.3422, "isco_avg": 0.3640, "gisco_avg": 0.3700 },
@@ -295,9 +293,19 @@ Alembic migration creates the tables and seeds 4 harmonized peer groups linked t
           "name": "Share of cocoa sourced traceable to farm level",
           "country": "Global",
           "unit": "percentage",
+          "chart_type": "line",
           "higher_is_better": true,
           "series": [
             { "year": 2022, "member": 0.2629, "isco_avg": 0.2860, "gisco_avg": 0.2700 },
+            { "year": 2023, "member": 0.2979, "isco_avg": 0.3630, "gisco_avg": 0.3200 },
+            { "year": 2024, "member": 0.4786, "isco_avg": 0.4670, "gisco_avg": 0.4500 }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
             { "year": 2023, "member": 0.2979, "isco_avg": 0.3630, "gisco_avg": 0.3200 },
             { "year": 2024, "member": 0.4786, "isco_avg": 0.4670, "gisco_avg": 0.4500 }
           ]
@@ -312,14 +320,18 @@ Alembic migration creates the tables and seeds 4 harmonized peer groups linked t
 
 ## 5. Calculation Logic & Caching Engine
 
-1. **Formula Evaluation**:
+1. **Formula Evaluation & AST Permutations**:
+   - Built on safe Python `ast` syntax parser supporting arbitrary arithmetic (`+`, `-`, `*`, `/`), nested parentheses `(A + B) / C`, repeat sums (`SUM(ID1216) / ID842`), and statistical/fallback functions (`AVG`, `MIN`, `MAX`, `COALESCE`).
    - `ID86`: direct lookup from submitted Answer.
    - `ID840 + ID841`: summation of direct and indirect traceable volumes.
    - `SUM(ID1216) / ID842`: sums numerator values across all repeat group entries, guarded against division-by-zero (`null` if denominator is 0).
 2. **Missing Years**: If an organisation did not submit data for a given year (e.g. 2022), `member: null` is emitted. Recharts renders this as a non-connected gap.
-3. **In-Memory TTL Caching**:
-   - Peer group averages (`ISCO_Average` and `GISCO_Average`) are calculated across all submitted member answers and cached in an in-memory `TTLCache` (TTL: 1 hour).
-   - Dynamic peer group dropdown requests hit cache in `< 50ms`.
+3. **Configurable Exclusion of Active Member (`exclude_current_member_from_average`)**:
+   - Declarative setting (in `visualization_mapping.json` or `.env`, default `false`).
+   - If enabled, the engine subtracts the active member's values from the cached cohort aggregate in $O(1)$ time, maintaining `< 50ms` response times while enabling clean self-exclusion.
+4. **In-Memory TTL Caching**:
+   - Peer group averages (`ISCO_Average` and `GISCO_Average`) are calculated across all submitted member answers and cached in an in-memory `TTLCache` (TTL: 1 hour) keyed by `peer_group_id`.
+   - Repeated requests hit cache in `< 50ms`.
 
 ---
 
@@ -327,34 +339,36 @@ Alembic migration creates the tables and seeds 4 harmonized peer groups linked t
 
 - **Page Entrypoint**: `/frontend/src/pages/member-dashboard/MemberDashboardPage.jsx`
 - **Routing**: Accessible at `/dashboard` from the top header navigation.
-- **Charts Library**: Recharts (`<ResponsiveContainer>`, `<LineChart>`, `<Line>`, `<XAxis>`, `<YAxis>`, `<Tooltip>`, `<Legend>`).
+- **Charts Library**: **`akvo-charts`** (`Line` component powered by Apache ECharts):
+  - Component: `import { Line } from 'akvo-charts';`
+  - Style: `import 'akvo-charts/dist/index.css';`
 - **Styling**: ISCO palette:
-  - 🔵 Member Line: `#1890ff` (solid stroke 3px, round dot)
-  - 🟠 ISCO Average Line: `#fa8c16` (dashed stroke 2px, small square)
-  - 🟢 GISCO Average Line: `#52c41a` (dotted stroke 2px, small triangle)
+  - 🔵 Member Line: `#1890ff` (solid stroke 3px, circular symbol)
+  - 🟠 ISCO Average Line: `#fa8c16` (dashed stroke 2px, square symbol)
+  - 🟢 GISCO Average Line: `#52c41a` (dotted stroke 2px, triangle symbol)
 - **Data Grid**: Compact Ant Design HTML table below each chart with columns `Year`, `Member`, `ISCO Avg`, `GISCO Avg`.
 
 ---
 
-## 7. Engineering Estimation Breakdown & Sprint Schedule (1 Dev, 8 Days / 56.0 Hours)
+## 7. Engineering Estimation Breakdown & Sprint Schedule (1 Dev, 52.0 Hours / ~7.4 Days)
 
 ### 7.1 Estimation Methodology
 - **Developer Capacity**: 1 full-stack engineer working **7 productive hours per day**, 5 days per week.
 - **Buffer Allocation**: Each engineering task includes a **+1.0h to +2.0h buffer for manual browser QA and edge-case testing**, ensuring no task is under-estimated.
-- **Dedicated Partner Review Reserve**: 6.5 hours (~1.0 working day) are explicitly reserved for review walkthroughs with GISCO and Akvo stakeholders.
+- **Dedicated Partner Review Reserve**: 5.5 hours (~0.8 working days) are explicitly reserved for review walkthroughs with GISCO and Akvo stakeholders.
 
 ### 7.2 Granular Task Estimation Breakdown
 
 | Task ID | Task Description & Subtasks | Vibe Coding (Dev) | Automated Testing | Manual QA & +1h Buffer | Total Buffered | Working Days (7h/d) |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: |
 | **TASK-01** | **Harmonized Peer Groups Database & Seeder**<br>• Create `peer_group` and `peer_group_member_type` SQLAlchemy models<br>• Write Alembic migration script with table constraints and indexes<br>• Seed 4 harmonized peer groups linked to existing `member_type` tags (`Trader/Processor`, `Large Manufacturer`, `SME`, `Retail`)<br>• Write database unit tests verifying tag mapping and migration upgrade/downgrade | 3.0h | 1.5h | 2.0h | **6.5h** | ~0.9d |
-| **TASK-02** | **Declarative Indicator Configuration & AST Formula Evaluator**<br>• Author `/backend/source/config/visualization_mapping.json` for 9 indicators with Question Groups & IDs<br>• Implement safe formula evaluator for ratios, sums (`ID840 + ID841`), and repeat groups (`SUM(ID1216) / ID842`)<br>• Implement division-by-zero safeguards (return `null`/`N/A` without 500 error)<br>• Unit test formula parser with mock survey answers across edge cases | 3.5h | 2.0h | 2.0h | **7.5h** | ~1.1d |
-| **TASK-03** | **Peer Group Benchmark Aggregation Engine & In-Memory TTLCache**<br>• Implement query logic to extract submitted answers for peer group member organisations across 2022–2024<br>• Calculate GISCO Average and ISCO Average benchmarks<br>• Implement minimum reporting cohort gate (>=3 reporting members per peer group/year to prevent de-anonymization)<br>• Build in-memory `TTLCache` (1-hour TTL) with thread-safe invalidation<br>• Integration tests verifying benchmark calculation & cache hits/misses | 4.0h | 2.5h | 2.0h | **8.5h** | ~1.2d |
-| **TASK-04** | **Individual Dashboard REST API Endpoints & Multi-Tenant RBAC**<br>• Implement `GET /api/visualization/individual-dashboard` endpoint<br>• Implement `GET /api/visualization/peer-groups` dropdown options endpoint<br>• Enforce multi-tenant data isolation: `member_user` can only query own organisation<br>• Enable Secretariat Admin switcher (`?organisation_id={id}`)<br>• API integration tests verifying RBAC, 403 Forbidden on foreign org, and missing year handling (`null` data points) | 3.5h | 2.0h | 2.0h | **7.5h** | ~1.1d |
-| **TASK-05** | **Frontend Dashboard Page Shell & Dynamic Controls**<br>• Create `/frontend/src/pages/member-dashboard/MemberDashboardPage.jsx`<br>• Add top header navigation link to `/dashboard`<br>• Implement Peer Group selection dropdown with automatic recalculation<br>• Implement Secretariat Organisation Switcher dropdown for `secretariat_admin`<br>• Handle loading spinners, error boundaries, and empty state alerts | 3.0h | 1.5h | 2.0h | **6.5h** | ~0.9d |
-| **TASK-06** | **9 Recharts Multi-Line Charts & Accompanying Data Grids**<br>• Build `IndicatorLineChartCard.jsx` using Recharts `<LineChart>`<br>• Configure 3 distinct curves: Member (solid blue), ISCO Avg (dashed orange), GISCO Avg (dotted green)<br>• Handle inverted polarity for child labour identification (lower is better visual cues)<br>• Render non-connected gaps for missing years (`null` points)<br>• Build compact yearly data table below each chart (`Year`, `Member`, `ISCO Avg`, `GISCO Avg`)<br>• Responsive 2-column grid layout across 4 Challenge sections | 4.5h | 2.0h | 2.5h | **9.0h** | ~1.3d |
-| **TASK-07** | **E2E Integration, Docker Coverage Gate & Partner Feedback Buffer**<br>• Full regression run inside Docker (`./dc.sh exec backend ./test.sh`) enforcing **≥80% test coverage**<br>• Backend linting (`flake8`) and frontend linting/formatting (`yarn lint`, `yarn prettier-write`)<br>• Cross-browser testing (Chrome, Firefox, Safari) and responsive layout validation<br>• Walkthrough review demo with Joy Ghosh (Akvo) and Dr. Ulrike Joras (GISCO)<br>• Dedicated buffer for stakeholder adjustments and formula calibration | 2.5h | 1.5h | 6.5h | **10.5h** | ~1.5d |
-| **TOTAL** | **Full Feature Delivery ("Dashboard Member X" Sheet)** | **24.0h** | **13.0h** | **19.0h** | **56.0h** | **8.0 Working Days** |
+| **TASK-02** | **Declarative Indicator Configuration & AST Formula Evaluator**<br>• Author `/backend/source/config/visualization_mapping.json` for 9 indicators with `chart_type: "line"`<br>• Implement safe Python AST formula evaluator supporting arithmetic (`+`, `-`, `*`, `/`), nested groupings `(A + B) / C`, repeat sums (`SUM(ID1216) / ID842`), and custom permutations (`AVG`, `MIN`, `MAX`, `COALESCE`)<br>• Add division-by-zero & missing data safeguards (returns `null` without 500)<br>• Unit test evaluator against mock survey payloads across complex permutation edge cases | 3.5h | 2.0h | 2.0h | **7.5h** | ~1.1d |
+| **TASK-03** | **Peer Group Benchmark Aggregation Engine & In-Memory TTLCache**<br>• Implement query logic to extract submitted answers for peer group member organisations across 2022–2024<br>• Calculate GISCO Average and ISCO Average benchmarks for the peer group cohort<br>• Implement configurable member self-exclusion toggle (`exclude_current_member_from_average`) with $O(1)$ cached cohort subtraction<br>• Enforce minimum cohort gate (>=3 reporting members per peer group/year to prevent de-anonymization)<br>• Build in-memory `TTLCache` (1-hour TTL) keyed by `peer_group_id`<br>• Integration tests verifying benchmark calculation & cache hits with and without member exclusion | 3.5h | 2.0h | 2.0h | **7.5h** | ~1.1d |
+| **TASK-04** | **Individual Dashboard REST API Endpoints & Multi-Tenant RBAC**<br>• Implement `GET /api/visualization/individual-dashboard` endpoint<br>• Enforce automatic peer group resolution from member's `member_type`<br>• Enforce data isolation: `member_user` can only query own organisation<br>• Enable Secretariat Admin switcher (`?organisation_id={id}`)<br>• API integration tests verifying RBAC, 403 Forbidden on foreign org, and missing year handling (`null` data points) | 3.0h | 2.0h | 1.5h | **6.5h** | ~0.9d |
+| **TASK-05** | **Frontend Dashboard Page Shell & Dynamic Controls**<br>• Create `/frontend/src/pages/member-dashboard/MemberDashboardPage.jsx`<br>• Add top header navigation link to `/dashboard`<br>• Render static Peer Group tag/badge based on API response<br>• Implement Secretariat Organisation Switcher dropdown for `secretariat_admin`<br>• Handle loading spinners, error boundaries, and empty state alerts | 2.5h | 1.5h | 1.5h | **5.5h** | ~0.8d |
+| **TASK-06** | **9 Multi-Line Charts via `akvo-charts` & Accompanying Data Grids**<br>• Install & verify `akvo-charts` in frontend (`./dc.sh exec frontend yarn add akvo-charts`)<br>• Build `IndicatorLineChartCard.jsx` using `akvo-charts` `<Line>` component<br>• Configure 3 distinct curves: Member (solid blue), ISCO Avg (dashed orange), GISCO Avg (dotted green)<br>• Handle inverted polarity for child labour identification (lower is better visual cues)<br>• Render non-connected gaps for missing years (`null` points)<br>• Build compact yearly data table below each chart (`Year`, `Member`, `ISCO Avg`, `GISCO Avg`)<br>• Responsive 2-column grid layout across 4 Challenge sections | 4.5h | 2.0h | 2.5h | **9.0h** | ~1.3d |
+| **TASK-07** | **E2E Integration, Docker Coverage Gate & Partner Feedback Buffer**<br>• Full regression run inside Docker (`./dc.sh exec backend ./test.sh`) enforcing **≥80% test coverage**<br>• Backend linting (`flake8`) and frontend linting/formatting (`yarn lint`, `yarn prettier-write`)<br>• Cross-browser testing (Chrome, Firefox, Safari) and responsive layout validation<br>• Walkthrough review demo with Joy Ghosh (Akvo) and Dr. Ulrike Joras (GISCO)<br>• Dedicated buffer for stakeholder adjustments and formula calibration | 2.5h | 1.5h | 5.5h | **9.5h** | ~1.4d |
+| **TOTAL** | **Full Feature Delivery ("Dashboard Member X" Sheet)** | **22.5h** | **12.5h** | **17.0h** | **52.0h** | **~7.4 Working Days** |
 
 ---
 
@@ -362,11 +376,11 @@ Alembic migration creates the tables and seeds 4 harmonized peer groups linked t
 
 | Component | Optimistic ("Vibe Coding") | Calibrated Buffered Plan | Difference (Buffer) | Rationale |
 | :--- | :---: | :---: | :---: | :--- |
-| **Core Dev Implementation** | 18.0h | 24.0h | +6.0h | Accounts for real-world AST edge cases, repeat group handling, and responsive styling. |
-| **Automated Testing (TEA)** | 8.0h | 13.0h | +5.0h | Guarantees meeting the strict ≥80% test coverage gate inside Docker (`./dc.sh`). |
-| **Manual QA & Verification** | 4.0h | 12.5h | +8.5h | Adds +1.0h to +2.0h per task for manual browser inspection and Excel reconciliation. |
-| **Partner Review Reserve** | 0.0h | 6.5h | +6.5h | Explicit buffer for review demos with GISCO/Akvo and requested formula adjustments. |
-| **Total Effort** | **30.0h (~4.3 days)** | **56.0h (8.0 days)** | **+26.0h (+3.7 days)** | **Provides realistic, stress-free delivery without risk of scope or deadline slip.** |
+| **Core Dev Implementation** | 16.5h | 22.5h | +6.0h | Accounts for real-world AST edge cases, repeat group handling, and responsive styling. |
+| **Automated Testing (TEA)** | 7.5h | 12.5h | +5.0h | Guarantees meeting the strict ≥80% test coverage gate inside Docker (`./dc.sh`). |
+| **Manual QA & Verification** | 4.0h | 11.5h | +7.5h | Adds +1.0h to +2.0h per task for manual browser inspection and Excel reconciliation. |
+| **Partner Review Reserve** | 0.0h | 5.5h | +5.5h | Explicit buffer for review demos with GISCO/Akvo and requested formula adjustments. |
+| **Total Effort** | **28.0h (~4.0 days)** | **52.0h (~7.4 days)** | **+24.0h (+3.4 days)** | **Provides realistic, stress-free delivery without risk of scope or deadline slip.** |
 
 ---
 
