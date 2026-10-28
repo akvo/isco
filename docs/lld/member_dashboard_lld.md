@@ -306,15 +306,6 @@ Alembic migration creates the tables and seeds 4 harmonized peer groups linked t
   ]
 }
 ```
-            { "year": 2023, "member": 0.2979, "isco_avg": 0.3630, "gisco_avg": 0.3200 },
-            { "year": 2024, "member": 0.4786, "isco_avg": 0.4670, "gisco_avg": 0.4500 }
-          ]
-        }
-      ]
-    }
-  ]
-}
-```
 
 ---
 
