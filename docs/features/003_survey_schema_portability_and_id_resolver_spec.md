@@ -259,36 +259,62 @@ class SurveyIdResolver:
 
 ---
 
-## 5. Granular Task Estimation & Sprint Plan (20.0 Hours / ~2.8 Days)
+---
 
-| Task ID | Task Description & Subtasks | Vibe Coding (Dev) | Automated Testing | QA & Review | Total Buffered | Independent QA Verification Gate |
+## 5. Unified Single-Task Breakdown & Estimation (1 Atomic Sprint Task)
+
+To keep sprint management lean and focused, this capability is consolidated into **one cohesive task** (`TASK-SYNC`) delivering the end-to-end portability suite.
+
+### 5.1 Single-Task Estimation Matrix
+
+| Task ID | Task Description | Vibe Coding (Dev) | Automated Testing | QA & Review | Total Buffered | Independent QA Gate |
 | :--- | :--- | :---: | :---: | :---: | :---: | :--- |
-| **SYNC-01** | **Structure-Only Survey Exporter CLI**<br>• Create `backend/scripts/dump_survey_schema.py`<br>• Query `Form`, `QuestionGroup`, `Question`, `Option`, `Cascade`, `SkipLogic`<br>• Enforce strict SQL exclusion of `answer`, `data`, `organisation`, `user`<br>• Dumps sanitized JSON schema with `canonical_id` attributes | 2.5h | 1.5h | 1.0h | **5.0h (~0.7d)** | **Independent Privacy Gate**:<br>QA runs script on database; inspects JSON file to verify it contains 0 rows of answers, organizations, or users. |
-| **SYNC-02** | **Survey Schema Importer & Mapping Ledger**<br>• Create `backend/scripts/import_survey_schema.py`<br>• Reads `survey_schema_export.json` and inserts into target DB<br>• Idempotent upsert matching by name or `variable_name`<br>• Generates `id_mapping.json` pairing old $\rightarrow$ new IDs | 3.0h | 1.5h | 1.5h | **6.0h (~0.8d)** | **Independent Migration Gate**:<br>QA runs importer on empty DB; confirms survey is created and `id_mapping.json` records accurate old-to-new ID pairs. |
-| **SYNC-03** | **Environment ID Resolver Service**<br>• Create `backend/services/survey_id_resolver.py`<br>• Implement `resolve_question_id` and `resolve_formula`<br>• Wire into AST formula evaluator in `visualization_service.py`<br>• Unit tests verifying environment switching and formula translation | 2.5h | 1.5h | 1.0h | **5.0h (~0.7d)** | **Independent Resolver Gate**:<br>Unit tests assert that in local env `ID86` translates to local ID, and in production it passes through unchanged. |
-| **SYNC-04** | **Synthetic Visualization Answers Seeder**<br>• Create `backend/scripts/seed_mock_visualization_data.py`<br>• Uses resolved local Question IDs to seed dummy submissions for 2022–2024<br>• Replicates reference values from `5_Template DUMMY_Individual_reporting_back_ISCO_GISCO.xlsx` | 2.0h | 1.0h | 1.0h | **4.0h (~0.6d)** | **Independent Data Gate**:<br>QA triggers seeder; verifies `/api/visualization/individual-dashboard` returns full 3-year multi-line curves locally. |
-| **TOTAL** | **Full Survey Portability & Multi-Environment Suite** | **10.0h** | **5.5h** | **4.5h** | **20.0h** | **~2.8 Working Days (0.6 Sprints)** |
+| **TASK-SYNC** | **Complete Survey Schema Portability & Multi-Environment ID Resolver Suite**<br>1. **CLI Exporter**: `dump_survey_schema.py` extracting all 8 structural survey layers (Form, Group, Question, Option, Cascade, CascadeList, SkipLogic, Access) without answers/users.<br>2. **Two-Pass CLI Importer**: `import_survey_schema.py` with idempotent upsert and referential dependency re-linking.<br>3. **Mapping Ledger & Resolver**: `survey_id_resolver.py` auto-translating canonical IDs to local database IDs.<br>4. **Synthetic Data Seeder**: `seed_mock_visualization_data.py` injecting 2022–2024 dummy answers.<br>5. **Automated Test Suite**: `test_survey_sync_and_resolver.py` testing export, import, round-trip parity, and resolver. | **6.0h** | **3.0h** | **2.5h** | **11.5h (~1.6 Working Days)** | **Full Round-Trip & Parity Gate**:<br>1. Dump survey from DB.<br>2. Inspect JSON: verify 0 sensitive answer/user rows.<br>3. Import JSON to clean test DB.<br>4. Run resolver & mock seeder.<br>5. Full regression passes with $\ge 80\%$ test coverage inside Docker. |
 
 ---
 
-## 6. User & Technical Acceptance Criteria (UAC & TAC)
+## 6. Detailed User & Technical Acceptance Criteria (UAC & TAC)
 
 ### 👤 User Acceptance Criteria (UAC)
-1. **UAC-01 (Data Privacy Guarantee)**: Exported survey files must never contain any member responses, organization identities, user accounts, or confidential survey answers.
-2. **UAC-02 (Multi-Environment Consistency)**: The exact same dashboard code and configuration runs without modification across Local, Test, and Production environments.
-3. **UAC-03 (Local Developer Autonomy)**: Developers and QA testers can work locally with realistic 3-year trend charts without needing access to production database dumps.
+- **UAC-SYNC.1 (Strict Privacy & Zero Data Leakage)**:
+  - Exported survey files must strictly contain schema definitions only.
+  - Zero rows of member answers, submitted questionnaires, user accounts, passwords, or organization identities can ever appear in the exported JSON.
+- **UAC-SYNC.2 (Full 8-Layer Survey Coverage)**:
+  - The export and import utility must handle the entire survey structure:
+    1. Form metadata and versioning.
+    2. Question groups (including repeatable sections and leading questions).
+    3. Questions (all input, number, option, cascade, and autofield types).
+    4. Options and multilingual translations.
+    5. Hierarchical Cascades and CascadeLists (parent-child dropdown trees).
+    6. Skip logic conditional branching rules.
+    7. Autofield computed validation formulas.
+    8. Member type and ISCO access control matrices.
+- **UAC-SYNC.3 (Cross-Environment Parity)**:
+  - The exact same codebase and indicator mapping (`visualization_mapping.json`) works seamlessly across Local, Test, and Production environments without manual ID re-mapping.
+- **UAC-SYNC.4 (Local Developer Self-Sufficiency)**:
+  - Running a single CLI command in Local Docker seeds realistic 2022–2024 test answers matching the partner Excel template, enabling immediate UI development without production database access.
 
 ### ⚙️ Technical Acceptance Criteria (TAC)
-1. **TAC-01 (Zero-Answer Whitelist Query)**:
-   - Exporter queries explicitly whitelist `Form`, `QuestionGroup`, `Question`, and `Option` tables.
-   - Code review verifies that `models.answer.Answer` and `models.data.Data` are never imported or queried.
-2. **TAC-02 (Idempotent Import)**:
-   - Re-running `import_survey_schema.py` does not create duplicate questions or violate unique constraints.
-3. **TAC-03 (Resolver Performance)**:
-   - `SurveyIdResolver` caches the mapping ledger in memory on first call ($O(1)$ dictionary lookup, latency $< 1\text{ms}$).
-4. **TAC-04 (Formula Translation Parity)**:
-   - Formula regex safely translates `ID840 + ID841` into `ID29 + ID30` in non-production environments while preserving original operators, parentheses, and functions.
-5. **TAC-05 (Docker Execution Standard)**:
-   - All scripts run via `./dc.sh exec backend python scripts/...`.
-   - Test suite passes with $\ge 80\%$ test coverage: `./dc.sh exec backend pytest tests/test_survey_sync_and_resolver.py -v`.
+- **TAC-SYNC.1 (Zero-Answer SQL Whitelist)**:
+  - `backend/scripts/dump_survey_schema.py` uses an explicit query whitelist for definition models only (`Form`, `QuestionGroup`, `Question`, `Option`, `Cascade`, `CascadeList`, `SkipLogic`).
+  - Code review strictly verifies that `models.answer.Answer` and `models.data.Data` are never imported or queried.
+- **TAC-SYNC.2 (Two-Pass Referential Integrity Algorithm)**:
+  - `backend/scripts/import_survey_schema.py` executes in two deterministic passes within a single transactional session:
+    - *Pass 1*: Inserts Forms, Groups, Cascades, Questions, and Options while building an in-memory mapping (`{ old_canonical_id: new_local_id }`).
+    - *Pass 2*: Remaps `SkipLogic.dependent_to`, `Question.cascade_id`, and `fn.fnString` in Autofield formulas to point to the newly assigned local primary keys.
+  - Idempotency: Re-running the script against an already imported schema updates existing records without duplicate rows or primary key constraint violations.
+- **TAC-SYNC.3 (Environment Mapping Ledger)**:
+  - Importer outputs `source/config/id_mapping.json` recording numeric mappings for forms, groups, and questions.
+  - File format validation: Ledger contains only integer pairs (`{ "86": 28, ... }`), preventing SQL injection vectors.
+- **TAC-SYNC.4 (Runtime ID Resolver Performance & Safety)**:
+  - `backend/services/survey_id_resolver.py` provides `resolve_question_id(id)` and `resolve_formula(formula)`.
+  - In Production (`CONFIG_SOURCE_PATH=production`), functions operate as zero-overhead identity pass-throughs.
+  - In Local/Test, maps are cached in memory on first call ($O(1)$ dictionary lookup, latency $< 1\text{ms}$).
+  - Regex translation cleanly replaces `ID86` $\rightarrow$ `ID28` while preserving operators, parentheses, and aggregation functions (`SUM`, `AVG`).
+- **TAC-SYNC.5 (Synthetic Mock Seeder)**:
+  - `backend/scripts/seed_mock_visualization_data.py` uses the resolved local IDs to generate test `Data` submissions and `Answer` values across 2022, 2023, and 2024 matching the reference Excel figures.
+- **TAC-SYNC.6 (Docker Verification & Coverage Gate)**:
+  - All scripts executable inside Docker via `./dc.sh exec backend python scripts/...`.
+  - Pytest suite `tests/test_survey_sync_and_resolver.py` includes a full round-trip parity test (`dump` ➔ `import` ➔ `dump` ➔ compare structure) and achieves **$\ge 80\%$ test coverage**.
+  - Flake8 linter passes with 0 violations: `./dc.sh exec backend flake8`.
 
