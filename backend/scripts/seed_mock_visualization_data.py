@@ -44,6 +44,7 @@ from models.organisation import Organisation  # noqa: E402
 from models.user import User, UserRole  # noqa: E402
 from models.data import Data  # noqa: E402
 from models.answer import Answer  # noqa: E402
+from models.cascade_list import CascadeList  # noqa: E402
 from models.skip_logic import SkipLogic  # noqa: E402
 from services.survey_id_resolver import SurveyIdResolver  # noqa: E402
 
@@ -240,6 +241,27 @@ def seed_mock_visualization_data(
         for s in all_skips:
             skip_rules_by_qid.setdefault(s.question, []).append(s)
 
+    # Pre-cache Cascade & NestedList leaf options grouped by cascade ID
+    cascade_leaves_by_id: Dict[int, List[str]] = {}
+    all_cascade_items = session.query(CascadeList).all()
+    cascade_items_by_cid: Dict[int, List[CascadeList]] = {}
+    for ci in all_cascade_items:
+        cascade_items_by_cid.setdefault(ci.cascade, []).append(ci)
+
+    for cid, citems in cascade_items_by_cid.items():
+        parent_ids = {i.parent for i in citems if i.parent is not None}
+        item_by_id = {i.id: i for i in citems}
+        leaves = [i for i in citems if i.id not in parent_ids]
+        leaf_paths = []
+        for leaf in leaves:
+            curr = leaf
+            chain = []
+            while curr:
+                chain.append(curr.name)
+                curr = item_by_id.get(curr.parent)
+            leaf_paths.append("|".join(reversed(chain)))
+        cascade_leaves_by_id[cid] = leaf_paths
+
     all_created_submissions = []
 
     # 4. Iterate through Organisations and Years
@@ -381,21 +403,54 @@ def seed_mock_visualization_data(
                     if should_skip_question(rules, submission_answers):
                         continue
 
-                # Populate reasonable default
+                # Populate randomized answer based on question type
                 default_num = None
                 default_text = None
                 default_opts = None
 
                 if q_model.type == QuestionType.number:
-                    default_num = _apply_jitter(50.0, jitter)
-                elif q_model.type in (
-                    QuestionType.option,
-                    QuestionType.multiple_option,
-                ):
+                    # Random numeric value (10 - 250) with jitter
+                    base_random_num = float(random.randint(10, 250))
+                    default_num = _apply_jitter(base_random_num, jitter)
+                elif q_model.type == QuestionType.option:
+                    # Pick a single random option from available choices
                     if q_model.option:
-                        default_opts = [q_model.option[0].name]
+                        chosen_opt = random.choice(q_model.option)
+                        default_opts = [chosen_opt.name]
+                elif q_model.type == QuestionType.multiple_option:
+                    # Pick 1 to N random distinct options
+                    if q_model.option:
+                        k = random.randint(1, min(3, len(q_model.option)))
+                        sampled = random.sample(q_model.option, k)
+                        default_opts = [opt.name for opt in sampled]
+                elif q_model.type in (
+                    QuestionType.cascade,
+                    QuestionType.nested_list,
+                ):
+                    # Pick random leaf path from cascade tree
+                    cid = q_model.cascade
+                    if cid and cid in cascade_leaves_by_id:
+                        c_leaves = cascade_leaves_by_id[cid]
+                        if c_leaves:
+                            if q_model.type == QuestionType.nested_list:
+                                k = random.randint(1, min(2, len(c_leaves)))
+                                default_opts = random.sample(c_leaves, k)
+                            else:
+                                default_opts = [random.choice(c_leaves)]
+                elif q_model.type == QuestionType.date:
+                    d = random.randint(1, 28)
+                    m = random.randint(1, 12)
+                    default_text = f"{yr:04d}-{m:02d}-{d:02d}T09:00:00.000Z"
                 elif q_model.type in (QuestionType.input, QuestionType.text):
-                    default_text = f"Synthetic response {yr}"
+                    synthetic_phrases = [
+                        f"Detailed feedback for cycle {yr}.",
+                        f"Action plan in cooperation with partners ({yr}).",
+                        f"Annual sustainability verification done for {yr}.",
+                        f"Field observations and monitoring notes in {yr}.",
+                        f"Capacity building assistance deployed in {yr}.",
+                        f"SOP conducted according to guidelines ({yr}).",
+                    ]
+                    default_text = random.choice(synthetic_phrases)
 
                 if default_num is not None or default_text or default_opts:
                     ans_rec = Answer(
