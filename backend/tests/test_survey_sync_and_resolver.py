@@ -574,8 +574,20 @@ def test_seed_mock_visualization_data(session):
         org_id=org.id,
         user_id=user.id,
         years=[2022, 2023, 2024],
+        num_orgs=1,
     )
     assert len(result2["submissions"]) == 3
+
+    # Test Multi-Org & Skip-Logic Aware Seeding
+    result_multi = seed_mock_visualization_data(
+        session=session,
+        form_id=7,
+        years=[2024],
+        num_orgs=2,
+        skip_logic_check=True,
+    )
+    assert result_multi["organisations_seeded"] >= 1
+    assert len(result_multi["submissions"]) >= 1
 
 
 def test_seed_mock_visualization_data_cli_main(monkeypatch, session):

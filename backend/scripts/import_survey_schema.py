@@ -43,6 +43,8 @@ import models.answer  # noqa: F401, E402
 import models.data  # noqa: F401, E402
 
 from models.form import Form  # noqa: E402
+from models.member_type import MemberType  # noqa: E402
+from models.isco_type import IscoType  # noqa: E402
 from models.question_group import QuestionGroup  # noqa: E402
 from models.question import Question, QuestionType  # noqa: E402
 from models.option import Option  # noqa: E402
@@ -182,6 +184,24 @@ def normalize_schema_data(data: Dict[str, Any]) -> Dict[str, Any]:
                         "type": "number",
                     })
 
+            # Unpack tooltip if serialized as dict
+            # e.g. {"text": ..., "translations": ...}
+            raw_tooltip = q.get("tooltip")
+            tooltip_str = None
+            tooltip_trans = q.get("tooltip_translations", [])
+            if isinstance(raw_tooltip, dict):
+                tooltip_str = raw_tooltip.get("text")
+                if not tooltip_trans and "translations" in raw_tooltip:
+                    tooltip_trans = raw_tooltip.get("translations", [])
+            elif isinstance(raw_tooltip, str):
+                tooltip_str = raw_tooltip
+
+            # For tree/nested_list, 'option' field points to tree name string
+            raw_options = q.get("option", [])
+            parsed_options = (
+                raw_options if isinstance(raw_options, list) else []
+            )
+
             q_entry = {
                 "canonical_question_id": q.get("id"),
                 "name": q.get("name", ""),
@@ -192,8 +212,8 @@ def normalize_schema_data(data: Dict[str, Any]) -> Dict[str, Any]:
                 "type": q_type,
                 "personal_data": q.get("personal_data", False),
                 "rule": q.get("rule"),
-                "tooltip": q.get("tooltip"),
-                "tooltip_translations": q.get("tooltip_translations", []),
+                "tooltip": tooltip_str,
+                "tooltip_translations": tooltip_trans,
                 "cascade": casc_id,
                 "repeating_objects": q.get("repeating_objects", []),
                 "order": q.get("order", 1),
@@ -204,7 +224,7 @@ def normalize_schema_data(data: Dict[str, Any]) -> Dict[str, Any]:
                 "show_as_textarea": q.get("show_as_textarea", False),
                 "member_access": q.get("member_access", []),
                 "isco_access": q.get("isco_access", []),
-                "options": q.get("option", []),
+                "options": parsed_options,
                 "skip_logic": skip_logics,
             }
             g_entry["questions"].append(q_entry)
@@ -233,6 +253,35 @@ def import_survey_schema(
         target_environment = os.environ.get("BUCKET_FOLDER", "local")
 
     schema_data = normalize_schema_data(schema_data)
+
+    # Pre-cache MemberType and IscoType mappings (name -> id, and id -> id)
+    member_type_map: Dict[Any, int] = {}
+    for mt in session.query(MemberType).all():
+        member_type_map[mt.id] = mt.id
+        member_type_map[mt.name] = mt.id
+
+    isco_type_map: Dict[Any, int] = {}
+    for it in session.query(IscoType).all():
+        isco_type_map[it.id] = it.id
+        isco_type_map[it.name] = it.id
+
+    def _resolve_member_type(val: Any) -> Optional[int]:
+        if val in member_type_map:
+            return member_type_map[val]
+        try:
+            int_val = int(val)
+            return member_type_map.get(int_val)
+        except (ValueError, TypeError):
+            return None
+
+    def _resolve_isco_type(val: Any) -> Optional[int]:
+        if val in isco_type_map:
+            return isco_type_map[val]
+        try:
+            int_val = int(val)
+            return isco_type_map.get(int_val)
+        except (ValueError, TypeError):
+            return None
 
     form_mapping: Dict[int, int] = {}
     group_mapping: Dict[int, int] = {}
@@ -370,7 +419,7 @@ def import_survey_schema(
                     order=group_order,
                     repeat=g_data.get("repeatable", False),
                     repeat_text=g_data.get("repeat_text"),
-                    leading_question=g_data.get("leading_question"),
+                    leading_question=None,  # Re-linked in Pass 2
                     show_repeat_in_question_level=bool(
                         g_data.get("show_repeat_in_question_level", False)
                     ),
@@ -384,7 +433,7 @@ def import_survey_schema(
                 group_rec.order = group_order
                 group_rec.repeat = g_data.get("repeatable", False)
                 group_rec.repeat_text = g_data.get("repeat_text")
-                group_rec.leading_question = g_data.get("leading_question")
+                # Do not set leading_question here; re-linked in Pass 2
                 group_rec.show_repeat_in_question_level = bool(
                     g_data.get("show_repeat_in_question_level", False)
                 )
@@ -395,7 +444,10 @@ def import_survey_schema(
             existing_m_access = {
                 ma.member_type for ma in group_rec.member_access
             }
-            target_m_access = set(g_data.get("member_access", []))
+            target_m_access = {
+                _resolve_member_type(m)
+                for m in g_data.get("member_access", [])
+            } - {None}
             for m_type in target_m_access - existing_m_access:
                 session.add(
                     QuestionGroupMemberAccess(
@@ -408,7 +460,9 @@ def import_survey_schema(
             existing_i_access = {
                 ia.isco_type for ia in group_rec.isco_access
             }
-            target_i_access = set(g_data.get("isco_access", []))
+            target_i_access = {
+                _resolve_isco_type(i) for i in g_data.get("isco_access", [])
+            } - {None}
             for i_type in target_i_access - existing_i_access:
                 session.add(
                     QuestionGroupIscoAccess(
@@ -508,7 +562,10 @@ def import_survey_schema(
                 existing_qm = {
                     ma.member_type for ma in q_rec.member_access
                 }
-                qm_target = set(q_data.get("member_access", []))
+                qm_target = {
+                    _resolve_member_type(m)
+                    for m in q_data.get("member_access", [])
+                } - {None}
                 for m_type in qm_target - existing_qm:
                     session.add(
                         QuestionMemberAccess(
@@ -521,7 +578,11 @@ def import_survey_schema(
                 existing_qi = {
                     ia.isco_type for ia in q_rec.isco_access
                 }
-                for i_type in set(q_data.get("isco_access", [])) - existing_qi:
+                qi_target = {
+                    _resolve_isco_type(i)
+                    for i in q_data.get("isco_access", [])
+                } - {None}
+                for i_type in qi_target - existing_qi:
                     session.add(
                         QuestionIscoAccess(
                             id=None,
@@ -573,6 +634,21 @@ def import_survey_schema(
     # PASS 2: Dependency Re-linking
     # =========================================================================
     for f_data in forms_data:
+        # Re-link leading_question for Question Groups
+        for g_data in f_data.get("question_groups", []):
+            c_g_id = g_data["canonical_group_id"]
+            local_g_id = group_mapping.get(c_g_id)
+            leading_q = g_data.get("leading_question")
+            if local_g_id and leading_q:
+                local_leading_q = question_mapping.get(leading_q, leading_q)
+                group_rec = (
+                    session.query(QuestionGroup)
+                    .filter_by(id=local_g_id)
+                    .first()
+                )
+                if group_rec:
+                    group_rec.leading_question = local_leading_q
+
         for g_data in f_data.get("question_groups", []):
             for q_data in g_data.get("questions", []):
                 c_q_id = q_data["canonical_question_id"]
