@@ -17,6 +17,8 @@ from db.crud_peer_group import (
     delete_peer_group,
     add_peer_group_member_type,
     get_peer_group_for_member_type,
+    get_peer_groups_with_mappings,
+    sync_peer_group_member_types,
 )
 
 
@@ -64,6 +66,15 @@ def test_peer_group_crud_lifecycle(session):
     TAC-01.1 & TAC-01.4:
     Verify create, read, update, delete operations on PeerGroup and mappings.
     """
+    # Clean up any leftover test artifact
+    leftover = (
+        session.query(PeerGroup)
+        .filter(PeerGroup.code == "coop_union")
+        .first()
+    )
+    if leftover:
+        delete_peer_group(session=session, id=leftover.id)
+
     payload: PeerGroupPayload = {
         "name": "Cooperative Union",
         "code": "coop_union",
@@ -93,12 +104,10 @@ def test_peer_group_crud_lifecycle(session):
     assert updated.name == "Smallholder Cooperative Union"
     assert updated.description == "Updated description"
 
-    # Create dummy member type to link
-    mt = session.query(MemberType).first()
-    if not mt:
-        mt = MemberType(id=9999, name="Special Cohort MT")
-        session.add(mt)
-        session.commit()
+    # Create dedicated dummy member type to link
+    mt = MemberType(id=99988, name="Lifecycle Test Exclusive MT")
+    session.add(mt)
+    session.commit()
 
     mt_payload: PeerGroupMemberTypePayload = {
         "peer_group_id": pg.id,
@@ -131,6 +140,8 @@ def test_peer_group_crud_lifecycle(session):
         .first()
     )
     assert remaining_mapping is None
+    session.delete(mt)
+    session.commit()
 
 
 def test_seeded_4_harmonized_peer_groups(session):
@@ -205,3 +216,37 @@ def test_nonexistent_member_type_resolution(session):
         session=session, member_type_id=9999999
     )
     assert resolved is None
+
+
+def test_peer_group_serialize_with_mappings_and_sync(session):
+    """Verify serialize_with_mappings and sync_peer_group_member_types."""
+    groups = get_peer_groups_with_mappings(session=session)
+    assert len(groups) >= 4
+    for g in groups:
+        assert "member_types" in g
+        assert isinstance(g["member_types"], list)
+
+    sync_pg = add_peer_group(
+        session=session,
+        payload={
+            "name": "Sync Test Peer Group",
+            "code": "sync_test_pg",
+            "description": "For sync testing",
+        },
+    )
+    mts = session.query(MemberType).limit(3).all()
+    target_ids = [m.id for m in mts]
+
+    updated = sync_peer_group_member_types(
+        session=session, peer_group_id=sync_pg.id, member_type_ids=target_ids
+    )
+    assert len(updated["member_types"]) == 3
+
+    # Invalid ID
+    with pytest.raises(HTTPException):
+        sync_peer_group_member_types(
+            session=session,
+            peer_group_id=sync_pg.id,
+            member_type_ids=[99999999],
+        )
+    delete_peer_group(session=session, id=sync_pg.id)

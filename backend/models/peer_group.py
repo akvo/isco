@@ -2,13 +2,18 @@
 # Keep the code clean and CLEAR
 
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel
 from typing_extensions import TypedDict
 from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from db.connection import Base
 from models.member_type import MemberType
+
+
+class MappedMemberTypeDict(TypedDict):
+    id: int
+    name: str
 
 
 class PeerGroupPayload(TypedDict):
@@ -23,6 +28,19 @@ class PeerGroupDict(TypedDict):
     code: str
     description: Optional[str]
     created: str
+
+
+class PeerGroupWithMappingsDict(TypedDict):
+    id: int
+    name: str
+    code: str
+    description: Optional[str]
+    created: str
+    member_types: List[MappedMemberTypeDict]
+
+
+class UpdatePeerGroupMappingsPayload(BaseModel):
+    member_type_ids: List[int]
 
 
 class PeerGroup(Base):
@@ -57,6 +75,28 @@ class PeerGroup(Base):
 
     def __repr__(self) -> str:
         return f"<PeerGroup {self.id}: {self.code}>"
+
+    @property
+    def serialize_with_mappings(self) -> PeerGroupWithMappingsDict:
+        mapped_types: List[MappedMemberTypeDict] = []
+        for mt in self.member_types:
+            if mt.member_type_detail:
+                mapped_types.append(
+                    {
+                        "id": mt.member_type_detail.id,
+                        "name": mt.member_type_detail.name,
+                    }
+                )
+        return {
+            "id": self.id,
+            "name": self.name,
+            "code": self.code,
+            "description": self.description,
+            "created": self.created.strftime("%Y-%m-%d %H:%M:%S")
+            if self.created
+            else "",
+            "member_types": sorted(mapped_types, key=lambda x: x["name"]),
+        }
 
     @property
     def serialize(self) -> PeerGroupDict:
