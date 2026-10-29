@@ -79,6 +79,56 @@ docker-compose down -v
 docker volume rm isco-docker-sync
 ```
 
+### Database Migrations & Seeders
+
+#### 1. Database Migrations (Alembic)
+Database schema definitions and DDL are version-controlled using Alembic.
+All migration commands must be executed inside the backend container via `./dc.sh`:
+
+- **Run all pending migrations**:
+  ```bash
+  ./dc.sh exec backend alembic upgrade head
+  ```
+- **Roll back the latest migration**:
+  ```bash
+  ./dc.sh exec backend alembic downgrade -1
+  ```
+- **Create a new migration**:
+  ```bash
+  ./dc.sh exec backend alembic revision -m "your_migration_description"
+  ```
+
+> **Migration Guidelines**:
+> - Migrations are strictly for **DDL (schema structure, tables, columns, indexes, foreign keys)** and static foundational reference rows (such as the 4 permanent harmonized peer groups).
+> - Dynamic domain data and cross-table mappings must **not** be seeded inside migrations to keep migrations 100% deterministic across fresh test environments and existing production databases.
+
+#### 2. Database Seeders
+Initial reference data, test datasets, and entity mappings are located in `backend/seeder/`:
+
+- **Seed Member & ISCO Types**:
+  ```bash
+  ./dc.sh exec backend python -m seeder.member_isco_type
+  ```
+- **Seed & Reconcile Peer Groups & Member Type Mappings**:
+  ```bash
+  ./dc.sh exec backend python -m seeder.peer_group
+  ```
+- **Seed Organisations**:
+  ```bash
+  ./dc.sh exec backend python -m seeder.organisation
+  ```
+- **Seed Users**:
+  ```bash
+  ./dc.sh exec backend python -m seeder.user
+  ```
+- **Seed Roadmap Forms**:
+  ```bash
+  ./dc.sh exec backend python -m seeder.roadmap_init
+  ```
+
+> **Single Source of Truth**:
+> Canonical static reference data is maintained in `backend/seeder/static/` (e.g. `static_peer_group.py`, `static_member_isco.py`). Both seeders and runtime services import from these definitions to guarantee DRY consistency across the platform.
+
 ### Static Content Extraction
 
 To extract the static content constants from the frontend application into a `.xlsx` spreadsheet, you can use the provided export script. This will run a script inside the Docker container to generate `frontend/content-export.xlsx`.

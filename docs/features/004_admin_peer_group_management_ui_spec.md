@@ -209,3 +209,22 @@ All verification commands executed via `./dc.sh`:
 | **TASK-01B.3** | **Navigation Wiring, Integration & Quality Gates**<br>• Add "Manage Peer Groups" card in `frontend/src/pages/admin/Admin.jsx`<br>• Register route in `frontend/src/App.js` and export in `pages/index.js`<br>• Pytest route tests (`test_peer_group_routes.py`) validating RBAC & transactions<br>• Enforce $\ge 80\%$ test coverage and Flake8/Yarn linting clean | 0.5h | 0.5h | 0.5h | **1.5h** |
 | **TOTAL** | **TASK-01 Bonus Slice Delivery** | **4.0h** | **2.25h** | **1.75h** | **8.0h (~1.1d)** |
 
+---
+
+## 9. Migration & Seeder Architecture Note
+
+To guarantee 100% deterministic database operations across CI/test suites and production, we decouple schema structure from entity seeders:
+
+1. **Alembic Migration (`migrations/versions/2026-10-29-17-05-00_857e7a330177_create_peer_group_tables.py`)**:
+   - Strictly handles DDL: creates `peer_group` and `peer_group_member_type` tables, foreign keys, and indexes.
+   - Inserts the 4 foundational structural peer group rows (`trader_processor`, `large_manufacturer`, `sme`, `retail`).
+   - Contains zero cross-table dynamic queries against `member_type`.
+2. **Canonical Single Source of Truth (`seeder/static/static_peer_group.py`)**:
+   - Defines the official peer group metadata and default member type name mappings.
+   - Imported by seeders and runtime services to maintain strict DRY compliance.
+3. **Idempotent Seeder Script (`seeder/peer_group.py`)**:
+   - Run manually or in deployment setups via `./dc.sh exec backend python -m seeder.peer_group`.
+   - Also integrated into `seeder/member_isco_type.py` so anytime member types are seeded or updated, peer group mappings are automatically reconciled.
+4. **Administrative Web UI (`/manage-peer-group`)**:
+   - Provides runtime flexibility for Secretariat Admins to adjust mappings on the fly without needing new migrations or code deployments.
+

@@ -19,6 +19,7 @@ from db.crud_peer_group import (
     get_peer_group_for_member_type,
     get_peer_groups_with_mappings,
     sync_peer_group_member_types,
+    reconcile_peer_group_mappings,
 )
 
 
@@ -193,21 +194,45 @@ def test_member_type_to_peer_group_resolution(session):
         ("Retail DISCO", "retail"),
     ]
 
+    created_mts = []
+    for mt_name, _ in test_cases:
+        mt = session.query(MemberType).filter(
+            MemberType.name == mt_name
+        ).first()
+        if not mt:
+            mt = MemberType(id=None, name=mt_name)
+            session.add(mt)
+            session.commit()
+            created_mts.append(mt)
+
+    reconcile_peer_group_mappings(session=session)
+
     for mt_name, expected_pg_code in test_cases:
         mt = session.query(MemberType).filter(
             MemberType.name == mt_name
         ).first()
-        if mt:
-            pg = get_peer_group_for_member_type(
-                session=session, member_type_id=mt.id
-            )
-            assert pg is not None, (
-                f"MemberType '{mt_name}' should map to a peer group"
-            )
-            assert pg.code == expected_pg_code, (
-                f"MemberType '{mt_name}' should map to '{expected_pg_code}', "
-                f"got '{pg.code}'"
-            )
+        assert mt is not None
+        pg = get_peer_group_for_member_type(
+            session=session, member_type_id=mt.id
+        )
+        assert pg is not None, (
+            f"MemberType '{mt_name}' should map to a peer group"
+        )
+        assert pg.code == expected_pg_code, (
+            f"MemberType '{mt_name}' should map to '{expected_pg_code}', "
+            f"got '{pg.code}'"
+        )
+
+    # Clean up test member types created by this test
+    if created_mts:
+        mt_ids = [m.id for m in created_mts]
+        session.query(PeerGroupMemberType).filter(
+            PeerGroupMemberType.member_type_id.in_(mt_ids)
+        ).delete(synchronize_session=False)
+        session.query(MemberType).filter(
+            MemberType.id.in_(mt_ids)
+        ).delete(synchronize_session=False)
+        session.commit()
 
 
 def test_nonexistent_member_type_resolution(session):

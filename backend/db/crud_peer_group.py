@@ -1,7 +1,9 @@
 from fastapi import HTTPException, status
 from typing import List, Optional
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from models.member_type import MemberType
+from seeder.static.static_peer_group import PEER_GROUPS
 from models.peer_group import (
     PeerGroup,
     PeerGroupDict,
@@ -148,3 +150,40 @@ def get_peer_group_for_member_type(
     if mapping and mapping.peer_group_detail:
         return mapping.peer_group_detail
     return None
+
+
+def reconcile_peer_group_mappings(session: Session) -> int:
+    """
+    Idempotently reconciles existing MemberType records with their default
+    harmonized peer group mappings. Returns the number of new mappings created.
+    """
+    created_count = 0
+    existing_mappings = {
+        (m.peer_group_id, m.member_type_id)
+        for m in session.query(PeerGroupMemberType).all()
+    }
+    for pg_def in PEER_GROUPS:
+        code = pg_def["code"]
+        mt_names = pg_def.get("member_types", [])
+        pg = session.query(PeerGroup).filter(PeerGroup.code == code).first()
+        if not pg:
+            continue
+        for name in mt_names:
+            matching_mts = (
+                session.query(MemberType)
+                .filter(func.lower(MemberType.name) == name.lower())
+                .all()
+            )
+            for mt in matching_mts:
+                if (pg.id, mt.id) not in existing_mappings:
+                    mapping = PeerGroupMemberType(
+                        peer_group_id=pg.id,
+                        member_type_id=mt.id,
+                        isco_scope="ALL",
+                    )
+                    session.add(mapping)
+                    existing_mappings.add((pg.id, mt.id))
+                    created_count += 1
+    if created_count > 0:
+        session.commit()
+    return created_count
