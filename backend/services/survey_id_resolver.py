@@ -20,7 +20,19 @@ class SurveyIdResolver:
     """
 
     def __init__(self, mapping_path: Optional[str] = None):
-        self.env = os.environ.get("BUCKET_FOLDER", "local").lower()
+        raw_env = (
+            (
+                os.environ.get("CONFIG_SOURCE_PATH")
+                or os.environ.get("BUCKET_FOLDER")
+                or "local"
+            )
+            .strip()
+            .strip('"')
+            .strip("'")
+            .lower()
+        )
+        self.env = os.path.basename(raw_env.rstrip("/"))
+
         if mapping_path:
             self.mapping_path = mapping_path
         else:
@@ -58,8 +70,7 @@ class SurveyIdResolver:
                 for k, v in data.get("question_group_mapping", {}).items()
             }
             self._form_mapping = {
-                int(k): int(v)
-                for k, v in data.get("form_mapping", {}).items()
+                int(k): int(v) for k, v in data.get("form_mapping", {}).items()
             }
 
         self._loaded = True

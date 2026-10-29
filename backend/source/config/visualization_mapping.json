@@ -1,0 +1,176 @@
+{
+  "exclude_current_member_from_average": false,
+  "challenges": [
+    {
+      "id": "transparency_and_traceability",
+      "name": "Transparency and traceability",
+      "indicators": [
+        {
+          "id": "sourced_directly",
+          "name": "Share of cocoa sourced directly",
+          "country": "Global",
+          "form_id": 7,
+          "question_group": {
+            "id": 90,
+            "name": "Sourcing & Traceability"
+          },
+          "formula": "ID86",
+          "numerator_ids": [86],
+          "denominator_ids": [],
+          "type": "percentage",
+          "chart_type": "line",
+          "higher_is_better": true
+        },
+        {
+          "id": "sourced_traceable",
+          "name": "Share of cocoa sourced traceable to farm level",
+          "country": "Global",
+          "form_id": 7,
+          "question_group": {
+            "id": 90,
+            "name": "Sourcing & Traceability"
+          },
+          "formula": "ID840 + ID841",
+          "numerator_ids": [840, 841],
+          "denominator_ids": [],
+          "type": "percentage",
+          "chart_type": "line",
+          "higher_is_better": true
+        }
+      ]
+    },
+    {
+      "id": "deforestation",
+      "name": "Deforestation",
+      "indicators": [
+        {
+          "id": "deforestation_free",
+          "name": "Share of deforestation free cocoa",
+          "country": "Global",
+          "form_id": 7,
+          "question_group": {
+            "id": 15,
+            "name": "Deforestation-Free Supply Chains"
+          },
+          "formula": "ID851",
+          "numerator_ids": [851],
+          "denominator_ids": [],
+          "type": "percentage",
+          "chart_type": "line",
+          "higher_is_better": true
+        }
+      ]
+    },
+    {
+      "id": "living_income",
+      "name": "Living income",
+      "indicators": [
+        {
+          "id": "li_gap_measured",
+          "name": "Share of households in direct supply chain for which a LI gap is measured",
+          "country": "Global",
+          "form_id": 7,
+          "question_group": {
+            "id": "supplier_repeats",
+            "name": "Supplier Repeat Group - Living Income"
+          },
+          "formula": "SUM(ID1216) / ID842",
+          "numerator_ids": [1216],
+          "denominator_ids": [842],
+          "aggregate_repeats": true,
+          "type": "ratio",
+          "chart_type": "line",
+          "higher_is_better": true
+        },
+        {
+          "id": "li_strategy_implemented",
+          "name": "Share of households in direct supply chain for which a LI strategy is implemented",
+          "country": "Global",
+          "form_id": 7,
+          "question_group": {
+            "id": "supplier_repeats",
+            "name": "Supplier Repeat Group - Living Income"
+          },
+          "formula": "SUM(ID847) / ID842",
+          "numerator_ids": [847],
+          "denominator_ids": [842],
+          "aggregate_repeats": true,
+          "type": "ratio",
+          "chart_type": "line",
+          "higher_is_better": true
+        }
+      ]
+    },
+    {
+      "id": "child_labour",
+      "name": "Child Labour",
+      "indicators": [
+        {
+          "id": "clmrs_covered",
+          "name": "Share of households in supply chain covered by CLMRS",
+          "country": "West Africa (Cameroon, Côte d'Ivoire, Ghana, Nigeria)",
+          "form_id": 7,
+          "question_group": {
+            "id": "clmrs_monitoring",
+            "name": "Child Labour Monitoring Systems (CLMRS)"
+          },
+          "formula": "ID575 / ID842",
+          "numerator_ids": [575],
+          "denominator_ids": [842],
+          "type": "ratio",
+          "chart_type": "line",
+          "higher_is_better": true
+        },
+        {
+          "id": "child_labour_identified",
+          "name": "Share of cases of child labour identified among children covered",
+          "country": "West Africa (Cameroon, Côte d'Ivoire, Ghana, Nigeria)",
+          "form_id": 7,
+          "question_group": {
+            "id": "clmrs_identification",
+            "name": "Child Labour Identification & Remediation"
+          },
+          "formula": "ID577 / ID873",
+          "numerator_ids": [577],
+          "denominator_ids": [873],
+          "type": "ratio",
+          "chart_type": "line",
+          "higher_is_better": false
+        },
+        {
+          "id": "support_received",
+          "name": "Share of children who received support among those identified",
+          "country": "West Africa (Cameroon, Côte d'Ivoire, Ghana, Nigeria)",
+          "form_id": 7,
+          "question_group": {
+            "id": "clmrs_remediation",
+            "name": "Remediation & Support Services"
+          },
+          "formula": "ID579 / ID577",
+          "numerator_ids": [579],
+          "denominator_ids": [577],
+          "type": "ratio",
+          "chart_type": "line",
+          "higher_is_better": true
+        },
+        {
+          "id": "follow_up_visits",
+          "name": "Share of children who received 2-follow-up visits among those identified in child labour",
+          "country": "West Africa (Cameroon, Côte d'Ivoire, Ghana, Nigeria)",
+          "form_id": 7,
+          "question_group": {
+            "id": "clmrs_followup",
+            "name": "Monitoring & Follow-up Verification"
+          },
+          "formula": "ID874 / ID577",
+          "numerator_ids": [874],
+          "denominator_ids": [577],
+          "type": "ratio",
+          "chart_type": "line",
+          "higher_is_better": true
+        }
+      ]
+    }
+  ]
+}
+
