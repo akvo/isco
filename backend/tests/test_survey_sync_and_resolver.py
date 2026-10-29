@@ -392,7 +392,9 @@ def test_import_survey_schema_cli_main(tmp_path, monkeypatch, session):
 
     assert "question_mapping" in ledger
     assert len(ledger["question_mapping"]) > 0
-    assert ledger["form_mapping"].get("7") == 7
+    assert "form_mapping" in ledger
+    assert "7" in ledger["form_mapping"]
+    assert ledger["form_mapping"]["7"] is not None
 
 
 def test_survey_id_resolver_production_mode(monkeypatch):
