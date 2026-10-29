@@ -154,15 +154,26 @@ The export file contains the entire nested survey hierarchy covering all 8 struc
 
 ### 4.2 Two-Pass Idempotent Import Algorithm (`import_survey_schema.py`)
 To preserve referential integrity when primary keys are re-sequenced in the target database:
-1. **Pass 1 (Core Entities Creation)**:
-   - Insert `Form` records.
-   - Insert `QuestionGroup` records linked to `form_id`.
-   - Insert `Cascade` and hierarchical `CascadeList` items, mapping old cascade IDs to new cascade IDs.
-   - Insert `Question` and `Option` records.
+
+#### Handling Existing Member Surveys in Target Database (Update vs. Create):
+Because backend services rely on hardcoded static configuration lists like `MEMBER_SURVEY = [1, 7]` in `/backend/util/survey_config.py` (which determine submission locking, webform routing, and data export logic):
+- **Default Strategy: In-Place Synchronized Update (`--mode update`)**:
+  - If a Form with the target canonical ID already exists (e.g. `Form.id == 7`), or matches the active Member Questionnaire by name:
+    - **Do NOT create a new Form with a different ID**, as that would break `MEMBER_SURVEY` static checks.
+    - Instead, the importer updates the existing Form in-place: updates question groups, syncs questions/options, and preserves the Form's existing primary key.
+- **Optional Strategy: Fresh Re-seed (`--mode clean` / `--target-form-id <id>`)**:
+  - Allows targeting a specific existing `form.id` (e.g. `--target-form-id 1` or `7`), or cleanly truncating and re-inserting definition tables with exact canonical IDs in local development databases.
+
+#### Two-Pass Execution Steps:
+1. **Pass 1 (Core Entities Upsert)**:
+   - Match or create target `Form` (preserving the `id in MEMBER_SURVEY` constraint).
+   - Upsert `QuestionGroup` records linked to `form_id`.
+   - Upsert `Cascade` and hierarchical `CascadeList` items, mapping old cascade IDs to new cascade IDs.
+   - Upsert `Question` and `Option` records matching on `variable_name` or unique question `name`.
    - Build in-memory ID ledger: `{ old_canonical_id: new_local_id }`.
 2. **Pass 2 (Dependency Re-linking)**:
-   - Re-link `Question.cascade` to the newly inserted `cascade.id`.
-   - Re-link `SkipLogic.dependent_to` to the newly inserted `question.id`.
+   - Re-link `Question.cascade` to the newly inserted/updated `cascade.id`.
+   - Re-link `SkipLogic.dependent_to` to the newly resolved `question.id`.
    - Remap `fn.fnString` in `Autofield` / Computed Validation questions to reference new local Question IDs.
    - Write verified `id_mapping.json` ledger.
 
