@@ -5,14 +5,7 @@
 .agent/
 agent_docs/
 task.md
-.claude/history/
-.claude/sessions/
-.claude/cache/
-.claude/projects/
-.claude/telemetry/
-.claude/*.local.json
-.claude/*.log
-.claude/state.json
+.claude/
 .env.*
 node_modules/
 test-results/
