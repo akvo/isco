@@ -20,6 +20,7 @@ import models.answer  # noqa: F401
 import models.data  # noqa: F401
 
 from scripts.dump_survey_schema import dump_survey_schema
+from scripts.import_survey_schema import import_survey_schema
 
 
 def test_dump_survey_schema_zero_sensitive_data(session):
@@ -168,3 +169,222 @@ def test_dump_survey_schema_cli_main(tmp_path, monkeypatch, session):
     with open(out_file, "r") as f:
         loaded = json.load(f)
     assert loaded["schema_version"] == "1.0"
+
+
+def test_import_survey_schema_two_pass_and_ledger(tmp_path, session):
+    """
+    TAC-SYNC.2 & TAC-SYNC.3:
+    Tests two-pass import algorithm:
+    - Pass 1: Upsert form, group, cascade, questions, options
+    - Pass 2: Re-link cascade_id, skip_logic dependent_to, and autofield tokens
+    - Outputs ledger json with valid mappings
+    """
+    test_schema = {
+        "schema_version": "1.0",
+        "exported_at": "2026-10-29T10:00:00Z",
+        "source_environment": "production",
+        "forms": [
+            {
+                "canonical_form_id": 9991,
+                "name": "Sync Test Survey",
+                "description": "Portability test survey",
+                "languages": ["en"],
+                "version": 1.0,
+                "enable_prefilled_value": False,
+                "question_groups": [
+                    {
+                        "canonical_group_id": 8881,
+                        "name": "Test Group 1",
+                        "description": "Group for test",
+                        "order": 1,
+                        "repeatable": False,
+                        "member_access": [1, 2],
+                        "isco_access": [1],
+                        "questions": [
+                            {
+                                "canonical_question_id": 7771,
+                                "name": "Base Sourced Cocoa",
+                                "variable_name": "q_sync_base",
+                                "type": "number",
+                                "mandatory": True,
+                                "datapoint_name": False,
+                                "personal_data": False,
+                                "rule": {"min": 0, "max": 100},
+                                "order": 1,
+                                "cascade": None,
+                                "core_mandatory": True,
+                                "deactivate": False,
+                                "autofield": None,
+                                "options": [],
+                                "skip_logic": [],
+                                "member_access": [1, 2],
+                                "isco_access": [1],
+                            },
+                            {
+                                "canonical_question_id": 7772,
+                                "name": "Computed Total Cocoa",
+                                "variable_name": "q_sync_computed",
+                                "type": "number",
+                                "mandatory": False,
+                                "datapoint_name": False,
+                                "personal_data": False,
+                                "order": 2,
+                                "cascade": 6661,
+                                "core_mandatory": False,
+                                "deactivate": False,
+                                "autofield": {
+                                    "fnString": (
+                                        "function () { return #7771 * 2; }"
+                                    ),
+                                    "multiline": False,
+                                },
+                                "options": [
+                                    {
+                                        "canonical_option_id": 5551,
+                                        "code": "OPT1",
+                                        "name": "Option One",
+                                        "order": 1,
+                                        "translations": [],
+                                    }
+                                ],
+                                "skip_logic": [
+                                    {
+                                        "canonical_skip_id": 4441,
+                                        "dependent_to_canonical_question_id": (
+                                            7771
+                                        ),
+                                        "operator": "greater_than",
+                                        "value": "10",
+                                        "type": "number",
+                                    }
+                                ],
+                                "member_access": [1, 2],
+                                "isco_access": [1],
+                            },
+                        ],
+                    }
+                ],
+                "cascades": [
+                    {
+                        "canonical_cascade_id": 6661,
+                        "name": "Sync Test Country Tree",
+                        "type": "cascade",
+                        "items": [
+                            {
+                                "canonical_item_id": 1001,
+                                "parent_id": None,
+                                "code": "REG1",
+                                "name": "Region One",
+                                "level": 1,
+                                "path": "",
+                            },
+                            {
+                                "canonical_item_id": 1002,
+                                "parent_id": 1001,
+                                "code": "DIST1",
+                                "name": "District One",
+                                "level": 2,
+                                "path": "",
+                            },
+                        ],
+                    }
+                ],
+            }
+        ],
+    }
+
+    ledger_path = str(tmp_path / "id_mapping.json")
+    ledger = import_survey_schema(
+        session=session,
+        schema_data=test_schema,
+        mode="clean",
+        ledger_file=ledger_path,
+    )
+
+    # 1. Verify ledger structure
+    assert "form_mapping" in ledger
+    assert "question_group_mapping" in ledger
+    assert "question_mapping" in ledger
+    assert "7771" in ledger["question_mapping"]
+    assert "7772" in ledger["question_mapping"]
+
+    local_q1_id = ledger["question_mapping"]["7771"]
+    local_q2_id = ledger["question_mapping"]["7772"]
+    assert local_q1_id != local_q2_id
+
+    # 2. Verify Pass 2 SkipLogic re-linking
+    q2 = (
+        session.query(models.question.Question)
+        .filter_by(id=local_q2_id)
+        .first()
+    )
+    assert q2 is not None
+    assert len(q2.skip_logic) == 1
+    # dependent_to must point to local_q1_id, not canonical 7771!
+    assert q2.skip_logic[0].dependent_to == local_q1_id
+
+    # 3. Verify Pass 2 Autofield formula re-linking
+    assert q2.autofield is not None
+    assert f"#{local_q1_id}" in q2.autofield["fnString"]
+    assert "#7771" not in q2.autofield["fnString"]
+
+    # 4. Verify CascadeList parent-child re-linking
+    assert q2.cascade is not None
+    c_items = (
+        session.query(models.cascade_list.CascadeList)
+        .filter_by(cascade=q2.cascade)
+        .order_by(models.cascade_list.CascadeList.level.asc())
+        .all()
+    )
+    assert len(c_items) == 2
+    parent_item = c_items[0]
+    child_item = c_items[1]
+    assert child_item.parent == parent_item.id
+
+    # 5. Verify Idempotency: Re-running does not duplicate
+    re_ledger = import_survey_schema(
+        session=session,
+        schema_data=test_schema,
+        mode="clean",
+        ledger_file=ledger_path,
+    )
+    assert re_ledger["question_mapping"]["7771"] == local_q1_id
+    assert re_ledger["question_mapping"]["7772"] == local_q2_id
+
+
+def test_import_survey_schema_cli_main(tmp_path, monkeypatch, session):
+    """
+    Tests invoking import_survey_schema.py main() CLI.
+    """
+    import sys
+    from scripts.import_survey_schema import main
+
+    export_path = "source/config/local/survey_schema_export.json"
+    if not os.path.exists(export_path):
+        pytest.skip(f"Export file {export_path} not found")
+
+    ledger_path = str(tmp_path / "cli_id_mapping.json")
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "import_survey_schema.py",
+            "--input",
+            export_path,
+            "--mode",
+            "update",
+            "--target-form-id",
+            "7",
+            "--ledger",
+            ledger_path,
+        ],
+    )
+
+    main()
+    assert os.path.exists(ledger_path)
+    with open(ledger_path, "r") as f:
+        ledger = json.load(f)
+
+    assert "question_mapping" in ledger
+    assert len(ledger["question_mapping"]) > 0
+    assert ledger["form_mapping"].get("7") == 7
