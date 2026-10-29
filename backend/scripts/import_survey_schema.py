@@ -78,6 +78,146 @@ def _to_enum(enum_cls, val):
         return val
 
 
+def normalize_schema_data(data: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Normalizes schema data from either canonical export format
+    ({"schema_version": ..., "forms": [...]}) or published webform JSON
+    ({"id": ..., "name": ..., "question_group": [...], "tree": ...}).
+    """
+    if "forms" in data:
+        return data
+
+    canonical_form_id = data.get("id", 1)
+    form_entry = {
+        "canonical_form_id": canonical_form_id,
+        "name": data.get("name", f"Form {canonical_form_id}"),
+        "description": data.get("description"),
+        "version": data.get("version", 1.0),
+        "url": data.get("url"),
+        "languages": data.get("languages", ["en"]),
+        "cascades": [],
+        "question_groups": [],
+    }
+
+    # Extract cascades from tree dict
+    trees = data.get("tree", {})
+    tree_idx = 1
+    for tree_key, root_items in trees.items():
+        casc_entry = {
+            "canonical_cascade_id": tree_idx,
+            "name": tree_key,
+            "type": "cascade",
+            "items": [],
+        }
+        item_counter = [1]
+
+        def traverse(items, parent_id=None, level=1):
+            for it in items:
+                cur_id = item_counter[0]
+                item_counter[0] += 1
+                casc_entry["items"].append({
+                    "canonical_item_id": cur_id,
+                    "parent_id": parent_id,
+                    "name": it.get("title") or it.get("value") or "",
+                    "level": level,
+                })
+                if it.get("children"):
+                    traverse(it["children"], parent_id=cur_id, level=level + 1)
+
+        if isinstance(root_items, list):
+            traverse(root_items)
+        form_entry["cascades"].append(casc_entry)
+        tree_idx += 1
+
+    # Extract question groups
+    for g in data.get("question_group", []):
+        g_entry = {
+            "canonical_group_id": g.get("id"),
+            "name": g.get("name", "Group"),
+            "description": g.get("description"),
+            "order": g.get("order", 1),
+            "repeatable": g.get("repeatable", False),
+            "repeat_text": g.get("repeat_text"),
+            "leading_question": g.get("leading_question"),
+            "show_repeat_in_question_level": g.get(
+                "show_repeat_in_question_level", False
+            ),
+            "translations": g.get("translations", []),
+            "member_access": g.get("member_access", []),
+            "isco_access": g.get("isco_access", []),
+            "questions": [],
+        }
+        for q in g.get("question", []):
+            raw_type = q.get("type", "input")
+            if raw_type == "tree":
+                q_type = "nested_list"
+            else:
+                q_type = raw_type
+
+            casc_id = (
+                1
+                if raw_type == "tree" and len(form_entry["cascades"]) > 0
+                else q.get("cascade")
+            )
+
+            # Map webform dependencies to SkipLogic format
+            skip_logics = []
+            for dep in q.get("dependency", []):
+                dep_q_id = dep.get("id")
+                if not dep_q_id:
+                    continue
+                if "options" in dep:
+                    for opt_val in dep["options"]:
+                        skip_logics.append({
+                            "dependent_to_canonical_question_id": dep_q_id,
+                            "operator": "equal",
+                            "value": opt_val,
+                            "type": "option",
+                        })
+                elif "min" in dep:
+                    skip_logics.append({
+                        "dependent_to_canonical_question_id": dep_q_id,
+                        "operator": "greater_than_or_equal",
+                        "value": str(dep["min"]),
+                        "type": "number",
+                    })
+
+            q_entry = {
+                "canonical_question_id": q.get("id"),
+                "name": q.get("name", ""),
+                "translations": q.get("translations", []),
+                "mandatory": q.get("required", False),
+                "datapoint_name": q.get("datapoint_name", False),
+                "variable_name": q.get("variable_name"),
+                "type": q_type,
+                "personal_data": q.get("personal_data", False),
+                "rule": q.get("rule"),
+                "tooltip": q.get("tooltip"),
+                "tooltip_translations": q.get("tooltip_translations", []),
+                "cascade": casc_id,
+                "repeating_objects": q.get("repeating_objects", []),
+                "order": q.get("order", 1),
+                "core_mandatory": q.get("coreMandatory", False),
+                "deactivate": q.get("deactivate", False),
+                "autofield": q.get("fn"),
+                "is_repeat_identifier": q.get("is_repeat_identifier", False),
+                "show_as_textarea": q.get("show_as_textarea", False),
+                "member_access": q.get("member_access", []),
+                "isco_access": q.get("isco_access", []),
+                "options": q.get("option", []),
+                "skip_logic": skip_logics,
+            }
+            g_entry["questions"].append(q_entry)
+        form_entry["question_groups"].append(g_entry)
+
+    return {
+        "schema_version": "1.0",
+        "exported_at": "normalized",
+        "source_environment": "webform",
+        "forms": [form_entry],
+    }
+
+
 def import_survey_schema(
     session,
     schema_data: Dict[str, Any],
@@ -91,6 +231,8 @@ def import_survey_schema(
     """
     if target_environment is None:
         target_environment = os.environ.get("BUCKET_FOLDER", "local")
+
+    schema_data = normalize_schema_data(schema_data)
 
     form_mapping: Dict[int, int] = {}
     group_mapping: Dict[int, int] = {}

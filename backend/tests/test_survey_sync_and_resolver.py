@@ -502,3 +502,261 @@ def test_survey_id_resolver_module_helpers(tmp_path, monkeypatch):
     assert res.resolve_question_id(100) == 200
     assert resolve_question_id(100, resolver=res) == 200
     assert resolve_formula("ID100", resolver=res) == "ID200"
+
+
+def test_seed_mock_visualization_data(session):
+    """
+    Tests seeding mock visualization submissions and answers
+    for Form 7 (SYNC-04).
+    """
+    from scripts.seed_mock_visualization_data import (
+        seed_mock_visualization_data,
+    )
+
+    # Ensure form 7 exists
+    form_7 = (
+        session.query(models.form.Form)
+        .filter(models.form.Form.id == 7)
+        .first()
+    )
+    if not form_7:
+        pytest.skip("Form 7 not present in test database")
+
+    # Create test org & user if not present
+    org = (
+        session.query(models.organisation.Organisation)
+        .filter_by(name="Test Visualizer Org")
+        .first()
+    )
+    if not org:
+        org = models.organisation.Organisation(
+            code="TVO",
+            name="Test Visualizer Org",
+            active=True,
+        )
+        session.add(org)
+        session.flush()
+
+    user = (
+        session.query(models.user.User)
+        .filter_by(email="test.visualizer@example.com")
+        .first()
+    )
+    if not user:
+        user = models.user.User(
+            email="test.visualizer@example.com",
+            password="mockpassword",
+            name="Test Visualizer",
+            phone_number="123456",
+            role=models.user.UserRole.secretariat_admin,
+            organisation=org.id,
+        )
+        session.add(user)
+        session.flush()
+
+    # Seed data for 2022, 2023, 2024
+    result = seed_mock_visualization_data(
+        session=session,
+        form_id=7,
+        org_id=org.id,
+        user_id=user.id,
+        years=[2022, 2023, 2024],
+    )
+
+    assert result["form_id"] == 7
+    assert len(result["submissions"]) == 3
+    assert result["answers_seeded"] > 0
+
+    # Test Idempotency: re-running updates instead of duplicating
+    result2 = seed_mock_visualization_data(
+        session=session,
+        form_id=7,
+        org_id=org.id,
+        user_id=user.id,
+        years=[2022, 2023, 2024],
+    )
+    assert len(result2["submissions"]) == 3
+
+
+def test_seed_mock_visualization_data_cli_main(monkeypatch, session):
+    """
+    Tests invoking seed_mock_visualization_data.py CLI main().
+    """
+    import sys
+    from scripts.seed_mock_visualization_data import main
+
+    form_7 = (
+        session.query(models.form.Form)
+        .filter(models.form.Form.id == 7)
+        .first()
+    )
+    if not form_7:
+        pytest.skip("Form 7 not present in test database")
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "seed_mock_visualization_data.py",
+            "--form-id",
+            "7",
+            "--years",
+            "2023",
+            "2024",
+        ],
+    )
+
+    main()
+
+
+def test_import_survey_schema_webform_json_format(session, tmp_path):
+    """
+    Tests import_survey_schema normalizer with published webform JSON format
+    (e.g. production_forms_7_member_survey_v78.0.json structure).
+    """
+    from scripts.import_survey_schema import (
+        import_survey_schema,
+        normalize_schema_data,
+    )
+
+    webform_fixture = {
+        "id": 7,
+        "name": "Member Survey Webform",
+        "description": "Published survey form",
+        "version": 78.0,
+        "languages": ["en"],
+        "tree": {
+            "tree_7": [
+                {
+                    "title": "Strategy 1",
+                    "value": "Strategy 1",
+                    "children": [
+                        {
+                            "title": "Child Strategy 1.1",
+                            "value": "Child Strategy 1.1",
+                        }
+                    ],
+                }
+            ]
+        },
+        "question_group": [
+            {
+                "id": 90,
+                "name": "Transparency and Traceability",
+                "description": "Group 90 description",
+                "order": 1,
+                "repeatable": False,
+                "leading_question": None,
+                "translations": [],
+                "member_access": [],
+                "isco_access": [],
+                "question": [
+                    {
+                        "id": 1296,
+                        "name": "Did company source directly?",
+                        "type": "option",
+                        "order": 1,
+                        "required": True,
+                        "datapoint_name": False,
+                        "option": [
+                            {"name": "Yes", "code": None, "order": 1},
+                            {"name": "No", "code": None, "order": 2},
+                        ],
+                    },
+                    {
+                        "id": 1297,
+                        "name": "Please specify direct share",
+                        "type": "number",
+                        "order": 2,
+                        "required": False,
+                        "datapoint_name": False,
+                        "dependency": [{"id": 1296, "options": ["Yes"]}],
+                    },
+                    {
+                        "id": 1219,
+                        "name": "Select strategies implemented",
+                        "type": "tree",
+                        "order": 3,
+                        "required": False,
+                        "datapoint_name": False,
+                        "dependency": [{"id": 1297, "min": 1}],
+                    },
+                ],
+            }
+        ],
+    }
+
+    # Test normalization function
+    normalized = normalize_schema_data(webform_fixture)
+    assert "forms" in normalized
+    assert normalized["forms"][0]["canonical_form_id"] == 7
+    assert len(normalized["forms"][0]["cascades"]) == 1
+    assert len(normalized["forms"][0]["question_groups"]) == 1
+    assert len(normalized["forms"][0]["question_groups"][0]["questions"]) == 3
+
+    ledger_path = str(tmp_path / "webform_ledger.json")
+    result = import_survey_schema(
+        session=session,
+        schema_data=webform_fixture,
+        mode="update",
+        ledger_file=ledger_path,
+        target_environment="test",
+    )
+
+    assert result["form_mapping"]["7"] == 7
+    assert "1296" in result["question_mapping"]
+    assert "1297" in result["question_mapping"]
+    assert "1219" in result["question_mapping"]
+    assert os.path.exists(ledger_path)
+
+
+def test_survey_sync_e2e_roundtrip_parity(session, tmp_path):
+    """
+    Full Round-Trip Parity Test (TAC-SYNC.6):
+    1. Dump existing database schema for Form 7.
+    2. Verify 0 sensitive answer/user/org rows in dump.
+    3. Import the dumped schema into the database.
+    4. Dump again and verify structural equivalence.
+    """
+    from scripts.dump_survey_schema import dump_survey_schema
+    from scripts.import_survey_schema import import_survey_schema
+
+    # 1. First dump
+    dump_1 = dump_survey_schema(session=session, form_ids=[7])
+    assert "forms" in dump_1
+    assert len(dump_1["forms"]) >= 1
+
+    form_entry = dump_1["forms"][0]
+    # Verify zero leakage
+    assert "answers" not in form_entry
+    assert "users" not in form_entry
+    assert "data" not in form_entry
+    assert "organisations" not in form_entry
+
+    initial_group_count = len(form_entry["question_groups"])
+    initial_q_count = sum(
+        len(g["questions"]) for g in form_entry["question_groups"]
+    )
+
+    # 2. Re-import
+    ledger_path = str(tmp_path / "roundtrip_ledger.json")
+    import_result = import_survey_schema(
+        session=session,
+        schema_data=dump_1,
+        mode="update",
+        ledger_file=ledger_path,
+        target_environment="test",
+    )
+    assert len(import_result["question_mapping"]) == initial_q_count
+
+    # 3. Second dump
+    dump_2 = dump_survey_schema(session=session, form_ids=[7])
+    form_entry_2 = dump_2["forms"][0]
+
+    # 4. Assert structural parity
+    assert form_entry_2["name"] == form_entry["name"]
+    assert len(form_entry_2["question_groups"]) == initial_group_count
+    q_count_2 = sum(
+        len(g["questions"]) for g in form_entry_2["question_groups"]
+    )
+    assert q_count_2 == initial_q_count
