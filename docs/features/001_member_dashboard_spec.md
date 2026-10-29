@@ -282,7 +282,94 @@ By removing the dynamic client-side peer group switcher, we eliminate dynamic pe
 
 ---
 
-### 7.2 Comparison: Previous Scope vs. Updated Scope
+### 7.2 Detailed User & Technical Acceptance Criteria (UAC & TAC)
+
+#### TASK-01: Harmonized Peer Groups Database & Seeder
+- **UAC (User Acceptance Criteria)**:
+  - **UAC-01.1**: Supports 4 standard harmonized peer groups (`Trader/Processor`, `Large Manufacturer`, `SME`, `Retail`).
+  - **UAC-01.2**: Every member organization is automatically linked to its peer group via its assigned `member_type`.
+  - **UAC-01.3**: Admin updates to an organization's member type update its peer group classification immediately without orphaned records.
+- **TAC (Technical Acceptance Criteria)**:
+  - **TAC-01.1**: SQLAlchemy models `PeerGroup` and `PeerGroupMemberType` with cascading foreign keys.
+  - **TAC-01.2**: Idempotent Alembic migration seeding the 4 peer groups and mappings for existing `member_type` tags.
+  - **TAC-01.3**: Fully reversible `alembic downgrade -1` leaving zero dangling keys.
+  - **TAC-01.4**: Pytest unit tests verifying mapping resolution and cascade deletes ($\ge 85\%$ test coverage).
+
+#### TASK-02: Declarative Indicator Config & AST Formula Evaluator
+- **UAC (User Acceptance Criteria)**:
+  - **UAC-02.1**: Accurately computes performance values for all 9 indicators across the 4 sustainability challenges.
+  - **UAC-02.2**: If a member hasn't submitted an answer or has a 0 denominator, shows `"N/A"` / empty point without crashing.
+  - **UAC-02.3**: Clear indicators for polarity (e.g. child labour cases inverted where lower is better).
+- **TAC (Technical Acceptance Criteria)**:
+  - **TAC-02.1**: Validated `visualization_mapping.json` with `id`, `name`, `form_id`, `chart_type: "line"`, `formula`, etc.
+  - **TAC-02.2**: Safe Python `ast.parse` whitelist parser banning imports, dunder attributes, and code execution.
+  - **TAC-02.3**: Evaluates arithmetic (`+`, `-`, `*`, `/`), nested parentheses `(A + B) / C`, and functions (`SUM`, `AVG`, `MIN`, `MAX`, `COALESCE`).
+  - **TAC-02.4**: Zero division and missing answers return `None` (`null` in JSON) without 500 errors.
+  - **TAC-02.5**: Pytest unit tests for all 9 formulas and injection attack prevention.
+
+#### TASK-03: Peer Group Benchmark Aggregation & TTLCache
+- **UAC (User Acceptance Criteria)**:
+  - **UAC-03.1**: Members see 2 benchmark curves: **ISCO Average** (all platforms) and **GISCO Average** (GISCO only).
+  - **UAC-03.2**: Computed benchmark figures match reference values from `5_Template DUMMY_Individual_reporting_back_ISCO_GISCO.xlsx`.
+  - **UAC-03.3**: Cohort anonymity protected: benchmarks hidden if fewer than 3 organizations reported in that peer group/year.
+- **TAC (Technical Acceptance Criteria)**:
+  - **TAC-03.1**: Configurable `exclude_current_member_from_average` toggle supporting $O(1)$ memory subtraction from cached aggregates.
+  - **TAC-03.2**: In-memory `TTLCache(maxsize=128, ttl=3600)` responding to cached requests in $< 50\text{ms}$.
+  - **TAC-03.3**: Bulk SQLAlchemy query joining `Data`, `Answer`, `Organisation`, and `PeerGroupMemberType` grouped by year (0 N+1 queries).
+  - **TAC-03.4**: Integration tests for averages, anonymity masking ($N < 3$), and cache invalidation.
+
+#### TASK-04: Individual Dashboard REST API Endpoint & Multi-Tenant RBAC
+- **UAC (User Acceptance Criteria)**:
+  - **UAC-04.1**: Authenticated members see their dashboard immediately on login without selecting an organization or peer group.
+  - **UAC-04.2**: Secretariat Admins can view any member company's dashboard via an organization switcher.
+  - **UAC-04.3**: A member organisation can never view another member organisation's confidential data.
+- **TAC (Technical Acceptance Criteria)**:
+  - **TAC-04.1**: `GET /api/visualization/individual-dashboard` returns 200 OK matching LLD JSON schema.
+  - **TAC-04.2**: JWT RBAC guard: Non-admins attempting to pass a foreign `organisation_id` are blocked with `403 Forbidden`.
+  - **TAC-04.3**: Target organization's `member_type_id` automatically resolves to its mapped `peer_group_id`.
+  - **TAC-04.4**: Pytest integration tests verifying 401 Unauthorized, 403 Forbidden, 200 OK, and response payloads.
+
+#### TASK-05: Frontend Dashboard Page Shell with Fixed Peer Group Badge
+- **UAC (User Acceptance Criteria)**:
+  - **UAC-05.1**: Accessible via a "Member Dashboard" navigation link in the top header.
+  - **UAC-05.2**: Displays organization name and a prominent static badge with the assigned peer group name (e.g. `<Tag color="blue">Peer Group: Large Manufacturer</Tag>`).
+  - **UAC-05.3**: Secretariat Admins see an organization switcher dropdown; switching organizations updates the view without full page reload.
+  - **UAC-05.4**: Skeletons and user-friendly error banners displayed during loading or on API failures.
+- **TAC (Technical Acceptance Criteria)**:
+  - **TAC-05.1**: Route `/dashboard` protected by auth guard (redirects unauthenticated users to `/login`).
+  - **TAC-05.2**: Clean React hooks (`useState`, `useEffect`) with request cancellation on unmount.
+  - **TAC-05.3**: Responsive 2-column Ant Design Grid layout (`Row`, `Col`) collapsing to 1 column on mobile/tablet.
+  - **TAC-05.4**: Jest / React Testing Library tests for badge rendering, switcher visibility, and loading/error states.
+
+#### TASK-06: 9 Multi-Line Charts via `akvo-charts` & Accompanying Data Grids
+- **UAC (User Acceptance Criteria)**:
+  - **UAC-06.1**: Each card displays 3 distinct interactive curves over time (2022–2024): Solid blue (Member), Dashed orange (ISCO Avg), Dotted green (GISCO Avg).
+  - **UAC-06.2**: Hovering over any data point reveals a tooltip with exact values for all 3 series for that year.
+  - **UAC-06.3**: Missing survey years render as disconnected line gaps (not drawn as 0 or artificially bridged).
+  - **UAC-06.4**: Polarity indicator clearly indicates for child labour that lower values represent better performance.
+  - **UAC-06.5**: Compact data table beneath each chart displays exact numbers formatted as percentages/ratios across `Year`, `Member`, `ISCO Avg`, `GISCO Avg`.
+- **TAC (Technical Acceptance Criteria)**:
+  - **TAC-06.1**: Integrates `akvo-charts` (`import { Line } from 'akvo-charts'; import 'akvo-charts/dist/index.css';`).
+  - **TAC-06.2**: Normalizes API series into `[{ year: "2022", "Member": 34.2, "ISCO Avg": 36.4, "GISCO Avg": 37.0 }, ...]`.
+  - **TAC-06.3**: Dynamic chart dispatcher checking `indicator.chart_type`.
+  - **TAC-06.4**: Handles `member: null` gracefully in ECharts without console warnings or layout breakage.
+  - **TAC-06.5**: Jest unit tests verifying data normalization, missing value handling, and table formatting.
+
+#### TASK-07: E2E Integration, Docker Coverage Gate & Partner Review Buffer
+- **UAC (User Acceptance Criteria)**:
+  - **UAC-07.1**: Dashboard renders seamlessly across Chrome, Firefox, Safari, and Edge.
+  - **UAC-07.2**: Sub-second page load and chart animations.
+  - **UAC-07.3**: Formal demo sign-off from Joy Ghosh (Akvo) and Dr. Ulrike Joras (GISCO).
+  - **UAC-07.4**: Stakeholder adjustments completed within the 5.5h buffer.
+- **TAC (Technical Acceptance Criteria)**:
+  - **TAC-07.1**: All backend tests pass via `./dc.sh exec backend ./test.sh` enforcing **$\ge 80\%$ test coverage**.
+  - **TAC-07.2**: Backend linting (`flake8`) and frontend linting/formatting (`yarn lint`, `yarn prettier-write`) pass with 0 errors.
+  - **TAC-07.3**: Migration up and down tested in PostgreSQL inside Docker.
+  - **TAC-07.4**: Scope governance verified: git diff strictly constrained to declared touchpoints.
+
+---
+
+### 7.3 Comparison: Previous Scope vs. Updated Scope
 
 | Metric | Previous Scope (Interactive Selector) | Updated Scope (Locked Peer Group) | Difference |
 | :--- | :---: | :---: | :--- |
