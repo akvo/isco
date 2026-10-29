@@ -1,10 +1,10 @@
 # Feature Specification: Survey Schema Portability & Multi-Environment ID Resolver
 
-> **Document Type**: Feature Specification & Architecture Design  
-> **Feature Number**: `003`  
-> **Status**: `Ready for Implementation` | **Author**: Tech Lead (`bmad-architect`)  
-> **Scope**: Safe structure-only survey schema export/import, dynamic environment ID resolution, and synthetic visualization answer seeding.  
-> **Reference**: [docs/features/001_member_dashboard_spec.md](docs/features/001_member_dashboard_spec.md)  
+> **Document Type**: Feature Specification & Architecture Design
+> **Feature Number**: `003`
+> **Status**: `Ready for Implementation` | **Author**: Tech Lead (`bmad-architect`)
+> **Scope**: Safe structure-only survey schema export/import, dynamic environment ID resolution, and synthetic visualization answer seeding.
+> **Reference**: [docs/features/001_member_dashboard_spec.md](docs/features/001_member_dashboard_spec.md)
 
 ---
 
@@ -43,14 +43,14 @@ flowchart TD
         SchemaJSON -->|"Import Survey Definition"| ImportCLI["import_survey_schema.py"]
         ImportCLI -->|"Inserts Structure"| TargetDB[("Target PostgreSQL DB")]
         ImportCLI -->|"Generates Ledger"| Ledger["id_mapping.json<br>{ '86': 28, '840': 29, ... }"]
-        
+
         MockSeeder["seed_mock_visualization_data.py"]
         Ledger --> MockSeeder
         MockSeeder -->|"Seeds 2022-2024 Dummy Answers"| TargetDB
-        
+
         DashboardService["VisualizationService & Formula Evaluator"]
         Resolver["SurveyIdResolverService"]
-        
+
         DashboardService -->|"Request ID86"| Resolver
         Resolver -->|"Checks Ledger"| Ledger
         Resolver -->|"Returns Local ID28"| DashboardService
@@ -74,8 +74,8 @@ flowchart TD
 
 ## 4. Technical Specifications
 
-### 4.1 Sanitized Survey Schema JSON Format (`survey_schema_export.json`)
-The export file contains the entire nested hierarchy without any submission or user data:
+### 4.1 Full Survey Format Specification (`survey_schema_export.json`)
+The export file contains the entire nested survey hierarchy covering all 8 structural layers (Form, QuestionGroup, Question, Option, Cascade, CascadeList, SkipLogic, and Access matrices) without any submission, organization, or user data:
 ```json
 {
   "schema_version": "1.0",
@@ -87,13 +87,17 @@ The export file contains the entire nested hierarchy without any submission or u
       "name": "Member Questionnaire",
       "description": "Annual sustainability reporting survey",
       "languages": ["en"],
+      "version": 1.0,
       "enable_prefilled_value": false,
       "question_groups": [
         {
           "canonical_group_id": 90,
           "name": "Sourcing & Traceability",
+          "description": "Direct and indirect sourcing volumes",
           "order": 1,
           "repeatable": false,
+          "member_access": [1, 2, 3, 4],
+          "isco_access": [1, 2, 3],
           "questions": [
             {
               "canonical_question_id": 86,
@@ -101,17 +105,45 @@ The export file contains the entire nested hierarchy without any submission or u
               "name": "Share of cocoa sourced directly",
               "type": "number",
               "mandatory": true,
+              "core_mandatory": true,
+              "deactivate": false,
+              "datapoint_name": false,
+              "order": 1,
               "rule": { "allow_decimal": true, "min": 0, "max": 100 },
-              "order": 1
+              "options": [],
+              "skip_logic": [],
+              "cascade_id": null
             },
             {
-              "canonical_question_id": 840,
-              "variable_name": "q_traceable_direct",
-              "name": "Direct cocoa volume traceable to farm/polygon",
-              "type": "number",
+              "canonical_question_id": 575,
+              "variable_name": "q_clmrs_covered",
+              "name": "Households covered by CLMRS",
+              "type": "option",
               "mandatory": true,
-              "order": 2
+              "options": [
+                { "canonical_option_id": 101, "code": "YES", "name": "Yes", "order": 1 },
+                { "canonical_option_id": 102, "code": "NO", "name": "No", "order": 2 }
+              ],
+              "skip_logic": [
+                {
+                  "dependent_to_canonical_question_id": 86,
+                  "operator": "greater_than",
+                  "value": "0",
+                  "type": "number"
+                }
+              ]
             }
+          ]
+        }
+      ],
+      "cascades": [
+        {
+          "canonical_cascade_id": 5,
+          "name": "Countries & Regions",
+          "type": "cascade",
+          "items": [
+            { "canonical_item_id": 1, "code": "CI", "name": "Côte d'Ivoire", "parent_id": null, "level": 1 },
+            { "canonical_item_id": 2, "code": "GH", "name": "Ghana", "parent_id": null, "level": 1 }
           ]
         }
       ]
@@ -119,6 +151,20 @@ The export file contains the entire nested hierarchy without any submission or u
   ]
 }
 ```
+
+### 4.2 Two-Pass Idempotent Import Algorithm (`import_survey_schema.py`)
+To preserve referential integrity when primary keys are re-sequenced in the target database:
+1. **Pass 1 (Core Entities Creation)**:
+   - Insert `Form` records.
+   - Insert `QuestionGroup` records linked to `form_id`.
+   - Insert `Cascade` and hierarchical `CascadeList` items, mapping old cascade IDs to new cascade IDs.
+   - Insert `Question` and `Option` records.
+   - Build in-memory ID ledger: `{ old_canonical_id: new_local_id }`.
+2. **Pass 2 (Dependency Re-linking)**:
+   - Re-link `Question.cascade` to the newly inserted `cascade.id`.
+   - Re-link `SkipLogic.dependent_to` to the newly inserted `question.id`.
+   - Remap `fn.fnString` in `Autofield` / Computed Validation questions to reference new local Question IDs.
+   - Write verified `id_mapping.json` ledger.
 
 ### 4.2 Environment ID Mapping Ledger (`id_mapping.json`)
 Generated automatically upon import in the target environment:
@@ -245,3 +291,4 @@ class SurveyIdResolver:
 5. **TAC-05 (Docker Execution Standard)**:
    - All scripts run via `./dc.sh exec backend python scripts/...`.
    - Test suite passes with $\ge 80\%$ test coverage: `./dc.sh exec backend pytest tests/test_survey_sync_and_resolver.py -v`.
+
