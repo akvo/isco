@@ -17,6 +17,7 @@ export { default as Setting } from "./setting/Setting";
 export { default as SubmissionProgress } from "./submission-progress/SubmissionProgress";
 export { default as Faq } from "./faq/Faq";
 export { default as ManageMember } from "./manage-member/ManageMember";
+export { default as ManagePeerGroup } from "./manage-peer-group/ManagePeerGroup";
 export { default as ManageDownload } from "./requested-download/ManageDownload";
 export { default as DataCleaning } from "./data-cleaning/DataCleaning";
 export { default as DownloadReport } from "./download-report/DownloadReport";

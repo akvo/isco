@@ -22,6 +22,7 @@ import {
   SubmissionProgress,
   Faq,
   ManageMember,
+  ManagePeerGroup,
   ManageDownload,
   DataCleaning,
   DownloadReport,
@@ -240,6 +241,11 @@ const App = () => {
             exact
             path="/manage-member"
             element={<Secure element={ManageMember} adminPage={true} />}
+          />
+          <Route
+            exact
+            path="/manage-peer-group"
+            element={<Secure element={ManagePeerGroup} adminPage={true} />}
           />
           <Route
             exact
