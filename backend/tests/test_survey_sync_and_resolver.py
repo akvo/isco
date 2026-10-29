@@ -21,6 +21,11 @@ import models.data  # noqa: F401
 
 from scripts.dump_survey_schema import dump_survey_schema
 from scripts.import_survey_schema import import_survey_schema
+from services.survey_id_resolver import (
+    SurveyIdResolver,
+    resolve_question_id,
+    resolve_formula,
+)
 
 
 def test_dump_survey_schema_zero_sensitive_data(session):
@@ -388,3 +393,112 @@ def test_import_survey_schema_cli_main(tmp_path, monkeypatch, session):
     assert "question_mapping" in ledger
     assert len(ledger["question_mapping"]) > 0
     assert ledger["form_mapping"].get("7") == 7
+
+
+def test_survey_id_resolver_production_mode(monkeypatch):
+    """
+    TAC-SYNC.4: In production, resolver is a zero-overhead identity function.
+    """
+    monkeypatch.setenv("BUCKET_FOLDER", "production")
+    resolver = SurveyIdResolver()
+
+    assert resolver.resolve_question_id(86) == 86
+    assert resolver.resolve_question_id(840) == 840
+    assert resolver.resolve_group_id(90) == 90
+    assert resolver.resolve_form_id(7) == 7
+
+    formula = "ID86 * 100 / (ID840 + ID841)"
+    assert resolver.resolve_formula(formula) == formula
+
+
+def test_survey_id_resolver_local_resolution(tmp_path, monkeypatch):
+    """
+    TAC-SYNC.4: In local/test, resolver maps canonical IDs to local DB IDs.
+    """
+    monkeypatch.setenv("BUCKET_FOLDER", "local")
+
+    mock_ledger = {
+        "target_environment": "local",
+        "form_mapping": {"7": 1},
+        "question_group_mapping": {"90": 12},
+        "question_mapping": {
+            "86": 28,
+            "840": 29,
+            "841": 30,
+        },
+    }
+    ledger_path = str(tmp_path / "mock_id_mapping.json")
+    with open(ledger_path, "w") as f:
+        json.dump(mock_ledger, f)
+
+    resolver = SurveyIdResolver(mapping_path=ledger_path)
+
+    # Question resolution
+    assert resolver.resolve_question_id(86) == 28
+    assert resolver.resolve_question_id(840) == 29
+    assert resolver.resolve_question_id(841) == 30
+    # Fallback to canonical when unmapped
+    assert resolver.resolve_question_id(9999) == 9999
+
+    # Group and Form resolution
+    assert resolver.resolve_group_id(90) == 12
+    assert resolver.resolve_group_id(9999) == 9999
+    assert resolver.resolve_form_id(7) == 1
+    assert resolver.resolve_form_id(9999) == 9999
+
+
+def test_survey_id_resolver_formula_rewriting(tmp_path, monkeypatch):
+    """
+    TAC-SYNC.4: Test formula AST token rewriting with word boundaries.
+    """
+    monkeypatch.setenv("BUCKET_FOLDER", "local")
+
+    mock_ledger = {
+        "question_mapping": {
+            "86": 28,
+            "840": 29,
+            "841": 30,
+        },
+    }
+    ledger_path = str(tmp_path / "formula_id_mapping.json")
+    with open(ledger_path, "w") as f:
+        json.dump(mock_ledger, f)
+
+    resolver = SurveyIdResolver(mapping_path=ledger_path)
+
+    # Arithmetic formula
+    expr = "ID86 * 100 / (ID840 + ID841)"
+    expected = "ID28 * 100 / (ID29 + ID30)"
+    assert resolver.resolve_formula(expr) == expected
+
+    # Function calls with commas
+    expr2 = "SUM(ID840, ID841) + AVG(ID86)"
+    expected2 = "SUM(ID29, ID30) + AVG(ID28)"
+    assert resolver.resolve_formula(expr2) == expected2
+
+    # Tokens that must NOT be matched
+    expr3 = "UUID123 + ID_MEMBER + ID86"
+    expected3 = "UUID123 + ID_MEMBER + ID28"
+    assert resolver.resolve_formula(expr3) == expected3
+
+
+def test_survey_id_resolver_module_helpers(tmp_path, monkeypatch):
+    """
+    Tests module-level convenience functions.
+    """
+    monkeypatch.setenv("BUCKET_FOLDER", "test")
+
+    mock_ledger = {
+        "question_mapping": {"100": 200},
+    }
+    ledger_path = str(tmp_path / "helper_id_mapping.json")
+    with open(ledger_path, "w") as f:
+        json.dump(mock_ledger, f)
+
+    # Initialize resolver and set default instance mapping
+    res = SurveyIdResolver(mapping_path=ledger_path)
+    res.load_mapping()
+
+    assert res.resolve_question_id(100) == 200
+    assert resolve_question_id(100, resolver=res) == 200
+    assert resolve_formula("ID100", resolver=res) == "ID200"
