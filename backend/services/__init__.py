@@ -15,6 +15,10 @@ from services.benchmark_service import (
     BenchmarkService,
     get_benchmark_service,
 )
+from services.visualization_service import (
+    VisualizationService,
+    get_visualization_service,
+)
 
 __all__ = [
     "SurveyIdResolver",
@@ -26,4 +30,6 @@ __all__ = [
     "validate_formula",
     "BenchmarkService",
     "get_benchmark_service",
+    "VisualizationService",
+    "get_visualization_service",
 ]
