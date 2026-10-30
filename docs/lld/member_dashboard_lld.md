@@ -9,7 +9,7 @@
 
 ## 1. Architectural Overview & Component Hierarchy
 
-The feature delivers an interactive time-series dashboard rendering the **9 sustainability indicators** across 4 challenges, comparing the logged-in Member against **GISCO** and **ISCO** peer group averages over years (2022, 2023, 2024).
+The feature delivers an interactive time-series dashboard rendering the **9 sustainability indicators** across 4 challenges, comparing the logged-in Member against **GISCO** and **ISCO** peer group averages over time (from 2022 through the current monitoring year).
 
 ```mermaid
 flowchart TD
@@ -108,6 +108,9 @@ Alembic migration creates the tables and seeds 4 harmonized peer groups linked t
 
 ```json
 {
+  "start_year": 2022,
+  "end_year": null,
+  "exclude_current_member_from_average": false,
   "challenges": [
     {
       "id": "transparency_and_traceability",
@@ -354,7 +357,7 @@ Alembic migration creates the tables and seeds 4 harmonized peer groups linked t
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: |
 | **TASK-01** | **Harmonized Peer Groups Database & Seeder**<br>• Create `peer_group` and `peer_group_member_type` SQLAlchemy models<br>• Write Alembic migration script with table constraints and indexes<br>• Seed 4 harmonized peer groups linked to existing `member_type` tags (`Trader/Processor`, `Large Manufacturer`, `SME`, `Retail`)<br>• Write database unit tests verifying tag mapping and migration upgrade/downgrade | 3.0h | 1.5h | 2.0h | **6.5h** | ~0.9d |
 | **TASK-02** | **Declarative Indicator Configuration & AST Formula Evaluator**<br>• Author `/backend/source/config/visualization_mapping.json` for 9 indicators with `chart_type: "line"`<br>• Implement safe Python AST formula evaluator supporting arithmetic (`+`, `-`, `*`, `/`), nested groupings `(A + B) / C`, repeat sums (`SUM(ID1216) / ID842`), and custom permutations (`AVG`, `MIN`, `MAX`, `COALESCE`)<br>• Add division-by-zero & missing data safeguards (returns `null` without 500)<br>• Unit test evaluator against mock survey payloads across complex permutation edge cases | 3.5h | 2.0h | 2.0h | **7.5h** | ~1.1d |
-| **TASK-03** | **Peer Group Benchmark Aggregation Engine & In-Memory TTLCache**<br>• Implement query logic to extract submitted answers for peer group member organisations across 2022–2024<br>• Calculate GISCO Average and ISCO Average benchmarks for the peer group cohort<br>• Implement configurable member self-exclusion toggle (`exclude_current_member_from_average`) with $O(1)$ cached cohort subtraction<br>• Enforce minimum cohort gate (>=3 reporting members per peer group/year to prevent de-anonymization)<br>• Build in-memory `TTLCache` (1-hour TTL) keyed by `peer_group_id`<br>• Integration tests verifying benchmark calculation & cache hits with and without member exclusion | 3.5h | 2.0h | 2.0h | **7.5h** | ~1.1d |
+| **TASK-03** | **Peer Group Benchmark Aggregation Engine & In-Memory TTLCache**<br>• Implement query logic to extract submitted answers for peer group member organisations across dynamic monitoring years (2022 to current monitoring year)<br>• Calculate GISCO Average and ISCO Average benchmarks for the peer group cohort<br>• Implement configurable member self-exclusion toggle (`exclude_current_member_from_average`) with $O(1)$ cached cohort subtraction<br>• Enforce minimum cohort gate (>=3 reporting members per peer group/year to prevent de-anonymization)<br>• Build in-memory `TTLCache` (1-hour TTL) keyed by `peer_group_id`<br>• Integration tests verifying benchmark calculation & cache hits with and without member exclusion across parameterized and dynamic years | 3.5h | 2.0h | 2.0h | **7.5h** | ~1.1d |
 | **TASK-04** | **Individual Dashboard REST API Endpoints & Multi-Tenant RBAC**<br>• Implement `GET /api/visualization/individual-dashboard` endpoint<br>• Enforce automatic peer group resolution from member's `member_type`<br>• Enforce data isolation: `member_user` can only query own organisation<br>• Enable Secretariat Admin switcher (`?organisation_id={id}`)<br>• API integration tests verifying RBAC, 403 Forbidden on foreign org, and missing year handling (`null` data points) | 3.0h | 2.0h | 1.5h | **6.5h** | ~0.9d |
 | **TASK-05** | **Frontend Dashboard Page Shell & Dynamic Controls**<br>• Create `/frontend/src/pages/member-dashboard/MemberDashboardPage.jsx`<br>• Add top header navigation link to `/dashboard`<br>• Render static Peer Group tag/badge based on API response<br>• Implement Secretariat Organisation Switcher dropdown for `secretariat_admin`<br>• Handle loading spinners, error boundaries, and empty state alerts | 2.5h | 1.5h | 1.5h | **5.5h** | ~0.8d |
 | **TASK-06** | **9 Multi-Line Charts via `akvo-charts` & Accompanying Data Grids**<br>• Install & verify `akvo-charts` in frontend (`./dc.sh exec frontend yarn add akvo-charts`)<br>• Build `IndicatorLineChartCard.jsx` using `akvo-charts` `<Line>` component<br>• Configure 3 distinct curves: Member (solid blue), ISCO Avg (dashed orange), GISCO Avg (dotted green)<br>• Handle inverted polarity for child labour identification (lower is better visual cues)<br>• Render non-connected gaps for missing years (`null` points)<br>• Build compact yearly data table below each chart (`Year`, `Member`, `ISCO Avg`, `GISCO Avg`)<br>• Responsive 2-column grid layout across 4 Challenge sections | 4.5h | 2.0h | 2.5h | **9.0h** | ~1.3d |
