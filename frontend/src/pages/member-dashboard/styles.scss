@@ -1,0 +1,556 @@
+@import "../../variables";
+
+// Domain & Anti-AI-Slop Tokens: Warm Cocoa & Agricultural Stewardship
+$color-cacao-deep: #24140a;
+$color-cacao-dark: #3a1d0d;
+$color-cacao: #673016;
+$color-cacao-light: #944b24;
+$color-cacao-tint: #f5ece4;
+$color-cacao-border: #e2d2c2;
+
+$color-forest-dark: #1b4332;
+$color-forest: #2d6a4f;
+$color-forest-tint: #edf5f0;
+
+$color-sand-light: #fbf9f6;
+$color-sand: #f5f0e8;
+$color-sand-border: #ede4d8;
+
+$color-text-main: #221810;
+$color-text-muted: #5e5449;
+$color-text-subtle: #8a7e71;
+
+.member-dashboard-page {
+  width: 100%;
+  min-height: calc(100vh - 70px);
+  padding: 32px 40px 64px;
+  background-color: #faf8f5;
+
+  .member-dashboard-container {
+    max-width: 1360px;
+    margin: 0 auto;
+  }
+
+  // 1. Dashboard Header Shell
+  .dashboard-header {
+    background: #ffffff;
+    border: 1px solid $color-sand-border;
+    border-radius: 12px;
+    padding: 28px 36px;
+    margin-bottom: 32px;
+    box-shadow: 0 1px 3px rgba(36, 20, 10, 0.04),
+      0 6px 16px rgba(36, 20, 10, 0.02);
+
+    .header-main {
+      .dashboard-eyebrow {
+        display: block;
+        font-size: 11.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: $color-cacao-light;
+        margin-bottom: 6px;
+      }
+
+      .dashboard-title {
+        color: $color-cacao-deep;
+        font-size: 24px;
+        font-weight: 700;
+        letter-spacing: -0.3px;
+        margin-top: 0;
+        margin-bottom: 8px;
+        line-height: 1.3;
+      }
+
+      .dashboard-subtitle {
+        display: block;
+        color: $color-text-muted;
+        font-size: 14.5px;
+        line-height: 1.5;
+        margin-bottom: 16px;
+
+        .peer-highlight {
+          color: $color-cacao-dark;
+          font-weight: 600;
+        }
+      }
+
+      .header-credentials-bar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+
+        // Bespoke Peer Group Tag (Anti-AI-Slop: eliminates default bright blue tag)
+        .peer-group-tag {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          background: $color-cacao-tint;
+          color: $color-cacao-dark;
+          border: 1px solid $color-cacao-border;
+          border-radius: 6px;
+          font-size: 13px;
+          font-weight: 600;
+          padding: 4px 12px;
+          line-height: 20px;
+          margin-right: 0;
+          letter-spacing: 0.1px;
+
+          .badge-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: $color-cacao-light;
+            display: inline-block;
+          }
+        }
+
+        .year-range-chip {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          background: #f7f3ed;
+          border: 1px solid $color-sand-border;
+          border-radius: 6px;
+          padding: 4px 10px;
+          font-size: 12.5px;
+          font-weight: 600;
+          color: $color-text-muted;
+          font-variant-numeric: tabular-nums;
+
+          .chip-symbol {
+            color: $color-cacao-light;
+            font-size: 10px;
+          }
+        }
+      }
+    }
+
+    // Secretariat Switcher Toolbar
+    .secretariat-switcher-wrapper {
+      display: flex;
+      justify-content: flex-end;
+
+      .secretariat-toolbar {
+        width: 100%;
+        max-width: 380px;
+        background: #fcfaf7;
+        border: 1px solid #ebdcd0;
+        border-radius: 8px;
+        padding: 14px 18px;
+        box-shadow: 0 1px 2px rgba(36, 20, 10, 0.02);
+
+        .toolbar-top {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 8px;
+
+          .admin-mode-pill {
+            font-size: 10.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: $color-cacao-dark;
+            background: #ede2d7;
+            padding: 2px 8px;
+            border-radius: 4px;
+          }
+
+          .switcher-label {
+            font-size: 12px;
+            color: $color-text-subtle;
+          }
+        }
+
+        .secretariat-org-select {
+          width: 100%;
+
+          .ant-select-selector {
+            border-radius: 6px;
+            border-color: #d8c8ba;
+            font-size: 13.5px;
+            font-weight: 500;
+            height: 38px;
+            padding: 0 12px;
+
+            .ant-select-selection-item {
+              line-height: 36px;
+              color: $color-text-main;
+              font-weight: 500;
+            }
+          }
+
+          &:hover .ant-select-selector {
+            border-color: $color-cacao-light;
+          }
+
+          &.ant-select-focused .ant-select-selector {
+            border-color: $color-cacao;
+            box-shadow: 0 0 0 2px rgba(103, 48, 22, 0.15);
+          }
+        }
+      }
+    }
+  }
+
+  // 2. Challenge Section
+  .challenge-section {
+    margin-bottom: 42px;
+
+    .challenge-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+      border-bottom: 1.5px solid #ebdcd0;
+
+      .challenge-title-wrap {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        .challenge-pillar-indicator {
+          width: 4px;
+          height: 22px;
+          border-radius: 2px;
+          background: $color-cacao;
+          flex-shrink: 0;
+        }
+
+        .challenge-title {
+          margin: 0;
+          font-size: 18.5px;
+          font-weight: 700;
+          color: $color-cacao-deep;
+          letter-spacing: -0.2px;
+          line-height: 1.3;
+        }
+      }
+
+      .indicator-count-badge {
+        font-size: 12px;
+        font-weight: 600;
+        color: $color-text-muted;
+        background: #f4eee7;
+        border: 1px solid #dfd1c3;
+        border-radius: 12px;
+        padding: 3px 10px;
+        font-variant-numeric: tabular-nums;
+      }
+    }
+
+    // 3. Indicator Card
+    .indicator-card {
+      height: 100%;
+      border-radius: 10px;
+      border: 1px solid #e7ded4;
+      background: #ffffff;
+      box-shadow: 0 1px 3px rgba(36, 20, 10, 0.04),
+        0 4px 12px rgba(36, 20, 10, 0.02);
+      transition: transform 140ms ease-out, box-shadow 140ms ease-out;
+      overflow: hidden;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 14px rgba(36, 20, 10, 0.08),
+          0 1px 4px rgba(36, 20, 10, 0.04);
+      }
+
+      .ant-card-head {
+        background: #faf7f4;
+        border-bottom: 1px solid #ede3d8;
+        padding: 0 20px;
+        min-height: 58px;
+
+        .ant-card-head-wrapper {
+          align-items: flex-start;
+          padding: 14px 0 12px;
+        }
+
+        .ant-card-head-title {
+          padding: 0;
+          white-space: normal;
+        }
+
+        .ant-card-extra {
+          padding: 0;
+          align-self: flex-start;
+        }
+
+        .card-title-container {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+
+          .card-title-top-row {
+            .indicator-name {
+              font-size: 14.5px;
+              font-weight: 600;
+              color: $color-text-main;
+              line-height: 1.4;
+              display: inline-block;
+            }
+          }
+
+          .card-title-sub-row {
+            display: flex;
+            align-items: center;
+
+            .scope-tag {
+              background: #f2ede7;
+              border: 1px solid #ddd2c5;
+              color: $color-text-muted;
+              border-radius: 4px;
+              font-size: 11px;
+              font-weight: 600;
+              margin: 0;
+              padding: 1px 7px;
+              line-height: 18px;
+            }
+          }
+        }
+
+        .unit-tag {
+          background: $color-forest-tint;
+          border: 1px solid #c2decb;
+          color: $color-forest-dark;
+          border-radius: 4px;
+          font-size: 11.5px;
+          font-weight: 600;
+          margin: 0;
+          padding: 2px 8px;
+          line-height: 18px;
+        }
+      }
+
+      .ant-card-body {
+        padding: 20px;
+      }
+
+      // 4. Blueprint Technical Canvas
+      .blueprint-canvas {
+        display: flex;
+        flex-direction: column;
+
+        .blueprint-legend {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          gap: 16px;
+          margin-bottom: 16px;
+          padding-bottom: 12px;
+          border-bottom: 1px dashed #ede5db;
+
+          .legend-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            color: $color-text-muted;
+
+            .legend-marker {
+              width: 14px;
+              height: 3px;
+              border-radius: 2px;
+              display: inline-block;
+            }
+
+            .marker-member {
+              background: #d97706; // Amber / Cacao accent
+              height: 3.5px;
+            }
+
+            .marker-peer {
+              background: #2563eb; // Benchmark blue
+              border-top: 1.5px dashed #2563eb;
+              background: transparent;
+            }
+
+            .marker-national {
+              background: #059669; // Emerald initiative
+              border-top: 1.5px dotted #059669;
+              background: transparent;
+            }
+          }
+        }
+
+        .blueprint-grid-area {
+          position: relative;
+          height: 100px;
+          background: #fbf9f6;
+          border: 1px solid #ebdcd0;
+          border-radius: 6px;
+          padding: 8px 12px;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          overflow: hidden;
+
+          .grid-line {
+            width: 100%;
+            border-bottom: 1px dashed rgba(216, 200, 186, 0.6);
+            height: 1px;
+          }
+
+          .blueprint-svg-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+
+            .svg-line-member {
+              fill: none;
+              stroke: #d97706;
+              stroke-width: 2.5;
+            }
+
+            .svg-line-peer {
+              fill: none;
+              stroke: #2563eb;
+              stroke-width: 1.8;
+              stroke-dasharray: 4, 3;
+            }
+
+            .svg-line-national {
+              fill: none;
+              stroke: #059669;
+              stroke-width: 1.8;
+              stroke-dasharray: 2, 2;
+            }
+
+            .node-member {
+              fill: #ffffff;
+              stroke: #d97706;
+              stroke-width: 2;
+            }
+          }
+        }
+
+        .blueprint-axis-years {
+          display: flex;
+          justify-content: space-between;
+          padding: 6px 12px 10px;
+          font-size: 11.5px;
+          font-weight: 600;
+          color: $color-text-subtle;
+          font-variant-numeric: tabular-nums;
+        }
+
+        .blueprint-caption {
+          margin-top: 4px;
+          padding-top: 8px;
+          border-top: 1px solid #f2ece4;
+          text-align: center;
+
+          .caption-label {
+            font-size: 12.5px;
+            color: $color-text-muted;
+
+            strong {
+              color: $color-text-main;
+            }
+          }
+        }
+      }
+
+      &.empty-indicator-card {
+        .empty-challenge-body {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 120px;
+          color: $color-text-subtle;
+        }
+      }
+    }
+  }
+
+  // 5. Zero-CLS Skeletons
+  .dashboard-skeleton-grid {
+    .skeleton-challenge-block {
+      margin-bottom: 36px;
+
+      .skeleton-card {
+        background: #ffffff;
+        border: 1px solid $color-sand-border;
+        border-radius: 10px;
+        padding: 24px;
+        min-height: 240px;
+      }
+    }
+  }
+
+  // 6. Error & Empty States
+  .dashboard-error-alert {
+    background: #ffffff;
+    border: 1px solid #f5c2c7;
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 24px;
+
+    .retry-btn {
+      background: #b91c1c;
+      border-color: #b91c1c;
+      font-weight: 600;
+      border-radius: 5px;
+
+      &:hover {
+        background: #991b1b;
+        border-color: #991b1b;
+      }
+    }
+  }
+
+  .dashboard-empty {
+    background: #ffffff;
+    border: 1px solid $color-sand-border;
+    border-radius: 12px;
+    padding: 48px 32px;
+    text-align: center;
+  }
+}
+
+// Responsive Breakpoints
+@media (max-width: 992px) {
+  .member-dashboard-page {
+    padding: 24px 20px 48px;
+
+    .dashboard-header {
+      padding: 20px 24px;
+
+      .secretariat-switcher-wrapper {
+        justify-content: flex-start;
+
+        .secretariat-toolbar {
+          max-width: 100%;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .member-dashboard-page {
+    padding: 16px 12px 36px;
+
+    .dashboard-header {
+      padding: 16px;
+
+      .header-main .dashboard-title {
+        font-size: 20px;
+      }
+    }
+
+    .challenge-section .challenge-header-bar {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+  }
+}

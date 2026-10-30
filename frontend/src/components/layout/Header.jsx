@@ -111,6 +111,7 @@ const Header = ({ className = "header", ...props }) => {
             <Space size="large" align="center">
               {isLoggedIn && (
                 <>
+                  <Link to="/dashboard">{text.navDashboard}</Link>
                   <Link to="/survey">{text.navSurvey}</Link>
                   <Link to="/download">{text.navDownload}</Link>
                 </>
