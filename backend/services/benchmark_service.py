@@ -186,7 +186,7 @@ class BenchmarkService:
                 Data.submitted.isnot(None),
                 extract("year", Data.submitted).in_(years),
             )
-            .order_by(Data.submitted.desc())
+            .order_by(Data.submitted.desc(), Data.id.desc())
             .all()
         )
 
@@ -363,14 +363,8 @@ class BenchmarkService:
             self.cache.clear()
             return
 
-        with self.cache._lock:
-            prefix = f"benchmarks_pg_{peer_group_id}_"
-            keys_to_delete = [
-                k for k in self.cache._store.keys()
-                if str(k).startswith(prefix)
-            ]
-            for k in keys_to_delete:
-                del self.cache._store[k]
+        prefix = f"benchmarks_pg_{peer_group_id}_"
+        self.cache.delete_prefix(prefix)
 
 
 # Singleton service instance

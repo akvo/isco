@@ -1,4 +1,5 @@
 import time
+from collections import namedtuple
 from datetime import datetime
 from unittest.mock import MagicMock
 
@@ -130,6 +131,73 @@ class TestBenchmarkCalculationLogic:
             exclude_current_member=True,
         )
         assert masked_avg is None
+
+    def test_extract_submissions_deterministic_tie_breaker_by_id(self):
+        """
+        Verifies that when multiple submissions share the exact same timestamp,
+        the query ordering (submitted.desc(), id.desc()) and extraction logic
+        deterministically selects the submission with the highest id.
+        """
+        service = BenchmarkService()
+        mock_session = MagicMock()
+
+        dt = datetime(2022, 6, 1, 12, 0, 0)
+        Row = namedtuple(
+            "DataRow",
+            ["id", "organisation", "form", "sub_year", "submitted"]
+        )
+        AnswerRow = namedtuple(
+            "AnswerRow",
+            ["data", "question", "value", "repeat_index"]
+        )
+
+        # Row 1 (id 200, value 0.75) comes before Row 2 (id 100, value 0.25)
+        # due to order_by(Data.submitted.desc(), Data.id.desc())
+        data_rows = [
+            Row(id=200, organisation=1, form=7, sub_year=2022, submitted=dt),
+            Row(id=100, organisation=1, form=7, sub_year=2022, submitted=dt),
+        ]
+        # Answer for data id 200 is 0.75; answer for data id 100 is 0.25
+        local_qid = service.resolver.resolve_question_id(86)
+        answer_rows = [
+            AnswerRow(
+                data=200,
+                question=local_qid,
+                value=0.75,
+                repeat_index=None
+            ),
+            AnswerRow(
+                data=100,
+                question=local_qid,
+                value=0.25,
+                repeat_index=None
+            ),
+        ]
+
+        mock_query_data = MagicMock()
+        (
+            mock_query_data.filter.return_value
+            .order_by.return_value
+            .all.return_value
+        ) = data_rows
+
+        mock_query_answer = MagicMock()
+        mock_query_answer.filter.return_value.all.return_value = answer_rows
+
+        mock_session.query.side_effect = [mock_query_data, mock_query_answer]
+
+        cohorts = service.extract_raw_cohort_submissions(
+            session=mock_session,
+            peer_org_ids=[1],
+            gisco_org_ids=set(),
+            years=[2022],
+        )
+
+        assert "sourced_directly" in cohorts
+        assert 2022 in cohorts["sourced_directly"]
+        assert 1 in cohorts["sourced_directly"][2022]
+        # Deterministically selected data row 200 with value 0.75
+        assert cohorts["sourced_directly"][2022][1] == 0.75
 
 
 class TestTTLCacheIntegrationAndLatency:

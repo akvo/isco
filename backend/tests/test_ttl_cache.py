@@ -184,3 +184,24 @@ class TestTTLCache:
             t.join()
 
         assert len(errors) == 0, f"Errors encountered: {errors}"
+
+    def test_delete_prefix(self):
+        cache = TTLCache(maxsize=10, ttl=60)
+        cache.set("pg_1_year_2022", "val1")
+        cache.set("pg_1_year_2023", "val2")
+        cache.set("pg_2_year_2022", "val3")
+
+        # Delete matching pg_1_
+        deleted_count = cache.delete_prefix("pg_1_")
+        assert deleted_count == 2
+        assert cache.get("pg_1_year_2022") is None
+        assert cache.get("pg_1_year_2023") is None
+        assert cache.get("pg_2_year_2022") == "val3"
+
+        # Delete non-matching prefix
+        assert cache.delete_prefix("pg_999_") == 0
+        assert cache.get("pg_2_year_2022") == "val3"
+
+        # Delete from empty cache
+        cache.clear()
+        assert cache.delete_prefix("pg_") == 0

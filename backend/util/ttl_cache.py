@@ -80,6 +80,20 @@ class TTLCache:
             if key in self._store:
                 del self._store[key]
 
+    def delete_prefix(self, prefix: str) -> int:
+        """
+        Removes all keys starting with prefix.
+        Returns count of deleted keys.
+        """
+        with self._lock:
+            keys_to_delete = [
+                k for k in self._store.keys()
+                if str(k).startswith(prefix)
+            ]
+            for k in keys_to_delete:
+                del self._store[k]
+            return len(keys_to_delete)
+
     def pop(self, key: Any, default: Any = None) -> Any:
         """Removes and returns a value from the cache if unexpired."""
         with self._lock:
