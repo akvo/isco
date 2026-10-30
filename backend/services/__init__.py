@@ -11,6 +11,10 @@ from services.formula_evaluator import (
     evaluate_formula,
     validate_formula,
 )
+from services.benchmark_service import (
+    BenchmarkService,
+    get_benchmark_service,
+)
 
 __all__ = [
     "SurveyIdResolver",
@@ -20,4 +24,6 @@ __all__ = [
     "FormulaSecurityError",
     "evaluate_formula",
     "validate_formula",
+    "BenchmarkService",
+    "get_benchmark_service",
 ]
