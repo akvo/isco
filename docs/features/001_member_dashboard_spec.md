@@ -24,17 +24,21 @@
    - Added `chart_type` attribute to every indicator definition (defaulting to `"line"` for this year's indicators, with extensible forward-compatible support for `"bar"`, `"stacked_bar"`, etc.).
 4. **Formula Capability Architecture**:
    - Clarified and standardized formula evaluation capability: safe Python AST parser supports both simple arithmetic (`+`, `-`, `*`, `/`) and complex permutations (parentheses grouping `(A + B) / C`, conditional fallback `coalesce(...)`, aggregation functions like `SUM(...)`, and statistical functions like `AVG(...)`, `MIN(...)`, `MAX(...)`). Evaluated securely without dangerous `eval()`.
+5. **Dynamic Monitoring Year Range (2022 to Current Monitoring Year)**:
+   - Initial GISCO pilot template provided dummy data across 2022–2024.
+   - The platform dynamically expands the year range from `start_year = 2022` through the `current_monitoring_year` (`datetime.now().year`), aligning with `MonitoringRoundSelector.jsx`.
+   - Backward-compatible and parameterized (`years: Optional[List[int]] = None`) allowing test suites to validate against 2022–2024 reference dummy fixtures while live dashboards automatically include new monitoring rounds (2025, 2026+) without code deployments.
 
 ### 5W1H Framework
 - **Who**: Member Users & Member Admins (`member_user`, `member_admin`), Secretariat Admins (`secretariat_admin`).
-- **What**: Multi-year trend dashboard digitizing the "Dashboard Member X" sheet from `5_Template DUMMY_Individual_reporting_back_ISCO_GISCO.xlsx`. Displays 9 interactive time-series line charts across 4 sustainability challenges (Transparency, Deforestation, Living Income, Child Labour), comparing individual performance (2022–2024) against ISCO and GISCO averages for their assigned peer group.
+- **What**: Multi-year trend dashboard digitizing the "Dashboard Member X" sheet from `5_Template DUMMY_Individual_reporting_back_ISCO_GISCO.xlsx`. Displays 9 interactive time-series line charts across 4 sustainability challenges (Transparency, Deforestation, Living Income, Child Labour), comparing individual performance over time (from 2022 through the current monitoring year) against ISCO and GISCO averages for their assigned peer group.
 - **Where**:
   - **Frontend**: `/dashboard` route (`/frontend/src/pages/member-dashboard/MemberDashboardPage.jsx`).
   - **Backend**: `/backend/routes/visualization.py` (`GET /api/visualization/individual-dashboard`).
   - **Database**: PostgreSQL tables `peer_group`, `peer_group_member_type`, linking to `organisation` via `member_type`.
 - **When**: Delivered within the current sprint cycle.
 - **Why**: Members need an immediate, self-serve visual benchmark of their progress over time relative to their direct peers without manual Excel report generation, while preventing cross-cohort comparison leakage.
-- **How**: The backend looks up the member's mapped peer group from their authenticated organization session, computes/retrieves cached 3-year cohort benchmarks, and serves the series to Recharts multi-line charts.
+- **How**: The backend looks up the member's mapped peer group from their authenticated organization session, computes/retrieves cached multi-year cohort benchmarks, and serves the series to multi-line charts.
 
 ---
 
@@ -187,6 +191,19 @@ The 4 harmonized peer groups mapped to existing `member_type` tags:
 ### 4.4 Declarative Configuration & AST Formula Evaluator Capability
 **File**: `/backend/source/config/visualization_mapping.json`
 
+#### Global Dashboard Configuration:
+```json
+{
+  "start_year": 2022,
+  "end_year": null,
+  "exclude_current_member_from_average": false,
+  "challenges": [ ... ]
+}
+```
+- `start_year` (integer, default `2022`): First monitoring round year included in the dashboard time-series.
+- `end_year` (optional integer or `null`, default `null`): Upper bound for monitoring rounds. If `null`, dynamically expands to `datetime.now().year` (current monitoring year). If set to an integer (e.g. `2024`), strictly bounds time-series to that year.
+- `exclude_current_member_from_average` (boolean, default `false`): Configurable toggle to exclude the active member's own data from cohort benchmark averages.
+
 Every indicator definition includes:
 - `chart_type`: `"line"` (Default for this release. Extensible to `"bar"`, `"stacked_bar"`, etc. for future cases).
 - `formula`: The arithmetic expression or function.
@@ -273,7 +290,7 @@ By removing the dynamic client-side peer group switcher, we eliminate dynamic pe
 | :--- | :--- | :---: | :---: | :---: | :---: | :--- |
 | **TASK-01** | **Harmonized Peer Groups Database & Seeder**<br>• Create `peer_group` and `peer_group_member_type` SQLAlchemy models<br>• Write Alembic migration script creating tables and indexes<br>• Seed 4 harmonized peer groups linked to `member_type` tags<br>• Unit test migration upgrade/downgrade and tag mapping resolution | 3.0h | 1.5h | 2.0h | **6.5h (~0.9d)** | **Independent DB & Migration Gate**:<br>Run Alembic migration upgrade/downgrade; verify table structures and seed mappings in PostgreSQL. |
 | **TASK-02** | **Declarative Indicator Config & AST Formula Evaluator**<br>• Author `/backend/source/config/visualization_mapping.json` for 9 indicators with `chart_type: "line"`<br>• Implement safe Python AST formula evaluator supporting arithmetic (`+`, `-`, `*`, `/`), groupings `(A + B) / C`, repeat sums (`SUM(ID1216) / ID842`), and custom permutations (`AVG`, `MIN`, `MAX`, `COALESCE`)<br>• Add division-by-zero & missing data safeguards (returns `null` without 500)<br>• Unit test evaluator against mock survey payloads across complex permutation edge cases | 3.5h | 2.0h | 2.0h | **7.5h (~1.1d)** | **Independent Engine Gate**:<br>Unit test suite verifies formulas with simple arithmetic, nested groupings, repeat aggregations, empty answers, missing years, and zero denominators. |
-| **TASK-03** | **Peer Group Benchmark Aggregation & TTLCache**<br>• Query submitted answers for peer group member organisations across 2022–2024<br>• Calculate GISCO Average and ISCO Average benchmarks for the peer group cohort<br>• Implement configurable member self-exclusion toggle (`exclude_current_member_from_average`) with $O(1)$ cached cohort subtraction<br>• Enforce minimum cohort gate (>=3 reporting members per peer group/year to prevent de-anonymization)<br>• Build in-memory `TTLCache` (1-hour TTL) keyed by `peer_group_id`<br>• Integration tests verifying benchmark calculation & cache hits with and without member exclusion | 3.5h | 2.0h | 2.0h | **7.5h (~1.1d)** | **Independent Benchmarks Gate**:<br>Test script compares calculated ISCO/GISCO benchmarks against Excel dummy reference values under both `exclude_current_member=false` and `true`. |
+| **TASK-03** | **Peer Group Benchmark Aggregation & TTLCache**<br>• Query submitted answers for peer group member organisations across dynamic monitoring years (2022 to current monitoring year)<br>• Calculate GISCO Average and ISCO Average benchmarks for the peer group cohort<br>• Implement configurable member self-exclusion toggle (`exclude_current_member_from_average`) with $O(1)$ cached cohort subtraction<br>• Enforce minimum cohort gate (>=3 reporting members per peer group/year to prevent de-anonymization)<br>• Build in-memory `TTLCache` (1-hour TTL) keyed by `peer_group_id`<br>• Integration tests verifying benchmark calculation & cache hits with and without member exclusion, across parameterized and dynamic monitoring years | 3.5h | 2.0h | 2.0h | **7.5h (~1.1d)** | **Independent Benchmarks Gate**:<br>Test script compares calculated ISCO/GISCO benchmarks against Excel dummy reference values under both `exclude_current_member=false` and `true`, and verifies dynamic year resolution up to current year. |
 | **TASK-04** | **Individual Dashboard REST API Endpoint & Multi-Tenant RBAC**<br>• Implement `GET /api/visualization/individual-dashboard`<br>• Enforce automatic peer group resolution from member's `member_type`<br>• Enforce data isolation: `member_user` can only query own organisation<br>• Allow `secretariat_admin` to pass `?organisation_id={id}`<br>• API integration tests verifying RBAC, 403 on foreign orgs, and payload contracts | 3.0h | 2.0h | 1.5h | **6.5h (~0.9d)** | **Independent API Gate**:<br>Swagger UI / curl testing: validates JSON structure, 403 on foreign org query attempt, and response times `< 50ms`. |
 | **TASK-05** | **Frontend Dashboard Page Shell with Fixed Peer Group Badge**<br>• Create `/frontend/src/pages/member-dashboard/MemberDashboardPage.jsx`<br>• Add top header navigation link to `/dashboard`<br>• Render static Peer Group tag/badge based on API response<br>• Implement Secretariat Organisation Switcher for `secretariat_admin`<br>• Implement loading spinners, error alerts, and empty states | 2.5h | 1.5h | 1.5h | **5.5h (~0.8d)** | **Independent UI Shell Gate**:<br>Test `/dashboard` in browser: verify navigation, static peer group badge display, and Secretariat switcher. |
 | **TASK-06** | **9 Multi-Line Charts via `akvo-charts` & Accompanying Data Grids**<br>• Install & verify `akvo-charts` dependency in frontend (`./dc.sh exec frontend yarn add akvo-charts`)<br>• Build `IndicatorLineChartCard.jsx` using `akvo-charts` `<Line>` component<br>• Configure 3 distinct ECharts curves: Member (solid blue), ISCO Avg (dashed orange), GISCO Avg (dotted green)<br>• Handle inverted polarity for child labour identification (lower is better visual cues)<br>• Handle missing years (`null` points) without chart breakdown<br>• Build compact yearly data table below each chart (`Year`, `Member`, `ISCO Avg`, `GISCO Avg`)<br>• Responsive 2-column grid layout across 4 Challenge sections | 4.5h | 2.0h | 2.5h | **9.0h (~1.3d)** | **Independent Chart Visual Gate**:<br>Verify all 9 charts in browser: inspect line styles, tooltips, missing year gaps, inverted polarity formatting, and data tables. |
@@ -315,8 +332,9 @@ By removing the dynamic client-side peer group switcher, we eliminate dynamic pe
 - **TAC (Technical Acceptance Criteria)**:
   - **TAC-03.1**: Configurable `exclude_current_member_from_average` toggle supporting $O(1)$ memory subtraction from cached aggregates.
   - **TAC-03.2**: In-memory `TTLCache(maxsize=128, ttl=3600)` responding to cached requests in $< 50\text{ms}$.
-  - **TAC-03.3**: Bulk SQLAlchemy query joining `Data`, `Answer`, `Organisation`, and `PeerGroupMemberType` grouped by year (0 N+1 queries).
-  - **TAC-03.4**: Integration tests for averages, anonymity masking ($N < 3$), and cache invalidation.
+  - **TAC-03.3**: Bulk SQLAlchemy query joining `Data`, `Answer`, `Organisation`, and `PeerGroupMemberType` grouped by dynamic years (2022 to current monitoring year, parameterized) (0 N+1 queries).
+  - **TAC-03.4**: Declarative control in `visualization_mapping.json`: engine respects `start_year` (default 2022) and `end_year` (dynamic resolution to `datetime.now().year` when `null`).
+  - **TAC-03.5**: Integration tests for averages, anonymity masking ($N < 3$), dynamic and bounded year ranges, and cache invalidation.
 
 #### TASK-04: Individual Dashboard REST API Endpoint & Multi-Tenant RBAC
 - **UAC (User Acceptance Criteria)**:

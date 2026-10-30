@@ -1,4 +1,6 @@
 {
+  "start_year": 2022,
+  "end_year": null,
   "exclude_current_member_from_average": false,
   "challenges": [
     {
