@@ -18,6 +18,7 @@ import {
   Empty,
   Button,
 } from "antd";
+import IndicatorLineChartCard from "./IndicatorLineChartCard";
 import { store, api } from "../../lib";
 import { globalSelectProps } from "../../lib/util";
 import { uiText } from "../../static";
@@ -145,20 +146,6 @@ const MemberDashboardPage = () => {
       return "";
     }
     return text.challenges?.[challenge.id] || challenge.name;
-  };
-
-  const getIndicatorName = (indicator) => {
-    if (!indicator) {
-      return "";
-    }
-    return text.indicators?.[indicator.id] || indicator.name;
-  };
-
-  const getUnitName = (unit) => {
-    if (!unit) {
-      return "";
-    }
-    return text.units?.[unit.toLowerCase()] || unit;
   };
 
   const getIndicatorCountLabel = (count) => {
@@ -342,127 +329,12 @@ const MemberDashboardPage = () => {
                     <Row gutter={[24, 24]}>
                       {(challenge.indicators || []).map((indicator) => (
                         <Col xs={24} lg={12} key={indicator.id}>
-                          <Card
-                            className="indicator-card"
-                            title={
-                              <div className="card-title-container">
-                                <div className="card-title-top-row">
-                                  <span className="indicator-name">
-                                    {getIndicatorName(indicator)}
-                                  </span>
-                                </div>
-                                {indicator.country && (
-                                  <div className="card-title-sub-row">
-                                    <Tag className="scope-tag">
-                                      {indicator.country}
-                                    </Tag>
-                                  </div>
-                                )}
-                              </div>
-                            }
-                            extra={
-                              indicator.unit ? (
-                                <Tag className="unit-tag">
-                                  {getUnitName(indicator.unit)}
-                                </Tag>
-                              ) : null
-                            }
-                          >
-                            <div className="blueprint-canvas">
-                              {/* Analytical Legend */}
-                              <div className="blueprint-legend">
-                                <div className="legend-item member-legend">
-                                  <span className="legend-marker marker-member" />
-                                  <span className="legend-text">
-                                    {text.dashboardLegendMember || "Member"}
-                                  </span>
-                                </div>
-                                <div className="legend-item peer-legend">
-                                  <span className="legend-marker marker-peer" />
-                                  <span className="legend-text">
-                                    {text.dashboardLegendIscoAvg ||
-                                      "ISCO Peer Avg"}
-                                  </span>
-                                </div>
-                                <div className="legend-item national-legend">
-                                  <span className="legend-marker marker-national" />
-                                  <span className="legend-text">
-                                    {text.dashboardLegendNationalAvg ||
-                                      "National Avg"}
-                                  </span>
-                                </div>
-                              </div>
-
-                              {/* Stylized Metric Blueprint Visualizer */}
-                              <div className="blueprint-grid-area">
-                                <div className="grid-line" />
-                                <div className="grid-line" />
-                                <div className="grid-line" />
-                                <svg
-                                  className="blueprint-svg-lines"
-                                  viewBox="0 0 360 80"
-                                  preserveAspectRatio="none"
-                                >
-                                  {/* National baseline */}
-                                  <path
-                                    d="M 10 50 Q 180 40 350 45"
-                                    className="svg-line-national"
-                                  />
-                                  {/* ISCO Peer baseline */}
-                                  <path
-                                    d="M 10 38 Q 180 52 350 32"
-                                    className="svg-line-peer"
-                                  />
-                                  {/* Member solid trend */}
-                                  <path
-                                    d="M 10 58 Q 180 20 350 25"
-                                    className="svg-line-member"
-                                  />
-                                  {/* Data node highlights */}
-                                  <circle
-                                    cx="10"
-                                    cy="58"
-                                    r="3.5"
-                                    className="node-member"
-                                  />
-                                  <circle
-                                    cx="180"
-                                    cy="24"
-                                    r="3.5"
-                                    className="node-member"
-                                  />
-                                  <circle
-                                    cx="350"
-                                    cy="25"
-                                    r="3.5"
-                                    className="node-member"
-                                  />
-                                </svg>
-                              </div>
-
-                              {/* Axis Timeline */}
-                              <div className="blueprint-axis-years">
-                                {(dashboardData?.years || [2022, 2023, 2024])
-                                  .slice(0, 5)
-                                  .map((yr) => (
-                                    <span key={yr} className="axis-year">
-                                      {yr}
-                                    </span>
-                                  ))}
-                              </div>
-
-                              {/* Technical Status Caption */}
-                              <div className="blueprint-caption">
-                                <Text
-                                  type="secondary"
-                                  className="caption-label"
-                                >
-                                  {text.dashboardChartPlaceholder} (
-                                  {indicator.country || "Global"})
-                                </Text>
-                              </div>
-                            </div>
-                          </Card>
+                          <IndicatorLineChartCard
+                            indicator={indicator}
+                            peerGroupName={getPeerGroupName(
+                              dashboardData.organisation.peer_group
+                            )}
+                          />
                         </Col>
                       ))}
 
