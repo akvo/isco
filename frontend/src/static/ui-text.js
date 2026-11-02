@@ -23,6 +23,7 @@ const uiText = {
       </Fragment>
     ),
     // Navigation
+    navDashboard: "Member Dashboard",
     navSurvey: "Survey",
     navDefinitions: "Definitions",
     navFeedback: "Feedback",
@@ -39,6 +40,59 @@ const uiText = {
     navImpressum: "Impressum",
     navFaq: "FAQ",
     navDownloadFeedback: "Download Feedback",
+    dashboardEyebrow: "ISCO Sustainability Reporting Back",
+    dashboardAdminMode: "Secretariat Administration",
+    dashboardIndicatorCountSingular: "indicator",
+    dashboardIndicatorCountPlural: "indicators",
+    dashboardLegendMember: "Member",
+    dashboardLegendIscoAvg: "ISCO Peer Average",
+    dashboardLegendNationalAvg: "National Average",
+    dashboardTitle: "Individual Reporting Back Dashboard",
+    dashboardSubtitlePrefix:
+      "Overview of performance per challenge – Member vs",
+    dashboardSubtitleSuffix: "average over time",
+    peerGroupBadgePrefix: "Peer Group",
+    selectOrganisationPlaceholder: "Select Organisation",
+    dashboardLoadingText: "Loading dashboard data...",
+    dashboardErrorTitle: "Failed to load dashboard",
+    dashboardRetryBtn: "Retry",
+    dashboardEmptyTitle: "No Data Available",
+    dashboardEmptyDesc:
+      "No reporting back performance data is available for this organization.",
+    dashboardChartPlaceholder: "Chart visualization for",
+    dashboardNoIndicators: "No indicators configured for this challenge.",
+    peerGroups: {
+      trader_processor: "Trader/Processor",
+      large_manufacturer: "Large Manufacturer",
+      sme: "SME",
+      retail: "Retail",
+    },
+    challenges: {
+      transparency_and_traceability: "Transparency and traceability",
+      deforestation: "Deforestation",
+      living_income: "Living income",
+      child_labour: "Child labour",
+    },
+    indicators: {
+      sourced_directly: "Share of cocoa sourced directly",
+      sourced_traceable: "Share of cocoa sourced traceable to farm level",
+      deforestation_free: "Share of deforestation free cocoa",
+      li_gap_measured:
+        "Share of households in direct supply chain for which a LI gap is measured",
+      li_strategy_implemented:
+        "Share of households in direct supply chain for which a LI strategy is implemented",
+      clmrs_covered: "Share of households in supply chain covered by CLMRS",
+      child_labour_identified:
+        "Share of cases of child labour identified among children covered",
+      support_received:
+        "Share of children who received support among those identified",
+      follow_up_visits:
+        "Share of children who received 2-follow-up visits among those identified in child labour",
+    },
+    units: {
+      percentage: "Percentage",
+      ratio: "Ratio",
+    },
     // Form
     formChangePwd: "Change Password",
     formEmail: "Email Address",
@@ -343,6 +397,7 @@ const uiText = {
     ),
     // Navigation
     back: "Back",
+    navDashboard: "Mitglieder-Dashboard",
     navSurvey: "Umfrage",
     navDefinitions: "Definitionen",
     navFeedback: "Feedback",
@@ -359,6 +414,62 @@ const uiText = {
     navImpressum: "Impressum",
     navFaq: "FAQ",
     navDownloadFeedback: "Download Feedback",
+    dashboardEyebrow: "ISCO Nachhaltigkeitsberichterstattung",
+    dashboardAdminMode: "Sekretariatsverwaltung",
+    dashboardIndicatorCountSingular: "Indikator",
+    dashboardIndicatorCountPlural: "Indikatoren",
+    dashboardLegendMember: "Mitglied",
+    dashboardLegendIscoAvg: "ISCO Vergleichsgruppendurchschnitt",
+    dashboardLegendNationalAvg: "Nationaler Durchschnitt",
+    dashboardTitle: "Individuelles Reporting-Back Dashboard",
+    dashboardSubtitlePrefix:
+      "Leistungsübersicht pro Herausforderung – Mitglied vs.",
+    dashboardSubtitleSuffix: "Durchschnitt im Zeitverlauf",
+    peerGroupBadgePrefix: "Vergleichsgruppe",
+    selectOrganisationPlaceholder: "Organisation auswählen",
+    dashboardLoadingText: "Dashboard-Daten werden geladen...",
+    dashboardErrorTitle: "Dashboard konnte nicht geladen werden",
+    dashboardRetryBtn: "Erneut versuchen",
+    dashboardEmptyTitle: "Keine Daten verfügbar",
+    dashboardEmptyDesc:
+      "Für diese Organisation sind keine Reporting-Back-Leistungsdaten verfügbar.",
+    dashboardChartPlaceholder: "Diagrammvisualisierung für",
+    dashboardNoIndicators:
+      "Für diese Herausforderung sind keine Indikatoren konfiguriert.",
+    peerGroups: {
+      trader_processor: "Händler/Verarbeiter",
+      large_manufacturer: "Großer Hersteller",
+      sme: "KMU",
+      retail: "Einzelhandel",
+    },
+    challenges: {
+      transparency_and_traceability: "Transparenz und Rückverfolgbarkeit",
+      deforestation: "Entwaldung",
+      living_income: "Existenzsicherndes Einkommen",
+      child_labour: "Kinderarbeit",
+    },
+    indicators: {
+      sourced_directly: "Anteil direkt bezogenen Kakaos",
+      sourced_traceable:
+        "Anteil bis zur Farmebene rückverfolgbar bezogenen Kakaos",
+      deforestation_free: "Anteil entwaldungsfreien Kakaos",
+      li_gap_measured:
+        "Anteil der Haushalte in der direkten Lieferkette, für die eine Einkommenslücke gemessen wird",
+      li_strategy_implemented:
+        "Anteil der Haushalte in der direkten Lieferkette, für die eine Strategie für existenzsichernde Einkommen umgesetzt wird",
+      clmrs_covered:
+        "Anteil der Haushalte in der Lieferkette, die durch CLMRS abgedeckt sind",
+      child_labour_identified:
+        "Anteil der unter den erfassten Kindern identifizierten Fälle von Kinderarbeit",
+      support_received:
+        "Anteil der identifizierten Kinder, die Unterstützung erhalten haben",
+      follow_up_visits:
+        "Anteil der in Kinderarbeit identifizierten Kinder, die zwei Folgebesuche erhalten haben",
+    },
+    units: {
+      percentage: "Prozentsatz",
+      ratio: "Verhältnis",
+    },
     // Form
     formChangePwd: "Passwort ändern",
     formEmail: "Emailadresse",

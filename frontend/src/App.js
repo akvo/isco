@@ -28,6 +28,7 @@ import {
   DownloadReport,
   ManageRoadmap,
   DownloadFeedback,
+  MemberDashboard,
 } from "./pages";
 import { Alert } from "antd";
 import { useCookies } from "react-cookie";
@@ -271,6 +272,11 @@ const App = () => {
             exact
             path="/download-feedback"
             element={<Secure element={DownloadFeedback} adminPage={true} />}
+          />
+          <Route
+            exact
+            path="/dashboard"
+            element={<Secure element={MemberDashboard} />}
           />
           <Route exact path="/survey" element={<Secure element={Survey} />} />
           <Route
