@@ -516,15 +516,15 @@ $color-text-subtle: #8a7e71;
             letter-spacing: 0.2px;
 
             &.col-member {
-              color: #1890ff;
+              color: $color-cacao;
             }
 
             &.col-isco {
-              color: #fa8c16;
+              color: #0284c7;
             }
 
             &.col-gisco {
-              color: #52c41a;
+              color: #d97706;
             }
           }
 
@@ -542,7 +542,7 @@ $color-text-subtle: #8a7e71;
 
             .member-cell-value {
               font-weight: 600;
-              color: #096dd9;
+              color: $color-cacao;
             }
           }
 

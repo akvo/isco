@@ -258,10 +258,10 @@ The formula evaluator in `/backend/services/visualization_service.py` is built u
   - Responsive container wrapping `<Line config={...} data={...} rawConfig={...} />`.
 - **ECharts Configuration via `akvo-charts`**:
   - **Dataset / Data Format**: Normalized data matrix `[{ year: "2022", "Member": 34.2, "ISCO Avg": 36.4, "GISCO Avg": 37.0 }, ...]`.
-  - **Color Palette & Stroke Styling**:
-    - Member curve: Solid `#1890ff` (stroke 3px, circular symbol).
-    - ISCO Average curve: Dashed `#fa8c16` (stroke 2px, type `'dashed'`).
-    - GISCO Average curve: Dotted `#52c41a` (stroke 2px, type `'dotted'`).
+  - **Color Palette & Stroke Styling (Palette D: High Contrast)**:
+    - Member curve: Solid `#673016` (Official ISCO Cacao Brown, stroke 3px, circular symbol).
+    - ISCO Average curve: Dashed `#0284c7` (Sky / River Blue, stroke 2px, type `'dashed'`).
+    - GISCO Average curve: Dotted `#f59e0b` (Amber Gold, stroke 2px, type `'dotted'`).
   - **Toolbox & Tooltip**: Integrated hover tooltip displaying exact percentage values across the 3 series.
   - **Missing Years Handling**: `null` values natively supported by ECharts without broken line artifacts.
 - **Compact Data Table**:

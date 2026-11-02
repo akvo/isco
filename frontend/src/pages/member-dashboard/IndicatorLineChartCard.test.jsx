@@ -101,11 +101,11 @@ describe("IndicatorLineChartCard Component (TASK-06)", () => {
     // Check 3 series curves
     expect(rawConfig.series).toHaveLength(3);
 
-    // 1. Member curve: Solid blue (#1890ff), 3px width, circle symbol
+    // 1. Member curve: Solid cacao (#673016), 3px width, circle symbol
     const memberSeries = rawConfig.series[0];
     expect(memberSeries.name).toBe("Member");
     expect(memberSeries.type).toBe("line");
-    expect(memberSeries.itemStyle.color).toBe("#1890ff");
+    expect(memberSeries.itemStyle.color).toBe("#673016");
     expect(memberSeries.lineStyle.width).toBe(3);
     expect(memberSeries.lineStyle.type).toBe("solid");
     expect(memberSeries.symbol).toBe("circle");
@@ -113,11 +113,11 @@ describe("IndicatorLineChartCard Component (TASK-06)", () => {
     expect(memberSeries.connectNulls).toBe(false);
     expect(memberSeries.data).toEqual([34.2, 70.6, 48.5]);
 
-    // 2. ISCO Peer Average curve: Dashed orange (#fa8c16), 2px width, rect symbol
+    // 2. ISCO Peer Average curve: Dashed sky blue (#0284c7), 2px width, rect symbol
     const iscoSeries = rawConfig.series[1];
     expect(iscoSeries.name).toBe("ISCO Peer Average");
     expect(iscoSeries.type).toBe("line");
-    expect(iscoSeries.itemStyle.color).toBe("#fa8c16");
+    expect(iscoSeries.itemStyle.color).toBe("#0284c7");
     expect(iscoSeries.lineStyle.width).toBe(2);
     expect(iscoSeries.lineStyle.type).toBe("dashed");
     expect(iscoSeries.symbol).toBe("rect");
@@ -125,11 +125,11 @@ describe("IndicatorLineChartCard Component (TASK-06)", () => {
     expect(iscoSeries.connectNulls).toBe(false);
     expect(iscoSeries.data).toEqual([36.4, 70.0, 46.5]);
 
-    // 3. GISCO Average curve: Dotted green (#52c41a), 2px width, triangle symbol
+    // 3. GISCO Average curve: Dotted amber (#f59e0b), 2px width, triangle symbol
     const giscoSeries = rawConfig.series[2];
     expect(giscoSeries.name).toBe("GISCO Average");
     expect(giscoSeries.type).toBe("line");
-    expect(giscoSeries.itemStyle.color).toBe("#52c41a");
+    expect(giscoSeries.itemStyle.color).toBe("#f59e0b");
     expect(giscoSeries.lineStyle.width).toBe(2);
     expect(giscoSeries.lineStyle.type).toBe("dotted");
     expect(giscoSeries.symbol).toBe("triangle");
