@@ -14,7 +14,8 @@ const toNumericPercent = (val) => {
   if (Number.isNaN(num)) {
     return null;
   }
-  return Number((num * 100).toFixed(1));
+  const scaled = Math.abs(num) <= 1.0 && num !== 0 ? num * 100 : num;
+  return Number(scaled.toFixed(1));
 };
 
 const formatPercent = (val, naText = "N/A") => {
@@ -25,7 +26,8 @@ const formatPercent = (val, naText = "N/A") => {
   if (Number.isNaN(num)) {
     return naText;
   }
-  return `${(num * 100).toFixed(1)}%`;
+  const scaled = Math.abs(num) <= 1.0 && num !== 0 ? num * 100 : num;
+  return `${scaled.toFixed(1)}%`;
 };
 
 const IndicatorLineChartCard = ({ indicator, peerGroupName }) => {

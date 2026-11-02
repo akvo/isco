@@ -298,6 +298,8 @@ $color-text-subtle: #8a7e71;
           .card-title-sub-row {
             display: flex;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
 
             .scope-tag {
               background: #f2ede7;

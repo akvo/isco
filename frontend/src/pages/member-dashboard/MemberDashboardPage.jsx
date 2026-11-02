@@ -312,6 +312,7 @@ const MemberDashboardPage = () => {
             <main className="dashboard-challenges-container">
               {dashboardData.challenges.map((challenge) => {
                 const indicatorCount = challenge.indicators?.length || 0;
+                const colSpan = indicatorCount === 1 ? 24 : 12;
                 return (
                   <section key={challenge.id} className="challenge-section">
                     <div className="challenge-header-bar">
@@ -328,7 +329,7 @@ const MemberDashboardPage = () => {
 
                     <Row gutter={[24, 24]}>
                       {(challenge.indicators || []).map((indicator) => (
-                        <Col xs={24} lg={12} key={indicator.id}>
+                        <Col xs={24} lg={colSpan} key={indicator.id}>
                           <IndicatorLineChartCard
                             indicator={indicator}
                             peerGroupName={getPeerGroupName(
