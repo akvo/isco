@@ -23,6 +23,18 @@ jest.mock("../../lib/api", () => ({
   },
 }));
 
+jest.mock("akvo-charts", () => ({
+  __esModule: true,
+  Line: ({ rawConfig }) => (
+    <div
+      data-testid="akvo-line-chart"
+      data-rawconfig={JSON.stringify(rawConfig)}
+    >
+      Mocked Akvo Line Chart
+    </div>
+  ),
+}));
+
 const mockDashboardData = {
   organisation: {
     id: 45,
@@ -138,6 +150,12 @@ describe("MemberDashboardPage Shell Component", () => {
     expect(screen.getByText("Living income")).toBeInTheDocument();
     expect(screen.getByText("Deforestation")).toBeInTheDocument();
     expect(screen.getByText("Child labour")).toBeInTheDocument();
+
+    // Verify IndicatorLineChartCard rendering
+    expect(
+      screen.getByText("Share of cocoa sourced directly")
+    ).toBeInTheDocument();
+    expect(screen.getByTestId("akvo-line-chart")).toBeInTheDocument();
 
     // Standard member should not see secretariat organisation switcher
     expect(
