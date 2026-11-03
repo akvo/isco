@@ -131,5 +131,84 @@ describe("ManagePeerGroup Component", () => {
         screen.getByText("Edit Member Types: Trader / Processor")
       ).toBeInTheDocument();
     });
+
+    // Close the modal by clicking cancel
+    const cancelButton = screen.getByRole("button", { name: /Cancel/i });
+    fireEvent.click(cancelButton);
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText("Edit Member Types: Trader / Processor")
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  test("handles API error when fetching peer groups gracefully", async () => {
+    api.get.mockRejectedValueOnce(new Error("API Connection Failed"));
+
+    render(<ManagePeerGroup />);
+
+    // Should still render page structure and not crash
+    expect(screen.getByText("Manage Peer Groups")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(api.get).toHaveBeenCalledWith("/peer_group/");
+    });
+  });
+
+  test("renders fallback indicators for empty member types and missing description", async () => {
+    api.get.mockResolvedValueOnce({
+      data: [
+        {
+          id: 99,
+          name: "Unassigned Cohort",
+          code: "unassigned_cohort",
+          description: null,
+          member_types: [],
+        },
+      ],
+    });
+
+    render(<ManagePeerGroup />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Unassigned Cohort")).toBeInTheDocument();
+    });
+
+    expect(screen.getByText("No description provided.")).toBeInTheDocument();
+    expect(screen.getByText("No member types mapped")).toBeInTheDocument();
+  });
+
+  test("does not render unmapped member types alert when all member types are mapped", async () => {
+    store.update((s) => {
+      s.optionValues = {
+        member_type: [
+          { id: 101, name: "Trader" },
+          { id: 102, name: "Processor" },
+        ],
+      };
+    });
+
+    api.get.mockResolvedValueOnce({
+      data: [
+        {
+          id: 1,
+          name: "Trader / Processor",
+          code: "trader_processor",
+          description: "All traders and processors.",
+          member_types: [
+            { id: 101, name: "Trader" },
+            { id: 102, name: "Processor" },
+          ],
+        },
+      ],
+    });
+
+    render(<ManagePeerGroup />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Trader / Processor")).toBeInTheDocument();
+    });
+
+    expect(screen.queryByText("Unmapped Member Types")).not.toBeInTheDocument();
   });
 });

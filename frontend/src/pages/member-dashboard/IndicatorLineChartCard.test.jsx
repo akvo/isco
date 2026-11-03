@@ -222,4 +222,81 @@ describe("IndicatorLineChartCard Component (TASK-06)", () => {
     // German Missing Value
     expect(screen.getByText("k.A.")).toBeInTheDocument();
   });
+
+  test("handles non-numeric strings in series data gracefully (fallback to N/A)", () => {
+    const indicatorWithInvalidValues = {
+      id: "test_invalid_series",
+      name: "Indicator with Invalid Numbers",
+      country: "Global",
+      unit: "percentage",
+      chart_type: "line",
+      higher_is_better: true,
+      series: [
+        {
+          year: 2022,
+          member: "not_a_number",
+          isco_avg: null,
+          gisco_avg: "NaN",
+        },
+      ],
+    };
+
+    render(
+      <IndicatorLineChartCard
+        indicator={indicatorWithInvalidValues}
+        peerGroupName="Trader / Processor"
+      />
+    );
+
+    // Should display table with N/A for invalid values rather than crashing
+    expect(screen.getByText("2022")).toBeInTheDocument();
+    const naElements = screen.getAllByText("N/A");
+    expect(naElements.length).toBeGreaterThanOrEqual(3);
+  });
+
+  test("handles indicator without unit tag and null indicator prop gracefully", () => {
+    const indicatorWithoutUnit = {
+      id: "test_no_unit",
+      name: "Indicator without Unit",
+      country: "Global",
+      unit: null,
+      chart_type: "line",
+      higher_is_better: true,
+      series: [{ year: 2022, member: 50.0, isco_avg: 45.0, gisco_avg: 40.0 }],
+    };
+
+    const { rerender } = render(
+      <IndicatorLineChartCard
+        indicator={indicatorWithoutUnit}
+        peerGroupName="Trader / Processor"
+      />
+    );
+
+    expect(screen.getByText("Indicator without Unit")).toBeInTheDocument();
+
+    // Rerender with null indicator
+    rerender(
+      <IndicatorLineChartCard indicator={null} peerGroupName="Trader" />
+    );
+    // Should not throw or crash
+  });
+
+  test("configures ECharts tooltip and series connectNulls in rawConfig", () => {
+    render(
+      <IndicatorLineChartCard
+        indicator={mockIndicatorPercentage}
+        peerGroupName="Large Manufacturer"
+      />
+    );
+
+    const chartElem = screen.getByTestId("akvo-line-chart");
+    const rawConfig = JSON.parse(
+      chartElem.getAttribute("data-rawConfig") ||
+        chartElem.getAttribute("data-rawconfig")
+    );
+
+    expect(rawConfig.tooltip.trigger).toBe("axis");
+    expect(rawConfig.series).toHaveLength(3);
+    expect(rawConfig.series[0].connectNulls).toBe(false);
+  });
 });
