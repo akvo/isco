@@ -1027,3 +1027,109 @@ def test_individual_dashboard_caching_and_subsequent_calls(
     assert res1["organisation"]["id"] == res2["organisation"]["id"]
     assert res1["years"] == res2["years"]
     assert len(res1["challenges"]) == len(res2["challenges"])
+
+
+async def test_individual_dashboard_peer_group_override(
+    app: FastAPI, client: AsyncClient, session: Session, test_setup: dict
+):
+    """
+    TAC-07.1: Passing peer_group_id query parameter overrides benchmark
+    cohort while retaining member values.
+    """
+    from models.peer_group import PeerGroup
+
+    # Create a secondary peer group
+    pg2 = (
+        session.query(PeerGroup)
+        .filter(PeerGroup.code == "large_manufacturer")
+        .first()
+    )
+    if not pg2:
+        pg2 = PeerGroup(
+            name="Large Manufacturer",
+            code="large_manufacturer",
+            description="Large manufacturer cohort",
+        )
+        session.add(pg2)
+        session.commit()
+        session.refresh(pg2)
+
+    headers = {"Authorization": f"Bearer {test_setup['user_a_token']}"}
+    res = await client.get(
+        f"/visualization/individual-dashboard?peer_group_id={pg2.id}",
+        headers=headers,
+    )
+    assert res.status_code == 200
+    data = res.json()
+    assert "peer_groups" in data
+    assert len(data["peer_groups"]) >= 1
+    assert data["organisation"]["peer_group"]["id"] == pg2.id
+
+
+async def test_individual_dashboard_invalid_peer_group_404(
+    app: FastAPI, client: AsyncClient, test_setup: dict
+):
+    """
+    TAC-07.3: Invalid peer_group_id returns 404 Not Found.
+    """
+    headers = {"Authorization": f"Bearer {test_setup['user_a_token']}"}
+    res = await client.get(
+        "/visualization/individual-dashboard?peer_group_id=99999",
+        headers=headers,
+    )
+    assert res.status_code == 404
+    assert "peer group 99999 not found" in res.json().get("detail", "").lower()
+
+
+async def test_individual_dashboard_unmapped_org_with_peer_group_override(
+    app: FastAPI, client: AsyncClient, test_setup: dict
+):
+    """
+    UAC-07.5: Unmapped organisation with explicit peer_group_id allows
+    secretariat admins to preview benchmarks without triggering 422.
+    """
+    headers = {"Authorization": f"Bearer {test_setup['sec_admin_token']}"}
+    unmapped_org_id = test_setup["org_c"].id
+    mapped_pg_id = test_setup["peer_group"].id
+
+    url = (
+        f"/visualization/individual-dashboard?"
+        f"organisation_id={unmapped_org_id}&peer_group_id={mapped_pg_id}"
+    )
+    res = await client.get(url, headers=headers)
+    assert res.status_code == 200
+    data = res.json()
+    assert data["organisation"]["id"] == unmapped_org_id
+    assert data["organisation"]["peer_group"]["id"] == mapped_pg_id
+    assert data["enable_peer_group_filter"] is True
+
+
+def test_peer_group_filter_feature_flag_disabled(
+    session: Session, test_setup: dict
+):
+    """
+    Verifies that when enable_peer_group_filter is False in config,
+    peer_group override is ignored, returning the mapped peer group
+    and empty peer_groups list.
+    """
+    from services.visualization_service import VisualizationService
+
+    service = VisualizationService()
+    # Temporarily set flag to False
+    orig_flag = service.config.get("enable_peer_group_filter", True)
+    try:
+        service.config["enable_peer_group_filter"] = False
+        res = service.get_individual_dashboard(
+            session=session,
+            organisation_id=test_setup["org_a"].id,
+            years=[2022],
+            peer_group_id=99999,  # Even with invalid/override ID
+        )
+        assert res["enable_peer_group_filter"] is False
+        assert res["peer_groups"] == []
+        assert (
+            res["organisation"]["peer_group"]["id"]
+            == test_setup["peer_group"].id
+        )
+    finally:
+        service.config["enable_peer_group_filter"] = orig_flag
