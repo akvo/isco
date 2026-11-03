@@ -417,6 +417,7 @@ def test_survey_id_resolver_local_resolution(tmp_path, monkeypatch):
     """
     TAC-SYNC.4: In local/test, resolver maps canonical IDs to local DB IDs.
     """
+    monkeypatch.delenv("CONFIG_SOURCE_PATH", raising=False)
     monkeypatch.setenv("BUCKET_FOLDER", "local")
 
     mock_ledger = {
@@ -453,6 +454,7 @@ def test_survey_id_resolver_formula_rewriting(tmp_path, monkeypatch):
     """
     TAC-SYNC.4: Test formula AST token rewriting with word boundaries.
     """
+    monkeypatch.delenv("CONFIG_SOURCE_PATH", raising=False)
     monkeypatch.setenv("BUCKET_FOLDER", "local")
 
     mock_ledger = {
@@ -488,6 +490,7 @@ def test_survey_id_resolver_module_helpers(tmp_path, monkeypatch):
     """
     Tests module-level convenience functions.
     """
+    monkeypatch.delenv("CONFIG_SOURCE_PATH", raising=False)
     monkeypatch.setenv("BUCKET_FOLDER", "test")
 
     mock_ledger = {

@@ -405,10 +405,11 @@ async def test_organisation_without_mapped_peer_group_422(
         headers=headers,
     )
     assert res.status_code == 422
-    detail = res.json().get("detail", "").lower()
+    detail = res.json().get("detail", "")
+    assert test_setup["org_c"].name in detail
     assert (
-        "no mapped member type" in detail
-        or "no mapped peer group" in detail
+        "no mapped member type" in detail.lower()
+        or "no mapped peer group" in detail.lower()
     )
 
 
@@ -652,6 +653,7 @@ def test_service_direct_no_peer_group(session: Session):
             session=session, organisation_id=unmapped_org.id
         )
     assert exc_info.value.status_code == 422
+    assert unmapped_org.name in exc_info.value.detail
     assert "no mapped peer group" in str(exc_info.value.detail).lower()
 
 

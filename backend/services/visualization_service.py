@@ -69,7 +69,7 @@ class VisualizationService:
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
                 detail=(
-                    f"Organisation {organisation_id} has no mapped "
+                    f"Organisation {org.name} has no mapped "
                     "member type"
                 ),
             )
@@ -83,7 +83,7 @@ class VisualizationService:
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
                 detail=(
-                    f"Organisation {organisation_id} has no mapped "
+                    f"Organisation {org.name} has no mapped "
                     "peer group"
                 ),
             )

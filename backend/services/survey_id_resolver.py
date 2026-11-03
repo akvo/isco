@@ -32,6 +32,7 @@ class SurveyIdResolver:
             .lower()
         )
         self.env = os.path.basename(raw_env.rstrip("/"))
+        self._explicit_mapping = mapping_path is not None
 
         if mapping_path:
             self.mapping_path = mapping_path
@@ -53,7 +54,7 @@ class SurveyIdResolver:
         if self._loaded and not force_reload:
             return
 
-        if self.env == "production":
+        if self.env == "production" and not self._explicit_mapping:
             self._loaded = True
             return
 
