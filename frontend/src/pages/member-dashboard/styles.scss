@@ -106,6 +106,55 @@ $color-text-subtle: #8a7e71;
           }
         }
 
+        // Interactive Peer Group Benchmark Filter
+        .peer-group-filter-wrapper {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          background: #ffffff;
+          border: 1px solid $color-sand-border;
+          border-radius: 6px;
+          padding: 2px 8px;
+          transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+          &:hover,
+          &:focus-within {
+            border-color: $color-cacao-light;
+          }
+
+          .peer-group-filter-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: $color-text-muted;
+            white-space: nowrap;
+            letter-spacing: 0.1px;
+          }
+
+          .peer-group-select {
+            min-width: 170px;
+
+            .ant-select-selector {
+              border: none !important;
+              box-shadow: none !important;
+              background: transparent !important;
+              padding: 0 4px !important;
+              font-size: 13px !important;
+              font-weight: 600 !important;
+              color: $color-cacao-dark !important;
+              height: 28px !important;
+
+              .ant-select-selection-item {
+                line-height: 28px !important;
+              }
+            }
+
+            .ant-select-arrow {
+              color: $color-cacao-light;
+              right: 6px;
+            }
+          }
+        }
+
         .year-range-chip {
           display: inline-flex;
           align-items: center;

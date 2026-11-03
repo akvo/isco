@@ -50,6 +50,7 @@ const MemberDashboardPage = () => {
   const [selectedOrgId, setSelectedOrgId] = useState(() =>
     getCleanOrgId(user?.organisation)
   );
+  const [selectedPeerGroupId, setSelectedPeerGroupId] = useState(null);
   const abortControllerRef = useRef(null);
 
   // Sync selectedOrgId when user profile loads if not set
@@ -61,7 +62,7 @@ const MemberDashboardPage = () => {
   }, [user?.organisation, selectedOrgId]);
 
   const fetchDashboard = useCallback(
-    async (orgId) => {
+    async (orgId, peerGroupId) => {
       // Cancel prior pending request if in-flight
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
@@ -76,6 +77,9 @@ const MemberDashboardPage = () => {
         const cleanOrgId = getCleanOrgId(orgId);
         if (isAdmin && cleanOrgId) {
           params.organisation_id = cleanOrgId;
+        }
+        if (peerGroupId) {
+          params.peer_group_id = peerGroupId;
         }
 
         const res = await api.get("/visualization/individual-dashboard", {
@@ -102,21 +106,26 @@ const MemberDashboardPage = () => {
   );
 
   useEffect(() => {
-    fetchDashboard(selectedOrgId);
+    fetchDashboard(selectedOrgId, selectedPeerGroupId);
 
     return () => {
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
       }
     };
-  }, [fetchDashboard, selectedOrgId]);
+  }, [fetchDashboard, selectedOrgId, selectedPeerGroupId]);
 
   const handleOrganisationChange = (newOrgId) => {
     setSelectedOrgId(newOrgId);
+    setSelectedPeerGroupId(null);
+  };
+
+  const handlePeerGroupChange = (newPgId) => {
+    setSelectedPeerGroupId(newPgId);
   };
 
   const handleRetry = () => {
-    fetchDashboard(selectedOrgId);
+    fetchDashboard(selectedOrgId, selectedPeerGroupId);
   };
 
   const yearsRange = useMemo(() => {
@@ -133,6 +142,16 @@ const MemberDashboardPage = () => {
   const availableOrganisations = useMemo(() => {
     return (optionValues?.organisation || []).filter((o) => o?.active);
   }, [optionValues]);
+
+  const availablePeerGroups = useMemo(() => {
+    if (dashboardData?.peer_groups && dashboardData.peer_groups.length > 0) {
+      return dashboardData.peer_groups;
+    }
+    if (dashboardData?.organisation?.peer_group) {
+      return [dashboardData.organisation.peer_group];
+    }
+    return [];
+  }, [dashboardData]);
 
   const getPeerGroupName = (peerGroup) => {
     if (!peerGroup) {
@@ -194,6 +213,37 @@ const MemberDashboardPage = () => {
                         )}
                       </Tag>
                     )}
+                    {dashboardData?.enable_peer_group_filter &&
+                      availablePeerGroups.length > 0 && (
+                        <div className="peer-group-filter-wrapper">
+                          <span className="peer-group-filter-label">
+                            {text.peerGroupFilterLabel ||
+                              "Benchmark Peer Group"}
+                            :
+                          </span>
+                          <Select
+                            data-testid="peer-group-selector"
+                            className="peer-group-select"
+                            placeholder={
+                              text.selectPeerGroupPlaceholder ||
+                              "Select Peer Group"
+                            }
+                            value={
+                              selectedPeerGroupId ||
+                              dashboardData?.organisation?.peer_group?.id
+                            }
+                            onChange={handlePeerGroupChange}
+                            dropdownMatchSelectWidth={false}
+                            {...globalSelectProps}
+                          >
+                            {availablePeerGroups.map((pg) => (
+                              <Option key={pg.id} value={pg.id}>
+                                {getPeerGroupName(pg)}
+                              </Option>
+                            ))}
+                          </Select>
+                        </div>
+                      )}
                     {yearsRange && (
                       <span className="year-range-chip">
                         <span className="chip-symbol">✦</span>
