@@ -23,6 +23,18 @@ jest.mock("../../lib/api", () => ({
   },
 }));
 
+jest.mock("akvo-charts", () => ({
+  __esModule: true,
+  Line: ({ rawConfig }) => (
+    <div
+      data-testid="akvo-line-chart"
+      data-rawconfig={JSON.stringify(rawConfig)}
+    >
+      Mocked Akvo Line Chart
+    </div>
+  ),
+}));
+
 const mockDashboardData = {
   organisation: {
     id: 45,
@@ -34,6 +46,13 @@ const mockDashboardData = {
     },
   },
   years: [2022, 2023, 2024],
+  peer_groups: [
+    { id: 1, code: "trader_processor", name: "Trader/Processor" },
+    { id: 2, code: "large_manufacturer", name: "Large Manufacturer" },
+    { id: 3, code: "sme", name: "SME" },
+    { id: 4, code: "retail", name: "Retail" },
+  ],
+  enable_peer_group_filter: true,
   challenges: [
     {
       id: "transparency_and_traceability",
@@ -138,6 +157,12 @@ describe("MemberDashboardPage Shell Component", () => {
     expect(screen.getByText("Living income")).toBeInTheDocument();
     expect(screen.getByText("Deforestation")).toBeInTheDocument();
     expect(screen.getByText("Child labour")).toBeInTheDocument();
+
+    // Verify IndicatorLineChartCard rendering
+    expect(
+      screen.getByText("Share of cocoa sourced directly")
+    ).toBeInTheDocument();
+    expect(screen.getByTestId("akvo-line-chart")).toBeInTheDocument();
 
     // Standard member should not see secretariat organisation switcher
     expect(
@@ -272,5 +297,84 @@ describe("MemberDashboardPage Shell Component", () => {
     expect(
       screen.getByText("Anteil direkt bezogenen Kakaos")
     ).toBeInTheDocument();
+  });
+
+  test("renders peer group benchmark selector and fetches with peer_group_id when changed", async () => {
+    api.get.mockResolvedValueOnce({ data: mockDashboardData });
+
+    render(<MemberDashboardPage />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("peer-group-selector")).toBeInTheDocument();
+    });
+
+    const selector = screen.getByTestId("peer-group-selector");
+    expect(selector).toBeInTheDocument();
+
+    // Verify initial call without peer_group_id
+    expect(api.get).toHaveBeenCalledWith(
+      "/visualization/individual-dashboard",
+      expect.objectContaining({
+        params: {},
+      })
+    );
+
+    // Mock response for peer group change
+    const traderGroupData = {
+      ...mockDashboardData,
+      organisation: {
+        ...mockDashboardData.organisation,
+        peer_group: {
+          id: 1,
+          code: "trader_processor",
+          name: "Trader/Processor",
+        },
+      },
+    };
+    api.get.mockResolvedValueOnce({ data: traderGroupData });
+
+    // Ant Design Select opens dropdown on mouseDown
+    const selectTrigger = selector.querySelector(".ant-select-selector");
+    fireEvent.mouseDown(selectTrigger);
+
+    // Click Trader/Processor option
+    const traderOption = await screen.findByText("Trader/Processor");
+    fireEvent.click(traderOption);
+
+    // Verify API called with peer_group_id: 1
+    await waitFor(() => {
+      expect(api.get).toHaveBeenCalledWith(
+        "/visualization/individual-dashboard",
+        expect.objectContaining({
+          params: { peer_group_id: 1 },
+        })
+      );
+    });
+  });
+
+  test("hides peer group selector when enable_peer_group_filter is false", async () => {
+    const disabledFlagData = {
+      ...mockDashboardData,
+      enable_peer_group_filter: false,
+    };
+    api.get.mockResolvedValueOnce({ data: disabledFlagData });
+
+    render(<MemberDashboardPage />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(
+          /Individual Reporting Back Dashboard – Chocolatier Example AG/i
+        )
+      ).toBeInTheDocument();
+    });
+
+    // Static tag still renders
+    expect(
+      screen.getByText(/Peer Group: Large Manufacturer/i)
+    ).toBeInTheDocument();
+
+    // Dropdown selector is hidden
+    expect(screen.queryByTestId("peer-group-selector")).not.toBeInTheDocument();
   });
 });

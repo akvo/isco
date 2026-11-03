@@ -405,10 +405,11 @@ async def test_organisation_without_mapped_peer_group_422(
         headers=headers,
     )
     assert res.status_code == 422
-    detail = res.json().get("detail", "").lower()
+    detail = res.json().get("detail", "")
+    assert test_setup["org_c"].name in detail
     assert (
-        "no mapped member type" in detail
-        or "no mapped peer group" in detail
+        "no mapped member type" in detail.lower()
+        or "no mapped peer group" in detail.lower()
     )
 
 
@@ -652,6 +653,7 @@ def test_service_direct_no_peer_group(session: Session):
             session=session, organisation_id=unmapped_org.id
         )
     assert exc_info.value.status_code == 422
+    assert unmapped_org.name in exc_info.value.detail
     assert "no mapped peer group" in str(exc_info.value.detail).lower()
 
 
@@ -849,3 +851,285 @@ def test_route_handler_direct_calls(session: Session, test_setup: dict):
             service=service,
         )
     assert exc_auth.value.status_code == 401
+
+
+def test_extract_member_answers_repeat_questions(
+    session: Session, test_setup: dict
+):
+    """
+    Verifies that multiple answers for the same question within a submission
+    (repeat groups) are correctly accumulated into a list.
+    """
+    from services.visualization_service import VisualizationService
+
+    service = VisualizationService()
+    org_a = test_setup["org_a"]
+
+    existing_q = session.query(Question).first()
+    assert existing_q is not None
+    target_qid = existing_q.id
+
+    t_rep = datetime(2023, 6, 1, 12, 0, 0)
+    d_rep = Data(
+        name="Org A 2023 Repeat Sub",
+        form=7,
+        geo=[],
+        locked_by=None,
+        created_by=1,
+        organisation=org_a.id,
+        submitted_by=1,
+        created=t_rep,
+        updated=t_rep,
+        submitted=t_rep,
+    )
+    session.add(d_rep)
+    session.commit()
+    session.refresh(d_rep)
+
+    ans_rep1 = Answer(
+        question=target_qid,
+        created=t_rep,
+        data=d_rep.id,
+        value=100.0,
+        repeat_index="0",
+    )
+    ans_rep2 = Answer(
+        question=target_qid,
+        created=t_rep,
+        data=d_rep.id,
+        value=200.0,
+        repeat_index="1",
+    )
+    ans_rep3 = Answer(
+        question=target_qid,
+        created=t_rep,
+        data=d_rep.id,
+        value=300.0,
+        repeat_index="2",
+    )
+    session.add_all([ans_rep1, ans_rep2, ans_rep3])
+    session.commit()
+
+    answers = service.extract_member_answers(
+        session=session,
+        organisation_id=org_a.id,
+        years=[2023],
+    )
+
+    # Must be accumulated as a list of 3 items
+    res_val = answers[2023].get(target_qid)
+    assert isinstance(res_val, list)
+    assert res_val == [100.0, 200.0, 300.0]
+
+    # Clean up
+    session.delete(ans_rep1)
+    session.delete(ans_rep2)
+    session.delete(ans_rep3)
+    session.delete(d_rep)
+    session.commit()
+
+
+async def test_individual_dashboard_out_of_range_years(
+    app: FastAPI, client: AsyncClient, test_setup: dict
+):
+    """
+    Verifies that requesting years where no member or peer submissions exist
+    gracefully returns None for all metric curves without crashing.
+    """
+    token = test_setup["user_a_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
+    res = await client.get(
+        app.url_path_for("visualization:individual_dashboard"),
+        headers=headers,
+        params=[("years", 2038), ("years", 2039)],
+    )
+    assert res.status_code == 200
+    data = res.json()
+    assert data["years"] == [2038, 2039]
+
+    for ch in data["challenges"]:
+        for ind in ch["indicators"]:
+            assert len(ind["series"]) == 2
+            for pt in ind["series"]:
+                assert pt["year"] in [2038, 2039]
+                assert pt["member"] is None
+                assert pt["isco_avg"] is None
+                assert pt["gisco_avg"] is None
+
+
+async def test_individual_dashboard_all_nine_indicators_present(
+    app: FastAPI, client: AsyncClient, test_setup: dict
+):
+    """
+    Verifies that all 9 canonical indicators spanning the 4 challenges
+    are always returned in the response contract.
+    """
+    token = test_setup["user_a_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
+    res = await client.get(
+        app.url_path_for("visualization:individual_dashboard"),
+        headers=headers,
+        params=[("years", 2022)],
+    )
+    assert res.status_code == 200
+    data = res.json()
+
+    expected_indicators = {
+        "sourced_directly",
+        "sourced_traceable",
+        "deforestation_free",
+        "li_gap_measured",
+        "li_strategy_implemented",
+        "clmrs_covered",
+        "child_labour_identified",
+        "support_received",
+        "follow_up_visits",
+    }
+    found_indicators = set()
+    for ch in data["challenges"]:
+        for ind in ch["indicators"]:
+            found_indicators.add(ind["id"])
+            assert "country" in ind
+            assert "unit" in ind
+            assert "higher_is_better" in ind
+            assert "chart_type" in ind
+
+    assert expected_indicators == found_indicators
+
+
+def test_individual_dashboard_caching_and_subsequent_calls(
+    session: Session, test_setup: dict
+):
+    """
+    Verifies that consecutive calls to get_individual_dashboard
+    leverage benchmark caching without inconsistencies.
+    """
+    from services.visualization_service import VisualizationService
+
+    service = VisualizationService()
+    org_a = test_setup["org_a"]
+
+    # First call primes cache
+    res1 = service.get_individual_dashboard(
+        session=session,
+        organisation_id=org_a.id,
+        years=[2022, 2023],
+    )
+    # Second call should leverage TTLCache
+    res2 = service.get_individual_dashboard(
+        session=session,
+        organisation_id=org_a.id,
+        years=[2022, 2023],
+    )
+
+    assert res1["organisation"]["id"] == res2["organisation"]["id"]
+    assert res1["years"] == res2["years"]
+    assert len(res1["challenges"]) == len(res2["challenges"])
+
+
+async def test_individual_dashboard_peer_group_override(
+    app: FastAPI, client: AsyncClient, session: Session, test_setup: dict
+):
+    """
+    TAC-07.1: Passing peer_group_id query parameter overrides benchmark
+    cohort while retaining member values.
+    """
+    from models.peer_group import PeerGroup
+
+    # Create a secondary peer group
+    pg2 = (
+        session.query(PeerGroup)
+        .filter(PeerGroup.code == "large_manufacturer")
+        .first()
+    )
+    if not pg2:
+        pg2 = PeerGroup(
+            name="Large Manufacturer",
+            code="large_manufacturer",
+            description="Large manufacturer cohort",
+        )
+        session.add(pg2)
+        session.commit()
+        session.refresh(pg2)
+
+    headers = {"Authorization": f"Bearer {test_setup['user_a_token']}"}
+    res = await client.get(
+        f"/visualization/individual-dashboard?peer_group_id={pg2.id}",
+        headers=headers,
+    )
+    assert res.status_code == 200
+    data = res.json()
+    assert "peer_groups" in data
+    assert len(data["peer_groups"]) >= 1
+    assert data["organisation"]["peer_group"]["id"] == pg2.id
+
+
+async def test_individual_dashboard_invalid_peer_group_404(
+    app: FastAPI, client: AsyncClient, test_setup: dict
+):
+    """
+    TAC-07.3: Invalid peer_group_id returns 404 Not Found.
+    """
+    headers = {"Authorization": f"Bearer {test_setup['user_a_token']}"}
+    res = await client.get(
+        "/visualization/individual-dashboard?peer_group_id=99999",
+        headers=headers,
+    )
+    assert res.status_code == 404
+    assert "peer group 99999 not found" in res.json().get("detail", "").lower()
+
+
+async def test_individual_dashboard_unmapped_org_with_peer_group_override(
+    app: FastAPI, client: AsyncClient, test_setup: dict
+):
+    """
+    UAC-07.5: Unmapped organisation with explicit peer_group_id allows
+    secretariat admins to preview benchmarks without triggering 422.
+    """
+    headers = {"Authorization": f"Bearer {test_setup['sec_admin_token']}"}
+    unmapped_org_id = test_setup["org_c"].id
+    mapped_pg_id = test_setup["peer_group"].id
+
+    url = (
+        f"/visualization/individual-dashboard?"
+        f"organisation_id={unmapped_org_id}&peer_group_id={mapped_pg_id}"
+    )
+    res = await client.get(url, headers=headers)
+    assert res.status_code == 200
+    data = res.json()
+    assert data["organisation"]["id"] == unmapped_org_id
+    assert data["organisation"]["peer_group"]["id"] == mapped_pg_id
+    assert data["enable_peer_group_filter"] is True
+
+
+def test_peer_group_filter_feature_flag_disabled(
+    session: Session, test_setup: dict
+):
+    """
+    Verifies that when enable_peer_group_filter is False in config,
+    peer_group override is ignored, returning the mapped peer group
+    and empty peer_groups list.
+    """
+    from services.visualization_service import VisualizationService
+
+    service = VisualizationService()
+    # Temporarily set flag to False
+    orig_flag = service.config.get("enable_peer_group_filter", True)
+    try:
+        service.config["enable_peer_group_filter"] = False
+        res = service.get_individual_dashboard(
+            session=session,
+            organisation_id=test_setup["org_a"].id,
+            years=[2022],
+            peer_group_id=99999,  # Even with invalid/override ID
+        )
+        assert res["enable_peer_group_filter"] is False
+        assert res["peer_groups"] == []
+        assert (
+            res["organisation"]["peer_group"]["id"]
+            == test_setup["peer_group"].id
+        )
+    finally:
+        service.config["enable_peer_group_filter"] = orig_flag

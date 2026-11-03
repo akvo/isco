@@ -1,29 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react";
 import "./styles.scss";
-import {
-  Row,
-  Col,
-  Typography,
-  Card,
-  Tag,
-  Button,
-  Spin,
-  Alert,
-  Empty,
-} from "antd";
-import { RiArrowLeftLine, RiPencilFill } from "react-icons/ri";
+import { Row, Col, Typography, Tag, Button, Table, Space, Alert } from "antd";
+import { RiPencilFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { api, store } from "../../lib";
 import EditPeerGroupMappingModal from "./EditPeerGroupMappingModal";
 
-const { Title, Text, Paragraph } = Typography;
-
-const PEER_GROUP_COLORS = {
-  trader_processor: "blue",
-  large_manufacturer: "gold",
-  sme: "cyan",
-  retail: "green",
-};
+const { Title, Text } = Typography;
 
 const ManagePeerGroup = () => {
   const navigate = useNavigate();
@@ -72,97 +55,120 @@ const ManagePeerGroup = () => {
     setSelectedGroup(null);
   };
 
+  const columns = [
+    {
+      title: "Peer Group",
+      key: "name",
+      width: "25%",
+      render: (record) => (
+        <div className="peer-group-title-col">
+          <div className="title">{record.name}</div>
+          <Tag className="code-tag">{record.code}</Tag>
+        </div>
+      ),
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
+      width: "30%",
+      render: (text) => (
+        <span className="desc-text">{text || "No description provided."}</span>
+      ),
+    },
+    {
+      title: "Mapped Member Types",
+      key: "member_types",
+      width: "35%",
+      render: (record) => {
+        const types = record.member_types || [];
+        if (types.length === 0) {
+          return (
+            <Text type="secondary" italic>
+              No member types mapped
+            </Text>
+          );
+        }
+        return (
+          <div className="tags-container">
+            {types.map((mt) => (
+              <Tag key={mt.id} className="member-type-tag">
+                {mt.name}
+              </Tag>
+            ))}
+          </div>
+        );
+      },
+    },
+    {
+      title: "Action",
+      key: "action",
+      width: "10%",
+      align: "center",
+      render: (record) => (
+        <Space key={`action-${record.id}`}>
+          <Button
+            className="action-btn"
+            icon={<RiPencilFill />}
+            shape="circle"
+            type="text"
+            onClick={() => handleEditClick(record)}
+          />
+        </Space>
+      ),
+    },
+  ];
+
   return (
     <div id="manage-peer-group">
-      <Row justify="space-between" align="middle" className="header-row">
-        <Col>
-          <Title level={3} style={{ margin: 0 }}>
-            Manage Peer Groups
-          </Title>
-          <Text type="secondary">
-            Configure which platform member types map to each harmonized peer
-            group cohort.
-          </Text>
-        </Col>
-        <Col>
-          <Button
-            type="default"
-            icon={<RiArrowLeftLine style={{ marginRight: 6 }} />}
-            onClick={() => navigate("/admin")}
+      <Row className="container bg-grey">
+        <Col span={24}>
+          <Row
+            className="page-title-wrapper"
+            align="middle"
+            justify="space-between"
+            style={{ borderBottom: "1px solid #777777" }}
+            gutter={[20, 20]}
           >
-            Back to Admin
-          </Button>
-        </Col>
-      </Row>
-
-      {loading ? (
-        <div style={{ textAlign: "center", padding: "80px 0" }}>
-          <Spin size="large" tip="Loading peer groups..." />
-        </div>
-      ) : peerGroups.length === 0 ? (
-        <Empty description="No peer groups found." />
-      ) : (
-        <>
-          <Row gutter={[24, 24]}>
-            {peerGroups.map((group) => {
-              const tagColor = PEER_GROUP_COLORS[group.code] || "blue";
-              const mappedCount = (group.member_types || []).length;
-
-              return (
-                <Col xs={24} md={12} key={group.id}>
-                  <Card
-                    className="peer-group-card"
-                    title={
-                      <div className="card-title-wrap">
-                        <span className="peer-name">{group.name}</span>
-                        <Tag color={tagColor}>{group.code}</Tag>
-                      </div>
-                    }
-                  >
-                    <Paragraph className="desc-text">
-                      {group.description || "No description provided."}
-                    </Paragraph>
-
-                    <div className="mappings-section">
-                      <div className="mappings-title">
-                        Mapped Member Types ({mappedCount}):
-                      </div>
-                      <div className="tags-container">
-                        {mappedCount > 0 ? (
-                          group.member_types.map((mt) => (
-                            <Tag
-                              key={mt.id}
-                              className="member-type-tag"
-                              color="default"
-                            >
-                              {mt.name}
-                            </Tag>
-                          ))
-                        ) : (
-                          <Text type="secondary" italic>
-                            No member types mapped to this peer group.
-                          </Text>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="action-row">
-                      <Button
-                        type="primary"
-                        ghost
-                        icon={<RiPencilFill style={{ marginRight: 6 }} />}
-                        onClick={() => handleEditClick(group)}
-                      >
-                        Edit Mappings
-                      </Button>
-                    </div>
-                  </Card>
-                </Col>
-              );
-            })}
+            <Col flex={1} align="start">
+              <Title className="page-title" level={3}>
+                Manage Peer Groups
+              </Title>
+            </Col>
+            <Col align="end">
+              <Button
+                className="button-back"
+                type="primary"
+                ghost
+                onClick={() => navigate("/admin")}
+              >
+                Back to Admin
+              </Button>
+            </Col>
           </Row>
 
-          {unmappedTypes.length > 0 && (
+          <Row className="page-sub-header">
+            <Col span={24}>
+              <Text className="header-subtitle">
+                Configure which platform member types map to each harmonized
+                peer group cohort.
+              </Text>
+            </Col>
+          </Row>
+
+          <Row className="table-wrapper">
+            <Col span={24}>
+              <Table
+                rowKey="id"
+                columns={columns}
+                dataSource={peerGroups}
+                loading={loading}
+                pagination={false}
+              />
+            </Col>
+          </Row>
+
+          {!loading && unmappedTypes.length > 0 && (
             <Alert
               className="unmapped-alert"
               type="info"
@@ -177,7 +183,7 @@ const ManagePeerGroup = () => {
                   </Text>
                   <div className="unmapped-tags">
                     {unmappedTypes.map((mt) => (
-                      <Tag key={mt.id} color="warning">
+                      <Tag key={mt.id} className="unmapped-tag">
                         {mt.name}
                       </Tag>
                     ))}
@@ -186,8 +192,8 @@ const ManagePeerGroup = () => {
               }
             />
           )}
-        </>
-      )}
+        </Col>
+      </Row>
 
       {selectedGroup && (
         <EditPeerGroupMappingModal

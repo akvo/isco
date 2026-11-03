@@ -61,6 +61,8 @@ class IndividualDashboardResponse(BaseModel):
     organisation: OrganisationSummary
     years: List[int]
     challenges: List[ChallengeDTO]
+    peer_groups: Optional[List[PeerGroupSummary]] = None
+    enable_peer_group_filter: bool = True
 
 
 @visualization_route.get(
@@ -75,6 +77,10 @@ def get_individual_dashboard(
     organisation_id: Optional[int] = Query(
         None,
         description="Target organisation id (secretariat_admin only)",
+    ),
+    peer_group_id: Optional[int] = Query(
+        None,
+        description="Optional peer group ID override",
     ),
     years: Optional[List[int]] = Query(
         None,
@@ -117,8 +123,13 @@ def get_individual_dashboard(
             detail="User is not associated with an organisation",
         )
 
+    target_peer_group_id = (
+        peer_group_id if isinstance(peer_group_id, int) else None
+    )
+
     return service.get_individual_dashboard(
         session=session,
         organisation_id=target_org_id,
         years=years,
+        peer_group_id=target_peer_group_id,
     )

@@ -69,7 +69,7 @@ class VisualizationService:
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
                 detail=(
-                    f"Organisation {organisation_id} has no mapped "
+                    f"Organisation {org.name} has no mapped "
                     "member type"
                 ),
             )
@@ -83,7 +83,7 @@ class VisualizationService:
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
                 detail=(
-                    f"Organisation {organisation_id} has no mapped "
+                    f"Organisation {org.name} has no mapped "
                     "peer group"
                 ),
             )
@@ -165,14 +165,44 @@ class VisualizationService:
         session: Session,
         organisation_id: int,
         years: Optional[List[int]] = None,
+        peer_group_id: Optional[int] = None,
     ) -> Dict[str, Any]:
         """
         Main entrypoint generating full individual member dashboard payload.
         Resolves peer group, evaluates member values, merges peer averages.
         """
-        org, peer_group = self.resolve_organisation_peer_group(
-            session=session, organisation_id=organisation_id
-        )
+        enable_filter = bool(self.config.get("enable_peer_group_filter", True))
+
+        if (
+            enable_filter
+            and peer_group_id is not None
+            and isinstance(peer_group_id, int)
+        ):
+            peer_group = (
+                session.query(PeerGroup)
+                .filter(PeerGroup.id == peer_group_id)
+                .first()
+            )
+            if not peer_group:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"Peer group {peer_group_id} not found",
+                )
+            org = (
+                session.query(Organisation)
+                .filter(Organisation.id == organisation_id)
+                .first()
+            )
+            if not org:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"Organisation {organisation_id} not found",
+                )
+        else:
+            org, peer_group = self.resolve_organisation_peer_group(
+                session=session, organisation_id=organisation_id
+            )
+
         resolved_years = self.benchmark_service.resolve_years(years)
 
         # 1. Extract member survey submissions
@@ -244,6 +274,19 @@ class VisualizationService:
 
             challenges_dto.append(ch_dto)
 
+        if enable_filter:
+            all_peer_groups = (
+                session.query(PeerGroup)
+                .order_by(PeerGroup.id.asc())
+                .all()
+            )
+            peer_groups_dto = [
+                {"id": pg.id, "code": pg.code, "name": pg.name}
+                for pg in all_peer_groups
+            ]
+        else:
+            peer_groups_dto = []
+
         return {
             "organisation": {
                 "id": org.id,
@@ -256,6 +299,8 @@ class VisualizationService:
             },
             "years": resolved_years,
             "challenges": challenges_dto,
+            "peer_groups": peer_groups_dto,
+            "enable_peer_group_filter": enable_filter,
         }
 
 

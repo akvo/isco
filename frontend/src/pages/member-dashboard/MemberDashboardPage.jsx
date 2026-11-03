@@ -18,6 +18,7 @@ import {
   Empty,
   Button,
 } from "antd";
+import IndicatorLineChartCard from "./IndicatorLineChartCard";
 import { store, api } from "../../lib";
 import { globalSelectProps } from "../../lib/util";
 import { uiText } from "../../static";
@@ -49,6 +50,7 @@ const MemberDashboardPage = () => {
   const [selectedOrgId, setSelectedOrgId] = useState(() =>
     getCleanOrgId(user?.organisation)
   );
+  const [selectedPeerGroupId, setSelectedPeerGroupId] = useState(null);
   const abortControllerRef = useRef(null);
 
   // Sync selectedOrgId when user profile loads if not set
@@ -60,7 +62,7 @@ const MemberDashboardPage = () => {
   }, [user?.organisation, selectedOrgId]);
 
   const fetchDashboard = useCallback(
-    async (orgId) => {
+    async (orgId, peerGroupId) => {
       // Cancel prior pending request if in-flight
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
@@ -75,6 +77,9 @@ const MemberDashboardPage = () => {
         const cleanOrgId = getCleanOrgId(orgId);
         if (isAdmin && cleanOrgId) {
           params.organisation_id = cleanOrgId;
+        }
+        if (peerGroupId) {
+          params.peer_group_id = peerGroupId;
         }
 
         const res = await api.get("/visualization/individual-dashboard", {
@@ -101,21 +106,26 @@ const MemberDashboardPage = () => {
   );
 
   useEffect(() => {
-    fetchDashboard(selectedOrgId);
+    fetchDashboard(selectedOrgId, selectedPeerGroupId);
 
     return () => {
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
       }
     };
-  }, [fetchDashboard, selectedOrgId]);
+  }, [fetchDashboard, selectedOrgId, selectedPeerGroupId]);
 
   const handleOrganisationChange = (newOrgId) => {
     setSelectedOrgId(newOrgId);
+    setSelectedPeerGroupId(null);
+  };
+
+  const handlePeerGroupChange = (newPgId) => {
+    setSelectedPeerGroupId(newPgId);
   };
 
   const handleRetry = () => {
-    fetchDashboard(selectedOrgId);
+    fetchDashboard(selectedOrgId, selectedPeerGroupId);
   };
 
   const yearsRange = useMemo(() => {
@@ -133,6 +143,16 @@ const MemberDashboardPage = () => {
     return (optionValues?.organisation || []).filter((o) => o?.active);
   }, [optionValues]);
 
+  const availablePeerGroups = useMemo(() => {
+    if (dashboardData?.peer_groups && dashboardData.peer_groups.length > 0) {
+      return dashboardData.peer_groups;
+    }
+    if (dashboardData?.organisation?.peer_group) {
+      return [dashboardData.organisation.peer_group];
+    }
+    return [];
+  }, [dashboardData]);
+
   const getPeerGroupName = (peerGroup) => {
     if (!peerGroup) {
       return "";
@@ -147,20 +167,6 @@ const MemberDashboardPage = () => {
     return text.challenges?.[challenge.id] || challenge.name;
   };
 
-  const getIndicatorName = (indicator) => {
-    if (!indicator) {
-      return "";
-    }
-    return text.indicators?.[indicator.id] || indicator.name;
-  };
-
-  const getUnitName = (unit) => {
-    if (!unit) {
-      return "";
-    }
-    return text.units?.[unit.toLowerCase()] || unit;
-  };
-
   const getIndicatorCountLabel = (count) => {
     const noun =
       count === 1
@@ -170,7 +176,7 @@ const MemberDashboardPage = () => {
   };
 
   return (
-    <div className="member-dashboard-page">
+    <div className="member-dashboard-page bg-grey">
       <div className="member-dashboard-container">
         {/* Header Shell */}
         <header className="dashboard-header">
@@ -200,16 +206,45 @@ const MemberDashboardPage = () => {
                   <div className="header-credentials-bar">
                     {dashboardData.organisation.peer_group && (
                       <Tag className="peer-group-tag">
-                        <span className="badge-dot" />
                         {text.peerGroupBadgePrefix}:{" "}
                         {getPeerGroupName(
                           dashboardData.organisation.peer_group
                         )}
                       </Tag>
                     )}
+                    {dashboardData?.enable_peer_group_filter &&
+                      availablePeerGroups.length > 0 && (
+                        <div className="peer-group-filter-wrapper">
+                          <span className="peer-group-filter-label">
+                            {text.peerGroupFilterLabel ||
+                              "Benchmark Peer Group"}
+                            :
+                          </span>
+                          <Select
+                            data-testid="peer-group-selector"
+                            className="peer-group-select"
+                            placeholder={
+                              text.selectPeerGroupPlaceholder ||
+                              "Select Peer Group"
+                            }
+                            value={
+                              selectedPeerGroupId ||
+                              dashboardData?.organisation?.peer_group?.id
+                            }
+                            onChange={handlePeerGroupChange}
+                            dropdownMatchSelectWidth={false}
+                            {...globalSelectProps}
+                          >
+                            {availablePeerGroups.map((pg) => (
+                              <Option key={pg.id} value={pg.id}>
+                                {getPeerGroupName(pg)}
+                              </Option>
+                            ))}
+                          </Select>
+                        </div>
+                      )}
                     {yearsRange && (
                       <span className="year-range-chip">
-                        <span className="chip-symbol">✦</span>
                         <span className="chip-label">{yearsRange}</span>
                       </span>
                     )}
@@ -325,6 +360,7 @@ const MemberDashboardPage = () => {
             <main className="dashboard-challenges-container">
               {dashboardData.challenges.map((challenge) => {
                 const indicatorCount = challenge.indicators?.length || 0;
+                const colSpan = indicatorCount === 1 ? 24 : 12;
                 return (
                   <section key={challenge.id} className="challenge-section">
                     <div className="challenge-header-bar">
@@ -341,128 +377,13 @@ const MemberDashboardPage = () => {
 
                     <Row gutter={[24, 24]}>
                       {(challenge.indicators || []).map((indicator) => (
-                        <Col xs={24} lg={12} key={indicator.id}>
-                          <Card
-                            className="indicator-card"
-                            title={
-                              <div className="card-title-container">
-                                <div className="card-title-top-row">
-                                  <span className="indicator-name">
-                                    {getIndicatorName(indicator)}
-                                  </span>
-                                </div>
-                                {indicator.country && (
-                                  <div className="card-title-sub-row">
-                                    <Tag className="scope-tag">
-                                      {indicator.country}
-                                    </Tag>
-                                  </div>
-                                )}
-                              </div>
-                            }
-                            extra={
-                              indicator.unit ? (
-                                <Tag className="unit-tag">
-                                  {getUnitName(indicator.unit)}
-                                </Tag>
-                              ) : null
-                            }
-                          >
-                            <div className="blueprint-canvas">
-                              {/* Analytical Legend */}
-                              <div className="blueprint-legend">
-                                <div className="legend-item member-legend">
-                                  <span className="legend-marker marker-member" />
-                                  <span className="legend-text">
-                                    {text.dashboardLegendMember || "Member"}
-                                  </span>
-                                </div>
-                                <div className="legend-item peer-legend">
-                                  <span className="legend-marker marker-peer" />
-                                  <span className="legend-text">
-                                    {text.dashboardLegendIscoAvg ||
-                                      "ISCO Peer Avg"}
-                                  </span>
-                                </div>
-                                <div className="legend-item national-legend">
-                                  <span className="legend-marker marker-national" />
-                                  <span className="legend-text">
-                                    {text.dashboardLegendNationalAvg ||
-                                      "National Avg"}
-                                  </span>
-                                </div>
-                              </div>
-
-                              {/* Stylized Metric Blueprint Visualizer */}
-                              <div className="blueprint-grid-area">
-                                <div className="grid-line" />
-                                <div className="grid-line" />
-                                <div className="grid-line" />
-                                <svg
-                                  className="blueprint-svg-lines"
-                                  viewBox="0 0 360 80"
-                                  preserveAspectRatio="none"
-                                >
-                                  {/* National baseline */}
-                                  <path
-                                    d="M 10 50 Q 180 40 350 45"
-                                    className="svg-line-national"
-                                  />
-                                  {/* ISCO Peer baseline */}
-                                  <path
-                                    d="M 10 38 Q 180 52 350 32"
-                                    className="svg-line-peer"
-                                  />
-                                  {/* Member solid trend */}
-                                  <path
-                                    d="M 10 58 Q 180 20 350 25"
-                                    className="svg-line-member"
-                                  />
-                                  {/* Data node highlights */}
-                                  <circle
-                                    cx="10"
-                                    cy="58"
-                                    r="3.5"
-                                    className="node-member"
-                                  />
-                                  <circle
-                                    cx="180"
-                                    cy="24"
-                                    r="3.5"
-                                    className="node-member"
-                                  />
-                                  <circle
-                                    cx="350"
-                                    cy="25"
-                                    r="3.5"
-                                    className="node-member"
-                                  />
-                                </svg>
-                              </div>
-
-                              {/* Axis Timeline */}
-                              <div className="blueprint-axis-years">
-                                {(dashboardData?.years || [2022, 2023, 2024])
-                                  .slice(0, 5)
-                                  .map((yr) => (
-                                    <span key={yr} className="axis-year">
-                                      {yr}
-                                    </span>
-                                  ))}
-                              </div>
-
-                              {/* Technical Status Caption */}
-                              <div className="blueprint-caption">
-                                <Text
-                                  type="secondary"
-                                  className="caption-label"
-                                >
-                                  {text.dashboardChartPlaceholder} (
-                                  {indicator.country || "Global"})
-                                </Text>
-                              </div>
-                            </div>
-                          </Card>
+                        <Col xs={24} lg={colSpan} key={indicator.id}>
+                          <IndicatorLineChartCard
+                            indicator={indicator}
+                            peerGroupName={getPeerGroupName(
+                              dashboardData.organisation.peer_group
+                            )}
+                          />
                         </Col>
                       ))}
 
