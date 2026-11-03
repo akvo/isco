@@ -176,7 +176,7 @@ const MemberDashboardPage = () => {
   };
 
   return (
-    <div className="member-dashboard-page">
+    <div className="member-dashboard-page bg-grey">
       <div className="member-dashboard-container">
         {/* Header Shell */}
         <header className="dashboard-header">
@@ -206,7 +206,6 @@ const MemberDashboardPage = () => {
                   <div className="header-credentials-bar">
                     {dashboardData.organisation.peer_group && (
                       <Tag className="peer-group-tag">
-                        <span className="badge-dot" />
                         {text.peerGroupBadgePrefix}:{" "}
                         {getPeerGroupName(
                           dashboardData.organisation.peer_group
@@ -246,7 +245,6 @@ const MemberDashboardPage = () => {
                       )}
                     {yearsRange && (
                       <span className="year-range-chip">
-                        <span className="chip-symbol">✦</span>
                         <span className="chip-label">{yearsRange}</span>
                       </span>
                     )}
