@@ -849,3 +849,179 @@ def test_route_handler_direct_calls(session: Session, test_setup: dict):
             service=service,
         )
     assert exc_auth.value.status_code == 401
+
+
+def test_extract_member_answers_repeat_questions(
+    session: Session, test_setup: dict
+):
+    """
+    Verifies that multiple answers for the same question within a submission
+    (repeat groups) are correctly accumulated into a list.
+    """
+    from services.visualization_service import VisualizationService
+
+    service = VisualizationService()
+    org_a = test_setup["org_a"]
+
+    existing_q = session.query(Question).first()
+    assert existing_q is not None
+    target_qid = existing_q.id
+
+    t_rep = datetime(2023, 6, 1, 12, 0, 0)
+    d_rep = Data(
+        name="Org A 2023 Repeat Sub",
+        form=7,
+        geo=[],
+        locked_by=None,
+        created_by=1,
+        organisation=org_a.id,
+        submitted_by=1,
+        created=t_rep,
+        updated=t_rep,
+        submitted=t_rep,
+    )
+    session.add(d_rep)
+    session.commit()
+    session.refresh(d_rep)
+
+    ans_rep1 = Answer(
+        question=target_qid,
+        created=t_rep,
+        data=d_rep.id,
+        value=100.0,
+        repeat_index="0",
+    )
+    ans_rep2 = Answer(
+        question=target_qid,
+        created=t_rep,
+        data=d_rep.id,
+        value=200.0,
+        repeat_index="1",
+    )
+    ans_rep3 = Answer(
+        question=target_qid,
+        created=t_rep,
+        data=d_rep.id,
+        value=300.0,
+        repeat_index="2",
+    )
+    session.add_all([ans_rep1, ans_rep2, ans_rep3])
+    session.commit()
+
+    answers = service.extract_member_answers(
+        session=session,
+        organisation_id=org_a.id,
+        years=[2023],
+    )
+
+    # Must be accumulated as a list of 3 items
+    res_val = answers[2023].get(target_qid)
+    assert isinstance(res_val, list)
+    assert res_val == [100.0, 200.0, 300.0]
+
+    # Clean up
+    session.delete(ans_rep1)
+    session.delete(ans_rep2)
+    session.delete(ans_rep3)
+    session.delete(d_rep)
+    session.commit()
+
+
+async def test_individual_dashboard_out_of_range_years(
+    app: FastAPI, client: AsyncClient, test_setup: dict
+):
+    """
+    Verifies that requesting years where no member or peer submissions exist
+    gracefully returns None for all metric curves without crashing.
+    """
+    token = test_setup["user_a_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
+    res = await client.get(
+        app.url_path_for("visualization:individual_dashboard"),
+        headers=headers,
+        params=[("years", 2038), ("years", 2039)],
+    )
+    assert res.status_code == 200
+    data = res.json()
+    assert data["years"] == [2038, 2039]
+
+    for ch in data["challenges"]:
+        for ind in ch["indicators"]:
+            assert len(ind["series"]) == 2
+            for pt in ind["series"]:
+                assert pt["year"] in [2038, 2039]
+                assert pt["member"] is None
+                assert pt["isco_avg"] is None
+                assert pt["gisco_avg"] is None
+
+
+async def test_individual_dashboard_all_nine_indicators_present(
+    app: FastAPI, client: AsyncClient, test_setup: dict
+):
+    """
+    Verifies that all 9 canonical indicators spanning the 4 challenges
+    are always returned in the response contract.
+    """
+    token = test_setup["user_a_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
+    res = await client.get(
+        app.url_path_for("visualization:individual_dashboard"),
+        headers=headers,
+        params=[("years", 2022)],
+    )
+    assert res.status_code == 200
+    data = res.json()
+
+    expected_indicators = {
+        "sourced_directly",
+        "sourced_traceable",
+        "deforestation_free",
+        "li_gap_measured",
+        "li_strategy_implemented",
+        "clmrs_covered",
+        "child_labour_identified",
+        "support_received",
+        "follow_up_visits",
+    }
+    found_indicators = set()
+    for ch in data["challenges"]:
+        for ind in ch["indicators"]:
+            found_indicators.add(ind["id"])
+            assert "country" in ind
+            assert "unit" in ind
+            assert "higher_is_better" in ind
+            assert "chart_type" in ind
+
+    assert expected_indicators == found_indicators
+
+
+def test_individual_dashboard_caching_and_subsequent_calls(
+    session: Session, test_setup: dict
+):
+    """
+    Verifies that consecutive calls to get_individual_dashboard
+    leverage benchmark caching without inconsistencies.
+    """
+    from services.visualization_service import VisualizationService
+
+    service = VisualizationService()
+    org_a = test_setup["org_a"]
+
+    # First call primes cache
+    res1 = service.get_individual_dashboard(
+        session=session,
+        organisation_id=org_a.id,
+        years=[2022, 2023],
+    )
+    # Second call should leverage TTLCache
+    res2 = service.get_individual_dashboard(
+        session=session,
+        organisation_id=org_a.id,
+        years=[2022, 2023],
+    )
+
+    assert res1["organisation"]["id"] == res2["organisation"]["id"]
+    assert res1["years"] == res2["years"]
+    assert len(res1["challenges"]) == len(res2["challenges"])

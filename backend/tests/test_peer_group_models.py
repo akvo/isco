@@ -259,8 +259,17 @@ def test_peer_group_serialize_with_mappings_and_sync(session):
             "description": "For sync testing",
         },
     )
-    mts = session.query(MemberType).limit(3).all()
-    target_ids = [m.id for m in mts]
+    # Ensure at least 3 MemberType fixtures exist for deterministic testing
+    mts = list(session.query(MemberType).limit(3).all())
+    created_test_mts = []
+    while len(mts) < 3:
+        new_mt = MemberType(id=None, name=f"Sync Test MT {len(mts) + 1}")
+        session.add(new_mt)
+        session.commit()
+        created_test_mts.append(new_mt)
+        mts.append(new_mt)
+
+    target_ids = [m.id for m in mts[:3]]
 
     updated = sync_peer_group_member_types(
         session=session, peer_group_id=sync_pg.id, member_type_ids=target_ids
@@ -274,4 +283,9 @@ def test_peer_group_serialize_with_mappings_and_sync(session):
             peer_group_id=sync_pg.id,
             member_type_ids=[99999999],
         )
+
     delete_peer_group(session=session, id=sync_pg.id)
+    if created_test_mts:
+        for m in created_test_mts:
+            session.delete(m)
+        session.commit()
