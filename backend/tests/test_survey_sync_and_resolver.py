@@ -401,6 +401,7 @@ def test_survey_id_resolver_production_mode(monkeypatch):
     """
     TAC-SYNC.4: In production, resolver is a zero-overhead identity function.
     """
+    monkeypatch.delenv("CONFIG_SOURCE_PATH", raising=False)
     monkeypatch.setenv("BUCKET_FOLDER", "production")
     resolver = SurveyIdResolver()
 

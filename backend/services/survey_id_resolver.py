@@ -22,8 +22,8 @@ class SurveyIdResolver:
     def __init__(self, mapping_path: Optional[str] = None):
         raw_env = (
             (
-                os.environ.get("CONFIG_SOURCE_PATH")
-                or os.environ.get("BUCKET_FOLDER")
+                os.environ.get("BUCKET_FOLDER")
+                or os.environ.get("CONFIG_SOURCE_PATH")
                 or "local"
             )
             .strip()
