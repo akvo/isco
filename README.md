@@ -129,6 +129,34 @@ Initial reference data, test datasets, and entity mappings are located in `backe
 > **Single Source of Truth**:
 > Canonical static reference data is maintained in `backend/seeder/static/` (e.g. `static_peer_group.py`, `static_member_isco.py`). Both seeders and runtime services import from these definitions to guarantee DRY consistency across the platform.
 
+#### 3. Member Dashboard Seeders (Production vs. Local/Test)
+
+For the **Member Reporting Back Dashboard** (`epic/685-epic-member-dashboard`), the required seeding steps differ between environments:
+
+##### 🟢 Production Environment
+On production, member questionnaires, organizations, and responses are live and confidential. **Only** run the idempotent peer group reconciler:
+
+```bash
+# Reconciles the 15 member-type-to-peer-group mappings in-place (safe & idempotent)
+./dc.sh exec backend python -m seeder.peer_group
+```
+> [!CAUTION]
+> **NEVER** run `import_survey_schema.py`, `seed_mock_visualization_data.py`, `seeder.organisation`, or `seeder.user` on production.
+
+##### 🟡 Local & Test Environments
+Local and test environments start without sensitive member data. Run the following sequence to import the survey schema structure and generate synthetic benchmark data for all 4 peer cohorts:
+
+```bash
+# 1. Reconcile peer groups and member type mappings
+./dc.sh exec backend python -m seeder.peer_group
+
+# 2. Import structure-only survey schema & update environment ID ledger (id_mapping.json)
+./dc.sh exec backend python scripts/import_survey_schema.py --mode update
+
+# 3. Seed multi-year synthetic answers across all peer groups (ISCO & GISCO benchmarks)
+./dc.sh exec backend python scripts/seed_mock_visualization_data.py --all-peers
+```
+
 ### Static Content Extraction
 
 To extract the static content constants from the frontend application into a `.xlsx` spreadsheet, you can use the provided export script. This will run a script inside the Docker container to generate `frontend/content-export.xlsx`.
