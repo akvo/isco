@@ -43,6 +43,8 @@ services:
       - ./backend:/app:delegated
       - ./credentials:/credentials/:ro
     environment:
+      - BUCKET_FOLDER=${BUCKET_FOLDER:-local}
+      - CONFIG_SOURCE_PATH=${CONFIG_SOURCE_PATH:-${BUCKET_FOLDER:-local}}
       - GOOGLE_APPLICATION_CREDENTIALS=/credentials/isco-service-account.json
       - WEBDOMAIN=http://localhost:3000
       - EMAIL_HOST=localhost

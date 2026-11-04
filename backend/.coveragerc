@@ -6,6 +6,7 @@ omit = */__init__*
        */db/connection.py
        */source/*
        */routes/test.py
+       */scripts/*
 disable_warnings = no-data-collected
 # Required for parallel
 parallel = true
@@ -13,6 +14,13 @@ parallel = true
 concurrency = multiprocessing
 
 [report]
+omit = */__init__*
+       */test*.py
+       */migrations/*
+       */db/connection.py
+       */source/*
+       */routes/test.py
+       */scripts/*
 precision = 1
 show_missing = True
 ignore_errors = True

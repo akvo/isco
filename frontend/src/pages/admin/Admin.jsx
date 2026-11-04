@@ -32,6 +32,11 @@ const adminMenu = [
     link: "/manage-member",
   },
   {
+    title: "Manage Peer Groups",
+    buttonText: "Manage Peer Groups",
+    link: "/manage-peer-group",
+  },
+  {
     title: "Manage Data",
     buttonText: "Manage Data",
     link: "/download-report",

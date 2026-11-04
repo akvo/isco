@@ -79,6 +79,84 @@ docker-compose down -v
 docker volume rm isco-docker-sync
 ```
 
+### Database Migrations & Seeders
+
+#### 1. Database Migrations (Alembic)
+Database schema definitions and DDL are version-controlled using Alembic.
+All migration commands must be executed inside the backend container via `./dc.sh`:
+
+- **Run all pending migrations**:
+  ```bash
+  ./dc.sh exec backend alembic upgrade head
+  ```
+- **Roll back the latest migration**:
+  ```bash
+  ./dc.sh exec backend alembic downgrade -1
+  ```
+- **Create a new migration**:
+  ```bash
+  ./dc.sh exec backend alembic revision -m "your_migration_description"
+  ```
+
+> **Migration Guidelines**:
+> - Migrations are strictly for **DDL (schema structure, tables, columns, indexes, foreign keys)** and static foundational reference rows (such as the 4 permanent harmonized peer groups).
+> - Dynamic domain data and cross-table mappings must **not** be seeded inside migrations to keep migrations 100% deterministic across fresh test environments and existing production databases.
+
+#### 2. Database Seeders
+Initial reference data, test datasets, and entity mappings are located in `backend/seeder/`:
+
+- **Seed Member & ISCO Types**:
+  ```bash
+  ./dc.sh exec backend python -m seeder.member_isco_type
+  ```
+- **Seed & Reconcile Peer Groups & Member Type Mappings**:
+  ```bash
+  ./dc.sh exec backend python -m seeder.peer_group
+  ```
+- **Seed Organisations**:
+  ```bash
+  ./dc.sh exec backend python -m seeder.organisation
+  ```
+- **Seed Users**:
+  ```bash
+  ./dc.sh exec backend python -m seeder.user
+  ```
+- **Seed Roadmap Forms**:
+  ```bash
+  ./dc.sh exec backend python -m seeder.roadmap_init
+  ```
+
+> **Single Source of Truth**:
+> Canonical static reference data is maintained in `backend/seeder/static/` (e.g. `static_peer_group.py`, `static_member_isco.py`). Both seeders and runtime services import from these definitions to guarantee DRY consistency across the platform.
+
+#### 3. Member Dashboard Seeders (Production vs. Local/Test)
+
+For the **Member Reporting Back Dashboard** (`epic/685-epic-member-dashboard`), the required seeding steps differ between environments:
+
+##### 🟢 Production Environment
+On production, member questionnaires, organizations, and responses are live and confidential. **Only** run the idempotent peer group reconciler:
+
+```bash
+# Reconciles the 15 member-type-to-peer-group mappings in-place (safe & idempotent)
+./dc.sh exec backend python -m seeder.peer_group
+```
+> [!CAUTION]
+> **NEVER** run `import_survey_schema.py`, `seed_mock_visualization_data.py`, `seeder.organisation`, or `seeder.user` on production.
+
+##### 🟡 Local & Test Environments
+Local and test environments start without sensitive member data. Run the following sequence to import the survey schema structure and generate synthetic benchmark data for all 4 peer cohorts:
+
+```bash
+# 1. Reconcile peer groups and member type mappings
+./dc.sh exec backend python -m seeder.peer_group
+
+# 2. Import structure-only survey schema & update environment ID ledger (id_mapping.json)
+./dc.sh exec backend python scripts/import_survey_schema.py --mode update
+
+# 3. Seed multi-year synthetic answers across all peer groups (ISCO & GISCO benchmarks)
+./dc.sh exec backend python scripts/seed_mock_visualization_data.py --all-peers
+```
+
 ### Static Content Extraction
 
 To extract the static content constants from the frontend application into a `.xlsx` spreadsheet, you can use the provided export script. This will run a script inside the Docker container to generate `frontend/content-export.xlsx`.
