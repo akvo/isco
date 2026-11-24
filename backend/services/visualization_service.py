@@ -13,6 +13,7 @@ from fastapi import HTTPException, status
 from models.organisation import Organisation
 from models.organisation_member import OrganisationMember
 from models.peer_group import PeerGroup, PeerGroupMemberType
+from models.member_message import MemberMessage
 from models.data import Data
 from models.answer import Answer
 from services.benchmark_service import BenchmarkService, get_benchmark_service
@@ -287,6 +288,27 @@ class VisualizationService:
         else:
             peer_groups_dto = []
 
+        # Query latest member message for target organisation
+        message_query = (
+            session.query(MemberMessage)
+            .filter(MemberMessage.organisation == organisation_id)
+        )
+        if years and len(years) == 1:
+            message_query = message_query.filter(
+                MemberMessage.year == years[0]
+            )
+
+        member_msg = message_query.order_by(MemberMessage.year.desc()).first()
+
+        member_message_dto = None
+        if member_msg:
+            member_message_dto = {
+                "id": member_msg.id,
+                "year": member_msg.year,
+                "message": member_msg.message,
+                "translations": member_msg.translations,
+            }
+
         return {
             "organisation": {
                 "id": org.id,
@@ -301,6 +323,7 @@ class VisualizationService:
             "challenges": challenges_dto,
             "peer_groups": peer_groups_dto,
             "enable_peer_group_filter": enable_filter,
+            "member_message": member_message_dto,
         }
 
 

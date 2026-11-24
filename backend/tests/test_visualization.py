@@ -15,8 +15,12 @@ from models.form import Form
 from models.data import Data
 from models.question import Question, QuestionType
 from models.question_group import QuestionGroup
+from models.question_member_access import QuestionMemberAccess
+from models.question_isco_access import QuestionIscoAccess
+from models.cascade import Cascade
 from models.answer import Answer
 from middleware import create_access_token
+import main  # noqa: F401
 
 pytestmark = pytest.mark.asyncio
 
@@ -1133,3 +1137,352 @@ def test_peer_group_filter_feature_flag_disabled(
         )
     finally:
         service.config["enable_peer_group_filter"] = orig_flag
+
+
+def test_member_message_model_crud_and_uniqueness(
+    session: Session, test_setup: dict
+):
+    """
+    TASK-1.1: Verify MemberMessage model creation, retrieval,
+    translations JSONB array storage, and unique constraint on (organisation, year).
+    """
+    from models.member_message import MemberMessage
+    from models.organisation import Organisation
+    from sqlalchemy.exc import IntegrityError
+
+    org = Organisation(name="Org For Model Test", code="ORG_MODEL_TEST", active=True)
+    session.add(org)
+    session.commit()
+    session.refresh(org)
+
+    # 1. Create a new MemberMessage
+    msg = MemberMessage(
+        organisation=org.id,
+        year=2024,
+        message="Achievements: Great progress. Growth area: Deforestation.",
+        translations=[
+            {"language": "de", "message": "Erfolge: Gute Fortschritte."},
+            {"language": "fr", "message": "Réalisations: Bons progrès."},
+        ],
+    )
+    session.add(msg)
+    session.commit()
+    session.refresh(msg)
+
+    assert msg.id is not None
+    assert msg.organisation == org.id
+    assert msg.year == 2024
+    assert "Achievements" in msg.message
+    assert len(msg.translations) == 2
+    assert msg.translations[0]["language"] == "de"
+    assert msg.created is not None
+
+    # 2. Duplicate (organisation, year) should violate unique constraint
+    duplicate_msg = MemberMessage(
+        organisation=org.id,
+        year=2024,
+        message="Duplicate message for same year",
+    )
+    session.add(duplicate_msg)
+    with pytest.raises(IntegrityError):
+        session.commit()
+    session.rollback()
+
+    # 3. Different year for same organisation succeeds
+    msg_2023 = MemberMessage(
+        organisation=org.id,
+        year=2023,
+        message="2023 Historic message",
+    )
+    session.add(msg_2023)
+    session.commit()
+    assert msg_2023.id is not None
+
+    # Cleanup
+    session.query(MemberMessage).filter(MemberMessage.organisation == org.id).delete()
+    session.delete(org)
+    session.commit()
+
+
+def test_member_message_cascade_delete(session: Session):
+    """
+    TASK-1.1: Verify deleting an organisation cascades to its MemberMessage records.
+    """
+    from models.member_message import MemberMessage
+    from models.organisation import Organisation
+
+    temp_org = Organisation(name="Temp Org For Cascade", code="TEMP_CAS", active=True)
+    session.add(temp_org)
+    session.commit()
+    session.refresh(temp_org)
+
+    msg = MemberMessage(
+        organisation=temp_org.id,
+        year=2024,
+        message="Message to be deleted",
+    )
+    session.add(msg)
+    session.commit()
+    msg_id = msg.id
+
+    # Delete organisation
+    session.delete(temp_org)
+    session.commit()
+
+    # MemberMessage must be deleted
+    assert session.query(MemberMessage).filter(MemberMessage.id == msg_id).first() is None
+
+
+@pytest.mark.asyncio
+async def test_get_individual_dashboard_member_message_resolution(
+    client: AsyncClient, test_setup: dict, session: Session
+):
+    """
+    TASK-1.2: Verify GET /visualization/individual-dashboard resolves
+    member_message for active/latest year, handles multiple years,
+    and returns null when no message exists.
+    """
+    from models.member_message import MemberMessage
+
+    org_a = test_setup["org_a"]
+    org_b = test_setup["org_b"]
+    headers_member = {"Authorization": f"Bearer {test_setup['user_a_token']}"}
+    headers_admin = {"Authorization": f"Bearer {test_setup['sec_admin_token']}"}
+
+    # 1. Before creating any messages, member_message is None
+    res = await client.get("/visualization/individual-dashboard", headers=headers_member)
+    assert res.status_code == 200
+    data = res.json()
+    assert data["member_message"] is None
+
+    # 2. Add two messages for Org A: 2023 and 2024
+    msg_2023 = MemberMessage(
+        organisation=org_a.id,
+        year=2023,
+        message="2023 message for Org A",
+        translations=[{"language": "de", "message": "2023 Botschaft"}],
+    )
+    msg_2024 = MemberMessage(
+        organisation=org_a.id,
+        year=2024,
+        message="2024 latest message for Org A",
+        translations=[{"language": "de", "message": "2024 Botschaft"}],
+    )
+    session.add_all([msg_2023, msg_2024])
+    session.commit()
+
+    # 3. Default query (no year specified) returns latest year (2024)
+    res = await client.get("/visualization/individual-dashboard", headers=headers_member)
+    assert res.status_code == 200
+    data = res.json()
+    assert data["member_message"] is not None
+    assert data["member_message"]["year"] == 2024
+    assert data["member_message"]["message"] == "2024 latest message for Org A"
+    assert len(data["member_message"]["translations"]) == 1
+
+    # 4. Filter by specific year 2023
+    res = await client.get("/visualization/individual-dashboard?years=2023", headers=headers_member)
+    assert res.status_code == 200
+    data = res.json()
+    assert data["member_message"] is not None
+    assert data["member_message"]["year"] == 2023
+    assert data["member_message"]["message"] == "2023 message for Org A"
+
+    # 5. Secretariat Admin switches to Org B (which has no message) -> member_message is None
+    res = await client.get(
+        f"/visualization/individual-dashboard?organisation_id={org_b.id}",
+        headers=headers_admin,
+    )
+    assert res.status_code == 200
+    data = res.json()
+    assert data["member_message"] is None
+
+
+def test_generate_protected_feedback_template_structure_and_locks(
+    session: Session, test_setup: dict
+):
+    """
+    TASK-1.3: Verify Excel template generation with sheet protection,
+    locked identifier columns A-C, and unlocked data entry columns D-H.
+    """
+    import openpyxl
+    from io import BytesIO
+    from util.feedback_template import generate_protected_feedback_template
+    from models.organisation import Organisation
+
+    orgs = [test_setup["org_a"], test_setup["org_b"]]
+    excel_stream = generate_protected_feedback_template(orgs, 2024)
+
+    assert isinstance(excel_stream, BytesIO)
+    wb = openpyxl.load_workbook(excel_stream, data_only=True)
+
+    # 1. Sheets check
+    assert "Member Feedback" in wb.sheetnames
+    assert "Instructions & Examples" in wb.sheetnames
+
+    ws = wb["Member Feedback"]
+    # 2. Protection enabled
+    assert ws.protection.sheet is True
+
+    # 3. Headers check
+    headers = [cell.value for cell in ws[1]]
+    expected_headers = [
+        "organisation_id",
+        "organisation_name",
+        "year",
+        "achievements",
+        "growth_areas",
+        "general_message",
+        "language",
+    ]
+    assert headers == expected_headers
+
+    # 4. Pre-populated org rows
+    assert ws.cell(row=2, column=1).value == test_setup["org_a"].id
+    assert ws.cell(row=2, column=2).value == test_setup["org_a"].name
+    assert ws.cell(row=2, column=3).value == 2024
+
+    assert ws.cell(row=3, column=1).value == test_setup["org_b"].id
+
+
+@pytest.mark.asyncio
+async def test_download_feedback_template_endpoint(
+    client: AsyncClient, test_setup: dict
+):
+    """
+    TASK-1.3: Verify GET /visualization/member-messages/template:
+    - 403 Forbidden for non-secretariat members
+    - 200 OK binary streaming for secretariat admin
+    """
+    import openpyxl
+    from io import BytesIO
+
+    headers_member = {"Authorization": f"Bearer {test_setup['user_a_token']}"}
+    headers_admin = {"Authorization": f"Bearer {test_setup['sec_admin_token']}"}
+
+    # Non-secretariat user gets 403
+    res_forbidden = await client.get(
+        "/visualization/member-messages/template?year=2024",
+        headers=headers_member,
+    )
+    assert res_forbidden.status_code == 403
+
+    # Secretariat admin gets 200 with attachment
+    res = await client.get(
+        "/visualization/member-messages/template?year=2024",
+        headers=headers_admin,
+    )
+    assert res.status_code == 200
+    assert "spreadsheetml" in res.headers.get("content-type", "")
+    assert "attachment" in res.headers.get("content-disposition", "")
+    assert "ISCO_Member_Feedback_Template_2024.xlsx" in res.headers.get("content-disposition", "")
+
+    # Content is readable valid xlsx
+    wb = openpyxl.load_workbook(BytesIO(res.content))
+    assert "Member Feedback" in wb.sheetnames
+
+
+@pytest.mark.asyncio
+async def test_upload_feedback_spreadsheet_endpoint(
+    client: AsyncClient, test_setup: dict, session: Session
+):
+    """
+    TASK-1.3: Verify POST /visualization/member-messages/upload:
+    - Dry-run returns statistics without committing
+    - Actual import parses achievements & growth areas into markdown
+    - Upserts records into member_message table
+    """
+    import pandas as pd
+    from io import BytesIO
+    from models.member_message import MemberMessage
+
+    org_a = test_setup["org_a"]
+    org_b = test_setup["org_b"]
+    headers_admin = {"Authorization": f"Bearer {test_setup['sec_admin_token']}"}
+
+    # Create in-memory test Excel data
+    df = pd.DataFrame([
+        {
+            "organisation_id": org_a.id,
+            "organisation_code": org_a.code,
+            "organisation_name": org_a.name,
+            "year": 2024,
+            "achievements": "High child labour remediation rate.",
+            "growth_areas": "Traceability needs farm-level mapping.",
+            "general_message": None,
+            "language": "en",
+        },
+        {
+            "organisation_id": org_b.id,
+            "organisation_code": org_b.code,
+            "organisation_name": org_b.name,
+            "year": 2024,
+            "achievements": None,
+            "growth_areas": None,
+            "general_message": "General feedback paragraph override.",
+            "language": "en",
+        },
+    ])
+    excel_buffer = BytesIO()
+    with pd.ExcelWriter(excel_buffer, engine="xlsxwriter") as writer:
+        df.to_excel(writer, sheet_name="Member Feedback", index=False)
+    excel_buffer.seek(0)
+
+    # 1. Test Dry Run
+    files = {"file": ("test_import.xlsx", excel_buffer.getvalue(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
+    data = {"dry_run": "true"}
+    res_dry = await client.post(
+        "/visualization/member-messages/upload",
+        files=files,
+        data=data,
+        headers=headers_admin,
+    )
+    assert res_dry.status_code == 200
+    res_dry_json = res_dry.json()
+    assert res_dry_json["status"] == "success"
+    assert res_dry_json["dry_run"] is True
+    assert res_dry_json["total_rows"] == 2
+    assert res_dry_json["imported"] == 2
+
+    # 2. Test Actual Upload
+    files_actual = {"file": ("test_import.xlsx", excel_buffer.getvalue(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
+    res_actual = await client.post(
+        "/visualization/member-messages/upload",
+        files=files_actual,
+        data={"dry_run": "false"},
+        headers=headers_admin,
+    )
+    assert res_actual.status_code == 200
+    res_actual_json = res_actual.json()
+    assert res_actual_json["status"] == "success"
+    assert res_actual_json["dry_run"] is False
+    assert res_actual_json["imported"] == 2
+
+    # Verify rows in database
+    msg_a = session.query(MemberMessage).filter(
+        MemberMessage.organisation == org_a.id,
+        MemberMessage.year == 2024,
+    ).first()
+    assert msg_a is not None
+    assert "**Achievements:**" in msg_a.message
+    assert "High child labour remediation rate." in msg_a.message
+    assert "**Growth area:**" in msg_a.message
+    assert "Traceability needs farm-level mapping." in msg_a.message
+
+    msg_b = session.query(MemberMessage).filter(
+        MemberMessage.organisation == org_b.id,
+        MemberMessage.year == 2024,
+    ).first()
+    assert msg_b is not None
+    assert msg_b.message == "General feedback paragraph override."
+
+    # Cleanup
+    session.query(MemberMessage).filter(
+        MemberMessage.organisation.in_([org_a.id, org_b.id]),
+        MemberMessage.year == 2024,
+    ).delete(synchronize_session=False)
+    session.commit()
+
+
+
+
