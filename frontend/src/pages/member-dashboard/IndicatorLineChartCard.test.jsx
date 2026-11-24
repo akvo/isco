@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import IndicatorLineChartCard from "./IndicatorLineChartCard";
 import { store } from "../../lib";
 
@@ -298,5 +298,117 @@ describe("IndicatorLineChartCard Component (TASK-06)", () => {
     expect(rawConfig.tooltip.trigger).toBe("axis");
     expect(rawConfig.series).toHaveLength(3);
     expect(rawConfig.series[0].connectNulls).toBe(false);
+  });
+
+  describe("Indicator Info Tooltips & Multilingual Support (MD-09 / TASK-07)", () => {
+    const indicatorWithTooltips = {
+      ...mockIndicatorPercentage,
+      description:
+        "Direct sourcing measures purchases from farmer cooperatives.",
+      translations: [
+        {
+          language: "de",
+          description:
+            "Direktbezug misst Einkäufe bei bäuerlichen Genossenschaften.",
+        },
+      ],
+    };
+
+    test("renders accessible (i) info button in card header", () => {
+      render(
+        <IndicatorLineChartCard
+          indicator={indicatorWithTooltips}
+          peerGroupName="Trader / Processor"
+        />
+      );
+
+      const infoBtn = screen.getByRole("button", {
+        name: /about share of cocoa sourced directly/i,
+      });
+      expect(infoBtn).toBeInTheDocument();
+      expect(infoBtn).toHaveClass("chart-info-btn");
+    });
+
+    test("displays English description on hover when language is English", async () => {
+      act(() => {
+        store.update((s) => {
+          s.language = { active: "en" };
+        });
+      });
+
+      render(
+        <IndicatorLineChartCard
+          indicator={indicatorWithTooltips}
+          peerGroupName="Trader / Processor"
+        />
+      );
+
+      const infoBtn = screen.getByRole("button", {
+        name: /about share of cocoa sourced directly/i,
+      });
+
+      fireEvent.mouseOver(infoBtn);
+      expect(
+        await screen.findByText(
+          "Direct sourcing measures purchases from farmer cooperatives."
+        )
+      ).toBeInTheDocument();
+    });
+
+    test("displays German translated description when language is German", async () => {
+      act(() => {
+        store.update((s) => {
+          s.language = { active: "de" };
+        });
+      });
+
+      render(
+        <IndicatorLineChartCard
+          indicator={indicatorWithTooltips}
+          peerGroupName="Trader / Processor"
+        />
+      );
+
+      const infoBtn = screen.getByRole("button", {
+        name: /about/i,
+      });
+
+      fireEvent.mouseOver(infoBtn);
+      expect(
+        await screen.findByText(
+          "Direktbezug misst Einkäufe bei bäuerlichen Genossenschaften."
+        )
+      ).toBeInTheDocument();
+    });
+
+    test("falls back to default description or Lorem Ipsum when active translation is missing", async () => {
+      act(() => {
+        store.update((s) => {
+          s.language = { active: "fr" };
+        });
+      });
+
+      const indicatorWithoutFrench = {
+        ...mockIndicatorPercentage,
+        description: "Fallback English description",
+        translations: [],
+      };
+
+      render(
+        <IndicatorLineChartCard
+          indicator={indicatorWithoutFrench}
+          peerGroupName="Trader / Processor"
+        />
+      );
+
+      const infoBtn = screen.getByRole("button", {
+        name: /about/i,
+      });
+
+      fireEvent.mouseOver(infoBtn);
+      expect(
+        await screen.findByText("Fallback English description")
+      ).toBeInTheDocument();
+    });
   });
 });

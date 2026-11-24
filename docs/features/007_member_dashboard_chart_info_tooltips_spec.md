@@ -3,7 +3,7 @@
 > **Document Type**: Feature Specification (Phase 0: Planning & Estimation)  
 > **Feature Number**: `007`  
 > **Feature Name**: `member_dashboard_chart_info_tooltips`  
-> **Status**: `Ready for Review & Approval`  
+> **Status**: `Implemented`  
 > **Author**: System Architect (`bmad-architect`) / Developer (`bmad-dev`)  
 > **Scope**: Member Reporting Back Dashboard (`/dashboard`)  
 > **Reference Docs**: [docs/lld/member_dashboard_lld.md](/docs/lld/member_dashboard_lld.md), [docs/features/001_member_dashboard_spec.md](/docs/features/001_member_dashboard_spec.md)

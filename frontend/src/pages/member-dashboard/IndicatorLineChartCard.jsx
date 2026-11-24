@@ -1,10 +1,15 @@
 import React, { useMemo } from "react";
 import PropTypes from "prop-types";
-import { Card, Tag, Table } from "antd";
+import { Card, Tag, Table, Tooltip } from "antd";
+import { InfoCircleOutlined } from "@ant-design/icons";
 import { Line } from "akvo-charts";
 import "akvo-charts/dist/index.css";
 import { store } from "../../lib";
 import { uiText } from "../../static";
+
+const DEFAULT_LOREM_IPSUM =
+  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
+  "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
 
 const toNumericPercent = (val) => {
   if (val === null || typeof val === "undefined") {
@@ -50,6 +55,32 @@ const IndicatorLineChartCard = ({ indicator, peerGroupName }) => {
     }
     return text.units?.[indicator.unit.toLowerCase()] || indicator.unit;
   }, [indicator, text]);
+
+  const indicatorDescription = useMemo(() => {
+    if (!indicator) {
+      return "";
+    }
+
+    // 1. Check if active language translation exists in indicator.translations
+    if (Array.isArray(indicator.translations)) {
+      const matched = indicator.translations.find(
+        (t) =>
+          t.language?.toLowerCase() === activeLang.toLowerCase() &&
+          t.description
+      );
+      if (matched?.description) {
+        return matched.description;
+      }
+    }
+
+    // 2. Check static uiText localization if defined
+    if (text.indicatorDescriptions?.[indicator.id]) {
+      return text.indicatorDescriptions[indicator.id];
+    }
+
+    // 3. Fallback to default indicator description or global placeholder
+    return indicator.description || DEFAULT_LOREM_IPSUM;
+  }, [indicator, activeLang, text]);
 
   const rawConfig = useMemo(() => {
     const seriesData = indicator?.series || [];
@@ -208,6 +239,7 @@ const IndicatorLineChartCard = ({ indicator, peerGroupName }) => {
             {indicator?.country && (
               <Tag className="scope-tag">{indicator.country}</Tag>
             )}
+            {unitName && <Tag className="unit-tag">{unitName}</Tag>}
             {peerGroupName && (
               <span className="peer-group-hint" style={{ display: "none" }}>
                 {peerGroupName}
@@ -229,7 +261,23 @@ const IndicatorLineChartCard = ({ indicator, peerGroupName }) => {
           </div>
         </div>
       }
-      extra={unitName ? <Tag className="unit-tag">{unitName}</Tag> : null}
+      extra={
+        <div className="card-extra-actions">
+          <Tooltip
+            title={indicatorDescription}
+            placement="topRight"
+            overlayClassName="chart-info-tooltip"
+          >
+            <button
+              type="button"
+              className="chart-info-btn"
+              aria-label={`About ${indicatorName}`}
+            >
+              <InfoCircleOutlined className="chart-info-icon" />
+            </button>
+          </Tooltip>
+        </div>
+      }
     >
       <div className="chart-canvas-wrapper">
         <Line rawConfig={rawConfig} />
@@ -257,6 +305,13 @@ IndicatorLineChartCard.propTypes = {
     unit: PropTypes.string,
     chart_type: PropTypes.string,
     higher_is_better: PropTypes.bool,
+    description: PropTypes.string,
+    translations: PropTypes.arrayOf(
+      PropTypes.shape({
+        language: PropTypes.string,
+        description: PropTypes.string,
+      })
+    ),
     series: PropTypes.arrayOf(
       PropTypes.shape({
         year: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
