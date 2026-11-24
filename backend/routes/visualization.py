@@ -64,6 +64,8 @@ class IndicatorDTO(BaseModel):
     unit: str
     chart_type: str
     higher_is_better: bool
+    description: Optional[str] = None
+    translations: Optional[List[dict]] = None
     series: List[IndicatorSeriesPoint]
 
 

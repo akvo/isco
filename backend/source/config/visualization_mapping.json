@@ -12,6 +12,17 @@
           "id": "sourced_directly",
           "name": "Share of cocoa sourced directly",
           "country": "Global",
+          "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "translations": [
+            {
+              "language": "de",
+              "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit (de). Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            },
+            {
+              "language": "fr",
+              "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit (fr). Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          ],
           "form_id": 7,
           "question_group": {
             "id": 90,
@@ -28,6 +39,17 @@
           "id": "sourced_traceable",
           "name": "Share of cocoa sourced traceable to farm level",
           "country": "Global",
+          "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "translations": [
+            {
+              "language": "de",
+              "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit (de). Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            },
+            {
+              "language": "fr",
+              "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit (fr). Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          ],
           "form_id": 7,
           "question_group": {
             "id": 90,
@@ -50,6 +72,17 @@
           "id": "deforestation_free",
           "name": "Share of deforestation free cocoa",
           "country": "Global",
+          "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "translations": [
+            {
+              "language": "de",
+              "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit (de). Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            },
+            {
+              "language": "fr",
+              "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit (fr). Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          ],
           "form_id": 7,
           "question_group": {
             "id": 15,
@@ -72,6 +105,17 @@
           "id": "li_gap_measured",
           "name": "Share of households in direct supply chain for which a LI gap is measured",
           "country": "Global",
+          "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "translations": [
+            {
+              "language": "de",
+              "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit (de). Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            },
+            {
+              "language": "fr",
+              "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit (fr). Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          ],
           "form_id": 7,
           "question_group": {
             "id": "supplier_repeats",
@@ -89,6 +133,17 @@
           "id": "li_strategy_implemented",
           "name": "Share of households in direct supply chain for which a LI strategy is implemented",
           "country": "Global",
+          "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "translations": [
+            {
+              "language": "de",
+              "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit (de). Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            },
+            {
+              "language": "fr",
+              "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit (fr). Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          ],
           "form_id": 7,
           "question_group": {
             "id": "supplier_repeats",
@@ -112,6 +167,17 @@
           "id": "clmrs_covered",
           "name": "Share of households in supply chain covered by CLMRS",
           "country": "West Africa (Cameroon, Côte d'Ivoire, Ghana, Nigeria)",
+          "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "translations": [
+            {
+              "language": "de",
+              "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit (de). Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            },
+            {
+              "language": "fr",
+              "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit (fr). Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          ],
           "form_id": 7,
           "question_group": {
             "id": "clmrs_monitoring",
@@ -128,6 +194,17 @@
           "id": "child_labour_identified",
           "name": "Share of cases of child labour identified among children covered",
           "country": "West Africa (Cameroon, Côte d'Ivoire, Ghana, Nigeria)",
+          "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "translations": [
+            {
+              "language": "de",
+              "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit (de). Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            },
+            {
+              "language": "fr",
+              "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit (fr). Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          ],
           "form_id": 7,
           "question_group": {
             "id": "clmrs_identification",
@@ -144,6 +221,17 @@
           "id": "support_received",
           "name": "Share of children who received support among those identified",
           "country": "West Africa (Cameroon, Côte d'Ivoire, Ghana, Nigeria)",
+          "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "translations": [
+            {
+              "language": "de",
+              "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit (de). Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            },
+            {
+              "language": "fr",
+              "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit (fr). Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          ],
           "form_id": 7,
           "question_group": {
             "id": "clmrs_remediation",
@@ -160,6 +248,17 @@
           "id": "follow_up_visits",
           "name": "Share of children who received 2-follow-up visits among those identified in child labour",
           "country": "West Africa (Cameroon, Côte d'Ivoire, Ghana, Nigeria)",
+          "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "translations": [
+            {
+              "language": "de",
+              "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit (de). Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            },
+            {
+              "language": "fr",
+              "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit (fr). Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          ],
           "form_id": 7,
           "question_group": {
             "id": "clmrs_followup",
@@ -176,4 +275,3 @@
     }
   ]
 }
-
