@@ -288,17 +288,37 @@ class VisualizationService:
         else:
             peer_groups_dto = []
 
-        # Query latest member message for target organisation
-        message_query = (
+        # Query all member messages for target organisation
+        all_member_msgs = (
             session.query(MemberMessage)
             .filter(MemberMessage.organisation == organisation_id)
+            .order_by(MemberMessage.year.desc())
+            .all()
         )
-        if years and len(years) == 1:
-            message_query = message_query.filter(
-                MemberMessage.year == years[0]
-            )
 
-        member_msg = message_query.order_by(MemberMessage.year.desc()).first()
+        member_messages_dto = (
+            [
+                {
+                    "id": m.id,
+                    "year": m.year,
+                    "message": m.message,
+                    "translations": m.translations,
+                }
+                for m in all_member_msgs
+            ]
+            if all_member_msgs
+            else None
+        )
+
+        # Resolve primary/active member message (latest or requested year)
+        member_msg = None
+        if years and len(years) == 1:
+            for m in all_member_msgs:
+                if m.year == years[0]:
+                    member_msg = m
+                    break
+        elif all_member_msgs:
+            member_msg = all_member_msgs[0]
 
         member_message_dto = None
         if member_msg:
@@ -324,6 +344,7 @@ class VisualizationService:
             "peer_groups": peer_groups_dto,
             "enable_peer_group_filter": enable_filter,
             "member_message": member_message_dto,
+            "member_messages": member_messages_dto,
         }
 
 

@@ -98,6 +98,7 @@ class IndividualDashboardResponse(BaseModel):
     peer_groups: Optional[List[PeerGroupSummary]] = None
     enable_peer_group_filter: bool = True
     member_message: Optional[MemberMessageDTO] = None
+    member_messages: Optional[List[MemberMessageDTO]] = None
 
 
 @visualization_route.get(
@@ -178,7 +179,10 @@ def get_individual_dashboard(
 )
 def download_feedback_template(
     req: Request,
-    year: int = Query(..., description="Target survey year"),
+    year: Optional[int] = Query(None, description="Target survey year"),
+    years: Optional[str] = Query(
+        None, description="Comma-separated monitoring round years"
+    ),
     session: Session = Depends(get_session),
     credentials: credentials = Depends(security),
 ):
@@ -200,12 +204,26 @@ def download_feedback_template(
         .all()
     )
 
+    if years:
+        target_years = [
+            int(y.strip()) for y in years.split(",") if y.strip().isdigit()
+        ]
+    elif year is not None:
+        target_years = [year]
+    else:
+        target_years = [2024, 2023, 2022]
+
     excel_stream = generate_protected_feedback_template(
         organisations=organisations,
-        year=year,
+        year=target_years,
     )
 
-    filename = f"ISCO_Member_Feedback_Template_{year}.xlsx"
+    if len(target_years) == 1:
+        year_suffix = str(target_years[0])
+    else:
+        year_suffix = f"{min(target_years)}_{max(target_years)}"
+
+    filename = f"ISCO_Member_Feedback_Template_{year_suffix}.xlsx"
     headers = {
         "Content-Disposition": f'attachment; filename="{filename}"'
     }

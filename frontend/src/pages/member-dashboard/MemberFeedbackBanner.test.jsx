@@ -124,4 +124,50 @@ describe("MemberFeedbackBanner Component", () => {
     const btn = screen.getByTestId("download-feedback-template-btn");
     expect(btn).toBeInTheDocument();
   });
+
+  test("renders year selector pills when multiple years of messages are provided and toggles content", () => {
+    const messages = [
+      {
+        id: 201,
+        year: 2024,
+        message:
+          "**Achievements:**\n2024 achievements reached.\n\n**Growth area:**\n2024 growth needed.",
+      },
+      {
+        id: 202,
+        year: 2023,
+        message:
+          "**Achievements:**\n2023 baseline set.\n\n**Growth area:**\n2023 initial steps.",
+      },
+      {
+        id: 203,
+        year: 2022,
+        message:
+          "**Achievements:**\n2022 pilot begun.\n\n**Growth area:**\n2022 setup required.",
+      },
+    ];
+
+    render(<MemberFeedbackBanner messages={messages} activeLang="en" />);
+
+    // Initial state: latest (2024) is displayed
+    expect(screen.getByText(/2024 achievements reached/i)).toBeInTheDocument();
+    expect(screen.getByText("2024")).toBeInTheDocument();
+    expect(screen.getByText("2023")).toBeInTheDocument();
+    expect(screen.getByText("2022")).toBeInTheDocument();
+
+    // Click 2023 pill
+    const pill2023 = screen.getByRole("tab", { name: /2023/i });
+    pill2023.click();
+
+    expect(screen.getByText(/2023 baseline set/i)).toBeInTheDocument();
+    expect(
+      screen.queryByText(/2024 achievements reached/i)
+    ).not.toBeInTheDocument();
+
+    // Click 2022 pill
+    const pill2022 = screen.getByRole("tab", { name: /2022/i });
+    pill2022.click();
+
+    expect(screen.getByText(/2022 pilot begun/i)).toBeInTheDocument();
+  });
 });

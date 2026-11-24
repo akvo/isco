@@ -280,7 +280,7 @@ class MemberMessage(Base):
   ```
 
 #### `GET /api/visualization/individual-dashboard`
-- Delivers `member_message: Optional[MemberMessageDTO]` with the most recent year's record for `target_org_id`.
+- Delivers `member_message: Optional[MemberMessageDTO]` with the most recent year's record for `target_org_id`, and `member_messages: Optional[List[MemberMessageDTO]]` containing all recorded monitoring round summaries ordered by year descending.
 
 ---
 
@@ -288,15 +288,15 @@ class MemberMessage(Base):
 
 ### 3.1 Feedback Banner Component (`/frontend/src/pages/member-dashboard/MemberFeedbackBanner.jsx`)
 - Renders an informative card beneath the dashboard header with anti-slop editorial design.
-- Displays the reporting round year tag in the header (e.g. `Annual Reporting Feedback (2024)`).
+- Displays interactive year selector pills (`[2024 (Latest)]`, `[2023]`, `[2022]`) in the header when multiple years of summaries exist, allowing members and admins to effortlessly browse past feedback. When only a single year is available, it displays `Annual Reporting Feedback (YYYY)`.
 - Formats structured feedback:
   - Highlights *Achievements* with a subtle forest-green badge/accent border (`#2e7d32`).
   - Highlights *Growth area* with a subtle amber/terracotta badge/accent border (`#b45309`).
-- Returns `null` if `dashboardData?.member_message` is absent or empty, except when user is a Secretariat Admin (`secretariat_admin`), where it renders a clean header showing "No feedback recorded..." alongside the template download action.
+- When no feedback is recorded for the active year, renders the default translated message (`text.feedbackNoMessage`) cleanly inside the content body (`.feedback-editorial-col.empty-col`).
 - Integrates the **"Download Feedback Template"** action into the banner header for Secretariat Admins, keeping feedback actions unified and removing awkward toolbar clutter.
 - Note: Web upload UI is hidden for now as feedback is seeded manually via CLI.
 
-### 3.2 Wireframe with Banner Header Download Action
+### 3.2 Wireframe with Banner Header Download Action & Multi-Year Pills
 
 ```text
 +-------------------------------------------------------------------------------------------------+
@@ -308,7 +308,7 @@ class MemberMessage(Base):
 +-------------------------------------------------------------------------------------------------+
 |                                                                                                 |
 |  +-- [Member Reporting Feedback Card] -------------------------------------------------------+  |
-|  | Annual Reporting Feedback (2024)                    [📥 Download Feedback Template (.xlsx)] |  |
+|  | Annual Reporting Feedback  [2024 (Latest)] [2023] [2022]   [📥 Download Feedback Template] |  |
 |  |                                                                                           |  |
 |  | Achievements: The member's achievements are largely in line with its peer group.          |  |
 |  |               Particularly positive is improved reporting on child labour indicators.      |  |

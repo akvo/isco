@@ -333,6 +333,7 @@ const MemberDashboardPage = () => {
         {!loading && !error && (
           <MemberFeedbackBanner
             message={dashboardData?.member_message}
+            messages={dashboardData?.member_messages}
             year={activeYear}
             activeLang={activeLang}
             isAdmin={isAdmin}

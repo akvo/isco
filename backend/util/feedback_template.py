@@ -1,5 +1,5 @@
 from io import BytesIO
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Union
 import pandas as pd
 import xlsxwriter
 from sqlalchemy.orm import Session
@@ -9,14 +9,14 @@ from models.member_message import MemberMessage
 
 def generate_protected_feedback_template(
     organisations: List[Organisation],
-    year: int
+    year: Optional[Union[int, List[int]]] = None
 ) -> BytesIO:
     """
     Generates a protected Excel (.xlsx) workbook for annual feedback import.
     - Sheet 1 ('Member Feedback'): Protected worksheet.
-      Columns A-C (organisation_id, code, name) are locked.
-      Column D (year) is unlocked and pre-filled with the target year.
-      Columns E-H (achievements, growth_areas, general, lang) are unlocked.
+      Columns A-B (organisation_id, name) are locked.
+      Column C (year) is unlocked and pre-filled with the target year(s).
+      Columns D-G (achievements, growth_areas, general, lang) are unlocked.
     - Sheet 2 ('Instructions & Examples'): Reference guidelines and examples.
     """
     output = BytesIO()
@@ -97,16 +97,26 @@ def generate_protected_feedback_template(
     ws_feedback.set_column('F:F', 45)  # general_message
     ws_feedback.set_column('G:G', 12)  # language
 
+    if year is None:
+        years_list = [2024, 2023, 2022]
+    elif isinstance(year, int):
+        years_list = [year]
+    elif isinstance(year, (list, tuple)):
+        years_list = list(year)
+    else:
+        years_list = [2024]
+
     row = 1
     for org in organisations:
-        ws_feedback.write(row, 0, org.id, locked_cell_format)
-        ws_feedback.write(row, 1, org.name or '', locked_cell_format)
-        ws_feedback.write(row, 2, year, unlocked_year_format)
-        ws_feedback.write(row, 3, '', unlocked_cell_format)
-        ws_feedback.write(row, 4, '', unlocked_cell_format)
-        ws_feedback.write(row, 5, '', unlocked_cell_format)
-        ws_feedback.write(row, 6, 'en', unlocked_cell_format)
-        row += 1
+        for y in years_list:
+            ws_feedback.write(row, 0, org.id, locked_cell_format)
+            ws_feedback.write(row, 1, org.name or '', locked_cell_format)
+            ws_feedback.write(row, 2, y, unlocked_year_format)
+            ws_feedback.write(row, 3, '', unlocked_cell_format)
+            ws_feedback.write(row, 4, '', unlocked_cell_format)
+            ws_feedback.write(row, 5, '', unlocked_cell_format)
+            ws_feedback.write(row, 6, 'en', unlocked_cell_format)
+            row += 1
 
     # Sheet 2: Instructions & Examples
     ws_instructions = workbook.add_worksheet('Instructions & Examples')
