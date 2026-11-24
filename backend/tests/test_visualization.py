@@ -15,9 +15,6 @@ from models.form import Form
 from models.data import Data
 from models.question import Question, QuestionType
 from models.question_group import QuestionGroup
-from models.question_member_access import QuestionMemberAccess
-from models.question_isco_access import QuestionIscoAccess
-from models.cascade import Cascade
 from models.answer import Answer
 from middleware import create_access_token
 import main  # noqa: F401
@@ -1144,13 +1141,16 @@ def test_member_message_model_crud_and_uniqueness(
 ):
     """
     TASK-1.1: Verify MemberMessage model creation, retrieval,
-    translations JSONB array storage, and unique constraint on (organisation, year).
+    translations JSONB array storage, and unique constraint on
+    (organisation, year).
     """
     from models.member_message import MemberMessage
     from models.organisation import Organisation
     from sqlalchemy.exc import IntegrityError
 
-    org = Organisation(name="Org For Model Test", code="ORG_MODEL_TEST", active=True)
+    org = Organisation(
+        name="Org For Model Test", code="ORG_MODEL_TEST", active=True
+    )
     session.add(org)
     session.commit()
     session.refresh(org)
@@ -1199,19 +1199,24 @@ def test_member_message_model_crud_and_uniqueness(
     assert msg_2023.id is not None
 
     # Cleanup
-    session.query(MemberMessage).filter(MemberMessage.organisation == org.id).delete()
+    session.query(MemberMessage).filter(
+        MemberMessage.organisation == org.id
+    ).delete()
     session.delete(org)
     session.commit()
 
 
 def test_member_message_cascade_delete(session: Session):
     """
-    TASK-1.1: Verify deleting an organisation cascades to its MemberMessage records.
+    TASK-1.1: Verify deleting an organisation cascades to its MemberMessage
+    records.
     """
     from models.member_message import MemberMessage
     from models.organisation import Organisation
 
-    temp_org = Organisation(name="Temp Org For Cascade", code="TEMP_CAS", active=True)
+    temp_org = Organisation(
+        name="Temp Org For Cascade", code="TEMP_CAS", active=True
+    )
     session.add(temp_org)
     session.commit()
     session.refresh(temp_org)
@@ -1230,7 +1235,12 @@ def test_member_message_cascade_delete(session: Session):
     session.commit()
 
     # MemberMessage must be deleted
-    assert session.query(MemberMessage).filter(MemberMessage.id == msg_id).first() is None
+    assert (
+        session.query(MemberMessage)
+        .filter(MemberMessage.id == msg_id)
+        .first()
+        is None
+    )
 
 
 @pytest.mark.asyncio
@@ -1247,10 +1257,14 @@ async def test_get_individual_dashboard_member_message_resolution(
     org_a = test_setup["org_a"]
     org_b = test_setup["org_b"]
     headers_member = {"Authorization": f"Bearer {test_setup['user_a_token']}"}
-    headers_admin = {"Authorization": f"Bearer {test_setup['sec_admin_token']}"}
+    headers_admin = {
+        "Authorization": f"Bearer {test_setup['sec_admin_token']}"
+    }
 
     # 1. Before creating any messages, member_message is None
-    res = await client.get("/visualization/individual-dashboard", headers=headers_member)
+    res = await client.get(
+        "/visualization/individual-dashboard", headers=headers_member
+    )
     assert res.status_code == 200
     data = res.json()
     assert data["member_message"] is None
@@ -1272,7 +1286,9 @@ async def test_get_individual_dashboard_member_message_resolution(
     session.commit()
 
     # 3. Default query (no year specified) returns latest year (2024)
-    res = await client.get("/visualization/individual-dashboard", headers=headers_member)
+    res = await client.get(
+        "/visualization/individual-dashboard", headers=headers_member
+    )
     assert res.status_code == 200
     data = res.json()
     assert data["member_message"] is not None
@@ -1281,14 +1297,17 @@ async def test_get_individual_dashboard_member_message_resolution(
     assert len(data["member_message"]["translations"]) == 1
 
     # 4. Filter by specific year 2023
-    res = await client.get("/visualization/individual-dashboard?years=2023", headers=headers_member)
+    res = await client.get(
+        "/visualization/individual-dashboard?years=2023",
+        headers=headers_member,
+    )
     assert res.status_code == 200
     data = res.json()
     assert data["member_message"] is not None
     assert data["member_message"]["year"] == 2023
     assert data["member_message"]["message"] == "2023 message for Org A"
 
-    # 5. Secretariat Admin switches to Org B (which has no message) -> member_message is None
+    # 5. Secretariat Admin switches to Org B (which has no message) -> None
     res = await client.get(
         f"/visualization/individual-dashboard?organisation_id={org_b.id}",
         headers=headers_admin,
@@ -1308,7 +1327,6 @@ def test_generate_protected_feedback_template_structure_and_locks(
     import openpyxl
     from io import BytesIO
     from util.feedback_template import generate_protected_feedback_template
-    from models.organisation import Organisation
 
     orgs = [test_setup["org_a"], test_setup["org_b"]]
     excel_stream = generate_protected_feedback_template(orgs, 2024)
@@ -1358,7 +1376,9 @@ async def test_download_feedback_template_endpoint(
     from io import BytesIO
 
     headers_member = {"Authorization": f"Bearer {test_setup['user_a_token']}"}
-    headers_admin = {"Authorization": f"Bearer {test_setup['sec_admin_token']}"}
+    headers_admin = {
+        "Authorization": f"Bearer {test_setup['sec_admin_token']}"
+    }
 
     # Non-secretariat user gets 403
     res_forbidden = await client.get(
@@ -1375,7 +1395,10 @@ async def test_download_feedback_template_endpoint(
     assert res.status_code == 200
     assert "spreadsheetml" in res.headers.get("content-type", "")
     assert "attachment" in res.headers.get("content-disposition", "")
-    assert "ISCO_Member_Feedback_Template_2024.xlsx" in res.headers.get("content-disposition", "")
+    assert (
+        "ISCO_Member_Feedback_Template_2024.xlsx"
+        in res.headers.get("content-disposition", "")
+    )
 
     # Content is readable valid xlsx
     wb = openpyxl.load_workbook(BytesIO(res.content))
@@ -1398,7 +1421,9 @@ async def test_upload_feedback_spreadsheet_endpoint(
 
     org_a = test_setup["org_a"]
     org_b = test_setup["org_b"]
-    headers_admin = {"Authorization": f"Bearer {test_setup['sec_admin_token']}"}
+    headers_admin = {
+        "Authorization": f"Bearer {test_setup['sec_admin_token']}"
+    }
 
     # Create in-memory test Excel data
     df = pd.DataFrame([
@@ -1428,8 +1453,19 @@ async def test_upload_feedback_spreadsheet_endpoint(
         df.to_excel(writer, sheet_name="Member Feedback", index=False)
     excel_buffer.seek(0)
 
+    content_type = (
+        "application/vnd.openxmlformats-officedocument"
+        ".spreadsheetml.sheet"
+    )
+
     # 1. Test Dry Run
-    files = {"file": ("test_import.xlsx", excel_buffer.getvalue(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
+    files = {
+        "file": (
+            "test_import.xlsx",
+            excel_buffer.getvalue(),
+            content_type,
+        )
+    }
     data = {"dry_run": "true"}
     res_dry = await client.post(
         "/visualization/member-messages/upload",
@@ -1445,7 +1481,13 @@ async def test_upload_feedback_spreadsheet_endpoint(
     assert res_dry_json["imported"] == 2
 
     # 2. Test Actual Upload
-    files_actual = {"file": ("test_import.xlsx", excel_buffer.getvalue(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
+    files_actual = {
+        "file": (
+            "test_import.xlsx",
+            excel_buffer.getvalue(),
+            content_type,
+        )
+    }
     res_actual = await client.post(
         "/visualization/member-messages/upload",
         files=files_actual,
@@ -1482,7 +1524,3 @@ async def test_upload_feedback_spreadsheet_endpoint(
         MemberMessage.year == 2024,
     ).delete(synchronize_session=False)
     session.commit()
-
-
-
-

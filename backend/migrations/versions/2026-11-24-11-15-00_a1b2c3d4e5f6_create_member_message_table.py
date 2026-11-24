@@ -5,7 +5,8 @@ Revises: 857e7a330177
 Create Date: 2026-11-24 11:15:00.000000
 
 Architecture Note:
-    - Creates `member_message` table for annual qualitative feedback per member organization.
+    - Creates `member_message` table for annual qualitative feedback
+      per member organization.
     - Foreign key to `organisation.id` with cascade deletion.
     - Unique constraint `uq_member_message_org_year` on `(organisation, year)`.
     - Multilingual translation column using ISCO standard `ARRAY(JSONB)`.
