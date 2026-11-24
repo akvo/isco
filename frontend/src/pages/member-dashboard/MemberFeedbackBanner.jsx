@@ -12,9 +12,9 @@ const parseFeedbackMessage = (rawText) => {
   }
 
   const achievementsMatch = rawText.match(
-    /\*\*Achievements:\*\*\s*([\s\S]*?)(?=(\*\*Growth area:\*\*|$))/i
+    /\*\*Achievements?:\*\*\s*([\s\S]*?)(?=(\*\*Growth areas?:\*\*|$))/i
   );
-  const growthMatch = rawText.match(/\*\*Growth area:\*\*\s*([\s\S]*?)$/i);
+  const growthMatch = rawText.match(/\*\*Growth areas?:\*\*\s*([\s\S]*?)$/i);
 
   const achievements = achievementsMatch ? achievementsMatch[1].trim() : null;
   const growthAreas = growthMatch ? growthMatch[1].trim() : null;
@@ -109,61 +109,63 @@ const MemberFeedbackBanner = ({
           <span className="feedback-eyebrow">
             {text.feedbackEyebrow || "Secretariat Reporting Summary"}
           </span>
-          <div className="feedback-title-row">
-            <Title level={4} className="feedback-title">
-              {text.feedbackBannerTitle || "Annual Reporting Feedback"}
-              {sortedMessages.length <= 1 && yearLabel}
-            </Title>
-            {sortedMessages.length > 1 && (
-              <div
-                className="feedback-year-pills"
-                role="tablist"
-                aria-label="Reporting years"
-              >
-                {sortedMessages.map((m, idx) => {
-                  const isSelected = m.year === activeSelectedYear;
-                  return (
-                    <button
-                      key={m.year}
-                      type="button"
-                      role="tab"
-                      aria-selected={isSelected}
-                      className={`feedback-year-pill ${
-                        isSelected ? "active" : ""
-                      }`}
-                      onClick={() => setSelectedYear(m.year)}
-                    >
-                      {m.year}
-                      {idx === 0 && (
-                        <span className="year-latest-badge">
-                          {text.feedbackLatestBadge || "Latest"}
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+          <Title level={4} className="feedback-title">
+            {text.feedbackBannerTitle || "Annual Reporting Feedback"}
+            {sortedMessages.length <= 1 && yearLabel}
+          </Title>
           <Text className="feedback-subtitle">
             {text.feedbackBannerSubtitle ||
               "Qualitative reporting feedback provided by the Secretariat"}
           </Text>
         </div>
-        {isAdmin && onDownloadTemplate && (
-          <div className="feedback-header-actions">
-            <Button
-              type="default"
-              icon={<DownloadOutlined />}
-              onClick={onDownloadTemplate}
-              loading={isDownloadingTemplate}
-              className="feedback-download-template-btn"
-              data-testid="download-feedback-template-btn"
+
+        <div className="feedback-header-right">
+          {isAdmin && onDownloadTemplate && (
+            <div className="feedback-header-actions">
+              <Button
+                type="default"
+                icon={<DownloadOutlined />}
+                onClick={onDownloadTemplate}
+                loading={isDownloadingTemplate}
+                className="feedback-download-template-btn"
+                data-testid="download-feedback-template-btn"
+              >
+                {text.feedbackDownloadTemplate || "Download Feedback Template"}
+              </Button>
+            </div>
+          )}
+
+          {sortedMessages.length > 1 && (
+            <div
+              className="feedback-year-pills"
+              role="tablist"
+              aria-label="Reporting years"
             >
-              {text.feedbackDownloadTemplate || "Download Feedback Template"}
-            </Button>
-          </div>
-        )}
+              {sortedMessages.map((m, idx) => {
+                const isSelected = m.year === activeSelectedYear;
+                return (
+                  <button
+                    key={m.year}
+                    type="button"
+                    role="tab"
+                    aria-selected={isSelected}
+                    className={`feedback-year-pill ${
+                      isSelected ? "active" : ""
+                    }`}
+                    onClick={() => setSelectedYear(m.year)}
+                  >
+                    {m.year}
+                    {idx === 0 && (
+                      <span className="year-latest-badge">
+                        {text.feedbackLatestBadge || "Latest"}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="feedback-banner-content">

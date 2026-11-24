@@ -280,6 +280,12 @@ def parse_and_import_feedback_file(
     imported = 0
     total_rows = 0
 
+    # Pre-cache organisations to eliminate N+1 queries during iteration
+    all_orgs = session.query(Organisation).all()
+    org_by_id = {o.id: o for o in all_orgs}
+    org_by_code = {o.code.strip().lower(): o for o in all_orgs if o.code}
+    org_by_name = {o.name.strip().lower(): o for o in all_orgs if o.name}
+
     for idx, row in df.iterrows():
         row_num = idx + 2  # 1-based, accounting for header row
         org_id = _clean_int(row.get("organisation_id"))
@@ -297,22 +303,16 @@ def parse_and_import_feedback_file(
 
         total_rows += 1
 
-        # Resolve organisation
+        # Resolve organisation from cache
         org = None
         if org_id is not None:
-            org = session.query(Organisation).filter(
-                Organisation.id == org_id
-            ).first()
+            org = org_by_id.get(org_id)
 
         if not org and org_code:
-            org = session.query(Organisation).filter(
-                Organisation.code == org_code
-            ).first()
+            org = org_by_code.get(org_code.strip().lower())
 
         if not org and org_name:
-            org = session.query(Organisation).filter(
-                Organisation.name.ilike(org_name)
-            ).first()
+            org = org_by_name.get(org_name.strip().lower())
 
         if not org:
             errors.append(
