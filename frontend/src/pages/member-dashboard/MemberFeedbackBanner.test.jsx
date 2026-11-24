@@ -1,0 +1,117 @@
+import React from "react";
+import { render, screen } from "@testing-library/react";
+import MemberFeedbackBanner from "./MemberFeedbackBanner";
+
+beforeAll(() => {
+  window.matchMedia =
+    window.matchMedia ||
+    function () {
+      return {
+        matches: false,
+        addListener: function () {},
+        removeListener: function () {},
+      };
+    };
+});
+
+describe("MemberFeedbackBanner Component", () => {
+  test("renders nothing when message is null or empty", () => {
+    const { container: c1 } = render(<MemberFeedbackBanner message={null} />);
+    expect(c1).toBeEmptyDOMElement();
+
+    const { container: c2 } = render(
+      <MemberFeedbackBanner message={{ message: "" }} />
+    );
+    expect(c2).toBeEmptyDOMElement();
+  });
+
+  test("renders achievements and growth areas in separated styled boxes", () => {
+    const message = {
+      id: 101,
+      year: 2024,
+      message:
+        "**Achievements:**\n85% direct sourcing achieved.\n\n**Growth area:**\nExpand living income coverage.",
+    };
+
+    render(<MemberFeedbackBanner message={message} activeLang="en" />);
+
+    const region = screen.getByRole("region", {
+      name: /Annual Reporting Feedback/i,
+    });
+    expect(region).toBeInTheDocument();
+
+    expect(screen.getByTestId("feedback-achievements-box")).toBeInTheDocument();
+    expect(
+      screen.getByText(/85% direct sourcing achieved/i)
+    ).toBeInTheDocument();
+
+    expect(screen.getByTestId("feedback-growth-box")).toBeInTheDocument();
+    expect(
+      screen.getByText(/Expand living income coverage/i)
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByText(/Annual Reporting Feedback \(2024\)/i)
+    ).toBeInTheDocument();
+  });
+
+  test("renders fallback general message when structured markdown headers are missing", () => {
+    const message = {
+      id: 102,
+      year: 2023,
+      message:
+        "Overall outstanding commitment across all supply chains without specific sub-headings.",
+    };
+
+    render(<MemberFeedbackBanner message={message} activeLang="en" />);
+
+    expect(screen.getByTestId("feedback-general-box")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /Overall outstanding commitment across all supply chains/i
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId("feedback-achievements-box")
+    ).not.toBeInTheDocument();
+  });
+
+  test("prefers matching translation when activeLang is de", () => {
+    const message = {
+      id: 103,
+      year: 2024,
+      message:
+        "**Achievements:**\nEnglish achievements.\n\n**Growth area:**\nEnglish growth.",
+      translations: [
+        {
+          language: "de",
+          message:
+            "**Achievements:**\nDeutsche Erfolge.\n\n**Growth area:**\nDeutscher Entwicklungsbereich.",
+        },
+      ],
+    };
+
+    render(<MemberFeedbackBanner message={message} activeLang="de" />);
+
+    expect(screen.getByText(/Deutsche Erfolge/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Deutscher Entwicklungsbereich/i)
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/English achievements/i)).not.toBeInTheDocument();
+  });
+
+  test("renders download template button for admin in header", () => {
+    const onDownload = jest.fn();
+    render(
+      <MemberFeedbackBanner
+        message={null}
+        year={2024}
+        isAdmin={true}
+        onDownloadTemplate={onDownload}
+      />
+    );
+
+    const btn = screen.getByTestId("download-feedback-template-btn");
+    expect(btn).toBeInTheDocument();
+  });
+});

@@ -1,0 +1,212 @@
+import React, { useMemo } from "react";
+import PropTypes from "prop-types";
+import { Row, Col, Typography, Button } from "antd";
+import { DownloadOutlined } from "@ant-design/icons";
+import { uiText } from "../../static";
+
+const { Title, Text, Paragraph } = Typography;
+
+const parseFeedbackMessage = (rawText) => {
+  if (!rawText || typeof rawText !== "string") {
+    return { achievements: null, growthAreas: null, general: null };
+  }
+
+  const achievementsMatch = rawText.match(
+    /\*\*Achievements:\*\*\s*([\s\S]*?)(?=(\*\*Growth area:\*\*|$))/i
+  );
+  const growthMatch = rawText.match(/\*\*Growth area:\*\*\s*([\s\S]*?)$/i);
+
+  const achievements = achievementsMatch ? achievementsMatch[1].trim() : null;
+  const growthAreas = growthMatch ? growthMatch[1].trim() : null;
+
+  if (!achievements && !growthAreas) {
+    return { achievements: null, growthAreas: null, general: rawText.trim() };
+  }
+
+  return { achievements, growthAreas, general: null };
+};
+
+const MemberFeedbackBanner = ({
+  message,
+  year,
+  activeLang = "en",
+  isAdmin = false,
+  onDownloadTemplate,
+  isDownloadingTemplate = false,
+}) => {
+  const text = useMemo(() => uiText[activeLang] || uiText.en, [activeLang]);
+
+  const resolvedMessageText = useMemo(() => {
+    if (!message || !message.message) {
+      return null;
+    }
+    if (message.translations && Array.isArray(message.translations)) {
+      const matched = message.translations.find(
+        (t) => t.language?.toLowerCase() === activeLang.toLowerCase()
+      );
+      if (matched && matched.message) {
+        return matched.message;
+      }
+    }
+    return message.message;
+  }, [message, activeLang]);
+
+  const { achievements, growthAreas, general } = useMemo(() => {
+    return parseFeedbackMessage(resolvedMessageText);
+  }, [resolvedMessageText]);
+
+  const displayYear = message?.year || year;
+  const yearLabel = displayYear ? ` (${displayYear})` : "";
+
+  // If there is no message recorded:
+  // - Non-admin: completely collapse to avoid visual noise.
+  // - Secretariat Admin: show clean header with template download button.
+  if (!resolvedMessageText || (!achievements && !growthAreas && !general)) {
+    if (!isAdmin) {
+      return null;
+    }
+    return (
+      <section
+        className="member-feedback-banner feedback-banner-empty"
+        role="region"
+        aria-label={text.feedbackBannerTitle || "Annual Reporting Feedback"}
+        data-testid="member-feedback-banner"
+      >
+        <div className="feedback-banner-header">
+          <div className="feedback-header-left">
+            <span className="feedback-eyebrow">
+              {text.feedbackEyebrow || "Secretariat Reporting Summary"}
+            </span>
+            <Title level={4} className="feedback-title">
+              {(text.feedbackBannerTitle || "Annual Reporting Feedback") +
+                yearLabel}
+            </Title>
+            <Text className="feedback-subtitle">
+              {text.feedbackNoMessageAdmin ||
+                "No feedback recorded for this organisation in this monitoring round."}
+            </Text>
+          </div>
+          {onDownloadTemplate && (
+            <div className="feedback-header-actions">
+              <Button
+                type="default"
+                icon={<DownloadOutlined />}
+                onClick={onDownloadTemplate}
+                loading={isDownloadingTemplate}
+                className="feedback-download-template-btn"
+                data-testid="download-feedback-template-btn"
+              >
+                {text.feedbackDownloadTemplate || "Download Feedback Template"}
+              </Button>
+            </div>
+          )}
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section
+      className="member-feedback-banner"
+      role="region"
+      aria-label={text.feedbackBannerTitle || "Annual Reporting Feedback"}
+      data-testid="member-feedback-banner"
+    >
+      <div className="feedback-banner-header">
+        <div className="feedback-header-left">
+          <span className="feedback-eyebrow">
+            {text.feedbackEyebrow || "Secretariat Reporting Summary"}
+          </span>
+          <Title level={4} className="feedback-title">
+            {(text.feedbackBannerTitle || "Annual Reporting Feedback") +
+              yearLabel}
+          </Title>
+          <Text className="feedback-subtitle">
+            {text.feedbackBannerSubtitle ||
+              "Qualitative reporting feedback provided by the Secretariat"}
+          </Text>
+        </div>
+        {isAdmin && onDownloadTemplate && (
+          <div className="feedback-header-actions">
+            <Button
+              type="default"
+              icon={<DownloadOutlined />}
+              onClick={onDownloadTemplate}
+              loading={isDownloadingTemplate}
+              className="feedback-download-template-btn"
+              data-testid="download-feedback-template-btn"
+            >
+              {text.feedbackDownloadTemplate || "Download Feedback Template"}
+            </Button>
+          </div>
+        )}
+      </div>
+
+      <div className="feedback-banner-content">
+        {(achievements || growthAreas) && (
+          <Row gutter={[32, 20]}>
+            {achievements && (
+              <Col xs={24} md={growthAreas ? 12 : 24}>
+                <div
+                  className="feedback-editorial-col achievement-col"
+                  data-testid="feedback-achievements-box"
+                >
+                  <span className="col-rubric-label">
+                    {text.feedbackAchievements || "Achievements"}
+                  </span>
+                  <Paragraph className="col-body-text">
+                    {achievements}
+                  </Paragraph>
+                </div>
+              </Col>
+            )}
+
+            {growthAreas && (
+              <Col xs={24} md={achievements ? 12 : 24}>
+                <div
+                  className="feedback-editorial-col growth-col"
+                  data-testid="feedback-growth-box"
+                >
+                  <span className="col-rubric-label">
+                    {text.feedbackGrowthAreas || "Growth Area"}
+                  </span>
+                  <Paragraph className="col-body-text">{growthAreas}</Paragraph>
+                </div>
+              </Col>
+            )}
+          </Row>
+        )}
+
+        {general && (
+          <div
+            className="feedback-editorial-col general-col"
+            data-testid="feedback-general-box"
+          >
+            <Paragraph className="col-body-text">{general}</Paragraph>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+};
+
+MemberFeedbackBanner.propTypes = {
+  message: PropTypes.shape({
+    id: PropTypes.number,
+    year: PropTypes.number,
+    message: PropTypes.string,
+    translations: PropTypes.arrayOf(
+      PropTypes.shape({
+        language: PropTypes.string,
+        message: PropTypes.string,
+      })
+    ),
+  }),
+  year: PropTypes.number,
+  activeLang: PropTypes.string,
+  isAdmin: PropTypes.bool,
+  onDownloadTemplate: PropTypes.func,
+  isDownloadingTemplate: PropTypes.bool,
+};
+
+export default MemberFeedbackBanner;

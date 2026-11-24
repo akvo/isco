@@ -71,6 +71,17 @@ const uiText = {
       "No reporting back performance data is available for this organization.",
     dashboardChartPlaceholder: "Chart visualization for",
     dashboardNoIndicators: "No indicators configured for this challenge.",
+    feedbackEyebrow: "Secretariat Reporting Summary",
+    feedbackBannerTitle: "Annual Reporting Feedback",
+    feedbackBannerSubtitle: "Qualitative summary from Secretariat",
+    feedbackNoMessageAdmin:
+      "No feedback recorded for this organisation in this monitoring round.",
+    feedbackAchievements: "Achievements",
+    feedbackGrowthAreas: "Growth Area",
+    feedbackDownloadTemplate: "Download Feedback Template",
+    feedbackUpload: "Upload Feedback",
+    feedbackUploadSuccess: "Feedback spreadsheet uploaded successfully",
+    feedbackUploadError: "Failed to upload feedback spreadsheet",
     peerGroups: {
       trader_processor: "Trader/Processor",
       large_manufacturer: "Large Manufacturer",
@@ -456,6 +467,17 @@ const uiText = {
     dashboardChartPlaceholder: "Diagrammvisualisierung für",
     dashboardNoIndicators:
       "Für diese Herausforderung sind keine Indikatoren konfiguriert.",
+    feedbackEyebrow: "Qualitative Berichterstattung des Sekretariats",
+    feedbackBannerTitle: "Jährliches Berichterstattungs-Feedback",
+    feedbackBannerSubtitle: "Qualitative Zusammenfassung des Sekretariats",
+    feedbackNoMessageAdmin:
+      "Für diese Organisation wurde in dieser Monitoringrunde noch kein Feedback erfasst.",
+    feedbackAchievements: "Erfolge",
+    feedbackGrowthAreas: "Entwicklungsbereich",
+    feedbackDownloadTemplate: "Feedback-Vorlage herunterladen",
+    feedbackUpload: "Feedback hochladen",
+    feedbackUploadSuccess: "Feedback-Tabelle erfolgreich hochgeladen",
+    feedbackUploadError: "Fehler beim Hochladen der Feedback-Tabelle",
     peerGroups: {
       trader_processor: "Händler/Verarbeiter",
       large_manufacturer: "Großer Hersteller",
