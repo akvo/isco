@@ -744,6 +744,14 @@ $color-bg-element: #f5f5f5;
           }
         }
 
+        &.empty-col {
+          border-left: 2px solid $color-border-main;
+
+          .col-body-text {
+            color: $color-text-muted;
+          }
+        }
+
         .col-rubric-label {
           display: block;
           font-size: 12px;

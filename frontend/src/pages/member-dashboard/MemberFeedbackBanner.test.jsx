@@ -15,14 +15,24 @@ beforeAll(() => {
 });
 
 describe("MemberFeedbackBanner Component", () => {
-  test("renders nothing when message is null or empty", () => {
-    const { container: c1 } = render(<MemberFeedbackBanner message={null} />);
-    expect(c1).toBeEmptyDOMElement();
-
-    const { container: c2 } = render(
-      <MemberFeedbackBanner message={{ message: "" }} />
+  test("renders default empty text in content body when message is null or empty", () => {
+    const { unmount } = render(
+      <MemberFeedbackBanner message={null} activeLang="en" />
     );
-    expect(c2).toBeEmptyDOMElement();
+    expect(screen.getByTestId("feedback-empty-box")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /No feedback recorded for this organisation in this monitoring round/i
+      )
+    ).toBeInTheDocument();
+    unmount();
+
+    render(<MemberFeedbackBanner message={{ message: "" }} activeLang="de" />);
+    expect(
+      screen.getByText(
+        /Für diese Organisation wurde in dieser Monitoringrunde noch kein Feedback erfasst/i
+      )
+    ).toBeInTheDocument();
   });
 
   test("renders achievements and growth areas in separated styled boxes", () => {

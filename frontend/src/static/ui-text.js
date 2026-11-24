@@ -74,6 +74,8 @@ const uiText = {
     feedbackEyebrow: "Secretariat Reporting Summary",
     feedbackBannerTitle: "Annual Reporting Feedback",
     feedbackBannerSubtitle: "Qualitative summary from Secretariat",
+    feedbackNoMessage:
+      "No feedback recorded for this organisation in this monitoring round.",
     feedbackNoMessageAdmin:
       "No feedback recorded for this organisation in this monitoring round.",
     feedbackAchievements: "Achievements",
@@ -470,6 +472,8 @@ const uiText = {
     feedbackEyebrow: "Qualitative Berichterstattung des Sekretariats",
     feedbackBannerTitle: "Jährliches Berichterstattungs-Feedback",
     feedbackBannerSubtitle: "Qualitative Zusammenfassung des Sekretariats",
+    feedbackNoMessage:
+      "Für diese Organisation wurde in dieser Monitoringrunde noch kein Feedback erfasst.",
     feedbackNoMessageAdmin:
       "Für diese Organisation wurde in dieser Monitoringrunde noch kein Feedback erfasst.",
     feedbackAchievements: "Erfolge",

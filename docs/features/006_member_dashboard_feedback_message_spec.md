@@ -368,7 +368,7 @@ class MemberMessage(Base):
 - **UAC (User Acceptance Criteria)**:
   - **UAC-06.4.1**: Feedback banner renders prominently beneath the dashboard header, showing the message year in the header (e.g. `Annual Reporting Feedback (2024)`).
   - **UAC-06.4.2**: Key accomplishments are highlighted under an *Achievements* callout (forest-green rubric accent `#2e7d32`), and improvement areas are highlighted under a *Growth area* callout (amber rubric accent `#b45309`).
-  - **UAC-06.4.3**: When `member_message` is `null`, the banner cleanly collapses with zero layout shift (zero-CLS) for regular members. For Secretariat Admins, it displays a clean header state ("No feedback recorded...") alongside the template download action.
+  - **UAC-06.4.3**: When `member_message` is null or empty, the banner renders the default feedback message in the content body with language translation support, keeping the standard header intact.
   - **UAC-06.4.4**: Only Secretariat Admins (`secretariat_admin`) see the "Download Feedback Template" action in the feedback banner header.
   - **UAC-06.4.5**: Clicking "Download Feedback Template" triggers an in-browser file download with active loading feedback.
 - **TAC (Technical Acceptance Criteria)**:

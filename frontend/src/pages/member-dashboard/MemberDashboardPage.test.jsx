@@ -405,7 +405,7 @@ describe("MemberDashboardPage Shell Component", () => {
     ).toBeInTheDocument();
   });
 
-  test("collapses MemberFeedbackBanner when member_message is null or empty", async () => {
+  test("renders MemberFeedbackBanner with default empty text when member_message is null or empty", async () => {
     const dataWithoutMessage = {
       ...mockDashboardData,
       member_message: null,
@@ -422,9 +422,13 @@ describe("MemberDashboardPage Shell Component", () => {
       ).toBeInTheDocument();
     });
 
+    expect(screen.getByTestId("member-feedback-banner")).toBeInTheDocument();
+    expect(screen.getByTestId("feedback-empty-box")).toBeInTheDocument();
     expect(
-      screen.queryByTestId("member-feedback-banner")
-    ).not.toBeInTheDocument();
+      screen.getByText(
+        /No feedback recorded for this organisation in this monitoring round/i
+      )
+    ).toBeInTheDocument();
   });
 
   test("renders Secretariat Admin download action and triggers template download", async () => {

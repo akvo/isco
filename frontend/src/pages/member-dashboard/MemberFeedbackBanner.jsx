@@ -57,57 +57,15 @@ const MemberFeedbackBanner = ({
 
   const displayYear = message?.year || year;
   const yearLabel = displayYear ? ` (${displayYear})` : "";
-
-  // If there is no message recorded:
-  // - Non-admin: completely collapse to avoid visual noise.
-  // - Secretariat Admin: show clean header with template download button.
-  if (!resolvedMessageText || (!achievements && !growthAreas && !general)) {
-    if (!isAdmin) {
-      return null;
-    }
-    return (
-      <section
-        className="member-feedback-banner feedback-banner-empty"
-        role="region"
-        aria-label={text.feedbackBannerTitle || "Annual Reporting Feedback"}
-        data-testid="member-feedback-banner"
-      >
-        <div className="feedback-banner-header">
-          <div className="feedback-header-left">
-            <span className="feedback-eyebrow">
-              {text.feedbackEyebrow || "Secretariat Reporting Summary"}
-            </span>
-            <Title level={4} className="feedback-title">
-              {(text.feedbackBannerTitle || "Annual Reporting Feedback") +
-                yearLabel}
-            </Title>
-            <Text className="feedback-subtitle">
-              {text.feedbackNoMessageAdmin ||
-                "No feedback recorded for this organisation in this monitoring round."}
-            </Text>
-          </div>
-          {onDownloadTemplate && (
-            <div className="feedback-header-actions">
-              <Button
-                type="default"
-                icon={<DownloadOutlined />}
-                onClick={onDownloadTemplate}
-                loading={isDownloadingTemplate}
-                className="feedback-download-template-btn"
-                data-testid="download-feedback-template-btn"
-              >
-                {text.feedbackDownloadTemplate || "Download Feedback Template"}
-              </Button>
-            </div>
-          )}
-        </div>
-      </section>
-    );
-  }
+  const hasFeedback = Boolean(
+    resolvedMessageText && (achievements || growthAreas || general)
+  );
 
   return (
     <section
-      className="member-feedback-banner"
+      className={`member-feedback-banner ${
+        !hasFeedback ? "feedback-banner-empty" : ""
+      }`}
       role="region"
       aria-label={text.feedbackBannerTitle || "Annual Reporting Feedback"}
       data-testid="member-feedback-banner"
@@ -143,46 +101,63 @@ const MemberFeedbackBanner = ({
       </div>
 
       <div className="feedback-banner-content">
-        {(achievements || growthAreas) && (
-          <Row gutter={[32, 20]}>
-            {achievements && (
-              <Col xs={24} md={growthAreas ? 12 : 24}>
-                <div
-                  className="feedback-editorial-col achievement-col"
-                  data-testid="feedback-achievements-box"
-                >
-                  <span className="col-rubric-label">
-                    {text.feedbackAchievements || "Achievements"}
-                  </span>
-                  <Paragraph className="col-body-text">
-                    {achievements}
-                  </Paragraph>
-                </div>
-              </Col>
+        {hasFeedback ? (
+          <>
+            {(achievements || growthAreas) && (
+              <Row gutter={[32, 20]}>
+                {achievements && (
+                  <Col xs={24} md={growthAreas ? 12 : 24}>
+                    <div
+                      className="feedback-editorial-col achievement-col"
+                      data-testid="feedback-achievements-box"
+                    >
+                      <span className="col-rubric-label">
+                        {text.feedbackAchievements || "Achievements"}
+                      </span>
+                      <Paragraph className="col-body-text">
+                        {achievements}
+                      </Paragraph>
+                    </div>
+                  </Col>
+                )}
+
+                {growthAreas && (
+                  <Col xs={24} md={achievements ? 12 : 24}>
+                    <div
+                      className="feedback-editorial-col growth-col"
+                      data-testid="feedback-growth-box"
+                    >
+                      <span className="col-rubric-label">
+                        {text.feedbackGrowthAreas || "Growth Area"}
+                      </span>
+                      <Paragraph className="col-body-text">
+                        {growthAreas}
+                      </Paragraph>
+                    </div>
+                  </Col>
+                )}
+              </Row>
             )}
 
-            {growthAreas && (
-              <Col xs={24} md={achievements ? 12 : 24}>
-                <div
-                  className="feedback-editorial-col growth-col"
-                  data-testid="feedback-growth-box"
-                >
-                  <span className="col-rubric-label">
-                    {text.feedbackGrowthAreas || "Growth Area"}
-                  </span>
-                  <Paragraph className="col-body-text">{growthAreas}</Paragraph>
-                </div>
-              </Col>
+            {general && (
+              <div
+                className="feedback-editorial-col general-col"
+                data-testid="feedback-general-box"
+              >
+                <Paragraph className="col-body-text">{general}</Paragraph>
+              </div>
             )}
-          </Row>
-        )}
-
-        {general && (
+          </>
+        ) : (
           <div
-            className="feedback-editorial-col general-col"
-            data-testid="feedback-general-box"
+            className="feedback-editorial-col empty-col"
+            data-testid="feedback-empty-box"
           >
-            <Paragraph className="col-body-text">{general}</Paragraph>
+            <Paragraph className="col-body-text empty-feedback-text">
+              {text.feedbackNoMessage ||
+                text.feedbackNoMessageAdmin ||
+                "No feedback recorded for this organisation in this monitoring round."}
+            </Paragraph>
           </div>
         )}
       </div>
