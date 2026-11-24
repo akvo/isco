@@ -13,6 +13,7 @@ from fastapi import HTTPException, status
 from models.organisation import Organisation
 from models.organisation_member import OrganisationMember
 from models.peer_group import PeerGroup, PeerGroupMemberType
+from models.member_message import MemberMessage
 from models.data import Data
 from models.answer import Answer
 from services.benchmark_service import BenchmarkService, get_benchmark_service
@@ -287,6 +288,47 @@ class VisualizationService:
         else:
             peer_groups_dto = []
 
+        # Query all member messages for target organisation
+        all_member_msgs = (
+            session.query(MemberMessage)
+            .filter(MemberMessage.organisation == organisation_id)
+            .order_by(MemberMessage.year.desc())
+            .all()
+        )
+
+        member_messages_dto = (
+            [
+                {
+                    "id": m.id,
+                    "year": m.year,
+                    "message": m.message,
+                    "translations": m.translations,
+                }
+                for m in all_member_msgs
+            ]
+            if all_member_msgs
+            else None
+        )
+
+        # Resolve primary/active member message (latest or requested year)
+        member_msg = None
+        if years and len(years) == 1:
+            for m in all_member_msgs:
+                if m.year == years[0]:
+                    member_msg = m
+                    break
+        elif all_member_msgs:
+            member_msg = all_member_msgs[0]
+
+        member_message_dto = None
+        if member_msg:
+            member_message_dto = {
+                "id": member_msg.id,
+                "year": member_msg.year,
+                "message": member_msg.message,
+                "translations": member_msg.translations,
+            }
+
         return {
             "organisation": {
                 "id": org.id,
@@ -301,6 +343,8 @@ class VisualizationService:
             "challenges": challenges_dto,
             "peer_groups": peer_groups_dto,
             "enable_peer_group_filter": enable_filter,
+            "member_message": member_message_dto,
+            "member_messages": member_messages_dto,
         }
 
 

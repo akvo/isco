@@ -20,6 +20,7 @@ jest.mock("../../lib/api", () => ({
   __esModule: true,
   default: {
     get: jest.fn(),
+    post: jest.fn(),
   },
 }));
 
@@ -376,5 +377,97 @@ describe("MemberDashboardPage Shell Component", () => {
 
     // Dropdown selector is hidden
     expect(screen.queryByTestId("peer-group-selector")).not.toBeInTheDocument();
+  });
+
+  test("renders MemberFeedbackBanner when member_message is present in dashboard response", async () => {
+    const dataWithMessage = {
+      ...mockDashboardData,
+      member_message: {
+        id: 1,
+        year: 2024,
+        message:
+          "**Achievements:**\nHigh child labour remediation rate.\n\n**Growth area:**\nTraceability needs farm-level mapping.",
+      },
+    };
+    api.get.mockResolvedValueOnce({ data: dataWithMessage });
+
+    render(<MemberDashboardPage />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("member-feedback-banner")).toBeInTheDocument();
+    });
+
+    expect(
+      screen.getByText(/High child labour remediation rate/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Traceability needs farm-level mapping/i)
+    ).toBeInTheDocument();
+  });
+
+  test("renders MemberFeedbackBanner with default empty text when member_message is null or empty", async () => {
+    const dataWithoutMessage = {
+      ...mockDashboardData,
+      member_message: null,
+    };
+    api.get.mockResolvedValueOnce({ data: dataWithoutMessage });
+
+    render(<MemberDashboardPage />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(
+          /Individual Reporting Back Dashboard – Chocolatier Example AG/i
+        )
+      ).toBeInTheDocument();
+    });
+
+    expect(screen.getByTestId("member-feedback-banner")).toBeInTheDocument();
+    expect(screen.getByTestId("feedback-empty-box")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /No feedback recorded for this organisation in this monitoring round/i
+      )
+    ).toBeInTheDocument();
+  });
+
+  test("renders Secretariat Admin download action and triggers template download", async () => {
+    store.update((s) => {
+      s.user = {
+        role: "secretariat_admin",
+        organisation: 45,
+      };
+      s.optionValues = {
+        organisation: mockOrganisations,
+      };
+    });
+
+    api.get.mockResolvedValueOnce({ data: mockDashboardData });
+    // Mock blob response for template download
+    api.get.mockResolvedValueOnce({ data: new Blob(["dummy excel content"]) });
+
+    // Mock window.URL methods
+    window.URL.createObjectURL = jest.fn(() => "blob:http://localhost/dummy");
+    window.URL.revokeObjectURL = jest.fn();
+
+    render(<MemberDashboardPage />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId("download-feedback-template-btn")
+      ).toBeInTheDocument();
+    });
+    // Upload button is hidden for now
+    expect(screen.queryByTestId("upload-feedback-btn")).not.toBeInTheDocument();
+
+    const downloadBtn = screen.getByTestId("download-feedback-template-btn");
+    fireEvent.click(downloadBtn);
+
+    await waitFor(() => {
+      expect(api.get).toHaveBeenCalledWith(
+        "/visualization/member-messages/template?year=2024",
+        expect.objectContaining({ responseType: "blob" })
+      );
+    });
   });
 });

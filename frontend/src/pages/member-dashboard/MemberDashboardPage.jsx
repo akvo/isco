@@ -17,8 +17,10 @@ import {
   Alert,
   Empty,
   Button,
+  message as antMessage,
 } from "antd";
 import IndicatorLineChartCard from "./IndicatorLineChartCard";
+import MemberFeedbackBanner from "./MemberFeedbackBanner";
 import { store, api } from "../../lib";
 import { globalSelectProps } from "../../lib/util";
 import { uiText } from "../../static";
@@ -122,6 +124,42 @@ const MemberDashboardPage = () => {
 
   const handlePeerGroupChange = (newPgId) => {
     setSelectedPeerGroupId(newPgId);
+  };
+
+  const [downloadingTemplate, setDownloadingTemplate] = useState(false);
+
+  const activeYear = useMemo(() => {
+    if (dashboardData?.years && dashboardData.years.length > 0) {
+      return Math.max(...dashboardData.years);
+    }
+    return new Date().getFullYear();
+  }, [dashboardData]);
+
+  const handleDownloadTemplate = async () => {
+    try {
+      setDownloadingTemplate(true);
+      const res = await api.get(
+        `/visualization/member-messages/template?year=${activeYear}`,
+        { responseType: "blob" }
+      );
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute(
+        "download",
+        `ISCO_Member_Feedback_Template_${activeYear}.xlsx`
+      );
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      antMessage.error(
+        text.feedbackDownloadError || "Failed to download feedback template"
+      );
+    } finally {
+      setDownloadingTemplate(false);
+    }
   };
 
   const handleRetry = () => {
@@ -290,6 +328,19 @@ const MemberDashboardPage = () => {
             )}
           </Row>
         </header>
+
+        {/* Annual Reporting Feedback Summary Banner */}
+        {!loading && !error && (
+          <MemberFeedbackBanner
+            message={dashboardData?.member_message}
+            messages={dashboardData?.member_messages}
+            year={activeYear}
+            activeLang={activeLang}
+            isAdmin={isAdmin}
+            onDownloadTemplate={handleDownloadTemplate}
+            isDownloadingTemplate={downloadingTemplate}
+          />
+        )}
 
         {/* Content-Shaped Zero-CLS Skeleton */}
         {loading && (
