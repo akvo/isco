@@ -20,6 +20,11 @@ from services.benchmark_service import BenchmarkService, get_benchmark_service
 from services.formula_evaluator import FormulaEvaluator
 from services.survey_id_resolver import SurveyIdResolver
 
+DEFAULT_LOREM_IPSUM = (
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
+    "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+)
+
 
 class VisualizationService:
     """
@@ -269,6 +274,10 @@ class VisualizationService:
                     "unit": ind.get("unit", ind.get("type", "percentage")),
                     "chart_type": ind.get("chart_type", "line"),
                     "higher_is_better": ind.get("higher_is_better", True),
+                    "description": (
+                        ind.get("description") or DEFAULT_LOREM_IPSUM
+                    ),
+                    "translations": ind.get("translations", []),
                     "series": series,
                 }
                 ch_dto["indicators"].append(ind_dto)

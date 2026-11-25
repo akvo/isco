@@ -1524,3 +1524,87 @@ async def test_upload_feedback_spreadsheet_endpoint(
         MemberMessage.year == 2024,
     ).delete(synchronize_session=False)
     session.commit()
+
+
+@pytest.mark.asyncio
+async def test_get_individual_dashboard_indicator_tooltips_and_translations(
+    client: AsyncClient, test_setup: dict
+):
+    """
+    TASK-09.2: Verify that every indicator in individual dashboard response
+    contains description and translations list with fallback support.
+    """
+    headers = {"Authorization": f"Bearer {test_setup['user_a_token']}"}
+    res = await client.get(
+        "/visualization/individual-dashboard", headers=headers
+    )
+    assert res.status_code == 200
+    data = res.json()
+    challenges = data.get("challenges", [])
+    assert len(challenges) > 0
+
+    all_indicators = []
+    for ch in challenges:
+        for ind in ch.get("indicators", []):
+            all_indicators.append(ind)
+
+    assert len(all_indicators) > 0
+    for ind in all_indicators:
+        assert "description" in ind
+        assert ind["description"] is not None
+        assert isinstance(ind["description"], str)
+        assert len(ind["description"].strip()) > 0
+        assert "translations" in ind
+        assert isinstance(ind["translations"], list)
+
+
+@pytest.mark.asyncio
+async def test_indicator_dto_fallback_to_default_description(
+    session: Session, test_setup: dict
+):
+    """
+    TASK-09.2: Verify that VisualizationService falls back to
+    DEFAULT_LOREM_IPSUM and empty list when description or
+    translations are omitted.
+    """
+    from services.visualization_service import (
+        VisualizationService,
+        DEFAULT_LOREM_IPSUM,
+    )
+
+    service = VisualizationService()
+    org_a = test_setup["org_a"]
+
+    # Temporarily override config to simulate missing description
+    original_config = service.benchmark_service._config
+    try:
+        service.benchmark_service._config = {
+            "start_year": 2024,
+            "end_year": 2024,
+            "enable_peer_group_filter": False,
+            "challenges": [
+                {
+                    "id": "test_challenge",
+                    "name": "Test Challenge",
+                    "indicators": [
+                        {
+                            "id": "test_ind_no_desc",
+                            "name": "Test No Desc",
+                            "formula": "ID86",
+                        }
+                    ],
+                }
+            ],
+        }
+
+        res = service.get_individual_dashboard(
+            session=session,
+            organisation_id=org_a.id,
+            years=[2024],
+        )
+
+        ind = res["challenges"][0]["indicators"][0]
+        assert ind["description"] == DEFAULT_LOREM_IPSUM
+        assert ind["translations"] == []
+    finally:
+        service.benchmark_service._config = original_config
