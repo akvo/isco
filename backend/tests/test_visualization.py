@@ -959,11 +959,11 @@ async def test_individual_dashboard_out_of_range_years(
                 assert pt["gisco_avg"] is None
 
 
-async def test_individual_dashboard_all_nine_indicators_present(
+async def test_individual_dashboard_all_twelve_indicators_present(
     app: FastAPI, client: AsyncClient, test_setup: dict
 ):
     """
-    Verifies that all 9 canonical indicators spanning the 4 challenges
+    Verifies that all 12 canonical indicators spanning the 4 challenges
     are always returned in the response contract.
     """
     token = test_setup["user_a_token"]
@@ -980,9 +980,12 @@ async def test_individual_dashboard_all_nine_indicators_present(
     expected_indicators = {
         "sourced_directly",
         "sourced_traceable",
+        "certified_company_program",
         "deforestation_free",
-        "li_gap_measured",
+        "cocoa_agroforestry_systems",
         "li_strategy_implemented",
+        "li_strategy_volume_share",
+        "li_benchmark_above_100",
         "clmrs_covered",
         "child_labour_identified",
         "support_received",
