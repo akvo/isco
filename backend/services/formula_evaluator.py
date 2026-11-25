@@ -9,6 +9,7 @@ Enforces zero code injection, division-by-zero protection, and missing data.
 """
 
 import ast
+import statistics
 from typing import Any, Dict, List, Optional, Set
 
 
@@ -41,8 +42,15 @@ ALLOWED_FUNCTIONS: Set[str] = {
     "AVG",
     "MIN",
     "MAX",
+    "MEDIAN",
+    "COUNT",
     "COALESCE",
     "SUM_PRODUCT",
+    "WEIGHTED_AVG",
+    "ROUND",
+    "ABS",
+    "CLAMP",
+    "SAFE_DIV",
 }
 
 
@@ -305,12 +313,92 @@ class FormulaEvaluator:
 
                 return total if valid_count > 0 else None
 
+            if func_name == "WEIGHTED_AVG":
+                if len(node.args) != 2:
+                    return None
+                val1 = self._eval_node(node.args[0], answers)
+                val2 = self._eval_node(node.args[1], answers)
+                if val1 is None or val2 is None:
+                    return None
+
+                list1 = val1 if isinstance(val1, list) else [val1]
+                list2 = val2 if isinstance(val2, list) else [val2]
+
+                if not list1 or not list2:
+                    return None
+
+                weighted_sum = 0.0
+                weight_total = 0.0
+                for item1, item2 in zip(list1, list2):
+                    w = _safe_float(item1)
+                    v = _safe_float(item2)
+                    if w is not None and v is not None:
+                        weighted_sum += w * v
+                        weight_total += w
+
+                if weight_total == 0.0:
+                    return None
+                return weighted_sum / weight_total
+
+            if func_name == "SAFE_DIV":
+                if len(node.args) < 2 or len(node.args) > 3:
+                    return None
+                num = _safe_float(self._eval_node(node.args[0], answers))
+                denom = _safe_float(self._eval_node(node.args[1], answers))
+                fallback = 0.0
+                if len(node.args) == 3:
+                    fallback_val = _safe_float(
+                        self._eval_node(node.args[2], answers)
+                    )
+                    if fallback_val is not None:
+                        fallback = fallback_val
+
+                if num is None or denom is None:
+                    return None
+                if denom == 0.0:
+                    return fallback
+                return num / denom
+
+            if func_name == "CLAMP":
+                if len(node.args) != 3:
+                    return None
+                val = _safe_float(self._eval_node(node.args[0], answers))
+                min_val = _safe_float(self._eval_node(node.args[1], answers))
+                max_val = _safe_float(self._eval_node(node.args[2], answers))
+                if val is None or min_val is None or max_val is None:
+                    return None
+                return max(min_val, min(val, max_val))
+
+            if func_name == "ROUND":
+                if len(node.args) < 1 or len(node.args) > 2:
+                    return None
+                val = _safe_float(self._eval_node(node.args[0], answers))
+                if val is None:
+                    return None
+                decimals = 0
+                if len(node.args) == 2:
+                    dec_val = _safe_float(
+                        self._eval_node(node.args[1], answers)
+                    )
+                    if dec_val is not None:
+                        decimals = int(dec_val)
+                return round(val, decimals)
+
+            if func_name == "ABS":
+                if len(node.args) != 1:
+                    return None
+                val = _safe_float(self._eval_node(node.args[0], answers))
+                return abs(val) if val is not None else None
+
             # Evaluate arguments for arithmetic/statistical functions
             arg_values = [
                 self._eval_node(arg_node, answers)
                 for arg_node in node.args
             ]
             flat_nums = _flatten_values(arg_values)
+
+            if func_name == "COUNT":
+                return float(len(flat_nums))
 
             if not flat_nums:
                 return None
@@ -319,6 +407,8 @@ class FormulaEvaluator:
                 return sum(flat_nums)
             if func_name == "AVG":
                 return sum(flat_nums) / len(flat_nums)
+            if func_name == "MEDIAN":
+                return float(statistics.median(flat_nums))
             if func_name == "MIN":
                 return min(flat_nums)
             if func_name == "MAX":

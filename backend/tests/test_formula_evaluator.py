@@ -306,6 +306,48 @@ class TestFormulaEvaluatorFunctions:
             is None
         )
 
+    def test_median_odd_and_even(self):
+        evaluator = FormulaEvaluator()
+        assert evaluator.evaluate("MEDIAN(10, 20, 30)", {}) == 20.0
+        assert evaluator.evaluate("MEDIAN(10, 20, 30, 40)", {}) == 25.0
+        assert evaluator.evaluate("MEDIAN(ID10)", {10: [5, 1, 9, 3, 7]}) == 5.0
+
+    def test_count_scalars_and_lists(self):
+        evaluator = FormulaEvaluator()
+        answers = {10: [1.0, 2.0, None, 4.0], 20: 5.0}
+        assert evaluator.evaluate("COUNT(ID10, ID20)", answers) == 4.0
+        assert evaluator.evaluate("COUNT(ID999)", {}) == 0.0
+
+    def test_weighted_avg(self):
+        evaluator = FormulaEvaluator()
+        # weights = [10, 30], values = [100, 200]
+        # (10*100 + 30*200) / (10 + 30) = (1000 + 6000) / 40 = 175.0
+        answers = {1: [10.0, 30.0], 2: [100.0, 200.0]}
+        assert evaluator.evaluate("WEIGHTED_AVG(ID1, ID2)", answers) == 175.0
+
+    def test_round(self):
+        evaluator = FormulaEvaluator()
+        assert evaluator.evaluate("ROUND(12.3456, 2)", {}) == 12.35
+        assert evaluator.evaluate("ROUND(12.6)", {}) == 13.0
+
+    def test_abs(self):
+        evaluator = FormulaEvaluator()
+        assert evaluator.evaluate("ABS(-42.5)", {}) == 42.5
+        assert evaluator.evaluate("ABS(42.5)", {}) == 42.5
+
+    def test_clamp(self):
+        evaluator = FormulaEvaluator()
+        # Clamps within [0, 100]
+        assert evaluator.evaluate("CLAMP(120.0, 0.0, 100.0)", {}) == 100.0
+        assert evaluator.evaluate("CLAMP(-15.0, 0.0, 100.0)", {}) == 0.0
+        assert evaluator.evaluate("CLAMP(75.5, 0.0, 100.0)", {}) == 75.5
+
+    def test_safe_div(self):
+        evaluator = FormulaEvaluator()
+        assert evaluator.evaluate("SAFE_DIV(100, 0)", {}) == 0.0
+        assert evaluator.evaluate("SAFE_DIV(100, 0, -1.0)", {}) == -1.0
+        assert evaluator.evaluate("SAFE_DIV(100, 4)", {}) == 25.0
+
 
 class TestFormulaEvaluatorSecurity:
     """Verifies strict AST whitelist and injection rejection (TAC-02.2)."""

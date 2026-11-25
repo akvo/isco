@@ -104,6 +104,9 @@ Alembic migration creates the tables and seeds 4 harmonized peer groups linked t
 
 ## 3. Declarative Configuration: `visualization_mapping.json`
 
+> [!TIP]
+> For the comprehensive guide on schema, mathematical formula syntax, repeat-group ordering, and how to add/update indicators, see [docs/VISUALIZATION_DASHBOARD.md](file:///Users/galihpratama/Sites/isco/docs/VISUALIZATION_DASHBOARD.md).
+
 **Path**: `/backend/source/config/visualization_mapping.json`
 
 ```json
