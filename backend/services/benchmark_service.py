@@ -214,6 +214,7 @@ class BenchmarkService:
                 Answer.repeat_index,
             )
             .filter(Answer.data.in_(selected_data_ids))
+            .order_by(Answer.repeat_index.asc(), Answer.id.asc())
             .all()
         )
 

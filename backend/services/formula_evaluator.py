@@ -36,7 +36,14 @@ ALLOWED_NODE_TYPES = (
 )
 
 # Permitted statistical and helper functions
-ALLOWED_FUNCTIONS: Set[str] = {"SUM", "AVG", "MIN", "MAX", "COALESCE"}
+ALLOWED_FUNCTIONS: Set[str] = {
+    "SUM",
+    "AVG",
+    "MIN",
+    "MAX",
+    "COALESCE",
+    "SUM_PRODUCT",
+}
 
 
 def _safe_float(val: Any) -> Optional[float]:
@@ -272,6 +279,31 @@ class FormulaEvaluator:
                     if flt is not None:
                         return flt
                 return None
+
+            if func_name == "SUM_PRODUCT":
+                if len(node.args) != 2:
+                    return None
+                val1 = self._eval_node(node.args[0], answers)
+                val2 = self._eval_node(node.args[1], answers)
+                if val1 is None or val2 is None:
+                    return None
+
+                list1 = val1 if isinstance(val1, list) else [val1]
+                list2 = val2 if isinstance(val2, list) else [val2]
+
+                if not list1 or not list2:
+                    return None
+
+                total = 0.0
+                valid_count = 0
+                for item1, item2 in zip(list1, list2):
+                    f1 = _safe_float(item1)
+                    f2 = _safe_float(item2)
+                    if f1 is not None and f2 is not None:
+                        total += f1 * f2
+                        valid_count += 1
+
+                return total if valid_count > 0 else None
 
             # Evaluate arguments for arithmetic/statistical functions
             arg_values = [

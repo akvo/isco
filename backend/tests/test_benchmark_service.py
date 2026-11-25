@@ -183,6 +183,11 @@ class TestBenchmarkCalculationLogic:
 
         mock_query_answer = MagicMock()
         mock_query_answer.filter.return_value.all.return_value = answer_rows
+        (
+            mock_query_answer.filter.return_value
+            .order_by.return_value
+            .all.return_value
+        ) = answer_rows
 
         mock_session.query.side_effect = [mock_query_data, mock_query_answer]
 
