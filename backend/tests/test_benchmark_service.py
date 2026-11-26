@@ -533,3 +533,97 @@ class TestBenchmarkDatabaseIntegration:
                     Form.id == 7
                 ).delete(synchronize_session=False)
             session.commit()
+
+
+class TestYearIndexRemapping:
+    """Verifies collection year remapping for year_index_question."""
+
+    def test_extract_year_index_helper(self):
+        from services.benchmark_service import extract_year_index
+
+        assert extract_year_index(2021) == 2021
+        assert extract_year_index(2022.0) == 2022
+        assert extract_year_index("2023") == 2023
+        assert extract_year_index(" 2024 ") == 2024
+        assert extract_year_index([2021]) == 2021
+        assert extract_year_index([2022.0, 2023.0]) == 2022
+        assert extract_year_index(None) is None
+        assert extract_year_index([]) is None
+        assert extract_year_index("") is None
+        assert extract_year_index("invalid") is None
+        assert extract_year_index(1800) is None
+        assert extract_year_index(2200) is None
+
+    def test_cohort_extraction_with_year_index_remapping(self):
+        """Verifies year_index_question assigns results to study year."""
+        service = BenchmarkService()
+        mock_session = MagicMock()
+
+        Row = namedtuple(
+            "DataRow",
+            ["id", "organisation", "form", "sub_year", "submitted"]
+        )
+        AnswerRow = namedtuple(
+            "AnswerRow",
+            ["data", "question", "value", "repeat_index"]
+        )
+
+        dt = datetime(2023, 6, 1, 12, 0, 0)
+        # Org 1 submitted in 2023
+        data_rows = [
+            Row(id=300, organisation=1, form=7, sub_year=2023, submitted=dt)
+        ]
+
+        qid_950 = service.resolver.resolve_question_id(950)
+        qid_845 = service.resolver.resolve_question_id(845)
+        qid_1215 = service.resolver.resolve_question_id(1215)
+
+        # Submitted in 2023, but study year (1215) was 2022
+        # ID950 / ID845 = 60 / 100 = 0.60
+        answer_rows = [
+            AnswerRow(
+                data=300,
+                question=qid_950,
+                value=60.0,
+                repeat_index=None
+            ),
+            AnswerRow(
+                data=300,
+                question=qid_845,
+                value=100.0,
+                repeat_index=None
+            ),
+            AnswerRow(
+                data=300,
+                question=qid_1215,
+                value=2022.0,
+                repeat_index=None
+            ),
+        ]
+
+        mock_query_data = MagicMock()
+        (
+            mock_query_data.filter.return_value
+            .order_by.return_value
+            .all.return_value
+        ) = data_rows
+        mock_query_answer = MagicMock()
+        (
+            mock_query_answer.filter.return_value
+            .order_by.return_value
+            .all.return_value
+        ) = answer_rows
+        mock_session.query.side_effect = [mock_query_data, mock_query_answer]
+
+        cohorts = service.extract_raw_cohort_submissions(
+            session=mock_session,
+            peer_org_ids=[1],
+            gisco_org_ids=set(),
+            years=[2022, 2023],
+        )
+
+        # li_benchmark_above_100 should be mapped to study year 2022, not 2023
+        assert "li_benchmark_above_100" in cohorts
+        assert 1 in cohorts["li_benchmark_above_100"][2022]
+        assert cohorts["li_benchmark_above_100"][2022][1] == 0.60
+        assert 1 not in cohorts["li_benchmark_above_100"][2023]

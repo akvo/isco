@@ -16,7 +16,11 @@ from models.peer_group import PeerGroup, PeerGroupMemberType
 from models.member_message import MemberMessage
 from models.data import Data
 from models.answer import Answer
-from services.benchmark_service import BenchmarkService, get_benchmark_service
+from services.benchmark_service import (
+    BenchmarkService,
+    extract_year_index,
+    get_benchmark_service,
+)
 from services.formula_evaluator import FormulaEvaluator
 from services.survey_id_resolver import SurveyIdResolver
 
@@ -246,27 +250,64 @@ class VisualizationService:
                 ind_id = ind["id"]
                 formula = ind["formula"]
                 resolved_formula = self.resolver.resolve_formula(formula)
+                year_index_qid = ind.get("year_index_question")
+                resolved_year_qid = (
+                    self.resolver.resolve_question_id(year_index_qid)
+                    if year_index_qid
+                    else None
+                )
 
                 series = []
-                for y in resolved_years:
-                    answers_for_year = year_answers.get(y, {})
-                    calc_val = None
-                    if answers_for_year:
+                if resolved_year_qid:
+                    member_values_by_year: Dict[int, Optional[float]] = {}
+                    for sub_y in sorted(resolved_years):
+                        answers_for_year = year_answers.get(sub_y, {})
+                        if not answers_for_year:
+                            continue
                         raw_val = self.evaluator.evaluate(
                             resolved_formula, answers_for_year
                         )
                         if raw_val is not None:
                             calc_val = round(float(raw_val), 4)
+                            raw_target_year = answers_for_year.get(
+                                resolved_year_qid
+                            )
+                            target_year = extract_year_index(raw_target_year)
+                            if target_year is None:
+                                target_year = sub_y
+                            member_values_by_year[target_year] = calc_val
 
-                    b_pt = bench_lookup.get((ind_id, y), {})
-                    series.append(
-                        {
-                            "year": y,
-                            "member": calc_val,
-                            "isco_avg": b_pt.get("isco_avg"),
-                            "gisco_avg": b_pt.get("gisco_avg"),
-                        }
-                    )
+                    for y in resolved_years:
+                        calc_val = member_values_by_year.get(y)
+                        b_pt = bench_lookup.get((ind_id, y), {})
+                        series.append(
+                            {
+                                "year": y,
+                                "member": calc_val,
+                                "isco_avg": b_pt.get("isco_avg"),
+                                "gisco_avg": b_pt.get("gisco_avg"),
+                            }
+                        )
+                else:
+                    for y in resolved_years:
+                        answers_for_year = year_answers.get(y, {})
+                        calc_val = None
+                        if answers_for_year:
+                            raw_val = self.evaluator.evaluate(
+                                resolved_formula, answers_for_year
+                            )
+                            if raw_val is not None:
+                                calc_val = round(float(raw_val), 4)
+
+                        b_pt = bench_lookup.get((ind_id, y), {})
+                        series.append(
+                            {
+                                "year": y,
+                                "member": calc_val,
+                                "isco_avg": b_pt.get("isco_avg"),
+                                "gisco_avg": b_pt.get("gisco_avg"),
+                            }
+                        )
 
                 ind_dto = {
                     "id": ind_id,
