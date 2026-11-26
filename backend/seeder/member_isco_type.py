@@ -1,6 +1,7 @@
 from db.connection import Base, SessionLocal, engine
 import db.crud_member_type as crud_member
 import db.crud_isco_type as crud_isco
+import db.crud_peer_group as crud_peer_group
 from seeder.static.static_member_isco import member_values, isco_values
 
 
@@ -24,5 +25,8 @@ for i in isco_values:
         isco_type = crud_isco.add_isco_type(
             session=session, payload=payload)
 print("Seeding Isco Type Done")
+
+crud_peer_group.reconcile_peer_group_mappings(session=session)
+print("Reconciling Peer Group Mappings Done")
 
 session.close()

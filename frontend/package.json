@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@react-leaflet/core": ">=1.0.0 <1.1.0 || ^1.1.1",
+    "akvo-charts": "^1.3.9",
     "antd": "^4.20.0",
     "antd-table-saveas-excel": "^2.2.1",
     "axios": "^0.26.1",

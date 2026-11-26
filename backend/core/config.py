@@ -20,6 +20,8 @@ from routes.collaborator import collaborator_route
 from routes.feedback import feedback_route
 from routes.roadmap import roadmap_route
 from routes.prefilled import prefilled_route
+from routes.peer_group import peer_group_route
+from routes.visualization import visualization_route
 from routes.test import test_route
 from templates.main import template_route
 
@@ -63,6 +65,8 @@ app.include_router(feedback_route)
 app.include_router(template_route)
 app.include_router(roadmap_route)
 app.include_router(prefilled_route)
+app.include_router(peer_group_route)
+app.include_router(visualization_route)
 # add test route except for production
 if BUCKET_FOLDER != "production":
     app.include_router(test_route)

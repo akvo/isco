@@ -1,0 +1,451 @@
+import os
+import json
+import pytest
+from services.formula_evaluator import (
+    FormulaEvaluator,
+    FormulaSecurityError,
+    evaluate_formula,
+    validate_formula,
+)
+
+
+def get_config_path():
+    """Locate visualization_mapping.json across test environments."""
+    candidates = [
+        "source/config/visualization_mapping.json",
+        "backend/source/config/visualization_mapping.json",
+        os.path.join(
+            os.path.dirname(__file__),
+            "..",
+            "source",
+            "config",
+            "visualization_mapping.json",
+        ),
+    ]
+    for p in candidates:
+        if os.path.exists(p):
+            return p
+    return candidates[0]
+
+
+class TestVisualizationMappingConfig:
+    """Verifies schema and integrity of visualization_mapping.json."""
+
+    def test_visualization_mapping_json_exists_and_valid(self):
+        config_path = get_config_path()
+        assert os.path.exists(config_path), f"Missing: {config_path}"
+
+        with open(config_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        assert "challenges" in data, "Missing 'challenges' key"
+        assert "exclude_current_member_from_average" in data
+        assert isinstance(data["exclude_current_member_from_average"], bool)
+
+        challenges = data["challenges"]
+        assert len(challenges) == 4, f"Expected 4, got {len(challenges)}"
+
+        expected_challenge_ids = {
+            "transparency_and_traceability",
+            "agroforestry_and_deforestation",
+            "living_income",
+            "child_labour",
+        }
+        actual_challenge_ids = {c["id"] for c in challenges}
+        assert actual_challenge_ids == expected_challenge_ids
+
+        expected_indicator_ids = {
+            "sourced_directly",
+            "sourced_traceable",
+            "certified_company_program",
+            "deforestation_free",
+            "cocoa_agroforestry_systems",
+            "li_strategy_implemented",
+            "li_strategy_volume_share",
+            "li_benchmark_above_100",
+            "clmrs_covered",
+            "child_labour_identified",
+            "support_received",
+            "follow_up_visits",
+        }
+
+        all_indicators = []
+        for c in challenges:
+            assert "name" in c
+            assert "indicators" in c
+            for ind in c["indicators"]:
+                all_indicators.append(ind)
+                # TAC-02.1 schema validation
+                assert "id" in ind
+                assert "name" in ind
+                assert "form_id" in ind
+                assert ind["form_id"] == 7
+                assert "chart_type" in ind
+                assert ind["chart_type"] == "line"
+                assert "formula" in ind
+                assert "numerator_ids" in ind
+                assert isinstance(ind["numerator_ids"], list)
+                assert "denominator_ids" in ind
+                assert isinstance(ind["denominator_ids"], list)
+                assert "type" in ind
+                assert ind["type"] in ("percentage", "ratio")
+                assert "higher_is_better" in ind
+                assert isinstance(ind["higher_is_better"], bool)
+
+                # Validate formula syntax and AST security
+                assert validate_formula(ind["formula"]) is True
+
+        found_indicator_ids = {ind["id"] for ind in all_indicators}
+        assert found_indicator_ids == expected_indicator_ids
+        assert len(all_indicators) == 12
+
+        # Inverted polarity check
+        cl_identified = next(
+            i for i in all_indicators if i["id"] == "child_labour_identified"
+        )
+        assert cl_identified["higher_is_better"] is False
+
+
+class TestFormulaEvaluatorArithmetic:
+    """Verifies basic arithmetic, grouping, and variable resolution."""
+
+    def test_single_variable_lookup_with_int_keys(self):
+        evaluator = FormulaEvaluator()
+        answers = {86: 65.5}
+        result = evaluator.evaluate("ID86", answers)
+        assert result == 65.5
+
+    def test_single_variable_lookup_with_string_keys(self):
+        evaluator = FormulaEvaluator()
+        # Should gracefully support "86" or "ID86"
+        assert evaluator.evaluate("ID86", {"86": 42.0}) == 42.0
+        assert evaluator.evaluate("ID86", {"ID86": 42.0}) == 42.0
+
+    def test_addition_two_questions(self):
+        evaluator = FormulaEvaluator()
+        answers = {840: 35.0, 841: 65.0}
+        result = evaluator.evaluate("ID840 + ID841", answers)
+        assert result == 100.0
+
+    def test_division_ratio(self):
+        evaluator = FormulaEvaluator()
+        answers = {575: 120.0, 842: 240.0}
+        result = evaluator.evaluate("ID575 / ID842", answers)
+        assert result == 0.5
+
+    def test_nested_parentheses_and_arithmetic(self):
+        evaluator = FormulaEvaluator()
+        answers = {840: 10.0, 841: 20.0, 842: 60.0}
+        # (10 + 20) / 60 = 0.5
+        assert evaluator.evaluate("(ID840 + ID841) / ID842", answers) == 0.5
+        # 100 * (1 - (30 / 60)) = 50.0
+        expr = "100 * (1 - (ID840 + ID841) / ID842)"
+        assert evaluator.evaluate(expr, answers) == 50.0
+
+    def test_unary_operations(self):
+        evaluator = FormulaEvaluator()
+        answers = {86: 25.0}
+        assert evaluator.evaluate("-ID86 + 100", answers) == 75.0
+        assert evaluator.evaluate("+ID86 + 25", answers) == 50.0
+
+    def test_subtraction_and_multiplication(self):
+        evaluator = FormulaEvaluator()
+        answers = {840: 100.0, 841: 20.0}
+        assert evaluator.evaluate("ID840 - ID841", answers) == 80.0
+        assert evaluator.evaluate("ID840 * 2", answers) == 200.0
+
+    def test_convenience_evaluate_formula_helper(self):
+        assert evaluate_formula("ID86 + 10", {86: 5.0}) == 15.0
+
+    def test_empty_or_whitespace_formula_raises_value_error(self):
+        evaluator = FormulaEvaluator()
+        with pytest.raises(ValueError, match="cannot be empty"):
+            evaluator.evaluate("", {})
+        with pytest.raises(ValueError, match="cannot be empty"):
+            evaluator.evaluate("   ", {})
+
+    def test_syntax_error_in_formula_raises_value_error(self):
+        evaluator = FormulaEvaluator()
+        with pytest.raises(ValueError, match="Syntax error"):
+            evaluator.evaluate("ID86 + + + *", {})
+
+    def test_arbitrary_variable_name_without_id_prefix(self):
+        evaluator = FormulaEvaluator()
+        res = evaluator.evaluate("custom_var + 10", {"custom_var": 5.0})
+        assert res == 15.0
+        assert evaluator.evaluate("custom_var + 10", {}) is None
+
+
+class TestFormulaEvaluatorSafeguards:
+    """Verifies division-by-zero, missing answers, and type handling."""
+
+    def test_division_by_zero_returns_none(self):
+        evaluator = FormulaEvaluator()
+        answers = {575: 100.0, 842: 0}
+        result = evaluator.evaluate("ID575 / ID842", answers)
+        assert result is None
+
+    def test_division_by_zero_float_returns_none(self):
+        evaluator = FormulaEvaluator()
+        answers = {575: 100.0, 842: 0.0}
+        result = evaluator.evaluate("ID575 / ID842", answers)
+        assert result is None
+
+    def test_missing_question_returns_none(self):
+        evaluator = FormulaEvaluator()
+        answers = {840: 35.0}
+        result = evaluator.evaluate("ID840 + ID841", answers)
+        assert result is None
+
+    def test_none_value_in_answers_returns_none(self):
+        evaluator = FormulaEvaluator()
+        answers = {840: 35.0, 841: None}
+        result = evaluator.evaluate("ID840 + ID841", answers)
+        assert result is None
+
+    def test_empty_answers_dict_returns_none(self):
+        evaluator = FormulaEvaluator()
+        assert evaluator.evaluate("ID86", {}) is None
+
+    def test_invalid_string_in_answer_returns_none(self):
+        evaluator = FormulaEvaluator()
+        answers = {840: "not-a-number", 841: 10.0}
+        assert evaluator.evaluate("ID840 + ID841", answers) is None
+
+    def test_numeric_string_in_answer_coerced_safely(self):
+        evaluator = FormulaEvaluator()
+        answers = {840: "35.5", 841: 64.5}
+        assert evaluator.evaluate("ID840 + ID841", answers) == 100.0
+
+
+class TestFormulaEvaluatorFunctions:
+    """Verifies SUM, AVG, MIN, MAX, COALESCE and repeat group aggregations."""
+
+    def test_sum_multiple_scalars(self):
+        evaluator = FormulaEvaluator()
+        answers = {840: 10.0, 841: 20.0, 842: 30.0}
+        assert evaluator.evaluate("SUM(ID840, ID841, ID842)", answers) == 60.0
+
+    def test_sum_repeat_group_list(self):
+        evaluator = FormulaEvaluator()
+        # Question 1216 answered in repeat group rows [100, 200, 300]
+        answers = {1216: [100.0, 200.0, 300.0], 842: 1200.0}
+        result = evaluator.evaluate("SUM(ID1216) / ID842", answers)
+        assert result == 0.5
+
+    def test_sum_with_mixed_scalars_and_lists(self):
+        evaluator = FormulaEvaluator()
+        answers = {10: [5.0, 15.0], 20: 30.0}
+        assert evaluator.evaluate("SUM(ID10, ID20, 10)", answers) == 60.0
+
+    def test_sum_empty_or_all_none_returns_none(self):
+        evaluator = FormulaEvaluator()
+        assert evaluator.evaluate("SUM(ID999)", {}) is None
+        assert evaluator.evaluate("SUM(ID999)", {999: []}) is None
+        assert evaluator.evaluate("SUM(ID999)", {999: [None, None]}) is None
+
+    def test_avg_scalars_and_list(self):
+        evaluator = FormulaEvaluator()
+        answers = {1216: [10.0, 20.0, 30.0]}
+        assert evaluator.evaluate("AVG(ID1216)", answers) == 20.0
+        assert evaluator.evaluate("AVG(10, 20, 30)", {}) == 20.0
+
+    def test_min_and_max(self):
+        evaluator = FormulaEvaluator()
+        answers = {10: 15.0, 20: 85.0}
+        assert evaluator.evaluate("MIN(ID10, ID20)", answers) == 15.0
+        assert evaluator.evaluate("MAX(ID10, ID20)", answers) == 85.0
+        assert evaluator.evaluate("MIN(ID10, 50, 100)", answers) == 15.0
+
+    def test_coalesce_prioritization(self):
+        evaluator = FormulaEvaluator()
+        answers = {1: None, 2: 75.0, 3: 100.0}
+        assert evaluator.evaluate("COALESCE(ID1, ID2, ID3)", answers) == 75.0
+        assert evaluator.evaluate("COALESCE(ID1, 0)", answers) == 0.0
+        assert evaluator.evaluate("COALESCE(ID1, ID999)", answers) is None
+
+    def test_sum_product_two_lists(self):
+        evaluator = FormulaEvaluator()
+        # weights = [10.0, 20.0, 30.0], values = [2.0, 3.0, 4.0]
+        # (10*2 + 20*3 + 30*4) = 20 + 60 + 120 = 200.0
+        answers = {878: [10.0, 20.0, 30.0], 1229: [2.0, 3.0, 4.0]}
+        expr = "SUM_PRODUCT(ID878, ID1229)"
+        assert evaluator.evaluate(expr, answers) == 200.0
+
+    def test_sum_product_with_division_ratio(self):
+        evaluator = FormulaEvaluator()
+        answers = {
+            878: [100.0, 200.0],
+            1229: [50.0, 25.0],
+            1288: 1000.0,
+        }
+        # (100*50 + 200*25) / 1000 = (5000 + 5000) / 1000 = 10.0
+        formula = "SUM_PRODUCT(ID878, ID1229) / ID1288"
+        assert evaluator.evaluate(formula, answers) == 10.0
+
+    def test_sum_product_mismatched_lengths(self):
+        evaluator = FormulaEvaluator()
+        answers = {878: [10.0, 20.0, 30.0], 1229: [2.0, 3.0]}
+        # Zips first 2 pairs: 10*2 + 20*3 = 80.0
+        expr = "SUM_PRODUCT(ID878, ID1229)"
+        assert evaluator.evaluate(expr, answers) == 80.0
+
+    def test_sum_product_scalars_fallback(self):
+        evaluator = FormulaEvaluator()
+        answers = {878: 10.0, 1229: 5.0}
+        expr = "SUM_PRODUCT(ID878, ID1229)"
+        assert evaluator.evaluate(expr, answers) == 50.0
+
+    def test_sum_product_empty_or_missing(self):
+        evaluator = FormulaEvaluator()
+        assert evaluator.evaluate("SUM_PRODUCT(ID878, ID1229)", {}) is None
+        assert (
+            evaluator.evaluate(
+                "SUM_PRODUCT(ID878, ID1229)", {878: [], 1229: []}
+            )
+            is None
+        )
+
+    def test_median_odd_and_even(self):
+        evaluator = FormulaEvaluator()
+        assert evaluator.evaluate("MEDIAN(10, 20, 30)", {}) == 20.0
+        assert evaluator.evaluate("MEDIAN(10, 20, 30, 40)", {}) == 25.0
+        assert evaluator.evaluate("MEDIAN(ID10)", {10: [5, 1, 9, 3, 7]}) == 5.0
+
+    def test_count_scalars_and_lists(self):
+        evaluator = FormulaEvaluator()
+        answers = {10: [1.0, 2.0, None, 4.0], 20: 5.0}
+        assert evaluator.evaluate("COUNT(ID10, ID20)", answers) == 4.0
+        assert evaluator.evaluate("COUNT(ID999)", {}) == 0.0
+
+    def test_weighted_avg(self):
+        evaluator = FormulaEvaluator()
+        # weights = [10, 30], values = [100, 200]
+        # (10*100 + 30*200) / (10 + 30) = (1000 + 6000) / 40 = 175.0
+        answers = {1: [10.0, 30.0], 2: [100.0, 200.0]}
+        assert evaluator.evaluate("WEIGHTED_AVG(ID1, ID2)", answers) == 175.0
+
+    def test_round(self):
+        evaluator = FormulaEvaluator()
+        assert evaluator.evaluate("ROUND(12.3456, 2)", {}) == 12.35
+        assert evaluator.evaluate("ROUND(12.6)", {}) == 13.0
+
+    def test_abs(self):
+        evaluator = FormulaEvaluator()
+        assert evaluator.evaluate("ABS(-42.5)", {}) == 42.5
+        assert evaluator.evaluate("ABS(42.5)", {}) == 42.5
+
+    def test_clamp(self):
+        evaluator = FormulaEvaluator()
+        # Clamps within [0, 100]
+        assert evaluator.evaluate("CLAMP(120.0, 0.0, 100.0)", {}) == 100.0
+        assert evaluator.evaluate("CLAMP(-15.0, 0.0, 100.0)", {}) == 0.0
+        assert evaluator.evaluate("CLAMP(75.5, 0.0, 100.0)", {}) == 75.5
+
+    def test_safe_div(self):
+        evaluator = FormulaEvaluator()
+        assert evaluator.evaluate("SAFE_DIV(100, 0)", {}) == 0.0
+        assert evaluator.evaluate("SAFE_DIV(100, 0, -1.0)", {}) == -1.0
+        assert evaluator.evaluate("SAFE_DIV(100, 4)", {}) == 25.0
+
+
+class TestFormulaEvaluatorSecurity:
+    """Verifies strict AST whitelist and injection rejection (TAC-02.2)."""
+
+    def test_reject_import_attempt(self):
+        evaluator = FormulaEvaluator()
+        with pytest.raises(FormulaSecurityError):
+            evaluator.evaluate("__import__('os').system('ls')", {})
+
+    def test_reject_dunder_attributes(self):
+        evaluator = FormulaEvaluator()
+        with pytest.raises(FormulaSecurityError):
+            evaluator.evaluate("''.__class__.__bases__[0]", {})
+
+    def test_reject_arbitrary_method_calls(self):
+        evaluator = FormulaEvaluator()
+        with pytest.raises(FormulaSecurityError):
+            evaluator.evaluate("ID86.upper()", {86: "test"})
+
+    def test_reject_unapproved_functions(self):
+        evaluator = FormulaEvaluator()
+        with pytest.raises(FormulaSecurityError):
+            evaluator.evaluate("eval('1+1')", {})
+        with pytest.raises(FormulaSecurityError):
+            evaluator.evaluate("open('/etc/passwd')", {})
+        with pytest.raises(FormulaSecurityError):
+            evaluator.evaluate("exec('x = 1')", {})
+
+    def test_reject_lambda_and_comprehensions(self):
+        evaluator = FormulaEvaluator()
+        with pytest.raises(FormulaSecurityError):
+            evaluator.evaluate("(lambda x: x)(ID86)", {86: 10})
+        with pytest.raises(FormulaSecurityError):
+            evaluator.evaluate("[x for x in [1, 2]]", {})
+
+    def test_reject_indexing_subscript(self):
+        evaluator = FormulaEvaluator()
+        with pytest.raises(FormulaSecurityError):
+            evaluator.evaluate("ID86[0]", {86: [1, 2]})
+
+    def test_validate_formula_helper_for_malicious_code(self):
+        assert validate_formula("__import__('sys').exit(0)") is False
+        assert validate_formula("ID840 + ID841") is True
+        assert validate_formula("SUM(ID1216) / ID842") is True
+
+
+class TestAllTwelveDashboardIndicators:
+    """Verifies all 12 member dashboard indicators with realistic answers."""
+
+    def test_evaluate_all_twelve_indicators(self):
+        config_path = get_config_path()
+        with open(config_path, "r", encoding="utf-8") as f:
+            config = json.load(f)
+
+        answers = {
+            86: 65.0,                         # Sourced directly
+            840: 35.0,                        # Sourced indirectly
+            841: 65.0,                        # Sourced certified
+            899: 45.0,                        # Certified / company program
+            851: 72.0,                        # Deforestation free
+            878: [100.0, 200.0],              # Agroforestry weight repeat
+            1229: [50.0, 25.0],               # Agroforestry value repeat
+            1288: 1000.0,                     # Global volume scale
+            842: 2400.0,                      # Total households
+            847: [200.0, 400.0, 600.0],       # Strategy implemented
+            1289: [150.0, 350.0],             # Sourced under LI strategy
+            950: 300.0,                       # >100% LI benchmark
+            845: 600.0,                       # LI benchmark total households
+            1215: 2023.0,                     # Study collection year
+            575: 1800.0,                      # Households in CLMRS
+            577: 250.0,                       # Child labour cases identified
+            873: 5000.0,                      # Children covered
+            579: 200.0,                       # Children received support
+            874: 150.0,                       # Children with 2 visits
+        }
+
+        evaluator = FormulaEvaluator()
+
+        expected_results = {
+            "sourced_directly": 65.0,
+            "sourced_traceable": 100.0,              # 35.0 + 65.0
+            "certified_company_program": 45.0,       # 899
+            "deforestation_free": 72.0,              # 851
+            "cocoa_agroforestry_systems": 10.0,      # (100*50 + 200*25)/1000
+            "li_strategy_implemented": 0.5,          # 1200 / 2400
+            "li_strategy_volume_share": 0.5,         # 500 / 1000
+            "li_benchmark_above_100": 0.5,           # 300 / 600
+            "clmrs_covered": 0.75,                   # 1800 / 2400
+            "child_labour_identified": 0.05,         # 250 / 5000
+            "support_received": 0.8,                 # 200 / 250
+            "follow_up_visits": 0.6,                 # 150 / 250
+        }
+
+        for challenge in config["challenges"]:
+            for ind in challenge["indicators"]:
+                val = evaluator.evaluate(ind["formula"], answers)
+                assert val is not None, f"Indicator {ind['id']} is None"
+                exp = expected_results[ind["id"]]
+                assert round(val, 4) == round(exp, 4), (
+                    f"Mismatch on {ind['id']}: got {val}, expected {exp}"
+                )

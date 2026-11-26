@@ -22,11 +22,13 @@ import {
   SubmissionProgress,
   Faq,
   ManageMember,
+  ManagePeerGroup,
   ManageDownload,
   DataCleaning,
   DownloadReport,
   ManageRoadmap,
   DownloadFeedback,
+  MemberDashboard,
 } from "./pages";
 import { Alert } from "antd";
 import { useCookies } from "react-cookie";
@@ -243,6 +245,11 @@ const App = () => {
           />
           <Route
             exact
+            path="/manage-peer-group"
+            element={<Secure element={ManagePeerGroup} adminPage={true} />}
+          />
+          <Route
+            exact
             path="/manage-download"
             element={<Secure element={ManageDownload} adminPage={true} />}
           />
@@ -265,6 +272,11 @@ const App = () => {
             exact
             path="/download-feedback"
             element={<Secure element={DownloadFeedback} adminPage={true} />}
+          />
+          <Route
+            exact
+            path="/dashboard"
+            element={<Secure element={MemberDashboard} />}
           />
           <Route exact path="/survey" element={<Secure element={Survey} />} />
           <Route
