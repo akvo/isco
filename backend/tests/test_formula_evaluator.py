@@ -47,7 +47,7 @@ class TestVisualizationMappingConfig:
 
         expected_challenge_ids = {
             "transparency_and_traceability",
-            "deforestation",
+            "agroforestry_and_deforestation",
             "living_income",
             "child_labour",
         }
@@ -57,9 +57,12 @@ class TestVisualizationMappingConfig:
         expected_indicator_ids = {
             "sourced_directly",
             "sourced_traceable",
+            "certified_company_program",
             "deforestation_free",
-            "li_gap_measured",
+            "cocoa_agroforestry_systems",
             "li_strategy_implemented",
+            "li_strategy_volume_share",
+            "li_benchmark_above_100",
             "clmrs_covered",
             "child_labour_identified",
             "support_received",
@@ -94,7 +97,7 @@ class TestVisualizationMappingConfig:
 
         found_indicator_ids = {ind["id"] for ind in all_indicators}
         assert found_indicator_ids == expected_indicator_ids
-        assert len(all_indicators) == 9
+        assert len(all_indicators) == 12
 
         # Inverted polarity check
         cl_identified = next(
@@ -261,6 +264,90 @@ class TestFormulaEvaluatorFunctions:
         assert evaluator.evaluate("COALESCE(ID1, 0)", answers) == 0.0
         assert evaluator.evaluate("COALESCE(ID1, ID999)", answers) is None
 
+    def test_sum_product_two_lists(self):
+        evaluator = FormulaEvaluator()
+        # weights = [10.0, 20.0, 30.0], values = [2.0, 3.0, 4.0]
+        # (10*2 + 20*3 + 30*4) = 20 + 60 + 120 = 200.0
+        answers = {878: [10.0, 20.0, 30.0], 1229: [2.0, 3.0, 4.0]}
+        expr = "SUM_PRODUCT(ID878, ID1229)"
+        assert evaluator.evaluate(expr, answers) == 200.0
+
+    def test_sum_product_with_division_ratio(self):
+        evaluator = FormulaEvaluator()
+        answers = {
+            878: [100.0, 200.0],
+            1229: [50.0, 25.0],
+            1288: 1000.0,
+        }
+        # (100*50 + 200*25) / 1000 = (5000 + 5000) / 1000 = 10.0
+        formula = "SUM_PRODUCT(ID878, ID1229) / ID1288"
+        assert evaluator.evaluate(formula, answers) == 10.0
+
+    def test_sum_product_mismatched_lengths(self):
+        evaluator = FormulaEvaluator()
+        answers = {878: [10.0, 20.0, 30.0], 1229: [2.0, 3.0]}
+        # Zips first 2 pairs: 10*2 + 20*3 = 80.0
+        expr = "SUM_PRODUCT(ID878, ID1229)"
+        assert evaluator.evaluate(expr, answers) == 80.0
+
+    def test_sum_product_scalars_fallback(self):
+        evaluator = FormulaEvaluator()
+        answers = {878: 10.0, 1229: 5.0}
+        expr = "SUM_PRODUCT(ID878, ID1229)"
+        assert evaluator.evaluate(expr, answers) == 50.0
+
+    def test_sum_product_empty_or_missing(self):
+        evaluator = FormulaEvaluator()
+        assert evaluator.evaluate("SUM_PRODUCT(ID878, ID1229)", {}) is None
+        assert (
+            evaluator.evaluate(
+                "SUM_PRODUCT(ID878, ID1229)", {878: [], 1229: []}
+            )
+            is None
+        )
+
+    def test_median_odd_and_even(self):
+        evaluator = FormulaEvaluator()
+        assert evaluator.evaluate("MEDIAN(10, 20, 30)", {}) == 20.0
+        assert evaluator.evaluate("MEDIAN(10, 20, 30, 40)", {}) == 25.0
+        assert evaluator.evaluate("MEDIAN(ID10)", {10: [5, 1, 9, 3, 7]}) == 5.0
+
+    def test_count_scalars_and_lists(self):
+        evaluator = FormulaEvaluator()
+        answers = {10: [1.0, 2.0, None, 4.0], 20: 5.0}
+        assert evaluator.evaluate("COUNT(ID10, ID20)", answers) == 4.0
+        assert evaluator.evaluate("COUNT(ID999)", {}) == 0.0
+
+    def test_weighted_avg(self):
+        evaluator = FormulaEvaluator()
+        # weights = [10, 30], values = [100, 200]
+        # (10*100 + 30*200) / (10 + 30) = (1000 + 6000) / 40 = 175.0
+        answers = {1: [10.0, 30.0], 2: [100.0, 200.0]}
+        assert evaluator.evaluate("WEIGHTED_AVG(ID1, ID2)", answers) == 175.0
+
+    def test_round(self):
+        evaluator = FormulaEvaluator()
+        assert evaluator.evaluate("ROUND(12.3456, 2)", {}) == 12.35
+        assert evaluator.evaluate("ROUND(12.6)", {}) == 13.0
+
+    def test_abs(self):
+        evaluator = FormulaEvaluator()
+        assert evaluator.evaluate("ABS(-42.5)", {}) == 42.5
+        assert evaluator.evaluate("ABS(42.5)", {}) == 42.5
+
+    def test_clamp(self):
+        evaluator = FormulaEvaluator()
+        # Clamps within [0, 100]
+        assert evaluator.evaluate("CLAMP(120.0, 0.0, 100.0)", {}) == 100.0
+        assert evaluator.evaluate("CLAMP(-15.0, 0.0, 100.0)", {}) == 0.0
+        assert evaluator.evaluate("CLAMP(75.5, 0.0, 100.0)", {}) == 75.5
+
+    def test_safe_div(self):
+        evaluator = FormulaEvaluator()
+        assert evaluator.evaluate("SAFE_DIV(100, 0)", {}) == 0.0
+        assert evaluator.evaluate("SAFE_DIV(100, 0, -1.0)", {}) == -1.0
+        assert evaluator.evaluate("SAFE_DIV(100, 4)", {}) == 25.0
+
 
 class TestFormulaEvaluatorSecurity:
     """Verifies strict AST whitelist and injection rejection (TAC-02.2)."""
@@ -307,10 +394,10 @@ class TestFormulaEvaluatorSecurity:
         assert validate_formula("SUM(ID1216) / ID842") is True
 
 
-class TestAllNineDashboardIndicators:
-    """Verifies all 9 member dashboard indicators with realistic answers."""
+class TestAllTwelveDashboardIndicators:
+    """Verifies all 12 member dashboard indicators with realistic answers."""
 
-    def test_evaluate_all_nine_indicators(self):
+    def test_evaluate_all_twelve_indicators(self):
         config_path = get_config_path()
         with open(config_path, "r", encoding="utf-8") as f:
             config = json.load(f)
@@ -319,10 +406,17 @@ class TestAllNineDashboardIndicators:
             86: 65.0,                         # Sourced directly
             840: 35.0,                        # Sourced indirectly
             841: 65.0,                        # Sourced certified
+            899: 45.0,                        # Certified / company program
             851: 72.0,                        # Deforestation free
-            1216: [400.0, 500.0, 300.0],      # LI gap measured
+            878: [100.0, 200.0],              # Agroforestry weight repeat
+            1229: [50.0, 25.0],               # Agroforestry value repeat
+            1288: 1000.0,                     # Global volume scale
             842: 2400.0,                      # Total households
             847: [200.0, 400.0, 600.0],       # Strategy implemented
+            1289: [150.0, 350.0],             # Sourced under LI strategy
+            950: 300.0,                       # >100% LI benchmark
+            845: 600.0,                       # LI benchmark total households
+            1215: 2023.0,                     # Study collection year
             575: 1800.0,                      # Households in CLMRS
             577: 250.0,                       # Child labour cases identified
             873: 5000.0,                      # Children covered
@@ -334,14 +428,17 @@ class TestAllNineDashboardIndicators:
 
         expected_results = {
             "sourced_directly": 65.0,
-            "sourced_traceable": 100.0,       # 35.0 + 65.0
-            "deforestation_free": 72.0,
-            "li_gap_measured": 0.5,           # 1200 / 2400
-            "li_strategy_implemented": 0.5,   # 1200 / 2400
-            "clmrs_covered": 0.75,            # 1800 / 2400
-            "child_labour_identified": 0.05,  # 250 / 5000
-            "support_received": 0.8,          # 200 / 250
-            "follow_up_visits": 0.6,          # 150 / 250
+            "sourced_traceable": 100.0,              # 35.0 + 65.0
+            "certified_company_program": 45.0,       # 899
+            "deforestation_free": 72.0,              # 851
+            "cocoa_agroforestry_systems": 10.0,      # (100*50 + 200*25)/1000
+            "li_strategy_implemented": 0.5,          # 1200 / 2400
+            "li_strategy_volume_share": 0.5,         # 500 / 1000
+            "li_benchmark_above_100": 0.5,           # 300 / 600
+            "clmrs_covered": 0.75,                   # 1800 / 2400
+            "child_labour_identified": 0.05,         # 250 / 5000
+            "support_received": 0.8,                 # 200 / 250
+            "follow_up_visits": 0.6,                 # 150 / 250
         }
 
         for challenge in config["challenges"]:

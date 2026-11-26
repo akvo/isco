@@ -959,11 +959,11 @@ async def test_individual_dashboard_out_of_range_years(
                 assert pt["gisco_avg"] is None
 
 
-async def test_individual_dashboard_all_nine_indicators_present(
+async def test_individual_dashboard_all_twelve_indicators_present(
     app: FastAPI, client: AsyncClient, test_setup: dict
 ):
     """
-    Verifies that all 9 canonical indicators spanning the 4 challenges
+    Verifies that all 12 canonical indicators spanning the 4 challenges
     are always returned in the response contract.
     """
     token = test_setup["user_a_token"]
@@ -977,12 +977,24 @@ async def test_individual_dashboard_all_nine_indicators_present(
     assert res.status_code == 200
     data = res.json()
 
+    expected_challenges = {
+        "transparency_and_traceability",
+        "agroforestry_and_deforestation",
+        "living_income",
+        "child_labour",
+    }
+    found_challenges = {ch["id"] for ch in data["challenges"]}
+    assert expected_challenges == found_challenges
+
     expected_indicators = {
         "sourced_directly",
         "sourced_traceable",
+        "certified_company_program",
         "deforestation_free",
-        "li_gap_measured",
+        "cocoa_agroforestry_systems",
         "li_strategy_implemented",
+        "li_strategy_volume_share",
+        "li_benchmark_above_100",
         "clmrs_covered",
         "child_labour_identified",
         "support_received",
@@ -1608,3 +1620,72 @@ async def test_indicator_dto_fallback_to_default_description(
         assert ind["translations"] == []
     finally:
         service.benchmark_service._config = original_config
+
+
+def test_individual_dashboard_year_index_remapping():
+    """Verifies that an indicator with year_index_question maps to year."""
+    from unittest.mock import MagicMock
+    from services.visualization_service import VisualizationService
+
+    service = VisualizationService()
+    mock_session = MagicMock()
+
+    mock_org = MagicMock()
+    mock_org.id = 1
+    mock_org.name = "Test Org"
+    mock_pg = MagicMock()
+    mock_pg.id = 10
+    mock_pg.code = "TEST"
+    mock_pg.name = "Test Peer Group"
+    service.resolve_organisation_peer_group = MagicMock(
+        return_value=(mock_org, mock_pg)
+    )
+
+    qid_950 = service.resolver.resolve_question_id(950)
+    qid_845 = service.resolver.resolve_question_id(845)
+    qid_1215 = service.resolver.resolve_question_id(1215)
+
+    # In 2023 submission, answered 1215 with 2022
+    # ID950 / ID845 = 45 / 100 = 0.45
+    year_answers = {
+        2022: {},
+        2023: {
+            qid_950: 45.0,
+            qid_845: 100.0,
+            qid_1215: 2022.0,
+        },
+    }
+    service.extract_member_answers = MagicMock(return_value=year_answers)
+    service.benchmark_service.get_peer_group_benchmarks = MagicMock(
+        return_value={}
+    )
+    (
+        mock_session.query.return_value
+        .filter.return_value
+        .order_by.return_value
+        .all.return_value
+    ) = []
+    mock_session.query.return_value.order_by.return_value.all.return_value = []
+
+    res = service.get_individual_dashboard(
+        session=mock_session,
+        organisation_id=1,
+        years=[2022, 2023],
+    )
+
+    target_ind = None
+    for ch in res["challenges"]:
+        for ind in ch["indicators"]:
+            if ind["id"] == "li_benchmark_above_100":
+                target_ind = ind
+                break
+        if target_ind:
+            break
+
+    assert target_ind is not None
+    series_2022 = next(s for s in target_ind["series"] if s["year"] == 2022)
+    series_2023 = next(s for s in target_ind["series"] if s["year"] == 2023)
+
+    # Remapped: 2022 has 0.45, 2023 has None
+    assert series_2022["member"] == 0.45
+    assert series_2023["member"] is None

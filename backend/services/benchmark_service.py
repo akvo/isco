@@ -34,6 +34,26 @@ DEFAULT_CONFIG_PATH = os.path.join(
 )
 
 
+def extract_year_index(raw_val: Any) -> Optional[int]:
+    """
+    Safely extracts a 4-digit calendar year from a question answer value.
+    Handles numeric, string, and list inputs, bounding between 1900 and 2100.
+    """
+    if raw_val is None:
+        return None
+    if isinstance(raw_val, list):
+        if not raw_val:
+            return None
+        raw_val = raw_val[0]
+    try:
+        y = int(float(raw_val))
+        if 1900 <= y <= 2100:
+            return y
+        return None
+    except (ValueError, TypeError):
+        return None
+
+
 class BenchmarkService:
     """
     High-performance cohort aggregation and peer group benchmark service.
@@ -214,6 +234,7 @@ class BenchmarkService:
                 Answer.repeat_index,
             )
             .filter(Answer.data.in_(selected_data_ids))
+            .order_by(Answer.repeat_index.asc(), Answer.id.asc())
             .all()
         )
 
@@ -238,7 +259,7 @@ class BenchmarkService:
             else:
                 org_year_answers[org_id][year][qid] = [current, val]
 
-        # 4. Evaluate all 9 indicators for each organisation and year
+        # 4. Evaluate all indicators for each organisation and year
         indicators = self.get_all_indicators()
         cohort_results: Dict[str, Dict[int, Dict[int, float]]] = {}
 
@@ -246,19 +267,50 @@ class BenchmarkService:
             ind_id = ind["id"]
             formula = ind["formula"]
             resolved_formula = self.resolver.resolve_formula(formula)
-            cohort_results[ind_id] = {}
+            cohort_results[ind_id] = {y: {} for y in years}
 
-            for year in years:
-                cohort_results[ind_id][year] = {}
-                for org_id in peer_org_ids:
-                    answers = org_year_answers.get(org_id, {}).get(year, {})
-                    if not answers:
-                        continue
-                    calc_val = self.evaluator.evaluate(
-                        resolved_formula, answers
-                    )
-                    if calc_val is not None:
-                        cohort_results[ind_id][year][org_id] = float(calc_val)
+            year_index_qid = ind.get("year_index_question")
+            resolved_year_qid = (
+                self.resolver.resolve_question_id(year_index_qid)
+                if year_index_qid
+                else None
+            )
+
+            if resolved_year_qid:
+                for sub_year in sorted(years):
+                    for org_id in peer_org_ids:
+                        answers = (
+                            org_year_answers.get(org_id, {}).get(sub_year, {})
+                        )
+                        if not answers:
+                            continue
+                        calc_val = self.evaluator.evaluate(
+                            resolved_formula, answers
+                        )
+                        if calc_val is not None:
+                            raw_target_year = answers.get(resolved_year_qid)
+                            target_year = extract_year_index(raw_target_year)
+                            if target_year is None:
+                                target_year = sub_year
+                            if target_year in cohort_results[ind_id]:
+                                cohort_results[ind_id][target_year][org_id] = (
+                                    float(calc_val)
+                                )
+            else:
+                for year in years:
+                    for org_id in peer_org_ids:
+                        answers = (
+                            org_year_answers.get(org_id, {}).get(year, {})
+                        )
+                        if not answers:
+                            continue
+                        calc_val = self.evaluator.evaluate(
+                            resolved_formula, answers
+                        )
+                        if calc_val is not None:
+                            cohort_results[ind_id][year][org_id] = float(
+                                calc_val
+                            )
 
         return cohort_results
 

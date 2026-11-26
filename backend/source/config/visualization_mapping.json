@@ -61,12 +61,39 @@
           "type": "percentage",
           "chart_type": "line",
           "higher_is_better": true
+        },
+        {
+          "id": "certified_company_program",
+          "name": "Share of cocoa in your global supply chain that is certified and/or sourced under a company program",
+          "country": "Global",
+          "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "translations": [
+            {
+              "language": "de",
+              "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit (de). Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            },
+            {
+              "language": "fr",
+              "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit (fr). Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          ],
+          "form_id": 7,
+          "question_group": {
+            "id": 90,
+            "name": "Sourcing & Traceability"
+          },
+          "formula": "ID899",
+          "numerator_ids": [899],
+          "denominator_ids": [],
+          "type": "percentage",
+          "chart_type": "line",
+          "higher_is_better": true
         }
       ]
     },
     {
-      "id": "deforestation",
-      "name": "Deforestation",
+      "id": "agroforestry_and_deforestation",
+      "name": "Agroforestry & Deforestation-free cocoa",
       "indicators": [
         {
           "id": "deforestation_free",
@@ -94,16 +121,10 @@
           "type": "percentage",
           "chart_type": "line",
           "higher_is_better": true
-        }
-      ]
-    },
-    {
-      "id": "living_income",
-      "name": "Living income",
-      "indicators": [
+        },
         {
-          "id": "li_gap_measured",
-          "name": "Share of households in direct supply chain for which a LI gap is measured",
+          "id": "cocoa_agroforestry_systems",
+          "name": "Share of cocoa sourced from agroforestry systems",
           "country": "Global",
           "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
           "translations": [
@@ -118,17 +139,26 @@
           ],
           "form_id": 7,
           "question_group": {
-            "id": "supplier_repeats",
-            "name": "Supplier Repeat Group - Living Income"
+            "id": 121,
+            "name": "Agroforestry & Environmental Sourcing"
           },
-          "formula": "SUM(ID1216) / ID842",
-          "numerator_ids": [1216],
-          "denominator_ids": [842],
-          "aggregate_repeats": true,
-          "type": "ratio",
+          "formula": "SUM_PRODUCT(ID878, ID1229) / ID1288",
+          "calculation_type": "weighted_repeat",
+          "weight_id": 878,
+          "value_id": 1229,
+          "scale_id": 1288,
+          "numerator_ids": [878, 1229],
+          "denominator_ids": [1288],
+          "type": "percentage",
           "chart_type": "line",
           "higher_is_better": true
-        },
+        }
+      ]
+    },
+    {
+      "id": "living_income",
+      "name": "Living income",
+      "indicators": [
         {
           "id": "li_strategy_implemented",
           "name": "Share of households in direct supply chain for which a LI strategy is implemented",
@@ -156,6 +186,62 @@
           "type": "ratio",
           "chart_type": "line",
           "higher_is_better": true
+        },
+        {
+          "id": "li_strategy_volume_share",
+          "name": "Share of cocoa sourced globally under a living income strategy.",
+          "country": "Global",
+          "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "translations": [
+            {
+              "language": "de",
+              "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit (de). Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            },
+            {
+              "language": "fr",
+              "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit (fr). Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          ],
+          "form_id": 7,
+          "question_group": {
+            "id": "supplier_repeats",
+            "name": "Supplier Repeat Group - Living Income"
+          },
+          "formula": "SUM(ID1289) / ID1288",
+          "numerator_ids": [1289],
+          "denominator_ids": [1288],
+          "aggregate_repeats": true,
+          "type": "ratio",
+          "chart_type": "line",
+          "higher_is_better": true
+        },
+        {
+          "id": "li_benchmark_above_100",
+          "name": "Share of households for which the LI gap has been measured with more than 100% income of a living income benchmark",
+          "country": "Global",
+          "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "translations": [
+            {
+              "language": "de",
+              "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit (de). Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            },
+            {
+              "language": "fr",
+              "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit (fr). Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          ],
+          "form_id": 7,
+          "question_group": {
+            "id": "living_income_studies",
+            "name": "Living Income Benchmark Studies"
+          },
+          "formula": "ID950 / ID845",
+          "year_index_question": 1215,
+          "numerator_ids": [950],
+          "denominator_ids": [845],
+          "type": "ratio",
+          "chart_type": "line",
+          "higher_is_better": true
         }
       ]
     },
@@ -165,7 +251,7 @@
       "indicators": [
         {
           "id": "clmrs_covered",
-          "name": "Share of households in supply chain covered by CLMRS",
+          "name": "Share of households in direct supply chain covered by CLMRS",
           "country": "West Africa (Cameroon, Côte d'Ivoire, Ghana, Nigeria)",
           "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
           "translations": [

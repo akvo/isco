@@ -411,7 +411,6 @@ const MemberDashboardPage = () => {
             <main className="dashboard-challenges-container">
               {dashboardData.challenges.map((challenge) => {
                 const indicatorCount = challenge.indicators?.length || 0;
-                const colSpan = indicatorCount === 1 ? 24 : 12;
                 return (
                   <section key={challenge.id} className="challenge-section">
                     <div className="challenge-header-bar">
@@ -427,16 +426,22 @@ const MemberDashboardPage = () => {
                     </div>
 
                     <Row gutter={[24, 24]}>
-                      {(challenge.indicators || []).map((indicator) => (
-                        <Col xs={24} lg={colSpan} key={indicator.id}>
-                          <IndicatorLineChartCard
-                            indicator={indicator}
-                            peerGroupName={getPeerGroupName(
-                              dashboardData.organisation.peer_group
-                            )}
-                          />
-                        </Col>
-                      ))}
+                      {(challenge.indicators || []).map((indicator, index) => {
+                        const isOddTotal = indicatorCount % 2 !== 0;
+                        const isLast = index === indicatorCount - 1;
+                        const colSpan = isOddTotal && isLast ? 24 : 12;
+
+                        return (
+                          <Col xs={24} lg={colSpan} key={indicator.id}>
+                            <IndicatorLineChartCard
+                              indicator={indicator}
+                              peerGroupName={getPeerGroupName(
+                                dashboardData.organisation.peer_group
+                              )}
+                            />
+                          </Col>
+                        );
+                      })}
 
                       {(!challenge.indicators ||
                         challenge.indicators.length === 0) && (
