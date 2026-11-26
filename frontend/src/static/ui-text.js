@@ -93,6 +93,7 @@ const uiText = {
     },
     challenges: {
       transparency_and_traceability: "Transparency and traceability",
+      agroforestry_and_deforestation: "Agroforestry & Deforestation-free cocoa",
       deforestation: "Deforestation",
       living_income: "Living income",
       child_labour: "Child labour",
@@ -100,11 +101,19 @@ const uiText = {
     indicators: {
       sourced_directly: "Share of cocoa sourced directly",
       sourced_traceable: "Share of cocoa sourced traceable to farm level",
+      certified_company_program:
+        "Share of cocoa in your global supply chain that is certified and/or sourced under a company program",
       deforestation_free: "Share of deforestation free cocoa",
+      cocoa_agroforestry_systems:
+        "Share of cocoa sourced from agroforestry systems",
       li_gap_measured:
         "Share of households in direct supply chain for which a LI gap is measured",
       li_strategy_implemented:
         "Share of households in direct supply chain for which a LI strategy is implemented",
+      li_strategy_volume_share:
+        "Share of cocoa sourced globally under a living income strategy",
+      li_benchmark_above_100:
+        "Share of households for which the LI gap has been measured with more than 100% income of a living income benchmark",
       clmrs_covered: "Share of households in supply chain covered by CLMRS",
       child_labour_identified:
         "Share of cases of child labour identified among children covered",
@@ -492,6 +501,8 @@ const uiText = {
     },
     challenges: {
       transparency_and_traceability: "Transparenz und Rückverfolgbarkeit",
+      agroforestry_and_deforestation:
+        "Agroforstwirtschaft & entwaldungsfreier Kakao",
       deforestation: "Entwaldung",
       living_income: "Existenzsicherndes Einkommen",
       child_labour: "Kinderarbeit",
@@ -500,11 +511,19 @@ const uiText = {
       sourced_directly: "Anteil direkt bezogenen Kakaos",
       sourced_traceable:
         "Anteil bis zur Farmebene rückverfolgbar bezogenen Kakaos",
+      certified_company_program:
+        "Anteil des Kakaos in Ihrer globalen Lieferkette, der zertifiziert ist und/oder im Rahmen eines Unternehmensprogramms bezogen wird",
       deforestation_free: "Anteil entwaldungsfreien Kakaos",
+      cocoa_agroforestry_systems:
+        "Anteil des aus Agroforstsystemen bezogenen Kakaos",
       li_gap_measured:
         "Anteil der Haushalte in der direkten Lieferkette, für die eine Einkommenslücke gemessen wird",
       li_strategy_implemented:
         "Anteil der Haushalte in der direkten Lieferkette, für die eine Strategie für existenzsichernde Einkommen umgesetzt wird",
+      li_strategy_volume_share:
+        "Anteil des weltweit im Rahmen einer Strategie für existenzsichernde Einkommen bezogenen Kakaos",
+      li_benchmark_above_100:
+        "Anteil der Haushalte, für die die Einkommenslücke gemessen wurde und die mehr als 100% des Benchmarks für existenzsichernde Einkommen erzielen",
       clmrs_covered:
         "Anteil der Haushalte in der Lieferkette, die durch CLMRS abgedeckt sind",
       child_labour_identified:

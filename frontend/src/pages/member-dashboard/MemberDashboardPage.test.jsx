@@ -470,4 +470,69 @@ describe("MemberDashboardPage Shell Component", () => {
       );
     });
   });
+
+  test("renders full-width (col-lg-24) for the last odd chart and half-width (col-lg-12) for pairs", async () => {
+    store.update((s) => {
+      s.user = {
+        role: "member_admin",
+        organisation: 45,
+      };
+      s.optionValues = {
+        organisation: mockOrganisations,
+      };
+    });
+
+    const dataWithThreeIndicators = {
+      ...mockDashboardData,
+      challenges: [
+        {
+          id: "transparency_and_traceability",
+          name: "Transparency and traceability",
+          indicators: [
+            {
+              id: "ind_1",
+              name: "Indicator 1",
+              country: "Global",
+              unit: "percentage",
+              series: [{ year: 2022, member: 0.1 }],
+            },
+            {
+              id: "ind_2",
+              name: "Indicator 2",
+              country: "Global",
+              unit: "percentage",
+              series: [{ year: 2022, member: 0.2 }],
+            },
+            {
+              id: "ind_3",
+              name: "Indicator 3",
+              country: "Global",
+              unit: "percentage",
+              series: [{ year: 2022, member: 0.3 }],
+            },
+          ],
+        },
+      ],
+    };
+
+    api.get.mockResolvedValueOnce({ data: dataWithThreeIndicators });
+
+    const { container } = render(<MemberDashboardPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Indicator 1")).toBeInTheDocument();
+      expect(screen.getByText("Indicator 2")).toBeInTheDocument();
+      expect(screen.getByText("Indicator 3")).toBeInTheDocument();
+    });
+
+    const challengeCols = container.querySelectorAll(
+      ".challenge-section .ant-col"
+    );
+    expect(challengeCols).toHaveLength(3);
+    // Chart 1 and 2 are half-width
+    expect(challengeCols[0]).toHaveClass("ant-col-lg-12");
+    expect(challengeCols[1]).toHaveClass("ant-col-lg-12");
+    // Odd last chart 3 is full-width
+    expect(challengeCols[2]).toHaveClass("ant-col-lg-24");
+  });
 });
